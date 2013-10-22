@@ -1,0 +1,3 @@
+#minimap { position:absolute; top:18px; right:18px; }
+#minimap .plus { position:absolute; top: 0px; right:0px; width:12px; height:12px; border:none; background:transparent; }
+#minimap .minus { position:absolute; top:12px; right:0px; width:12px; height:12px; border:none; background:transparent; }

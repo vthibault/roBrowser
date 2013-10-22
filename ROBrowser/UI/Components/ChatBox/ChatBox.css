@@ -1,0 +1,122 @@
+#chatbox {
+	position: absolute;
+	left: 5px;
+	width: 595px;
+}
+
+
+/** Tabs **/
+#chatbox .header {
+	margin-left:3px;
+	height:17px;
+	font-size:12px;
+}
+
+#chatbox .header .tab {
+	width: 75px;
+	color: white;
+	text-align: center;
+}
+
+#chatbox .header input {
+	border:none;
+	background-color:transparent;
+	color:white;
+	width:75px;
+	height:15px;
+	text-align:center;
+}
+
+#chatbox .header .tab div {
+	padding-top:2px;
+	border-radius:2px 2px 0px 0px;
+	background: rgba(0,0,0,0.75);
+	border:1px solid #959595;
+	border-bottom:1px solid white;
+}
+
+#chatbox .header .tab div.on {
+	background:rgba(0,0,0,0.50);
+	border:1px solid white;
+	border-bottom:none;
+	border-right:none;
+	height:16px;
+}
+
+#chatbox .header .options {
+	border-bottom:1px solid white;
+	height:18px;
+	margin-right:4px;
+}
+
+
+/** Content **/
+#chatbox .body {
+	background:rgba(0,0,0,0.5);
+	border-left:1px solid white;
+	border-right:1px solid white;
+	border-radius:0px 3px 0px 0px;
+	padding:5px;
+	margin-left:3px;
+	margin-right:-2px;
+}
+#chatbox .content {
+	font-size:12px;
+	text-shadow:1px 1px 0px black;
+	height:42px;
+	overflow-y:auto;
+	line-height:14px;
+}
+
+
+/** Input **/
+#chatbox .input {
+	width:600px;
+	height:25px;
+	position:relative;
+}
+
+#chatbox .input input {
+	position:absolute;
+	top:3px;
+	height:18px;
+	background-color:transparent;
+	border:none;
+}
+
+#chatbox .input .username {
+	left:4px;
+	width:90px;
+	padding-left:5px;
+}
+
+#chatbox .input .list {
+	width:8px;
+	height:18px;
+	border:none;
+	position:absolute;
+	top:3px;
+	left:97px;
+	background-repeat:no-repeat;
+}
+
+#chatbox .input .message {
+	left:108px;
+	width:460px;
+	padding-left:5px;
+}
+
+#chatbox .input .filter,
+#chatbox .input .size {
+	width:11px;
+	height:11px;
+	border:none;
+	position:absolute;
+	right:16px;
+	top:8px;
+	background-color:transparent;
+}
+
+#chatbox .input .size {
+ right:3px; 
+}

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Ragnarok Online in the Browser powered by roBrowser</title>
+		<script type="text/javascript">
+			var ROConfig = {};
+
+			addEventListener('message', function( event ) {
+				if( ROConfig.ready ) {
+					return;
+				}
+
+				event.source.postMessage('ready', '*' );
+
+				ROConfig.ready        = true;
+				ROConfig.grfList      = event.data.grfList      || null;
+				ROConfig.servers      = event.data.servers      || 'data/clientinfo.xml';
+				ROConfig.remoteClient = event.data.remoteClient || '';
+				ROConfig.packetver    = event.data.packetver    || 'auto';
+
+				var script = document.createElement('script');
+				script.src = 'ROBrowser/Vendors/require.js';
+				script.setAttribute('data-main', 'ROBrowser/App/' + event.data.application);
+
+				document.getElementsByTagName('head')[0].appendChild(script);
+			}, false);
+		</script>
+	</head>
+</html>

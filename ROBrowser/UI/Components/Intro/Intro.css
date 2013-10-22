@@ -1,0 +1,220 @@
+/* Avoid input focus border */
+:focus {outline:none;}
+::-moz-focus-inner {border:0;}
+
+body {
+	background-color:#d2afab;
+	font-size:12px;
+	font-family:Arial;
+	overflow:hidden;
+	-webkit-user-select:none;
+	user-select:none;
+}
+
+/* Courgette style */
+@font-face {
+  font-family: 'Courgette';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Courgette Regular'), local('Courgette-Regular'), url(http://themes.googleusercontent.com/static/fonts/courgette/v1/BHG8ZtTfO0yYnp02--Qxqj8E0i7KZn-EPnyo3HZu7kw.woff) format('woff');
+}
+
+
+
+
+/* Page Elements */
+#intro {
+	position:absolute;
+	top:40%;
+	width:95%;
+	opacity:0;
+	z-index:1;
+}
+
+#intro div {
+	position:absolute;
+	left:50%;
+	margin-left:-300px;
+}
+
+#intro header, #intro footer, #intro article {
+	position:relative;
+	font-family: 'Courgette', cursive;
+	color:white;
+	font-size:40px;
+	left:200px;
+	text-shadow: rgba(0, 0, 0, 0.5) 2px 2px 5px;
+}
+
+#intro footer {
+	font-size:20px;
+	top:-190px;
+	text-align:right;
+	color:#e0e0e0;
+}
+
+#intro article {
+	font-size:20px;
+	color:#825571;
+	top:-120px;
+}
+#intro canvas { position:relative; }
+#intro input[type="file"] { visibility:hidden; }
+
+
+
+/* Button CSS3 */
+#intro button {
+	-moz-box-shadow:inset 0px 1px 5px 0px #f29c93;
+	-webkit-box-shadow:inset 0px 1px 5px 0px #f29c93;
+	box-shadow:inset 0px 1px 5px 0px #f29c93;
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #b56d6d), color-stop(1, #d18181) );
+	background:-moz-linear-gradient( center top, #b56d6d 5%, #d18181 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#b56d6d', endColorstr='#d18181');
+	background-color:#b56d6d;
+	-moz-border-radius:5px;
+	-webkit-border-radius:5px;
+	border-radius:5px;
+	border:2px solid #b56a63;
+	display:inline-block;
+	color:#ffffff;
+	font-family:Verdana;
+	font-size:24px;
+	font-weight:normal;
+	padding:5px 30px;
+	text-decoration:none;
+	text-shadow:1px 1px 0px #733737;
+	position: relative;
+	bottom: 150px;
+	left: 530px;
+}
+#intro button:hover {
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #d18181), color-stop(1, #b56d6d) );
+	background:-moz-linear-gradient( center top, #d18181 5%, #b56d6d 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#d18181', endColorstr='#b56d6d');
+	background-color:#d18181;
+}
+#intro button:active {
+	bottom:149px;
+}
+
+
+/* Metaling Animation handler */
+#intro .metal_drop_over {
+	animation:metal_drop_over 0.8s infinite linear;
+	-webkit-animation:metal_drop_over 0.8s infinite linear;
+	-moz-animation:metal_drop_over 0.8s infinite linear;
+	-o-animation:metal_drop_over 0.8s infinite linear;
+}
+#intro .metal_default {
+	animation:metal_default 0.8s infinite linear;
+	-webkit-animation:metal_default 0.8s infinite linear;
+	-moz-animation:metal_default 0.8s infinite linear;
+	-o-animation:metal_default 0.8s infinite linear;
+}
+#intro .metal_drop {
+	animation:metal_drop 0.8s infinite linear;
+	-webkit-animation:metal_drop 0.8s infinite linear;
+	-moz-animation:metal_drop 0.8s infinite linear;
+	-o-animation:metal_drop 0.8s infinite linear;
+}
+#intro .metal_error { 
+	animation:metal_default 0.3s infinite linear;
+	-webkit-animation:metal_default 0.3s infinite linear;
+	-moz-animation:metal_default 0.3s infinite linear;
+	-o-animation:metal_default 0.3s infinite linear;
+}
+
+
+
+/* Animation */
+@keyframes metal_default
+{
+	0%   {top:0px;  transform: scale(1,1);}
+	50%  {top:-5px; transform: scale(1,1.05);}
+	100% {top:0px;  transform: scale(1,1);}
+}
+@keyframes metal_drop_over
+{
+	0%   { transform:rotate(0deg);   top:0px;    }
+	10%  { transform:rotate(0deg);   top:-15px;  }
+	50%  { transform:rotate(180deg); top:-80px;  }
+	90%  { transform:rotate(340deg); top:-15px;  }
+	100% { transform:rotate(360deg); top:0px;    }
+}
+@keyframes metal_drop
+{
+	0%   {top:0px;  transform: scale(1,1);}
+	50%  {top:-5px; transform: scale(1.2,0.9);}
+	100% {top:0px;  transform: scale(1,1);}
+}
+
+
+
+/* Animation webkit */
+@-webkit-keyframes metal_default
+{
+	0%   {top:0px;  -webkit-transform: scale(1,1);}
+	50%  {top:-5px; -webkit-transform: scale(1,1.05);}
+	100% {top:0px;  -webkit-transform: scale(1,1);}
+}
+@-webkit-keyframes metal_drop_over
+{
+	0%   { -webkit-transform:rotate(0deg);   top:0px;    }
+	10%  { -webkit-transform:rotate(0deg);   top:-15px;  }
+	50%  { -webkit-transform:rotate(180deg); top:-80px; }
+	90%  { -webkit-transform:rotate(340deg); top:-15px;  }
+	100% { -webkit-transform:rotate(360deg); top:0px;    }
+}
+@-webkit-keyframes metal_drop
+{
+	0%   {top:0px;  -webkit-transform: scale(1,1);}
+	50%  {top:-5px; -webkit-transform: scale(1.2,0.9);}
+	100% {top:0px;  -webkit-transform: scale(1,1);}
+}
+
+
+/* Animation Firefox */
+@-moz-keyframes metal_default
+{
+	0%   {top:0px;  -moz-transform: scale(1,1);}
+	50%  {top:-5px; -moz-transform: scale(1,1.05);}
+	100% {top:0px;  -moz-transform: scale(1,1);}
+}
+@-moz-keyframes metal_drop_over
+{
+	0%   { -moz-transform:rotate(0deg);   top:0px;    }
+	10%  { -moz-transform:rotate(0deg);   top:-15px;  }
+	50%  { -moz-transform:rotate(180deg); top:-80px; }
+	90%  { -moz-transform:rotate(340deg); top:-15px;  }
+	100% { -moz-transform:rotate(360deg); top:0px;    }
+}
+@-moz-keyframes metal_drop
+{
+	0%   {top:0px;  -moz-transform: scale(1,1);}
+	50%  {top:-5px; -moz-transform: scale(1.2,0.9);}
+	100% {top:0px;  -moz-transform: scale(1,1);}
+}
+
+
+/* Animation Opera */
+@-o-keyframes metal_default
+{
+	0%   {top:0px;  -o-transform: scale(1,1);}
+	50%  {top:-5px; -o-transform: scale(1,1.05);}
+	100% {top:0px;  -o-transform: scale(1,1);}
+}
+@-o-keyframes metal_drop_over
+{
+	0%   { -o-transform:rotate(0deg);   top:0px;    }
+	10%  { -o-transform:rotate(0deg);   top:-15px;  }
+	50%  { -o-transform:rotate(180deg); top:-80px; }
+	90%  { -o-transform:rotate(340deg); top:-15px;  }
+	100% { -o-transform:rotate(360deg); top:0px;    }
+}
+@-o-keyframes metal_drop
+{
+	0%   {top:0px;  -o-transform: scale(1,1);}
+	50%  {top:-5px; -o-transform: scale(1.2,0.9);}
+	100% {top:0px;  -o-transform: scale(1,1);}
+}

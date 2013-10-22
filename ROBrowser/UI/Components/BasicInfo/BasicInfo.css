@@ -1,0 +1,40 @@
+#basicinfo { position:absolute; top:0px; left:0px; width:220px; height:135px; font-size:11px; text-shadow:1px 1px white; }
+#basicinfo.small .large { display:none; }
+#basicinfo.large .small { display:none; border-radius:5px; }
+#basicinfo.small { height:53px; }
+#basicinfo.large .buttons { top:135px; }
+#basicinfo.small .buttons { top:53px; }
+
+
+#basicinfo .topbar .left { position:absolute; top:3px; left:4px; width:11px; height:11px; border:none; background:none; }
+#basicinfo .topbar .right { position:absolute; top:3px; right:2px; width:11px; height:11px; border:none; background:none; }
+
+/* LARGE */
+#basicinfo .large .title{ position:absolute; top:2px; left:18px; }
+#basicinfo .large .name { position:absolute; left:10px; top:20px; }
+#basicinfo .large .job  { position:absolute; left:10px; top:33px; }
+#basicinfo .large .hp_title { position:absolute; top:50px; left:15px;  }
+#basicinfo .large .sp_title { position:absolute; top:65px; left:15px;  }
+#basicinfo .large .hp_bar, #basicinfo .large .sp_bar { position:absolute; top:53px; left:35px; width:135px; height:8px; }
+#basicinfo .large .sp_bar { top:68px; }
+#basicinfo .large .hp_bar div, #basicinfo .large .sp_bar div { width:4px; height:8px; float:left; }
+#basicinfo .large div.hp_bar_perc, #basicinfo .large div.sp_bar_perc { text-align:center; width:127px; font-size:10px; position:absolute; top:-2px; }
+#basicinfo .large .hp_perc { position:absolute; top:50px; right:20px; }
+#basicinfo .large .sp_perc { position:absolute; top:65px; right:20px; }
+#basicinfo .large .blvl { position:absolute; top:86px; left:15px; }
+#basicinfo .large .jlvl { position:absolute; top:97px; left:15px; }
+#basicinfo .large .bexp, #basicinfo .large .jexp{ position:absolute; top:89px; left:84px; width:110px; height:4px; border:1px solid #afafaf; background-color:white; }
+#basicinfo .large .bexp div, #basicinfo .large .jexp div { position:absolute; top:0px; left:0px; width:0%; height:4px; background-color:#4262a5; }
+#basicinfo .large .jexp { top:101px; }
+#basicinfo .large .extra { position:absolute; top:119px; right:5px; }
+#basicinfo .large .extra { padding-right:10px; }
+#basicinfo .buttons { position:absolute; left:0px; width:220px; opacity:0.5; }
+#basicinfo .buttons:hover { opacity:1.0; }
+#basicinfo .buttons button { float:left; width:54px; height:18px; border:none; margin:0; background-color:transparent; }
+#basicinfo .buttons .clear { clear:both; }
+
+/* REDUCED */
+#basicinfo .small .line1 { position:absolute; top:2px;  left:18px; text-shadow:1px 1px white; }
+#basicinfo .small .line2 { position:absolute; top:20px; left:10px; }
+#basicinfo .small .line3 { position:absolute; top:36px; left:10px; }
+#basicinfo .small .toggle_btns { width:9px; height:14px; border:none; background:none; background-repeat:no-repeat; position:absolute; right:2px; bottom: 2px; }
