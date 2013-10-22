@@ -151,9 +151,9 @@ define(function(require)
 
 	/**
 	 * Key Event Handler
-     *
-     * @param {object} event - KeyEventHandler
-     * @return {boolean}
+	 *
+	 * @param {object} event - KeyEventHandler
+	 * @return {boolean}
 	 */
 	ChatBox.onKeyDown = function OnKeyDown( event )
 	{
@@ -261,7 +261,7 @@ define(function(require)
 	 * Add text to chatbox
 	 *
 	 * @param {string} text
-     * @param {number} type
+	 * @param {number} type
 	 * @param {string} color
 	 */
 	ChatBox.addText = function addText( text, type, color )

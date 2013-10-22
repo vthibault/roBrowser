@@ -5,39 +5,39 @@
 
 /** CONTEXTMENU **/
 #contextmenu {
-    position:absolute;
-    width:150px;
-    font-family:Arial;
-    font-size:9pt;
-    padding-top:5px;
-    padding-bottom:5px;
+	position:absolute;
+	width:150px;
+	font-family:Arial;
+	font-size:9pt;
+	padding-top:5px;
+	padding-bottom:5px;
 	background-color:white;
-    border:1px solid #bababa;
-    box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
-    display:none;
+	border:1px solid #bababa;
+	box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+	display:none;
 }
 #contextmenu hr {
-    padding:0px;
-    margin:0px;
-    height:1px;
-    border:none;
-    background-color:#DDD;
+	padding:0px;
+	margin:0px;
+	height:1px;
+	border:none;
+	background-color:#DDD;
 }
 #contextmenu div {
-    padding-top:5px;
-    padding-bottom:5px;
-    padding-left:25px;
-    cursor:default;
+	padding-top:5px;
+	padding-bottom:5px;
+	padding-left:25px;
+	cursor:default;
 }
 #contextmenu div:hover {
-    background-color:#efefef;
+	background-color:#efefef;
 }
 #contextmenu div.disable {
-    color: #a1a192;
-    font-weight:bold;
+	color: #a1a192;
+	font-weight:bold;
 }
 #contextmenu .disable:hover {
-    background-color:white;
+	background-color:white;
 }
 
 

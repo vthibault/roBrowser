@@ -11,12 +11,12 @@ define( function( require )
 {
 	"use strict";
 
-    /**
-     *  Load dependencies
-     */
-    var PathFinding = require('Utils/PathFinding');
-    var Renderer    = require('Renderer/Renderer');
-    var Altitude    = require('Renderer/Map/Altitude');
+	/**
+	 *  Load dependencies
+	 */
+	var PathFinding = require('Utils/PathFinding');
+	var Renderer    = require('Renderer/Renderer');
+	var Altitude    = require('Renderer/Map/Altitude');
 
 
 	/**

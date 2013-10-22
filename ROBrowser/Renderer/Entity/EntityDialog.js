@@ -85,19 +85,19 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 
 		// Parse lines, depend on text size.
 		while ( text.length ) {
-            i = text.length;
-            while( ctx.measureText(text.substr(0,i)).width > max_width ) {
-                i--;
-            }
+			i = text.length;
+			while( ctx.measureText(text.substr(0,i)).width > max_width ) {
+				i--;
+			}
 
 			result = text.substr(0,i);
 
 			if ( i !== text.length ) {
-                j = 0;
+				j = 0;
 				while( result.indexOf(" ",j) !== -1 ) {
-                    j = result.indexOf(" ",j) + 1;
-                }
-            }
+					j = result.indexOf(" ",j) + 1;
+				}
+			}
 	
 			lines.push( result.substr(0, j|| result.length) );
 			width = Math.max( width, ctx.measureText(lines[ lines.length-1 ]).width );

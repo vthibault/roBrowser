@@ -206,9 +206,9 @@ define( ['Core/FileManager'], function( FileManager )
 			for( j=0; j<size; ++j ) {
 				meshes = model.meshes[j];
 
-                index = Object.keys(meshes);
-                len   = index.length;
-                for( k = 0; k < len; ++k ) {
+				index = Object.keys(meshes);
+				len   = index.length;
+				for( k = 0; k < len; ++k ) {
 					objects.push({
 						texture: model.textures[index[k]],
 						alpha:   Models[filename].alpha,

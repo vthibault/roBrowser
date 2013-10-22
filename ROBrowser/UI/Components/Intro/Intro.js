@@ -18,7 +18,7 @@ define(function(require)
 	var jQuery      = require('Utils/jquery');
 	var UIManager   = require('UI/UIManager');
 	var UIComponent = require('UI/UIComponent');
-    var Metaling    = require('./Metaling');
+	var Metaling    = require('./Metaling');
 	var htmlText    = require('text!./Intro.html');
 	var cssText     = require('text!./Intro.css');
 
@@ -34,7 +34,7 @@ define(function(require)
 	 */
 	Intro.init = function Init()
 	{
-        Metaling.init( this.ui.find('canvas')[0], this.onInit.bind(this));
+		Metaling.init( this.ui.find('canvas')[0], this.onInit.bind(this));
 	};
 
 
@@ -89,8 +89,8 @@ define(function(require)
 
 	/**
 	 * User submit files, get back files
-     * @param {object} event
-     * @return {boolean} false
+	 * @param {object} event
+	 * @return {boolean} false
 	 */
 	Intro.process = function Process( event )
 	{

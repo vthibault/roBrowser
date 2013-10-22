@@ -8,9 +8,8 @@
  * @author Vincent Thibault
  */
 
-define(
-	[   'require', 'Utils/jquery', 'Core/Client', 'Loaders/Sprite', 'Loaders/Action'],
-function( require,        jQuery,        Client,           Sprite,           Action )
+define([ 'require', 'Utils/jquery', 'Core/Client', 'Loaders/Sprite', 'Loaders/Action'],
+function( require,         jQuery,        Client,           Sprite,           Action )
 {
 	"use strict";
 

@@ -46,7 +46,7 @@ function(
 				if( entityOver ) {
 					entityOver.onMouseDown();
 					entityOver.onFocus();
-                    EntityManager.setFocusEntity(entityOver);
+					EntityManager.setFocusEntity(entityOver);
 					return;
 				}
 
@@ -114,7 +114,7 @@ function(
 		}
 		else if ( event.originalEvent.detail ) {
 			delta = -event.originalEvent.detail / 3;
-        }
+		}
 
 		Camera.setZoom(delta);
 	}

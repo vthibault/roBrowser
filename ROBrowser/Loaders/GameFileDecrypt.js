@@ -23,8 +23,8 @@ define(function()
 	/**
 	 * Initial permutation (IP).
 	 *
-     * @param {Uint8Array} src
-     * @param {number} index
+	 * @param {Uint8Array} src
+	 * @param {number} index
 	 */
 	function IP( src, index )
 	{
@@ -56,8 +56,8 @@ define(function()
 	/**
 	 * Final permutation (IP^-1).
 	 *
-     * @param {Uint8Array} src
-     * @param {number} index
+	 * @param {Uint8Array} src
+	 * @param {number} index
 	 */
 	function FP( src, index )
 	{
@@ -89,8 +89,8 @@ define(function()
 	/**
 	 * Transposition (P-BOX).
 	 *
-     * @param {Uint8Array} src
-     * @param {number} index
+	 * @param {Uint8Array} src
+	 * @param {number} index
 	 */
 	function TP( src, index )
 	{
@@ -123,8 +123,8 @@ define(function()
 	 * Expansion (E).
 	 * Expands upper four 8-bits (32b) into eight 6-bits (48b).
 	 *
-     * @param {Uint8Array} src
-     * @param {number} index
+	 * @param {Uint8Array} src
+	 * @param {number} index
 	 */
 	function E( src, index )
 	{
@@ -146,8 +146,8 @@ define(function()
 	 * Substitution boxes (S-boxes).
 	 * NOTE: This implementation was optimized to process two nibbles in one step (twice as fast).
 	 *
-     * @param {Uint8Array} src
-     * @param {number} index
+	 * @param {Uint8Array} src
+	 * @param {number} index
 	 */
 	function SBOX( src, index )
 	{
@@ -190,8 +190,8 @@ define(function()
 	 * DES round function.
 	 *  XORs src[0..3] with TP(SBOX(E(src[4..7]))).
 	 *
-     * @param {Uint8Array} src
-     * @param {number} index
+	 * @param {Uint8Array} src
+	 * @param {number} index
 	 */
 	function RoundFunction( src, index )
 	{
@@ -213,8 +213,8 @@ define(function()
 	/**
 	 * DEcrypt a block
 	 *
-     * @param {Uint8Array} src
-     * @param {number} index
+	 * @param {Uint8Array} src
+	 * @param {number} index
 	 */
 	function DecryptBlock( src, index )
 	{
@@ -227,9 +227,9 @@ define(function()
 	/**
 	 * Decode the whole file
 	 *
-     * @param {Uint8Array} buf
-     * @param {number} len
-     * @param {number} entry_len
+	 * @param {Uint8Array} buf
+	 * @param {number} len
+	 * @param {number} entry_len
 	 */
 	function DecodeFull( buf, len, entry_len)
 	{
@@ -277,8 +277,8 @@ define(function()
 	/**
 	 * Decode only the header
 	 *
-     * @param {Uint8Array} buf
-     * @param {number} len
+	 * @param {Uint8Array} buf
+	 * @param {number} len
 	 */
 	function DecodeHeader( buf, len )
 	{

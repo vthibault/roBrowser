@@ -93,19 +93,19 @@ define(function(require)
 
 		// Create lines
 		while ( text.length ) {
-            i = text.length;
-            while( this.ctx.measureText(text.substr(0,i)).width > MaxWidth ) {
-                i--;
-            }
+			i = text.length;
+			while( this.ctx.measureText(text.substr(0,i)).width > MaxWidth ) {
+				i--;
+			}
 
 			result = text.substr(0,i);
 
 			if ( i !== text.length ) {
-                j = 0;
+				j = 0;
 				while( result.indexOf(" ",j) !== -1 ) {
-                    j = result.indexOf(" ",j) + 1;
-                }
-            }
+					j = result.indexOf(" ",j) + 1;
+				}
+			}
 
 			lines.push( result.substr(0, j || result.length) );
 			width = Math.max( width, this.ctx.measureText(lines[ lines.length-1 ]).width );

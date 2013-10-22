@@ -379,7 +379,7 @@ function(        BinaryReader,                       Socket,     PACKETVER,     
 		this.setPing        = SetPing;
 		this.connect        = Connect;
 		this.guessPacketVer = GuessPacketVer;
-        this.hookPacket     = HookPacket;
+		this.hookPacket     = HookPacket;
 		this.close          = Close;
 		this.read           = Read;
 

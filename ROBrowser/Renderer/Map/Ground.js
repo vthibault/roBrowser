@@ -218,7 +218,7 @@ function(      WebGL,         Texture,   Preferences )
 	 *
 	 * @param {object} gl context
 	 * @param {object} lightmap
-     * @param {number} size
+	 * @param {number} size
 	 */
 	function InitLightmap( gl, lightmap, size )
 	{
@@ -233,7 +233,7 @@ function(      WebGL,         Texture,   Preferences )
 
 		// Send texture to GPU
 		gl.bindTexture( gl.TEXTURE_2D, _lightmap );
-    	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, lightmap );
+		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, lightmap );
 
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
@@ -288,7 +288,7 @@ function(      WebGL,         Texture,   Preferences )
 		}
 
 		gl.bindTexture( gl.TEXTURE_2D, _tileColor );
-    	gl.texImage2D( gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, smooth );
+		gl.texImage2D( gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, smooth );
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
 		gl.generateMipmap( gl.TEXTURE_2D );
@@ -469,6 +469,6 @@ function(      WebGL,         Texture,   Preferences )
 		init:   Init,
 		free:   Free,
 		render: Render,
-        getShadowFactor: GetShadowFactor
+		getShadowFactor: GetShadowFactor
 	};
 });

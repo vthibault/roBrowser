@@ -12,15 +12,15 @@ define( function( require )
 	"use strict";
 
 
-    /**
-     * Import
-     */
-    var Renderer = require('Renderer/Renderer');
-    var Altitude = require('Renderer/Map/Altitude');
-    var Client   = require('Core/Client');
-    var glMatrix = require('Utils/gl-matrix');
-    var vec3     = glMatrix.vec3;
-    var mat4     = glMatrix.mat4;
+	/**
+	 * Import
+	 */
+	var Renderer = require('Renderer/Renderer');
+	var Altitude = require('Renderer/Map/Altitude');
+	var Client   = require('Core/Client');
+	var glMatrix = require('Utils/gl-matrix');
+	var vec3     = glMatrix.vec3;
+	var mat4     = glMatrix.mat4;
 
 
 	/**

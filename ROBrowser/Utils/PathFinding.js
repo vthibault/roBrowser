@@ -229,7 +229,7 @@ define(function()
 	{
 		var i, dx, dy, x, y;
 		var types = GAT.cells;
-        var width = GAT.width;
+		var width = GAT.width;
 
 		dx   = ((dx = x1-x0)) ? ((dx<0) ? -1 : 1) : 0;
 		dy   = ((dy = y1-y0)) ? ((dy<0) ? -1 : 1) : 0;
@@ -344,9 +344,9 @@ define(function()
 			f     = 0;
 
 			dc[0] = 0;
-            dc[1] = 0;
-            dc[2] = 0;
-            dc[3] = 0;
+			dc[1] = 0;
+			dc[2] = 0;
+			dc[3] = 0;
 
 			rp    = pop_heap_path(heap);
 

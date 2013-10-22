@@ -91,7 +91,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 		textures  =  new Array(count);
 		for ( i=0; i<count; ++i ) {
 			textures[i] = fp.readString(40);
-        }
+		}
 
 		// Read nodes.
 		name   =  fp.readString(40);
@@ -102,7 +102,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 			nodes[i] =  new RSM.Node( this, fp, count === 1 );
 			if ( nodes[i].name === name ) {
 				this.main_node = nodes[i];
-            }
+			}
 		}
 
 		// Read poskeyframes
@@ -117,7 +117,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 					py:    fp.readFloat(),
 					pz:    fp.readFloat()
 				};
-            }
+			}
 
 			this.posKeyframes = posKeyframes;
 		}
@@ -137,7 +137,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 				rot:  [ fp.readFloat(), fp.readFloat(), fp.readFloat() ],
 				flag: ( this.version >= 1.3 ) ? fp.readLong() : 0
 			};
-        }
+		}
 
 		this.instances    = [];
 		this.box          = new RSM.Box();
@@ -519,8 +519,8 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 
 	/**
 	 * Generate default normals
-     *
-     * @param {Float32Array[]} out
+	 *
+	 * @param {Float32Array[]} out
 	 */
 	RSM.Node.prototype.calcNormal_NONE = function calcNormalNone( out )
 	{
@@ -533,10 +533,10 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 
 	/**
 	 * Generate FLAT normals
-     *
-     * @param {Float32Array[]} out
-     * @param {mat4} normalMat
-     * @param {Array} groupUsed
+	 *
+	 * @param {Float32Array[]} out
+	 * @param {mat4} normalMat
+	 * @param {Array} groupUsed
 	 */
 	RSM.Node.prototype.calcNormal_FLAT = function calcNormalFlat( out, normalMat, groupUsed)
 	{
@@ -568,10 +568,10 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 
 	/**
 	 * Generate smooth normals
-     *
-     * @param {Float32Array[]} normal
-     * @param {Array} groupUsed
-     * @param {Array} group
+	 *
+	 * @param {Float32Array[]} normal
+	 * @param {Array} groupUsed
+	 * @param {Array} group
 	 */
 	RSM.Node.prototype.calcNormal_SMOOTH = function calcNormalSmooth(normal, groupUsed, group)
 	{
@@ -593,8 +593,8 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 
 			for ( v=0, l=0; v<size; ++v, l+=3 ) {
 				x = 0;
-                y = 0;
-                z = 0;
+				y = 0;
+				z = 0;
 
 				for ( i=0, k=0; i<count; ++i, k+=3 ) {
 					face = faces[i];
@@ -617,10 +617,10 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 
 	/**
 	 * Generate Mesh (with normals type FLAT)
-     *
-     * @param {Float32Array[]} vert
-     * @param {Float32Array[]} norm
-     * @param {Array} mesh
+	 *
+	 * @param {Float32Array[]} vert
+	 * @param {Float32Array[]} norm
+	 * @param {Array} mesh
 	 */
 	RSM.Node.prototype.generate_mesh_FLAT = function GenerateMeshFlat( vert, norm, mesh )
 	{
@@ -661,10 +661,10 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 
 	/**
 	 * Generate Mesh (with normals type SMOOTH)
-     *
-     * @param {Float32Array[]} vert
-     * @param {Array} shadeGroup
-     * @param {Array} mesh
+	 *
+	 * @param {Float32Array[]} vert
+	 * @param {Array} shadeGroup
+	 * @param {Array} mesh
 	 */
 	RSM.Node.prototype.generate_mesh_SMOOTH = function GenerateMeshSmooth( vert, shadeGroup, mesh )
 	{

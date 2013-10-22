@@ -21,13 +21,13 @@ function(
 	PACKET,              Network,
 	ControlPreferences,  AudioPreferences,  MapPreferences,  CameraPreferences
 ) {
-    "use strict";
+	"use strict";
 
 
 	/**
 	 * Process command
 	 */
-    return function( cmd ){
+	return function( cmd ){
 		var pkt;
 
 		switch( cmd ) {
@@ -145,5 +145,5 @@ function(
 				Network.sendPacket(pkt);
 				break;	
 		}
-    };
+	};
 });

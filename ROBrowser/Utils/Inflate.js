@@ -109,13 +109,13 @@ define(function()
 		0x50003, 0x50013, 0x5000b, 0x5001b, 0x50007, 0x50017, 0x5000f, 0x00000
 	]), 5];
 
-    /**
-     *
-     * @param {Uint8Array} bytes
-     * @constructor
-     */
+	/**
+	 *
+	 * @param {Uint8Array} bytes
+	 * @constructor
+	 */
 	function Inflate(bytes) {
-	    var bytesPos = 0;
+		var bytesPos = 0;
 
 		var cmf = bytes[bytesPos++];
 		var flg = bytes[bytesPos++];
@@ -133,10 +133,10 @@ define(function()
 		this.bytesLength  = bytes.length;
 	}
 
-    /**
-     * Extract data from ZIP
-     * @param {Uint8Array} output
-     */
+	/**
+	 * Extract data from ZIP
+	 * @param {Uint8Array} output
+	 */
 	Inflate.prototype.getBytes = function(output) {
 		this.buffer       = output;
 		this.bufferPos    = 0;
@@ -147,11 +147,11 @@ define(function()
 		while( !this.readBlock() );
 	};
 
-    /**
-     * Get bits
-     * @param {number} bits
-     * @returns {number}
-     */
+	/**
+	 * Get bits
+	 * @param {number} bits
+	 * @returns {number}
+	 */
 	Inflate.prototype.getBits = function Inflate_getBits(bits) {
 		var codeSize = this.codeSize;
 		var codeBuf  = this.codeBuf;
@@ -161,7 +161,7 @@ define(function()
 
 		if (this.bytesLength <= bytesPos + (bits-codeSize) * 0.2) {
 			throw new Error('Bad encoding in flate stream ');
-        }
+		}
 
 		while (codeSize < bits) {
 		  codeBuf  |= bytes[bytesPos++] << codeSize;
@@ -175,11 +175,11 @@ define(function()
 		return b;
 	};
 
-    /**
-     * Get Code
-     * @param {Array} table
-     * @returns {number}
-     */
+	/**
+	 * Get Code
+	 * @param {Array} table
+	 * @returns {number}
+	 */
 	Inflate.prototype.getCode = function Inflate_getCode(table) {
 		var codes    = table[0];
 		var maxLen   = table[1];
@@ -209,17 +209,17 @@ define(function()
 		return codeVal;
 	};
 
-    /**
-     * Get bits
-     * @param {Uint32Array} lengths
-     * @param {number} start
-     * @param {number} end
-     * @returns {Array}
-     */
+	/**
+	 * Get bits
+	 * @param {Uint32Array} lengths
+	 * @param {number} start
+	 * @param {number} end
+	 * @returns {Array}
+	 */
 	Inflate.prototype.generateHuffmanTable = function Inflate_GenerateHuffmanTable( lengths, start, end ) {
 		// find max code length
 		var maxLen = 0;
-        var i;
+		var i;
 
 		for (i = start; i < end; ++i) {
 			if (lengths[i] > maxLen)
@@ -255,14 +255,14 @@ define(function()
 		return [codes, maxLen];
 	};
 
-    /**
-     * @returns {boolean}
-     */
+	/**
+	 * @returns {boolean}
+	 */
 	Inflate.prototype.readBlock = function Inflate_readBlock() {
 		// read block header
 		var hdr  = this.getBits(3);
 		var stop = !!(hdr & 1);
-        var len;
+		var len;
 		hdr >>= 1;
 
 		if (hdr == 0) { // uncompressed block
@@ -287,7 +287,7 @@ define(function()
 			this.bufferPos   = end;
 
 			for (var n = bufferPos; n < end && bytesPos < bytesLength; ++n)
-                this.buffer[n] = bytes[bytesPos++];
+				this.buffer[n] = bytes[bytesPos++];
 
 			this.bytesPos = bytesPos;
 			return stop || (n < end);
@@ -300,7 +300,7 @@ define(function()
 			litCodeTable  = fixedLitCodeTab;
 			distCodeTable = fixedDistCodeTab;
 		} else if (hdr == 2) { // compressed block, dynamic codes
-            var i;
+			var i;
 			var numLitCodes     = this.getBits(5) + 257;
 			var numDistCodes    = this.getBits(5) + 1;
 			var numCodeLenCodes = this.getBits(4) + 4;
@@ -314,7 +314,7 @@ define(function()
 
 			// build the literal and distance code tables
 			len = 0;
-            var bitsLength, bitsOffset, what;
+			var bitsLength, bitsOffset, what;
 			i = 0;
 			var codes = numLitCodes + numDistCodes;
 			//var codeLengths = new Uint8Array(codes);
@@ -322,16 +322,16 @@ define(function()
 				var code = this.getCode(codeLenCodeTab);
 				if (code === 16) {
 					bitsLength = 2;
-                    bitsOffset =  3;
-                    what       = len;
+					bitsOffset =  3;
+					what       = len;
 				} else if (code === 17) {
 					bitsLength = 3;
-                    bitsOffset = 3;
-                    what = (len = 0);
+					bitsOffset = 3;
+					what = (len = 0);
 				} else if (code === 18) {
 					bitsLength = 7;
-                    bitsOffset = 11;
-                    what = (len = 0);
+					bitsOffset = 11;
+					what = (len = 0);
 				} else {
 					_codeLengths[i++] = len = code;
 					continue;
@@ -340,7 +340,7 @@ define(function()
 				var repeatLength = this.getBits(bitsLength) + bitsOffset;
 				while (repeatLength-- > 0) {
 					_codeLengths[i++] = what;
-                }
+				}
 			}
 
 			litCodeTable  = this.generateHuffmanTable(_codeLengths, 0, numLitCodes);

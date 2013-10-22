@@ -16,7 +16,7 @@ define(function(require)
 	 * Dependencies
 	 */
 	var DB                 = require('DB/DBManager');
-    var Client             = require('Core/Client');
+	var Client             = require('Core/Client');
 	var jQuery             = require('Utils/jquery');
 	var KEYS               = require('Controls/KeyEventHandler');
 	var UIManager          = require('UI/UIManager');
@@ -82,19 +82,19 @@ define(function(require)
 
 	/**
 	 * Key Listener
-     *
-     * @param {object} event
-     * @return {boolean}
+	 *
+	 * @param {object} event
+	 * @return {boolean}
 	 */
 	BasicInfo.onKeyDown = function OnKeyDown( event )
 	{
 		if( KEYS.ALT && event.which === KEYS.V ) {
 			this.toggleMode();
 			event.stopImmediatePropagation();
-            return false;
+			return false;
 		}
 
-        return true;
+		return true;
 	};
 
 

@@ -27,7 +27,7 @@ function(       Queue,        Client,     ClassTable,     ClassPalTable,     Mon
 	DB.msgstringtable = [];
 	DB.fog            = {};
 	DB.mapalias       = {};
-    DB.mobname        = MonsterTable;
+	DB.mobname        = MonsterTable;
 	DB.mapname        = {};
 	DB.weather        = Weather;
 	DB.itemList       = {};

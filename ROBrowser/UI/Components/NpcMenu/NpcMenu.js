@@ -16,7 +16,7 @@ define(function(require)
 	 * Dependencies
 	 */
 	var jQuery             = require('Utils/jquery');
-    var Client             = require('Core/Client');
+	var Client             = require('Core/Client');
 	var KEYS               = require('Controls/KeyEventHandler');
 	var Renderer           = require('Renderer/Renderer');
 	var UIManager          = require('UI/UIManager');

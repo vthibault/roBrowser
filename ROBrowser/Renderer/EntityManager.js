@@ -17,9 +17,9 @@ function(         Entity,     SpriteRenderer )
 
 	/**
 	 * Find an Entity and return its index
-     *
+	 *
 	 * @param {number} gid
-     * @returns {number} position
+	 * @returns {number} position
 	 */
 	function GetEntityIndex( gid )
 	{
@@ -36,9 +36,9 @@ function(         Entity,     SpriteRenderer )
 
 	/**
 	 * Find an Entity and return it
-     *
+	 *
 	 * @param {number} gid
-     * @returns {object} Entity
+	 * @returns {object} Entity
 	 */
 	function GetEntity( gid )
 	{
@@ -53,9 +53,9 @@ function(         Entity,     SpriteRenderer )
 
 	/**
 	 * Add or replace entity
-     *
-     * @param {object} entity
-     * @return {object}
+	 *
+	 * @param {object} entity
+	 * @return {object}
 	 */
 	function AddEntity( entity )
 	{

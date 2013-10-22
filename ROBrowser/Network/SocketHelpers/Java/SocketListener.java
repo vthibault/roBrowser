@@ -73,6 +73,6 @@ public class SocketListener extends Thread {
 		for( int i=0; i<size; i++ ) { 
 			out.append(String.format("%02X", bytes[i]));
 		}
-        return out.toString(); 
+		return out.toString(); 
 	}
 }

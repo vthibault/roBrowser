@@ -91,7 +91,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 		this.width   = width;
 		this.height  = height;
 		this.cells   = cells;
-        this.version = version;
+		this.version = version;
 	};
 
 

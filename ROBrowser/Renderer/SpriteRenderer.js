@@ -220,8 +220,8 @@ function(      WebGL,         glMatrix,      Camera )
 	 * Initialize 3D Context
 	 *
 	 * @param {object} gl context
-     * @param {mat4} modelView
-     * @param {mat4} projection
+	 * @param {mat4} modelView
+	 * @param {mat4} projection
 	 * @param {boolean} picking enable ?
 	 * @param {object} fog structure
 	 */
@@ -293,7 +293,7 @@ function(      WebGL,         glMatrix,      Camera )
 	 */
 	SpriteRenderer.bind2DContext = function Bind2DContext( ctx, x, y )
 	{
-        this.ctx    = ctx;
+		this.ctx    = ctx;
 		this.pos[0] = x;
 		this.pos[1] = y;
 		this.render = RenderCanvas2D;

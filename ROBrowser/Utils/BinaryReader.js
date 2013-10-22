@@ -227,11 +227,11 @@ define( ['./Struct'], function( Struct )
 		var out={}, current, keys;
 		var i, j, count;
 
-        keys = Object.keys(list);
-        count = keys.length;
+		keys = Object.keys(list);
+		count = keys.length;
 
-        for( j = 0; j<count; ++j ) {
-            name    = keys[j];
+		for( j = 0; j<count; ++j ) {
+			name    = keys[j];
 			current = list[name];
 
 			if ( current.count > 1 ) {

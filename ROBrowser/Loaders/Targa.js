@@ -105,8 +105,8 @@ define( function()
 		switch (this.header.image_type) {
 			case Targa.TYPE_RLE_INDEXED:
 				this.use_rle = true;
-                this.use_pal = true;
-                break;
+				this.use_pal = true;
+				break;
 
 			case Targa.TYPE_INDEXED:
 				this.use_pal = true;
@@ -114,15 +114,15 @@ define( function()
 
 			case Targa.TYPE_RLE_RGB:
 				this.use_rle = true;
-                break;
+				break;
 
 			case Targa.TYPE_RGB:
 				break;
 
 			case Targa.TYPE_RLE_GREY:
 				this.use_rle = true;
-                this.use_grey = true;
-                break;
+				this.use_grey = true;
+				break;
 
 			case Targa.TYPE_GREY:
 				this.use_grey = true;

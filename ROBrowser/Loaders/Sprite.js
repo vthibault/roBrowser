@@ -333,8 +333,8 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 						out[ ( ( y + start_y ) * gl_width + ( x + start_x ) ) * 4 + 1 ] = data[ ( (height-y-1) * width + x ) * 4 + 2 ];
 						out[ ( ( y + start_y ) * gl_width + ( x + start_x ) ) * 4 + 2 ] = data[ ( (height-y-1) * width + x ) * 4 + 1 ];
 						out[ ( ( y + start_y ) * gl_width + ( x + start_x ) ) * 4 + 3 ] = data[ ( (height-y-1) * width + x ) * 4 + 0 ];
-                    }
-                }
+					}
+				}
 			}
 	
 			output[i] = {

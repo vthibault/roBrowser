@@ -12,15 +12,15 @@ define( function( require )
 	"use strict";
 
 
-    /**
-     * Load dependencies
-     */
-    var glMatrix       = require('Utils/gl-matrix');
-    var Camera         = require('Renderer/Camera');
-    var Client         = require('Core/Client');
-    var Renderer       = require('Renderer/Renderer');
-    var SpriteRenderer = require('Renderer/SpriteRenderer');
-    var Ground         = require('Renderer/Map/Ground');
+	/**
+	 * Load dependencies
+	 */
+	var glMatrix       = require('Utils/gl-matrix');
+	var Camera         = require('Renderer/Camera');
+	var Client         = require('Core/Client');
+	var Renderer       = require('Renderer/Renderer');
+	var SpriteRenderer = require('Renderer/SpriteRenderer');
+	var Ground         = require('Renderer/Map/Ground');
 	var Altitude       = require('Renderer/Map/Altitude');
 
 
@@ -98,9 +98,9 @@ define( function( require )
 
 		// Get depth for rendering order
 		_vector[0] = 0.0;
-        _vector[1] = 0.0;
-        _vector[2] = 0.0;
-        _vector[3] = 1.0;
+		_vector[1] = 0.0;
+		_vector[2] = 0.0;
+		_vector[3] = 1.0;
 
 		mat4.multiplyVec4( _matrix, _vector );
 		this.depth = _vector[3];
@@ -214,7 +214,7 @@ define( function( require )
 	 * @param {string} type
 	 * @param {vec2}   position (reference)
 	 * @param {boolean} is_main - true if it's the main element (body)
-     */
+	 */
 	function RenderElement( files, type, position, is_main )
 	{
 		// Nothing to render

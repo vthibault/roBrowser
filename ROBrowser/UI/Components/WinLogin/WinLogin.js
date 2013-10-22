@@ -82,7 +82,7 @@ define(function(require)
 	 * When player press key - InHerit from UIComponent
 	 *
 	 * @param {object} event
-     * @return {boolean}
+	 * @return {boolean}
 	 */
 	WinLogin.onKeyDown = function OnKeyDown( event )
 	{
@@ -105,7 +105,7 @@ define(function(require)
 				return false;
 		}
 
-        return true;
+		return true;
 	};
 
 
@@ -113,7 +113,7 @@ define(function(require)
 	 * Switch the save button
 	 *
 	 * @param {object} event
-     * @return {boolean}
+	 * @return {boolean}
 	 */
 	WinLogin.toggleSaveButton = function ToggleSaveButton( event )
 	{
@@ -140,8 +140,8 @@ define(function(require)
 
 	/**
 	 * When user click on the button "connect", or press "enter".
-     *
-     * @return {boolean} false
+	 *
+	 * @return {boolean} false
 	 */
 	WinLogin.connect = function Connect()
 	{

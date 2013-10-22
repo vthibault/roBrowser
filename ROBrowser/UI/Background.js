@@ -12,11 +12,11 @@ define( function( require )
 	"use strict";
 
 
-    /**
-     * Load dependencies
-     */
-   var jQuery = require('Utils/jquery');
-   var Client = require('Core/Client');
+	/**
+	 * Load dependencies
+	 */
+	var jQuery = require('Utils/jquery');
+	var Client = require('Core/Client');
 
 
 	/**

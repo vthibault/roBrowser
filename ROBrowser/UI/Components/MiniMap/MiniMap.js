@@ -108,7 +108,7 @@ define(function(require)
 	 * KeyDown Handler
 	 *
 	 * @param {object} event
-     * @return {boolean}
+	 * @return {boolean}
 	 */
 	MiniMap.onKeyDown = function OnKeyDown( event )
 	{
@@ -119,7 +119,7 @@ define(function(require)
 			return false;
 		}
 
-        return true;
+		return true;
 	};
 
 

@@ -18,11 +18,11 @@ define(function( require )
 	var Thread         = require('Core/Thread');
 	var SoundManager   = require('Audio/SoundManager');
 	var BGM            = require('Audio/BGM');
-    var DB             = require('DB/DBManager');
+	var DB             = require('DB/DBManager');
 	var UIManager      = require('UI/UIManager');
 	var Background     = require('UI/Background');
 	var MemoryManager  = require('Core/MemoryManager');
-    var Mouse          = require('Controls/MouseEventHandler');
+	var Mouse          = require('Controls/MouseEventHandler');
 	var Renderer       = require('Renderer/Renderer');
 	var Camera         = require('Renderer/Camera');
 	var EntityManager  = require('Renderer/EntityManager');
@@ -288,7 +288,7 @@ define(function( require )
 	 * Rendering world
 	 *
 	 * @param {number} tick - game tick
-     * @param {object} gl context
+	 * @param {object} gl context
 	 */
 	MapRenderer.onRender = function OnRender( tick, gl )
 	{

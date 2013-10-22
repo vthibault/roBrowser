@@ -30,15 +30,15 @@ define( ['Utils/Texture'], function( Texture )
 		var i, count = args.length;
 
 		// Default options
-        if( !parameters ) {
-		   parameters = {
-                alpha:              false,
-                depth:              true,
-                stencil:            false,
-                antialias:          false,
-                premultipliedAlpha: false,
-		    };
-        }
+		if( !parameters ) {
+			parameters = {
+				alpha:              false,
+				depth:              true,
+				stencil:            false,
+				antialias:          false,
+				premultipliedAlpha: false,
+			};
+		}
 
 		// Find the context
 		if ( canvas.getContext && window['WebGLRenderingContext'] ) {
@@ -54,7 +54,7 @@ define( ['Utils/Texture'], function( Texture )
 		// :(
 		if( !gl ) {
 			throw new Error("WebGL::getContext() - Can't find a valid context, is WebGL supported ?");
-        }
+		}
 
 		return gl;
 	}

@@ -386,16 +386,16 @@ function(        Executable,                  PACKETVER,       Thread,      Memo
 	/**
 	 * Export
 	 */
-    var Client = {
+	var Client = {
 		init:          Init,
 		addGRF:        LoadGRF,
 		getFile:       getFile,
 		getFiles:      getFiles,
-        loadFile:      loadFile,
-        loadFiles:     loadFiles,
+		loadFile:      loadFile,
+		loadFiles:     loadFiles,
 		search:        search,
 		onFilesLoaded: function OnFilesLoaded(){}
 	};
 
-    return Client;
+	return Client;
 });

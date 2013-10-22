@@ -202,7 +202,7 @@ define(['Core/Client', 'DB/DBManager', './EntityAction'], function( Client, DB, 
 	 */
 	return function Init()
 	{
-        this.files = new View();
+		this.files = new View();
 
 		// Getters
 		this.__defineGetter__("job",         function(){ return this._job });

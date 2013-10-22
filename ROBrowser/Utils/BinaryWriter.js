@@ -86,8 +86,8 @@ define(function()
 	/**
 	 * Write Uint8 to buffer
 	 *
-     * @param {number} value
-     * @return {BinaryWriter}
+	 * @param {number} value
+	 * @return {BinaryWriter}
 	 */
 	BinaryWriter.prototype.setUint8   =
 	BinaryWriter.prototype.writeUChar = 
@@ -101,8 +101,8 @@ define(function()
 	/**
 	 * Write Int16 to buffer
 	 *
-     * @param {number} value
-     * @return {BinaryWriter}
+	 * @param {number} value
+	 * @return {BinaryWriter}
 	 */
 	BinaryWriter.prototype.setInt16   =
 	BinaryWriter.prototype.writeShort = function setInt16( value )
@@ -116,8 +116,8 @@ define(function()
 	/**
 	 * Write Uint16 to buffer
 	 *
-     * @param {number} value
-     * @return {BinaryWriter}
+	 * @param {number} value
+	 * @return {BinaryWriter}
 	 */
 	BinaryWriter.prototype.setUint16   =
 	BinaryWriter.prototype.writeUShort = function setUint16( value )
@@ -131,8 +131,8 @@ define(function()
 	/**
 	 * Write Int32 to buffer
 	 *
-     * @param {number} value
-     * @return {BinaryWriter}
+	 * @param {number} value
+	 * @return {BinaryWriter}
 	 */
 	BinaryWriter.prototype.setInt32  =
 	BinaryWriter.prototype.writeInt  =
@@ -147,8 +147,8 @@ define(function()
 	/**
 	 * Write Uint32 to buffer
 	 *
-     * @param {number} value
-     * @return {BinaryWriter}
+	 * @param {number} value
+	 * @return {BinaryWriter}
 	 */
 	BinaryWriter.prototype.setUint32  =
 	BinaryWriter.prototype.writeUInt  =
@@ -163,8 +163,8 @@ define(function()
 	/**
 	 * Write Float32 to buffer
 	 *
-     * @param {number} value
-     * @return {BinaryWriter}
+	 * @param {number} value
+	 * @return {BinaryWriter}
 	 */
 	BinaryWriter.prototype.setFloat32 =
 	BinaryWriter.prototype.writeFloat = function setFloat32( value )
@@ -178,8 +178,8 @@ define(function()
 	/**
 	 * Write Float64 to buffer
 	 *
-     * @param {number} value
-     * @return {BinaryWriter}
+	 * @param {number} value
+	 * @return {BinaryWriter}
 	 */
 	BinaryWriter.prototype.setFloat64  =
 	BinaryWriter.prototype.writeDouble = function setFloat64( value )
@@ -247,9 +247,9 @@ define(function()
 	};
 
 
-    /**
-     * Export
-     */
+	/**
+	 * Export
+	 */
 	return BinaryWriter;
 });
 

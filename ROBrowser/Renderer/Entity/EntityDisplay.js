@@ -159,19 +159,19 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 		// Chrome hack
 		if( window.chrome ) {
 			multiShadow(ctx, lines[0], start_x, 0,  0, -1, 0);
-            multiShadow(ctx, lines[0], start_x, 0,  0,  1, 0);
-            multiShadow(ctx, lines[0], start_x, 0, -1,  0, 0);
-            multiShadow(ctx, lines[0], start_x, 0,  1,  0, 0);
+			multiShadow(ctx, lines[0], start_x, 0,  0,  1, 0);
+			multiShadow(ctx, lines[0], start_x, 0, -1,  0, 0);
+			multiShadow(ctx, lines[0], start_x, 0,  1,  0, 0);
 			multiShadow(ctx, lines[1], start_x, fontSize * 1.5,  0, -1, 0);
-            multiShadow(ctx, lines[1], start_x, fontSize * 1.5,  0,  1, 0);
-            multiShadow(ctx, lines[1], start_x, fontSize * 1.5, -1,  0, 0);
-            multiShadow(ctx, lines[1], start_x, fontSize * 1.5,  1,  0, 0);
-            ctx.fillStyle   = color;
-            ctx.strokeStyle = "black";
-            ctx.strokeText(lines[0], start_x, 0);
-            ctx.fillText(  lines[0], start_x, 0);
+			multiShadow(ctx, lines[1], start_x, fontSize * 1.5,  0,  1, 0);
+			multiShadow(ctx, lines[1], start_x, fontSize * 1.5, -1,  0, 0);
+			multiShadow(ctx, lines[1], start_x, fontSize * 1.5,  1,  0, 0);
+			ctx.fillStyle   = color;
+			ctx.strokeStyle = "black";
+			ctx.strokeText(lines[0], start_x, 0);
+			ctx.fillText(  lines[0], start_x, 0);
 			ctx.strokeText(lines[1], start_x, fontSize * 1.5);
-            ctx.fillText(  lines[1], start_x, fontSize * 1.5);
+			ctx.fillText(  lines[1], start_x, fontSize * 1.5);
 		}
 
 		// Firefox hack

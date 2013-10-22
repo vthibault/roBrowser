@@ -15,9 +15,9 @@ function(   DB,            EntityManager,            Entity,        Client )
 
 	/**
 	 * Find an Entity and return its index
-     *
+	 *
 	 * @param {number} gid
-     * @param {number} itemid
+	 * @param {number} itemid
 	 * @param {boolean} identify
 	 * @param {number} count
 	 * @param {number} x

@@ -61,9 +61,9 @@ define(function(require)
 
 	/**
 	 * Key Listener
-     *
-     * @param {object} event
-     * @return {boolean}
+	 *
+	 * @param {object} event
+	 * @return {boolean}
 	 */
 	Escape.onKeyDown = function OnKeyDown( event )
 	{
@@ -77,10 +77,10 @@ define(function(require)
 			}
 
 			event.stopImmediatePropagation();
-            return false;
+			return false;
 		}
 
-        return true;
+		return true;
 	};
 
 
