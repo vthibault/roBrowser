@@ -40,21 +40,7 @@ function(        BinaryReader,                       Socket,     PACKETVER,     
 	 * Buffer to use to read packets
 	 * @var buffer
 	 */
-	var _save_buffer         = new Uint8Array(MAX_PACKET_SIZE*2);
-
-
-	/**
-	 * Buffer Cursor offset
-	 * @var integer
-	 */
-	var _save_offset         = 0;
-
-
-	/**
-	 * Buffer length
-	 * @var integer
-	 */
-	var _save_length         = 0;
+	var _save_buffer         = null;
 
 
 	/**
@@ -212,23 +198,26 @@ function(        BinaryReader,                       Socket,     PACKETVER,     
 	 *
 	 * @param {Uint8Array} buffer
 	 */
-	function Receive( buffer )
+	function Receive( buf )
 	{
 		var id, packet, fp;
 		var length = 0;
 		var offset = 0;
-		var bufferLen = buffer.byteLength;
+		var buffer;
 
 
 		// Waiting for data ? concat the buffer
-		if( _save_length ) {
-			_save_buffer.set( new Uint8Array(buffer), _save_length );
-			_save_length += buffer.byteLength;
-			fp  = new BinaryReader( _save_buffer, _save_offset, _save_length );
+		if( _save_buffer ) {
+			var _data = new Uint8Array( _save_buffer.length + buf.byteLength );
+			_data.set( _save_buffer, 0 );
+			_data.set( new Uint8Array(buf), _save_buffer.length );
+			buffer = _data.buffer;
 		}
 		else {
-			fp = new BinaryReader( buffer );
+			buffer = buf;
 		}
+
+		fp = new BinaryReader( buffer );
 
 
 		// Read hook
@@ -265,11 +254,12 @@ function(        BinaryReader,                       Socket,     PACKETVER,     
 
 			// Not enough bytes, need to wait for new buffer to read more.
 			if( offset > fp.length ) {
-				if( !_save_length ) {
-					_save_buffer.set( new Uint8Array(buffer), 0 );
-					_save_length = buffer.byteLength;
-				}
-				_save_offset = ( fp.tell() - (packet.size < 0 ? 4 : 2) );
+				offset       = fp.tell() - (packet.size < 0 ? 4 : 2);
+				_save_buffer = new Uint8Array(
+					buffer,
+					offset,
+					fp.length - offset
+				);
 				return;
 			}
 
@@ -288,8 +278,7 @@ function(        BinaryReader,                       Socket,     PACKETVER,     
 			}
 		}
 
-		_save_offset = 0;
-		_save_length = 0;
+		_save_buffer = null;
 	}
 
 
