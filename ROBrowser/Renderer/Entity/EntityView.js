@@ -83,11 +83,18 @@ define(['Core/Client', 'DB/DBManager', './EntityAction'], function( Client, DB, 
 		// Reload actions frames (the type can change...)
 		EntityAction.call(this);
 
-		// Loading
-		if( path === null ) { // warp ?
+		// warp ?
+		if( path === null ) {
 			return;
 		}
 
+		// granny model ? :(
+		// Display a poring instead
+		if( path.match(/\.gr2$/i) ) {
+			path = DB.getBodyPath( 1002, this._sex );
+		}
+
+		// Loading
 		Client.loadFile(path + ".act", null, null, []);
 		Client.loadFile(path + ".spr", function(){
 			_this.files.body.spr = path + ".spr";
