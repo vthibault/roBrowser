@@ -53,13 +53,13 @@
 	/**
 	 * @var {number} screen width
 	 */
-	ROBrowser.prototype.width = 800;
+	ROBrowser.prototype.width = 0;
 
 
 	/**
 	 * @var {number} screen height
 	 */
-	ROBrowser.prototype.height = 600;
+	ROBrowser.prototype.height = 0;
 
 
 	/**
@@ -147,14 +147,17 @@
 
 			// Create Popup
 			case ROBrowser.TYPE.POPUP:
+				this.width  = this.width  || '800';
+				this.height = this.height || '600';
+
 				this._APP = window.open(
 					this.baseUrl,
 					'_blank',
 					[
 						'directories=0',
 						'fullscreen=0',
-						'top=' + ( (window.innerHeight||document.body.clientHeight)-this.height) / 2,
-						'left=' + ( (window.innerWidth||document.body.clientWidth)-this.width) / 2,
+						'top='  + ( (window.innerHeight||document.body.clientHeight)-this.height) / 2,
+						'left=' + ( (window.innerWidth ||document.body.clientWidth) -this.width ) / 2,
 						'height='+ this.height,
 						'width=' + this.width,
 						'location=0',
@@ -169,6 +172,9 @@
 
 			// Append ROBrowser to an element
 			case ROBrowser.TYPE.FRAME:
+				this.width  = this.width  || '100%';
+				this.height = this.height || '100%';
+
 				var frame          = document.createElement('iframe');
 				frame.src          = this.baseUrl;
 				frame.width        = this.width;
