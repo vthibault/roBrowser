@@ -29,7 +29,7 @@ define(function( require )
 	 */
 	function OnPrivateMessage( pkt )
 	{
-		ChatBox.addText("(From "+ pkt.sender +") : " + pkt.msg, ChatBox.TYPE.PRIVATE );
+		ChatBox.addText("(From "+ pkt.sender +") : " + pkt.msg.replace(/\|\d{2}/, ''), ChatBox.TYPE.PRIVATE );
 	}
 
 
@@ -47,7 +47,7 @@ define(function( require )
 			ChatBox.addText( "(To "+ user +") : " + msg, ChatBox.TYPE.PRIVATE );
 		}
 		else {
-			ChatBox.addText( "("+ user +") : " + DB.msgstringtable[147 + this.result],  ChatBox.TYPE.PRIVATE );
+			ChatBox.addText( "("+ user +") : " + DB.msgstringtable[147 + pkt.result],  ChatBox.TYPE.PRIVATE );
 		}
 	
 		ChatBox.PrivateMessageStorage.splice(0,1);

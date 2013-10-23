@@ -271,7 +271,7 @@ define(function( require )
 	 */
 	function OnPlayerMessage( pkt )
 	{
-		ChatBox.addText( pkt.msg, ChatBox.TYPE.SELF );
+		ChatBox.addText( pkt.msg, ChatBox.TYPE.PUBLIC | ChatBox.TYPE.SELF );
 		if( Camera.target ) {
 			Camera.target.dialog.set( pkt.msg );
 		}

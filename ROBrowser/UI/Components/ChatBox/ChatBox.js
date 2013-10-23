@@ -163,8 +163,20 @@ define(function(require)
 			default:
 				return true;
 
+			case KEYS.TAB:
+				if( document.activeElement === this.ui.find('.input .message')[0] ) {
+					this.ui.find('.input .username').select().focus();
+				}
+				else if( document.activeElement === this.ui.find('.input .username')[0] ) {
+					this.ui.find('.input .message').select().focus();
+				}
+				else {
+					return true;	
+				}
+				break;
+
 			case KEYS.UP:
-				if( jQuery('#NpcMenu').length ) {
+				if( !is_focus || jQuery('#NpcMenu').length ) {
 					return true;
 				}
 				if( this.historyIndex > 0 ) {
@@ -174,7 +186,7 @@ define(function(require)
 				break;
 
 			case KEYS.DOWN:
-				if( jQuery('#NpcMenu').length ) {
+				if( !is_focus || jQuery('#NpcMenu').length ) {
 					return true;
 				}
 				if( this.historyIndex < this.history.length ) {
@@ -274,7 +286,7 @@ define(function(require)
 		var $content = this.ui.find('.content');
 
 		if( !color ) {
-			if( type & (ChatBox.TYPE.PUBLIC | ChatBox.TYPE.SELF ) ) {
+			if( (type & ChatBox.TYPE.PUBLIC) && (type & ChatBox.TYPE.SELF) ) {
 				color = '#00FF00';
 			}
 			else if( type & ChatBox.TYPE.PRIVATE ) {

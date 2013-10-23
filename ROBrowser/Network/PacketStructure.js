@@ -306,13 +306,12 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 		this.msg          = '';
 	
 		this.build = function() {
-			var pkt_len = 2 + 2 + 24 + 16 + this.msg.length + 1;
+			var pkt_len = 2 + 2 + 24 + this.msg.length + 1;
 			var pkt_buf = new BinaryWriter(pkt_len);
 	
 			pkt_buf.writeShort(0x96);
 			pkt_buf.writeShort(pkt_len);
 			pkt_buf.writeString(this.receiver, 24);
-			pkt_buf.skip(16);
 			pkt_buf.writeString(this.msg);
 			return pkt_buf.buffer;
 		};
@@ -5501,7 +5500,10 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 	// 0x97
 	PACKET.ZC.WHISPER = function PACKET_ZC_WHISPER(fp, end) {
 		this.sender       = fp.readString(24);
-		fp.seek(16, SEEK_CUR );
+		this.isAdmin      = fp.readLong();
+		if( this.isAdmin !== 0 && this.isAdmin !== 1 ) {
+			fp.seek( -4, SEEK_CUR );
+		}
 		this.msg          = fp.readString(end-fp.tell());
 	};
 	PACKET.ZC.WHISPER.size = -1;
