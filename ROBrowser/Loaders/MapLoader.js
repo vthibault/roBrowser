@@ -123,7 +123,7 @@ define( ['Core/FileManager'], function( FileManager )
 
 		// Load water
 		if( CompiledGround.waterVertCount ) {
-			path = "data/texture/¿öÅÍ/water" + this.world.water.type;
+			path = "data/texture/\xbf\xf6\xc5\xcd/water" + this.world.water.type;
 
 			for(; i<32; ++i ) {
 				this.world.water.images[i] = FileManager.load( path + ( i<10 ? "0"+i : i) + ".jpg", true );
