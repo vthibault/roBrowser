@@ -211,7 +211,7 @@
 
 		// Wait for robrowser to be ready
 		var _this = this;
-		function OnMessage() {
+		function OnMessage( event ) {
 			if( _this.baseUrl.indexOf(event.origin) === 0 ) {
 				clearInterval( _this._Interval );
 				window.removeEventListener( 'message', OnMessage, false );
