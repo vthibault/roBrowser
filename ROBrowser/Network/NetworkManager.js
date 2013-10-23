@@ -217,13 +217,14 @@ function(        BinaryReader,                       Socket,     PACKETVER,     
 		var id, packet, fp;
 		var length = 0;
 		var offset = 0;
-		var bufferLen = (new Uint8Array(buffer)).length;
+		var bufferLen = buffer.byteLength;
 
 
 		// Waiting for data ? concat the buffer
 		if( _save_length ) {
-			_save_buffer.set( buffer, _save_length );
-			fp  = new BinaryReader( _save_buffer, _save_offset, _save_length + bufferLen );
+			_save_buffer.set( new Uint8Array(buffer), _save_length );
+			_save_length += buffer.byteLength;
+			fp  = new BinaryReader( _save_buffer, _save_offset, _save_length );
 		}
 		else {
 			fp = new BinaryReader( buffer );
@@ -264,9 +265,11 @@ function(        BinaryReader,                       Socket,     PACKETVER,     
 
 			// Not enough bytes, need to wait for new buffer to read more.
 			if( offset > fp.length ) {
-				_save_buffer.set( buffer );
-				_save_offset = ( fp.tell() - (packet.size < 0 ? 4 : 2) ) - _save_offset;
-				_save_length = bufferLen;
+				if( !_save_length ) {
+					_save_buffer.set( new Uint8Array(buffer), 0 );
+					_save_length = buffer.byteLength;
+				}
+				_save_offset = ( fp.tell() - (packet.size < 0 ? 4 : 2) );
 				return;
 			}
 
