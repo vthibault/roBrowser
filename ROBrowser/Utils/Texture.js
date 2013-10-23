@@ -23,12 +23,14 @@ define(['Loaders/Targa'], function( Targa )
 	 */
 	function Texture( data, oncomplete )
 	{
+		var args = Array.prototype.slice.call(arguments, 2);
+
 		// Possible missing textures on loaders
 		if( !data ){
+			args.unshift(false);
+			oncomplete.apply( null, args );
 			return;
 		}
-
-		var args = Array.prototype.slice.call(arguments, 2);
 
 		// TGA Support
 		if( data instanceof ArrayBuffer ) {
