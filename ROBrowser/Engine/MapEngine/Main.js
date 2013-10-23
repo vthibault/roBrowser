@@ -178,7 +178,7 @@ define(function( require )
 			case 22:
 				MainPlayer.base_exp_next  = amount;
 				if( MainPlayer.base_exp > -1 ) {
-					BasicInfo.update('jexp', MainPlayer.base_exp, MainPlayer.base_exp_next );
+					BasicInfo.update('bexp', MainPlayer.base_exp, MainPlayer.base_exp_next );
 				}
 				break;
 
