@@ -48,7 +48,7 @@ define( function( require )
 			if( this.objecttype === this.constructor.TYPE_ITEM ) {
 				this.position[2] = Math.max(
 					Altitude.getCellHeight( this.position[0], this.position[1] ),
-					this.position[2] * 0.8
+					this.position[2] - 0.4
 				);
 			}
 
