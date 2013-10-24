@@ -68,9 +68,9 @@ define(function( require )
 
 
 	/**
-	 * @var {function} callback to execute
+	 * @var {function[]} callbacks to execute
 	 */
-	Renderer.renderCallback = null;
+	Renderer.renderCallbacks = [];
 
 
 	/**
@@ -240,9 +240,10 @@ define(function( require )
 		_requestAnimationFrame( this._render.bind(this), this.canvas );
 
 		this.tick = Date.now();
+		var i, count;
 
-		if( this.renderCallback ) {
-			this.renderCallback( this.tick, this.gl );
+		for( i = 0, count = this.renderCallbacks.length; i < count; ++i ) {
+			this.renderCallbacks[i]( this.tick, this.gl );
 		}
 
 		Cursor.render( this.tick );
@@ -254,7 +255,9 @@ define(function( require )
 	 */
 	Renderer.render = function RenderCallback( fn )
 	{
-		this.renderCallback = fn;
+		if( fn ) {
+			this.renderCallbacks.push(fn);
+		}
 
 		if( !this.rendering ) {
 			this.rendering = true;
@@ -266,9 +269,18 @@ define(function( require )
 	/**
 	 * Stop rendering
 	 */
-	Renderer.stop = function Stop()
+	Renderer.stop = function Stop( fn )
 	{
-		this.renderCallback = null;
+		// No callback specified, remove all
+		if( !arguments.length ) {
+			this.renderCallbacks.length = 0;
+			return;
+		}
+
+		var pos = this.renderCallbacks.indexOf(fn);
+		if( pos > -1 ) {
+			this.renderCallbacks.splice( pos, 1 );
+		}
 	};
 
 

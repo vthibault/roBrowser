@@ -136,7 +136,7 @@ function(
 			WinList.append();
 			WinList.setList( list );
 
-			Renderer.render();
+			Renderer.stop();
 		});
 
 		// Hooking WinList

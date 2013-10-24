@@ -26,6 +26,7 @@ define(function( require )
 	var InputBox      = require('UI/Components/InputBox/InputBox');
 	var NpcMenu       = require('UI/Components/NpcMenu/NpcMenu');
 	var WinPopup      = require('UI/Components/WinPopup/WinPopup');
+	var MiniMap       = require('UI/Components/MiniMap/MiniMap');
 
 
 	/**
@@ -283,6 +284,35 @@ define(function( require )
 		}
 	}
 
+
+	/**
+	 * NPC put a mark on minimap
+	 * @param {object} pkt - PACKET.ZC.COMPASS
+	 */
+	function OnNpcMark( pkt )
+	{
+		// TODO: do we need to use NPC ID ? (pkt.NAID)
+
+		switch( pkt.type ) {
+
+			// Add a mark for 15 seconds
+			case 0:
+				MiniMap.addNpcMark( pkt.id, pkt.xPos, pkt.yPos, pkt.color, 15000 );
+				break;
+
+			// Add a mark
+			case 1:
+				MiniMap.addNpcMark( pkt.id, pkt.xPos, pkt.yPos, pkt.color, Infinity );
+				break;
+
+			// Remove a mark
+			case 2:
+				MiniMap.removeNpcMark( pkt.id );
+				break;
+		}
+	}
+
+
 	/**
 	 * Initialize
 	 */
@@ -297,5 +327,6 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.SELECT_DEALTYPE, OnDealSelection );
 		Network.hookPacket( PACKET.ZC.SHOW_IMAGE,      OnCutin );
 		Network.hookPacket( PACKET.ZC.SHOW_IMAGE2,     OnCutin );
+		Network.hookPacket( PACKET.ZC.COMPASS,         OnNpcMark );
 	};
 });

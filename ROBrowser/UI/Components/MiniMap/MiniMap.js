@@ -40,6 +40,7 @@ define(function(require)
 	{
 		this.party       = [];
 		this.guild       = [];
+		this.mark        = [];
 		this.preferences = Preferences.get('MiniMap', { zoom:1.0, opacity:1.0 });
 
 		this.updateZoom( this.preferences.zoom );
@@ -52,7 +53,6 @@ define(function(require)
 
 		this.zoom      = 0.0;
 		this.opacity   = 1.0;
-		this.rendering = false;
 
 		// Bind DOM elements
 		this.zoomPlus  = this.ui.find('.plus');
@@ -86,8 +86,7 @@ define(function(require)
 			MiniMap.arrow.src = dataURI;
 		});
 
-		this.rendering = true;
-		this.render();
+		Renderer.render(this.render.bind(this));
 	};
 
 
@@ -131,7 +130,7 @@ define(function(require)
 		// Clean up memory
 		this.party.length = 0;
 		this.guild.length = 0;
-		this.rendering    = false;
+		this.mark.length  = 0;
 	};
 
 
@@ -228,6 +227,61 @@ define(function(require)
 
 
 	/**
+	 * Add a npc mark to minimap
+	 *
+	 * @param {number} key id
+	 * @param {number} x position
+	 * @param {number} y position
+	 * @param {Array} color
+	 */
+	MiniMap.addNpcMark = function AddNPCMark( key, x, y, lcolor, time )
+	{
+		var i, count = this.mark.length;
+		var color = [
+			( lcolor & 0x00ff0000 ) >> 16,
+			( lcolor & 0x0000ff00 ) >> 8,
+			( lcolor & 0x000000ff )
+		];
+
+		for( i=0; i<count; ++i ) {
+			if( this.mark[i].key === key ) {
+				this.mark[i].x     = x;
+				this.mark[i].y     = y;
+				this.mark[i].color = 'rgb(' + color[0] + ',' + color[1] + ',' + color[2] + ')';
+				this.mark[i].tick  = Renderer.tick + time
+				return;
+			}
+		}
+
+		this.mark.push({
+			key:    key,
+			x:      x,
+			y:      y,
+			color: 'rgb(' + color[0] + ',' + color[1] + ',' + color[2] + ')',
+			tick:  Renderer.tick + time
+		})
+	};
+
+
+	/**
+	 * Remove a NPC mark from minimap
+	 *
+	 * @param {number} key id
+	 */
+	MiniMap.removeNpcMark = function RemoveNPCMark( key )
+	{
+		var i, count = this.mark.length;
+
+		for( i=0; i<count; ++i ) {
+			if( this.mark[i].key === key ) {
+				this.mark.splice(i, 1);
+				break;
+			}
+		}
+	};
+
+
+	/**
 	 * Change zoom
 	 * TODO: implement zoom feature in minimap.
 	 */
@@ -268,7 +322,7 @@ define(function(require)
 	/**
 	 * Render GUI
 	 */
-	MiniMap.render = function Render()
+	MiniMap.render = function Render( tick )
 	{
 		var width   = Altitude.width;
 		var height  = Altitude.height;
@@ -278,7 +332,7 @@ define(function(require)
 		var start_x = (max-width)  / 2 * f;
 		var start_y = (height-max) / 2 * f;
 
-		var i, count, player;
+		var i, count, dot;
 		var ctx = this.ctx;
 
 		// Rendering map
@@ -297,14 +351,37 @@ define(function(require)
 			ctx.restore();
 		}
 
+		// Render NPC mark
+		if( tick % 1000 > 500 ) { // blink effect
+
+			count = this.mark.length;
+
+			for( i=0; i<count; ++i ) {
+				dot = this.mark[i];
+
+				// Auto remove feature
+				if( dot.tick < Renderer.tick ) {
+					this.mark.splice( i, 1 );
+					i--;
+					count--;
+					continue;
+				}
+
+				// Render mark
+				ctx.fillStyle = dot.color;
+				ctx.fillRect( start_x + dot.x * f - 1, start_y + 128 - dot.y * f - 4, 2, 8 );
+				ctx.fillRect( start_x + dot.x * f - 4, start_y + 128 - dot.y * f - 1, 8, 2 );
+			}
+		}
+
 		// Render party members
 		count = this.party.length;
 		for( i=0; i<count; ++i ) {
-			player        = this.party[i];
+			dot           = this.party[i];
 			ctx.fillStyle = "white";
-			ctx.fillRect( start_x + player.x * f - 3, start_y + 128 - player.y * f - 3, 6, 6 );
-			ctx.fillStyle = player.color;
-			ctx.fillRect( start_x + player.x * f - 2, start_y + 128 - player.y * f - 2, 4, 4 );
+			ctx.fillRect( start_x + dot.x * f - 3, start_y + 128 - dot.y * f - 3, 6, 6 );
+			ctx.fillStyle = dot.color;
+			ctx.fillRect( start_x + dot.x * f - 2, start_y + 128 - dot.y * f - 2, 4, 4 );
 		}
 
 		// Render guild members
@@ -312,18 +389,13 @@ define(function(require)
 		ctx.fillStyle   = 'rgb(0.9,0.7,0.8)';
 		ctx.strokeStyle = 'white';
 		for( i=0; i<count; ++i ) {
-			player = this.guild[i];
-			ctx.moveTo( start_x + player.x * f + 0, start_y + 128 - player.y * f - 3 );
-			ctx.lineTo( start_x + player.x * f + 3, start_y + 128 - player.y * f + 3 );
-			ctx.lineTo( start_x + player.x * f - 3, start_y + 128 - player.y * f + 3 );
+			dot = this.guild[i];
+			ctx.moveTo( start_x + dot.x * f + 0, start_y + 128 - dot.y * f - 3 );
+			ctx.lineTo( start_x + dot.x * f + 3, start_y + 128 - dot.y * f + 3 );
+			ctx.lineTo( start_x + dot.x * f - 3, start_y + 128 - dot.y * f + 3 );
 		}
 		ctx.stroke();
 		ctx.fill();
-
-		// Continue to render
-		if ( this.rendering ) {
-			requestAnimationFrame( this.render.bind(this), this.ui[0] );
-		}
 	};
 
 
