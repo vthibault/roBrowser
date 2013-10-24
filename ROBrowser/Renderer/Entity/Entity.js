@@ -106,15 +106,6 @@ define( function( require )
 	Entity.prototype.attack_speed = 300;
 
 
-	// Main character
-	Entity.prototype.base_exp      = 0;
-	Entity.prototype.base_exp_next = 1;
-	Entity.prototype.job_exp       = 0;
-	Entity.prototype.job_exp_next  =-1;
-	Entity.prototype.weight        = 0;
-	Entity.prototype.weight_max    = 1;
-
-
 	/**
 	 * Initialized Entity data
 	 */

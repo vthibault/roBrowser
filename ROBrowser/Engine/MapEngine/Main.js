@@ -80,17 +80,17 @@ define(function( require )
 
 			// Base exp
 			case  1:
-				MainPlayer.base_exp  = amount;
-				if( MainPlayer.base_exp_next ) {
-					BasicInfo.update('bexp', MainPlayer.base_exp, MainPlayer.base_exp_next );
+				BasicInfo.base_exp  = amount;
+				if( BasicInfo.base_exp_next ) {
+					BasicInfo.update('bexp', BasicInfo.base_exp, BasicInfo.base_exp_next );
 				}
 				break;
 
 			// Job exp
 			case  2:
-				MainPlayer.job_exp  = amount;
-				if( MainPlayer.job_exp_next ) {
-					BasicInfo.update('jexp', MainPlayer.job_exp, MainPlayer.job_exp_next );
+				BasicInfo.job_exp  = amount;
+				if( BasicInfo.job_exp_next ) {
+					BasicInfo.update('jexp', BasicInfo.job_exp, BasicInfo.job_exp_next );
 				}
 				break;
 
@@ -176,30 +176,30 @@ define(function( require )
 
 			// Base exp next
 			case 22:
-				MainPlayer.base_exp_next  = amount;
-				if( MainPlayer.base_exp > -1 ) {
-					BasicInfo.update('bexp', MainPlayer.base_exp, MainPlayer.base_exp_next );
+				BasicInfo.base_exp_next  = amount;
+				if( BasicInfo.base_exp > -1 ) {
+					BasicInfo.update('bexp', BasicInfo.base_exp, BasicInfo.base_exp_next );
 				}
 				break;
 
 			case 23:
-				MainPlayer.job_exp_next  = amount;
-				if( MainPlayer.job_exp > -1 ) {
-					BasicInfo.update('jexp', MainPlayer.job_exp, MainPlayer.job_exp_next );
+				BasicInfo.job_exp_next  = amount;
+				if( BasicInfo.job_exp > -1 ) {
+					BasicInfo.update('jexp', BasicInfo.job_exp, BasicInfo.job_exp_next );
 				}
 				break;
 
 			case 24:
-				MainPlayer.weight = amount;
-				if( MainPlayer.weight_max > -1 ) {
-					BasicInfo.update('weight', MainPlayer.weight, MainPlayer.weight_max );
+				BasicInfo.weight = amount;
+				if( BasicInfo.weight_max > -1 ) {
+					BasicInfo.update('weight', BasicInfo.weight, BasicInfo.weight_max );
 				}
 				break;
 
 			case 25:
-				MainPlayer.weight_max = amount;
-				if( MainPlayer.weight > -1 ) {
-					BasicInfo.update('weight', MainPlayer.weight, MainPlayer.weight_max );
+				BasicInfo.weight_max = amount;
+				if( BasicInfo.weight > -1 ) {
+					BasicInfo.update('weight', BasicInfo.weight, BasicInfo.weight_max );
 				}
 				break;
 

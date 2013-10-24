@@ -33,6 +33,17 @@ define(function(require)
 
 
 	/**
+	 * Stored data
+	 */
+	BasicInfo.base_exp      = 0;
+	BasicInfo.base_exp_next = 1;
+	BasicInfo.job_exp       = 0;
+	BasicInfo.job_exp_next  =-1;
+	BasicInfo.weight        = 0;
+	BasicInfo.weight_max    = 1;
+
+
+	/**
 	 * Initialize UI
 	 */
 	BasicInfo.init = function Init()
