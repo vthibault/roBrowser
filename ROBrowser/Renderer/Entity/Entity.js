@@ -138,12 +138,10 @@ define( function( require )
 
 		// First thing to set to initialize action, etc.
 		if( unit.job ) {
-			this.job = unit.job;
+			this._job = unit.job;
 		}
+		this.sex = unit.hasOwnProperty('sex') ? unit.sex : this._sex;
 
-		if( unit.sex ){
-			this.sex = unit.sex;
-		}
 
 		keys  = Object.keys( unit );
 		count = keys.length;
