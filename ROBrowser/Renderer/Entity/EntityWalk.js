@@ -58,12 +58,15 @@ define( function( require )
 			this.walk.tick = Renderer.tick;
 
 			this.headDir   = 0;
-			this.setAction({
-				action: this.ACTION.WALK,
-				frame:  0,
-				repeat: true,
-				play:   true
-			});
+
+			if( this.action !== this.ACTION.WALK ) {
+				this.setAction({
+					action: this.ACTION.WALK,
+					frame:  0,
+					repeat: true,
+					play:   true
+				});
+			}
 		}
 	}
 
