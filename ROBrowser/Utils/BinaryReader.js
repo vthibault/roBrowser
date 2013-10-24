@@ -43,7 +43,7 @@ define( ['./Struct'], function( Struct )
 
 			length = mixed.length;
 			buffer = new ArrayBuffer(length);
-			uint8  = new Uint8Array(mixed);
+			uint8  = new Uint8Array(buffer);
 
 			for ( i=0; i<length; ++i ) {
 				uint8[i] = mixed.charCodeAt(i) & 0xff;
