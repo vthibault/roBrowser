@@ -270,11 +270,14 @@ define(function(require)
 	 */
 	MiniMap.render = function Render()
 	{
-		var width  = Altitude.width;
-		var height = Altitude.height;
-		var pos    = Camera.target.position;
-		var fx     = 1 / width  * 128;
-		var fy     = 1 / height * 128;
+		var width   = Altitude.width;
+		var height  = Altitude.height;
+		var pos     = Camera.target.position;
+		var max     = Math.max(width, height);
+		var f       = 1 / max  * 128;
+		var start_x = (max-width)  / 2 * f;
+		var start_y = (height-max) / 2 * f;
+
 		var i, count, player;
 		var ctx = this.ctx;
 
@@ -288,7 +291,7 @@ define(function(require)
 		// Render attached player arrow
 		if( this.arrow.complete && this.arrow.width ) {
 			ctx.save();
-			ctx.translate( pos[0] * fx, 128 - pos[1] * fy );
+			ctx.translate( start_x + pos[0] * f, start_y + 128 - pos[1] * f );
 			ctx.rotate( ( Camera.target.direction + 4 ) * 45 * Math.PI / 180 );
 			ctx.drawImage( this.arrow, -this.arrow.width * 0.5, -this.arrow.height * 0.5 );
 			ctx.restore();
@@ -299,9 +302,9 @@ define(function(require)
 		for( i=0; i<count; ++i ) {
 			player        = this.party[i];
 			ctx.fillStyle = "white";
-			ctx.fillRect( player.x * fx - 3, 128 - player.y * fy - 3, 6, 6 );
+			ctx.fillRect( start_x + player.x * f - 3, start_y + 128 - player.y * f - 3, 6, 6 );
 			ctx.fillStyle = player.color;
-			ctx.fillRect( player.x * fx - 2, 128 - player.y * fy - 2, 4, 4 );
+			ctx.fillRect( start_x + player.x * f - 2, start_y + 128 - player.y * f - 2, 4, 4 );
 		}
 
 		// Render guild members
@@ -310,9 +313,9 @@ define(function(require)
 		ctx.strokeStyle = 'white';
 		for( i=0; i<count; ++i ) {
 			player = this.guild[i];
-			ctx.moveTo( player.x * fx + 0,  128 - player.y * fy - 3 );
-			ctx.lineTo( player.x * fx + 3,  128 - player.y * fy + 3 );
-			ctx.lineTo( player.x * fx - 3,  128 - player.y * fy + 3 );
+			ctx.moveTo( start_x + player.x * f + 0, start_y + 128 - player.y * f - 3 );
+			ctx.lineTo( start_x + player.x * f + 3, start_y + 128 - player.y * f + 3 );
+			ctx.lineTo( start_x + player.x * f - 3, start_y + 128 - player.y * f + 3 );
 		}
 		ctx.stroke();
 		ctx.fill();
