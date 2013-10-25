@@ -36,6 +36,7 @@ define(function( require )
 	var MiniMap          = require('UI/Components/MiniMap/MiniMap');
 	var BasicInfo        = require('UI/Components/BasicInfo/BasicInfo');
 	var WinStats         = require('UI/Components/WinStats/WinStats');
+	var Inventory        = require('UI/Components/Inventory/Inventory');
 
 
 	/**
@@ -214,6 +215,7 @@ define(function( require )
 			BasicInfo.append();
 			WinStats.append();
 			Escape.append();
+			Inventory.append();
 
 			// Map loaded
 			Network.sendPacket(

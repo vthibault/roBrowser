@@ -22,6 +22,7 @@ define(function(require)
 	var UIManager          = require('UI/UIManager');
 	var UIComponent        = require('UI/UIComponent');
 	var MiniMap            = require('UI/Components/MiniMap/MiniMap');
+	var Inventory          = require('UI/Components/Inventory/Inventory');
 	var htmlText           = require('text!./BasicInfo.html');
 	var cssText            = require('text!./BasicInfo.css');
 
@@ -59,6 +60,9 @@ define(function(require)
 				case 'info':
 				case 'skill':
 				case 'item':
+					Inventory.ui.toggle();
+					break;
+
 				case 'party':
 				case 'guild':
 				case 'quest':

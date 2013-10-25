@@ -23,6 +23,7 @@ define(function( require )
 	var Altitude      = require('Renderer/Map/Altitude');
 	var ChatBox       = require('UI/Components/ChatBox/ChatBox');
 	var ItemObtain    = require('UI/Components/ItemObtain/ItemObtain');
+	var Inventory     = require('UI/Components/Inventory/Inventory');
 
 
 	/**
@@ -95,8 +96,6 @@ define(function( require )
 			return;
 		}
 
-		
-
 		ItemObtain.append();
 		ItemObtain.set( pkt.ITID, pkt.IsIdentified, pkt.count );
 
@@ -106,25 +105,29 @@ define(function( require )
 			ChatBox.TYPE.BLUE
 		);
 
-		// TODO: add item to inventory
-/*
-		this.Index           = fp.readUShort();
-		this.count           = fp.readUShort();
-		this.ITID            = fp.readUShort();
-		this.IsIdentified    = fp.readUChar();
-		this.IsDamaged       = fp.readUChar();
-		this.refiningLevel   = fp.readUChar();
-		this.slot            = {};
-		this.slot.card1 = fp.readUShort();
-		this.slot.card2 = fp.readUShort();
-		this.slot.card3 = fp.readUShort();
-		this.slot.card4 = fp.readUShort();
-		this.location        = fp.readUShort();
-		this.type            = fp.readUChar();
-		this.result          = fp.readUChar();
-		this.HireExpireDate  = fp.readLong();
-		this.bindOnEquipType = fp.readUShort();
-*/
+		Inventory.addItem(pkt);
+	}
+
+
+	/**
+	 * Generic function to add items to inventory
+	 *
+	 * @param {object} pkt - PACKET.ZC.EQUIPMENT_ITEMLIST
+	 */
+	function InventoryList( pkt )
+	{
+		Inventory.setItems( pkt.itemInfo || pkt.ItemInfo );
+	}
+
+
+	/**
+	 * Remove item from inventory
+	 *
+	 * @param {object} pkt - PACKET.ZC.ITEM_THROW_ACK
+	 */
+	function InventoryRemoveItem( pkt )
+	{
+		Inventory.removeItem( pkt.index, pkt.count );
 	}
 
 
@@ -133,11 +136,18 @@ define(function( require )
 	 */
 	return function ItemEngine()
 	{
-		Network.hookPacket( PACKET.ZC.ITEM_ENTRY,       Exist );
-		Network.hookPacket( PACKET.ZC.ITEM_FALL_ENTRY,  Create );
-		Network.hookPacket( PACKET.ZC.ITEM_DISAPPEAR,   Remove );
-		Network.hookPacket( PACKET.ZC.ITEM_PICKUP_ACK,  PickAnswer );
-		Network.hookPacket( PACKET.ZC.ITEM_PICKUP_ACK2, PickAnswer );
-		Network.hookPacket( PACKET.ZC.ITEM_PICKUP_ACK3, PickAnswer );
+		Network.hookPacket( PACKET.ZC.ITEM_ENTRY,          Exist );
+		Network.hookPacket( PACKET.ZC.ITEM_FALL_ENTRY,     Create );
+		Network.hookPacket( PACKET.ZC.ITEM_DISAPPEAR,      Remove );
+		Network.hookPacket( PACKET.ZC.ITEM_PICKUP_ACK,     PickAnswer );
+		Network.hookPacket( PACKET.ZC.ITEM_PICKUP_ACK2,    PickAnswer );
+		Network.hookPacket( PACKET.ZC.ITEM_PICKUP_ACK3,    PickAnswer );
+		Network.hookPacket( PACKET.ZC.ITEM_THROW_ACK,      InventoryRemoveItem );
+		Network.hookPacket( PACKET.ZC.NORMAL_ITEMLIST,     InventoryList );
+		Network.hookPacket( PACKET.ZC.NORMAL_ITEMLIST2,    InventoryList );
+		Network.hookPacket( PACKET.ZC.NORMAL_ITEMLIST3,    InventoryList );
+		Network.hookPacket( PACKET.ZC.EQUIPMENT_ITEMLIST,  InventoryList );
+		Network.hookPacket( PACKET.ZC.EQUIPMENT_ITEMLIST2, InventoryList );
+		Network.hookPacket( PACKET.ZC.EQUIPMENT_ITEMLIST3, InventoryList );
 	};
 });
