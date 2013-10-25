@@ -27,14 +27,11 @@ function(
 	/**
 	 * Process command
 	 */
-	return function( cmd ){
+	return function( text ){
 		var pkt;
+		var cmd = text.split(' ')[0];
 
 		switch( cmd ) {
-
-			default:
-				this.addText( DB.msgstringtable[95], this.TYPE.INFO );
-				break;
 
 			case 'sound':
 				this.addText( DB.msgstringtable[27 + AudioPreferences.Sound.play], this.TYPE.INFO );
@@ -44,7 +41,7 @@ function(
 				if( AudioPreferences.Sound.play ) {
 					Sound.stop();
 				}
-				break;
+				return;
 
 			case 'bgm':
 				this.addText( DB.msgstringtable[31 + AudioPreferences.BGM.play], this.TYPE.INFO );
@@ -57,44 +54,44 @@ function(
 				else {
 					BGM.stop();
 				}
-				break;
+				return;
 
 			case 'miss':
 				this.addText( DB.msgstringtable[317 + MapPreferences.miss], this.TYPE.INFO );
 				MapPreferences.miss = !MapPreferences.miss;
 				MapPreferences.save();
-				break;
+				return;
 
 			case 'camera':
 				this.addText( DB.msgstringtable[319 + CameraPreferences.smooth], this.TYPE.INFO );
 				CameraPreferences.smooth = !CameraPreferences.smooth;
 				CameraPreferences.save();
-				break;
+				return;
 
 			case 'fog':
 				MapPreferences.fog = !MapPreferences.fog;
 				this.addText( 'fog ' + ( MapPreferences.fog ? 'on' : 'off'), this.TYPE.INFO );
 				MapPreferences.save();
-				break;
+				return;
 
 			case 'lightmap':
 				MapPreferences.lightmap = !MapPreferences.lightmap;
 				MapPreferences.save();
-				break;
+				return;
 
 			case 'noctrl':
 			case 'nc':
 				this.addText( DB.msgstringtable[715 + ControlPreferences.noctrl], this.TYPE.INFO );
 				ControlPreferences.noctrl = !ControlPreferences.noctrl;
 				ControlPreferences.save();
-				break;
+				return;
 
 			case 'noshift':
 			case 'ns':
 				this.addText( DB.msgstringtable[699 + ControlPreferences.noshift], this.TYPE.INFO );
 				ControlPreferences.noshift = !ControlPreferences.noshift;
 				ControlPreferences.save();
-				break;
+				return;
 
 			case 'sit':
 			case 'stand':
@@ -105,31 +102,31 @@ function(
 					pkt.action = 2; // sit down	
 				}
 				Network.sendPacket(pkt);
-				break;
+				return;
 
 			case 'doridori':
 				Camera.target.headDir = ( Camera.target.headDir === 1 ? 2 : 1 );
-				pkt = new PACKET.CZ.CHANGE_DIRECTION();
+				pkt         = new PACKET.CZ.CHANGE_DIRECTION();
 				pkt.headDir = Camera.target.headDir;
 				pkt.dir     = Camera.target.direction;
 				Network.sendPacket(pkt);
-				break;
+				return;
 
 			case 'bangbang':
 				Camera.target.direction = ( Camera.target.direction + 1 ) % 8;
-				pkt = new PACKET.CZ.CHANGE_DIRECTION();
+				pkt         = new PACKET.CZ.CHANGE_DIRECTION();
 				pkt.headDir = Camera.target.headDir;
 				pkt.dir     = Camera.target.direction;
 				Network.sendPacket(pkt);
-				break;
+				return;
 	
 			case 'bingbing':
 				Camera.target.direction = ( Camera.target.direction + 7 ) % 8;
-				pkt = new PACKET.CZ.CHANGE_DIRECTION();
+				pkt         = new PACKET.CZ.CHANGE_DIRECTION();
 				pkt.headDir = Camera.target.headDir;
 				pkt.dir     = Camera.target.direction;
 				Network.sendPacket(pkt);
-				break;
+				return;
 
 			case 'where':
 				this.addText(
@@ -137,13 +134,32 @@ function(
 					"(" + MapRenderer.currentMap + ") : " + Math.floor(Camera.target.position[0]) + ", " + Math.floor(Camera.target.position[1]),
 					this.TYPE.INFO
 				);
-				break;
+				return;
 
 			case 'who':
 			case 'w':
 				pkt = new PACKET.CZ.REQ_USER_COUNT();
 				Network.sendPacket(pkt);
-				break;	
+				return;
 		}
+
+
+		// /str+
+		// TODO: do we have to spam the server with "1" unit or do we have to fix the servers code ?
+		var matches = text.match(/^(\w{3})\+ (\d+)$/);
+		if( matches ) {
+			var pos = ['str', 'agi', 'vit', 'int', 'dex', 'luk'].indexOf(matches[1]);
+			if( pos > -1 && matches[2] !== 0 ) {
+				pkt = new PACKET.CZ.STATUS_CHANGE();
+				pkt.statusID     = pos + 13;
+				pkt.changeAmount = parseInt( matches[2], 10 );
+				Network.sendPacket(pkt);
+				return;
+			}
+		}
+
+
+		// Command not found
+		this.addText( DB.msgstringtable[95], this.TYPE.INFO );
 	};
 });

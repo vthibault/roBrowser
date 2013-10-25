@@ -35,6 +35,7 @@ define(function( require )
 	var ChatBox          = require('UI/Components/ChatBox/ChatBox');
 	var MiniMap          = require('UI/Components/MiniMap/MiniMap');
 	var BasicInfo        = require('UI/Components/BasicInfo/BasicInfo');
+	var WinStats         = require('UI/Components/WinStats/WinStats');
 
 
 	/**
@@ -164,7 +165,13 @@ define(function( require )
 		BasicInfo.update('zeny', MapEngine.baseCharacter.money );
 		BasicInfo.update('name', MapEngine.baseCharacter.name );
 		BasicInfo.update('job',  MapEngine.baseCharacter.job );
-		// Nothing to do here ?
+
+		// Bind UI
+		WinStats.OnRequestUpdate        = MapEngine.OnRequestStatUpdate;
+		Escape.onExitRequest            = MapEngine.onExitRequest;
+		Escape.onCharSelectionRequest   = MapEngine.onRestartRequest;
+		Escape.onReturnSavePointRequest = MapEngine.onReturnSavePointRequest;
+		Escape.onResurectionRequest     = MapEngine.onResurectionRequest;
 	};
 
 
@@ -205,12 +212,8 @@ define(function( require )
 			MiniMap.setMap( MapRenderer.currentMap );
 			ChatBox.append();
 			BasicInfo.append();
-
+			WinStats.append();
 			Escape.append();
-			Escape.onExitRequest            = MapEngine.onExitRequest;
-			Escape.onCharSelectionRequest   = MapEngine.onRestartRequest;
-			Escape.onReturnSavePointRequest = MapEngine.onReturnSavePointRequest;
-			Escape.onResurectionRequest     = MapEngine.onResurectionRequest;
 
 			// Map loaded
 			Network.sendPacket(
@@ -438,6 +441,22 @@ define(function( require )
 			pkt.targetGID = entity.GID;
 			Network.sendPacket(pkt);
 		}
+	};
+
+
+	/**
+	 * Ask server to update status
+	 *
+	 * @param {number} id
+	 * @param {number} amount
+	 */
+	MapEngine.OnRequestStatUpdate = function OnRequestStatUpdate(id, amount)
+	{
+		var pkt = new PACKET.CZ.STATUS_CHANGE();
+		pkt.statusID     = id;
+		pkt.changeAmount = amount;
+
+		Network.sendPacket(pkt);
 	};
 
 

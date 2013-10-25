@@ -72,8 +72,8 @@ define( ['./PacketStructure' ], function( PACKET )
 		0xb5: PACKET.ZC.WAIT_DIALOG, // ok
 		0xb6: PACKET.ZC.CLOSE_DIALOG, // ok
 		0xb7: PACKET.ZC.MENU_LIST, // ok
-		0xbc: PACKET.ZC.STATUS_CHANGE_ACK,
-		0xbd: PACKET.ZC.STATUS,
+		0xbc: PACKET.ZC.STATUS_CHANGE_ACK, // ok
+		0xbd: PACKET.ZC.STATUS, // ok
 		0xbe: PACKET.ZC.STATUS_CHANGE, // ok
 		0xc0: PACKET.ZC.EMOTION,
 		0xc2: PACKET.ZC.USER_COUNT, // ok

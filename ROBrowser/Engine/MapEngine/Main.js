@@ -28,6 +28,7 @@ define(function( require )
 	var Altitude      = require('Renderer/Map/Altitude');
 	var ChatBox       = require('UI/Components/ChatBox/ChatBox');
 	var BasicInfo     = require('UI/Components/BasicInfo/BasicInfo');
+	var WinStats      = require('UI/Components/WinStats/WinStats');
 	var Escape        = require('UI/Components/Escape/Escape');
 	var Announce      = require('UI/Components/Announce/Announce');
 
@@ -59,6 +60,65 @@ define(function( require )
 	function UpdateAttackRange( pkt )
 	{
 		MainPlayer.attack_range = pkt.currentAttRange;
+	}
+
+
+	/**
+	 * Update status parameters
+	 *
+	 * @param {object} pkt - PACKET.ZC.STATUS
+	 */
+	function UpdateStatusParameter( pkt )
+	{
+		WinStats.update('str',         pkt.str);
+		WinStats.update('agi',         pkt.agi);
+		WinStats.update('vit',         pkt.vit);
+		WinStats.update('int',         pkt.Int);
+		WinStats.update('dex',         pkt.dex);
+		WinStats.update('luk',         pkt.luk);
+		WinStats.update('str3',        pkt.standardStr);
+		WinStats.update('agi3',        pkt.standardAgi);
+		WinStats.update('vit3',        pkt.standardVit);
+		WinStats.update('int3',        pkt.standardInt);
+		WinStats.update('dex3',        pkt.standardDex);
+		WinStats.update('luk3',        pkt.standardLuk);
+		WinStats.update('aspd',        ( pkt.ASPD + pkt.plusASPD ) / 4);
+		WinStats.update('atak',        pkt.attPower);
+		WinStats.update('atak2',       pkt.refiningPower);
+		WinStats.update('matak',       pkt.min_mattPower);
+		WinStats.update('matak2',      pkt.max_mattPower);
+		WinStats.update('flee',        pkt.avoidSuccessValue );
+		WinStats.update('flee2',       pkt.plusAvoidSuccessValue );
+		WinStats.update('critical',    pkt.criticalSuccessValue );
+		WinStats.update('hit',         pkt.hitSuccessValue );
+		WinStats.update('def',         pkt.itemdefPower );
+		WinStats.update('def2',        pkt.plusdefPower );
+		WinStats.update('mdef',        pkt.mdefPower );
+		WinStats.update('mdef2',       pkt.plusmdefPower );
+		WinStats.update('statuspoint', pkt.point );
+	}
+
+
+	/**
+	 * Answer from server for updating parameter
+	 *
+	 * @param {object} pkt - PACKET.ZC.STATUS_CHANGE_ACK
+	 */
+	function UpdateStatusParameterAck( pkt )
+	{
+		// Fail
+		if( !pkt.result ) {
+			return;
+		}
+
+		switch( pkt.statusID ) {
+			case 13: WinStats.update('str', pkt.value); break;
+			case 14: WinStats.update('agi', pkt.value); break;
+			case 15: WinStats.update('vit', pkt.value); break;
+			case 16: WinStats.update('int', pkt.value); break;
+			case 17: WinStats.update('dex', pkt.value); break;
+			case 18: WinStats.update('luk', pkt.value); break;
+		}
 	}
 
 
@@ -150,6 +210,7 @@ define(function( require )
 
 			// Status points
 			case  9:
+				WinStats.update('statuspoint', amount);
 				break;
 
 			// Base level
@@ -162,12 +223,12 @@ define(function( require )
 				break;
 
 			// Stats
-			case 13: break; // str
-			case 14: break; // agi
-			case 15: break; // vit
-			case 16: break; // int
-			case 17: break; // dex
-			case 18: break; // luk
+			case 13: WinStats.update('str', amount); break; // str
+			case 14: WinStats.update('agi', amount); break; // agi
+			case 15: WinStats.update('vit', amount); break; // vit
+			case 16: WinStats.update('int', amount); break; // int
+			case 17: WinStats.update('dex', amount); break; // dex
+			case 18: WinStats.update('luk', amount); break; // luk
 
 			// Zeny
 			case 20:
@@ -204,19 +265,19 @@ define(function( require )
 				break;
 
 			// Stats window
-			case 41: break; // atk1
-			case 42: break; // atk2
-			case 43: break; // matk1
-			case 44: break; // matk2
-			case 45: break; // def1
-			case 46: break; // def2
-			case 47: break; // mdef1
-			case 48: break; // mdef2
-			case 49: break; // hit
-			case 50: break; // flee
-			case 51: break; // dodge
-			case 52: break; // crit
-			case 53: break; // aspd
+			case 41: WinStats.update('atak',     amount); break; // atk1
+			case 42: WinStats.update('atak2',    amount); break; // atk2
+			case 43: WinStats.update('matak',    amount); break; // matk1
+			case 44: WinStats.update('matak2',   amount); break; // matk2
+			case 45: WinStats.update('def',      amount); break; // def1
+			case 46: WinStats.update('def2',     amount); break; // def2
+			case 47: WinStats.update('mdef',     amount); break; // mdef1
+			case 48: WinStats.update('mdef2',    amount); break; // mdef2
+			case 49: WinStats.update('hit',      amount); break; // hit
+			case 50: WinStats.update('flee',     amount); break; // flee
+			case 51: WinStats.update('flee2',    amount); break; // dodge
+			case 52: WinStats.update('critical', amount); break; // crit
+			case 53: WinStats.update('aspd',     amount); break; // aspd
 
 			// Job level
 			case 55:
@@ -224,7 +285,7 @@ define(function( require )
 				break;
 
 			default:
-				console.log( "recv_main_update_status();  -> unknown type " + type + ".");
+				console.log( "Main::UpdateParameter() - Unsupported type", pkt);
 		}
 	}
 
@@ -376,6 +437,8 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.STATUS_CHANGE,               UpdateParameter );
 		Network.hookPacket( PACKET.ZC.NOTIFY_CARTITEM_COUNTINFO,   UpdateParameter );
 		Network.hookPacket( PACKET.ZC.COUPLESTATUS,                UpdateParameter );
+		Network.hookPacket( PACKET.ZC.STATUS,                      UpdateStatusParameter );
+		Network.hookPacket( PACKET.ZC.STATUS_CHANGE_ACK,           UpdateStatusParameterAck );
 		Network.hookPacket( PACKET.ZC.ATTACK_RANGE,                UpdateAttackRange );
 		Network.hookPacket( PACKET.ZC.BROADCAST,                   OnBroadcast );
 		Network.hookPacket( PACKET.ZC.USER_COUNT,                  OnPlayerCount );
