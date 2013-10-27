@@ -421,9 +421,10 @@ define(function( require )
 				});
 
 				// Combo
+				var aspd = (srcEntity && srcEntity.attack_speed) || 150;
 				for ( var i = 0; i<pkt.count; ++i ) {
-					Damage.add( Math.round( pkt.damage / pkt.count ), dstEntity, Renderer.tick + srcEntity.attack_speed + ( 200 * i ), Damage.TYPE.COMBO );
-					//Damage.add( Math.round( pkt.damage / pkt.count ), dstEntity, Renderer.tick + srcEntity.attack_speed + ( 200 * i ), Damage.TYPE.COMBO_TITLE );
+					Damage.add( Math.round( pkt.damage / pkt.count ), dstEntity, Renderer.tick + aspd + ( 200 * i ), Damage.TYPE.COMBO );
+					//Damage.add( Math.round( pkt.damage / pkt.count ), dstEntity, Renderer.tick + aspd + ( 200 * i ), Damage.TYPE.COMBO_TITLE );
 				}
 			}
 		}
