@@ -161,13 +161,13 @@ define( function( require )
 					this.position[2] = Altitude.getCellHeight(  unit.PosDir[0],  unit.PosDir[1] );
 					break;
 
-				case 'action':
+				case 'state':
 					var actions = [ this.ACTION.IDLE, this.ACTION.DIE, this.ACTION.SIT ];
 					this.setAction({
-						action: actions[unit.action],
+						action: actions[unit.state],
 						frame:  0,
 						play:  true,
-						repeat: unit.action !== 1
+						repeat: unit.state !== 1
 					});
 					break;
 
