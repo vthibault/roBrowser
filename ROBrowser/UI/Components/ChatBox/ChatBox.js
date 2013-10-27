@@ -137,6 +137,9 @@ define(function(require)
 			this.addText.apply(this, this.storage[i]);
 		}
 		this.storage.length = 0;
+
+		var content = this.ui.find('.content')[0];
+		content.scrollTop = content.scrollHeight;
 	};
 
 
