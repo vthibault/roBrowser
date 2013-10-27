@@ -182,11 +182,15 @@ define(function(require)
 			var extraX = 23 + 16 + 16;
 			var extraY = 31 + 19;
 	
-			var w = Mouse.screen.x - left - extraX;
-			var h = Mouse.screen.y - top  -  extraY;
+			var w = Math.floor( (Mouse.screen.x - left - extraX) / 32 );
+			var h = Math.floor( (Mouse.screen.y - top  - extraY) / 32 );
 
-			w = extraX + Math.floor( w / 32 ) * 32;
-			h = extraY + Math.floor( h / 32 ) * 32;
+			// Maximum and minimum window size
+			w = Math.min( Math.max(w, 6), 9);
+			h = Math.min( Math.max(h, 2), 6);
+
+			w = extraX + w * 32;
+			h = extraY + h * 32;
 
 			if( w === lastWidth && h === lastHeight ) {
 				return;
@@ -227,6 +231,8 @@ define(function(require)
 	Inventory.setItems = function SetItems(items)
 	{
 		var i, count;
+		this.ui.find('.container .content').empty();
+		this.list.length = 0;
 
 		for( i = 0, count = items.length; i < count ; ++i ) {
 			this.addItemSub( items[i] );
