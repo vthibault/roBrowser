@@ -93,6 +93,7 @@ define(function( require )
 		// Clean objects
 		SoundManager.stop();
 		Renderer.stop();
+		UIManager.removeComponents();
 
 		// Don't reload a map when it's just a local teleportation
 		if( this.currentMap !== mapname ) {
@@ -106,8 +107,6 @@ define(function( require )
 			}
 
 			Background.setLoading(function() {
-				UIManager.removeComponents();
-
 				// Hooking Thread
 				Thread.hook('MAP_PROGRESS', MapRenderer.onProgressUpdate.bind(MapRenderer) );
 				Thread.hook('MAP_WORLD',    MapRenderer.onWorldComplete.bind(MapRenderer) );
