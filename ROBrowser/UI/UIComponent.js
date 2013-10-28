@@ -215,14 +215,15 @@ function(       jQuery,        Client,            Mouse )
 			}, 30 );
 
 			// Stop the drag (need to focus on window to avoid possible errors...)
-			jQuery(window).one('mouseup', function(event){
+			jQuery(window).on('mouseup.dragdrop', function(event){
 				// Only on left click
-				if ( event.which !== 1 ) {
+				if ( event.which !== 1 && !event.isTrigger ) {
 					return;
 				}
 
 				container.stop().animate({ opacity:1.0 }, 500 );
 				clearInterval(drag);
+				jQuery(window).off('mouseup.dragdrop');
 			});
 		});
 	

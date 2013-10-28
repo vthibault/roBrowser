@@ -1,4 +1,5 @@
-#Inventory { position:absolute; top:100px; left:100px; width: 280px; height: 245px; font-size:12px; border-spacing:0px; }
+#Inventory { position:absolute; top:100px; left:100px; font-size:12px; }
+#Inventory table { border-spacing:0px; }
 
 #Inventory .titlebar { width:100%; height:17px; background-color:white; background-repeat:repeat-x; border-radius:3px 3px 0px 0px; }
 #Inventory .titlebar .base { width:11px; height:11px; border:none; background-color:transparent; background-repeat:no-repeat; }
@@ -9,19 +10,18 @@
 #Inventory .titlebar .right { float:right; margin-right:3px;}
 #Inventory .titlebar .clear { clear:both; }
 
-#Inventory .tabs { border-left:1px solid #ccc; width:50px; height:82px; background-repeat:no-repeat; background-color:transparent; vertical-align:top; background-position: -1px 0px; }
+#Inventory .tabs { border-left:1px solid #ccc; width:50px; background-repeat:no-repeat; background-color:transparent; vertical-align:top; background-position: -1px 0px; }
 #Inventory .tabs button { width:20px; height:27px; border:none; background-color:transparent; display:block; }
 
 #Inventory .panel { background:white; }
 #Inventory .container { width: 100%; height: 100%; padding-left: 16px; border-right:1px solid #ccc; position:relative; }
 #Inventory .hide { height:100%; width:16px; position:absolute; top:0px; right:0px; background-color:white;}
-#Inventory .content { overflow:auto; width:100%; height:100%; background-color:transparent; background-repeat:repeat; }
+#Inventory .content { overflow:auto; width:100%; height:100%; min-height:65px; background-color:transparent; background-repeat:repeat; }
 
 #Inventory .content .item { display:block; width:24px; height:24px; margin:4px 4px 4px 4px; position:relative; float:left; }
 #Inventory .content .item button { width:24px; height:24px; border:none; background-color:transparent; background-repeat:no-repeat; }
-#Inventory .content .item .overlay { position:absolute; top:-20px; left:10px; display:none; white-space:nowrap; z-index:900; height:18px; padding:5px; background:rgba(0,0,0,0.7); color:white; }
-#Inventory .content .item:hover .overlay { display:block }
+#Inventory .overlay { position:absolute; display:none; white-space:nowrap; z-index:900; height:13px; padding:5px; background:rgba(0,0,0,0.7); color:white; }
 #Inventory .content .item .amount { position:relative; font-size:11px; bottom:9px; right:0px; text-align:right; text-shadow:-1px -1px white; }
 
-#Inventory .footer { width:100%; height:29px; background-repeat:repeat-x; background-color:transparent; position:relative; border-left:1px solid #ccc; border-right:1px solid #ccc; }
-#Inventory .footer button { position:absolute; right:0px; bottom:2px; width:13px; height:13px; border:none; background-repeat:no-repeat; background-color:transparent; }
+#Inventory .footer { width:100%; height:27px; background-repeat:repeat-x; background-color:transparent; position:relative; border-right:1px solid #ccc; }
+#Inventory .footer button { position:absolute; right:0px; bottom:1px; width:13px; height:13px; border:none; background-repeat:no-repeat; background-color:transparent; }

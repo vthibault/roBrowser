@@ -84,18 +84,19 @@ define(function(require)
 	Inventory.init = function Init()
 	{
 		this.ui.css({ top: 200, left:200 });
+		this.resize( 7, 4 );
 
 		this.ui.find('.titlebar .mini').mousedown(function(){
 			// TODO: fix this part
 			if( Inventory.realSize ) {
-				Inventory.ui.find('.max').show();
+				Inventory.ui.find('.panel').show();
 				Inventory.ui.height(Inventory.realSize);
 				Inventory.realSize = 0;
 			}
 			else {
 				Inventory.realSize = Inventory.ui.height();
 				Inventory.ui.height(17);
-				Inventory.ui.find('.max').hide();
+				Inventory.ui.find('.panel').hide();
 			}
 		});
 
@@ -111,16 +112,64 @@ define(function(require)
 				Inventory.ui.find('.tabs').css('backgroundImage', 'url("' + data + '")');
 				Inventory.filter(idx);
 			});
+
+			event.stopImmediatePropagation();
+			return false;
 		});
 
 		this.ui.find('.footer .extend').mousedown(
-			this.resize.bind(this)
+			this.extend.bind(this)
 		);
 
-		// Scroll feature should block at each line
-		this.ui.find('.container .content').on('scroll', function(){
-			this.scrollTop = Math.floor( this.scrollTop / 32 ) * 32;
-		});
+
+		var overlay = this.ui.find('.overlay');
+		this.ui.find('.container .content')
+
+			// Scroll feature should block at each line
+			.on('scroll', function(){
+				this.scrollTop = Math.floor( this.scrollTop / 32 ) * 32;
+			})
+
+			// Title feature
+			.on('mouseover', '.item', function(){
+				var i, count;
+				var items = Inventory.list;
+				var idx  = parseInt( this.className.match(/ (\d+)$/)[1], 10);
+
+				for( i = 0, count = items.length; i < count ; ++i ) {
+					if( items[i].index === idx ) {
+
+						// Get back data
+						var item = items[i];
+						var it   = DB.getItemInfo( item.ITID );
+						var pos  = jQuery(this).position();
+
+						// Display box
+						overlay.show();
+						overlay.css({top: pos.top, left:pos.left+35});
+						overlay.html(
+							(item.count ? '<span class="count">' + item.count + '</span> ' : '') +
+							( item.IsIdentified ? it.display : it._display )
+						);
+						break;
+					}
+				}
+			})
+
+			.on('mouseout', '.item', function(){
+				overlay.hide();
+			})
+
+
+			.on('dragstart', 'button', function(event){
+				event.originalEvent.dataTransfer.setData("Text", parseInt(
+					this.parentNode.className.match(/ (\d+)$/)[1], 10
+				));
+
+				// Stop component drag drop
+				jQuery(window).trigger('mouseup');
+				overlay.hide();
+			})
 
 		this.draggable();
 	};
@@ -163,10 +212,9 @@ define(function(require)
 
 
 	/**
-	 * Resize inventory window
-	 *
+	 * Extend inventory window size
 	 */
-	Inventory.resize = function Resize( event )
+	Inventory.extend = function Extend( event )
 	{
 		var ui      = this.ui;
 		var content = ui.find('.container .content');
@@ -179,9 +227,9 @@ define(function(require)
 
 		function Resizing()
 		{
-			var extraX = 23 + 16 + 16;
-			var extraY = 31 + 19;
-	
+			var extraX = 23 + 16 + 16 - 30;
+			var extraY = 31 + 19 - 30;
+
 			var w = Math.floor( (Mouse.screen.x - left - extraX) / 32 );
 			var h = Math.floor( (Mouse.screen.y - top  - extraY) / 32 );
 
@@ -189,14 +237,11 @@ define(function(require)
 			w = Math.min( Math.max(w, 6), 9);
 			h = Math.min( Math.max(h, 2), 6);
 
-			w = extraX + w * 32;
-			h = extraY + h * 32;
-
 			if( w === lastWidth && h === lastHeight ) {
 				return;
 			}
 
-			ui.css({ width: w,  height: h });
+			Inventory.resize( w, h );
 			lastWidth  = w;
 			lastHeight = h;
 
@@ -226,13 +271,28 @@ define(function(require)
 
 
 	/**
+	 * Extend inventory window size
+	 */
+	Inventory.resize = function Resize( width, height )
+	{
+		this.ui.find('.container .content').css({
+			width:  width  * 32 + 13, // 13 = scrollbar
+			height: height * 32
+		});
+
+		this.ui.css({
+			width:  23 + 16 + 16 + width  * 32,
+			height: 31 + 19      + height * 32
+		});
+	};
+
+
+	/**
 	 * Add items to the list
 	 */
 	Inventory.setItems = function SetItems(items)
 	{
 		var i, count;
-		this.ui.find('.container .content').empty();
-		this.list.length = 0;
 
 		for( i = 0, count = items.length; i < count ; ++i ) {
 			this.addItemSub( items[i] );
@@ -249,12 +309,13 @@ define(function(require)
 	Inventory.addItem = function AddItem( item )
 	{
 		var i, size;
+		var index = typeof item.index === 'undefined' ? item.Index : item.index;
 
 		for( i = 0, size = this.list.length; i < size; ++i ) {
 
-			if( this.list[i].index === item.index ) {
+			if( this.list[i].index === index ) {
 				this.list[i].count += item.count;
-				this.ui.find('.item.'+ item.index + ' .count').text( this.list[i].count )
+				this.ui.find('.item.'+ index + ' .count').text( this.list[i].count )
 				return;
 			}
 		}
@@ -300,14 +361,15 @@ define(function(require)
 		if( tab === this.tab ) {
 			var it      = DB.getItemInfo( item.ITID );
 			var path    = 'data/texture/\xc0\xaf\xc0\xfa\xc0\xce\xc5\xcd\xc6\xe4\xc0\xcc\xbd\xba/item/';
+			var index   = typeof item.index === 'undefined' ? item.Index : item.index;
+
 
 			Client.loadFile( path + ( item.IsIdentified ? it.resource : it._resource ) + '.bmp', function(data){
 				var content = ui.find('.container .content');
 
 				content.append(
-					'<div class="item '+ item.index +'">' +
-						'<button style="background-image:url(' + data + ')"></button>' +
-						'<div class="overlay">'+ (item.count ? '<span class="count">' + item.count + '</span> ' : '') + ' ' + ( item.IsIdentified ? it.display : it._display ) + '</div>' +
+					'<div class="item '+ index +'">' +
+						'<button style="background-image:url(' + data + ')" draggable="true"></button>' +
 						'<div class="amount">'+ (item.count ? '<span class="count">' + item.count + '</span>' + ' ' : '') + '</div>' +
 					'</div>'
 				);
