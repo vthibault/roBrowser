@@ -70,7 +70,7 @@ define(['Renderer/Renderer'], function( Renderer )
 				// ex: bow and knife don't have the same action frame
 			}
 
-			this.action = option.action === -1 ? this.ACTION.IDLE : option.action;
+			this.action = option.action === -1 || typeof option.action === 'undefined' ? this.ACTION.IDLE : option.action;
 			anim.tick   = Renderer.tick + 0;
 			anim.delay  = 0;
 			anim.frame  = option.frame  || 0;

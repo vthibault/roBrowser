@@ -171,6 +171,15 @@ define( function( require )
 					});
 					break;
 
+				case 'action':
+					this.setAction({
+						action:unit.action,
+						play:true,
+						frame:0,
+						repeat: unit.action !== 1
+					});
+					break;
+
 				case 'actStartTime':
 					this.animation.tick = unit.actStartTime;
 					break;

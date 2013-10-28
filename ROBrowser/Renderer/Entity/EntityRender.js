@@ -303,7 +303,7 @@ define( function( require )
 		// If hat/hair, divide to 3 since there is doridori include
 		// TODO: fixed, just on IDLE and SIT ?
 		if( type === "head" && ( ACTION === this.ACTION.IDLE || ACTION === this.ACTION.SIT ) ) {
-			animations_count /= 3;
+			animations_count  = Math.floor( animations_count / 3 );
 			headDir           = this.headDir + 0;
 		}
 
