@@ -1,6 +1,5 @@
 <?php
 	ini_set('memory_limit', '1000M');
-	error_reporting(E_ALL);
 
 	// Set header
 	header("Access-Control-Allow-Origin: *");
@@ -43,6 +42,9 @@
 	$directory = basename(dirname(__FILE__));
 	$path = end(explode($directory . '/', $path, 2 ));
 	$args = explode('/', $path);
+	if( $args[1] === "data" ) {
+		array_shift($args);
+	}
 	$path = implode($args, '\\');
 	$ext  = end( explode('.',$path) );
 
