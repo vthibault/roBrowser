@@ -26,7 +26,7 @@ define( function( require )
 	{
 		this.speed =  150;
 		this.tick  =  0;
-		this.path  =  null;
+		this.path  =  [];
 		this.pos   =  new Float32Array(3)
 	}
 
@@ -88,33 +88,36 @@ define( function( require )
 			[7,6,5]
 		];
 
-		// Calculate new position, base on time and walk speed.
-		while( path.length ) {
-			x = path[0][0] - (walk.pos[0]);
-			y = path[0][1] - (walk.pos[1]);
-
-			// Seems like walking on diagonal is slower ?
-			speed = ( x && y ) ? walk.speed / 0.6 : walk.speed;
-
-			// New position :)
-			if( TICK - walk.tick <= speed ) {
-				break;
-			}
-
-			walk.tick += speed;
-			walk.pos.set(path.shift());
-		}
-
-		// Calculate and store new position
-		// TODO: check the min() part.
-		pos[0] = walk.pos[0] + x / ( speed / Math.min(speed, TICK-walk.tick) ) ;
-		pos[1] = walk.pos[1] + y / ( speed / Math.min(speed, TICK-walk.tick) ) ;
-		pos[2] = Altitude.getCellHeight( pos[0], pos[1] );
-
-		// Update player direction while walking
 		if( path.length ) {
-			this.direction = direction[(x>0?1:x<0?-1:0)+1][(y>0?1:y<0?-1:0)+1];
-			return;
+
+			// Calculate new position, base on time and walk speed.
+			while( path.length ) {
+				x = path[0][0] - (walk.pos[0]);
+				y = path[0][1] - (walk.pos[1]);
+	
+				// Seems like walking on diagonal is slower ?
+				speed = ( x && y ) ? walk.speed / 0.6 : walk.speed;
+	
+				// New position :)
+				if( TICK - walk.tick <= speed ) {
+					break;
+				}
+	
+				walk.tick += speed;
+				walk.pos.set(path.shift());
+			}
+	
+			// Calculate and store new position
+			// TODO: check the min() part.
+			pos[0] = walk.pos[0] + x / ( speed / Math.min(speed, TICK-walk.tick) ) ;
+			pos[1] = walk.pos[1] + y / ( speed / Math.min(speed, TICK-walk.tick) ) ;
+			pos[2] = Altitude.getCellHeight( pos[0], pos[1] );
+
+			// Update player direction while walking
+			if( path.length ) {
+				this.direction = direction[(x>0?1:x<0?-1:0)+1][(y>0?1:y<0?-1:0)+1];
+				return;
+			}
 		}
 
 		// Stop walking
