@@ -346,6 +346,8 @@ define( function( require )
 					this.setAction( animation.next );
 				}
 			}
+
+			anim = Math.min( anim, animations_count-1 );
 		}
 
 		// anim %= animations_length;
