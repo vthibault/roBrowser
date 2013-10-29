@@ -10,6 +10,8 @@
 define([
 	'Utils/jquery',
 	'UI/CursorManager',
+	'UI/Components/Inventory/Inventory',
+	'UI/Components/InputBox/InputBox',
 	'Controls/KeyEventHandler',
 	'Renderer/Renderer', 'Renderer/Camera', 'Renderer/EntityManager',
 	'Preferences/Controls'
@@ -17,6 +19,8 @@ define([
 function(
 	jQuery,
 	Cursor,
+	Inventory,
+	InputBox,
 	KEYS,
 	Renderer, Camera, EntityManager,
 	Preferences
@@ -120,6 +124,70 @@ function(
 	}
 
 
+
+	/**
+	 * Allow dropping data
+	 */
+	function OnDragOver(event)
+	{
+		event.stopImmediatePropagation();
+		return false;
+	}
+	
+
+
+	/**
+	 * Drop items to the map
+	 */
+	function OnDrop( event )
+	{
+		var i, count;
+		var items, item;
+		var MapEngine = this;
+
+		var data = event.originalEvent.dataTransfer.getData("Text");
+		var matches = data.match(/(\w+) (\d+)/);
+
+		// Just support items for now ?
+		if( matches && matches[1] !== "item" ) {
+			event.stopImmediatePropagation();
+			return false;
+		}
+
+		for( i = 0, items = Inventory.list, count = items.length; i < count; ++i ) {
+
+			if( items[i].index != matches[2] ) {
+				continue;
+			}
+
+			item = items[i];
+
+			// Have to specify how much
+			if( item.count > 1 ) {
+				InputBox.append();
+				InputBox.setType("number");
+				InputBox.onSubmitRequest = function OnSubmitRequest( count )
+				{
+					InputBox.remove();
+					MapEngine.onDropItem(
+						parseInt(matches[2], 10),
+						parseInt(count, 10 )
+					);
+				};
+				break;
+			}
+		
+			MapEngine.onDropItem( parseInt(matches[2], 10), 1 );
+			break;
+		}
+
+		event.stopImmediatePropagation();
+		return false;
+	}
+
+
+
+
 	/**
 	 *  Ugly but to avoid circular dependencies
 	 */
@@ -129,7 +197,9 @@ function(
 		jQuery( Renderer.canvas )
 			.mousedown( OnMouseDown.bind(this) )
 			.mouseup( OnMouseUp.bind(this) )
-			.on('mousewheel DOMMouseScroll', OnMouseWheel);
+			.on('mousewheel DOMMouseScroll', OnMouseWheel)
+			.on('dragover', OnDragOver )
+			.on('drop', OnDrop.bind(this));
 
 		jQuery(window).on('contextmenu', function(){ return false; });
 	};

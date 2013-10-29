@@ -168,7 +168,7 @@ define(function( require )
 		BasicInfo.update('job',  MapEngine.baseCharacter.job );
 
 		// Bind UI
-		WinStats.OnRequestUpdate        = MapEngine.OnRequestStatUpdate;
+		WinStats.OnRequestUpdate        = MapEngine.onRequestStatUpdate;
 		Escape.onExitRequest            = MapEngine.onExitRequest;
 		Escape.onCharSelectionRequest   = MapEngine.onRestartRequest;
 		Escape.onReturnSavePointRequest = MapEngine.onReturnSavePointRequest;
@@ -452,13 +452,30 @@ define(function( require )
 	 * @param {number} id
 	 * @param {number} amount
 	 */
-	MapEngine.OnRequestStatUpdate = function OnRequestStatUpdate(id, amount)
+	MapEngine.onRequestStatUpdate = function OnRequestStatUpdate(id, amount)
 	{
 		var pkt = new PACKET.CZ.STATUS_CHANGE();
 		pkt.statusID     = id;
 		pkt.changeAmount = amount;
 
 		Network.sendPacket(pkt);
+	};
+
+
+	/**
+	 * Drop item to the floor
+	 *
+	 * @param {number} index in inventory
+	 * @param {number} count to drop
+	 */
+	MapEngine.onDropItem = function OnDropItem( index, count )
+	{
+		if( count ) {
+			var pkt   = new PACKET.CZ.ITEM_THROW();
+			pkt.Index = index;
+			pkt.count = count;
+			Network.sendPacket(pkt);
+		}
 	};
 
 

@@ -26,6 +26,7 @@ define(function(require)
 	var cssText            = require('text!./Inventory.css');
 
 
+
 	/**
 	 * Create Component
 	 */
@@ -314,13 +315,12 @@ define(function(require)
 	Inventory.addItem = function AddItem( item )
 	{
 		var i, size;
-		var index = typeof item.index === 'undefined' ? item.Index : item.index;
 
 		for( i = 0, size = this.list.length; i < size; ++i ) {
 
-			if( this.list[i].index === index ) {
+			if( this.list[i].index === item.index ) {
 				this.list[i].count += item.count;
-				this.ui.find('.item.'+ index + ' .count').text( this.list[i].count )
+				this.ui.find('.item.'+ item.index + ' .count').text( this.list[i].count )
 				return;
 			}
 		}
@@ -366,14 +366,13 @@ define(function(require)
 		if( tab === this.tab ) {
 			var it      = DB.getItemInfo( item.ITID );
 			var path    = 'data/texture/\xc0\xaf\xc0\xfa\xc0\xce\xc5\xcd\xc6\xe4\xc0\xcc\xbd\xba/item/';
-			var index   = typeof item.index === 'undefined' ? item.Index : item.index;
 
 
 			Client.loadFile( path + ( item.IsIdentified ? it.resource : it._resource ) + '.bmp', function(data){
 				var content = ui.find('.container .content');
 
 				content.append(
-					'<div class="item '+ index +'" draggable="true">' +
+					'<div class="item '+ item.index +'" draggable="true">' +
 						'<button style="background-image:url(' + data + ')"></button>' +
 						'<div class="amount">'+ (item.count ? '<span class="count">' + item.count + '</span>' + ' ' : '') + '</div>' +
 					'</div>'
@@ -414,9 +413,9 @@ define(function(require)
 			}
 		}
 
-		var content = ui.find('.container .content');
+		var content = this.ui.find('.container .content');
 		if( content.height() === content[0].scrollHeight ) {
-			ui.find('.hide').show();
+			this.ui.find('.hide').show();
 		}
 	};
 

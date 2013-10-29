@@ -127,7 +127,7 @@ define(function( require )
 	 */
 	function InventoryRemoveItem( pkt )
 	{
-		Inventory.removeItem( pkt.index, pkt.count );
+		Inventory.removeItem( pkt.Index, pkt.count );
 	}
 
 

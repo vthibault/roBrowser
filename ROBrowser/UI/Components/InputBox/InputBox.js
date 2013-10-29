@@ -67,7 +67,7 @@ define(function(require)
 	InputBox.validate = function Validate( event )
 	{
 		var text = this.ui.find('input').val();
-		if( text.length && ( !this.ui.hasClass('number') || parseInt(text, 16) > 0 )) {
+		if( text.length && ( !this.ui.hasClass('number') || parseInt(text, 10) > 0 )) {
 			this.onSubmitRequest( text );
 		}
 	};
@@ -83,8 +83,8 @@ define(function(require)
 		switch( type ) {
 			case 'number':
 				this.ui.addClass('number');
-				this.ui.find('.text').text( DB.msgstringtable[1259] );
-				this.ui.find('input').attr('type', 'text');
+				this.ui.find('.text').text( DB.msgstringtable[1256] );
+				this.ui.find('input').attr('type', 'text').val(0).select();
 				break;
 	
 			case 'text':
