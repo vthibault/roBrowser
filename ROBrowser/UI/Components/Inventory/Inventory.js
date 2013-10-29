@@ -166,7 +166,7 @@ define(function(require)
 				// Set image to the drag drop element
 				var img = new Image();
 				img.src = this.firstChild.style.backgroundImage.match(/\(([^\)]+)/)[1];
-				event.originalEvent.dataTransfer.setDragImage( img, 0, 0);
+				event.originalEvent.dataTransfer.setDragImage( img, 12, 12 );
 
 				// Save item class : ".item <id>",
 				event.originalEvent.dataTransfer.setData("Text", this.className);
