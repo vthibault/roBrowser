@@ -42,7 +42,7 @@ define( [
 					Cursor.setType( Cursor.ACTION.DEFAULT );
 				}
 				break;
-	
+
 			case Entity.TYPE_PC:
 			case Entity.TYPE_ELEM:
 			case Entity.TYPE_HOM:

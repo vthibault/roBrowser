@@ -69,6 +69,23 @@ define( function( require )
 
 
 	/**
+	 * Priority in picking
+	 */
+	Entity.PickingPriority = {};
+	Entity.PickingPriority[Entity.TYPE_MOB]       = 3;
+	Entity.PickingPriority[Entity.TYPE_ITEM]      = 2;
+	Entity.PickingPriority[Entity.TYPE_NPC]       = 1;
+	Entity.PickingPriority[Entity.TYPE_UNKNOWN]   = 0;
+	Entity.PickingPriority[Entity.TYPE_WARP]      = 0;
+	Entity.PickingPriority[Entity.TYPE_PC]        = 0;
+	Entity.PickingPriority[Entity.TYPE_DISGUISED] = 0;
+	Entity.PickingPriority[Entity.TYPE_PET]       = 0;
+	Entity.PickingPriority[Entity.TYPE_HOM]       = 0;
+	Entity.PickingPriority[Entity.TYPE_MERC]      = 0;
+	Entity.PickingPriority[Entity.TYPE_ELEM]      = 0;
+
+
+	/**
 	 * Public methods
 	 */
 	Entity.prototype.objecttype   = Entity.TYPE_UNKNOWN;

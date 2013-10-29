@@ -299,6 +299,11 @@ define(function( require )
 		var color;
 		var pos, x, y;
 
+		// Clean mouse position in world
+		Mouse.world.x =  -1;
+		Mouse.world.y =  -1;
+		Mouse.world.z =  -1;
+
 		// Clear screen, update camera
 		gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT );
 		Camera.update( tick );

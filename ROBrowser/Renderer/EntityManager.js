@@ -166,10 +166,20 @@ function(         Entity,     SpriteRenderer )
 	 *
 	 * @param {Array} color (rgba)
 	 */
+	var _color = new Uint8Array(4);
 	function SetOverEntityByColor( color )
 	{
+		// Picking isn't done at all frames but the entities list order change at each frames
+		// so if it's the same color, there is a lot of chance to be the same entity and it's a good idea to
+		// stop processing here.
+		if( _color[0] === color[0]
+		 && _color[1] === color[1] ) {
+			return; 
+		}
+
 		var target;
 		var current = this.getOverEntity();
+		_color.set(color);
 
 		// Flag to detect an entity
 		if( color[2] === 0xff  ) {
@@ -212,16 +222,17 @@ function(         Entity,     SpriteRenderer )
 		var i, count, j = 0;
 		var tick = Date.now();
 
-		if( picking ) {
-			_list.sort(function(a, b){
-				return b.depth - a.depth;
-			});
-		}
-
 		// Stop rendering if no units to render (should never happened...)
 		if( !_list.length ) {
 			return;
 		}
+
+		_list.sort(function(a, b){
+			if( picking && a.objecttype !== b.objecttype ) {
+				return Entity.PickingPriority[b.objecttype] - Entity.PickingPriority[a.objecttype];
+			}
+			return b.depth - a.depth;
+		});
 
 		// Use program
 		SpriteRenderer.bind3DContext( gl, modelView, projection, picking, fog );
