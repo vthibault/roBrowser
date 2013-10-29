@@ -156,17 +156,22 @@ define(function(require)
 				}
 			})
 
+			// Stop title feature
 			.on('mouseout', '.item', function(){
 				overlay.hide();
 			})
 
+			// Item drag drop feature
+			.on('dragstart', '.item', function(event){
+				// Set image to the drag drop element
+				var img = new Image();
+				img.src = this.firstChild.style.backgroundImage.match(/\(([^\)]+)/)[1];
+				event.originalEvent.dataTransfer.setDragImage( img, 0, 0);
 
-			.on('dragstart', 'button', function(event){
-				event.originalEvent.dataTransfer.setData("Text", parseInt(
-					this.parentNode.className.match(/ (\d+)$/)[1], 10
-				));
+				// Save item class : ".item <id>",
+				event.originalEvent.dataTransfer.setData("Text", this.className);
 
-				// Stop component drag drop
+				// Stop component to be draggable
 				jQuery(window).trigger('mouseup');
 				overlay.hide();
 			})
@@ -368,8 +373,8 @@ define(function(require)
 				var content = ui.find('.container .content');
 
 				content.append(
-					'<div class="item '+ index +'">' +
-						'<button style="background-image:url(' + data + ')" draggable="true"></button>' +
+					'<div class="item '+ index +'" draggable="true">' +
+						'<button style="background-image:url(' + data + ')"></button>' +
 						'<div class="amount">'+ (item.count ? '<span class="count">' + item.count + '</span>' + ' ' : '') + '</div>' +
 					'</div>'
 				);
