@@ -5,7 +5,6 @@
 	header("Access-Control-Allow-Origin: *");
 	header("Cache-Control: max-age=2592000, public");
 	header("Expires: Sat, 31 Jan 2015 05:00:00 GMT");
-	ob_start("ob_gzhandler");
 
 
 	// Include library
@@ -21,7 +20,7 @@
 
 	// Search Feature
 	if ( isset($_POST['filter']) && is_string($_POST['filter']) ) {
-		header("HTTP/1.0 200 OK");
+		header("Status: 200 OK");
 		header('Content-type: text/plain');
 		$filter = ini_get('magic_quotes_gpc') ? stripslashes($_POST['filter']) : $_POST['filter'];
 		$filter = '/'. $filter. '/i';
@@ -58,7 +57,7 @@
 		die();
 	}
 
-	header("HTTP/1.0 200 OK");
+	header("Status: 200 OK");
 	switch( strtolower($ext) ) {
 
 		// Convert bmp images to png (less weight)
@@ -71,8 +70,9 @@
 		case 'jpg':
 		case 'jpeg': header('Content-type:image/jpeg'); break;
 		case 'gif':  header('Content-type:image/gif');  break;
-		case 'xml':  header('Content-type:text/xml');   break;
-		case 'txt':  header('Content-type:text/plain'); break;
+		case 'xml':  header('Content-type:text/xml');   ob_start("ob_gzhandler"); break;
+		case 'txt':  header('Content-type:text/plain'); ob_start("ob_gzhandler"); break;
+		case 'mp3':  header('Content-type:audio/mp3');  break;
 	}
 
 	echo $file;
