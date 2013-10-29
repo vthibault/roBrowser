@@ -101,7 +101,7 @@ define(function( require )
 
 		var it = DB.getItemInfo( pkt.ITID );
 		ChatBox.addText(
-			DB.msgstringtable[153].replace('%s', pkt.IsIdentified ? it.display : it._display ).replace('%d', pkt.count ),
+			DB.msgstringtable[153].replace('%s', pkt.IsIdentified ? it.identifiedDisplayName : it.unidentifiedDisplayName ).replace('%d', pkt.count ),
 			ChatBox.TYPE.BLUE
 		);
 

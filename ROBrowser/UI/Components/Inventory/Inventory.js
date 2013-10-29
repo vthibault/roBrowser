@@ -150,7 +150,7 @@ define(function(require)
 						overlay.css({top: pos.top, left:pos.left+35});
 						overlay.html(
 							(item.count ? '<span class="count">' + item.count + '</span> ' : '') +
-							( item.IsIdentified ? it.display : it._display )
+							( item.IsIdentified ? it.identifiedDisplayName : it.unidentifiedDisplayName )
 						);
 						break;
 					}
@@ -368,7 +368,7 @@ define(function(require)
 			var path    = 'data/texture/\xc0\xaf\xc0\xfa\xc0\xce\xc5\xcd\xc6\xe4\xc0\xcc\xbd\xba/item/';
 
 
-			Client.loadFile( path + ( item.IsIdentified ? it.resource : it._resource ) + '.bmp', function(data){
+			Client.loadFile( path + ( item.IsIdentified ? it.identifiedResourceName : it.unidentifiedResourceName ) + '.bmp', function(data){
 				var content = ui.find('.container .content');
 
 				content.append(

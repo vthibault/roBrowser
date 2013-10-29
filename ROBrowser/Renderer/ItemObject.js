@@ -29,14 +29,7 @@ function(   DB,            EntityManager,            Entity,        Client )
 		var it     = DB.getItemInfo(itemid);
 		var path   = DB.getItemPath(itemid);
 		var entity = new Entity();
-		var name;
-
-		if( identify ) {
-			name  = it.display;
-		}
-		else {
-			name  = it._display;
-		}
+		var name   = identify ? it.identifiedDisplayName : it.unidentifiedDisplayName;
 
 		entity.GID          = gid;
 		entity.objecttype   = Entity.TYPE_ITEM;

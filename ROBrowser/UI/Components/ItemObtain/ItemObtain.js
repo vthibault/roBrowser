@@ -82,8 +82,8 @@ define(function(require)
 	ItemObtain.set = function Set( itemid, identify, amount )
 	{
 		var it   = DB.getItemInfo( itemid );
-		var name = identify ? it.display  : it._display;
-		var path = identify ? it.resource : it._resource;
+		var name = identify ? it.identifiedDisplayName  : it.unidentifiedDisplayName;
+		var path = identify ? it.identifiedResourceName : it.unidentifiedResourceName;
 
 		this.ui.find('.content').html(
 			'<img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" width="24" height="24" /> '

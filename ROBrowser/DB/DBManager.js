@@ -90,21 +90,21 @@ function(       Queue,        Client,     ClassTable,     ClassPalTable,     Mon
 		// Load items description
 		q.add(function(){
 			DB.loadTable( 'data/idnum2itemdesctable.txt', 2, function(index, key, val){
-				(DB.itemList[key] || (DB.itemList[key] = {})).description = val;
+				(DB.itemList[key] || (DB.itemList[key] = {})).identifiedDescriptionName = val;
 			}, q.next );
 		});
 
 		// Load items name
 		q.add(function(){
 			DB.loadTable( 'data/idnum2itemdisplaynametable.txt', 2, function(index, key, val){
-				(DB.itemList[key] || (DB.itemList[key] = {})).display = val.replace(/\_/g, ' ');
+				(DB.itemList[key] || (DB.itemList[key] = {})).identifiedDisplayName = val.replace(/\_/g, ' ');
 			}, q.next );
 		});
 
 		// Load items resource name
 		q.add(function(){
 			DB.loadTable( 'data/idnum2itemresnametable.txt', 2, function(index, key, val){
-				(DB.itemList[key] || (DB.itemList[key] = {})).resource = val;
+				(DB.itemList[key] || (DB.itemList[key] = {})).identifiedResourceName = val;
 			}, q.next );
 		});
 
@@ -112,21 +112,21 @@ function(       Queue,        Client,     ClassTable,     ClassPalTable,     Mon
 		// Load items description
 		q.add(function(){
 			DB.loadTable( 'data/num2itemdesctable.txt', 2, function(index, key, val){
-				(DB.itemList[key] || (DB.itemList[key] = {}))._description = val;
+				(DB.itemList[key] || (DB.itemList[key] = {})).unidentifiedDescriptionName = val;
 			}, q.next );
 		});
 
 		// Load items name
 		q.add(function(){
 			DB.loadTable( 'data/num2itemdisplaynametable.txt', 2, function(index, key, val){
-				(DB.itemList[key] || (DB.itemList[key] = {}))._display = val.replace(/\_/g, ' ');
+				(DB.itemList[key] || (DB.itemList[key] = {})).unidentifiedDisplayName = val.replace(/\_/g, ' ');
 			}, q.next );
 		});
 
 		// Load items resource name
 		q.add(function(){
 			DB.loadTable( 'data/num2itemresnametable.txt', 2, function(index, key, val){
-				(DB.itemList[key] || (DB.itemList[key] = {}))._resource = val;
+				(DB.itemList[key] || (DB.itemList[key] = {})).unidentifiedResourceName = val;
 			}, q.next );
 		});
 
@@ -418,7 +418,7 @@ function(       Queue,        Client,     ClassTable,     ClassPalTable,     Mon
 	DB.getItemPath = function GetItemPath( itemid, identify )
 	{
 		var it   = DB.getItemInfo( itemid );
-		return "data/sprite/\xbe\xc6\xc0\xcc\xc5\xdb/" + ( identify ? it.resource : it._resource );
+		return "data/sprite/\xbe\xc6\xc0\xcc\xc5\xdb/" + ( identify ? it.identifiedResourceName : it.unidentifiedResourceName );
 	};
 
 
