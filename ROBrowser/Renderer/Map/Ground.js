@@ -455,8 +455,8 @@ function(      WebGL,         Texture,   Preferences )
 		_y   = Math.floor( y / 2 ) * 8;
 
 		// Add floor percent
-		_x += ( x & 1 ? 4 : 0) + Math.floor( (x % 1) * 4 );
-		_y += ( y & 1 ? 4 : 0) + Math.floor( (y % 1) * 4 );
+		_x += Math.min( ( x & 1 ? 4 : 0) + Math.floor( (x % 1) * 4 ), 6);
+		_y += Math.min( ( y & 1 ? 4 : 0) + Math.floor( (y % 1) * 4 ), 6);
 
 
 		// Get back shadow value
