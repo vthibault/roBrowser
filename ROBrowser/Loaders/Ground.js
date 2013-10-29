@@ -295,7 +295,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 	{
 		var width  = this.width;
 		var height = this.height;
-		var data   = new Uint8Array( (width) * 8 * (height * 8 ) );
+		var data   = new Uint8Array( (width * 8) * (height * 8) );
 		var cell, lightmap;
 		var x, y, i, j;
 
@@ -303,12 +303,12 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 			for( x = 0; x < width; ++x ) {
 
 				cell = this.surfaces[ x + y * width ];
-				if( cell.tile_up > 1 && this.tiles[ cell.tile_up ].light > 1 ) {
+				if( cell.tile_up > -1 && this.tiles[ cell.tile_up ].light > -1 ) {
 					lightmap = this.lightmap[ this.tiles[ cell.tile_up ].light ];
 
 					for( i=0; i<8; ++i ) {
 						for( j=0; j<8; ++j ) {
-							data[ ( x * 8 + i ) + ( y * 8 + j ) * width ] = lightmap[ ( i + j * 8 ) * 4 + 3 ];
+							data[ ( x * 8 + i ) + ( y * 8 + j ) * ( width * 8) ] = lightmap[ ( i + j * 8 ) * 4 + 3 ];
 						}
 					}
 				}

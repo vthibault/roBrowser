@@ -122,7 +122,7 @@ define( function( require )
 	function RenderSub( pick_color )
 	{
 		// Update shadow
-		SpriteRenderer.shadow    = Ground.getShadowFactor( this.position[0], this.position[2] );
+		SpriteRenderer.shadow    = Ground.getShadowFactor( this.position[0], this.position[1] );
 		SpriteRenderer.pickindex = pick_color;
 
 		var animation  = this.animation;

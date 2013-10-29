@@ -146,7 +146,7 @@ function(      WebGL,         Texture,   Preferences )
 	{
 		var uniform = _program.uniform;
 		var attribute = _program.attribute;
-	
+
 		gl.useProgram( _program );
 
 		// Bind matrix
@@ -335,7 +335,7 @@ function(      WebGL,         Texture,   Preferences )
 			}, i);
 		}
 	}
-	
+
 
 
 	/**
@@ -439,15 +439,16 @@ function(      WebGL,         Texture,   Preferences )
 	 */
 	function GetShadowFactor( x, y )
 	{
-		// Todo: implement ground shadow
-		return 1.0;
-
 		// Map not loadead yet
 		if( !_shadowMap ) {
 			return 1.0;
 		}
 
-		var x, y;
+		var _x, _y;
+
+		// Player is at cell center
+		x += 0.5;
+		y += 0.5;
 
 		// Get index
 		_x   = Math.floor( x / 2 ) * 8;
@@ -457,8 +458,9 @@ function(      WebGL,         Texture,   Preferences )
 		_x += ( x & 1 ? 4 : 0) + Math.floor( (x % 1) * 4 );
 		_y += ( y & 1 ? 4 : 0) + Math.floor( (y % 1) * 4 );
 
+
 		// Get back shadow value
-		return _shadowMap[ _x + _y * _width ] / 255.0;
+		return _shadowMap[_x + _y * _width * 8] / 255.0;
 	}
 
 
