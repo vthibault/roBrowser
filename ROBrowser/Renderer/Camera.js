@@ -252,7 +252,7 @@ define(['Controls/KeyEventHandler', 'Controls/MouseEventHandler', 'Preferences/C
 	 */
 	Camera.update = function Update( tick )
 	{
-		var lerp      = (tick - this.lastTick) * 0.006;
+		var lerp      = Math.min( (tick - this.lastTick) * 0.006, 1.0);
 		this.lastTick = tick;
 
 		// Update camera from mouse movement
