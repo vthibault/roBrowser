@@ -229,7 +229,7 @@ function(         Entity,     SpriteRenderer )
 
 		_list.sort(function(a, b){
 			if( picking && a.objecttype !== b.objecttype ) {
-				return Entity.PickingPriority[b.objecttype] - Entity.PickingPriority[a.objecttype];
+				return Entity.PickingPriority[a.objecttype] - Entity.PickingPriority[b.objecttype];
 			}
 			return b.depth - a.depth;
 		});
