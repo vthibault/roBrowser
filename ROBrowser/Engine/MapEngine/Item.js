@@ -33,8 +33,8 @@ define(function( require )
 	 */
 	function Exist( pkt )
 	{
-		var x = pkt.xPos + pkt.subX / 8;
-		var y = pkt.yPos + pkt.subY / 8;
+		var x = pkt.xPos - 0.5 + pkt.subX / 12;
+		var y = pkt.yPos - 0.5 + pkt.subY / 12;
 		var z = Altitude.getCellHeight( x, y );
 
 		ItemObject.add(
@@ -56,8 +56,8 @@ define(function( require )
 	 */
 	function Create( pkt )
 	{
-		var x = pkt.xPos + pkt.subX / 8;
-		var y = pkt.yPos + pkt.subY / 8;
+		var x = pkt.xPos - 0.5 + pkt.subX / 12;
+		var y = pkt.yPos - 0.5 + pkt.subY / 12;
 		var z = Altitude.getCellHeight( x, y ) + 5.0;
 
 		ItemObject.add(
