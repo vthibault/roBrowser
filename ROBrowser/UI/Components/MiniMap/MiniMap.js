@@ -52,7 +52,7 @@ define(function(require)
 		this.arrow.onload = this.map.onload = this.render.bind(this);
 
 		this.zoom      = 0.0;
-		this.opacity   = 1.0;
+		this.opacity   = 2.0;
 
 		// Bind DOM elements
 		this.zoomPlus  = this.ui.find('.plus');

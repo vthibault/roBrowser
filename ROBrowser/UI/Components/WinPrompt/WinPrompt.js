@@ -15,6 +15,7 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
+	var DB          = require('DB/DBManager');
 	var UIManager   = require('UI/UIManager');
 	var WinPopup    = require('UI/Components/WinPopup');
 	var jQuery      = require('Utils/jquery');
@@ -52,9 +53,9 @@ define(function(require)
 
 			jQuery('<button/>').
 				addClass('btn').
-				data('background', 'btn_' + btn_yes + '.bmp').
-				data('hover',      'btn_' + btn_yes + '_a.bmp').
-				data('down',       'btn_' + btn_yes + '_b.bmp').
+				data('background', DB.INTERFACE_PATH + 'btn_' + btn_yes + '.bmp').
+				data('hover',      DB.INTERFACE_PATH + 'btn_' + btn_yes + '_a.bmp').
+				data('down',       DB.INTERFACE_PATH + 'btn_' + btn_yes + '_b.bmp').
 				each( this.parseHTML ).
 				one('click',function(){
 					WinPrompt.remove();
@@ -65,9 +66,9 @@ define(function(require)
 
 			jQuery('<button/>').
 				addClass('btn').
-				data('background', 'btn_' + btn_no + '.bmp').
-				data('hover',      'btn_' + btn_no + '_a.bmp').
-				data('down',       'btn_' + btn_no + '_b.bmp').
+				data('background', DB.INTERFACE_PATH + 'btn_' + btn_no + '.bmp').
+				data('hover',      DB.INTERFACE_PATH + 'btn_' + btn_no + '_a.bmp').
+				data('down',       DB.INTERFACE_PATH + 'btn_' + btn_no + '_b.bmp').
 				each( this.parseHTML ).
 				one('click',function(){
 					WinPrompt.remove();

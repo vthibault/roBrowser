@@ -82,17 +82,17 @@ define(function(require)
 	ItemObtain.set = function Set( itemid, identify, amount )
 	{
 		var it   = DB.getItemInfo( itemid );
-		var name = identify ? it.identifiedDisplayName  : it.unidentifiedDisplayName;
-		var path = identify ? it.identifiedResourceName : it.unidentifiedResourceName;
+		var display  = identify ? it.identifiedDisplayName  : it.unidentifiedDisplayName;
+		var resource = identify ? it.identifiedResourceName : it.unidentifiedResourceName;
 
 		this.ui.find('.content').html(
 			'<img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" width="24" height="24" /> '
-			+ name + ' ' + DB.msgstringtable[694].replace('%d', amount)
+			+ display + ' ' + DB.msgstringtable[694].replace('%d', amount)
 		);
 
 		this.ui.css('left', ( Renderer.width - (this.ui.width()) ) >> 1 );
 
-		Client.loadFile( '/item/' + path + '.bmp', (function(url){
+		Client.loadFile( DB.INTERFACE_PATH + 'item/' + resource + '.bmp', (function(url){
 			this.ui.find('img').attr('src', url);
 		}).bind(this));
 

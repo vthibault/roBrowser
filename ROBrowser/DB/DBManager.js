@@ -45,6 +45,12 @@ function(       Queue,        Client,     ClassTable,     ClassPalTable,     Mon
 
 
 	/**
+	 * String we need to store somewhere, boring to copy paste each time...
+	 */
+	DB.INTERFACE_PATH = 'data/texture/\xc0\xaf\xc0\xfa\xc0\xce\xc5\xcd\xc6\xe4\xc0\xcc\xbd\xba/';
+
+
+	/**
 	 * Initialize DB
 	 */
 	DB.init = function Init()

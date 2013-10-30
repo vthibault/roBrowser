@@ -15,6 +15,7 @@ define( function( require )
 	/**
 	 * Load dependencies
 	 */
+	var DB     = require('DB/DBManager');
 	var jQuery = require('Utils/jquery');
 	var Client = require('Core/Client');
 
@@ -137,7 +138,7 @@ define( function( require )
 
 
 		// Get and load Image
-		Client.loadFile( filename, function(url) {
+		Client.loadFile( DB.INTERFACE_PATH + filename, function(url) {
 			if( url !== Background.image.src ) {
 				Background.image.src = url;
 				Background.image.onload  = function(){

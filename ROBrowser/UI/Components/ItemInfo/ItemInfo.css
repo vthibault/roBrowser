@@ -1,0 +1,6 @@
+.ItemInfo { position:absolute; top:0px; left:0px; width:280px; height:120px; background-repeat:no-repeat; bakground-color:transparent; }
+.ItemInfo .collection { position:absolute; top:11px; left:10px; width:75px; height:100px; background-repeat:no-repeat; background-color:transparent; }
+.ItemInfo .title { position:absolute; top:10px; left:92px; font-size:12px; text-shadow:1px 1px 0px white; }
+.ItemInfo .close { position:absolute; top:3px; right:3px; width:11px; height:11px; display:block; background-repeat:no-repeat; background-color:transparent; border:none; }
+.ItemInfo .description { position:absolute; top:35px; left:100px; line-height:18px; width:170px; height:75px; overflow-y:auto;}
+.ItemInfo .extend { position:absolute; right:4px; bottom:3px; width:13px; height:13px; border:none; background-repeat:no-repeat; background-color:transparent; }

@@ -21,6 +21,7 @@ define([
 	'Renderer/Renderer',
 	'UI/UIManager',
 	'UI/CursorManager',
+	'UI/Scrollbar',
 	'UI/Background',
 	'UI/Components/Intro/Intro',
 	'UI/Components/WinList/WinList'
@@ -37,6 +38,7 @@ function(
 	Renderer,
 	UIManager,
 	Cursor,
+	Scrollbar,
 	Background,
 	Intro,
 	WinList
@@ -99,6 +101,7 @@ function(
 
 		// Initialize cursor
 		q.add(function(){
+			Scrollbar.init();
 			Cursor.init(q.next);
 		});
 
@@ -123,7 +126,7 @@ function(
 		// Setup background
 		Background.init();
 		Background.resize( Renderer.width, Renderer.height );
-		Background.setImage( "/bgi_temp.bmp", function(){
+		Background.setImage( "bgi_temp.bmp", function(){
 
 			// Display server list
 			var list = new Array( GameEngine.servers.length );
@@ -178,7 +181,7 @@ function(
 	GameEngine.loadClientInfo = function LoadClientInfo( callback )
 	{
 		GameEngine.servers.length = 0;
-		ROConfig.servers = ROConfig.servers || 'clientinfo.xml';
+		ROConfig.servers = ROConfig.servers || 'data/clientinfo.xml';
 
 		if( ROConfig.servers instanceof Array ) {
 			GameEngine.servers = ROConfig.servers;

@@ -16,9 +16,7 @@ define(function(require)
 	 * Dependencies
 	 */
 	var jQuery      = require('Utils/jquery');
-	var Texture     = require('Utils/Texture');
 	var KEYS        = require('Controls/KeyEventHandler');
-	var Client      = require('Core/Client');
 	var Renderer    = require('Renderer/Renderer');
 	var UIManager   = require('UI/UIManager');
 	var UIComponent = require('UI/UIComponent');
@@ -60,39 +58,6 @@ define(function(require)
 		// Bind mouse
 		this.buttonNext.click( NpcBox.next.bind(this) );
 		this.buttonClose.click( NpcBox.close.bind(this) );
-
-		//Custom scrollbar
-		Client.loadFiles(
-			['/scroll0down.bmp',     '/scroll0mid.bmp',     '/scroll0up.bmp',
-			 '/scroll0bar_down.bmp', '/scroll0bar_mid.bmp', '/scroll0bar_up.bmp'],
-			function( down, mid, up, base_down, base_mid, base_up ) {
-
-				Texture( base_down, function(){
-					var base_down = this;
-					Texture( base_mid, function(){
-						var base_mid = this;
-						Texture( base_up, function(){
-							var base_up = this;
-							var base    = document.createElement('canvas');
-							var ctx     = base.getContext('2d');
-							base.width  = base_up.width;
-							base.height = base_up.height + base_mid.height + base_down.height;
-
-							ctx.drawImage( base_up, 0, 0);
-							ctx.drawImage( base_mid, 0, base_up.height);
-							ctx.drawImage( base_down, 0, base_up.height + base_mid.height );
-
-							jQuery('style:first').append([
-								'::-webkit-scrollbar-button:vertical:increment { background-image: url('+ down +');}',
-								'::-webkit-scrollbar-button:vertical:decrement { background-image: url('+ up + ');}',
-								'::-webkit-scrollbar-track-piece:vertical { background-image: url('+ mid +');}',
-								'::-webkit-scrollbar-thumb:vertical{ -webkit-border-image: url('+ base.toDataURL() +') 4 0 4 0;}'
-							].join("\n"));
-						});
-					});
-				});
-			}
-		);
 	};
 
 

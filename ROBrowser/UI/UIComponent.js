@@ -7,8 +7,8 @@
  *
  * @author Vincent Thibault
  */
-define( ['Utils/jquery', 'Core/Client', 'Controls/MouseEventHandler'],
-function(       jQuery,        Client,            Mouse )
+define( ['Utils/jquery', 'DB/DBManager', 'Core/Client', 'Controls/MouseEventHandler'],
+function(       jQuery,      DB,               Client,            Mouse )
 {
 	"use strict";
 
@@ -50,8 +50,11 @@ function(       jQuery,        Client,            Mouse )
 			if( !style.length ) {
 				style = jQuery('<style type="text/css"></style>').appendTo('head');
 			}
-	
-			style.append("\n" + this._cssText);
+
+			// Avoid adding css each time the same component is created
+			if( style.text().indexOf("\n\n/** " + this.name + " **/\n") === -1 ) {
+				style.append("\n\n/** " + this.name + " **/\n" + this._cssText);
+			}
 			jQuery('body').append(this.ui);
 		}
 
@@ -118,9 +121,20 @@ function(       jQuery,        Client,            Mouse )
 	 *
 	 * @param {string} name - new component name
 	 */
-	UIComponent.prototype.clone = function Clone( name )
+	UIComponent.prototype.clone = function Clone( name, full )
 	{
-		return new UIComponent( name, this._htmlText, this._cssText )
+		var ui = new UIComponent( name, this._htmlText, this._cssText );
+
+		if( full ) {
+			var keys = Object.keys(this);
+			var i, count = keys.length;
+
+			for( i = 0; i < count; ++i ) {
+				ui[ keys[i] ] = this[ keys[i] ];
+			}
+		}
+
+		return ui;
 	};
 
 
@@ -248,7 +262,7 @@ function(       jQuery,        Client,            Mouse )
 
 		// Default background
 		if ( background ) {
-			Client.loadFile( background, function(dataURI) {
+			Client.loadFile( DB.INTERFACE_PATH + background, function(dataURI) {
 				bg_uri = dataURI;
 				$node.css('backgroundImage', 'url(' + bg_uri + ')');
 			});
@@ -256,7 +270,7 @@ function(       jQuery,        Client,            Mouse )
 
 		// On mouse over
 		if ( hover ) {
-			Client.loadFile( hover, function(dataURI){
+			Client.loadFile( DB.INTERFACE_PATH + hover, function(dataURI){
 				hover_uri = dataURI;
 				$node.mouseover(function(){ $node.css('backgroundImage', 'url(' + hover_uri + ')') });
 				$node.mouseout( function(){ $node.css('backgroundImage', 'url(' + bg_uri    + ')') });
@@ -265,7 +279,7 @@ function(       jQuery,        Client,            Mouse )
 	
 		// On mouse down
 		if ( down ) {
-			Client.loadFile( down, function(dataURI){
+			Client.loadFile( DB.INTERFACE_PATH + down, function(dataURI){
 				$node.mousedown(function(event){ $node.css('backgroundImage', 'url(' + dataURI + ')'); event.stopImmediatePropagation(); });
 				$node.mouseup(  function()     { $node.css('backgroundImage', 'url(' + (hover_uri||bg_uri) + ')') });
 			});
@@ -275,7 +289,7 @@ function(       jQuery,        Client,            Mouse )
 		if ( preload ) {
 			preloads = preload.split(';');
 			for ( i=0, count=preloads.length; i<count; ++i ) {
-				preloads[i] = jQuery.trim(preloads[i]);
+				preloads[i] = DB.INTERFACE_PATH + jQuery.trim(preloads[i]);
 			}
 			Client.loadFiles( preloads );
 		}

@@ -22,6 +22,7 @@ define(function(require)
 	var KEYS               = require('Controls/KeyEventHandler');
 	var UIManager          = require('UI/UIManager');
 	var UIComponent        = require('UI/UIComponent');
+	var ItemInfo           = require('UI/Components/ItemInfo/ItemInfo');
 	var htmlText           = require('text!./Inventory.html');
 	var cssText            = require('text!./Inventory.css');
 
@@ -103,6 +104,7 @@ define(function(require)
 
 		this.ui.find('.titlebar .close').mousedown(function(){
 			Inventory.ui.hide();
+			return false;
 		});
 
 		this.ui.find('.tabs button').mousedown(function(){
@@ -177,6 +179,36 @@ define(function(require)
 				overlay.hide();
 			})
 
+			// Right click on item
+			.on('contextmenu', '.item', function(event) {
+				var matches = this.className.match(/(\w+) (\d+)/);
+				var index   = parseInt(matches[2], 10);
+				var box, list, ui;
+				var i, count;
+
+				for( i = 0, list = Inventory.list, count = list.length; i < count; ++i ) {
+					if( list[i].index === index ) {
+
+						// Don't add the same UI twice, remove it
+						ui = jQuery('.ItemInfo.item' + list[i].ITID );
+						if( ui.length ) {
+							ui.remove();
+							break;
+						}
+
+						// Add ui to window
+						box = ItemInfo.clone('ItemInfo', true);
+						box.append();
+						box.ui.addClass('item' + list[i].ITID );
+						box.setItem( list[i] );
+						break;
+					}
+				}
+
+				event.stopImmediatePropagation();
+				return false;
+			});
+
 		this.draggable();
 	};
 
@@ -196,6 +228,7 @@ define(function(require)
 	Inventory.onRemove = function OnRemove()
 	{
 		this.ui.find('.container .content').empty();
+		jQuery('.ItemInfo').remove();
 	};
 
 
@@ -365,10 +398,8 @@ define(function(require)
 
 		if( tab === this.tab ) {
 			var it      = DB.getItemInfo( item.ITID );
-			var path    = 'data/texture/\xc0\xaf\xc0\xfa\xc0\xce\xc5\xcd\xc6\xe4\xc0\xcc\xbd\xba/item/';
 
-
-			Client.loadFile( path + ( item.IsIdentified ? it.identifiedResourceName : it.unidentifiedResourceName ) + '.bmp', function(data){
+			Client.loadFile( DB.INTERFACE_PATH + 'item/' + ( item.IsIdentified ? it.identifiedResourceName : it.unidentifiedResourceName ) + '.bmp', function(data){
 				var content = ui.find('.container .content');
 
 				content.append(

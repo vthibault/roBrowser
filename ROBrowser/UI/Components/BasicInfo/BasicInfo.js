@@ -123,7 +123,7 @@ define(function(require)
 			this.ui.find('.buttons').show();
 		}
 		else {
-			this.ui.find('.toggle_btns').css('backgroundImage', 'url(' + Client.loadFile('viewon.bmp') + ')');
+			this.ui.find('.toggle_btns').css('backgroundImage', 'url(' + Client.loadFile(DB.INTERFACE_PATH + 'basic_interface/viewon.bmp') + ')');
 			this.ui.find('.buttons').hide(); 
 		}
 	};
@@ -139,11 +139,11 @@ define(function(require)
 
 		if( buttons.is(':hidden') ) {
 			buttons.show();
-			datauri = Client.loadFile('viewoff.bmp');
+			datauri = Client.loadFile( DB.INTERFACE_PATH + 'basic_interface/viewoff.bmp');
 		}
 		else {
 			buttons.hide();	
-			datauri = Client.loadFile('viewon.bmp');
+			datauri = Client.loadFile( DB.INTERFACE_PATH + 'basic_interface/viewon.bmp');
 		}
 
 		jQuery(this).css('backgroundImage', 'url(' + datauri + ')');
@@ -211,20 +211,20 @@ define(function(require)
 					this.ui.find('.'+ type +'_bar div').css('backgroundImage', 'none');	
 				}
 				else {
-					Client.loadFile('gze'+ color +'_left.bmp', function(url){
-						BasicInfo.ui.find('.'+ type +'_bar_left').css('backgroundImage', 'url('+ Client.loadFile('gze'+ color +'_left.bmp') +')');
+					Client.loadFile(DB.INTERFACE_PATH + 'basic_interface/gze'+ color +'_left.bmp', function(url){
+						BasicInfo.ui.find('.'+ type +'_bar_left').css('backgroundImage', 'url('+ Client.loadFile(DB.INTERFACE_PATH + 'basic_interface/gze'+ color +'_left.bmp') +')');
 					});
 
-					Client.loadFile('gze'+ color +'_mid.bmp', function(url){
+					Client.loadFile(DB.INTERFACE_PATH + 'basic_interface/gze'+ color +'_mid.bmp', function(url){
 						BasicInfo.ui.find('.'+ type +'_bar_middle').css({
-							backgroundImage: 'url('+ Client.loadFile('gze'+ color +'_mid.bmp') +')',
+							backgroundImage: 'url('+ Client.loadFile(DB.INTERFACE_PATH + 'basic_interface/gze'+ color +'_mid.bmp') +')',
 							width: Math.floor( Math.min( perc, 100 ) * 1.27 ) + 'px'
 						});
 					});
 
-					Client.loadFile('gze'+ color +'_right.bmp', function(url){
+					Client.loadFile(DB.INTERFACE_PATH + 'basic_interface/gze'+ color +'_right.bmp', function(url){
 						BasicInfo.ui.find('.'+ type +'_bar_right').css({
-							backgroundImage: 'url('+ Client.loadFile('gze'+ color +'_right.bmp') +')',
+							backgroundImage: 'url('+ Client.loadFile(DB.INTERFACE_PATH + 'basic_interface/gze'+ color +'_right.bmp') +')',
 							left: Math.floor( Math.min( perc, 100) * 1.27 ) + 'px'
 						});
 					});

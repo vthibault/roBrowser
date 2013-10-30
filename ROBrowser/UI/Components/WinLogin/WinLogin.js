@@ -15,6 +15,7 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
+	var DB          = require('DB/DBManager');
 	var Client      = require('Core/Client');
 	var Preferences = require('Core/Preferences');
 	var Renderer    = require('Renderer/Renderer');
@@ -65,7 +66,7 @@ define(function(require)
 		this.inputPassword.val( '' );
 
 		// Display save button
-		Client.loadFile( 'chk_save' + ( this.preferences.saveID ? 'on' : 'off' ) + '.bmp', function( url ) {
+		Client.loadFile( DB.INTERFACE_PATH + 'login_interface/chk_save' + ( this.preferences.saveID ? 'on' : 'off' ) + '.bmp', function( url ) {
 			WinLogin.buttonSave.css('backgroundImage', 'url(' + url + ')');
 		});
 
@@ -119,7 +120,7 @@ define(function(require)
 	{
 		this.preferences.saveID = !this.preferences.saveID;
 
-		Client.loadFile( 'chk_save' + ( this.preferences.saveID ? 'on' : 'off' ) + '.bmp', function( url ) {
+		Client.loadFile( DB.INTERFACE_PATH + 'login_interface/chk_save' + ( this.preferences.saveID ? 'on' : 'off' ) + '.bmp', function( url ) {
 			WinLogin.buttonSave.css('backgroundImage', 'url(' + url + ')');
 		});
 

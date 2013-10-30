@@ -15,6 +15,7 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
+	var DB                 = require('DB/DBManager');
 	var jQuery             = require('Utils/jquery');
 	var Renderer           = require('Renderer/Renderer');
 	var KEYS               = require('Controls/KeyEventHandler');
@@ -70,7 +71,7 @@ define(function(require)
 		this.draggable( this.ui.find('.input') );
 
 		// Setting chatbox scrollbar
-		Client.loadFiles(["dialscr_down.bmp", "dialscr_up.bmp"], function( down, up ){
+		Client.loadFiles([DB.INTERFACE_PATH + "basic_interface/dialscr_down.bmp", DB.INTERFACE_PATH + "basic_interface/dialscr_up.bmp"], function( down, up ){
 			jQuery("style:first").append([
 				"#chatbox .content::-webkit-scrollbar { width: 10px; height: 10px;}",
 				"#chatbox .content::-webkit-scrollbar-button:vertical:start:increment,",
