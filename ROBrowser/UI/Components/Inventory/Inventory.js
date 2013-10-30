@@ -137,8 +137,10 @@ define(function(require)
 						overlay.show();
 						overlay.css({top: pos.top, left:pos.left+35});
 						overlay.html(
-							(item.count ? '<span class="count">' + item.count + '</span> ' : '') +
-							( item.IsIdentified ? it.identifiedDisplayName : it.unidentifiedDisplayName )
+							( item.RefiningLevel ? '+' + item.RefiningLevel + ' ' : '') +
+							( item.IsIdentified ? it.identifiedDisplayName : it.unidentifiedDisplayName ) +
+							( it.slotCount ? ' [' + it.slotCount + ']' : '') + 
+							' ' + ( item.count || 1 ) + ' ea'
 						);
 						break;
 					}

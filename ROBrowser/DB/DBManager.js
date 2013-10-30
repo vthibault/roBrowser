@@ -136,6 +136,12 @@ function(       Queue,        Client,     ClassTable,     ClassPalTable,     Mon
 			}, q.next );
 		});
 
+		// Load items slots
+		q.add(function(){
+			DB.loadTable( 'data/itemslotcounttable.txt', 2, function(index, key, val){
+				(DB.itemList[key] || (DB.itemList[key] = {})).slotCount = parseInt(val, 10);
+			}, q.next );
+		});
 
 
 		// Fog system
