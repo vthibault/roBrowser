@@ -43,9 +43,6 @@ define(function(require)
 		this.mark        = [];
 		this.preferences = Preferences.get('MiniMap', { zoom:1.0, opacity:2 });
 
-		this.updateZoom( this.preferences.zoom );
-		this.toggleOpacity( this.preferences.opacity );
-
 		this.arrow = new Image();
 		this.map   = new Image();
 
@@ -61,6 +58,10 @@ define(function(require)
 
 		this.zoomPlus.mousedown(this.genericUpdateZoom(+1));
 		this.zoomMinus.mousedown(this.genericUpdateZoom(-1));
+
+		// Set preferences
+		this.updateZoom( this.preferences.zoom );
+		this.toggleOpacity( this.preferences.opacity );
 	};
 
 
