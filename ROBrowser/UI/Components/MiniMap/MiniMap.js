@@ -41,7 +41,7 @@ define(function(require)
 		this.party       = [];
 		this.guild       = [];
 		this.mark        = [];
-		this.preferences = Preferences.get('MiniMap', { zoom:1.0, opacity:1.0 });
+		this.preferences = Preferences.get('MiniMap', { zoom:1.0, opacity:2 });
 
 		this.updateZoom( this.preferences.zoom );
 		this.toggleOpacity( this.preferences.opacity );
@@ -52,7 +52,7 @@ define(function(require)
 		this.arrow.onload = this.map.onload = this.render.bind(this);
 
 		this.zoom      = 0.0;
-		this.opacity   = 2.0;
+		this.opacity   = 2;
 
 		// Bind DOM elements
 		this.zoomPlus  = this.ui.find('.plus');
@@ -295,9 +295,9 @@ define(function(require)
 	/**
 	 * Change window opacity
 	 */
-	MiniMap.toggleOpacity = function ToggleOpacity()
+	MiniMap.toggleOpacity = function ToggleOpacity( opacity )
 	{
-		this.opacity = ( this.opacity + 2 ) % 3;
+		this.opacity = ( ( arguments.length ? opacity : this.opacity ) + 2 ) % 3;
 		this.preferences.opacity = this.opacity;
 		this.preferences.save();
 

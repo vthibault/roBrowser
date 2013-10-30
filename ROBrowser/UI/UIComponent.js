@@ -81,8 +81,6 @@ function(       jQuery,      DB,               Client,            Mouse )
 	UIComponent.prototype.remove = function Remove()
 	{
 		if( this.__loaded && this.ui.parent().length ) {
-			this.ui.detach();
-
 			if( this.onRemove ) {
 				this.onRemove();
 			}
@@ -90,6 +88,8 @@ function(       jQuery,      DB,               Client,            Mouse )
 			if( this.onKeyDown ) {
 				jQuery(window).off('keydown.' + this.name);
 			}
+
+			this.ui.detach();
 		}
 	};
 

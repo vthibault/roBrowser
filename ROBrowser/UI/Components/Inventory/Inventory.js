@@ -18,6 +18,8 @@ define(function(require)
 	var DB                 = require('DB/DBManager');
 	var jQuery             = require('Utils/jquery');
 	var Client             = require('Core/Client');
+	var Preferences        = require('Core/Preferences');
+	var Renderer           = require('Renderer/Renderer');
 	var Mouse              = require('Controls/MouseEventHandler');
 	var KEYS               = require('Controls/KeyEventHandler');
 	var UIManager          = require('UI/UIManager');
@@ -85,44 +87,25 @@ define(function(require)
 	 */
 	Inventory.init = function Init()
 	{
-		this.ui.css({ top: 200, left:200 });
-		this.resize( 7, 4 );
+		// Preferences structure
+		this.preferences = Preferences.get('Inventory', {
+			x:        200,
+			y:        200,
+			width:    7,
+			height:   4,
+			show:     false,
+			reduce:   false,
+			tab:      this.TAB.USABLE
+		}, 1.0);
 
-		this.ui.find('.titlebar .mini').mousedown(function(){
-			// TODO: fix this part
-			if( Inventory.realSize ) {
-				Inventory.ui.find('.panel').show();
-				Inventory.ui.height(Inventory.realSize);
-				Inventory.realSize = 0;
-			}
-			else {
-				Inventory.realSize = Inventory.ui.height();
-				Inventory.ui.height(17);
-				Inventory.ui.find('.panel').hide();
-			}
-		});
-
+		// Bind buttons
+		this.ui.find('.titlebar .mini').mousedown(this.toggleReduction.bind(this));
+		this.ui.find('.tabs button').mousedown(this.switchTab);
+		this.ui.find('.footer .extend').mousedown( this.extend.bind(this) );
 		this.ui.find('.titlebar .close').mousedown(function(){
 			Inventory.ui.hide();
 			return false;
 		});
-
-		this.ui.find('.tabs button').mousedown(function(){
-			var idx = jQuery(this).index();
-			Inventory.tab = idx;
-
-			Client.loadFile("basic_interface/tab_itm_0"+ (idx+1) +".bmp", function(data){
-				Inventory.ui.find('.tabs').css('backgroundImage', 'url("' + data + '")');
-				Inventory.filter(idx);
-			});
-
-			event.stopImmediatePropagation();
-			return false;
-		});
-
-		this.ui.find('.footer .extend').mousedown(
-			this.extend.bind(this)
-		);
 
 
 		var overlay = this.ui.find('.overlay');
@@ -132,6 +115,9 @@ define(function(require)
 			.on('scroll', function(){
 				this.scrollTop = Math.floor( this.scrollTop / 32 ) * 32;
 			})
+
+
+		// TODO: move all this part to GenericItemSkill.js
 
 			// Title feature
 			.on('mouseover', '.item', function(){
@@ -218,7 +204,25 @@ define(function(require)
 	 */
 	Inventory.onAppend = function OnAppend()
 	{
-		this.ui.hide();
+		// Apply preferences
+		if( !this.preferences.show ) {
+			this.ui.hide();
+		}
+
+		this.tab = this.preferences.tab;
+		Client.loadFile("basic_interface/tab_itm_0"+ (this.tab+1) +".bmp", function(data){
+			Inventory.ui.find('.tabs').css('backgroundImage', 'url("' + data + '")');
+		});
+
+		this.resize( this.preferences.width, this.preferences.height );
+
+		this.ui.css({
+			top:  Math.min( Math.max( 0, this.preferences.y), Renderer.height - this.ui.height()),
+			left: Math.min( Math.max( 0, this.preferences.x), Renderer.width  - this.ui.width())
+		});
+
+		Inventory.realSize = this.preferences.reduce ? 0 : this.ui.height();
+		this.ui.find('.titlebar .mini').trigger('mousedown');
 	};
 
 
@@ -228,7 +232,18 @@ define(function(require)
 	Inventory.onRemove = function OnRemove()
 	{
 		this.ui.find('.container .content').empty();
+		this.list.length = 0;
 		jQuery('.ItemInfo').remove();
+
+		// Save preferences
+		this.preferences.show   =  this.ui.is(':visible');
+		this.preferences.reduce = !!this.realSize;
+		this.preferences.tab    =  this.tab;
+		this.preferences.x      =  this.ui.position().top;
+		this.preferences.y      =  this.ui.position().left;
+		this.preferences.width  =  Math.floor( (this.ui.width()  - (23 + 16 + 16 - 30)) / 32 );
+		this.preferences.height =  Math.floor( (this.ui.height() - (31 + 19 - 30     )) / 32 );
+		this.preferences.save();
 	};
 
 
@@ -314,6 +329,9 @@ define(function(require)
 	 */
 	Inventory.resize = function Resize( width, height )
 	{
+		width  = Math.min( Math.max(width,  6), 9);
+		height = Math.min( Math.max(height, 2), 6);
+
 		this.ui.find('.container .content').css({
 			width:  width  * 32 + 13, // 13 = scrollbar
 			height: height * 32
@@ -323,6 +341,46 @@ define(function(require)
 			width:  23 + 16 + 16 + width  * 32,
 			height: 31 + 19      + height * 32
 		});
+	};
+
+
+	/**
+	 * Modify tab, filter display entries
+	 */
+	Inventory.switchTab = function SwitchTab( event )
+	{
+		var idx = jQuery(this).index();
+		Inventory.tab = idx;
+
+		Client.loadFile("basic_interface/tab_itm_0"+ (idx+1) +".bmp", function(data){
+			Inventory.ui.find('.tabs').css('backgroundImage', 'url("' + data + '")');
+			Inventory.filter(idx);
+		});
+
+		event.stopImmediatePropagation();
+		return false;
+	};
+
+
+	/**
+	 * Hide/show inventory's content
+	 */
+	Inventory.toggleReduction = function ToggleReduction( event )
+	{
+		// TODO: fix this part
+		if( this.realSize ) {
+			this.ui.find('.panel').show();
+			this.ui.height(this.realSize);
+			this.realSize = 0;
+		}
+		else {
+			this.realSize = this.ui.height();
+			this.ui.height(17);
+			this.ui.find('.panel').hide();
+		}
+
+		event.stopImmediatePropagation();
+		return false;
 	};
 
 
