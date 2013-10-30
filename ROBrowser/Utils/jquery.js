@@ -43,6 +43,9 @@ define( ['jquery', 'DB/DBManager'], function( jQuery, DB )
 				txt = txt.replace( result[0], DB.itemList[ result[1] ] ? DB.itemList[ result[1] ].identifiedDisplayName : "Unknown Item" );
 			}
 
+			// Line feed feature
+			txt = txt.replace(/\n/g, '<br/>');
+
 			return jQuery(this).html( txt );
 
 		}, null, value, arguments.length );
