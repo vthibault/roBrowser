@@ -24,6 +24,7 @@ define(function( require )
 	var Entity        = require('Renderer/Entity/Entity');
 	var Altitude      = require('Renderer/Map/Altitude');
 	var ChatBox       = require('UI/Components/ChatBox/ChatBox');
+	var StatusIcons   = require('UI/Components/StatusIcons/StatusIcons');
 	var Damage        = require('Renderer/Effects/Damage');
 
 
@@ -477,6 +478,44 @@ define(function( require )
 
 
 	/**
+	 * Update Player status
+	 * @param {object} pkt - PACKET.ZC.MSG_STATE_CHANGE
+	 */
+	function UpdateStatus( pkt )
+	{
+		var entity = EntityManager.get( pkt.AID );
+		if ( entity === false ) {
+			return;
+		}
+
+		switch( pkt.index ) {
+			case 27: //SI_RIDING (status.h)
+				var job = entity.job;
+				var newjob  = (
+					job === 7    ? 13   : // knight
+					job === 14   ? 21   : // cruzader
+					job === 4030 ? 4036 : // baby knight
+					job === 4037 ? 4044 : // baby crusader
+					job === 4008 ? 4014 : // lord knight
+					job === 4015 ? 4022 : // paladin
+					job
+				);
+
+				// Update job
+				if( newjob !== job ) {
+					entity.job = newjob;
+				}
+				break;
+			default:
+		}
+
+		if ( entity === MainPlayer ) {
+			StatusIcons.update( pkt.index, pkt.state, pkt.RemainMS );
+		}
+	}
+
+
+	/**
 	 * Initialize
 	 */
 	return function EntityEngine()
@@ -520,5 +559,7 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.NOTIFY_SKILL_POSITION, UseSkillDamage );
 		Network.hookPacket( PACKET.ZC.USESKILL_ACK,          CastSkill );
 		Network.hookPacket( PACKET.ZC.USESKILL_ACK2,         CastSkill );
+		Network.hookPacket( PACKET.ZC.MSG_STATE_CHANGE,      UpdateStatus );
+		Network.hookPacket( PACKET.ZC.MSG_STATE_CHANGE2,     UpdateStatus );
 	};
 });

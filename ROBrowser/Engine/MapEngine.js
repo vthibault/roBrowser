@@ -37,6 +37,7 @@ define(function( require )
 	var BasicInfo        = require('UI/Components/BasicInfo/BasicInfo');
 	var WinStats         = require('UI/Components/WinStats/WinStats');
 	var Inventory        = require('UI/Components/Inventory/Inventory');
+	var StatusIcons      = require('UI/Components/StatusIcons/StatusIcons');
 
 
 	/**
@@ -216,6 +217,7 @@ define(function( require )
 			WinStats.append();
 			Escape.append();
 			Inventory.append();
+			StatusIcons.append();
 
 			// Map loaded
 			Network.sendPacket(
