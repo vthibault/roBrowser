@@ -5690,9 +5690,12 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 	PACKET.ZC.REQ_WEAR_EQUIP_ACK = function PACKET_ZC_REQ_WEAR_EQUIP_ACK(fp, end) {
 		this.index        = fp.readUShort();
 		this.wearLocation = fp.readUShort();
+		if( PACKETVER.min >= 20100629 ) {
+			this.viewid   = fp.readUShort();
+		}
 		this.result       = fp.readUChar();
 	};
-	PACKET.ZC.REQ_WEAR_EQUIP_ACK.size = 7;
+	PACKET.ZC.REQ_WEAR_EQUIP_ACK.size = 0;
 
 
 	// 0xac

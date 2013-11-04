@@ -37,6 +37,7 @@ define(function( require )
 	var BasicInfo        = require('UI/Components/BasicInfo/BasicInfo');
 	var WinStats         = require('UI/Components/WinStats/WinStats');
 	var Inventory        = require('UI/Components/Inventory/Inventory');
+	var Equipment        = require('UI/Components/Equipment/Equipment');
 	var StatusIcons      = require('UI/Components/StatusIcons/StatusIcons');
 
 
@@ -170,6 +171,9 @@ define(function( require )
 
 		// Bind UI
 		WinStats.OnRequestUpdate        = MapEngine.onRequestStatUpdate;
+		Equipment.onUnEquip             = MapEngine.onUnEquip;
+		Inventory.onUseItem             = MapEngine.onUseItem;
+		Inventory.onEquipItem           = MapEngine.onEquipItem;
 		Escape.onExitRequest            = MapEngine.onExitRequest;
 		Escape.onCharSelectionRequest   = MapEngine.onRestartRequest;
 		Escape.onReturnSavePointRequest = MapEngine.onReturnSavePointRequest;
@@ -214,9 +218,9 @@ define(function( require )
 			MiniMap.setMap( MapRenderer.currentMap );
 			ChatBox.append();
 			BasicInfo.append();
-			WinStats.append();
 			Escape.append();
 			Inventory.append();
+			Equipment.append();
 			StatusIcons.append();
 
 			// Map loaded
@@ -478,6 +482,48 @@ define(function( require )
 			pkt.count = count;
 			Network.sendPacket(pkt);
 		}
+	};
+
+
+	/**
+	 * Use an item
+	 *
+	 * @param {number} item's index
+	 */
+	MapEngine.onUseItem = function( index )
+	{
+		var pkt   = new PACKET.CZ.USE_ITEM();
+		pkt.index = index;
+		pkt.AID   = MapEngine.entity.GID;
+		Network.sendPacket(pkt);
+	};
+
+
+	/**
+	 * Equip item
+	 *
+	 * @param {number} item's index
+	 * @param {number} where to equip
+	 */
+	MapEngine.onEquipItem = function( index, location )
+	{
+		var pkt          = new PACKET.CZ.REQ_WEAR_EQUIP();
+		pkt.index        = index;
+		pkt.wearLocation = location;
+		Network.sendPacket(pkt);
+	};
+
+
+	/**
+	 * Take off an equip
+	 *
+	 * @param {number} index to unequip
+	 */
+	MapEngine.onUnEquip = function OnUnEquip( index )
+	{
+		var pkt = new PACKET.CZ.REQ_TAKEOFF_EQUIP();
+		pkt.index = index;
+		Network.sendPacket(pkt);
 	};
 
 

@@ -1,0 +1,20 @@
+#Equipment { position:absolute; font-size:12px; }
+
+#Equipment .titlebar { width:280px; height:17px; background-color:white; background-repeat:repeat-x; border-radius:3px 3px 0px 0px; }
+#Equipment .titlebar .base { width:11px; height:11px; border:none; background-color:transparent; background-repeat:no-repeat; }
+#Equipment .titlebar .text { text-shadow:1px 1px white; vertical-align:-2px; 
+ /* chrome bug */ display: inline-block; width: 32px; height:13px; }
+
+#Equipment .titlebar .left { margin-left:3px; float:left; }
+#Equipment .titlebar .right { float:right; margin-right:3px;}
+#Equipment .titlebar .clear { clear:both; }
+
+#Equipment .content { width:280px; height:130px; border-spacing:0; }
+#Equipment .col1, #Equipment .col3  { width:115px; height:24px; }
+#Equipment .item button { width:24px; height:24px; background-color:transparent; background-repeat:no-repeat; border: none; }
+#Equipment .item span { white-space:pre; width:80px; height:24px; display:inline-block; line-height:12px; }
+
+#Equipment .col3 .item button, #Equipment .col3 .item span { float:right; }
+#Equipment .col1 .item button, #Equipment .col1 .item span { float:left; }
+#Equipment .col1 .item { padding-left:4px; }
+#Equipment .col3 .item { padding-right:4px; }

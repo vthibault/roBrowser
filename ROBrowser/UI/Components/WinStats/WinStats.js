@@ -42,8 +42,6 @@ define(function(require)
 				case 'luk': WinStats.OnRequestUpdate( 18, 1 ); break;
 			}
 		});
-
-		this.draggable();
 	};
 
 
@@ -65,7 +63,6 @@ define(function(require)
 		}
 
 		this.stack.length = 0;
-		this.ui.hide();
 	};
 
 
@@ -134,7 +131,7 @@ define(function(require)
 
 
 	/**
-	 * Create component and export it
+	 * Export it (don't add it to component list)
 	 */
-	return UIManager.addComponent(WinStats);
+	return WinStats;
 });

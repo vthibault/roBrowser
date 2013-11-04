@@ -24,7 +24,8 @@ define(function(require)
 	var KEYS               = require('Controls/KeyEventHandler');
 	var UIManager          = require('UI/UIManager');
 	var UIComponent        = require('UI/UIComponent');
-	var ItemInfo           = require('UI/Components/ItemInfo/ItemInfo');
+	var ItemInfo           = require('UI/Components/ItemInfo/ItemInfo')
+	var Equipment          = require('UI/Components/Equipment/Equipment');
 	var htmlText           = require('text!./Inventory.html');
 	var cssText            = require('text!./Inventory.css');
 
@@ -189,6 +190,41 @@ define(function(require)
 						box.append();
 						box.ui.addClass('item' + list[i].ITID );
 						box.setItem( list[i] );
+						break;
+					}
+				}
+
+				event.stopImmediatePropagation();
+				return false;
+			})
+
+			// Equip/Use item
+			.on('dblclick', '.item', function(event) {
+				var matches = this.className.match(/(\w+) (\d+)/);
+				var index   = parseInt(matches[2], 10);
+				var list;
+				var i, count;
+
+				for( i = 0, list = Inventory.list, count = list.length; i < count; ++i ) {
+					if( list[i].index === index ) {
+						switch( list[i].type ) {
+							// Usable item
+							case Inventory.ITEM.HEALING:
+							case Inventory.ITEM.USABLE:
+							//case Inventory.ITEM.USABLE_SKILL:
+							case Inventory.ITEM.USABLE_UNK:
+								Inventory.onUseItem( index );
+								overlay.hide();
+								break;
+
+							// Equip item
+							case Inventory.ITEM.WEAPON:
+							case Inventory.ITEM.EQUIP:
+							case Inventory.ITEM.PETEQUIP:
+								Inventory.onEquipItem( index, list[i].location );
+								overlay.hide();
+								break;
+						}
 						break;
 					}
 				}
@@ -394,8 +430,9 @@ define(function(require)
 		var i, count;
 
 		for( i = 0, count = items.length; i < count ; ++i ) {
-			this.addItemSub( items[i] );
-			this.list.push(items[i]);
+			if( this.addItemSub( items[i] ) ) {
+				this.list.push( items[i] );
+			}
 		}
 	};
 
@@ -410,7 +447,6 @@ define(function(require)
 		var i, size;
 
 		for( i = 0, size = this.list.length; i < size; ++i ) {
-
 			if( this.list[i].index === item.index ) {
 				this.list[i].count += item.count;
 				this.ui.find('.item.'+ item.index + ' .count').text( this.list[i].count )
@@ -418,8 +454,9 @@ define(function(require)
 			}
 		}
 
-		this.addItemSub(item);
-		this.list.push(item);
+		if( this.addItemSub(item) ) {
+			this.list.push(item);
+		}
 	};
 
 
@@ -456,6 +493,12 @@ define(function(require)
 				break;
 		}
 
+		// Equip item
+		if( item.WearState ) {
+			Equipment.equip(item);
+			return false;
+		}
+
 		if( tab === this.tab ) {
 			var it      = DB.getItemInfo( item.ITID );
 
@@ -474,6 +517,8 @@ define(function(require)
 				}
 			});
 		}
+
+		return true;
 	};
 
 
@@ -494,20 +539,24 @@ define(function(require)
 
 					if( this.list[i].count > 0 ) {
 						this.ui.find('.item.'+index + ' .count').text( this.list[i].count )
-						return;
+						return this.list[i];
 					}
 				}
 
+				var item = this.list[i];
 				this.list.splice( i, 1 );
 				this.ui.find('.item.'+index).remove();
-				break;
+
+				var content = this.ui.find('.container .content');
+				if( content.height() === content[0].scrollHeight ) {
+					this.ui.find('.hide').show();
+				}
+
+				return item;
 			}
 		}
 
-		var content = this.ui.find('.container .content');
-		if( content.height() === content[0].scrollHeight ) {
-			this.ui.find('.hide').show();
-		}
+		return null;
 	};
 
 
@@ -523,6 +572,13 @@ define(function(require)
 			this.addItemSub( this.list[i] );
 		}
 	};
+
+
+	/**
+	 * Abstract function to define
+	 */
+	Inventory.onUseItem   = function OnUseItem( index ){};
+	Inventory.onEquipItem = function OnEquipItem( index, location ){};
 
 
 	/**
