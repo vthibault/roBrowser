@@ -1,4 +1,6 @@
-#Equipment { position:absolute; font-size:12px; }
+#Equipment { position:absolute; font-size:12px; width:280px; }
+
+#Equipment .clear { clear:both; }
 
 #Equipment .titlebar { width:280px; height:17px; background-color:white; background-repeat:repeat-x; border-radius:3px 3px 0px 0px; }
 #Equipment .titlebar .base { width:11px; height:11px; border:none; background-color:transparent; background-repeat:no-repeat; }
@@ -9,6 +11,7 @@
 #Equipment .titlebar .right { float:right; margin-right:3px;}
 #Equipment .titlebar .clear { clear:both; }
 
+#Equipment .panel { background-color:white; }
 #Equipment .content { width:280px; height:130px; border-spacing:0; }
 #Equipment .col1, #Equipment .col3  { width:115px; height:24px; }
 #Equipment .item button { width:24px; height:24px; background-color:transparent; background-repeat:no-repeat; border: none; }
@@ -18,3 +21,9 @@
 #Equipment .col1 .item button, #Equipment .col1 .item span { float:left; }
 #Equipment .col1 .item { padding-left:4px; }
 #Equipment .col3 .item { padding-right:4px; }
+
+#Equipment .footer { height:20px; border-bottom:1px solid #c0c0c0; }
+#Equipment .footer .left { float:left; text-align:left; margin-left:5px; margin-top:3px; }
+#Equipment .footer .right { float:right; text-align:right; margin-right:5px; margin-top:3px; }
+#Equipment .footer .view_status { width:9px; height:14px; border:none; background-color:transparent; background-repeat:no-repeat; }
+#Equipment .footer .show_equip { width:10px; height:12px; border:none; background-color:transparent; background-repeat:no-repeat; }

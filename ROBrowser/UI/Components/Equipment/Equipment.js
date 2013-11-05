@@ -69,12 +69,13 @@ define(function(require)
 		this.ctx    = this.ui.find('canvas')[0].getContext('2d');
 		this.entity = new Entity(Camera.target);
 
-		this.draggable();
-
 		// Append WinStats to content
 		WinStats.prepare();
 		WinStats.__loaded = true;
-		this.ui.find('.stats').append(WinStats.ui);
+		this.ui.find('.status_component').append(WinStats.ui);
+
+		this.initPreferences();
+		this.draggable();
 
 		// Bind events
 		this.ui.find('.titlebar .mini').mousedown(function(){
@@ -85,6 +86,11 @@ define(function(require)
 			Equipment.ui.hide();
 			return false;
 		});
+
+		// Show Status ?
+		this.ui.find('.view_status').mousedown(this.toggleStatus);
+		this.ui.find('.show_equip').mousedown(this.toggleEquip);
+
 
 		// Bind items
 		this.ui.find('.content')
@@ -140,8 +146,122 @@ define(function(require)
 	 */
 	Equipment.onRemove = function OnRemove()
 	{
+		// Stop rendering
 		Renderer.stop(this.renderCharacter);
+
+		// Clean equipments
 		this.list = {};
+		this.ui.find('.col1, .col3').empty();
+
+		// Save preferences
+		this.preferences.show   =  this.ui.is(':visible');
+		this.preferences.reduce = !this.ui.find('.panel').is(':visible');
+		this.preferences.stats  =  this.ui.find('.status_component').is(':visible');
+		this.preferences.y      =  this.ui.position().top;
+		this.preferences.x      =  this.ui.position().left;
+		this.preferences.save();
+	};
+
+
+	/**
+	 * Key Listener
+	 *
+	 * @param {object} event
+	 * @return {boolean}
+	 */
+	Equipment.onKeyDown = function OnKeyDown( event )
+	{
+		if( KEYS.ALT && event.which === KEYS.Q ) {
+			this.ui.toggle();
+			event.stopImmediatePropagation();
+			return false;
+		}
+
+		return true;
+	};
+
+
+	/**
+	 * Initialize preferences
+	 */
+	Equipment.initPreferences = function InitPreferences()
+	{
+		// Preferences structure
+		this.preferences = Preferences.get('Equipment', {
+			x:        480,
+			y:        200,
+			show:     false,
+			reduce:   false,
+			stats:    true,
+			equip:    false
+		}, 1.0);
+
+		// Apply preferences
+		this.ui.css({
+			top:  Math.min( Math.max( 0, this.preferences.y), Renderer.height - this.ui.height()),
+			left: Math.min( Math.max( 0, this.preferences.x), Renderer.width  - this.ui.width())
+		});
+
+		// Hide window ?
+		if( !this.preferences.show ) {
+			this.ui.hide();
+		}
+
+		// Reduce window ?
+		if( this.preferences.reduce ) {
+			this.ui.find('.panel').hide();
+		}
+
+		// Show status window ?
+		if( !this.preferences.stats ) {
+			this.ui.find('.status_component').hide();
+			Client.loadFile( DB.INTERFACE_PATH + 'basic_interface/viewon.bmp', function(data){
+				Equipment.ui.find('.view_status').css('backgroundImage', 'url(' + data + ')');
+			});
+		}
+
+		// Show equipment ?
+		if( this.preferences.equip ) {
+			Client.loadFile( DB.INTERFACE_PATH + 'checkbox_1.bmp', function(data){
+				Equipment.ui.find('.show_equip').css('backgroundImage', 'url(' + data + ')');
+			});
+		}
+	};
+
+
+	/**
+	 * Display or not status window
+	 */
+	Equipment.toggleStatus = function ToggleStatus()
+	{
+		var ui     = this;
+		var status = Equipment.ui.find('.status_component');
+		var state  = status.is(':visible') ? 'on' : 'off';
+
+		status.toggle();
+
+		Client.loadFile( DB.INTERFACE_PATH + 'basic_interface/view' + state + '.bmp', function(data){
+			ui.style.backgroundImage = 'url(' + data + ')';
+		});
+
+		return false;
+	};
+
+
+	/**
+	 * Does player can see your equipment ?
+	 */
+	Equipment.toggleEquip = function ToggleEquip()
+	{
+		Equipment.preferences.equip = !Equipment.preferences.equip;
+		var file = Equipment.preferences.equip ? 'checkbox_1.bmp' : 'checkbox_0.bmp';
+		var ui   = this;
+
+		Client.loadFile( DB.INTERFACE_PATH + file, function(data){
+			ui.style.backgroundImage = 'url(' + data + ')';
+		});
+
+		return false;
 	};
 
 
@@ -150,13 +270,14 @@ define(function(require)
 	 */
 	Equipment.renderCharacter = function RenderCharacter()
 	{
+		// 2D render use much CPU, dont render it if not visible.
 		if( Equipment.ui.is(':visible') ) {
 			var ctx = Equipment.ctx;
-	
+
 			// Rendering
 			SpriteRenderer.bind2DContext( ctx, 30, 130 );
 			ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height );
-	
+
 			Camera.direction = 4;
 			Equipment.entity._renderSub(0);
 		}
@@ -196,10 +317,12 @@ define(function(require)
 	Equipment.equip = function Equip( item, location )
 	{
 		this.list[ item.index] = item;
-		var ui = this.ui.find(
-			GetSelectorFromLocation( arguments.length === 2 ? location : item.location )
-		);
 		var it = DB.getItemInfo( item.ITID );
+		var ui = this.ui.find(
+			GetSelectorFromLocation(
+				arguments.length === 2 ? location : item.location
+			)
+		);
 
 		Client.loadFile( DB.INTERFACE_PATH + 'item/' + it.identifiedResourceName + '.bmp', function(data){
 			var name  = ( item.RefiningLevel ? '+' + item.RefiningLevel + ' ' : '') + it.identifiedDisplayName;
@@ -239,27 +362,10 @@ define(function(require)
 
 
 	/**
-	 * Key Listener
-	 *
-	 * @param {object} event
-	 * @return {boolean}
-	 */
-	Equipment.onKeyDown = function OnKeyDown( event )
-	{
-		if( KEYS.ALT && event.which === KEYS.Q ) {
-			this.ui.toggle();
-			event.stopImmediatePropagation();
-			return false;
-		}
-
-		return true;
-	};
-
-
-	/**
 	 * Abstract method to define
 	 */
 	Equipment.onUnEquip = function onUnEquip( index ){};
+
 
 	/**
 	 * Create component and export it

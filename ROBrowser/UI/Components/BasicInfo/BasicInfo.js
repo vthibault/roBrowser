@@ -23,6 +23,7 @@ define(function(require)
 	var UIComponent        = require('UI/UIComponent');
 	var MiniMap            = require('UI/Components/MiniMap/MiniMap');
 	var Inventory          = require('UI/Components/Inventory/Inventory');
+	var Equipment          = require('UI/Components/Equipment/Equipment');
 	var htmlText           = require('text!./BasicInfo.html');
 	var cssText            = require('text!./BasicInfo.css');
 
@@ -57,16 +58,19 @@ define(function(require)
 					MiniMap.toggleOpacity();
 					break;
 
-				case 'info':
-				case 'skill':
 				case 'item':
 					Inventory.ui.toggle();
+					break;
+
+				case 'info':
+					Equipment.ui.toggle();
 					break;
 
 				case 'party':
 				case 'guild':
 				case 'quest':
 				case 'option':
+				case 'skill':
 			}
 		});
 
