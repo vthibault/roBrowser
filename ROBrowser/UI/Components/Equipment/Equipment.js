@@ -66,8 +66,9 @@ define(function(require)
 	 */
 	Equipment.init = function Init()
 	{
-		this.ctx    = this.ui.find('canvas')[0].getContext('2d');
-		this.entity = new Entity(Camera.target);
+		this.ctx       = this.ui.find('canvas')[0].getContext('2d');
+		this.entity    = new Entity(Camera.target);
+		this.showEquip = false;
 
 		// Append WinStats to content
 		WinStats.prepare();
@@ -91,6 +92,10 @@ define(function(require)
 		this.ui.find('.view_status').mousedown(this.toggleStatus);
 		this.ui.find('.show_equip').mousedown(this.toggleEquip);
 
+		// drag, drop items
+		this.ui.on('dragover',  this.onDragOver.bind(this) );
+		this.ui.on('dragleave', this.onDragLeave.bind(this) );
+		this.ui.on('drop',      this.onDrop.bind(this) );
 
 		// Bind items
 		this.ui.find('.content')
@@ -192,8 +197,7 @@ define(function(require)
 			y:        200,
 			show:     false,
 			reduce:   false,
-			stats:    true,
-			equip:    false
+			stats:    true
 		}, 1.0);
 
 		// Apply preferences
@@ -219,13 +223,21 @@ define(function(require)
 				Equipment.ui.find('.view_status').css('backgroundImage', 'url(' + data + ')');
 			});
 		}
+	};
 
-		// Show equipment ?
-		if( this.preferences.equip ) {
-			Client.loadFile( DB.INTERFACE_PATH + 'checkbox_1.bmp', function(data){
-				Equipment.ui.find('.show_equip').css('backgroundImage', 'url(' + data + ')');
-			});
-		}
+
+	/**
+	 * Show or hide equipment
+	 *
+	 * @param {boolean} on
+	 */
+	Equipment.setEquipConfig = function SetEquipConfig( on )
+	{
+		Equipment.showEquip = on;
+
+		Client.loadFile( DB.INTERFACE_PATH + 'checkbox_' + ( on ? '1' : '0' ) + '.bmp', function(data){
+			Equipment.ui.find('.show_equip').css('backgroundImage', 'url(' + data + ')');
+		});
 	};
 
 
@@ -253,14 +265,15 @@ define(function(require)
 	 */
 	Equipment.toggleEquip = function ToggleEquip()
 	{
-		Equipment.preferences.equip = !Equipment.preferences.equip;
-		var file = Equipment.preferences.equip ? 'checkbox_1.bmp' : 'checkbox_0.bmp';
+		Equipment.showEquip = !Equipment.showEquip;
+		var file = Equipment.showEquip ? 'checkbox_1.bmp' : 'checkbox_0.bmp';
 		var ui   = this;
 
 		Client.loadFile( DB.INTERFACE_PATH + file, function(data){
 			ui.style.backgroundImage = 'url(' + data + ')';
 		});
 
+		Equipment.onConfigUpdate( 0, Equipment.showEquip ? 1 : 0 );
 		return false;
 	};
 
@@ -362,9 +375,83 @@ define(function(require)
 
 
 	/**
+	 * Drag an item over the equipment, show where to place the item
+	 */
+	Equipment.onDragOver = function OnDragOver( event )
+	{
+		if( window._OBJ_DRAG_ ) {
+			var data = window._OBJ_DRAG_;
+			var item, selector, ui;
+
+			// Just support items for now ?
+			if( data.type === "item") {
+				item = data.data;
+	
+				// Only for TYPE.WEAPON and TYPE.EQUIP
+				if( item.type ===  4 || item.type === 5 ) {
+					selector = GetSelectorFromLocation( item.location );
+					ui       = this.ui.find(selector);
+
+					Client.loadFile( DB.INTERFACE_PATH + "basic_interface/item_invert.bmp", function(data){
+						ui.css('backgroundImage', 'url('+ data + ')');
+					});
+				}
+			}
+		}
+
+		event.stopImmediatePropagation();
+		return false;
+	};
+
+
+	/**
+	 * Drag out the window
+	 */
+	Equipment.onDragLeave = function OnDragLeave( event )
+	{
+		this.ui.find('td').css('backgroundImage','none');
+		event.stopImmediatePropagation();
+		return false;
+	};
+
+
+
+	/**
+	 * Drop an item in the equipment, equip it if possible
+	 */
+	Equipment.onDrop = function OnDrop( event )
+	{
+		var item, data;
+
+		try {
+			data = JSON.parse(
+				event.originalEvent.dataTransfer.getData("Text")
+			);
+		}
+		catch(e) {}
+
+		// Just support items for now ?
+		if( data && data.type === "item") {
+			item = data.data;
+
+			// Only for TYPE.WEAPON and TYPE.EQUIP
+			if( item.type ===  4 || item.type === 5 ) {
+				this.ui.find('td').css('backgroundImage','none');
+				this.onEquipItem( item.index, item.location );
+			}
+		}
+
+		event.stopImmediatePropagation();
+		return false;
+	};
+
+
+	/**
 	 * Abstract method to define
 	 */
-	Equipment.onUnEquip = function onUnEquip( index ){};
+	Equipment.onUnEquip      = function OnUnEquip( index ){};
+	Equipment.onConfigUpdate = function OnConfigUpdate( type, value ){};
+	Equipment.onEquipItem    = function OnEquipItem( index, location ){};
 
 
 	/**

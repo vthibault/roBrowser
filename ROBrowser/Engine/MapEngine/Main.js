@@ -31,6 +31,7 @@ define(function( require )
 	var WinStats      = require('UI/Components/WinStats/WinStats');
 	var Escape        = require('UI/Components/Escape/Escape');
 	var Announce      = require('UI/Components/Announce/Announce');
+	var Equipment     = require('UI/Components/Equipment/Equipment');
 
 
 	/**
@@ -425,6 +426,21 @@ define(function( require )
 
 
 	/**
+	 * Do we show equipment to others ?
+	 *
+	 * @param {object} pkt - PACKET_ZC_CONFIG_NOTIFY
+	 */
+	function ConfigEquip( pkt )
+	{
+		Equipment.setEquipConfig( pkt.bOpenEquipmentWin );
+		ChatBox.addText(
+			DB.msgstringtable[1354 + (pkt.bOpenEquipmentWin ? 1 : 0) ],
+			ChatBox.TYPE.INFO
+		);
+	};
+
+
+	/**
 	 * Initialize
 	 */
 	return function MainEngine()
@@ -445,5 +461,6 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.NOTIFY_PLAYERCHAT,           OnPlayerMessage );
 		Network.hookPacket( PACKET.ZC.ATTACK_FAILURE_FOR_DISTANCE, OnPlayerTooFarToAttack );
 		Network.hookPacket( PACKET.ZC.ACK_TOUSESKILL,              SkillResult );
+		Network.hookPacket( PACKET.ZC.CONFIG_NOTIFY,               ConfigEquip );
 	};
 });

@@ -151,12 +151,30 @@ define(function(require)
 				img.src = this.firstChild.style.backgroundImage.match(/\(([^\)]+)/)[1];
 				event.originalEvent.dataTransfer.setDragImage( img, 12, 12 );
 
-				// Save item class : ".item <id>",
-				event.originalEvent.dataTransfer.setData("Text", this.className);
+				var matches = this.className.match(/(\w+) (\d+)/);
+				var index   = parseInt(matches[2], 10);
+				var list, i, count;
+
+				for( i = 0, list = Inventory.list, count = list.length; i < count; ++i ) {
+					if( list[i].index === index ) {
+						event.originalEvent.dataTransfer.setData("Text",
+							JSON.stringify( window._OBJ_DRAG_ = {
+								type: "item",
+								data:  list[i]
+							})
+						);
+						break;
+					}
+				}
 
 				// Stop component to be draggable
 				jQuery(window).trigger('mouseup');
 				overlay.hide();
+			})
+
+			// Clean up
+			.on('dragend', '.item', function(event){
+				delete window._OBJ_DRAG_;
 			})
 
 			// Right click on item

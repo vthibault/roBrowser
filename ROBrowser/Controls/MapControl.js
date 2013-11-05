@@ -141,44 +141,37 @@ function(
 	 */
 	function OnDrop( event )
 	{
-		var i, count;
-		var items, item;
+		var item, data;
 		var MapEngine = this;
 
-		var data = event.originalEvent.dataTransfer.getData("Text");
-		var matches = data.match(/(\w+) (\d+)/);
+		try {
+			data = JSON.parse(
+				event.originalEvent.dataTransfer.getData("Text")
+			);
+		}
+		catch(e) {}
 
 		// Just support items for now ?
-		if( matches && matches[1] !== "item" ) {
-			event.stopImmediatePropagation();
-			return false;
-		}
-
-		for( i = 0, items = Inventory.list, count = items.length; i < count; ++i ) {
-
-			if( items[i].index != matches[2] ) {
-				continue;
-			}
-
-			item = items[i];
+		if( data && data.type === "item" ) {
+			item = data.data;
 
 			// Have to specify how much
 			if( item.count > 1 ) {
 				InputBox.append();
 				InputBox.setType("number");
-				InputBox.onSubmitRequest = function OnSubmitRequest( count )
-				{
+				InputBox.onSubmitRequest = function OnSubmitRequest( count ) {
 					InputBox.remove();
 					MapEngine.onDropItem(
-						parseInt(matches[2], 10),
+						item.index,
 						parseInt(count, 10 )
 					);
 				};
-				break;
 			}
-		
-			MapEngine.onDropItem( parseInt(matches[2], 10), 1 );
-			break;
+
+			// Only one, don't have to specify
+			else {
+				MapEngine.onDropItem( item.index, 1 );
+			}
 		}
 
 		event.stopImmediatePropagation();

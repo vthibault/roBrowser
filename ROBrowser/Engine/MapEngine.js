@@ -172,6 +172,8 @@ define(function( require )
 		// Bind UI
 		WinStats.OnRequestUpdate        = MapEngine.onRequestStatUpdate;
 		Equipment.onUnEquip             = MapEngine.onUnEquip;
+		Equipment.onConfigUpdate        = MapEngine.onConfigUpdate;
+		Equipment.onEquipItem           = MapEngine.onEquipItem;
 		Inventory.onUseItem             = MapEngine.onUseItem;
 		Inventory.onEquipItem           = MapEngine.onEquipItem;
 		Escape.onExitRequest            = MapEngine.onExitRequest;
@@ -523,6 +525,21 @@ define(function( require )
 	{
 		var pkt = new PACKET.CZ.REQ_TAKEOFF_EQUIP();
 		pkt.index = index;
+		Network.sendPacket(pkt);
+	};
+
+
+	/**
+	 * Update config
+	 *
+	 * @param {number} config id (only type:0 is supported - equip)
+	 * @param {number} val
+	 */
+	MapEngine.onConfigUpdate = function OnConfigUpdate( type, val )
+	{
+		var pkt = new PACKET.CZ.CONFIG();
+		pkt.Config = type;
+		pkt.Value = val;
 		Network.sendPacket(pkt);
 	};
 
