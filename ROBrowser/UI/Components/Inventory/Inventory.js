@@ -88,16 +88,7 @@ define(function(require)
 	 */
 	Inventory.init = function Init()
 	{
-		// Preferences structure
-		this.preferences = Preferences.get('Inventory', {
-			x:        200,
-			y:        200,
-			width:    7,
-			height:   4,
-			show:     false,
-			reduce:   false,
-			tab:      this.TAB.USABLE
-		}, 1.0);
+		this.initPreferences();
 
 		// Bind buttons
 		this.ui.find('.titlebar .mini').mousedown(this.toggleReduction.bind(this));
@@ -240,8 +231,19 @@ define(function(require)
 	/**
 	 * Hide inventory when append to body
 	 */
-	Inventory.onAppend = function OnAppend()
+	Inventory.initPreferences = function InitPreferences()
 	{
+		// Preferences structure
+		this.preferences = Preferences.get('Inventory', {
+			x:        200,
+			y:        200,
+			width:    7,
+			height:   4,
+			show:     false,
+			reduce:   false,
+			tab:      this.TAB.USABLE
+		}, 1.0);
+
 		// Apply preferences
 		if( !this.preferences.show ) {
 			this.ui.hide();
@@ -277,8 +279,8 @@ define(function(require)
 		this.preferences.show   =  this.ui.is(':visible');
 		this.preferences.reduce = !!this.realSize;
 		this.preferences.tab    =  this.tab;
-		this.preferences.x      =  this.ui.position().top;
-		this.preferences.y      =  this.ui.position().left;
+		this.preferences.y      =  this.ui.position().top;
+		this.preferences.x      =  this.ui.position().left;
 		this.preferences.width  =  Math.floor( (this.ui.width()  - (23 + 16 + 16 - 30)) / 32 );
 		this.preferences.height =  Math.floor( (this.ui.height() - (31 + 19 - 30     )) / 32 );
 		this.preferences.save();
