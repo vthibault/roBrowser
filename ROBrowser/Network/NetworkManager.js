@@ -244,7 +244,22 @@ function(        BinaryReader,                       Socket,     PACKETVER,     
 
 			// Find packet size
 			packet  = Packets.list[id];
-			length  = packet.size < 0 ? fp.readUShort() : packet.size;
+
+			if( packet.size < 0 ) {
+				// Not enough bytes...
+				if( fp.tell() + 2 >= fp.length ) {
+					_save_buffer = new Uint8Array(
+						buffer,
+						offset,
+						fp.length - offset
+					);
+					return;
+				}
+				length = fp.readUShort();
+			}
+			else {
+				length = packet.size;
+			}
 			offset += length;
 
 			// Try to guess the packet version
