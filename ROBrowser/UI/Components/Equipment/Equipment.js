@@ -265,15 +265,7 @@ define(function(require)
 	 */
 	Equipment.toggleEquip = function ToggleEquip()
 	{
-		Equipment.showEquip = !Equipment.showEquip;
-		var file = Equipment.showEquip ? 'checkbox_1.bmp' : 'checkbox_0.bmp';
-		var ui   = this;
-
-		Client.loadFile( DB.INTERFACE_PATH + file, function(data){
-			ui.style.backgroundImage = 'url(' + data + ')';
-		});
-
-		Equipment.onConfigUpdate( 0, Equipment.showEquip ? 1 : 0 );
+		Equipment.onConfigUpdate( 0, !Equipment.showEquip ? 1 : 0 );
 		return false;
 	};
 
@@ -386,9 +378,9 @@ define(function(require)
 			// Just support items for now ?
 			if( data.type === "item") {
 				item = data.data;
-	
+
 				// Only for TYPE.WEAPON and TYPE.EQUIP
-				if( item.type ===  4 || item.type === 5 ) {
+				if( (item.type ===  4 || item.type === 5) && item.IsIdentified && !item.IsDamaged ) {
 					selector = GetSelectorFromLocation( item.location );
 					ui       = this.ui.find(selector);
 
@@ -435,7 +427,7 @@ define(function(require)
 			item = data.data;
 
 			// Only for TYPE.WEAPON and TYPE.EQUIP
-			if( item.type ===  4 || item.type === 5 ) {
+			if( (item.type ===  4 || item.type === 5) && item.IsIdentified && !item.IsDamaged ) {
 				this.ui.find('td').css('backgroundImage','none');
 				this.onEquipItem( item.index, item.location );
 			}

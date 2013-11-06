@@ -230,8 +230,10 @@ define(function(require)
 							case Inventory.ITEM.WEAPON:
 							case Inventory.ITEM.EQUIP:
 							case Inventory.ITEM.PETEQUIP:
-								Inventory.onEquipItem( index, list[i].location );
-								overlay.hide();
+								if( list[i].IsIdentified && !list[i].IsDamaged ) {
+									Inventory.onEquipItem( index, list[i].location );
+									overlay.hide();
+								}
 								break;
 						}
 						break;

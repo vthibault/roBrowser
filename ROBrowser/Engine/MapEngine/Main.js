@@ -441,6 +441,27 @@ define(function( require )
 
 
 	/**
+	 * Receive user config from server
+	 *
+	 * @param {object} pkt - PACKET.ZC.CONFIG
+	 */
+	function OnConfigChange( pkt )
+	{
+		switch( pkt.Config ) {
+
+			// equipment
+			case 0:
+				Equipment.setEquipConfig( pkt.Value );
+				ChatBox.addText(
+					DB.msgstringtable[1354 + (pkt.Value ? 1 : 0) ],
+					ChatBox.TYPE.INFO
+				);
+				break;
+		}
+	}
+
+
+	/**
 	 * Initialize
 	 */
 	return function MainEngine()
@@ -462,5 +483,6 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.ATTACK_FAILURE_FOR_DISTANCE, OnPlayerTooFarToAttack );
 		Network.hookPacket( PACKET.ZC.ACK_TOUSESKILL,              SkillResult );
 		Network.hookPacket( PACKET.ZC.CONFIG_NOTIFY,               ConfigEquip );
+		Network.hookPacket( PACKET.ZC.CONFIG,                      OnConfigChange );
 	};
 });

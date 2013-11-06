@@ -143,13 +143,10 @@ define(function( require )
 			var item = Equipment.unEquip( pkt.index, pkt.wearLocation );
 			item.WearState = 0;
 
-			ItemObtain.append();
-			ItemObtain.set( item.ITID, item.IsIdentified, 1 );
-
 			var it = DB.getItemInfo( item.ITID );
 			ChatBox.addText(
-				DB.msgstringtable[153].replace('%s', it.identifiedDisplayName ).replace('%d', 1 ),
-				ChatBox.TYPE.BLUE
+				it.identifiedDisplayName + " " + DB.msgstringtable[171],
+				ChatBox.TYPE.ERROR
 			);
 
 			Inventory.addItem(item);
@@ -166,7 +163,18 @@ define(function( require )
 	{
 		if( pkt.result === 1 ) {
 			var item = Inventory.removeItem( pkt.index, 1 );
+			var it   = DB.getItemInfo( item.ITID );
 			Equipment.equip( item, pkt.wearLocation );
+			ChatBox.addText(
+				it.identifiedDisplayName + " " + DB.msgstringtable[170],
+				ChatBox.TYPE.BLUE
+			);
+		}
+		else {
+			ChatBox.addText(
+				DB.msgstringtable[372],
+				ChatBox.TYPE.BLUE
+			);
 		}
 	}
 
