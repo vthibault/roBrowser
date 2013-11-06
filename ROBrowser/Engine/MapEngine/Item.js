@@ -170,10 +170,12 @@ define(function( require )
 				ChatBox.TYPE.BLUE
 			);
 		}
+
+		// Fail to equip
 		else {
 			ChatBox.addText(
 				DB.msgstringtable[372],
-				ChatBox.TYPE.BLUE
+				ChatBox.TYPE.ERROR
 			);
 		}
 	}
