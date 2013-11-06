@@ -182,6 +182,9 @@ define(function( require )
 						next:   false
 					}
 				});
+				if( dstEntity ) {
+					srcEntity.lookTo( dstEntity.position[0], dstEntity.position[1] );
+				}
 				break;
 
 			// Sit Down

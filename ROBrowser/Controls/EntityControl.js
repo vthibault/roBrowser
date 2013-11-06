@@ -132,6 +132,7 @@ define( [
 
 			case Entity.TYPE_ITEM:
 				Cursor.setType( Cursor.ACTION.PICK, true, 2 );
+				Camera.target.lookTo( this.position[0], this.position[1] );
 
 				pkt = new PACKET.CZ.ITEM_PICKUP();
 				pkt.ITAID = this.GID;
