@@ -9,10 +9,22 @@
  * @author Vincent Thibault
  */
 
-define(  ['Utils/BinaryReader', './SocketHelpers/JavaSocket', './PacketVerManager', './PacketVersions', './PacketRegister', './PacketGuess'],
-function(        BinaryReader,                       Socket,     PACKETVER,            PacketVersions,     PacketRegister,     PacketGuess )
+define([ 'require', 'Utils/BinaryReader',   './PacketVerManager', './PacketVersions', './PacketRegister', './PacketGuess', './SocketHelpers/ChromeSocket', './SocketHelpers/JavaSocket'],
+function( require,          BinaryReader,      PACKETVER,            PacketVersions,     PacketRegister,     PacketGuess,                   ChromeSocket,                   JavaSocket)
 {
 	"use strict";
+
+	var Socket;
+
+	// Native socket
+	if( window.chrome && chrome.socket ) {
+		Socket = ChromeSocket;
+	}
+
+	// Java socket...
+	else {
+		Socket = JavaSocket;
+	}
 
 
 	/**

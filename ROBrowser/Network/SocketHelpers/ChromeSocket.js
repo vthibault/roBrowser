@@ -22,7 +22,7 @@ define(function()
 	function Socket( host, port )
 	{
 		this.connected = false;
-		this.socketId  = 0;
+		this.socketID  = 0;
 		this.host      = host;
 		this.port      = port;
 
@@ -36,7 +36,7 @@ define(function()
 	 */
 	Socket.prototype.connect = function SocketConnect()
 	{
-		chrome.socket.connect( this.socketId, this.host, this.port, this.__onComplete.bind(this));
+		chrome.socket.connect( this.socketID, this.host, parseInt(this.port, 10), this.__onComplete.bind(this));
 	};
 
 
@@ -48,7 +48,7 @@ define(function()
 	Socket.prototype.send = function Send( buffer )
 	{
 		if ( this.connected ) {
-			chrome.socket.write( this.socketId, buffer, this.__onWrite.bind(this));
+			chrome.socket.write( this.socketID, buffer, this.__onWrite.bind(this));
 		}
 	};
 
@@ -86,10 +86,10 @@ define(function()
 	 */
 	Socket.prototype.__onComplete = function onComplete( success )
 	{
-		this.connected = success;
+		this.connected = success >= 0;
 
 		if( this.onComplete ) {
-			this.onComplete(success);
+			this.onComplete(this.connected);
 		}
 
 		// Start receiving data
@@ -119,7 +119,6 @@ define(function()
 	 */
 	Socket.prototype.__onWrite = function onWrite( writeInfo )
 	{
-		
 	};
 
 
@@ -141,7 +140,7 @@ define(function()
 			}
 		}
 
-		chrome.socket.read( this.socketId, null, this.__onReceive.bind(this)); 
+		chrome.socket.read( this.socketID, null, this.__onReceive.bind(this)); 
 	};
 
 
