@@ -247,7 +247,10 @@ function(       Queue,        Client,     ClassTable,     ClassPalTable,     Mon
 		return function() {
 			Client.loadFile( filename, function(js) {
 				// TODO: fix Lub decoder
-				eval(js);
+				try {
+					eval(js);
+				}
+				catch(e){}
 				onEnd();
 			}, onEnd );
 		};
