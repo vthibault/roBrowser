@@ -97,7 +97,7 @@ define(function( require )
 			this.canvas.style.position = "absolute";
 			this.canvas.style.top      = "0px";
 			this.canvas.style.left     = "0px";
-			this.canvas.style.zIndex   = -1;
+			this.canvas.style.zIndex   =  0;
 	
 			this.gl = WebGL.getContext( this.canvas );
 
