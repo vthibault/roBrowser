@@ -102,6 +102,10 @@ function(       jQuery,      DB,               Client,            Mouse )
 		if( !this.__loaded) {
 			this.prepare();
 			this.__loaded = true;
+
+			// Hack to fix async preferences on Chrome App...
+			setTimeout( this.append.bind(this), 10 );
+			return;
 		}
 
 		this.ui.appendTo('body');

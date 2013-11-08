@@ -66,6 +66,15 @@ define(function(require)
 	 */
 	Equipment.init = function Init()
 	{
+		// Preferences structure
+		this.preferences = Preferences.get('Equipment', {
+			x:        480,
+			y:        200,
+			show:     false,
+			reduce:   false,
+			stats:    true
+		}, 1.0);
+
 		this.ctx       = this.ui.find('canvas')[0].getContext('2d');
 		this.entity    = new Entity(Camera.target);
 		this.showEquip = false;
@@ -75,7 +84,6 @@ define(function(require)
 		WinStats.__loaded = true;
 		this.ui.find('.status_component').append(WinStats.ui);
 
-		this.initPreferences();
 		this.draggable();
 
 		// Bind events
@@ -142,6 +150,30 @@ define(function(require)
 	 */
 	Equipment.onAppend = function OnAppend()
 	{
+		// Apply preferences
+		this.ui.css({
+			top:  Math.min( Math.max( 0, this.preferences.y), Renderer.height - this.ui.height()),
+			left: Math.min( Math.max( 0, this.preferences.x), Renderer.width  - this.ui.width())
+		});
+
+		// Hide window ?
+		if( !this.preferences.show ) {
+			this.ui.hide();
+		}
+
+		// Reduce window ?
+		if( this.preferences.reduce ) {
+			this.ui.find('.panel').hide();
+		}
+
+		// Show status window ?
+		if( !this.preferences.stats ) {
+			this.ui.find('.status_component').hide();
+			Client.loadFile( DB.INTERFACE_PATH + 'basic_interface/viewon.bmp', function(data){
+				Equipment.ui.find('.view_status').css('backgroundImage', 'url(' + data + ')');
+			});
+		}
+
 		Renderer.render(this.renderCharacter);
 	};
 
@@ -183,46 +215,6 @@ define(function(require)
 		}
 
 		return true;
-	};
-
-
-	/**
-	 * Initialize preferences
-	 */
-	Equipment.initPreferences = function InitPreferences()
-	{
-		// Preferences structure
-		this.preferences = Preferences.get('Equipment', {
-			x:        480,
-			y:        200,
-			show:     false,
-			reduce:   false,
-			stats:    true
-		}, 1.0);
-
-		// Apply preferences
-		this.ui.css({
-			top:  Math.min( Math.max( 0, this.preferences.y), Renderer.height - this.ui.height()),
-			left: Math.min( Math.max( 0, this.preferences.x), Renderer.width  - this.ui.width())
-		});
-
-		// Hide window ?
-		if( !this.preferences.show ) {
-			this.ui.hide();
-		}
-
-		// Reduce window ?
-		if( this.preferences.reduce ) {
-			this.ui.find('.panel').hide();
-		}
-
-		// Show status window ?
-		if( !this.preferences.stats ) {
-			this.ui.find('.status_component').hide();
-			Client.loadFile( DB.INTERFACE_PATH + 'basic_interface/viewon.bmp', function(data){
-				Equipment.ui.find('.view_status').css('backgroundImage', 'url(' + data + ')');
-			});
-		}
 	};
 
 

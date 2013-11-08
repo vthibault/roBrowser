@@ -11,17 +11,6 @@ body {
 	user-select:none;
 }
 
-/* Courgette style */
-@font-face {
-  font-family: 'Courgette';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Courgette Regular'), local('Courgette-Regular'), url(http://themes.googleusercontent.com/static/fonts/courgette/v1/BHG8ZtTfO0yYnp02--Qxqj8E0i7KZn-EPnyo3HZu7kw.woff) format('woff');
-}
-
-
-
-
 /* Page Elements */
 #intro {
 	position:absolute;
@@ -39,7 +28,6 @@ body {
 
 #intro header, #intro footer, #intro article {
 	position:relative;
-	font-family: 'Courgette', cursive;
 	color:white;
 	font-size:40px;
 	left:200px;

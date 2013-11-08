@@ -43,7 +43,6 @@ define(function(require)
 			index: 0
 		}, 1.0 );
 
-		this.index       = this.preferences.index;
 		this.maxSlots    = 3 * 9;
 		this.ctx         = [];
 		this.list        = [];
@@ -116,6 +115,8 @@ define(function(require)
 	 */
 	CharSelect.onAppend = function onAppend()
 	{
+		this.index       = this.preferences.index;
+
 		this.ui.find('.slotinfo .content').text( DB.msgstringtable[2004] );
 		this.ui.find('.slotinfo .number').text( this.list.length + ' / ' + this.maxSlots );
 		this.ui.find('.pageinfo .count').text( this.maxSlots / 3 );

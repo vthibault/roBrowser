@@ -1,0 +1,25 @@
+{
+	"manifest_version": 2,
+	"name": "roBrowser",
+	"version": "1",
+
+	"description": "roBrowser is an Open Source Ragnarok Online adaptation",
+	"author": "Thibault Vincent",
+
+	"minimum_chrome_version": "23",
+	"icons": {
+		"16":  "app/icon_16.png",
+		"128": "app/icon_128.png"
+	},
+
+	"app": {
+		"background": {
+		  "scripts": ["app/index.js"]
+		}
+	},
+
+	"permissions": [
+		{ "socket": ["tcp-connect:*:*"] },
+		"storage"
+	]
+}

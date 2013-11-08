@@ -88,7 +88,16 @@ define(function(require)
 	 */
 	Inventory.init = function Init()
 	{
-		this.initPreferences();
+		// Preferences structure
+		this.preferences = Preferences.get('Inventory', {
+			x:        200,
+			y:        200,
+			width:    7,
+			height:   4,
+			show:     false,
+			reduce:   false,
+			tab:      this.TAB.USABLE
+		}, 1.0);
 
 		// Bind buttons
 		this.ui.find('.titlebar .mini').mousedown(this.toggleReduction.bind(this));
@@ -249,21 +258,10 @@ define(function(require)
 
 
 	/**
-	 * Hide inventory when append to body
+	 * Apply preferences once append to body
 	 */
-	Inventory.initPreferences = function InitPreferences()
+	Inventory.onAppend = function OnAppend()
 	{
-		// Preferences structure
-		this.preferences = Preferences.get('Inventory', {
-			x:        200,
-			y:        200,
-			width:    7,
-			height:   4,
-			show:     false,
-			reduce:   false,
-			tab:      this.TAB.USABLE
-		}, 1.0);
-
 		// Apply preferences
 		if( !this.preferences.show ) {
 			this.ui.hide();

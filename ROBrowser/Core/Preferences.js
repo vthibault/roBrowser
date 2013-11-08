@@ -12,6 +12,22 @@ define(function()
 	"use strict";
 
 
+	var Storage = ( window.chrome && chrome.storage && chrome.storage.local )
+		|| {
+			get: function Get( key, fn ){
+				var out = {};
+				out[key] = localStorage.getItem(key);
+				fn( out );
+			},
+			set: function Set( obj, fn ) {
+				var keys = Object.keys( obj );
+				for( var i=0, count = keys.length; i<count; ++i ) {
+					localStorage.setItem( keys[i], obj[ keys[i] ] );
+				}
+			}
+		};
+
+
 	/**
 	 * Get back values
 	 *
@@ -21,28 +37,32 @@ define(function()
 	 */
 	function Get( key, def, version )
 	{
-		var value = localStorage.getItem(key);
-		version   = version || 0.0
+		Storage.get( key, function( value ){
 
-		// Not existing, storing it
-		if( value === null || JSON.parse(value)._version !== version ) {
-			if( def ) {
-				def._key     = key;
-				def._version = version;
-				def.save     = SelfSave;
+			version   = version || 0.0
+
+			// Not existing, storing it
+			if( !value[key] || JSON.parse(value[key])._version !== version ) {
 				Save( def );
-				return def;
+				return;
 			}
 
-			return null;
-		}
+			var data      = JSON.parse( value[key] );
+			data._key     = key;
+			data._version = version;
+			data.save     = SelfSave;
 
-		var data     = JSON.parse( value );
-		data._key    = key;
+			var keys = Object.keys(data);
+			for( var i=0, count=keys.length; i<count; ++i ) {
+				def[ keys[i] ] = data[ keys[i] ];
+			}
+		});
+
+		def._key     = key;
 		def._version = version;
-		data.save    = SelfSave;
+		def.save     = SelfSave;
 
-		return data;
+		return def;
 	}
 
 
@@ -56,12 +76,15 @@ define(function()
 	{
 		var key = data._key;
 		delete data._key;
-		delete data._save;
+		delete data.save;
 
-		localStorage.setItem( key, JSON.stringify(data) );	
+		var store = {};
+		store[key] = JSON.stringify(data);
+
+		Storage.set( store );
 
 		data._key  = key;
-		data._save = SelfSave;
+		data.save  = SelfSave;
 	}
 
 

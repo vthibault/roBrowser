@@ -58,10 +58,6 @@ define(function(require)
 
 		this.zoomPlus.mousedown(this.genericUpdateZoom(+1));
 		this.zoomMinus.mousedown(this.genericUpdateZoom(-1));
-
-		// Set preferences
-		this.updateZoom( this.preferences.zoom );
-		this.toggleOpacity( this.preferences.opacity );
 	};
 
 
@@ -83,6 +79,10 @@ define(function(require)
 	 */
 	MiniMap.onAppend = function OnAppend()
 	{
+		// Set preferences
+		this.updateZoom( this.preferences.zoom );
+		this.toggleOpacity( this.preferences.opacity );
+
 		Client.loadFile('/map/map_arrow.bmp', function(dataURI){
 			MiniMap.arrow.src = dataURI;
 		});
