@@ -113,7 +113,7 @@ define(function(require)
 
 		// Change size
 		this.ui.find('.input .size').mousedown(function( event ){
-			ChatBox.updateHeight();
+			ChatBox.updateHeight(true);
 			event.stopImmediatePropagation();
 			return false;
 		});
@@ -200,7 +200,7 @@ define(function(require)
 				break;
 
 			case KEYS.F10:
-				this.updateHeight();
+				this.updateHeight(false);
 				break;
 
 			case KEYS.ENTER:
@@ -328,25 +328,50 @@ define(function(require)
 
 
 	/**
+	 * @var {number} Chatbox position's index
+	 */
+	ChatBox.heightIndex = 2;
+
+
+	/**
 	 * Change chatbox's height
 	 */
-	ChatBox.updateHeight = function changeHeight()
+	ChatBox.updateHeight = function changeHeight( AlwaysVisible )
 	{
-		var $content = this.ui.find('.content');
-		var list     = [ 0, 3*14, 6*14, 9*14, 12*14, 15*14 ];
-		var index    = list.indexOf( $content.height() );
-		var height   = list[ (index + list.length + 1) % list.length ];
+		var HeightList   = [ 0, 0, 3*14, 6*14, 9*14, 12*14, 15*14 ];
+		this.heightIndex = (this.heightIndex + 1) % HeightList.length;
 
-		var top      = parseInt(this.ui.css('top'),10);
+		var $content   = this.ui.find('.content');
+		var height     = HeightList[ this.heightIndex ];
+		var top        = parseInt( this.ui.css('top'), 10);
+
 		this.ui.css('top', top - (height - $content.height()) );
 		$content.height(height);
 
-		if( height === 0 ) this.ui.hide();
-		else               this.ui.show();
+		// Don't remove UI
+		if( this.heightIndex === 0 && AlwaysVisible ) {
+			this.heightIndex++;
+		}
+
+		switch( this.heightIndex ) {
+			case 0:
+				this.ui.hide();
+				break;
+
+			case 1:
+				this.ui.show();
+				this.ui.find('.header, .body').hide();
+				this.ui.find('.input').addClass('fix');
+				break;
+
+			default:
+				this.ui.find('.input').removeClass('fix');
+				this.ui.find('.header, .body').show();
+				break;
+		}
 
 		$content[0].scrollTop = $content[0].scrollHeight;
 	};
-
 
 	/**
 	 * Talk feature

@@ -76,6 +76,10 @@
 	position:relative;
 }
 
+#chatbox .input.fix {
+	margin-top:29px;
+}
+
 #chatbox .input input {
 	position:absolute;
 	top:3px;
