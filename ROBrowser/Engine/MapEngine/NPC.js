@@ -13,6 +13,9 @@ define(function( require )
 	"use strict";
 
 
+	var MainPlayer;
+
+
 	/**
 	 * Load dependencies
 	 */
@@ -314,10 +317,46 @@ define(function( require )
 
 
 	/**
+	 * Receive progressbar
+	 *
+	 * @param {object} pkt - PACKET_ZC_PROGRESS
+	 */
+	function OnProgressBar( pkt )
+	{
+		MainPlayer.cast.onComplete = function(){
+			var pkt = new PACKET.CZ.PROGRESS();
+			Network.sendPacket(pkt);
+		};
+
+		var rgb = 'rgb(' + ([
+				( pkt.color & 0x00ff0000 ) >> 16,
+				( pkt.color & 0x0000ff00 ) >> 8,
+				( pkt.color & 0x000000ff )
+			]).join(',') + ')';
+
+		// Color added only if the progressbar isn't black
+		MainPlayer.cast.set( pkt.time * 1000, pkt.color ? rgb : null );
+	}
+
+
+	/**
+	 * Stop Progressbar
+	 *
+	 * @param {object} pkt - PACKET.CZ.PROGRESS
+	 */
+	function OnProgressBarStop( pkt )
+	{
+		MainPlayer.cast.remove();
+	}
+
+
+	/**
 	 * Initialize
 	 */
 	return function NPCEngine()
 	{
+		MainPlayer = this.entity;
+
 		Network.hookPacket( PACKET.ZC.SAY_DIALOG,      OnMessage );
 		Network.hookPacket( PACKET.ZC.WAIT_DIALOG,     OnNextAppear );
 		Network.hookPacket( PACKET.ZC.CLOSE_DIALOG,    OnCloseAppear );
@@ -328,5 +367,7 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.SHOW_IMAGE,      OnCutin );
 		Network.hookPacket( PACKET.ZC.SHOW_IMAGE2,     OnCutin );
 		Network.hookPacket( PACKET.ZC.COMPASS,         OnNpcMark );
+		Network.hookPacket( PACKET.ZC.PROGRESS,        OnProgressBar );
+		Network.hookPacket( PACKET.ZC.PROGRESS_CANCEL, OnProgressBarStop );
 	};
 });

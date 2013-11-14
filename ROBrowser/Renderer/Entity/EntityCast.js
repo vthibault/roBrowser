@@ -25,13 +25,15 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 	 */
 	function Cast()
 	{
-		this.tick    =  0;
-		this.delay   =  0;
-		this.percent = -1;
-		this.display = false;
+		this.tick       =  0;
+		this.delay      =  0;
+		this.percent    = -1;
+		this.display    = false;
+		this.color      = "#00FF00";
+		this.onComplete = null;
 
-		this.canvas = document.createElement('canvas');
-		this.ctx    = this.canvas.getContext('2d');
+		this.canvas     = document.createElement('canvas');
+		this.ctx        = this.canvas.getContext('2d');
 		this.canvas.style.position = "absolute";
 		this.canvas.style.zIndex   = 1;
 		this.canvas.width  = 60;
@@ -44,7 +46,7 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 	 *
 	 * @param {number} delay
 	 */
-	Cast.prototype.set = function Set( delay )
+	Cast.prototype.set = function Set( delay, color )
 	{
 		// Append to body
 		if( !this.canvas.parentNode ) {
@@ -55,6 +57,7 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 		this.display = true;
 		this.tick    = Renderer.tick + 0;
 		this.delay   = delay;
+		this.color   = color || '#00FF00';
 	};
 
 
@@ -77,6 +80,7 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 	Cast.prototype.clean = function Clean()
 	{
 		this.remove();
+		this.onComplete = null;
 		//this.ctx    = null;
 		//this.canvas = null;
 	};
@@ -101,7 +105,7 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 		ctx.fillRect( 1, 1, width-2, 4 );
 
 		// Percent
-		ctx.fillStyle = '#10ef21';
+		ctx.fillStyle = this.color;
 		ctx.fillRect( 1, 1, Math.round( (width-2) * perc ), 4 );
 	};
 
@@ -120,6 +124,11 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 		// Cast complete remove it
 		if ( percent >= 1.0 ) {
 			this.remove();
+
+			if( this.onComplete ) {
+				this.onComplete();
+				this.onComplete = null;
+			}
 			return;
 		}
 
