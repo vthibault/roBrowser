@@ -390,11 +390,11 @@ define(function(require)
 		}
 		else if( text[0] === '%' ) {
 			pkt = new PACKET.CZ.REQUEST_CHAT_PARTY();
-			pkt.msg = text;
+			pkt.msg = Camera.target.display.name + ' : ' + text.substr(1);
 		}
 		else if( text[0] === '$' ) {
 			pkt = new PACKET.CZ.GUILD_CHAT();
-			pkt.msg = text;
+			pkt.msg = Camera.target.display.name + ' : ' + text.substr(1);
 		}
 		else {
 			pkt = new PACKET.CZ.REQUEST_CHAT();
