@@ -30,7 +30,7 @@ define( function( require )
 	 * Background canvas element
 	 */
 	Background.canvas = jQuery('<canvas/>')
-		.css({ position: 'absolute', top: 0, left: 0, zIndex:-1 });
+		.css({ position: 'absolute', top: 0, left: 0, zIndex:0 });
 
 
 	/**
@@ -195,7 +195,7 @@ define( function( require )
 	Background.remove = function Remove( callback )
 	{
 		this.transition(function(){
-			Background.canvas.css('zIndex', -1 );
+			Background.canvas.css('zIndex', 0 );
 			Background.canvas.remove();
 
 			if( callback ) {
