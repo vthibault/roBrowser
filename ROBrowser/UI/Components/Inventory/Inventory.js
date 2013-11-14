@@ -143,6 +143,13 @@ define(function(require)
 							( it.slotCount ? ' [' + it.slotCount + ']' : '') + 
 							' ' + ( item.count || 1 ) + ' ea'
 						);
+
+						if( item.IsIdentified ) {
+							overlay.removeClass('grey');
+						}
+						else {
+							overlay.addClass('grey');
+						}
 						break;
 					}
 				}
