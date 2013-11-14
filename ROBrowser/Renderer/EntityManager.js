@@ -228,10 +228,15 @@ function(         Entity,     SpriteRenderer )
 		}
 
 		_list.sort(function(a, b){
+			var aDepth = a.depth + (a.GID%100) / 1000;
+			var bDepth = b.depth + (b.GID%100) / 1000;
+
 			if( picking && a.objecttype !== b.objecttype ) {
-				return Entity.PickingPriority[a.objecttype] - Entity.PickingPriority[b.objecttype];
+				aDepth += Entity.PickingPriority[a.objecttype];
+				bDepth += Entity.PickingPriority[b.objecttype];
 			}
-			return b.depth - a.depth;
+
+			return bDepth - aDepth;
 		});
 
 		// Use program
