@@ -223,13 +223,41 @@ define(function( require )
 			case 12:
 				break;
 
-			// Stats
-			case 13: WinStats.update('str', amount); break; // str
-			case 14: WinStats.update('agi', amount); break; // agi
-			case 15: WinStats.update('vit', amount); break; // vit
-			case 16: WinStats.update('int', amount); break; // int
-			case 17: WinStats.update('dex', amount); break; // dex
-			case 18: WinStats.update('luk', amount); break; // luk
+			// Str
+			case 13:
+				WinStats.update('str',  pkt.defaultStatus);
+				WinStats.update('str2', pkt.plusStatus);
+				break;
+
+			// Agi
+			case 14:
+				WinStats.update('agi',  pkt.defaultStatus);
+				WinStats.update('agi2', pkt.plusStatus);
+				break;
+
+			// Vit
+			case 15:
+				WinStats.update('vit',  pkt.defaultStatus);
+				WinStats.update('vit2', pkt.plusStatus);
+				break;
+
+			// Int
+			case 16:
+				WinStats.update('int',  pkt.defaultStatus);
+				WinStats.update('int2', pkt.plusStatus);
+				break;
+
+			// Dex
+			case 17:
+				WinStats.update('dex',  pkt.defaultStatus);
+				WinStats.update('dex2', pkt.plusStatus);
+				break;
+
+			// Luk
+			case 18:
+				WinStats.update('luk',  pkt.defaultStatus);
+				WinStats.update('luk2', pkt.plusStatus);
+				break;
 
 			// Zeny
 			case 20:

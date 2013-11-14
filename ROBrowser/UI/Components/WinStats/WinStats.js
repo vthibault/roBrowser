@@ -112,6 +112,16 @@ define(function(require)
 				this.ui.find('.stats .'+ type).text(val);
 				break;
 
+			case 'str2':
+			case 'agi2':
+			case 'vit2':
+			case 'int2':
+			case 'dex2':
+			case 'luk2':
+				var str = val < 0 ? '- ' + (-val) : val > 0 ? '+ ' + val : '';
+				this.ui.find('.bonus .'+ type.replace('2','')).text( str );
+				break;
+
 			case 'str3':
 			case 'agi3':
 			case 'vit3':
