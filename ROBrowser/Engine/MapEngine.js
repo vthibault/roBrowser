@@ -341,6 +341,7 @@ define(function( require )
 			ChatBox.addText( DB.msgstringtable[501], ChatBox.TYPE.ERROR );
 		}
 		else {
+			ChatBox.clean();
 			MapRenderer.free();
 			Renderer.stop();
 			MapEngine.onRestart();
@@ -363,6 +364,7 @@ define(function( require )
 		switch( pkt.result ) {
 			// Disconnect
 			case 0:
+				ChatBox.clean();
 				Renderer.stop();
 				MapEngine.onExit();
 				break;

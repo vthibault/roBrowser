@@ -126,6 +126,17 @@ define(function(require)
 
 
 	/**
+	 * Clean up the box
+	 */
+	ChatBox.clean = function Clean()
+	{
+		this.ui.find('.content').empty();
+		this.ui.find('.input .message').val('');
+		this.ui.find('.input .username').val('');
+	};
+
+
+	/**
 	 * Once append to HTML
 	 */
 	ChatBox.onAppend = function OnAppend()
