@@ -100,10 +100,10 @@ define(function(require)
 		}, 1.0);
 
 		// Bind buttons
-		this.ui.find('.titlebar .mini').mousedown(this.toggleReduction.bind(this));
+		this.ui.find('.titlebar .mini').click(this.toggleReduction.bind(this));
 		this.ui.find('.tabs button').mousedown(this.switchTab);
 		this.ui.find('.footer .extend').mousedown( this.extend.bind(this) );
-		this.ui.find('.titlebar .close').mousedown(function(){
+		this.ui.find('.titlebar .close').click(function(){
 			Inventory.ui.hide();
 			return false;
 		});

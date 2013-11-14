@@ -39,7 +39,7 @@ define(function(require)
 
 		this.ui.css({ top: 200, left:200 });
 
-		this.ui.find('.close').mousedown(function(){
+		this.ui.find('.close').click(function(){
 			ui.remove();
 		});
 

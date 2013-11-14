@@ -87,11 +87,11 @@ define(function(require)
 		this.draggable();
 
 		// Bind events
-		this.ui.find('.titlebar .mini').mousedown(function(){
+		this.ui.find('.titlebar .mini').click(function(){
 			Equipment.ui.find('.panel').toggle();
 		});
 
-		this.ui.find('.titlebar .close').mousedown(function(){
+		this.ui.find('.titlebar .close').click(function(){
 			Equipment.ui.hide();
 			return false;
 		});

@@ -50,7 +50,7 @@ define(function(require)
 	 */
 	BasicInfo.init = function Init()
 	{
-		this.ui.find('.topbar .right').mousedown(BasicInfo.toggleMode.bind(this));
+		this.ui.find('.topbar .right').click(BasicInfo.toggleMode.bind(this));
 		this.ui.find('.toggle_btns').mousedown(BasicInfo.toggleButtons.bind(this));
 		this.ui.find('.buttons button').mousedown(function(){
 			switch( this.className ) {
