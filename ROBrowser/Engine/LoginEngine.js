@@ -179,6 +179,9 @@ function(
 	 */
 	LoginEngine.onCharServerSelected = function OnCharServerSelected( index )
 	{
+		// Play "¹öÆ°¼Ò¸®.wav" (encode to avoid problem with charset)
+		Sound.play("\xB9\xF6\xC6\xB0\xBC\xD2\xB8\xAE.wav");
+
 		WinList.remove();
 		WinLoading.append();
 
