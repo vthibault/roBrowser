@@ -194,8 +194,8 @@ define(function(require)
 		this.preferences.show   =  this.ui.is(':visible');
 		this.preferences.reduce = !this.ui.find('.panel').is(':visible');
 		this.preferences.stats  =  this.ui.find('.status_component').is(':visible');
-		this.preferences.y      =  this.ui.position().top;
-		this.preferences.x      =  this.ui.position().left;
+		this.preferences.y      =  parseInt(this.ui.css('top'), 10);
+		this.preferences.x      =  parseInt(this.ui.css('left'), 10);
 		this.preferences.save();
 	};
 

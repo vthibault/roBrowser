@@ -304,8 +304,8 @@ define(function(require)
 		this.preferences.show   =  this.ui.is(':visible');
 		this.preferences.reduce = !!this.realSize;
 		this.preferences.tab    =  this.tab;
-		this.preferences.y      =  this.ui.position().top;
-		this.preferences.x      =  this.ui.position().left;
+		this.preferences.y      =  parseInt(this.ui.css('top'), 10);
+		this.preferences.x      =  parseInt(this.ui.css('left'), 10);
 		this.preferences.width  =  Math.floor( (this.ui.width()  - (23 + 16 + 16 - 30)) / 32 );
 		this.preferences.height =  Math.floor( (this.ui.height() - (31 + 19 - 30     )) / 32 );
 		this.preferences.save();
