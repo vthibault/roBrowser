@@ -248,8 +248,9 @@ define(function(require)
 			return;
 		}
 
-		if( user.length ) {
-			ChatBox.PrivateMessageStorage.push({ nick: user, msg: text });
+		if( user.length && text[0] !== '/' ) {
+			this.PrivateMessageStorage.nick = user;
+			this.PrivateMessageStorage.msg  = text;
 		}
 
 		// Save in history
@@ -275,7 +276,10 @@ define(function(require)
 	/**
 	 * Storage to cache the private messages
 	 */
-	ChatBox.PrivateMessageStorage = [];
+	ChatBox.PrivateMessageStorage = {
+		nick: "",
+		msg:  ""
+	};
 
 
 	/**

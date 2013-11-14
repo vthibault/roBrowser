@@ -40,8 +40,8 @@ define(function( require )
 	 */
 	function OnPrivateMessageSent( pkt )
 	{
-		var user = ChatBox.PrivateMessageStorage[0].nick;
-		var msg  = ChatBox.PrivateMessageStorage[0].msg;
+		var user = ChatBox.PrivateMessageStorage.nick;
+		var msg  = ChatBox.PrivateMessageStorage.msg;
 		
 		if ( pkt.result === 0 ) {
 			ChatBox.addText( "(To "+ user +") : " + msg, ChatBox.TYPE.PRIVATE );
@@ -50,7 +50,8 @@ define(function( require )
 			ChatBox.addText( "("+ user +") : " + DB.msgstringtable[147 + pkt.result],  ChatBox.TYPE.PRIVATE );
 		}
 	
-		ChatBox.PrivateMessageStorage.splice(0,1);
+		ChatBox.PrivateMessageStorage.nick = "";
+		ChatBox.PrivateMessageStorage.msg  = "";
 	}
 
 
