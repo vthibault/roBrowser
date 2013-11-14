@@ -77,6 +77,9 @@ define(function( require )
 		// Connect to char server
 		Network.connect( Network.utils.longToIP( _pkt.addr.ip ), _pkt.addr.port, function( success ){
 
+			// Force reloading map
+			MapRenderer.currentMap = "";
+
 			// Fail to connect...
 			if ( !success ) {
 				UIManager.showErrorBox( DB.msgstringtable[1] );

@@ -367,6 +367,13 @@ function( require,          BinaryReader,      PACKETVER,            PacketVersi
 				clearInterval(_socket.ping);
 			}
 			_socket.ping = setInterval( callback, 10000);
+
+			while( _sockets.length > 1 ) {
+				if( _socket !== _sockets[0] ) {
+					_sockets[0].close();
+					_sockets.splice( 0, 1 );
+				}
+			}
 		}
 	}
 

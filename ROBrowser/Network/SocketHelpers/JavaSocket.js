@@ -82,7 +82,8 @@ define([ 'require', 'Utils/jquery'], function( require, jQuery )
 	Socket.prototype.close = function Close()
 	{
 		if( this.connected ) {
-			this.applet.disconnect();
+			// Don't need to disconnect, removing it from html will execute all we need in the JAVA class
+			//this.applet.disconnect();
 
 			if( this.applet.parentNode ) {
 				document.body.removeChild(this.applet);
@@ -163,7 +164,9 @@ define([ 'require', 'Utils/jquery'], function( require, jQuery )
 	 */
 	window.javasocketbridge_onready = function SocketOnReady( id )
 	{
-		Socket.list[id].__onReady();
+		if( Socket.list[id] ) {
+			Socket.list[id].__onReady();
+		}
 	};
 
 
@@ -175,7 +178,9 @@ define([ 'require', 'Utils/jquery'], function( require, jQuery )
 	 */
 	window.javasocketbridge_oncomplete = function SocketOnComplete( id, result)
 	{
-		Socket.list[id].__onComplete(!!result);
+		if( Socket.list[id] ) {
+			Socket.list[id].__onComplete(!!result);
+		}
 	};
 
 
@@ -186,7 +191,9 @@ define([ 'require', 'Utils/jquery'], function( require, jQuery )
 	 */
 	window.javasocketbridge_onclose = function( id )
 	{
-		Socket.list[id].__onClose();
+		if( Socket.list[id] ) {
+			Socket.list[id].__onClose();
+		}
 	};
 
 
@@ -198,7 +205,9 @@ define([ 'require', 'Utils/jquery'], function( require, jQuery )
 	 */
 	window.javasocketbridge_onmessage = function( id, data )
 	{
-		Socket.list[id].__onReceive( String(data) );
+		if( Socket.list[id] ) {
+			Socket.list[id].__onReceive( String(data) );
+		}
 	};
 
 

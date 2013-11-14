@@ -103,9 +103,9 @@ define( ['Utils/WebGL'], function( WebGL )
 		var i, count;
 		var objects;
 
-		objects  = data.infos;
-		count    = objects.length;
-		_objects = new Array(count);
+		objects         = data.infos;
+		count           = objects.length;
+		_objects.length = count;
 
 		// Bind buffer
 		if( !_buffer ) {
@@ -121,7 +121,10 @@ define( ['Utils/WebGL'], function( WebGL )
 
 		// Fetch all images, and draw them in a mega-texture
 		for ( i=0; i<count; ++i ) {
-			_objects[i] = {};
+			if( ! _objects[i] ) {
+				_objects[i] = {};
+			}
+
 			_objects[i].vertCount  = data.infos[i].vertCount;
 			_objects[i].vertOffset = data.infos[i].vertOffset;
 			_objects[i].complete   = false;
@@ -224,7 +227,7 @@ define( ['Utils/WebGL'], function( WebGL )
 		for ( i=0, count=_objects.length; i<count; ++i ) {
 			gl.deleteTexture( _objects[i].texture );
 		}
-		_objects = null;
+		_objects.length = 0;
 	}
 
 

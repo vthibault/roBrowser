@@ -53,7 +53,7 @@ define([
 	/**
 	 * @var {object} char server
 	 */
-	CharEngine.server = null;
+	CharEngine.Server = null;
 
 
 	/**
@@ -66,6 +66,24 @@ define([
 	 * @var {boolean} account sex
 	 */
 	CharEngine.AccountSex = 0;
+
+
+	/**
+	 * @var {number} language type
+	 */
+	CharEngine.LangType = 0;
+
+
+	/**
+	 * @var {number} AuthCode
+	 */
+	CharEngine.AuthCode = 0;
+
+
+	/**
+	 * @var {number} UserLevel
+	 */
+	CharEngine.UserLevel = 0;
 
 
 	/**
@@ -83,6 +101,9 @@ define([
 		this.AID        = AID;
 		this.AccountSex = Sex;
 		this.AuthCode   = AuthCode;
+		this.Server     = server;
+		this.LangType   = langtype;
+		this.UserLevel  = UserLevel;
 
 		// Connect to char server
 		Network.connect( Network.utils.longToIP( server.ip ), server.port, function( success ){
@@ -406,8 +427,6 @@ define([
 		UIManager.getComponent('WinLoading').append();
 		CharEngine.selectedCharacter = entity;
 
-		// CharSelect.Entity = entity;
-
 		var pkt = new PACKET.CH.SELECT_CHAR();
 		pkt.CharNum = entity.CharNum;
 		Network.sendPacket(pkt);	
@@ -436,9 +455,9 @@ define([
 	 */
 	MapEngine.onExit = function OnMapEngineExit()
 	{
-		UIManager.removeComponents();
-		Background.setImage( '/bgi_temp.bmp', function() {
-			CharEngine.onExitRequest();			   
+		Background.setImage( 'bgi_temp.bmp', function() {
+			UIManager.removeComponents();
+			CharEngine.onExitRequest();
 		});
 	};
 
@@ -448,9 +467,17 @@ define([
 	 */
 	MapEngine.onRestart = function OnMapEngineRestart()
 	{
-		UIManager.removeComponents();
-		Background.setImage( '/bgi_temp.bmp', function() {
-			CharSelect.append();
+		Background.setImage( 'bgi_temp.bmp', function() {
+			UIManager.removeComponents();
+
+			CharEngine.init(
+				CharEngine.Server,
+				CharEngine.LangType,
+				CharEngine.AID,
+				CharEngine.AuthCode,
+				CharEngine.UserLevel,
+				CharEngine.AccountSex
+			);
 		});
 	};
 
