@@ -139,8 +139,9 @@ define(['Controls/KeyEventHandler', 'Controls/MouseEventHandler', 'Preferences/C
 	{
 		this.lastTick  = Date.now();
 
-		this.zoom      = 0.0;
-		this.zoomFinal = 0.0;
+		// Should not re-initialize zoom ?
+		//this.zoom      = 0.0;
+		//this.zoomFinal = 0.0;
 
 		this.angle[0]      = 240.0;
 		this.angle[1]      = this.rotationFrom % 360.0;
