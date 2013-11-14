@@ -48,6 +48,7 @@ define(function(require)
 		this.list        = [];
 		this.slots       = [];
 		this.entitySlots = [];
+		this.index       = 0;
 
 		var ui = this.ui;
 		ui.css({ top: (Renderer.height-342)/2, left: (Renderer.width-576)/2 });
@@ -115,7 +116,7 @@ define(function(require)
 	 */
 	CharSelect.onAppend = function onAppend()
 	{
-		this.index       = this.preferences.index;
+		this.index = this.preferences.index;
 
 		this.ui.find('.slotinfo .content').text( DB.msgstringtable[2004] );
 		this.ui.find('.slotinfo .number').text( this.list.length + ' / ' + this.maxSlots );
@@ -134,6 +135,8 @@ define(function(require)
 	 */
 	CharSelect.onRemove = function onRemove()
 	{
+		this.preferences.index = this.index;
+		this.preferences.save();
 		Renderer.stop();
 	};
 
@@ -204,7 +207,7 @@ define(function(require)
 
 		this.ui.find('.slotinfo .number').text( this.list.length + ' / ' + this.maxSlots );
 		this.ui.find('.pageinfo .count').text( this.maxSlots / 3 );
-		this.moveTo(0);
+		this.moveTo( this.index );
 	};
 
 
