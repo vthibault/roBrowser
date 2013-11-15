@@ -129,7 +129,7 @@ define(function( require )
 	 */
 	function UpdateParameter( pkt )
 	{
-		var amount = pkt.amount || pkt.count;
+		var amount = pkt.amount || pkt.count || 0;
 		var type   = pkt.varID  || pkt.statusType;
 
 		switch( type ) {
@@ -272,6 +272,7 @@ define(function( require )
 				}
 				break;
 
+			// Job exp next
 			case 23:
 				BasicInfo.job_exp_next  = amount;
 				if( BasicInfo.job_exp > -1 ) {
@@ -279,6 +280,7 @@ define(function( require )
 				}
 				break;
 
+			//Weight
 			case 24:
 				BasicInfo.weight = amount;
 				if( BasicInfo.weight_max > -1 ) {
@@ -286,6 +288,7 @@ define(function( require )
 				}
 				break;
 
+			// Weight Max
 			case 25:
 				BasicInfo.weight_max = amount;
 				if( BasicInfo.weight > -1 ) {
