@@ -40,7 +40,7 @@ function(
 		DAMAGE:      1 << 2,
 		ENEMY:       1 << 3,
 		COMBO:       1 << 4,
-		COMBO_TITLE: 1 << 5
+		COMBO_FINAL: 1 << 5
 	};
 
 
@@ -147,6 +147,7 @@ function(
 			obj.color[0] = 0.9;
 			obj.color[1] = 0.9;
 			obj.color[2] = 0.15;
+			obj.delay    = 3000;
 		}
 		else {
 			// white
@@ -283,9 +284,15 @@ function(
 			perc = ( tick - damage.start ) / damage.delay;
 
 			// Combo title
-			if( damage.type & Damage.TYPE.COMBO_TITLE ) {
+			if( damage.type & Damage.TYPE.COMBO ) {
 				// TODO: fix it
-				size = Math.min( perc, 0.25 ) * 10;
+				size = Math.min( perc, 0.05 ) * 75;
+
+				// Remove it
+				if( !(damage.type & Damage.TYPE.COMBO_FINAL) && perc > 0.15 ) {
+					damage.start = 0;
+				}
+
 				SpriteRenderer.position[0] = damage.position[0];
 				SpriteRenderer.position[1] = damage.position[1];
 				SpriteRenderer.position[2] = damage.position[2] + 5 + perc;
@@ -294,8 +301,8 @@ function(
 			// Damage
 			else if( damage.type & Damage.TYPE.DAMAGE ) {
 				size = ( 1 - perc ) * 4;
-				SpriteRenderer.position[0] = damage.position[0] + perc * 3; // + 3
-				SpriteRenderer.position[1] = damage.position[1] - perc * 2; // - 2
+				SpriteRenderer.position[0] = damage.position[0] + perc * 4;
+				SpriteRenderer.position[1] = damage.position[1] - perc * 4;
 				SpriteRenderer.position[2] = damage.position[2] + 2 + Math.sin( -Math.PI/2 + ( Math.PI * (0.5 + perc * 1.5 ) ) ) * 5;
 			}
 

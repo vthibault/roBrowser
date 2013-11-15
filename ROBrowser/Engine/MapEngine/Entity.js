@@ -121,6 +121,7 @@ define(function( require )
 		switch( pkt.action ) {
 
 			// Damage
+			case 8:
 			case 0:
 				if ( dstEntity ) {
 					if ( pkt.damage ) {
@@ -142,7 +143,19 @@ define(function( require )
 					}
 
 					// Display damage
-					Damage.add( pkt.damage, pkt.damage ? dstEntity : srcEntity, Renderer.tick + pkt.attackMT );
+					if( pkt.action === 0 ) {
+						Damage.add( pkt.damage, pkt.damage ? dstEntity : srcEntity, Renderer.tick + pkt.attackMT );
+					}
+					else if( pkt.action === 8 ) {
+						
+						if( dstEntity.objecttype === Entity.TYPE_MOB ) {
+							Damage.add( pkt.damage / 2, dstEntity, Renderer.tick + pkt.attackMT * 1, Damage.TYPE.COMBO );
+							Damage.add( pkt.damage ,    dstEntity, Renderer.tick + pkt.attackMT * 2, Damage.TYPE.COMBO | Damage.TYPE.COMBO_FINAL );
+						}
+
+						Damage.add( pkt.damage / 2, dstEntity, Renderer.tick + pkt.attackMT * 1 );
+						Damage.add( pkt.damage / 2, dstEntity, Renderer.tick + pkt.attackMT * 2 );
+					}
 
 					// Update entity position
 					srcEntity.lookTo( dstEntity.position[0], dstEntity.position[1] );
@@ -427,8 +440,18 @@ define(function( require )
 				// Combo
 				var aspd = (srcEntity && srcEntity.attack_speed) || 150;
 				for ( var i = 0; i<pkt.count; ++i ) {
-					Damage.add( Math.round( pkt.damage / pkt.count ), dstEntity, Renderer.tick + aspd + ( 200 * i ), Damage.TYPE.COMBO );
-					//Damage.add( Math.round( pkt.damage / pkt.count ), dstEntity, Renderer.tick + aspd + ( 200 * i ), Damage.TYPE.COMBO_TITLE );
+					Damage.add(
+						Math.floor( pkt.damage / pkt.count * (i+1) ),
+						dstEntity,
+						Renderer.tick + aspd + ( 200 * i ), //TOFIX: why 200 ?
+						Damage.TYPE.COMBO | ( (i+1) === pkt.count ? Damage.TYPE.COMBO_FINAL : 0 )
+					);
+					Damage.add(
+						Math.floor( pkt.damage / pkt.count ),
+						dstEntity,
+						Renderer.tick + aspd + ( 200 * i ),
+						Damage.TYPE.DAMAGE
+					);
 				}
 			}
 		}
