@@ -255,6 +255,9 @@ define( function( require )
 		// Remove
 		this.remove_tick  = 0;
 		this.remove_delay = 0;
+
+		// Avoid collision with other Entity with same GID
+		this.GID         += Math.random();
 	};
 
 
