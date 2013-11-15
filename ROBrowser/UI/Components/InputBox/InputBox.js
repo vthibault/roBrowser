@@ -15,7 +15,9 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
+	var jQuery             = require('Utils/jquery');
 	var Renderer           = require('Renderer/Renderer');
+	var KEYS               = require('Controls/KeyEventHandler');
 	var DB                 = require('DB/DBManager');
 	var UIManager          = require('UI/UIManager');
 	var UIComponent        = require('UI/UIComponent');
@@ -34,9 +36,19 @@ define(function(require)
 	 */
 	InputBox.init = function Init()
 	{
+		var self = this;
+
 		this.draggable();
 		this.ui.css({ top: (Renderer.height-120)/1.5-49, left: (Renderer.width -280)/2+1 });
 		this.ui.find('button').click( this.validate.bind(this) );
+
+		this.overlay = jQuery('<div/>')
+			.addClass('win_popup_overlay')
+			.css('zIndex', 30)
+			.click(function(){
+				self.remove();
+			})
+		;
 	};
 
 
@@ -56,6 +68,25 @@ define(function(require)
 	{
 		this.ui.find('input').val('');
 		this.ui.find('.text').text('');
+		this.overlay.detach();
+	};
+
+
+	/**
+	 * Key Listener
+	 *
+	 * @param {object} event
+	 * @return {boolean}
+	 */
+	InputBox.onKeyDown = function OnKeyDown( event )
+	{
+		if( !this.isPersistent && event.which === KEYS.ENTER ) {
+			this.validate();
+			event.stopImmediatePropagation();
+			return false;
+		}
+
+		return true;
 	};
 
 
@@ -64,10 +95,10 @@ define(function(require)
 	 *
 	 * @param {ClickEvent}
 	 */
-	InputBox.validate = function Validate( event )
+	InputBox.validate = function Validate()
 	{
 		var text = this.ui.find('input').val();
-		if( text.length && ( !this.ui.hasClass('number') || parseInt(text, 10) > 0 )) {
+		if( !this.isPersistent || text.length && ( !this.ui.hasClass('number') || parseInt(text, 10) > 0 )) {
 			this.onSubmitRequest( text );
 		}
 	};
@@ -78,8 +109,14 @@ define(function(require)
 	 *
 	 * @param {string} input type (number or text)
 	 */
-	InputBox.setType = function( type )
+	InputBox.setType = function( type, isPersistent )
 	{
+		this.isPersistent = !!isPersistent;
+
+		if( !this.isPersistent ) {
+			this.overlay.appendTo('body');
+		}
+
 		switch( type ) {
 			case 'number':
 				this.ui.addClass('number');

@@ -77,7 +77,7 @@ function(
 			// Left click
 			case 1:
 				// Remove entity picking ?
-				var entity = EntityManager.getFocusEntity();				
+				var entity = EntityManager.getFocusEntity();
 
 				if( entity ) {
 					entity.onMouseUp();
@@ -158,7 +158,7 @@ function(
 			// Have to specify how much
 			if( item.count > 1 ) {
 				InputBox.append();
-				InputBox.setType("number");
+				InputBox.setType("number", false);
 				InputBox.onSubmitRequest = function OnSubmitRequest( count ) {
 					InputBox.remove();
 					MapEngine.onDropItem(

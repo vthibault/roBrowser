@@ -209,6 +209,7 @@ define([
 		var _time_end;
 		var _render = false;
 		var _canvas, _ctx, _width, _height;
+		var _TimeOut;
 
 		// Delete the character
 		function DeleteCharacter() {
@@ -223,13 +224,14 @@ define([
 			InputBox.remove();
 			_ui_box.remove();
 			_overlay.detach();
+			clearTimeout(_TimeOut);
 			CharSelect.deleteAnswer(-2);
 		}
 
 		// Ask the mail
 		function onOk(){
 			InputBox.append();
-			InputBox.setType('mail');
+			InputBox.setType('mail', true);
 			InputBox.ui.css('zIndex',101);
 			InputBox.onSubmitRequest = onSubmit;
 			_ui_box.append(); // don't remove message box
@@ -296,7 +298,7 @@ define([
 			_ctx.fillStyle = "rgb(255,255,0)";
 			_ctx.fillText( percent + '%' ,  ( _width - _ctx.measureText( percent+'%').width ) * 0.5 , 12  );
 
-			setTimeout( Render, 30);
+			_TimeOut = setTimeout( Render, 30);
 		}
 	};
 
