@@ -197,24 +197,22 @@ define(function(require)
 			.on('contextmenu', '.item', function(event) {
 				var matches = this.className.match(/(\w+) (\d+)/);
 				var index   = parseInt(matches[2], 10);
-				var box, list, ui;
+				var list;
 				var i, count;
 
 				for( i = 0, list = Inventory.list, count = list.length; i < count; ++i ) {
 					if( list[i].index === index ) {
 
 						// Don't add the same UI twice, remove it
-						ui = jQuery('.ItemInfo.item' + list[i].ITID );
-						if( ui.length ) {
-							ui.remove();
+						if( ItemInfo.uid === list[i].ITID ) {
+							ItemInfo.remove();
 							break;
 						}
 
 						// Add ui to window
-						box = ItemInfo.clone('ItemInfo', true);
-						box.append();
-						box.ui.addClass('item' + list[i].ITID );
-						box.setItem( list[i] );
+						ItemInfo.append();
+						ItemInfo.uid = list[i].ITID;
+						ItemInfo.setItem( list[i] );
 						break;
 					}
 				}

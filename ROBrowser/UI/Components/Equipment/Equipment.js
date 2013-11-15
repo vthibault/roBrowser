@@ -113,22 +113,19 @@ define(function(require)
 				var matches = this.className.match(/(\w+) (\d+)/);
 				var index   = parseInt(matches[2], 10);
 				var item    = Equipment.list[index];
-				var box, ui;
 
 				if( item ) {
-					ui = jQuery('.ItemInfo.item' + item.ITID );
 
 					// Don't add the same UI twice, remove it
-					if( ui.length ) {
+					if( ItemInfo.uid === item.ITID ) {
 						ui.remove();
 					}
 
 					// Add ui to window
 					else {
-						box = ItemInfo.clone('ItemInfo', true);
-						box.append();
-						box.ui.addClass('item' + item.ITID );
-						box.setItem( item );
+						ItemInfo.append();
+						ItemInfo.uid =  item.ITID;
+						ItemInfo.setItem( item );
 					}
 				}
 

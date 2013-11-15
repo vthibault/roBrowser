@@ -110,12 +110,12 @@ function(       jQuery,      DB,               Client,            Mouse )
 
 		this.ui.appendTo('body');
 
-		if( this.onAppend ) {
-			this.onAppend();	
-		}
-
 		if( this.onKeyDown ) {
 			jQuery(window).on('keydown.' + this.name, this.onKeyDown.bind(this));
+		}
+
+		if( this.onAppend ) {
+			this.onAppend();
 		}
 	};
 

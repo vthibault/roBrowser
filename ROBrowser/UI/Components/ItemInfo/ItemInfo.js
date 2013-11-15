@@ -15,9 +15,10 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
+	var jQuery             = require('Utils/jquery');
 	var DB                 = require('DB/DBManager');
 	var Client             = require('Core/Client');
-	//var Mouse              = require('Controls/MouseEventHandler');
+	var KEYS               = require('Controls/KeyEventHandler');
 	var UIManager          = require('UI/UIManager');
 	var UIComponent        = require('UI/UIComponent');
 	var htmlText           = require('text!./ItemInfo.html');
@@ -29,7 +30,48 @@ define(function(require)
 	 */
 	var ItemInfo = new UIComponent( 'ItemInfo', htmlText, cssText );
 
- 
+
+	/**
+	 * @var {number} ItemInfo unique id
+	 */
+	ItemInfo.uid = -1;
+
+
+	/**
+	 * Once append to the DOM
+	 */
+	ItemInfo.onKeyDown = function OnKeyDown( event )
+	{
+		if( event.which === KEYS.ESCAPE ) {
+			ItemInfo.remove();
+			event.stopImmediatePropagation();
+			return false;
+		}
+
+		return true;
+	};
+
+
+	/**
+	 * Once append
+	 */
+	ItemInfo.onAppend = function OnAppend()
+	{
+		// Seems like "EscapeWindow" is execute first, push it before.
+		var events = jQuery._data( window, 'events').keydown;
+		events.unshift( events.pop() );
+	};
+
+
+	/**
+	 * Once removed from html
+	 */
+	ItemInfo.onRemove = function OnRemove()
+	{
+		this.uid = -1;
+	};
+
+
 	/**
 	 * Initialize UI
 	 */
@@ -40,7 +82,7 @@ define(function(require)
 		this.ui.css({ top: 200, left:200 });
 
 		this.ui.find('.close').click(function(){
-			ui.remove();
+			ItemInfo.remove();
 		});
 
 		this.draggable();
@@ -62,8 +104,8 @@ define(function(require)
 		ui.find('.title').text( item.IsIdentified ? it.identifiedDisplayName : it.unidentifiedDisplayName );
 		ui.find('.description').text( item.IsIdentified ? it.identifiedDescriptionName : it.unidentifiedDescriptionName );
 
-		// add cards if type === equip
-		// add card image if type === card
+		// TODO: add cards if type === equip
+		// TODO: add card image if type === card
 	};
 
 	
