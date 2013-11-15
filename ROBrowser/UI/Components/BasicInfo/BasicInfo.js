@@ -54,10 +54,6 @@ define(function(require)
 		this.ui.find('.toggle_btns').mousedown(BasicInfo.toggleButtons.bind(this));
 		this.ui.find('.buttons button').mousedown(function(){
 			switch( this.className ) {
-				case 'map':
-					MiniMap.toggleOpacity();
-					break;
-
 				case 'item':
 					Inventory.ui.toggle();
 					break;
@@ -66,6 +62,7 @@ define(function(require)
 					Equipment.ui.toggle();
 					break;
 
+				case 'map':
 				case 'party':
 				case 'guild':
 				case 'quest':
