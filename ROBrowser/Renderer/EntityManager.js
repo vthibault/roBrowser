@@ -232,8 +232,8 @@ function(         Entity,     SpriteRenderer )
 			var bDepth = b.depth + (b.GID%100) / 1000;
 
 			if( picking && a.objecttype !== b.objecttype ) {
-				aDepth += Entity.PickingPriority[a.objecttype];
-				bDepth += Entity.PickingPriority[b.objecttype];
+				aDepth -= Entity.PickingPriority[a.objecttype] * 100;
+				bDepth -= Entity.PickingPriority[b.objecttype] * 100;
 			}
 
 			return bDepth - aDepth;
