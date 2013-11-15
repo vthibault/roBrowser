@@ -201,7 +201,7 @@ function( require,         jQuery,        Client,           Sprite,           Ac
 		// New way
 		var i, count;
 		var action    = this.action.actions[this.type];
-		var delay     = action.delay * 2;
+		var delay     = action.delay * ( this.type === Cursor.ACTION.DEFAULT ? 2 : 1 );
 		var anim, frame;
 
 		if( this.play ) {
