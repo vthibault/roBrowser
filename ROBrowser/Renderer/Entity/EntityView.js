@@ -135,12 +135,14 @@ define(['Core/Client', 'DB/DBManager', './EntityAction'], function( Client, DB, 
 	{
 		var _this  = this;
 		var path   = DB.getHeadPath( head, this._sex );
+		this._head = head;
 
 		Client.loadFile(path + ".act", null, null, []);
 		Client.loadFile(path + ".spr", function(){
-			_this._head          = head;
 			_this.files.head.spr = path + ".spr";
 			_this.files.head.act = path + ".act";
+
+			// Reload head palette
 			_this.headpalette = _this._headpalette;
 		}, null, null, []);
 	}
@@ -151,12 +153,12 @@ define(['Core/Client', 'DB/DBManager', './EntityAction'], function( Client, DB, 
 	 */
 	function UpdateHeadPalette( pal )
 	{
-		var _this = this;
+		var _this         = this;
+		this._headpalette = pal;
 
 		if( pal ) {
 			var path = DB.getHeadPalPath( this._head, pal, this._sex);
 			Client.loadFile( path, function(){
-				_this._headpalette   = pal;
 				_this.files.head.pal = path;
 			}, null, []);
 		}
