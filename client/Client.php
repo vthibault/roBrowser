@@ -72,7 +72,7 @@ final class Client
 				if( self::$AutoExtract ) {
 
 					$current_path = self::$path;
-					$directories  = explode('/', $path);
+					$directories  = explode('\\', $path);
 					array_pop($directories);
 
 					// Creating directories

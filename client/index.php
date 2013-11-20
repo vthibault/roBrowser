@@ -44,6 +44,12 @@
 	if( $args[1] === "data" ) {
 		array_shift($args);
 	}
+
+	// Allowed directory
+	if( !preg_match( "/^(data|BGM)$/", $args[0]) ) {
+		exit;
+	}
+
 	$path = implode($args, '\\');
 	$ext  = end( explode('.',$path) );
 
