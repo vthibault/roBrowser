@@ -265,6 +265,12 @@ define(function( require )
 	{
 		var pkt = new PACKET.CZ.REQUEST_QUIT();
 		Network.sendPacket(pkt);
+
+		// No Answer from the server, close it now
+		Network.close();
+		Renderer.stop();
+		MapRenderer.free();
+		MapEngine.onExit();
 	};
 
 
@@ -287,6 +293,7 @@ define(function( require )
 	MapEngine.onExitSuccess = function OnExitSuccess( pkt )
 	{
 		Renderer.stop();
+		MapRenderer.free();
 		MapEngine.onExit();
 	};
 

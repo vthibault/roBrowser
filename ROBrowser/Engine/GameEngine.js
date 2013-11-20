@@ -169,7 +169,13 @@ function(
 	 */
 	GameEngine.onExit = function OnExit()
 	{
-		//TODO: what to do ?
+		Sound.stop();
+		Renderer.stop();
+		UIManager.removeComponents();
+
+		Background.remove(function(){
+			Intro.append();
+		});
 	};
 
 
