@@ -3,7 +3,7 @@
 	"name": "roBrowser",
 	"version": "1",
 
-	"description": "roBrowser is an Open Source Ragnarok Online adaptation",
+	"description": "roBrowser is an Open Source adaptation of Ragnarok Online game",
 	"author": "Thibault Vincent",
 
 	"minimum_chrome_version": "23",
