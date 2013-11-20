@@ -145,7 +145,7 @@ define( function( require )
 		Client.loadFile(this.files.shadow.act, null, null, []);
 
 		// First thing to set to initialize action, etc.
-		if( unit.job ) {
+		if( unit.hasOwnProperty('job') ) {
 			this._job = unit.job;
 		}
 		this.sex = unit.hasOwnProperty('sex') ? unit.sex : this._sex;
