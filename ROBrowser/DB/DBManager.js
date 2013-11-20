@@ -316,7 +316,7 @@ function(       Queue,        Client,     ClassTable,     ClassPalTable,     Mon
 	 */
 	DB.getBodyPalPath = function GetBodyPalettePath( id, pal, sex )
 	{
-		if( !id in ClassPalTable ) {
+		if( id === 0 || !(id in ClassPalTable) ) {
 			return null;
 		}
 
@@ -354,10 +354,9 @@ function(       Queue,        Client,     ClassTable,     ClassPalTable,     Mon
 	 */
 	DB.getHatPath = function GetHatPath( id, sex )
 	{
-		if( !id in HatTable ) {
+		if( id === 0 || (!(id in HatTable) && !(id in DB.AccNameTable)) ) {
 			return null;
 		}
-
 		return "data/sprite/\xbe\xc7\xbc\xbc\xbb\xe7\xb8\xae/" + DB.SEX[sex] + "/" + DB.SEX[sex] + ( DB.AccNameTable[id] || HatTable[id] );
 	};
 
@@ -368,7 +367,7 @@ function(       Queue,        Client,     ClassTable,     ClassPalTable,     Mon
 	 */
 	DB.getPetEquipPath = function GetPetEquipPath( id )
 	{
-		if( !id in PetInfo.EquipAct ) {
+		if( id === 0 || !(id in PetInfo.EquipAct) ) {
 			return null;
 		}
 
@@ -394,7 +393,7 @@ function(       Queue,        Client,     ClassTable,     ClassPalTable,     Mon
 	 */
 	DB.getShieldPath = function GetShieldPath( id, job, sex )
 	{
-		if( !job in ClassTable || id === 0 ) {
+		if( id === 0 || !(job in ClassTable) ) {
 			return null;
 		}
 		return "data/sprite/\xb9\xe6\xc6\xd0/" + ClassTable[job] + "/" + ClassTable[job] + "_" + DB.SEX[sex] + "_" + ( ShieldTable[id] || ShieldTable[1] );
@@ -409,7 +408,7 @@ function(       Queue,        Client,     ClassTable,     ClassPalTable,     Mon
 	 */
 	DB.getWeaponPath = function GetWeaponPath( id, job, sex )
 	{
-		if( !job in ClassTable || id === 0 ) {
+		if( id === 0 || !(job in ClassTable) ) {
 			return null;
 		}
 
