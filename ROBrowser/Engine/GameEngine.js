@@ -219,7 +219,8 @@ function(
 					address:    connection.find('address:first').text(),
 					port:       connection.find('port:first').text(),
 					version:    connection.find('version:first').text(),
-					langtype:   connection.find('langtype:first').text()
+					langtype:   connection.find('langtype:first').text(),
+					packetver:  connection.find('packetver:first').text()
 				});
 
 				if( index === stop ) {

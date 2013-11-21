@@ -15,6 +15,7 @@ define([
 	'Engine/CharEngine',
 	'Network/NetworkManager',
 	'Network/PacketStructure',
+	'Network/PacketVerManager',
 	'Renderer/Renderer',
 	'UI/UIManager',
 	'UI/Components/WinList/WinList',
@@ -27,6 +28,7 @@ function(
 	CharEngine,
 	Network,
 	PACKET,
+	PACKETVER,
 	Renderer,
 	UIManager,
 	WinList,
@@ -104,6 +106,16 @@ function(
 		UIManager.removeComponents();
 
 		this.server = server;
+
+		// Add support for "packetver" definition in Server listing
+		if( server.packetver ) {
+			ROConfig.packetver = server.packetver;
+
+			if( server.packetver.match(/^\d+$/) ) {
+				PACKETVER.min = date;
+				PACKETVER.max = date;
+			}
+		}
 
 		// Hooking win_login
 		WinLogin.onConnectionRequest = LoginEngine.onConnectionRequest;
