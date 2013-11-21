@@ -18,6 +18,7 @@ define([
 	'Core/Client',
 	'Core/Thread',
 	'Engine/LoginEngine',
+	'Network/NetworkManager',
 	'Renderer/Renderer',
 	'UI/UIManager',
 	'UI/CursorManager',
@@ -35,6 +36,7 @@ function(
 	Client,
 	Thread,
 	LoginEngine,
+	Network,
 	Renderer,
 	UIManager,
 	Cursor,
@@ -122,6 +124,7 @@ function(
 	{
 		BGM.play('01.mp3');
 		UIManager.removeComponents();
+		Network.close();
 
 		// Setup background
 		Background.init();
