@@ -102,7 +102,7 @@ define(function(require)
 	WinList.setIndex = function SetIndex( id )
 	{
 		if( id > -1 && id < this.list.length ) {
-			this.ui_list.find('div:eq('+ id +')').css('backgroundColor', 'transparent');
+			this.ui_list.find('div:eq('+ this.index +')').css('backgroundColor', 'transparent');
 			this.ui_list.find('div:eq('+ id +')').css('backgroundColor', '#cde0ff');
 			this.index = id;
 		}
