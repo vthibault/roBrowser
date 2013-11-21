@@ -213,7 +213,7 @@ function(       Queue,        Client,     ClassTable,     ClassPalTable,     Mon
 		console.log('Loading file "'+ filename +'"...');
 		Client.loadFile( filename, function(data) {
 			// Remove commented lines
-			var content  = data.replace(/\/\/([^\n]+)/g, '');
+			var content  = ("\n" + data).replace(/\n\s?\/\/[^\n]+\n/g, '');
 			var elements = content.split("#");
 			var i, count = elements.length;
 			var args     = new Array(size+1);
