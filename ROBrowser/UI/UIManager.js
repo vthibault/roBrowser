@@ -109,8 +109,10 @@ function( require,         jQuery,     UIComponent,            KEYS,            
 		overlay.appendTo('body');
 	
 		// Push the event to the top, stopImmediatePropagation will block every key down event.
-		var down = jQuery._data( window, 'events').keydown;
-		down.unshift( down.pop() );
+		WinError.onAppend = function() {
+			var events = jQuery._data( window, 'events').keydown;
+			events.unshift( events.pop() );
+		};
 
 		WinError.append();
 
@@ -178,8 +180,10 @@ function( require,         jQuery,     UIComponent,            KEYS,            
 			};
 
 			// Push the event to the top, stopImmediatePropagation will block every key down.
-			var down = jQuery._data( window, 'events').keydown;
-			down.unshift( down.pop() );
+			WinMSG.onAppend = function() {
+				var events = jQuery._data( window, 'events').keydown;
+				events.unshift( events.pop() );
+			};
 		}
 
 		WinMSG.append();
