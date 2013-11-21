@@ -231,7 +231,7 @@ function(
 		for( i = 0; i < count; ++i ) {
 			list[i]  =  servers[i].property ? DB.msgstringtable[481] + " " : "";
 			list[i] +=  servers[i].name;
-			list[i] +=  servers[i].state    ? DB.msgstringtable[483] : " " + DB.msgstringtable[482].replace("%d", servers[i].usercount);
+			list[i] +=  servers[i].state    ? DB.msgstringtable[484] : " " + DB.msgstringtable[483].replace("%d", servers[i].usercount);
 		}
 
 		// Show window
@@ -267,11 +267,11 @@ function(
 			case   1: error =    7; break; // Incorrect Password
 			case   2: error =    8; break; // This ID is expired
 			case   3: error =    3; break; // Rejected from Server
-			case   4: error =  704; break; // You have been blocked by the GM Team
+			case   4: error =  704; break; // You have been blocked by the GM Team - TODO: check it
 			case   5: error =  310; break; // Your Game's EXE file is not the latest version
-			case   6: error =  703; break; // Your are Prohibited to log in until %s
+			case   6: error =  449; break; // Your are Prohibited to log in until %s
 			case   7: error =  264; break; // Server is jammed due to over populated
-			case   8: error =  681; break; // 8 = No more accounts may be connected from this company
+			case   8: error =  681; break; // 8 = No more accounts may be connected from this company - TODO: check it
 			case   9: error =  703; break; // 9 = MSI_REFUSE_BAN_BY_DBA
 			case  10: error =  704; break; // 10 = MSI_REFUSE_EMAIL_NOT_CONFIRMED
 			case  11: error =  705; break; // 11 = MSI_REFUSE_BAN_BY_GM
@@ -319,10 +319,10 @@ function(
 			case 5:   msg_id =  305; break; // You are underaged and cannot join this server.
 			case 6:   msg_id =  764; break; // Trial players can't connect Pay to Play Server. (761)
 			case 8:   msg_id =  440; break; // Server still recognizes your last login
-			case 9:   msg_id =  527; break; // IP capacity of this Internet Cafe is full. Would you like to pay the personal base?
+			case 9:   msg_id =  529; break; // IP capacity of this Internet Cafe is full. Would you like to pay the personal base?
 			case 10:  msg_id =  530; break; // You are out of available paid playing time. Game will be shut down automatically. (528)
-			case 15:  msg_id =  577; break; // You have been forced to disconnect by the Game Master Team
-			case 101: msg_id =  808; break; // Account has been locked for a hacking investigation.
+			case 15:  msg_id =  579; break; // You have been forced to disconnect by the Game Master Team
+			case 101: msg_id =  810; break; // Account has been locked for a hacking investigation.
 			case 102: msg_id = 1179; break; // More than 10 connections sharing the same IP have logged into the game for an hour. (1176)
 		}
 

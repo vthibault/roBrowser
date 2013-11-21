@@ -87,7 +87,7 @@ define(function(require)
 
 		this.ui.find('.content').html(
 			'<img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" width="24" height="24" /> '
-			+ display + ' ' + DB.msgstringtable[694].replace('%d', amount)
+			+ display + ' ' + DB.msgstringtable[696].replace('%d', amount)
 		);
 
 		this.ui.css('left', ( Renderer.width - (this.ui.width()) ) >> 1 );

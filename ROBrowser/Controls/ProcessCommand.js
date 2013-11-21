@@ -81,14 +81,14 @@ function(
 
 			case 'noctrl':
 			case 'nc':
-				this.addText( DB.msgstringtable[715 + ControlPreferences.noctrl], this.TYPE.INFO );
+				this.addText( DB.msgstringtable[717 + ControlPreferences.noctrl], this.TYPE.INFO );
 				ControlPreferences.noctrl = !ControlPreferences.noctrl;
 				ControlPreferences.save();
 				return;
 
 			case 'noshift':
 			case 'ns':
-				this.addText( DB.msgstringtable[699 + ControlPreferences.noshift], this.TYPE.INFO );
+				this.addText( DB.msgstringtable[701 + ControlPreferences.noshift], this.TYPE.INFO );
 				ControlPreferences.noshift = !ControlPreferences.noshift;
 				ControlPreferences.save();
 				return;

@@ -120,7 +120,7 @@ define(function(require)
 		switch( type ) {
 			case 'number':
 				this.ui.addClass('number');
-				this.ui.find('.text').text( DB.msgstringtable[1256] );
+				this.ui.find('.text').text( DB.msgstringtable[1259] );
 				this.ui.find('input').attr('type', 'text').val(0).select();
 				break;
 	

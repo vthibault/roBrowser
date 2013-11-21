@@ -281,7 +281,7 @@ define(function( require )
 	 */
 	MapEngine.onExitFail = function OnExitFail( pkt )
 	{
-		ChatBox.addText( DB.msgstringtable[501], ChatBox.TYPE.ERROR);
+		ChatBox.addText( DB.msgstringtable[502], ChatBox.TYPE.ERROR);
 	};
 
 
@@ -345,7 +345,7 @@ define(function( require )
 	{
 		if( !pkt.type ) {
 			// Have to wait 10sec
-			ChatBox.addText( DB.msgstringtable[501], ChatBox.TYPE.ERROR );
+			ChatBox.addText( DB.msgstringtable[502], ChatBox.TYPE.ERROR );
 		}
 		else {
 			ChatBox.clean();
@@ -378,7 +378,7 @@ define(function( require )
 
 			case 1:
 				// Have to wait 10 sec
-				ChatBox.addText( DB.msgstringtable[501], ChatBox.TYPE.ERROR);
+				ChatBox.addText( DB.msgstringtable[502], ChatBox.TYPE.ERROR);
 				return;
 
 			default:

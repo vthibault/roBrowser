@@ -465,7 +465,7 @@ define(function( require )
 	{
 		Equipment.setEquipConfig( pkt.bOpenEquipmentWin );
 		ChatBox.addText(
-			DB.msgstringtable[1354 + (pkt.bOpenEquipmentWin ? 1 : 0) ],
+			DB.msgstringtable[1358 + (pkt.bOpenEquipmentWin ? 1 : 0) ],
 			ChatBox.TYPE.INFO
 		);
 	};
@@ -484,7 +484,7 @@ define(function( require )
 			case 0:
 				Equipment.setEquipConfig( pkt.Value );
 				ChatBox.addText(
-					DB.msgstringtable[1354 + (pkt.Value ? 1 : 0) ],
+					DB.msgstringtable[1358 + (pkt.Value ? 1 : 0) ],
 					ChatBox.TYPE.INFO
 				);
 				break;
