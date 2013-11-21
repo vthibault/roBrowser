@@ -27,9 +27,10 @@ function(      Client,          Preferences,              Memory )
 	 * Play a wav sound
 	 *
 	 * @param {string} filename
-	 * @param {number} vol (volume)
+	 * @param {optional|number} vol (volume)
+	 * @param {optional|boolean} auto-repeat
 	 */
-	function Play( filename, vol ) {
+	function Play( filename, vol, repeat ) {
 		var volume;
 
 		// Sound volume * Global volume
@@ -50,6 +51,7 @@ function(      Client,          Preferences,              Memory )
 			var sound = document.createElement('audio');
 
 			// Initialiaze the sound and play it
+			sound.filename    = filename;
 			sound.src         = url;
 			sound.volume      = Math.min(volume,1.0);
 			sound._volume     = volume;
@@ -59,7 +61,13 @@ function(      Client,          Preferences,              Memory )
 			sound.addEventListener('ended', function Remove(){
 				var pos = _sounds.indexOf(this);
 				if( pos !== -1 ) {
-					_sounds.splice( pos, 1 );
+					if( repeat ) {
+						sound.currentTime = 0;
+						sound.play();
+					}
+					else {
+						_sounds.splice( pos, 1 );
+					}
 				}
 			}, false);
 
@@ -70,14 +78,28 @@ function(      Client,          Preferences,              Memory )
 
 
 	/**
-	 * Stop all sound and clean data from memory
+	 * Stop a specify sound, or all sounds.
+	 *
+	 * @param {optional|string} filename to stop
 	 */
-	function Stop()
+	function Stop( filename )
 	{
 		var i, count, list;
 
+		if( filename ) {
+			for( i=0, count=_sounds.length; i<count; ++i ) {
+				if( _sounds[i].filename === filename ) {
+					_sounds[i].pause();
+					_sounds.splice(i, 1);
+					i--;
+					count--;
+				}
+			}
+			return;
+		}
+
 		// Remove from memory
-		for( i=0, count=_sounds.length; i<count; ++i ) {
+		for( count=_sounds.length; count > 0; --count ) {
 			_sounds[0].pause();
 			_sounds.splice(0, 1);
 		}

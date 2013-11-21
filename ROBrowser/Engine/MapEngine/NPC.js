@@ -21,6 +21,8 @@ define(function( require )
 	 */
 	var jQuery        = require('Utils/jquery');
 	var DB            = require('DB/DBManager');
+	var Sound         = require('Audio/SoundManager');
+	var BGM           = require('Audio/BGM');
 	var Client        = require('Core/Client');
 	var Network       = require('Network/NetworkManager');
 	var PACKET        = require('Network/PacketStructure');
@@ -351,6 +353,53 @@ define(function( require )
 
 
 	/**
+	 * Received sound from NPC
+	 *
+	 * @param {object} pkt - PACKET.ZC.SOUND
+	 */
+	function OnSound( pkt )
+	{
+		switch( pkt.act ) {
+
+			// Play once
+			case 0:
+			case 1:
+				Sound.play( pkt.fileName );
+				break;
+/*
+			// Play repeat
+			// Not supported !
+			case 1:
+				Sound.play( pkt.fileName, Sound.volume, true );
+				break;
+*/
+			// From rathena, should stop a sound but doesn't seems to work in official client ?
+			case 2:
+				Sound.stop( pkt.fileName );
+				break;
+		}
+
+		// TODO: 3D sound based on npc(pkt.NAID) position ?
+		// what is pkt.term ?
+	}
+
+
+	/**
+	 * Received bgm from npc
+	 *
+	 * @param {object} pkt - PACKET.ZC.PLAY_NPC_BGM
+	 */
+	function OnBGM( pkt )
+	{
+		if( !pkt.Bgm.match(/\.mp3$/i) ) {
+			pkt.Bgm += ".mp3";
+		}
+
+		BGM.play( pkt.Bgm );
+	}
+
+
+	/**
 	 * Initialize
 	 */
 	return function NPCEngine()
@@ -369,5 +418,7 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.COMPASS,         OnNpcMark );
 		Network.hookPacket( PACKET.ZC.PROGRESS,        OnProgressBar );
 		Network.hookPacket( PACKET.ZC.PROGRESS_CANCEL, OnProgressBarStop );
+		Network.hookPacket( PACKET.ZC.SOUND,           OnSound );
+		Network.hookPacket( PACKET.ZC.PLAY_NPC_BGM,    OnBGM );
 	};
 });
