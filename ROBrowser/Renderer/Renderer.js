@@ -98,7 +98,7 @@ define(function( require )
 			this.canvas.style.top      = "0px";
 			this.canvas.style.left     = "0px";
 			this.canvas.style.zIndex   =  0;
-	
+
 			this.gl = WebGL.getContext( this.canvas );
 
 			jQuery(window).resize(this.onResize.bind(this));
@@ -167,12 +167,18 @@ define(function( require )
 		Mouse.screen.width  = this.width;
 		Mouse.screen.height = this.height;
 
-		this.canvas.width   = this.width;
-		this.canvas.height  = this.height;
+		var quality = ( ROConfig.quality || 100 ) / 100;
+		var width   = this.width  * quality;
+		var height  = this.height * quality;
 
-		this.gl.viewport( 0, 0, this.width, this.height );
+		this.canvas.width         = width;
+		this.canvas.height        = height;
+		this.canvas.style.width   = this.width + 'px';
+		this.canvas.style.height  = this.height + 'px';
 
-		mat4.perspective( 20.0, this.width/this.height, 0.1, 1000, Camera.projection );
+		this.gl.viewport( 0, 0, width, height );
+
+		mat4.perspective( 20.0, width/height, 0.1, 1000, Camera.projection );
 
 		Background.resize( this.width, this.height );
 	};
@@ -199,9 +205,11 @@ define(function( require )
 	 */
 	Renderer.getPickingColor = function GetPickingColor( callback )
 	{
-		var x  = Mouse.screen.x;
-		var y  = Mouse.screen.y;
-		var gl = this.gl;
+		var gl      = this.gl;
+
+		var quality = ( ROConfig.quality || 100 ) / 100;
+		var x       = Math.floor( Mouse.screen.x * quality );
+		var y       = Math.floor( (this.height - Mouse.screen.y) * quality );
 
 		if( x === this._mouseInfo[0] && y === this._mouseInfo[1] && ++this._mouseInfo[2] % 10 ) {
 			return this._color;
@@ -209,13 +217,13 @@ define(function( require )
 
 		// Set up box context
 		gl.enable( gl.SCISSOR_TEST );
-		gl.scissor( x, this.height - y, 1, 1) ;
+		gl.scissor( x, y, 1, 1) ;
 
 		// Rendering color
 		callback();
 
 		// Get back the pixel.
-		gl.readPixels( x, this.height - y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, this._color );
+		gl.readPixels( x, y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, this._color );
 		gl.disable( gl.SCISSOR_TEST );
 
 		// Save last coords
