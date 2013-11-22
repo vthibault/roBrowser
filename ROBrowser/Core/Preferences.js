@@ -7,13 +7,14 @@
  *
  * @author Vincent Thibault
  */
-define(function()
+define([ './Context' ], function( Context )
 {
 	"use strict";
 
 
-	var Storage = ( window.chrome && chrome.storage && chrome.storage.local )
-		|| {
+	var Storage = Context.Is.APP ?
+		window.chrome.storage.local :
+		{
 			get: function Get( key, fn ){
 				var out = {};
 				out[key] = localStorage.getItem(key);

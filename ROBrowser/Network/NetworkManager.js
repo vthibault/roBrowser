@@ -9,15 +9,15 @@
  * @author Vincent Thibault
  */
 
-define([ 'require', 'Utils/BinaryReader',   './PacketVerManager', './PacketVersions', './PacketRegister', './PacketGuess', './SocketHelpers/ChromeSocket', './SocketHelpers/JavaSocket'],
-function( require,          BinaryReader,      PACKETVER,            PacketVersions,     PacketRegister,     PacketGuess,                   ChromeSocket,                   JavaSocket)
+define([ 'require', 'Core/Context', 'Utils/BinaryReader',   './PacketVerManager', './PacketVersions', './PacketRegister', './PacketGuess', './SocketHelpers/ChromeSocket', './SocketHelpers/JavaSocket'],
+function( require,        Context,         BinaryReader,       PACKETVER,            PacketVersions,     PacketRegister,     PacketGuess,                   ChromeSocket,                   JavaSocket)
 {
 	"use strict";
 
 	var Socket;
 
 	// Native socket
-	if( window.chrome && chrome.socket ) {
+	if( Context.Is.APP ) {
 		Socket = ChromeSocket;
 	}
 
