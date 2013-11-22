@@ -70,10 +70,11 @@ define(function(require)
 		if( event.which === KEYS.ESCAPE ) {
 
 			if( this.ui.is(':visible') ) {
-				this.ui.hide();	
+				this.ui.hide();
 			}
 			else {
-				this.ui.show();	
+				this.ui.show();
+				this.ui[0].parentNode.appendChild(this.ui[0]);
 			}
 
 			event.stopImmediatePropagation();

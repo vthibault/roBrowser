@@ -207,6 +207,9 @@ define(function(require)
 	{
 		if( KEYS.ALT && event.which === KEYS.Q ) {
 			this.ui.toggle();
+			if( this.ui.is(':visible') ) {
+				this.ui[0].parentNode.appendChild(this.ui[0]);
+			}
 			event.stopImmediatePropagation();
 			return false;
 		}

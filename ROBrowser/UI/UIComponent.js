@@ -201,6 +201,9 @@ function(       jQuery,      DB,               Client,            Mouse )
 			// Don't propagate event.
 			event.stopImmediatePropagation();
 
+			// Set element over others components
+			element.css('zIndex', 51);
+
 			x = container.position().left - Mouse.screen.x;
 			y = container.position().top  - Mouse.screen.y;
 			width  = container.width();
@@ -239,8 +242,15 @@ function(       jQuery,      DB,               Client,            Mouse )
 					return;
 				}
 
+				// Get back zIndex, push the element to the end to be over others components
+				setTimeout(function(){
+					element.css('zIndex', 50);
+					element[0].parentNode.appendChild(element[0]);
+				}, 1);
+
 				container.stop().animate({ opacity:1.0 }, 500 );
 				clearInterval(drag);
+
 				jQuery(window).off('mouseup.dragdrop');
 			});
 		});
