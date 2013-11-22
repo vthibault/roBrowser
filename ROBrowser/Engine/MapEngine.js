@@ -19,6 +19,8 @@ define(function( require )
 	 */
 	var jQuery           = require('Utils/jquery');
 	var DB               = require('DB/DBManager');
+	var SoundManager     = require('Audio/SoundManager');
+	var BGM              = require('Audio/BGM');
 	var Network          = require('Network/NetworkManager');
 	var PACKET           = require('Network/PacketStructure');
 	var Renderer         = require('Renderer/Renderer');
@@ -267,10 +269,16 @@ define(function( require )
 		Network.sendPacket(pkt);
 
 		// No Answer from the server, close it now
+		UIManager.removeComponents();
 		Network.close();
 		Renderer.stop();
 		MapRenderer.free();
-		MapEngine.onExit();
+		SoundManager.stop();
+		BGM.stop();
+
+		window.close();
+
+		require('Engine/GameEngine').init();
 	};
 
 
