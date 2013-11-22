@@ -1,10 +1,124 @@
-<section id="intro">
-	<div>
-		<header>Feed him with your Client</header>
-		<canvas class="metal_default"></canvas>
+<div id="intro">
+	<div class="intro">
+
+		<div class="overlay loading">
+			<span></span>
+			<span></span>
+			<span></span>
+		</div>
+
+		<div class="overlay about">
+			<div class="title">
+				<div class="icon"><img src="" width="65" height="64" alt="icon roBrowser"/></div>
+				<div class="desc">
+					<h1>roBrowser</h1>
+					<h2>Open Source reproduction of Ragnarök Online for the Web Browser</h2>
+				</div>
+				<div class="clear"></div>
+			</div>
+			<table class="info">
+				<tr>
+					<td>Author:</td>
+					<td>Vincent Thibault</td>
+				</tr>
+				<tr>
+					<td>Site:</td>
+					<td><a href="http://www.robrowser.com/" target="_blank">http://www.robrowser.com/</a></td>
+				</tr>
+				<tr>
+					<td>Source:</td>
+					<td><a href="http://www.github.com/vthibault/roBrowser/" target="_blank">http://www.github.com/vthibault/roBrowser/</a></td>
+				</tr>
+			</table>
+			<div class="concept">
+				<p>roBrowser is an open source project based on the game Ragnarök Online.<br/>
+				It’s not afficiliate by anyway with Gravity.</p>
+				<p>The concept is to reproduce the game using awesome new web technologies (HTML5, Javascript, WebGL) to bring it to Web Browsers.</p>
+				<p>Since roBrowser run into a Web Browser, it also mean it’s cross-plateform and can run into multiples OS (Windows, Linux, Macintosh, ...)  instead of the original client limited to Windows.<br/>
+				It should also run fine on others devices ( televisions, smartphone, tablettes, computer) if the device support openGL ES 2.0 and is enough powerfull to support the game.</p>
+			</div>
+		</div>
+
+		<div class="overlay settings">
+
+			<h1>Window Settings</h1>
+			<table class="screen">
+				<tr>
+					<td>Screen Resolution</td>
+					<td colspan="2">
+						<select class="screensize" style="width:150px">
+							<option value="650x480">640 x 480</option>
+							<option value="800x600">800 x 600</option>
+							<option value="1024x768">1024 x 768</option>
+							<option value="1280x800">1280 x 800</option>
+							<option value="1400x900">1400 x 900</option>
+							<option value="1680x1050">1680 x 1050</option>
+							<option value="full">Full Screen</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>Resolution Details</td>
+					<td>
+						<input class="quality" style="width:150px" type="range" value="100" max="100" min="25" step="25">
+					</td>
+					<td class="quality_result">100%</td>
+				</tr>
+			</table>
+
+			<h1>Server List</h1>
+			<dl>
+				<dt>
+					<input class="radio serverdef" type="radio" value="serverfile" name="server"/>
+					<span>Using clientinfo.xml file stored in my FullClient</span>
+				</dt>
+				<dd>data / <input type="text" value="clientinfo.xml" class="clientinfo"/></dd>
+
+				<dt>
+					<input class="radio serverdef" type="radio" value="serverlist" name="server"/>
+					<span>Using servers from the current list :</span>
+				</dt>
+				<dd>
+					<div class="servercontainer">
+						<table class="serverlist">
+							<thead>
+								<tr>
+									<td width="22%">Name</td>
+									<td width="25%">Address</td>
+									<td width="12%">Version</td>
+									<td width="15%">Langtype</td>
+									<td width="22%">Packet Version</td>
+									<td width="10px">
+									</td>
+								</tr>
+							</thead>
+							<tbody class="servers">
+							</tbody>
+						</table>
+					</div>
+					<button class="btn_add"></button>
+					<div class="clear"></div>
+				</dd>
+			</dl>
+
+			<button class="btn_save"></button>
+		</div>
+
+		<button class="btn_about">
+			<img src="" width="48" height="51" alt="About roBrowser"/>
+		</button>
+
+		<div class="ribbon"></div>
+		<div class="msg"></div>
+		<div class="box"></div>
 		<input type="file" multiple="multiple"/>
-		<footer>To load an awesome experience</footer>
-		<button type="button">Start</button>
-		<article class="msg"></article>
+
+		<button class="btn_play"></button>
+
+		<button class="btn_settings">
+			<img src="" width="60" height="60" alt="Parameters"/>
+		</button>
+
+		<canvas width="800" height="600"></canvas>
 	</div>
-</section>
+</div>
