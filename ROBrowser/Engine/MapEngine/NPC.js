@@ -13,9 +13,6 @@ define(function( require )
 	"use strict";
 
 
-	var MainPlayer;
-
-
 	/**
 	 * Load dependencies
 	 */
@@ -24,6 +21,7 @@ define(function( require )
 	var Sound         = require('Audio/SoundManager');
 	var BGM           = require('Audio/BGM');
 	var Client        = require('Core/Client');
+	var Session       = require('Engine/SessionStorage');
 	var Network       = require('Network/NetworkManager');
 	var PACKET        = require('Network/PacketStructure');
 	var Renderer      = require('Renderer/Renderer');
@@ -325,7 +323,7 @@ define(function( require )
 	 */
 	function OnProgressBar( pkt )
 	{
-		MainPlayer.cast.onComplete = function(){
+		Session.Entity.cast.onComplete = function(){
 			var pkt = new PACKET.CZ.PROGRESS();
 			Network.sendPacket(pkt);
 		};
@@ -337,7 +335,7 @@ define(function( require )
 			]).join(',') + ')';
 
 		// Color added only if the progressbar isn't black
-		MainPlayer.cast.set( pkt.time * 1000, pkt.color ? rgb : null );
+		Session.Entity.cast.set( pkt.time * 1000, pkt.color ? rgb : null );
 	}
 
 
@@ -348,7 +346,7 @@ define(function( require )
 	 */
 	function OnProgressBarStop( pkt )
 	{
-		MainPlayer.cast.remove();
+		Session.Entity.cast.remove();
 	}
 
 
@@ -404,8 +402,6 @@ define(function( require )
 	 */
 	return function NPCEngine()
 	{
-		MainPlayer = this.entity;
-
 		Network.hookPacket( PACKET.ZC.SAY_DIALOG,      OnMessage );
 		Network.hookPacket( PACKET.ZC.WAIT_DIALOG,     OnNextAppear );
 		Network.hookPacket( PACKET.ZC.CLOSE_DIALOG,    OnCloseAppear );

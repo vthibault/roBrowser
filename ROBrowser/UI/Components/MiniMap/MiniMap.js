@@ -17,6 +17,7 @@ define(function(require)
 	 */
 	var Client             = require('Core/Client');
 	var Preferences        = require('Core/Preferences');
+	var Session            = require('Engine/SessionStorage');
 	var Renderer           = require('Renderer/Renderer');
 	var Camera             = require('Renderer/Camera');
 	var Altitude           = require('Renderer/Map/Altitude');
@@ -327,7 +328,7 @@ define(function(require)
 	{
 		var width   = Altitude.width;
 		var height  = Altitude.height;
-		var pos     = Camera.target.position;
+		var pos     = Session.Entity.position;
 		var max     = Math.max(width, height);
 		var f       = 1 / max  * 128;
 		var start_x = (max-width)  / 2 * f;
@@ -347,7 +348,7 @@ define(function(require)
 		if( this.arrow.complete && this.arrow.width ) {
 			ctx.save();
 			ctx.translate( start_x + pos[0] * f, start_y + 128 - pos[1] * f );
-			ctx.rotate( ( Camera.target.direction + 4 ) * 45 * Math.PI / 180 );
+			ctx.rotate( ( Session.Entity.direction + 4 ) * 45 * Math.PI / 180 );
 			ctx.drawImage( this.arrow, -this.arrow.width * 0.5, -this.arrow.height * 0.5 );
 			ctx.restore();
 		}

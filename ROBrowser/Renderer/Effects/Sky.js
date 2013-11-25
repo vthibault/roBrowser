@@ -19,7 +19,7 @@ define(function( require )
 	var WebGL          = require('Utils/WebGL');
 	var DB             = require('DB/DBManager');
 	var Client         = require('Core/Client');
-	var Camera         = require('Renderer/Camera');
+	var Session        = require('Engine/SessionStorage');
 	var SpriteRenderer = require('Renderer/SpriteRenderer');
 	var GLMatrix       = require('Utils/gl-matrix');
 	var vec3           = GLMatrix.vec3;
@@ -109,7 +109,7 @@ define(function( require )
 	 */
 	function CloudInit( cloud )
 	{
-		var pos = Camera.target.position;
+		var pos = Session.Entity.position;
 
 		cloud.position[0]  =  pos[0] + (Math.random()*35 | 0) * (Math.random() > 0.5 ? 1 : -1);
 		cloud.position[1]  =  pos[1] + (Math.random()*35 | 0) * (Math.random() > 0.5 ? 1 : -1);

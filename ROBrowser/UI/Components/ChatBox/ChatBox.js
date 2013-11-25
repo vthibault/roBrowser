@@ -20,7 +20,7 @@ define(function(require)
 	var Renderer           = require('Renderer/Renderer');
 	var KEYS               = require('Controls/KeyEventHandler');
 	var Client             = require('Core/Client');
-	var Camera             = require('Renderer/Camera'); // TODO: used to get player attached - changed it
+	var Session            = require('Engine/SessionStorage');
 	var PACKET             = require('Network/PacketStructure');
 	var Network            = require('Network/NetworkManager');
 	var UIManager          = require('UI/UIManager');
@@ -405,15 +405,15 @@ define(function(require)
 		}
 		else if( text[0] === '%' ) {
 			pkt = new PACKET.CZ.REQUEST_CHAT_PARTY();
-			pkt.msg = Camera.target.display.name + ' : ' + text.substr(1);
+			pkt.msg = Session.Entity.display.name + ' : ' + text.substr(1);
 		}
 		else if( text[0] === '$' ) {
 			pkt = new PACKET.CZ.GUILD_CHAT();
-			pkt.msg = Camera.target.display.name + ' : ' + text.substr(1);
+			pkt.msg = Session.Entity.display.name + ' : ' + text.substr(1);
 		}
 		else {
 			pkt = new PACKET.CZ.REQUEST_CHAT();
-			pkt.msg = Camera.target.display.name + ' : ' + text;
+			pkt.msg = Session.Entity.display.name + ' : ' + text;
 		}
 
 		Network.sendPacket(pkt);

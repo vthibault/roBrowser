@@ -10,8 +10,10 @@
  */
 
 define([
+	'require',
 	'DB/DBManager',
 	'Audio/SoundManager',
+	'Engine/SessionStorage',
 	'Engine/CharEngine',
 	'Network/NetworkManager',
 	'Network/PacketStructure',
@@ -23,8 +25,10 @@ define([
 	'UI/Components/WinPopup/WinPopup'
 ],
 function(
+	require,
 	DB,
 	Sound,
+	Session,
 	CharEngine,
 	Network,
 	PACKET,
@@ -51,61 +55,32 @@ function(
 
 
 	/**
-	 * Login Engine namespace
-	 */
-	var LoginEngine = {};
-
-
-	/**
 	 * @var {object} server object stored in clientinfo.xml
 	 */
-	LoginEngine.server = null;
+	var _server = null;
 
 
 	/**
 	 * @var {array} char-servers list
 	 */
-	LoginEngine.servers = [];
-
-
-	/**
-	 * @var {integer} code session
-	 */
-	LoginEngine.AuthCode = 0;
-
-
-	/**
-	 * @var {integer} account id
-	 */
-	LoginEngine.AID = 0;
-
-
-	/**
-	 * @var {integer} code session 2
-	 */
-	LoginEngine.userLevel = 0;
-
-
-	/**
-	 * @var {integer} account sex
-	 */
-	LoginEngine.sex = 0;
+	var _charServers = [];
 
 
 	/**
 	 * @var {string} Stored username to send as ping
 	 */
-	LoginEngine.loginID = "";
+	var _loginID = "";
 
 
 	/**
 	 * Init Game
 	 */
-	LoginEngine.init = function Init( server )
+	function Init( server )
 	{
 		UIManager.removeComponents();
 
-		this.server = server;
+		Session.LangType = parseInt(server.langtype, 10);
+		_server = server;
 
 		// Add support for "packetver" definition in Server listing
 		if( server.packetver ) {
@@ -118,34 +93,28 @@ function(
 		}
 
 		// Hooking win_login
-		WinLogin.onConnectionRequest = LoginEngine.onConnectionRequest;
-		WinLogin.onExitRequest       = LoginEngine.onExitRequest;
+		WinLogin.onConnectionRequest = OnConnectionRequest;
+		WinLogin.onExitRequest       = OnExitRequest;
 		WinLogin.append();
 
 		// Hook packets
-		Network.hookPacket( PACKET.AC.ACCEPT_LOGIN,    LoginEngine.onConnectionAccepted );
-		Network.hookPacket( PACKET.AC.REFUSE_LOGIN,    LoginEngine.onConnectionRefused );
-		Network.hookPacket( PACKET.AC.REFUSE_LOGIN_R2, LoginEngine.onConnectionRefused );
-		Network.hookPacket( PACKET.SC.NOTIFY_BAN,      LoginEngine.onServerClosed );
-	};
+		Network.hookPacket( PACKET.AC.ACCEPT_LOGIN,    OnConnectionAccepted );
+		Network.hookPacket( PACKET.AC.REFUSE_LOGIN,    OnConnectionRefused );
+		Network.hookPacket( PACKET.AC.REFUSE_LOGIN_R2, OnConnectionRefused );
+		Network.hookPacket( PACKET.SC.NOTIFY_BAN,      OnServerClosed );
+	}
 
 
 	/**
 	 * Reload WinLogin
 	 */
-	LoginEngine.reload = function Reload()
+	function Reload()
 	{
 		UIManager.removeComponents();
-		WinLogin.onConnectionRequest = LoginEngine.onConnectionRequest;
-		WinLogin.onExitRequest       = LoginEngine.onExitRequest;
+		WinLogin.onConnectionRequest = OnConnectionRequest;
+		WinLogin.onExitRequest       = OnExitRequest;
 		WinLogin.append();
-	};
-
-
-	/**
-	 * Abstract Callback used by GameEngine
-	 */
-	LoginEngine.onExitRequest = function OnExitRequest(){};
+	}
 
 
 	/**
@@ -154,7 +123,7 @@ function(
 	 * @param {string} username
 	 * @param {string} password
 	 */
-	LoginEngine.onConnectionRequest = function OnConnectionRequest( username, password )
+	function OnConnectionRequest( username, password )
 	{
 		// Play "¹öÆ°¼Ò¸®.wav" (possible problem with charset)
 		Sound.play("\xB9\xF6\xC6\xB0\xBC\xD2\xB8\xAE.wav");
@@ -163,10 +132,10 @@ function(
 		// Store the ID to use for the ping
 		WinLogin.remove();
 		WinLoading.append();
-		LoginEngine.loginID = username;
+		_loginID = username;
 
 		// Try to connect
-		Network.connect( LoginEngine.server.address, LoginEngine.server.port, function( success ) {
+		Network.connect( _server.address, _server.port, function( success ) {
 			// Fail to connect...
 			if ( !success ) {
 				UIManager.showErrorBox(DB.msgstringtable[1]);
@@ -177,11 +146,20 @@ function(
 			var pkt        = new PACKET.CA.LOGIN();
 			pkt.ID         = username;
 			pkt.Passwd     = password;
-			pkt.Version    = LoginEngine.server.version;
-			pkt.clienttype = LoginEngine.server.langtype;
+			pkt.Version    = parseInt(_server.version, 10);
+			pkt.clienttype = parseInt(_server.langtype, 10);
 			Network.sendPacket(pkt);
 		});
-	};
+	}
+
+
+	/**
+	 * Go back to intro window
+	 */
+	function OnExitRequest()
+	{
+		require('Engine/GameEngine').reload();
+	}
 
 
 	/**
@@ -189,7 +167,7 @@ function(
 	 *
 	 * @param {number} index in server list
 	 */
-	LoginEngine.onCharServerSelected = function OnCharServerSelected( index )
+	function OnCharServerSelected( index )
 	{
 		// Play "¹öÆ°¼Ò¸®.wav" (encode to avoid problem with charset)
 		Sound.play("\xB9\xF6\xC6\xB0\xBC\xD2\xB8\xAE.wav");
@@ -197,16 +175,9 @@ function(
 		WinList.remove();
 		WinLoading.append();
 
-		CharEngine.onExitRequest = LoginEngine.reload;
-		CharEngine.init(
-			LoginEngine.servers[index],
-			LoginEngine.server.langtype,
-			LoginEngine.AID,
-			LoginEngine.AuthCode,
-			LoginEngine.userLevel,
-			LoginEngine.sex
-		);
-	};
+		CharEngine.onExitRequest = Reload;
+		CharEngine.init( _charServers[index] );
+	}
 
 
 	/**
@@ -214,28 +185,27 @@ function(
 	 *
 	 * @param {object} pkt - PACKET.AC.ACCEPT_LOGIN
 	 */
-	LoginEngine.onConnectionAccepted = function OnConnectionAccepted( pkt )
+	function OnConnectionAccepted( pkt )
 	{
 		UIManager.removeComponents();
 
-		LoginEngine.AuthCode  = pkt.AuthCode;
-		LoginEngine.AID       = pkt.AID;
-		LoginEngine.userLevel = pkt.userLevel;
-		LoginEngine.sex       = pkt.Sex;
-		LoginEngine.servers   = pkt.ServerList;
+		Session.AuthCode  = pkt.AuthCode;
+		Session.AID       = pkt.AID;
+		Session.UserLevel = pkt.userLevel;
+		Session.Sex       = pkt.Sex;
+		_charServers      = pkt.ServerList;
 
 		// Build list of servers
-		var servers  = pkt.ServerList;
-		var i, count = servers.length;
+		var i, count = _charServers.length;
 		var list     = new Array(count);
 		for( i = 0; i < count; ++i ) {
-			list[i]  =  servers[i].property ? DB.msgstringtable[481] + " " : "";
-			list[i] +=  servers[i].name;
-			list[i] +=  servers[i].state    ? DB.msgstringtable[484] : " " + DB.msgstringtable[483].replace("%d", servers[i].usercount);
+			list[i]  =  _charServers[i].property ? DB.msgstringtable[481] + " " : "";
+			list[i] +=  _charServers[i].name;
+			list[i] +=  _charServers[i].state    ? DB.msgstringtable[484] : " " + DB.msgstringtable[483].replace("%d", _charServers[i].usercount);
 		}
 
 		// Show window
-		WinList.onIndexSelected = LoginEngine.onCharServerSelected;
+		WinList.onIndexSelected = OnCharServerSelected;
 		WinList.onExitRequest   = function(){
 			Network.close();
 			WinList.remove();
@@ -247,11 +217,11 @@ function(
 
 		// Set ping
 		var ping = new PACKET.CA.CONNECT_INFO_CHANGED();
-		ping.ID  = LoginEngine.loginID;
+		ping.ID  = _loginID;
 		Network.setPing(function(){
 			Network.sendPacket(ping);
 		});
-	};
+	}
 
 
 	/**
@@ -259,7 +229,7 @@ function(
 	 *
 	 * @param {object} pkt - PACKET.AC.REFUSE_LOGIN
 	 */
-	LoginEngine.onConnectionRefused = function OnConnectionRefused( pkt )
+	function OnConnectionRefused( pkt )
 	{
 		var error = 9;
 		switch ( pkt.ErrorCode ) {
@@ -297,7 +267,7 @@ function(
 		);
 
 		Network.close();
-	};
+	}
 
 
 	/**
@@ -305,7 +275,7 @@ function(
 	 *
 	 * @param {object} pkt - PACKET.SC.NOTIFY_BAN
 	 */
-	LoginEngine.onServerClosed = function OnServerClosed( pkt )
+	function OnServerClosed( pkt )
 	{
 		var msg_id;
 
@@ -328,11 +298,14 @@ function(
 
 		UIManager.showErrorBox( DB.msgstringtable[msg_id] );
 		Network.close();
-	};
+	}
 
 
 	/**
 	 * Export
 	 */
-	return LoginEngine;
+	return {
+		init:   Init,
+		reload: Reload
+	};
 });

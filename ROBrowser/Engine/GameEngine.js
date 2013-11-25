@@ -50,21 +50,15 @@ function(
 
 
 	/**
-	 * GameEngine NameSpace
+	 * @var {Array} Login server list
 	 */
-	var GameEngine = {};
-
-
-	/**
-	 * @var {array} server list object
-	 */
-	GameEngine.servers = [];
+	var _servers = [];
 
 
 	/**
 	 * Initialize Game
 	 */
-	GameEngine.init = function Init()
+	function Init()
 	{
 		var q = new Queue();
 
@@ -92,7 +86,7 @@ function(
 
 		// Loading clientinfo
 		q.add(function(){
-			GameEngine.loadClientInfo(q.next);
+			LoadClientInfo(q.next);
 		});
 
 		// Loading Game file (txt, lua, lub)
@@ -109,18 +103,18 @@ function(
 
 		// Initialize Login
 		q.add(function(){
-			GameEngine.reload();
+			Reload();
 		});
 
 		// Execute
 		q.run();
-	};
+	}
 
 
 	/**
 	 * Reload the game
 	 */
-	GameEngine.reload = function Reload()
+	function Reload()
 	{
 		BGM.play('01.mp3');
 		UIManager.removeComponents();
@@ -132,11 +126,11 @@ function(
 		Background.setImage( "bgi_temp.bmp", function(){
 
 			// Display server list
-			var list = new Array( GameEngine.servers.length );
+			var list = new Array( _servers.length );
 			var i, count = list.length;
 	
 			for( i = 0; i < count; ++i ) {
-				list[i] = GameEngine.servers[i].display;
+				list[i] = _servers[i].display;
 			}
 
 			WinList.append();
@@ -146,9 +140,9 @@ function(
 		});
 
 		// Hooking WinList
-		WinList.onIndexSelected = GameEngine.onLoginServerSelected;
-		WinList.onExitRequest   = GameEngine.onExit;
-	};
+		WinList.onIndexSelected = OnLoginServerSelected;
+		WinList.onExitRequest   = OnExit;
+	}
 
 
 	/**
@@ -156,30 +150,30 @@ function(
 	 *
 	 * @param {number} index in server list
 	 */
-	GameEngine.onLoginServerSelected = function OnLoginServerSelected( index )
+	function OnLoginServerSelected( index )
 	{
 		// Play "¹öÆ°¼Ò¸®.wav" (possible problem with charset)
 		Sound.play("\xB9\xF6\xC6\xB0\xBC\xD2\xB8\xAE.wav");
 
 		WinList.remove();
-		LoginEngine.onExitRequest = GameEngine.reload;
-		LoginEngine.init( GameEngine.servers[index] );
-	};
+		LoginEngine.onExitRequest = Reload;
+		LoginEngine.init( _servers[index] );
+	}
 
 
 	/**
 	 * Ask to exit window
 	 */
-	GameEngine.onExit = function OnExit()
+	function OnExit()
 	{
 		Sound.stop();
 		Renderer.stop();
 		UIManager.removeComponents();
 
 		Background.remove(function(){
-			Intro.append();
+			Init();
 		});
-	};
+	}
 
 
 	/**
@@ -187,13 +181,13 @@ function(
 	 *
 	 * @param {function} callback
 	 */
-	GameEngine.loadClientInfo = function LoadClientInfo( callback )
+	function LoadClientInfo( callback )
 	{
-		GameEngine.servers.length = 0;
+		_servers.length = 0;
 		ROConfig.servers = ROConfig.servers || 'data/clientinfo.xml';
 
 		if( ROConfig.servers instanceof Array ) {
-			GameEngine.servers = ROConfig.servers;
+			_servers = ROConfig.servers;
 			callback();
 			return;
 		}
@@ -213,7 +207,7 @@ function(
 				var connection = jQuery(element);
 
 				list.push( connection.find('display:first').text() );
-				GameEngine.servers.push({
+				_servers.push({
 					display:    connection.find('display:first').text(),
 					desc:       connection.find('desc:first').text(),
 					address:    connection.find('address:first').text(),
@@ -228,7 +222,7 @@ function(
 				}
 			});
 		});
-	};
+	}
 
 
 	/**
@@ -246,5 +240,8 @@ function(
 	/**
 	 * Export
 	 */
-	return GameEngine;
+	return {
+		init:           Init,
+		reload:         Reload
+	};
 });

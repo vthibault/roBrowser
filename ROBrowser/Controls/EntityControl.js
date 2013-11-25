@@ -9,12 +9,12 @@
  */
 define( [
 	'Utils/gl-matrix', 'Controls/KeyEventHandler',
-	'Renderer/Camera',
+	'Renderer/Camera', 'Engine/SessionStorage',
 	'Network/PacketStructure', 'Network/NetworkManager',
 	'UI/CursorManager', 'Preferences/Controls'
 ], function(
 	glMatrix, KEYS,
-	Camera,
+	Camera, Session,
 	PACKET, Network,
 	Cursor, Preferences
 )
@@ -132,7 +132,7 @@ define( [
 
 			case Entity.TYPE_ITEM:
 				Cursor.setType( Cursor.ACTION.PICK, true, 2 );
-				Camera.target.lookTo( this.position[0], this.position[1] );
+				Session.Entity.lookTo( this.position[0], this.position[1] );
 
 				pkt = new PACKET.CZ.ITEM_PICKUP();
 				pkt.ITAID = this.GID;
@@ -146,10 +146,10 @@ define( [
 				Network.sendPacket(pkt);
 
 				// Updare look
-				Camera.target.lookTo( this.position[0], this.position[1] );
+				Session.Entity.lookTo( this.position[0], this.position[1] );
 				pkt = new PACKET.CZ.CHANGE_DIRECTION();
-				pkt.headDir = Camera.target.headDir;
-				pkt.dir     = Camera.target.direction;
+				pkt.headDir = Session.Entity.headDir;
+				pkt.dir     = Session.Entity.direction;
 				Network.sendPacket(pkt);
 				break;
 

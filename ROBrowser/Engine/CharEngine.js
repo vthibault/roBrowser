@@ -10,9 +10,11 @@
  */
 
 define([
+	'require',
 	'Utils/jquery',
 	'DB/DBManager',
 	'Audio/SoundManager',
+	'Engine/SessionStorage',
 	'Engine/MapEngine',
 	'Network/NetworkManager',
 	'Network/PacketStructure',
@@ -25,9 +27,11 @@ define([
 	'UI/Components/WinPopup/WinPopup',
 	'UI/Components/InputBox/InputBox'
 ], function(
+	require,
 	jQuery,
 	DB,
 	Sound,
+	Session,
 	MapEngine,
 	Network,
 	PACKET,
@@ -45,65 +49,24 @@ define([
 
 
 	/**
-	 * Char Engine namespace
+	 * @var {object} server data
 	 */
-	var CharEngine = {};
+	var _server = null;
 
 
 	/**
-	 * @var {object} char server
+	 * @var {number} where to create character ?
 	 */
-	CharEngine.Server = null;
-
-
-	/**
-	 * @var {number} account id
-	 */
-	CharEngine.AID = 0;
-
-
-	/**
-	 * @var {boolean} account sex
-	 */
-	CharEngine.AccountSex = 0;
-
-
-	/**
-	 * @var {number} language type
-	 */
-	CharEngine.LangType = 0;
-
-
-	/**
-	 * @var {number} AuthCode
-	 */
-	CharEngine.AuthCode = 0;
-
-
-	/**
-	 * @var {number} UserLevel
-	 */
-	CharEngine.UserLevel = 0;
-
-
-	/**
-	 * @var {Entity} selected character
-	 */
-	CharEngine.selectedCharacter = null;
+	var _creationSlot = 0;
 
 
 	/*
 	 * Connect to char server
 	 */
-	CharEngine.init = function Init( server, langtype, AID, AuthCode, UserLevel, Sex )
+	function Init( server )
 	{
-		// Storing variables
-		this.AID        = AID;
-		this.AccountSex = Sex;
-		this.AuthCode   = AuthCode;
-		this.Server     = server;
-		this.LangType   = langtype;
-		this.UserLevel  = UserLevel;
+		// Storing variable
+		_server = server;
 
 		// Connect to char server
 		Network.connect( Network.utils.longToIP( server.ip ), server.port, function( success ){
@@ -116,30 +79,51 @@ define([
 
 			// Success, try to connect
 			var pkt        = new PACKET.CH.ENTER();
-			pkt.AID        = AID;
-			pkt.AuthCode   = AuthCode;
-			pkt.userLevel  = UserLevel;
-			pkt.Sex        = Sex;
-			pkt.clientType = langtype;
+			pkt.AID        = Session.AID;
+			pkt.AuthCode   = Session.AuthCode;
+			pkt.userLevel  = Session.UserLevel;
+			pkt.Sex        = Session.Sex;
+			pkt.clientType = Session.LangType;
 			Network.sendPacket(pkt);
 
 			// Server send back (new) AID
 			Network.read(function(fp){
-				CharEngine.AID = fp.readLong();
+				Session.AID = fp.readLong();
 			});
 		});
 
 		// Hook packets
-		Network.hookPacket( PACKET.HC.ACCEPT_ENTER_NEO_UNION,        this.onConnectionAccepted );
-		Network.hookPacket( PACKET.HC.REFUSE_ENTER,                  this.onConnectionRefused );
-		Network.hookPacket( PACKET.HC.ACCEPT_MAKECHAR_NEO_UNION,     this.onCreationSuccess );
-		Network.hookPacket( PACKET.HC.REFUSE_MAKECHAR,               this.onCreationFail );
-		Network.hookPacket( PACKET.HC.ACCEPT_DELETECHAR,             this.onDeleteAnswer );
-		Network.hookPacket( PACKET.HC.REFUSE_DELETECHAR,             this.onDeleteAnswer );
-		Network.hookPacket( PACKET.HC.NOTIFY_ZONESVR,                this.onReceiveMapInfo );
-		Network.hookPacket( PACKET.HC.ACCEPT_ENTER_NEO_UNION_HEADER, this.onConnectionAccepted );
-		Network.hookPacket( PACKET.HC.ACCEPT_ENTER_NEO_UNION_LIST,   this.onConnectionAccepted );
-	};
+		Network.hookPacket( PACKET.HC.ACCEPT_ENTER_NEO_UNION,        OnConnectionAccepted );
+		Network.hookPacket( PACKET.HC.REFUSE_ENTER,                  OnConnectionRefused );
+		Network.hookPacket( PACKET.HC.ACCEPT_MAKECHAR_NEO_UNION,     OnCreationSuccess );
+		Network.hookPacket( PACKET.HC.REFUSE_MAKECHAR,               OnCreationFail );
+		Network.hookPacket( PACKET.HC.ACCEPT_DELETECHAR,             OnDeleteAnswer );
+		Network.hookPacket( PACKET.HC.REFUSE_DELETECHAR,             OnDeleteAnswer );
+		Network.hookPacket( PACKET.HC.NOTIFY_ZONESVR,                OnReceiveMapInfo );
+		Network.hookPacket( PACKET.HC.ACCEPT_ENTER_NEO_UNION_HEADER, OnConnectionAccepted );
+		Network.hookPacket( PACKET.HC.ACCEPT_ENTER_NEO_UNION_LIST,   OnConnectionAccepted );
+	}
+
+
+	/**
+	 * Reload Char-Select
+	 */
+	function Reload()
+	{
+		Background.setImage( 'bgi_temp.bmp', function() {
+			UIManager.removeComponents();
+			Init( _server );
+		});
+	}
+
+
+	/**
+	 * Request to go back to Login Window
+	 */
+	function OnExitRequest()
+	{
+		require('Engine/LoginEngine').reload();
+	}
 
 
 	/**
@@ -148,13 +132,13 @@ define([
 	 *
 	 * @param {object} pkt - PACKET.HC.ACCEPT_ENTER_NEO_UNION
 	 */
-	CharEngine.onConnectionAccepted = function OnConnectionAccepted( pkt )
+	function OnConnectionAccepted( pkt )
 	{
-		pkt.sex = CharEngine.AccountSex;
+		pkt.sex = Session.Sex;
 
 		// Start sending ping
 		var ping = new PACKET.CZ.PING();
-		ping.AID = CharEngine.AID;
+		ping.AID = Session.AID;
 		Network.setPing(function(){
 			Network.sendPacket(ping);
 		});
@@ -162,13 +146,13 @@ define([
 		UIManager.getComponent('WinLoading').remove();
 
 		// Initialize window
-		CharSelect.onExitRequest    = CharEngine.onExitRequest;
-		CharSelect.onConnectRequest = CharEngine.onConnectRequest;
-		CharSelect.onCreateRequest  = CharEngine.onCreateRequest;
-		CharSelect.onDeleteRequest  = CharEngine.onDeleteRequest;
+		CharSelect.onExitRequest    = OnExitRequest;
+		CharSelect.onConnectRequest = OnConnectRequest;
+		CharSelect.onCreateRequest  = OnCreateRequest;
+		CharSelect.onDeleteRequest  = OnDeleteRequest;
 		CharSelect.append();
 		CharSelect.setInfo( pkt );
-	};
+	}
 
 
 	/**
@@ -176,7 +160,7 @@ define([
 	 *
 	 * @param {object} pkt - PACKET.HC.REFUSE_ENTER
 	 */
-	CharEngine.onConnectionRefused = function OnConnectionRefused( pkt )
+	function OnConnectionRefused( pkt )
 	{
 		var msg_id;
 
@@ -187,13 +171,7 @@ define([
 		}
 
 		UIManager.showErrorBox( DB.msgstringtable[msg_id] );
-	};
-
-
-	/**
-	 * @var {function} callback used by LoginEngine
-	 */
-	CharEngine.onExitRequest = function OnExitRequest(){};
+	}
 
 
 	/**
@@ -201,7 +179,7 @@ define([
 	 *
 	 * @param {number} charID - Character ID
 	 */
-	CharEngine.onDeleteRequest = function OnDeleteRequest( charID )
+	function OnDeleteRequest( charID )
 	{
 		var _ui_box;
 		var _email;
@@ -225,7 +203,7 @@ define([
 			_ui_box.remove();
 			_overlay.detach();
 			clearTimeout(_TimeOut);
-			CharSelect.deleteAnswer(-2);
+			OnDeleteAnswer(-2);
 		}
 
 		// Ask the mail
@@ -300,7 +278,7 @@ define([
 
 			_TimeOut = setTimeout( Render, 30);
 		}
-	};
+	}
 
 
 	/*
@@ -308,17 +286,11 @@ define([
 	 *
 	 * @param {object} PACKET.HC.REFUSE_DELETECHAR or PACKET.HC.ACCEPT_DELETECHAR
 	 */
-	CharEngine.onDeleteAnswer = function DeleteAnswer(pkt)
+	function OnDeleteAnswer(pkt)
 	{
 		var result = typeof( pkt.ErrorCode ) === "undefined" ? -1 : pkt.ErrorCode;
 		CharSelect.deleteAnswer(result);
-	};
-
-
-	/**
-	 * @var {number} where to create character ?
-	 */
-	CharEngine.creationSlot = 0;
+	}
 
 
 	/**
@@ -326,18 +298,18 @@ define([
 	 *
 	 * @param {number} index - slot where to create character
 	 */
-	CharEngine.onCreateRequest = function OnCreateRequest( index )
+	function OnCreateRequest( index )
 	{
-		CharEngine.creationSlot = index;
+		_creationSlot = index;
 		CharSelect.remove();
-		CharCreate.setAccountSex( CharEngine.AccountSex );
-		CharCreate.onCharCreationRequest = CharEngine.onCharCreationRequest;
+		CharCreate.setAccountSex( Session.Sex );
+		CharCreate.onCharCreationRequest = OnCharCreationRequest;
 		CharCreate.onExitRequest = function(){
 			CharCreate.remove();
 			CharSelect.append();
 		};
 		CharCreate.append();
-	};
+	}
 
 
 	/**
@@ -353,7 +325,7 @@ define([
 	 * @param {number} hair - hair style
 	 * @param {number} color - hair color
 	 */
-	CharEngine.onCharCreationRequest = function OnCharCreationRequest( name, Str, Agi, Vit, Int, Dex, Luk, hair, color )
+	function OnCharCreationRequest( name, Str, Agi, Vit, Int, Dex, Luk, hair, color )
 	{
 		var pkt;
 
@@ -374,10 +346,10 @@ define([
 		pkt.name    = name;
 		pkt.head    = hair;
 		pkt.headPal = color;
-		pkt.CharNum = CharEngine.creationSlot;
+		pkt.CharNum = _creationSlot;
 
 		Network.sendPacket(pkt);
-	};
+	}
 
 
 	/**
@@ -385,12 +357,12 @@ define([
 	 *
 	 * @param {object} pkt - PACKET.HC.ACCEPT_MAKECHAR_NEO_UNION
 	 */
-	CharEngine.onCreationSuccess = function OnCreationSuccess( pkt )
+	function OnCreationSuccess( pkt )
 	{
 		CharCreate.remove();
 		CharSelect.addCharacter( pkt.charinfo );
 		CharSelect.append();
-	};
+	}
 
 
 	/**
@@ -398,7 +370,7 @@ define([
 	 *
 	 * @param {object} pkt - PACKET.HC.REFUSE_MAKECHAR
 	 */
-	CharEngine.onCreationFail = function CreationFail( pkt )
+	function OnCreationFail( pkt )
 	{
 		var msg_id;
 
@@ -412,7 +384,7 @@ define([
 		}
 
 		UIManager.showMessageBox( DB.msgstringtable[msg_id], "ok" );
-	};
+	}
 
 
 	/**
@@ -420,19 +392,19 @@ define([
 	 *
 	 * @param {object} entity to connect with
 	 */
-	CharEngine.onConnectRequest = function OnConnectRequest( entity )
+	function OnConnectRequest( entity )
 	{
 		// Play sound
 		Sound.play("\xB9\xF6\xC6\xB0\xBC\xD2\xB8\xAE.wav");
 
 		CharSelect.remove();
 		UIManager.getComponent('WinLoading').append();
-		CharEngine.selectedCharacter = entity;
+		Session.Character = entity;
 
 		var pkt = new PACKET.CH.SELECT_CHAR();
 		pkt.CharNum = entity.CharNum;
 		Network.sendPacket(pkt);	
-	};
+	}
 
 
 	/**
@@ -440,48 +412,10 @@ define([
 	 *
 	 * @param {object} pkt - PACKET.HC.NOTIFY_ZONESVR
 	 */
-	CharEngine.onReceiveMapInfo = function onReceiveMapInfo( pkt )
+	function OnReceiveMapInfo( pkt )
 	{
-		MapEngine.init(
-			pkt,
-			CharEngine.AID,
-			CharEngine.AuthCode,
-			CharEngine.AccountSex,
-			CharEngine.selectedCharacter
-		);
-	};
-
-
-	/**
-	 * Go back from map-server to login-server
-	 */
-	MapEngine.onExit = function OnMapEngineExit()
-	{
-		Background.setImage( 'bgi_temp.bmp', function() {
-			UIManager.removeComponents();
-			CharEngine.onExitRequest();
-		});
-	};
-
-
-	/**
-	 * Go back from map-server to char-server
-	 */
-	MapEngine.onRestart = function OnMapEngineRestart()
-	{
-		Background.setImage( 'bgi_temp.bmp', function() {
-			UIManager.removeComponents();
-
-			CharEngine.init(
-				CharEngine.Server,
-				CharEngine.LangType,
-				CharEngine.AID,
-				CharEngine.AuthCode,
-				CharEngine.UserLevel,
-				CharEngine.AccountSex
-			);
-		});
-	};
+		MapEngine.init( pkt.addr.ip, pkt.addr.port, pkt.GID );
+	}
 
 
 	// TODO: Add support for captcha, rename, changeslot and pincode.
@@ -534,5 +468,8 @@ define([
 	/**
 	 * Export
 	 */
-	return CharEngine;
+	return {
+		init:   Init,
+		reload: Reload
+	};
 });

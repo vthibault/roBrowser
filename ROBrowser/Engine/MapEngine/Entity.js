@@ -17,6 +17,7 @@ define(function( require )
 	 * Load dependencies
 	 */
 	var DB            = require('DB/DBManager');
+	var Session       = require('Engine/SessionStorage');
 	var Network       = require('Network/NetworkManager');
 	var PACKET        = require('Network/PacketStructure');
 	var Renderer      = require('Renderer/Renderer');
@@ -26,12 +27,6 @@ define(function( require )
 	var ChatBox       = require('UI/Components/ChatBox/ChatBox');
 	var StatusIcons   = require('UI/Components/StatusIcons/StatusIcons');
 	var Damage        = require('Renderer/Effects/Damage');
-
-
-	/**
-	 * @var {Entity} Main Player
-	 */
-	var MainPlayer;
 
 
 	/**
@@ -249,7 +244,7 @@ define(function( require )
 		var type = ChatBox.TYPE.PUBLIC;
 
 		// Should not happened
-		if( entity === MainPlayer ) {
+		if( entity === Session.Entity ) {
 			type |= ChatBox.TYPE.SELF;
 		}
 
@@ -535,7 +530,7 @@ define(function( require )
 			default:
 		}
 
-		if ( entity === MainPlayer ) {
+		if ( entity === Session.Entity ) {
 			StatusIcons.update( pkt.index, pkt.state, pkt.RemainMS );
 		}
 	}
@@ -546,8 +541,6 @@ define(function( require )
 	 */
 	return function EntityEngine()
 	{
-		MainPlayer = this.entity;
-
 		Network.hookPacket( PACKET.ZC.NOTIFY_STANDENTRY,     Create );
 		Network.hookPacket( PACKET.ZC.NOTIFY_NEWENTRY,       Create );
 		Network.hookPacket( PACKET.ZC.NOTIFY_ACTENTRY,       Create );

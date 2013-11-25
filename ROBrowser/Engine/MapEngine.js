@@ -1,5 +1,5 @@
 /**
- * Engine/CharEngine.js
+ * Engine/MapEngine.js
  *
  * Map Engine
  * Manage Map server
@@ -21,6 +21,7 @@ define(function( require )
 	var DB               = require('DB/DBManager');
 	var SoundManager     = require('Audio/SoundManager');
 	var BGM              = require('Audio/BGM');
+	var Session          = require('Engine/SessionStorage');
 	var Network          = require('Network/NetworkManager');
 	var PACKET           = require('Network/PacketStructure');
 	var Renderer         = require('Renderer/Renderer');
@@ -44,40 +45,16 @@ define(function( require )
 
 
 	/**
-	 * Map Engine namespace
-	 */
-	var MapEngine = {};
-
-
-	// Initialize
-	require('Controls/MapControl').call(MapEngine);
-
-
-	/**
-	 *  @var {Entity} CharSelect character
-	 */
-	MapEngine.baseCharacter = null;
-
-
-	/**
-	 * @var {Entity} main player
-	 */
-	MapEngine.entity = new Entity();
-
-
-	/**
 	 * Connect to Map Server
 	 *
-	 * @param {object} _pkt - PACKET.HC.NOTIFY_ZONESVR
-	 * @param {number} AID - account id
-	 * @param {number} AuthCode - session code
-	 * @param {boolean} Sex - account sex
-	 * @param {Entity} Character entity from char select
+	 * @param {number} IP
+	 * @param {number} port
+	 * @param {number} Character ID
 	 */
-	MapEngine.init = function Init( _pkt, AID, AuthCode, Sex, Character )
+	function Init( ip, port, GID )
 	{
 		// Connect to char server
-		Network.connect( Network.utils.longToIP( _pkt.addr.ip ), _pkt.addr.port, function( success ){
+		Network.connect( Network.utils.longToIP( ip ), port, function( success ){
 
 			// Force reloading map
 			MapRenderer.currentMap = "";
@@ -88,22 +65,20 @@ define(function( require )
 				return;
 			}
 
-			MapEngine.baseCharacter = Character;
-
 			// Success, try to login.
 			var pkt        = new PACKET.CZ.ENTER();
-			pkt.AID        = AID;
-			pkt.GID        = _pkt.GID;
-			pkt.AuthCode   = AuthCode;
+			pkt.AID        = Session.AID;
+			pkt.GID        = GID;
+			pkt.AuthCode   = Session.AuthCode;
 			pkt.clientTime = Date.now();
-			pkt.Sex        = Sex;
+			pkt.Sex        = Session.Sex;
 			Network.sendPacket(pkt);
 
 			// Server send back AID
 			Network.read(function(fp){
 				// if PACKETVER < 20070521, client send GID...
 				if ( fp.length === 4 ) {
-					MapEngine.baseCharacter.GID = fp.readLong();
+					Session.Character.GID = fp.readLong();
 				}
 			});
 
@@ -117,34 +92,34 @@ define(function( require )
 
 
 		// Hook packets
-		Network.hookPacket( PACKET.ZC.AID,                 this.onReceiveAccountID );
-		Network.hookPacket( PACKET.ZC.ACCEPT_ENTER,        this.onConnectionAccepted );
-		Network.hookPacket( PACKET.ZC.ACCEPT_ENTER2,       this.onConnectionAccepted );
-		Network.hookPacket( PACKET.ZC.NPCACK_MAPMOVE,      this.onMapChange );
-		Network.hookPacket( PACKET.ZC.NPCACK_SERVERMOVE,   this.onServerChange );
-		Network.hookPacket( PACKET.ZC.ACCEPT_QUIT,         this.onExitFail );
-		Network.hookPacket( PACKET.ZC.REFUSE_QUIT,         this.onExitSuccess );
-		Network.hookPacket( PACKET.ZC.RESTART_ACK,         this.onRestartAnswer );
-		Network.hookPacket( PACKET.ZC.ACK_REQ_DISCONNECT,  this.onDisconnectAnswer );
-		Network.hookPacket( PACKET.ZC.NOTIFY_TIME,         this.onPong );
+		Network.hookPacket( PACKET.ZC.AID,                 OnReceiveAccountID );
+		Network.hookPacket( PACKET.ZC.ACCEPT_ENTER,        OnConnectionAccepted );
+		Network.hookPacket( PACKET.ZC.ACCEPT_ENTER2,       OnConnectionAccepted );
+		Network.hookPacket( PACKET.ZC.NPCACK_MAPMOVE,      OnMapChange );
+		Network.hookPacket( PACKET.ZC.NPCACK_SERVERMOVE,   OnServerChange );
+		Network.hookPacket( PACKET.ZC.ACCEPT_QUIT,         OnExitFail );
+		Network.hookPacket( PACKET.ZC.REFUSE_QUIT,         OnExitSuccess );
+		Network.hookPacket( PACKET.ZC.RESTART_ACK,         OnRestartAnswer );
+		Network.hookPacket( PACKET.ZC.ACK_REQ_DISCONNECT,  OnDisconnectAnswer );
+		Network.hookPacket( PACKET.ZC.NOTIFY_TIME,         OnPong );
 
 		// Extend controller
-		require('./MapEngine/Main').call(this);
-		require('./MapEngine/NPC').call(this);
-		require('./MapEngine/Entity').call(this);
-		require('./MapEngine/Item').call(this);
-		require('./MapEngine/PrivateMessage').call(this);
-	};
+		require('./MapEngine/Main').call();
+		require('./MapEngine/NPC').call();
+		require('./MapEngine/Entity').call();
+		require('./MapEngine/Item').call();
+		require('./MapEngine/PrivateMessage').call();
+	}
 
 
 	/**
 	 * Pong from server
 	 * TODO: check the time ?
 	 */
-	MapEngine.onPong = function OnPong( pkt )
+	function OnPong( pkt )
 	{
 		//pkt.time
-	};
+	}
 
 
 	/**
@@ -152,10 +127,10 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET.ZC.AID
 	 */
-	MapEngine.onReceiveAccountID = function OnReceiveAccountID( pkt )
+	function OnReceiveAccountID( pkt )
 	{
-		MapEngine.baseCharacter.GID = pkt.AID;
-	};
+		Session.Character.GID = pkt.AID;
+	}
 
 
 	/**
@@ -163,29 +138,29 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET.ZC.ACCEPT_ENTER
 	 */
-	MapEngine.onConnectionAccepted = function OnConnectionAccepted( pkt )
+	function OnConnectionAccepted( pkt )
 	{
-		MapEngine.entity.set( MapEngine.baseCharacter );
-		MapEngine.entity.onWalkEnd = MapEngine.onWalkEnd;
+		Session.Entity = new Entity( Session.Character );
+		Session.Entity.onWalkEnd = OnWalkEnd;
 
-		BasicInfo.update('blvl', MapEngine.baseCharacter.level );
-		BasicInfo.update('jlvl', MapEngine.baseCharacter.joblevel );
-		BasicInfo.update('zeny', MapEngine.baseCharacter.money );
-		BasicInfo.update('name', MapEngine.baseCharacter.name );
-		BasicInfo.update('job',  MapEngine.baseCharacter.job );
+		BasicInfo.update('blvl', Session.Character.level );
+		BasicInfo.update('jlvl', Session.Character.joblevel );
+		BasicInfo.update('zeny', Session.Character.money );
+		BasicInfo.update('name', Session.Character.name );
+		BasicInfo.update('job',  Session.Character.job );
 
 		// Bind UI
-		WinStats.OnRequestUpdate        = MapEngine.onRequestStatUpdate;
-		Equipment.onUnEquip             = MapEngine.onUnEquip;
-		Equipment.onConfigUpdate        = MapEngine.onConfigUpdate;
-		Equipment.onEquipItem           = MapEngine.onEquipItem;
-		Inventory.onUseItem             = MapEngine.onUseItem;
-		Inventory.onEquipItem           = MapEngine.onEquipItem;
-		Escape.onExitRequest            = MapEngine.onExitRequest;
-		Escape.onCharSelectionRequest   = MapEngine.onRestartRequest;
-		Escape.onReturnSavePointRequest = MapEngine.onReturnSavePointRequest;
-		Escape.onResurectionRequest     = MapEngine.onResurectionRequest;
-	};
+		WinStats.OnRequestUpdate        = OnRequestStatUpdate;
+		Equipment.onUnEquip             = OnUnEquip;
+		Equipment.onConfigUpdate        = OnConfigUpdate;
+		Equipment.onEquipItem           = OnEquipItem;
+		Inventory.onUseItem             = OnUseItem;
+		Inventory.onEquipItem           = OnEquipItem;
+		Escape.onExitRequest            = OnExitRequest;
+		Escape.onCharSelectionRequest   = OnRestartRequest;
+		Escape.onReturnSavePointRequest = OnReturnSavePointRequest;
+		Escape.onResurectionRequest     = OnResurectionRequest;
+	}
 
 
 	/**
@@ -193,7 +168,7 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET.ZC.NPCACK_MAPMOVE
 	 */
-	MapEngine.onMapChange = function OnMapChange( pkt )
+	function OnMapChange( pkt )
 	{
 		jQuery(window).off('keydown.map');
 
@@ -203,21 +178,21 @@ define(function( require )
 			jQuery(window).on('keydown.map', function( event ){
 				if( event.which === KEYS.INSERT ) {
 					var pkt = new PACKET.CZ.REQUEST_ACT();
-					pkt.action = MapEngine.entity.action === MapEngine.entity.ACTION.SIT ? 3 : 2;
+					pkt.action = Session.Entity.action === Session.Entity.ACTION.SIT ? 3 : 2;
 					Network.sendPacket(pkt);
 					event.stopImmediatePropagation();
 					return false;
 				}
 			});
 
-			MapEngine.entity.set({
+			Session.Entity.set({
 				PosDir: [ pkt.xPos, pkt.yPos, 0 ],
-				GID: MapEngine.baseCharacter.GID
+				GID: Session.Character.GID
 			});
-			EntityManager.add( MapEngine.entity );
+			EntityManager.add( Session.Entity );
 
 			// Initialize camera
-			Camera.setTarget( MapEngine.entity );
+			Camera.setTarget( Session.Entity );
 			Camera.init();
 
 			// Add Game UI
@@ -237,7 +212,7 @@ define(function( require )
 		};
 
 		MapRenderer.setMap( pkt.mapName );
-	};
+	}
 
 
 	/**
@@ -246,7 +221,7 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET.ZC.NPCACK_SERVERMOVE
 	 */
-	MapEngine.onServerChange = function onServerChange( pkt )
+	function OnServerChange( pkt )
 	{
 		jQuery(window).off('keydown.map');
 		/*
@@ -257,13 +232,13 @@ define(function( require )
 			pkt.addr.port
 		*/
 		// Add to resend authcode sex etc ?
-	};
+	}
 
 
 	/**
 	 * Ask the server to disconnect
 	 */
-	MapEngine.onExitRequest = function OnExitRequest()
+	function OnExitRequest()
 	{
 		var pkt = new PACKET.CZ.REQUEST_QUIT();
 		Network.sendPacket(pkt);
@@ -278,8 +253,9 @@ define(function( require )
 
 		window.close();
 
+		// TOFIX
 		require('Engine/GameEngine').init();
-	};
+	}
 
 
 	/**
@@ -287,10 +263,10 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET.ZC.REFUSE_QUIT
 	 */
-	MapEngine.onExitFail = function OnExitFail( pkt )
+	function OnExitFail( pkt )
 	{
 		ChatBox.addText( DB.msgstringtable[502], ChatBox.TYPE.ERROR);
-	};
+	}
 
 
 	/**
@@ -298,50 +274,55 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET.ZC.REFUSE_QUIT
 	 */
-	MapEngine.onExitSuccess = function OnExitSuccess( pkt )
+	function OnExitSuccess( pkt )
 	{
 		Renderer.stop();
 		MapRenderer.free();
-		MapEngine.onExit();
-	};
 
+		UIManager.removeComponents();
+		Network.close();
+		Renderer.stop();
+		MapRenderer.free();
+		SoundManager.stop();
+		BGM.stop();
 
-	/**
-	 * @var {function} callback to define
-	 */
-	MapEngine.onExit = function OnExit(){};
+		window.close();
+
+		// TOFIX
+		require('Engine/GameEngine').init();
+	}
 
 
 	/**
 	 * Try to return to char-server
 	 */
-	MapEngine.onRestartRequest = function OnRestartRequest()
+	function OnRestartRequest()
 	{
 		var pkt = new PACKET.CZ.RESTART();
 		pkt.type = 1;
 		Network.sendPacket(pkt);
-	};
+	}
 
 
 	/**
 	 * Go back to save point request
 	 */
-	MapEngine.onReturnSavePointRequest = function OnReturnSavePointRequest()
+	function OnReturnSavePointRequest()
 	{
 		var pkt = new PACKET.CZ.RESTART();
 		pkt.type = 0;
 		Network.sendPacket(pkt);
-	};
+	}
 
 
 	/**
 	 * Resurection feature
 	 */
-	MapEngine.onResurectionRequest = function OnResurectionRequest()
+	function OnResurectionRequest()
 	{
 		var pkt = new PACKET.CZ.STANDING_RESURRECTION();
 		Network.sendPacket(pkt);
-	};
+	}
 
 
 	/**
@@ -349,7 +330,7 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET.ZC.RESTART_ACK
 	 */
-	MapEngine.onRestartAnswer = function OnRestartAnswer( pkt )
+	function OnRestartAnswer( pkt )
 	{
 		if( !pkt.type ) {
 			// Have to wait 10sec
@@ -359,29 +340,23 @@ define(function( require )
 			ChatBox.clean();
 			MapRenderer.free();
 			Renderer.stop();
-			MapEngine.onRestart();
+			OnRestart();
 		}
-	};
-
-
-	/**
-	 * @var {function} callback to define
-	 */
-	MapEngine.onRestart = function OnRestart(){};
+	}
 
 
 	/**
 	 * Response from server to disconnect
 	 * @param pkt - {object}
 	 */
-	MapEngine.onDisconnectAnswer = function OnDisconnectAnswer( pkt )
+	function OnDisconnectAnswer( pkt )
 	{
 		switch( pkt.result ) {
 			// Disconnect
 			case 0:
 				ChatBox.clean();
 				Renderer.stop();
-				MapEngine.onExit();
+				OnExit();
 				break;
 
 			case 1:
@@ -391,58 +366,58 @@ define(function( require )
 
 			default:
 		}
-	};
+	}
 
 
 	/**
 	 * @var {number} walk timer
 	 */
-	MapEngine._walkTimer = null;
+	var _walkTimer = null;
 
 
 	/**
-	 * Last delay to walk
+	 * @var {number} Last delay to walk
 	 */
-	MapEngine._walkLastTick = 0;
+	var _walkLastTick = 0;
 
 
 	/**
 	 * Ask to move
 	 */
-	MapEngine.onMouseDown = function OnMouseDown()
+	function OnMouseDown()
 	{
-		clearTimeout(this._walkTimer);
+		clearTimeout(_walkTimer);
 
 		// If siting, update direction
-		if( this.entity.action === this.entity.ACTION.SIT ) {
-			this.entity.lookTo( Mouse.world.x, Mouse.world.y );
+		if( Session.Entity.action === Session.Entity.ACTION.SIT ) {
+			Session.Entity.lookTo( Mouse.world.x, Mouse.world.y );
 
 			var pkt     = new PACKET.CZ.CHANGE_DIRECTION();
-			pkt.headDir = this.entity.headDir;
-			pkt.dir     = this.entity.direction;
+			pkt.headDir = Session.Entity.headDir;
+			pkt.dir     = Session.Entity.direction;
 			Network.sendPacket(pkt);
 			return;
 		}
 
-		this.onWalkRequest();
+		OnWalkRequest();
 	};
 
 
 	/**
 	 * Stop moving
 	 */
-	MapEngine.onMouseUp = function OnMouseUp()
+	function OnMouseUp()
 	{
-		clearTimeout(this._walkTimer);
+		clearTimeout(_walkTimer);
 	};
 
 
 	/**
 	 * Moving function
 	 */
-	MapEngine.onWalkRequest = function OnWalkRequest()
+	function OnWalkRequest()
 	{
-		if( this._walkLastTick + 500 > Renderer.tick ) {
+		if( _walkLastTick + 500 > Renderer.tick ) {
 			return;	
 		}
 
@@ -453,16 +428,16 @@ define(function( require )
 			Network.sendPacket(pkt);
 		}
 
-		clearTimeout(this._walkTimer);
-		this._walkTimer    =  setTimeout( this.onWalkRequest.bind(this), 500);
-		this._walkLastTick = +Renderer.tick;
-	};
+		clearTimeout(_walkTimer);
+		_walkTimer    =  setTimeout( OnWalkRequest, 500);
+		_walkLastTick = +Renderer.tick;
+	}
 
 
 	/**
 	 * If the character moved to attack, once it finished to move ask to attack
 	 */
-	MapEngine.onWalkEnd = function OnWalkEnd()
+	function OnWalkEnd()
 	{
 		var entity = EntityManager.getFocusEntity();
 		if( entity ) {
@@ -471,7 +446,7 @@ define(function( require )
 			pkt.targetGID = entity.GID;
 			Network.sendPacket(pkt);
 		}
-	};
+	}
 
 
 	/**
@@ -480,14 +455,14 @@ define(function( require )
 	 * @param {number} id
 	 * @param {number} amount
 	 */
-	MapEngine.onRequestStatUpdate = function OnRequestStatUpdate(id, amount)
+	function OnRequestStatUpdate(id, amount)
 	{
 		var pkt = new PACKET.CZ.STATUS_CHANGE();
 		pkt.statusID     = id;
 		pkt.changeAmount = amount;
 
 		Network.sendPacket(pkt);
-	};
+	}
 
 
 	/**
@@ -496,7 +471,7 @@ define(function( require )
 	 * @param {number} index in inventory
 	 * @param {number} count to drop
 	 */
-	MapEngine.onDropItem = function OnDropItem( index, count )
+	function OnDropItem( index, count )
 	{
 		if( count ) {
 			var pkt   = new PACKET.CZ.ITEM_THROW();
@@ -504,7 +479,7 @@ define(function( require )
 			pkt.count = count;
 			Network.sendPacket(pkt);
 		}
-	};
+	}
 
 
 	/**
@@ -512,13 +487,13 @@ define(function( require )
 	 *
 	 * @param {number} item's index
 	 */
-	MapEngine.onUseItem = function( index )
+	function OnUseItem( index )
 	{
 		var pkt   = new PACKET.CZ.USE_ITEM();
 		pkt.index = index;
-		pkt.AID   = MapEngine.entity.GID;
+		pkt.AID   = Session.Entity.GID;
 		Network.sendPacket(pkt);
-	};
+	}
 
 
 	/**
@@ -527,13 +502,13 @@ define(function( require )
 	 * @param {number} item's index
 	 * @param {number} where to equip
 	 */
-	MapEngine.onEquipItem = function( index, location )
+	function OnEquipItem( index, location )
 	{
 		var pkt          = new PACKET.CZ.REQ_WEAR_EQUIP();
 		pkt.index        = index;
 		pkt.wearLocation = location;
 		Network.sendPacket(pkt);
-	};
+	}
 
 
 	/**
@@ -541,12 +516,12 @@ define(function( require )
 	 *
 	 * @param {number} index to unequip
 	 */
-	MapEngine.onUnEquip = function OnUnEquip( index )
+	function OnUnEquip( index )
 	{
 		var pkt = new PACKET.CZ.REQ_TAKEOFF_EQUIP();
 		pkt.index = index;
 		Network.sendPacket(pkt);
-	};
+	}
 
 
 	/**
@@ -555,17 +530,34 @@ define(function( require )
 	 * @param {number} config id (only type:0 is supported - equip)
 	 * @param {number} val
 	 */
-	MapEngine.onConfigUpdate = function OnConfigUpdate( type, val )
+	function OnConfigUpdate( type, val )
 	{
 		var pkt = new PACKET.CZ.CONFIG();
 		pkt.Config = type;
 		pkt.Value = val;
 		Network.sendPacket(pkt);
+	}
+
+
+	/**
+	 * Go back from map-server to char-server
+	 */
+	function OnRestart()
+	{
+		require('Engine/CharEngine').reload();
 	};
+
 
 
 	/**
 	 * Export
 	 */
-	return MapEngine;
+	return new function MapEngine(){
+		this.init        = Init;
+		this.onMouseUp   = OnMouseUp;
+		this.onMouseDown = OnMouseDown;
+		this.onDropItem  = OnDropItem;
+
+		require('Controls/MapControl').call(this);
+	};
 });

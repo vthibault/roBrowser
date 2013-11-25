@@ -13,17 +13,14 @@ define(function( require )
 	"use strict";
 
 
-	var MainPlayer;
-
-
 	/**
 	 * Load dependencies
 	 */
 	var DB            = require('DB/DBManager');
 	var PathFinding   = require('Utils/PathFinding');
+	var Session       = require('Engine/SessionStorage');
 	var Network       = require('Network/NetworkManager');
 	var PACKET        = require('Network/PacketStructure');
-	var Camera        = require('Renderer/Camera');
 	var EntityManager = require('Renderer/EntityManager');
 	var Altitude      = require('Renderer/Map/Altitude');
 	var ChatBox       = require('UI/Components/ChatBox/ChatBox');
@@ -44,7 +41,7 @@ define(function( require )
 		//entity.position[0] = pkt.MoveData[0];
 		//entity.position[1] = pkt.MoveData[1];
 		//entity.position[2] = Altitude.getCellHeight(  pkt.MoveData[0],  pkt.MoveData[1] );
-		Camera.target.walkTo(
+		Session.Entity.walkTo(
 			pkt.MoveData[0],
 			pkt.MoveData[1],
 			pkt.MoveData[2],
@@ -60,7 +57,7 @@ define(function( require )
 	 */
 	function UpdateAttackRange( pkt )
 	{
-		MainPlayer.attack_range = pkt.currentAttRange;
+		Session.Entity.attack_range = pkt.currentAttRange;
 	}
 
 
@@ -136,7 +133,7 @@ define(function( require )
 
 			// Walk Speed
 			case  0:
-				MainPlayer.walk.speed = amount;
+				Session.Entity.walk.speed = amount;
 				break;
 
 			// Base exp
@@ -162,8 +159,8 @@ define(function( require )
 
 			// HP
 			case  5:
-				MainPlayer.life.hp = amount;
-				MainPlayer.life.update();
+				Session.Entity.life.hp = amount;
+				Session.Entity.life.update();
 
 				// Urg we are dead !
 				if( amount < 1 ) {
@@ -174,38 +171,38 @@ define(function( require )
 					// TODO: check for resurection button
 				}
 
-				if( MainPlayer.life.hp_max > -1 ) {
-					BasicInfo.update('hp', MainPlayer.life.hp, MainPlayer.life.hp_max);
+				if( Session.Entity.life.hp_max > -1 ) {
+					BasicInfo.update('hp', Session.Entity.life.hp, Session.Entity.life.hp_max);
 				}
 				break;
 
 			// HP max
 			case  6:
-				MainPlayer.life.hp_max = amount;
-				MainPlayer.life.update();
+				Session.Entity.life.hp_max = amount;
+				Session.Entity.life.update();
 
-				if( MainPlayer.life.hp > -1 ) {
-					BasicInfo.update('hp',  MainPlayer.life.hp, MainPlayer.life.hp_max);
+				if( Session.Entity.life.hp > -1 ) {
+					BasicInfo.update('hp',  Session.Entity.life.hp, Session.Entity.life.hp_max);
 				}
 				break;
 
 			// SP
 			case  7:
-				MainPlayer.life.sp = amount;
-				MainPlayer.life.update();
+				Session.Entity.life.sp = amount;
+				Session.Entity.life.update();
 
-				if( MainPlayer.life.sp_max > -1 ) {
-					BasicInfo.update('sp', MainPlayer.life.sp, MainPlayer.life.sp_max);
+				if( Session.Entity.life.sp_max > -1 ) {
+					BasicInfo.update('sp', Session.Entity.life.sp, Session.Entity.life.sp_max);
 				}
 				break;
 
 			// SP max
 			case  8:
-				MainPlayer.life.sp_max = amount;
-				MainPlayer.life.update();
+				Session.Entity.life.sp_max = amount;
+				Session.Entity.life.update();
 
-				if( MainPlayer.life.sp > -1 ) {
-					BasicInfo.update('sp',  MainPlayer.life.sp, MainPlayer.life.sp_max);
+				if( Session.Entity.life.sp > -1 ) {
+					BasicInfo.update('sp',  Session.Entity.life.sp, Session.Entity.life.sp_max);
 				}
 				break;
 
@@ -365,8 +362,8 @@ define(function( require )
 	function OnPlayerMessage( pkt )
 	{
 		ChatBox.addText( pkt.msg, ChatBox.TYPE.PUBLIC | ChatBox.TYPE.SELF );
-		if( Camera.target ) {
-			Camera.target.dialog.set( pkt.msg );
+		if( Session.Entity ) {
+			Session.Entity.dialog.set( pkt.msg );
 		}
 	}
 
@@ -497,8 +494,6 @@ define(function( require )
 	 */
 	return function MainEngine()
 	{
-		MainPlayer = this.entity;
-
 		Network.hookPacket( PACKET.ZC.NOTIFY_PLAYERMOVE,           WalkTo );
 		Network.hookPacket( PACKET.ZC.PAR_CHANGE,                  UpdateParameter );
 		Network.hookPacket( PACKET.ZC.LONGPAR_CHANGE,              UpdateParameter );

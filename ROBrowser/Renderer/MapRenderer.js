@@ -21,6 +21,7 @@ define(function( require )
 	var DB             = require('DB/DBManager');
 	var UIManager      = require('UI/UIManager');
 	var Background     = require('UI/Background');
+	var Session        = require('Engine/SessionStorage');
 	var MemoryManager  = require('Core/MemoryManager');
 	var Mouse          = require('Controls/MouseEventHandler');
 	var Renderer       = require('Renderer/Renderer');
@@ -349,7 +350,7 @@ define(function( require )
 		//Effects.render( gl, modelView, projection, fog );
 
 		// Play sounds
-		Sounds.render( Camera.target.position, tick );
+		Sounds.render( Session.Entity.position, tick );
 
 
 		// Clean up

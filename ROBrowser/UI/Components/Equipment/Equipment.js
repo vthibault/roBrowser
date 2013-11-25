@@ -19,6 +19,7 @@ define(function(require)
 	var jQuery             = require('Utils/jquery');
 	var Client             = require('Core/Client');
 	var Preferences        = require('Core/Preferences');
+	var Session            = require('Engine/SessionStorage');
 	var Renderer           = require('Renderer/Renderer');
 	var Camera             = require('Renderer/Camera');
 	var SpriteRenderer     = require('Renderer/SpriteRenderer');
@@ -76,7 +77,7 @@ define(function(require)
 		}, 1.0);
 
 		this.ctx       = this.ui.find('canvas')[0].getContext('2d');
-		this.entity    = new Entity(Camera.target);
+		this.entity    = new Entity(Session.Entity);
 		this.showEquip = false;
 
 		// Append WinStats to content

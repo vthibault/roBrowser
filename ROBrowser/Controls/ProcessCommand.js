@@ -10,14 +10,16 @@
 define([
 	'DB/DBManager',
 	'Audio/BGM',               'Audio/SoundManager',
-	'Renderer/MapRenderer',    'Renderer/Camera',
+	'Renderer/MapRenderer',
+	'Engine/SessionStorage',
 	'Network/PacketStructure', 'Network/NetworkManager',
 	'Preferences/Controls',    'Preferences/Audio',       'Preferences/Map',    'Preferences/Camera'
 ],
 function(
 	DB,
 	BGM,                 Sound,
-	MapRenderer,         Camera,
+	MapRenderer,
+	Session,
 	PACKET,              Network,
 	ControlPreferences,  AudioPreferences,  MapPreferences,  CameraPreferences
 ) {
@@ -96,7 +98,7 @@ function(
 			case 'sit':
 			case 'stand':
 				pkt = new PACKET.CZ.REQUEST_ACT();
-				if( Camera.target.action === Camera.target.ACTION.SIT )
+				if( Session.Entity.action === Session.Entity.ACTION.SIT )
 					pkt.action = 3; // stand up
 				else {
 					pkt.action = 2; // sit down	
@@ -105,33 +107,33 @@ function(
 				return;
 
 			case 'doridori':
-				Camera.target.headDir = ( Camera.target.headDir === 1 ? 2 : 1 );
+				Session.Entity.headDir = ( Session.Entity.headDir === 1 ? 2 : 1 );
 				pkt         = new PACKET.CZ.CHANGE_DIRECTION();
-				pkt.headDir = Camera.target.headDir;
-				pkt.dir     = Camera.target.direction;
+				pkt.headDir = Session.Entity.headDir;
+				pkt.dir     = Session.Entity.direction;
 				Network.sendPacket(pkt);
 				return;
 
 			case 'bangbang':
-				Camera.target.direction = ( Camera.target.direction + 1 ) % 8;
+				Session.Entity.direction = ( Session.Entity.direction + 1 ) % 8;
 				pkt         = new PACKET.CZ.CHANGE_DIRECTION();
-				pkt.headDir = Camera.target.headDir;
-				pkt.dir     = Camera.target.direction;
+				pkt.headDir = Session.Entity.headDir;
+				pkt.dir     = Session.Entity.direction;
 				Network.sendPacket(pkt);
 				return;
 	
 			case 'bingbing':
-				Camera.target.direction = ( Camera.target.direction + 7 ) % 8;
+				Session.Entity.direction = ( Session.Entity.direction + 7 ) % 8;
 				pkt         = new PACKET.CZ.CHANGE_DIRECTION();
-				pkt.headDir = Camera.target.headDir;
-				pkt.dir     = Camera.target.direction;
+				pkt.headDir = Session.Entity.headDir;
+				pkt.dir     = Session.Entity.direction;
 				Network.sendPacket(pkt);
 				return;
 
 			case 'where':
 				this.addText(
 					( DB.mapname[ MapRenderer.currentMap.replace('.gat','.rsw') ] || DB.msgstringtable[187] ) +
-					"(" + MapRenderer.currentMap + ") : " + Math.floor(Camera.target.position[0]) + ", " + Math.floor(Camera.target.position[1]),
+					"(" + MapRenderer.currentMap + ") : " + Math.floor(Session.Entity.position[0]) + ", " + Math.floor(Session.Entity.position[1]),
 					this.TYPE.INFO
 				);
 				return;
