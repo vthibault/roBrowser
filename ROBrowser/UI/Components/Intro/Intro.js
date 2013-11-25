@@ -262,7 +262,7 @@ define(function(require)
 		this.ui.find('.quality').val( this.preferences.quality ).trigger('change');
 
 		this.ui.find('.serverdef').attr('checked', false );
-		this.ui.find('.serverdef[value="'+ this.preferences.serverdef +'"]').attr('checked', 'checked');
+		this.ui.find('.serverdef[value="'+ this.preferences.serverdef +'"]').attr('checked', 'checked').trigger('click');
 		this.ui.find('.clientinfo').val( this.preferences.serverfile );
 
 		var i, count;
@@ -293,7 +293,7 @@ define(function(require)
 	{
 		this.preferences.screensize = this.ui.find('.screensize').val();
 		this.preferences.quality    = this.ui.find('.quality').val();
-		this.preferences.serverdef  = this.ui.find('.serverdef:checked').val();
+		this.preferences.serverdef  = this.ui.find('.serverdef[checked="checked"]').val();
 		this.preferences.serverfile = this.ui.find('.clientinfo').val();
 		this.preferences.serverlist = [];
 
