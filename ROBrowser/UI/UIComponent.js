@@ -245,7 +245,9 @@ function(       jQuery,      DB,               Client,            Mouse )
 				// Get back zIndex, push the element to the end to be over others components
 				setTimeout(function(){
 					element.css('zIndex', 50);
-					element[0].parentNode.appendChild(element[0]);
+					if( element[0].parentNode ) {
+						element[0].parentNode.appendChild(element[0]);
+					}
 				}, 1);
 
 				container.stop().animate({ opacity:1.0 }, 500 );

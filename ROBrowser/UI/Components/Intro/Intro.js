@@ -141,7 +141,6 @@ define(function(require)
 					this.select();
 				}
 				event.stopImmediatePropagation();
-				return false;
 			});
 
 		// Add Server
