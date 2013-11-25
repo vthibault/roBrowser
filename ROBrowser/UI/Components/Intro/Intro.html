@@ -66,40 +66,42 @@
 				</tr>
 			</table>
 
-			<h1>Server List</h1>
-			<dl>
-				<dt>
-					<input class="radio serverdef" type="radio" value="serverfile" name="server"/>
-					<span>Using clientinfo.xml file stored in my FullClient</span>
-				</dt>
-				<dd>data / <input type="text" value="clientinfo.xml" class="clientinfo"/></dd>
-
-				<dt>
-					<input class="radio serverdef" type="radio" value="serverlist" name="server"/>
-					<span>Using servers from the current list :</span>
-				</dt>
-				<dd>
-					<div class="servercontainer">
-						<table class="serverlist">
-							<thead>
-								<tr>
-									<td width="22%">Name</td>
-									<td width="25%">Address</td>
-									<td width="12%">Version</td>
-									<td width="15%">Langtype</td>
-									<td width="22%">Packet Version</td>
-									<td width="10px">
-									</td>
-								</tr>
-							</thead>
-							<tbody class="servers">
-							</tbody>
-						</table>
-					</div>
-					<button class="btn_add"></button>
-					<div class="clear"></div>
-				</dd>
-			</dl>
+			<div class="serveredit">
+				<h1>Server List</h1>
+				<dl>
+					<dt>
+						<input class="radio serverdef" type="radio" value="serverfile" name="server"/>
+						<span>Using clientinfo.xml file stored in my FullClient</span>
+					</dt>
+					<dd>data / <input type="text" value="clientinfo.xml" class="clientinfo"/></dd>
+	
+					<dt>
+						<input class="radio serverdef" type="radio" value="serverlist" name="server"/>
+						<span>Using servers from the current list :</span>
+					</dt>
+					<dd>
+						<div class="servercontainer">
+							<table class="serverlist">
+								<thead>
+									<tr>
+										<td width="22%">Name</td>
+										<td width="25%">Address</td>
+										<td width="12%">Version</td>
+										<td width="15%">Langtype</td>
+										<td width="22%">Packet Version</td>
+										<td width="10px">
+										</td>
+									</tr>
+								</thead>
+								<tbody class="servers">
+								</tbody>
+							</table>
+						</div>
+						<button class="btn_add"></button>
+						<div class="clear"></div>
+					</dd>
+				</dl>
+			</div>
 
 			<button class="btn_save"></button>
 		</div>

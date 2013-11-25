@@ -75,6 +75,12 @@ define(function(require)
 	 */
 	Intro.init = function Init()
 	{
+		window.ROConfig = window.ROConfig || {};
+
+		if( !ROConfig.servers || typeof(ROConfig.servers) === 'string' ) {
+			ROConfig.serverEditMode = true;
+		}
+
 		var ui = this.ui;
 
 		this.preloadImages();
@@ -142,6 +148,11 @@ define(function(require)
 				}
 				event.stopImmediatePropagation();
 			});
+
+		// Not allow to edit server list
+		if( !ROConfig.serverEditMode ) {
+			ui.find('.serveredit').hide();
+		}
 
 		// Add Server
 		ui.find('.btn_add')
@@ -293,24 +304,27 @@ define(function(require)
 	{
 		this.preferences.screensize = this.ui.find('.screensize').val();
 		this.preferences.quality    = this.ui.find('.quality').val();
-		this.preferences.serverdef  = this.ui.find('.serverdef[checked="checked"]').val();
-		this.preferences.serverfile = this.ui.find('.clientinfo').val();
-		this.preferences.serverlist = [];
 
 		var $servers = this.ui.find('.servers');
 		var i, count = $servers.find('tr').length;
 		var $server;
 
-		for( i = 0; i < count; ++i ) {
-			$server = $servers.find('tr:eq('+ i +')');
-			this.preferences.serverlist.push({
-				display:   $server.find('.display').val(),
-				address:   $server.find('.address').val().split(':')[0],
-				port:      parseInt( $server.find('.address').val().split(':')[1], 10),
-				version:   $server.find('.version').val(),
-				langtype:  $server.find('.langtype').val(),
-				packetver: $server.find('.packetver').val()
-			});
+		if( ROConfig.serverEditMode ) {
+			this.preferences.serverdef  = this.ui.find('.serverdef[checked="checked"]').val();
+			this.preferences.serverfile = this.ui.find('.clientinfo').val();
+			this.preferences.serverlist = [];
+
+			for( i = 0; i < count; ++i ) {
+				$server = $servers.find('tr:eq('+ i +')');
+				this.preferences.serverlist.push({
+					display:   $server.find('.display').val(),
+					address:   $server.find('.address').val().split(':')[0],
+					port:      parseInt( $server.find('.address').val().split(':')[1], 10),
+					version:   $server.find('.version').val(),
+					langtype:  $server.find('.langtype').val(),
+					packetver: $server.find('.packetver').val()
+				});
+			}
 		}
 
 		this.preferences.save();
@@ -323,8 +337,6 @@ define(function(require)
 	 */
 	Intro.applyPreferences = function ApplyPreferences()
 	{
-		window.ROConfig = window.ROConfig || {};
-
 		var isFullScreen = Context.isFullScreen();
 
 		// Full Screen support
@@ -347,12 +359,14 @@ define(function(require)
 			}
 		}
 
-		// Bind data
-		if( this.preferences.serverdef === 'serverlist' ) {
-			ROConfig.servers = this.preferences.serverlist;
-		}
-		else {
-			ROConfig.servers = 'data/' + this.preferences.serverfile;
+		if( ROConfig.serverEditMode ) {
+			// Bind data
+			if( this.preferences.serverdef === 'serverlist' ) {
+				ROConfig.servers = this.preferences.serverlist;
+			}
+			else {
+				ROConfig.servers = 'data/' + this.preferences.serverfile;
+			}
 		}
 
 		ROConfig.quality = this.preferences.quality;
