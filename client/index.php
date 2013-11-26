@@ -66,16 +66,9 @@
 
 	header("Status: 200 OK");
 	switch( strtolower($ext) ) {
-
-		// Convert bmp images to png (less weight)
-		case 'bmp':
-			header('Content-type:image/png');
-			$img = imagecreatefrombmpstring( $file);
-			imagepng($img);
-			die();
-
 		case 'jpg':
 		case 'jpeg': header('Content-type:image/jpeg'); break;
+		case 'bmp':  header('Content-type:image/bmp');  break;
 		case 'gif':  header('Content-type:image/gif');  break;
 		case 'xml':  header('Content-type:text/xml');   ob_start("ob_gzhandler"); break;
 		case 'txt':  header('Content-type:text/plain'); ob_start("ob_gzhandler"); break;

@@ -55,6 +55,12 @@ final class Client
 
 		// Read data first
 		if ( file_exists($local_path) && !is_dir($local_path) && is_readable($local_path) ) {
+
+			// Store file
+			if( self::$AutoExtract ) {
+				return self::store( $path, file_get_contents($local_path) );
+			}
+
 			return file_get_contents($local_path);
 		}
 
@@ -68,24 +74,9 @@ final class Client
 			// If file is found
 			if( $grf->getFile($grf_path, $content) ) {
 
-				// Auto Extract GRF files ?
+				// Store file
 				if( self::$AutoExtract ) {
-
-					$current_path = self::$path;
-					$directories  = explode('\\', $path);
-					array_pop($directories);
-
-					// Creating directories
-					foreach( $directories as $dir ) {
-						$current_path .= $dir . DIRECTORY_SEPARATOR;
-
-						if( !file_exists($current_path) ) {
-							mkdir( $current_path );
-						}
-					}
-
-					// Saving file
-					file_put_contents( $local_path, $content);
+					return self::store( $path, $content );
 				}
 
 				return $content;
@@ -94,6 +85,44 @@ final class Client
 
 		return false;
 	}
+
+
+
+	/**
+	 * Storing file in data folder (convert it if needed)
+	 */
+	static public function store( $path, $content )
+	{
+		$path         = utf8_encode($path);
+		$current_path = self::$path;
+		$local_path   = $current_path . str_replace('\\', '/', $path );
+		$directories  = explode('\\', $path );
+		array_pop($directories);
+
+		// Creating directories
+		foreach( $directories as $dir ) {
+			$current_path .= $dir . DIRECTORY_SEPARATOR;
+
+			if( !file_exists($current_path) ) {
+				mkdir( $current_path );
+			}
+		}
+
+		// storing bmp images as png
+		if( end( explode('.',$path) ) === "bmp" )  {
+			$img  = imagecreatefrombmpstring( $content );
+			$path = str_replace(".bmp", ".png", $local_path);
+			imagepng($img, $path );
+			return file_get_contents( $path );
+		}
+
+		else {
+			// Saving file
+			file_put_contents( $local_path, $content);
+			return $content;
+		}
+	}
+
 
 
 	/**

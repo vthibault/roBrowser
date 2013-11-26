@@ -11,5 +11,25 @@
 # ErrorDocument 404 /index.php
 # -----------------------------------------
 
+
 # Setup the rule
 ErrorDocument 404 /client/index.php
+
+
+#------------------------------------------
+# /!\ Edit this part at your own risk !
+#------------------------------------------
+
+
+Options +FollowSymlinks -MultiViews
+RewriteEngine On
+
+# Replace bmp to png
+RewriteRule ^(.*)\.bmp$   $1\.png [NC,QSA]
+
+# If there is no png file, search for jpg
+#RewriteCond %{REQUEST_FILENAME} !-f
+#RewriteRule ^(.*)\.png$   $1\.jpg [NC,QSA]
+
+# If no png or jpg file found, run the script in the ErrorDocument
+# to extract files from GRF and convert them
