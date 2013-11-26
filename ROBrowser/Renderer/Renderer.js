@@ -167,7 +167,7 @@ define(function( require )
 		Mouse.screen.width  = this.width;
 		Mouse.screen.height = this.height;
 
-		var quality = ( ROConfig.quality || 100 ) / 100;
+		var quality = ( (window.ROConfig && ROConfig.quality) || 100 ) / 100;
 		var width   = this.width  * quality;
 		var height  = this.height * quality;
 
