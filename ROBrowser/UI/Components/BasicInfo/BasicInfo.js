@@ -17,6 +17,8 @@ define(function(require)
 	 */
 	var DB                 = require('DB/DBManager');
 	var Client             = require('Core/Client');
+	var Preferences        = require('Core/Preferences');
+	var Renderer           = require('Renderer/Renderer');
 	var jQuery             = require('Utils/jquery');
 	var KEYS               = require('Controls/KeyEventHandler');
 	var UIManager          = require('UI/UIManager');
@@ -50,6 +52,14 @@ define(function(require)
 	 */
 	BasicInfo.init = function Init()
 	{
+		// Preferences structure
+		this.preferences = Preferences.get('BasicInfo', {
+			x:        0,
+			y:        0,
+			reduce:   true,
+			buttons:  true
+		}, 1.0);
+
 		// Don't activate drag drop when clicking on buttons
 		this.ui.find('.topbar button').mousedown(function( event ){
 			event.stopImmediatePropagation();
@@ -87,6 +97,7 @@ define(function(require)
 
 
 	/**
+	 * When append the element to html
 	 * Execute elements in memory
 	 */
 	BasicInfo.onAppend = function OnAppend()
@@ -98,6 +109,41 @@ define(function(require)
 		}
 
 		this.stack.length = 0;
+
+		// Apply preferences
+		this.ui.css({
+			top:  Math.min( Math.max( 0, this.preferences.y), Renderer.height - this.ui.height()),
+			left: Math.min( Math.max( 0, this.preferences.x), Renderer.width  - this.ui.width())
+		});
+
+		this.ui.removeClass('small large');
+		if( this.preferences.reduce ) {
+			this.ui.addClass('small');
+
+			if( this.preferences.buttons ) {
+				this.ui.find('.buttons').show();
+			}
+			else {
+				this.ui.find('.buttons').hide();
+			}
+		}
+		else {
+			this.ui.addClass('large');
+			this.ui.find('.buttons').hide(); 
+		}
+	};
+
+
+	/**
+	 * Once remove, save preferences
+	 */
+	BasicInfo.onRemove = function OnRemove()
+	{
+		this.preferences.x = parseInt(this.ui.css('left'), 10);
+		this.preferences.y = parseInt(this.ui.css('top'), 10);
+		this.preferences.reduce  = this.ui.hasClass('small');
+		this.preferences.buttons = this.ui.find('.buttons').is(':visible');
+		this.preferences.save();
 	};
 
 
@@ -124,35 +170,52 @@ define(function(require)
 	 */
 	BasicInfo.toggleMode = function ToggleMode()
 	{
+		var type;
 		this.ui.toggleClass('small large');
+
 		if( this.ui.hasClass('large') ) {
 			this.ui.find('.buttons').show();
+			return;
+		}
+
+		if( this.preferences.buttons ) {
+			this.ui.find('.buttons').show();
+			type = 'off';
 		}
 		else {
-			this.ui.find('.toggle_btns').css('backgroundImage', 'url(' + Client.loadFile(DB.INTERFACE_PATH + 'basic_interface/viewon.bmp') + ')');
-			this.ui.find('.buttons').hide(); 
+			this.ui.find('.buttons').hide();
+			type = 'on';
 		}
+
+		Client.loadFile( DB.INTERFACE_PATH + 'basic_interface/view' + type + '.bmp', function(url) {
+			BasicInfo.ui.find('.toggle_btns').css('backgroundImage', 'url(' + url + ')');
+		});
 	};
 
 
 	/**
 	 * Toggle the list of buttons
 	 */
-	BasicInfo.toggleButtons = function ToggleButtons()
+	BasicInfo.toggleButtons = function ToggleButtons( event )
 	{
-		var datauri;
-		var buttons = this.ui.find('.buttons');
+		var type;
+		var $buttons = this.ui.find('.buttons');
+		this.preferences.buttons = !$buttons.is(':visible');
 
-		if( buttons.is(':hidden') ) {
-			buttons.show();
-			datauri = Client.loadFile( DB.INTERFACE_PATH + 'basic_interface/viewoff.bmp');
+		if( this.preferences.buttons ) {
+			$buttons.show();
+			type = 'off'; 
 		}
 		else {
-			buttons.hide();	
-			datauri = Client.loadFile( DB.INTERFACE_PATH + 'basic_interface/viewon.bmp');
+			$buttons.hide();
+			type = 'on';
 		}
 
-		jQuery(this).css('backgroundImage', 'url(' + datauri + ')');
+		Client.loadFile( DB.INTERFACE_PATH + 'basic_interface/view' + type + '.bmp', function(url){
+			BasicInfo.ui.find('.toggle_btns').css('backgroundImage', 'url(' + url + ')');
+		});
+
+		event.stopImmediatePropagation();
 	};
 
 
