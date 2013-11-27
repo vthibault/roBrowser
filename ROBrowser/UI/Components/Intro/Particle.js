@@ -69,6 +69,7 @@ define(function( require )
 
 		this.bg     = new Image();
 		this.bg.src = require.toUrl('./images/background.jpg');
+		this.bg.onload = function(){ this.ready = true; };
 
 		for( var i = 0; i < count; ++i ) {
 			this.list[i] = new Particle( this.width, this.height );
@@ -99,8 +100,9 @@ define(function( require )
 
 		if( now - this.tick > 50 ) {
 			this.ctx.clearRect( 0, 0, this.width, this.height );
-			if( this.bg.complete )
+			if( this.bg.ready ) {
 				this.ctx.drawImage(this.bg, 0, 0);
+			}
 
 			for( i = 0, count = this.list.length; i < count; ++i ) {
 				this.list[i].move( 0, 0, this.width, this.height );

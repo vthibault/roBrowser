@@ -67,7 +67,7 @@ body {
 	-o-transition:-o-transform 0.1s ease-out;
 	transition:transform 0.1s ease-out;
 }
-#intro .btn_about img:hover{
+#intro .btn_about:hover img{
 	-webkit-transform:scale(1.25);
 	-moz-transform:scale(1.25);
 	-o-transform:scale(1.25);
@@ -95,7 +95,7 @@ body {
 	-o-transition:-o-transform 0.4s ease-out;
 	transition:transform 0.4s ease-out;
 }
-#intro .btn_settings img:hover{
+#intro .btn_settings:hover img {
 	-webkit-transform:rotate(360deg);
 	-moz-transform:rotate(360deg);
 	-o-transform:rotate(360deg);
@@ -140,6 +140,9 @@ body {
 	top:332px;
 	left:319px;
 	opacity:0.0;
+	-webkit-transition: opacity 0.5s;
+	-moz-transition: opacity 0.5s;
+	-o-transition: opacity 0.5s;
 	transition: opacity 0.5s;
 }
 #intro .box.over {
