@@ -42,7 +42,8 @@ define(function( require )
 			position: 'absolute',
 			top:     166,
 			right:   20,
-			width:   34
+			width:   34,
+			zIndex:  50
 		});
 	};
 
@@ -50,7 +51,7 @@ define(function( require )
 	/**
 	 * Clean up component
 	 */
-	StatusIcons.onRemove = function OnRemove()
+	StatusIcons.clean = function Clean()
 	{
 		this.ui.empty();
 	};

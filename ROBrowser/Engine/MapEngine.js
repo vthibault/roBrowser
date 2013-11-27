@@ -337,6 +337,7 @@ define(function( require )
 			ChatBox.addText( DB.msgstringtable[502], ChatBox.TYPE.ERROR );
 		}
 		else {
+			StatusIcons.clean();
 			ChatBox.clean();
 			MapRenderer.free();
 			Renderer.stop();
