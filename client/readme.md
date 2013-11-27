@@ -1,6 +1,14 @@
 Setup the remote client
 =======================
 
+The remote client exist to help users without a FullClient on their computer to play by downloading resources from an external server.
+Because pushing directly the fullclient on a server/ftp can provoke some errors, this tool allow to :
+
+ - Get the files from a client used in another domain (Cross-origin resource sharing).
+ - Extracting file directly from GRF archive file (only version 0x200 supported for now).
+ - Converting BMP files to PNG to speed up the transfer (downloading).
+ - Optimized to don't call any script if files are already extracted/converted (resource friendly).
+
 ###Add your fullclient###
 
 Just put your fullclient files in this directory. If you want to put only the required files, put :
@@ -17,6 +25,7 @@ Just put your fullclient files in this directory. If you want to put only the re
 Open *"index.php"* file
 
  - Where is locate your fullclient ?
+
     `Client::$path        =  ""           ;`
 
  If the fullclient is locate as default, in the current directory, let the string empty.
