@@ -46,7 +46,7 @@ define(function(require)
 		quality:      100,
 		serverfile:  'clientinfo.xml',
 		serverlist:  [],
-		serverdef:   'serverlist'
+		serverdef:   'serverfile'
 	}, 1.0 );
 
 
