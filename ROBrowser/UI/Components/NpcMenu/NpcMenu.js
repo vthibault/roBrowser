@@ -50,8 +50,15 @@ define(function(require)
 		this.draggable();
 
 		// Scroll feature should block at each line
+		var lastScrollPos = 0;
 		this.ui.find('.content').on('scroll', function(){
-			this.scrollTop = Math.floor(this.scrollTop/20) * 20;
+			if( this.scrollTop > lastScrollPos ) {
+				this.scrollTop = Math.ceil(this.scrollTop/20) * 20;
+			}
+			else {
+				this.scrollTop = Math.floor(this.scrollTop/20) * 20;
+			}
+			lastScrollPos = this.scrollTop;
 		});
 	};
 

@@ -119,8 +119,15 @@ define(function(require)
 		});
 
 		// Scroll feature should block at each line
+		var lastScrollPos = 0;
 		this.ui.find('.content').on('scroll', function(){
-			this.scrollTop = Math.floor(this.scrollTop/14) * 14;
+			if( this.scrollTop > lastScrollPos ) {
+				this.scrollTop = Math.ceil(this.scrollTop/14) * 14;
+			}
+			else {
+				this.scrollTop = Math.floor(this.scrollTop/14) * 14;
+			}
+			lastScrollPos = this.scrollTop;
 		});
 	};
 

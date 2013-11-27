@@ -115,11 +115,19 @@ define(function(require)
 
 
 		var overlay = this.ui.find('.overlay');
+		var lastScrollPos = 0;
+
 		this.ui.find('.container .content')
 
 			// Scroll feature should block at each line
-			.on('scroll', function(){
-				this.scrollTop = Math.floor( this.scrollTop / 32 ) * 32;
+			.on('scroll', function(){	
+				if( this.scrollTop > lastScrollPos ) {
+					this.scrollTop = Math.ceil(this.scrollTop/32) * 32;
+				}
+				else {
+					this.scrollTop = Math.floor(this.scrollTop/32) * 32;
+				}
+				lastScrollPos = this.scrollTop;
 			})
 
 
