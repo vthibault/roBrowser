@@ -32,6 +32,8 @@ define(function(require)
 	 */
 	WinStats.init = function Init()
 	{
+		this.statuspoint = 0;
+
 		this.ui.find('.up button').mousedown(function(){
 			switch( this.className ) {
 				case 'str': WinStats.OnRequestUpdate( 13, 1 ); break;
@@ -81,8 +83,14 @@ define(function(require)
 		}
 
 		switch( type ) {
-			case 'guildname':
 			case 'statuspoint':
+				this.statuspoint = val;
+				this.ui.find('.requirements div').each(function(){
+					WinStats.ui.find('.up .'+ this.className)
+						.css('opacity', parseInt(this.textContent, 10) <= val ? 1 : 0 );
+				});
+
+			case 'guildname':
 			case 'atak':
 			case 'matak':
 			case 'def':
@@ -129,6 +137,7 @@ define(function(require)
 			case 'dex3':
 			case 'luk3':
 				this.ui.find('.requirements .'+ type.replace('3','')).text(val);
+				this.ui.find('.up .'+ type.replace('3','')).css('opacity', val <= this.statuspoint ? 1 : 0 );
 				break;
 		}
 	};
