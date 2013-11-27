@@ -50,6 +50,11 @@ define(function(require)
 	 */
 	BasicInfo.init = function Init()
 	{
+		// Don't activate drag drop when clicking on buttons
+		this.ui.find('.topbar button').mousedown(function( event ){
+			event.stopImmediatePropagation();
+		})
+
 		this.ui.find('.topbar .right').click(BasicInfo.toggleMode.bind(this));
 		this.ui.find('.toggle_btns').mousedown(BasicInfo.toggleButtons.bind(this));
 		this.ui.find('.buttons button').mousedown(function(){

@@ -99,6 +99,11 @@ define(function(require)
 			tab:      this.TAB.USABLE
 		}, 1.0);
 
+		// Don't activate drag drop when clicking on buttons
+		this.ui.find('.titlebar .base').mousedown(function( event ){
+			event.stopImmediatePropagation();
+		})
+
 		// Bind buttons
 		this.ui.find('.titlebar .mini').click(this.toggleReduction.bind(this));
 		this.ui.find('.tabs button').mousedown(this.switchTab);

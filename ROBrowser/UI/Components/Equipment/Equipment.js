@@ -87,6 +87,11 @@ define(function(require)
 
 		this.draggable();
 
+		// Don't activate drag drop when clicking on buttons
+		this.ui.find('.titlebar .base').mousedown(function( event ){
+			event.stopImmediatePropagation();
+		})
+
 		// Bind events
 		this.ui.find('.titlebar .mini').click(function(){
 			Equipment.ui.find('.panel').toggle();
@@ -190,8 +195,8 @@ define(function(require)
 
 		// Save preferences
 		this.preferences.show   =  this.ui.is(':visible');
-		this.preferences.reduce = !this.ui.find('.panel').is(':visible');
-		this.preferences.stats  =  this.ui.find('.status_component').is(':visible');
+		this.preferences.reduce =  this.ui.find('.panel').css('display') === 'none';
+		this.preferences.stats  =  this.ui.find('.status_component').css('display') !== 'none';
 		this.preferences.y      =  parseInt(this.ui.css('top'), 10);
 		this.preferences.x      =  parseInt(this.ui.css('left'), 10);
 		this.preferences.save();
