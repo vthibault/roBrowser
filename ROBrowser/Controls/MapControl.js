@@ -9,18 +9,24 @@
  */
 define([
 	'Utils/jquery',
+	'DB/DBManager',
 	'UI/CursorManager',
 	'UI/Components/Inventory/Inventory',
 	'UI/Components/InputBox/InputBox',
+	'UI/Components/ChatBox/ChatBox',
+	'UI/Components/Equipment/Equipment',
 	'Controls/KeyEventHandler',
 	'Renderer/Renderer', 'Renderer/Camera', 'Renderer/EntityManager',
 	'Preferences/Controls'
 ],
 function(
 	jQuery,
+	DB,
 	Cursor,
 	Inventory,
 	InputBox,
+	ChatBox,
+	Equipment,
 	KEYS,
 	Renderer, Camera, EntityManager,
 	Preferences
@@ -153,6 +159,16 @@ function(
 
 		// Just support items for now ?
 		if( data && data.type === "item" ) {
+
+			// Can't drop an item on map if Equipment window is open
+			if( Equipment.ui.is(':visible') ) {
+				ChatBox.addText(
+					DB.msgstringtable[189],
+					ChatBox.TYPE.ERROR
+				);
+				return;
+			}
+
 			item = data.data;
 
 			// Have to specify how much
