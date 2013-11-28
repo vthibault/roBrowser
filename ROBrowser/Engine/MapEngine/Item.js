@@ -141,15 +141,17 @@ define(function( require )
 	{
 		if( pkt.result ) {
 			var item = Equipment.unEquip( pkt.index, pkt.wearLocation );
-			item.WearState = 0;
-
-			var it = DB.getItemInfo( item.ITID );
-			ChatBox.addText(
-				it.identifiedDisplayName + " " + DB.msgstringtable[171],
-				ChatBox.TYPE.ERROR
-			);
-
-			Inventory.addItem(item);
+			if( item ) {
+				item.WearState = 0;
+	
+				var it = DB.getItemInfo( item.ITID );
+				ChatBox.addText(
+					it.identifiedDisplayName + " " + DB.msgstringtable[171],
+					ChatBox.TYPE.ERROR
+				);
+	
+				Inventory.addItem(item);
+			}
 		}
 	}
 

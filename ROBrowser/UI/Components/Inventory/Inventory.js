@@ -534,8 +534,8 @@ define(function(require)
 				break;
 		}
 
-		// Equip item
-		if( item.WearState ) {
+		// Equip item (if not arrow)
+		if( item.WearState && item.WearState !== 32768 ) {
 			Equipment.equip(item);
 			return false;
 		}

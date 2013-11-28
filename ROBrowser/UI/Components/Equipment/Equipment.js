@@ -321,11 +321,17 @@ define(function(require)
 	{
 		this.list[ item.index] = item;
 		var it = DB.getItemInfo( item.ITID );
-		var ui = this.ui.find(
-			GetSelectorFromLocation(
-				arguments.length === 2 ? location : item.location
-			)
-		);
+
+		if( arguments.length === 1 ) {
+			if( 'location' in item ) {
+				location = item.location;
+			}
+			else if( 'WearState' in item ) {
+				location = item.WearState;
+			}
+		}
+
+		var ui = this.ui.find( GetSelectorFromLocation( location ) );
 
 		Client.loadFile( DB.INTERFACE_PATH + 'item/' + it.identifiedResourceName + '.bmp', function(data){
 			var name  = ( item.RefiningLevel ? '+' + item.RefiningLevel + ' ' : '') + it.identifiedDisplayName;
@@ -378,8 +384,8 @@ define(function(require)
 				item = data.data;
 
 				// Only for TYPE.WEAPON and TYPE.EQUIP
-				if( (item.type ===  4 || item.type === 5) && item.IsIdentified && !item.IsDamaged ) {
-					selector = GetSelectorFromLocation( item.location );
+				if( (item.type ===  4 || item.type === 5 || item.type === 10) && item.IsIdentified && !item.IsDamaged ) {
+					selector = GetSelectorFromLocation( 'location' in item ? item.location : item.WearLocation );
 					ui       = this.ui.find(selector);
 
 					Client.loadFile( DB.INTERFACE_PATH + "basic_interface/item_invert.bmp", function(data){
@@ -425,9 +431,9 @@ define(function(require)
 			item = data.data;
 
 			// Only for TYPE.WEAPON and TYPE.EQUIP
-			if( (item.type ===  4 || item.type === 5) && item.IsIdentified && !item.IsDamaged ) {
+			if( (item.type ===  4 || item.type === 5 || item.type === 10 ) && item.IsIdentified && !item.IsDamaged ) {
 				this.ui.find('td').css('backgroundImage','none');
-				this.onEquipItem( item.index, item.location );
+				this.onEquipItem( item.index, 'location' in item ? item.location : item.WearState );
 			}
 		}
 
