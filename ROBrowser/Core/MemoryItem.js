@@ -44,6 +44,13 @@ define(function()
 
 
 	/**
+	 * Error informatio,
+	 * @var {string}
+	 */
+	MemoryItem.prototype._error = "";
+
+
+	/**
 	 * Is the item loaded ?
 	 * @var boolean complete
 	 */
@@ -83,7 +90,6 @@ define(function()
 
 		switch( event.toLowerCase() ) {
 			case 'load':
-	
 				if( this.complete ) {
 					callback(this._data);
 					return;
@@ -93,6 +99,11 @@ define(function()
 				break;
 
 			case 'error':
+				if( this.complete ) {
+					callback(this._error);
+					return;
+				}
+
 				this._onerror.push(callback);
 				break;
 
@@ -133,6 +144,7 @@ define(function()
 	{
 		var i, size;
 
+		this._error       = error;
 		this.complete     = true;
 		this.lastTimeUsed = Date.now();
 

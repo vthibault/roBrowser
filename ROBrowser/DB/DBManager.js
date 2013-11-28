@@ -417,6 +417,54 @@ function(       Queue,        Client,     ClassTable,     ClassPalTable,     Mon
 
 
 	/**
+	 * @return {number} weapon viewid
+	 * @param {number} id weapon
+	 */
+	DB.getWeaponViewID = function GetWeaponViewID(id)
+	{
+		if( id < 1150 ) return 2;
+		if( id < 1200 ) return 3;
+		if( id < 1250 ) return 1;
+		if( id < 1300 ) return 16;
+		if( id < 1350 ) return 6;
+		if( id < 1400 ) return 7;
+		if( id < 1450 ) return 4;
+		if( id < 1500 ) return 5;
+		if( id < 1550 ) return 8;
+		if( id < 1600 ) return 15;
+		if( id < 1650 ) return 10;
+		if( id < 1700 ) return 0; // ?
+		if( id < 1750 ) return 11;
+		if( id < 1800 ) return 0; // arrow
+		if( id < 1850 ) return 12;
+		if( id < 1900 ) return 0; // ?
+		if( id < 1950 ) return 13;
+		if( id < 2000 ) return 14;
+		if( id < 13000 ) return 0; // ?
+		if( id < 13100 ) return 1;
+		if( id < 13150 ) return 19; // revolver
+
+		// I HATE GRAVITY
+		// TODO: find the proper sprite for each weapons in gunslinger job
+		if( id < 13154 ) return 20; // sniper
+		if( id < 13157 ) return 21; //fusil
+		if( id < 13172 ) return 18;
+		if( id < 13200 ) return 21;
+
+		if( id < 13250 ) return 0; // bullets
+		if( id < 13255 ) return 23;
+		if( id < 13260 ) return  1; // kunai...
+		if( id < 13300 ) return  0;
+		if( id < 13400 ) return 23;
+		if( id < 13500 ) return  2;
+		if( id < 18100 ) return  0;
+		if( id < 18200 ) return 11;
+
+		return 0;
+	};
+
+
+	/**
 	 * Get back informations from id
 	 * @param {number} item id
 	 */

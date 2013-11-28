@@ -66,8 +66,12 @@ define(['Renderer/Renderer'], function( Renderer )
 		}
 		else {
 			if( option.action === this.ACTION.ATTACK ) {
+				if( this.weapon ) {
+					option.action = this.ACTION.ATTACK2;
+				}
 				// TODO: need to change here the action based on the weapon.
 				// ex: bow and knife don't have the same action frame
+				
 			}
 
 			this.action = option.action === -1 || typeof option.action === 'undefined' ? this.ACTION.IDLE : option.action;

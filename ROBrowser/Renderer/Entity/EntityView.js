@@ -171,7 +171,7 @@ define(['Core/Client', 'DB/DBManager', './EntityAction'], function( Client, DB, 
 	/**
 	 * Update Generic function to load hats, weapons and shields
 	 */
-	function UpdateGeneric( type, func )
+	function UpdateGeneric( type, func, fallback )
 	{
 		return function( val ) {
 			if( !val ) {
@@ -190,18 +190,35 @@ define(['Core/Client', 'DB/DBManager', './EntityAction'], function( Client, DB, 
 			}
 
 			if( !path ) {
-				return;	
+				this.files[type].spr = null;
+				this.files[type].act = null;
+				this.files[type].pal = null;
+				return;
 			}
-	
-			Client.loadFile(path + ".act", null, null, []);
-			Client.loadFile(path + ".spr", function(){
-				_this['_'+type] = val;
-				_this.files[type].spr = path + ".spr";
-				_this.files[type].act = path + ".act";
 
-			// The generic just used : weapon, shield, accessory.
-			// This sprites don't use external palettes, so compile it now to rgba.
-			}, null, {to_rgba:true});
+			var _val = val;
+
+			function LoadView( path, final ) {
+				Client.loadFile(path + ".act", null, null, []);
+				Client.loadFile(path + ".spr", function(){
+					_this['_'+type] = _val;
+					_this.files[type].spr = path + ".spr";
+					_this.files[type].act = path + ".act";
+	
+				// The generic just used : weapon, shield, accessory.
+				// This sprites don't use external palettes, so compile it now to rgba.
+				}, function(){
+					if( fallback && !final ) {
+						_val = DB[fallback](val);
+						path = DB[func]( _val, _this._job, _this._sex );
+						if( path ) {
+							LoadView( path, true );
+						}
+					}
+				}, {to_rgba:true});
+			}
+
+			LoadView(path);
 		};
 	}
 
@@ -231,7 +248,7 @@ define(['Core/Client', 'DB/DBManager', './EntityAction'], function( Client, DB, 
 		this.__defineSetter__("bodypalette", UpdateBodyPalette );
 		this.__defineSetter__("head",        UpdateHead );
 		this.__defineSetter__("headpalette", UpdateHeadPalette );
-		this.__defineSetter__("weapon",      UpdateGeneric("weapon", "getWeaponPath") );
+		this.__defineSetter__("weapon",      UpdateGeneric("weapon", "getWeaponPath", "getWeaponViewID") );
 		this.__defineSetter__("shield",      UpdateGeneric("shield", "getShieldPath") );
 		this.__defineSetter__("accessory",   UpdateGeneric("accessory", "getHatPath") );
 		this.__defineSetter__("accessory2",  UpdateGeneric("accessory2", "getHatPath") );
