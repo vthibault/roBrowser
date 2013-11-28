@@ -318,7 +318,7 @@ define( function( require )
 
 		// Don't play, so stop at the current frame.
 		else if ( animation.play === false ) {
-			anim = animation.frame;
+			anim = Math.min(animation.frame, animations_length-1);
 		}
 
 		// Repeatable, so stop at the last frame.
@@ -346,9 +346,11 @@ define( function( require )
 					this.setAction( animation.next );
 				}
 			}
+
+			anim = Math.min( anim, animations_count-1 );
 		}
 
-		anim = Math.min( anim, animations_count-1 );
+		// anim %= animations_length;
 
 		return [ anim, delay ];
 	}
