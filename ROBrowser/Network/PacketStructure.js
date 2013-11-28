@@ -7644,7 +7644,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 	PACKET.ZC.SPRITE_CHANGE2 = function PACKET_ZC_SPRITE_CHANGE2(fp, end) {
 		this.GID        = fp.readULong();
 		this.type       = fp.readUChar();
-		this.value      = fp.readLong();
+		this.value      = fp.readULong();
 	};
 	PACKET.ZC.SPRITE_CHANGE2.size = 11;
 
