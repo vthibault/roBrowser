@@ -107,6 +107,7 @@ define(function( require )
 	{
 		var srcEntity = EntityManager.get(pkt.GID);
 		var dstEntity = EntityManager.get(pkt.targetGID);
+		var target;
 
 		// Entity out of the screen ?
 		if( !srcEntity ) {
@@ -137,19 +138,22 @@ define(function( require )
 						});
 					}
 
+					target = pkt.damage ? dstEntity : srcEntity;
+
 					// Display damage
 					if( pkt.action === 0 ) {
-						Damage.add( pkt.damage, pkt.damage ? dstEntity : srcEntity, Renderer.tick + pkt.attackMT );
+						Damage.add( pkt.damage, target, Renderer.tick + pkt.attackMT );
 					}
 					else if( pkt.action === 8 ) {
-						
-						if( dstEntity.objecttype === Entity.TYPE_MOB ) {
+
+						// Display combo only if entity is mob and the attack don't miss
+						if( dstEntity.objecttype === Entity.TYPE_MOB && pkt.damage > 0 ) {
 							Damage.add( pkt.damage / 2, dstEntity, Renderer.tick + pkt.attackMT * 1, Damage.TYPE.COMBO );
 							Damage.add( pkt.damage ,    dstEntity, Renderer.tick + pkt.attackMT * 2, Damage.TYPE.COMBO | Damage.TYPE.COMBO_FINAL );
 						}
 
-						Damage.add( pkt.damage / 2, dstEntity, Renderer.tick + pkt.attackMT * 1 );
-						Damage.add( pkt.damage / 2, dstEntity, Renderer.tick + pkt.attackMT * 2 );
+						Damage.add( pkt.damage / 2, target, Renderer.tick + pkt.attackMT * 1 );
+						Damage.add( pkt.damage / 2, target, Renderer.tick + pkt.attackMT * 2 );
 					}
 
 					// Update entity position
@@ -417,6 +421,10 @@ define(function( require )
 			pkt.attackedMT = Math.max(   1, pkt.attackedMT );
 			dstEntity.attack_speed = pkt.attackedMT;
 
+			var aspd   = (srcEntity && srcEntity.attack_speed) || 150;
+			var target = pkt.damage ? dstEntity : srcEntity;
+			var i;
+
 			if( pkt.damage ) {
 				dstEntity.setAction({
 					action: dstEntity.ACTION.HURT,
@@ -433,21 +441,23 @@ define(function( require )
 				});
 
 				// Combo
-				var aspd = (srcEntity && srcEntity.attack_speed) || 150;
-				for ( var i = 0; i<pkt.count; ++i ) {
+				for ( i = 0; i<pkt.count; ++i ) {
 					Damage.add(
 						Math.floor( pkt.damage / pkt.count * (i+1) ),
-						dstEntity,
+						target,
 						Renderer.tick + aspd + ( 200 * i ), //TOFIX: why 200 ?
 						Damage.TYPE.COMBO | ( (i+1) === pkt.count ? Damage.TYPE.COMBO_FINAL : 0 )
 					);
-					Damage.add(
-						Math.floor( pkt.damage / pkt.count ),
-						dstEntity,
-						Renderer.tick + aspd + ( 200 * i ),
-						Damage.TYPE.DAMAGE
-					);
 				}
+			}
+
+			// Damage
+			for ( i = 0; i<pkt.count; ++i ) {
+				Damage.add(
+					Math.floor( pkt.damage / pkt.count ),
+					target,
+					Renderer.tick + aspd + ( 200 * i )
+				);
 			}
 		}
 	}
