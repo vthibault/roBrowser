@@ -10875,7 +10875,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 
 	// 0x857
-	PACKET.ZC.NOTIFY_NEWENTRY6 = function PACKET_ZC_NOTIFY_NEWENTRY6(fp, end) {
+	PACKET.ZC.NOTIFY_STANDENTRY6 = function PACKET_ZC_NOTIFY_STANDENTRY6(fp, end) {
 		this.objecttype   = fp.readUChar();
 		this.GID          = fp.readULong();
 		this.speed        = fp.readShort();
@@ -10905,11 +10905,11 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 		this.font         = fp.readShort();
 		this.name         = fp.readString(end-fp.tell());
 	};
-	PACKET.ZC.NOTIFY_NEWENTRY6.size = -1;
+	PACKET.ZC.NOTIFY_STANDENTRY6.size = -1;
 
 
 	// 0x858
-	PACKET.ZC.NOTIFY_STANDENTRY6 = function PACKET_ZC_NOTIFY_STANDENTRY6(fp, end) {
+	PACKET.ZC.NOTIFY_NEWENTRY6 = function PACKET_ZC_NOTIFY_NEWENTRY6(fp, end) {
 		this.objecttype   = fp.readUChar();
 		this.GID          = fp.readULong();
 		this.speed        = fp.readShort();
@@ -10940,7 +10940,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 		this.font         = fp.readShort();
 		this.name         = fp.readString(end-fp.tell());
 	};
-	PACKET.ZC.NOTIFY_STANDENTRY6.size = -1;
+	PACKET.ZC.NOTIFY_NEWENTRY6.size = -1;
 
 
 	// 0x99d
