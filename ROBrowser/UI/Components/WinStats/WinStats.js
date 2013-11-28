@@ -98,8 +98,11 @@ define(function(require)
 			case 'hit':
 			case 'flee':
 			case 'critical':
-			case 'aspd':
 				this.ui.find('.' + type).text(val);
+				break;
+
+			case 'aspd':
+				this.ui.find('.' + type).text( Math.floor(200-val/10) );
 				break;
 
 			case 'atak2':
