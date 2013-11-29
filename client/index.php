@@ -15,7 +15,7 @@
 
 	// Client Config
 	Client::$path        =  ""           ;  // Define where is locate your full client (note: updating the location can provoke errors on BGM (no looping) because of some headers not properly set)
-	Client::$data_ini    =  "data.ini"   ;  // the name of your data.ini file (case sensitive)
+	Client::$data_ini    =  "DATA.INI"   ;  // the name of your data.ini file (case sensitive)
 	Client::$AutoExtract =  false        ;  // Do you want to cache files once extracted from GRF ?
 	Client::init();
 
