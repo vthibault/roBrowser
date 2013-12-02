@@ -14,9 +14,9 @@ define(function()
 
 	return [
 		null,
-		"°¡µå",
-		"¹öÅ¬·¯",
-		"½¯µå",
-		"¹Ì·¯½¯µå"
+		"\xb0\xa1\xb5\xe5",
+		"\xb9\xf6\xc5\xac\xb7\xaf",
+		"\xbd\xaf\xb5\xe5",
+		"\xb9\xcc\xb7\xaf\xbd\xaf\xb5\xe5"
 	];
 });

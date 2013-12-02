@@ -122,6 +122,8 @@ define( function( require )
 	Entity.prototype.attack_range = 0;
 	Entity.prototype.attack_speed = 300;
 
+	Entity.prototype.weapon_sound = "";
+
 
 	/**
 	 * Initialized Entity data

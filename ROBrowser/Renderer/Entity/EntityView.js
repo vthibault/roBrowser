@@ -193,6 +193,11 @@ define(['Core/Client', 'DB/DBManager', './EntityAction'], function( Client, DB, 
 				this.files[type].spr = null;
 				this.files[type].act = null;
 				this.files[type].pal = null;
+
+				// Load weapon sound
+				if( type === 'weapon') {
+					this.weapon_sound = DB.getWeaponSound( val );
+				}
 				return;
 			}
 
@@ -204,10 +209,15 @@ define(['Core/Client', 'DB/DBManager', './EntityAction'], function( Client, DB, 
 					_this['_'+type] = _val;
 					_this.files[type].spr = path + ".spr";
 					_this.files[type].act = path + ".act";
-	
-				// The generic just used : weapon, shield, accessory.
-				// This sprites don't use external palettes, so compile it now to rgba.
-				}, function(){
+
+					// Load weapon sound
+					if( type === 'weapon' ) {
+						_this.weapon_sound = DB.getWeaponSound( _val );
+					}
+				},
+
+				// if weapon isn't loaded, try to load the default sprite for the weapon type
+				function(){
 					if( fallback && !final ) {
 						_val = DB[fallback](val);
 						path = DB[func]( _val, _this._job, _this._sex );
@@ -215,6 +225,9 @@ define(['Core/Client', 'DB/DBManager', './EntityAction'], function( Client, DB, 
 							LoadView( path, true );
 						}
 					}
+
+				// The generic just used : weapon, shield, accessory.
+				// This sprites don't use external palettes, so compile it now to rgba.
 				}, {to_rgba:true});
 			}
 

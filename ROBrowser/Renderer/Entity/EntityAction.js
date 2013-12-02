@@ -7,7 +7,7 @@
  *
  * @author Vincent Thibault
  */
-define(['Renderer/Renderer'], function( Renderer )
+define(['Renderer/Renderer', 'DB/DBManager'], function( Renderer, DB )
 {
 	"use strict";
 
@@ -18,16 +18,17 @@ define(['Renderer/Renderer'], function( Renderer )
 	function Action()
 	{
 		this.IDLE       =  0;
+		this.ATTACK     = -2;
 
 		this.WALK       = -1;
 		this.SIT        = -1;
 		this.PICKUP     = -1;
 		this.READYFIGHT = -1;
-		this.ATTACK     = -1;
 		this.WTF        = -1;
 		this.HURT       = -1;
 		this.DIE        = -1;
 		this.WTF2       = -1;
+		this.ATTACK1    = -1;
 		this.ATTACK2    = -1;
 		this.ATTACK3    = -1;
 		this.SKILL      = -1;
@@ -65,13 +66,11 @@ define(['Renderer/Renderer'], function( Renderer )
 			anim.save    = option;
 		}
 		else {
-			if( option.action === this.ACTION.ATTACK ) {
-				if( this.weapon ) {
-					option.action = this.ACTION.ATTACK2;
-				}
-				// TODO: need to change here the action based on the weapon.
-				// ex: bow and knife don't have the same action frame
-				
+
+			// Know attack frame based on weapon type
+			if( option.action === this.ACTION.ATTACK && this.objecttype === this.constructor.TYPE_PC ) {
+				var attack    = DB.getWeaponAction( this.weapon, this._job );
+				option.action = [ this.ACTION.ATTACK1, this.ACTION.ATTACK2, this.ACTION.ATTACK3 ][attack];
 			}
 
 			this.action = option.action === -1 || typeof option.action === 'undefined' ? this.ACTION.IDLE : option.action;
@@ -105,7 +104,7 @@ define(['Renderer/Renderer'], function( Renderer )
 				this.ACTION.SIT        = 2;
 				this.ACTION.PICKUP     = 3;
 				this.ACTION.READYFIGHT = 4;
-				this.ACTION.ATTACK     = 5;
+				this.ACTION.ATTACK1    = 5;
 				this.ACTION.HURT       = 6;
 				this.ACTION.WTF        = 7;
 				this.ACTION.DIE        = 8;

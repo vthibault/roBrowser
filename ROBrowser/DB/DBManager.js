@@ -8,8 +8,8 @@
  * @author Vincent Thibault
  */
 
-define( ['Utils/Queue', 'Core/Client', './ClassTable', './ClassPalTable', './MonsterTable', './PetInfo', './HatTable', './WeaponTable', './ShieldTable', './Weather' ],
-function(       Queue,        Client,     ClassTable,     ClassPalTable,     MonsterTable,     PetInfo,     HatTable,     WeaponTable,     ShieldTable,     Weather)
+define( ['Utils/Queue', 'Core/Client', './ClassTable', './ClassPalTable', './MonsterTable', './PetInfo', './HatTable', './WeaponTable', './WeaponAction', './ShieldTable', './Weather' ],
+function(       Queue,        Client,     ClassTable,     ClassPalTable,     MonsterTable,     PetInfo,     HatTable,     WeaponTable,     WeaponAction,     ShieldTable,     Weather)
 {
 	"use strict";
 
@@ -412,7 +412,24 @@ function(       Queue,        Client,     ClassTable,     ClassPalTable,     Mon
 			return null;
 		}
 
-		return "data/sprite/\xc0\xce\xb0\xa3\xc1\xb7/" + ClassTable[job] + "/" + ClassTable[job] + "_" + DB.SEX[sex] + "_" + ( WeaponTable[id] || id ) ;
+		return "data/sprite/\xc0\xce\xb0\xa3\xc1\xb7/" + ClassTable[job] + "/" + ClassTable[job] + "_" + DB.SEX[sex] + ( WeaponTable.WeaponNameTable[id] || id ) ;
+	};
+
+
+	/**
+	 * @return {string} Path to eapon sound
+	 * @param {number} weapon id
+	 */
+	DB.getWeaponSound = function GetWeaponSound( id )
+	{
+		var type = DB.getWeaponViewID(id);
+
+		// TODO: implement basejob
+		if( type === 0 ) {
+			// return "_" + ( basejob ) + "_attack.wav";
+		}
+
+		return WeaponTable.WeaponHitWaveNameTable[type];
 	};
 
 
@@ -422,43 +439,77 @@ function(       Queue,        Client,     ClassTable,     ClassPalTable,     Mon
 	 */
 	DB.getWeaponViewID = function GetWeaponViewID(id)
 	{
-		if( id < 1150 ) return 2;
-		if( id < 1200 ) return 3;
-		if( id < 1250 ) return 1;
-		if( id < 1300 ) return 16;
-		if( id < 1350 ) return 6;
-		if( id < 1400 ) return 7;
-		if( id < 1450 ) return 4;
-		if( id < 1500 ) return 5;
-		if( id < 1550 ) return 8;
-		if( id < 1600 ) return 15;
-		if( id < 1650 ) return 10;
-		if( id < 1700 ) return 0; // ?
-		if( id < 1750 ) return 11;
-		if( id < 1800 ) return 0; // arrow
-		if( id < 1850 ) return 12;
-		if( id < 1900 ) return 0; // ?
-		if( id < 1950 ) return 13;
-		if( id < 2000 ) return 14;
-		if( id < 13000 ) return 0; // ?
-		if( id < 13100 ) return 1;
-		if( id < 13150 ) return 19; // revolver
+		// Already weapon type.
+		if( id < 32 )    return id;
 
-		// I HATE GRAVITY
-		// TODO: find the proper sprite for each weapons in gunslinger job
-		if( id < 13154 ) return 20; // sniper
-		if( id < 13157 ) return 21; //fusil
-		if( id < 13172 ) return 18;
-		if( id < 13200 ) return 21;
+		// Weapon  ID starting at 1100
+		if( id <  1100 ) return  0;
 
-		if( id < 13250 ) return 0; // bullets
-		if( id < 13255 ) return 23;
-		if( id < 13260 ) return  1; // kunai...
+		// Specific weapon range inside other range (wtf gravity ?)
+		if( id >= 1116 && id <= 1118 ) return  3;  // Katana
+		if( id >= 1314 && id <= 1315 ) return  7;  // 2 axe
+		if( id >= 1410 && id <= 1412 ) return  5;  // 2 spear
+		if( id >= 1472 && id <= 1473 ) return 10;  // 2 rod
+		if( id === 1599 ) return  8;  // angra manyu 
+		if( (id >= 13157 && id <= 13159) || id === 13172 || id === 13177 ) return 19; // gatling gun
+		if( (id >= 13154 && id <= 13156) || id === 13167 || id === 13168 || id === 13169 || id === 13173 || id === 13178) return 20; // rifle
+		if( (id >= 13160 && id <= 13162) || id === 13174 || id === 13179 ) return 21;
+
+		// Ranges
+		if( id <  1150 ) return  2; // 1100-1149 -> 1 sword
+		if( id <  1200 ) return  3; // 1150-1199 -> 2 sword
+		if( id <  1250 ) return  1; // 1200-1249 ->   dagger
+		if( id <  1300 ) return 16; // 1250-1299 ->   katar
+		if( id <  1350 ) return  6; // 1300-1349 -> 1 axe
+		if( id <  1400 ) return  7; // 1314-1399 -> 2 axe
+		if( id <  1450 ) return  4; // 1400-1449 -> 1 spear
+		if( id <  1500 ) return  5; // 1450-1499 -> 2 spear
+		if( id <  1550 ) return  8; // 1500-1549 ->   mace
+		if( id <  1600 ) return 15; // 1550-1599 ->   book
+		if( id <  1650 ) return 10; // 1600-1649 ->   rod
+		if( id <  1700 ) return  0;
+		if( id <  1750 ) return 11; // 1700-1749 ->   bow
+		if( id <  1800 ) return  0;
+		if( id <  1850 ) return 12; // 1800-1849 ->   knuckle
+		if( id <  1900 ) return  0;
+		if( id <  1950 ) return 13; // 1900-1949 ->   instrument
+		if( id <  2000 ) return 14; // 1950-1999 ->   whip
+		if( id <  2050 ) return 23; // 2000-2049 -> 2 rod
+		if( id < 13000 ) return 0;
+		if( id < 13050 ) return  1; // 13000-13050 -> dagger
+		if( id < 13100 ) return  0;
+		if( id < 13150 ) return 17; // 13100-13149 -> revolver
+		if( id < 13200 ) return 18; // 13150-13199 -> rifle
 		if( id < 13300 ) return  0;
-		if( id < 13400 ) return 23;
-		if( id < 13500 ) return  2;
+		if( id < 13350 ) return 22; // 13300-13349 -> shurikens
+		if( id < 13400 ) return  0;
+		if( id < 13450 ) return  2; // 13400-13449 -> sword
 		if( id < 18100 ) return  0;
-		if( id < 18200 ) return 11;
+		if( id < 18150 ) return 11; // 18100-18149 -> bow
+
+		// Not found ?
+		return 0;
+	};
+
+
+	/**
+	 * @return {number} weapon action frame
+	 * @param {number} id weapon
+	 * @param {number} job
+	 */
+	DB.getWeaponAction = function GetWeaponAction( id, job )
+	{
+		var type = DB.getWeaponViewID(id);
+
+		if( job in WeaponAction ) {
+			if( type in WeaponAction[job] ) {
+				return WeaponAction[job][type];
+			}
+
+			if( 0 in WeaponAction[job] ) {
+				return WeaponAction[job][0];
+			}
+		}
 
 		return 0;
 	};

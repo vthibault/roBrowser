@@ -52,13 +52,9 @@ define( ['Audio/SoundManager', 'Renderer/Renderer'], function( SoundManager, Ren
 
 		// Find Audio filename
 		if( name === "atk" ) {
-			// TODO: [Audio] Check for class_, weapon ? Don't have hit sound on act ?
-
-			//this.sound_type = this.type === TYPE_PC ? "_novice_attack.wav" : DB.mobname[this.view.body[0]] + ".wav";
-			//Sound.play(
-			//	this.type === Entity.TYPE_PC ?  "_novice_attack.wav" :
-			//  DB.mobname[this.view.body[0]] + ".wav"
-			//);
+			if( this.weapon_sound ) {
+				Sound.play( this.weapon_sound );
+			}
 		}
 		else {
 			wavFileName = name;	
