@@ -20,6 +20,9 @@ ErrorDocument 404 /client/index.php
 # /!\ Edit this part at your own risk !
 #------------------------------------------
 
+<IfModule mod_headers.c>
+	Header set Access-Control-Allow-Origin "*"
+</IfModule>
 
 Options +FollowSymlinks -MultiViews
 RewriteEngine On
