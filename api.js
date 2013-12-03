@@ -130,6 +130,12 @@
 
 
 	/**
+	 * @var {boolean} is in development mode ?
+	 */
+	ROBrowser.prototype.development = false;
+
+
+	/**
 	 * @var {string} roBrowser api window path
 	 */
 	ROBrowser.prototype.baseUrl = (function(){
@@ -239,7 +245,8 @@
 			servers:      this.server,
 			grfList:      this.grfList,
 			remoteClient: this.remoteClient,
-			packetver:    this.packetver
+			packetver:    this.packetver,
+			development:  this.development
 		}, '*');
 	}
 

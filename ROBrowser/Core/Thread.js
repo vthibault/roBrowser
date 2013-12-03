@@ -108,7 +108,8 @@ define(function( require )
 	 */
 	function Init()
 	{
-		_worker = new Worker( require.toUrl('./ThreadEventHandler.js') );
+		var url = ROConfig.development ? './ThreadEventHandler.js' : '../../build/ThreadEventHandler.js';
+		_worker = new Worker( require.toUrl(url) );
 		_worker.addEventListener('message', Receive, false);
 	}
 

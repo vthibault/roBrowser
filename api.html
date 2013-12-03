@@ -17,10 +17,20 @@
 				ROConfig.servers      = event.data.servers      || 'data/clientinfo.xml';
 				ROConfig.remoteClient = event.data.remoteClient || '';
 				ROConfig.packetver    = event.data.packetver    || 'auto';
+				ROConfig.development  = event.data.development  || false;
 
 				var script = document.createElement('script');
 				script.src = 'ROBrowser/Vendors/require.js';
-				script.setAttribute('data-main', 'ROBrowser/App/' + event.data.application);
+
+				if( ROConfig.development ) {
+					script.setAttribute('data-main', 'ROBrowser/App/' + event.data.application);
+				}
+				else {
+					var app     = document.createElement('script');
+					app.src     = 'build/' + event.data.application + '.js';
+					app.charset = "UTF-8";
+					document.getElementsByTagName('head')[0].appendChild(app);
+				}
 
 				document.getElementsByTagName('head')[0].appendChild(script);
 			}, false);
