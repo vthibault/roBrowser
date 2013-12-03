@@ -62,7 +62,7 @@
 				var matches = text.match(/importScripts\([^\)]+\)/g);
 				if( matches ) {
 					text = text.replace(/importScripts\([^\)]+\)(\,|\;|\n)?/g, '');
-					text = "importScripts('r.js');\n\n" + text;
+					text = "importScripts('../ROBrowser/Vendors/require.js');\n\n" + text;
 				}
 
 				output.value = [

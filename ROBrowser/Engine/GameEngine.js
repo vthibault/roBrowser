@@ -78,7 +78,20 @@ function(
 		// Start Intro, wait the user to add files
 		q.add(function(){
 			Intro.onFilesSubmit = function( files ) {
-				Client.onFilesLoaded = q.next;
+				Client.onFilesLoaded = function(count){
+					if( !ROConfig.remoteClient && !count ) {
+						try {
+							alert( 'No client to initialize roBrowser');
+						}
+						catch(e){
+							// FIXME: no window.alert() in chrome app.
+						}
+						Intro.remove();
+						Intro.append();
+						return;
+					}
+					q._next();
+				}
 				Client.init( files );
 			};
 			Intro.append();
@@ -129,12 +142,21 @@ function(
 			var list = new Array( _servers.length );
 			var i, count = list.length;
 	
-			for( i = 0; i < count; ++i ) {
-				list[i] = _servers[i].display;
+			if( count ) {
+				for( i = 0; i < count; ++i ) {
+					list[i] = _servers[i].display;
+				}
+	
+				WinList.append();
+				WinList.setList( list );
 			}
 
-			WinList.append();
-			WinList.setList( list );
+			// WTF no servers ?
+			else {
+				UIManager.showMessageBox( 'Sorry, no server found.', 'ok', function(){
+					Init();
+				})
+			}
 
 			Renderer.stop();
 		});
@@ -203,6 +225,10 @@ function(
 			var stop             = connections.length - 1;
 			var list             = [];
 
+			if( !connections.length ) {
+				callback();
+			}
+
 			connections.each(function(index, element){
 				var connection = jQuery(element);
 
@@ -221,7 +247,7 @@ function(
 					callback();
 				}
 			});
-		});
+		}, callback );
 	}
 
 

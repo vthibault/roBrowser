@@ -107,7 +107,7 @@ function(        Executable,                  PACKETVER,       Thread,      Memo
 		}
 
 		console.warn('%cClient::init() - No grf files found.', 'color:red');
-		Client.onFilesLoaded();
+		Client.onFilesLoaded(0);
 	}
 
 
@@ -152,6 +152,7 @@ function(        Executable,                  PACKETVER,       Thread,      Memo
 		var _index = -1;
 		var _total = grfs.length;
 		var _count = _files.length;
+		var load   = 0;
 	
 		if( !grfs.length ) {
 			return;
@@ -168,11 +169,12 @@ function(        Executable,                  PACKETVER,       Thread,      Memo
 			// GRF loaded ?
 			if( _index > 0 ) {
 				console.info( success ? 'Success to load GRF file "' + grfs[_index-1] + '"' : ( error || 'Error loading GRF file' ) );
+				load += success;
 			}
 
 			// Ending entry ?
 			if( _index >= _total ) {
-				Client.onFilesLoaded();
+				Client.onFilesLoaded(load);
 				return;
 			}
 
