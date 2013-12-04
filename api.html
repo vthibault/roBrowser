@@ -20,10 +20,10 @@
 				ROConfig.development  = event.data.development  || false;
 
 				var script = document.createElement('script');
-				script.src = 'ROBrowser/Vendors/require.js';
+				script.src = 'src/Vendors/require.js';
 
 				if( ROConfig.development ) {
-					script.setAttribute('data-main', 'ROBrowser/App/' + event.data.application);
+					script.setAttribute('data-main', 'src/App/' + event.data.application);
 				}
 				else {
 					var app     = document.createElement('script');

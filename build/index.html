@@ -51,7 +51,7 @@
 		file.textContent = "";
 
 		requirejs.optimize({
-			baseUrl: '../ROBrowser/',
+			baseUrl: '../src/',
 			paths: {
 				text:   "Vendors/text.require",
 				jquery: "Vendors/jquery-1.9.1"
@@ -62,7 +62,7 @@
 				var matches = text.match(/importScripts\([^\)]+\)/g);
 				if( matches ) {
 					text = text.replace(/importScripts\([^\)]+\)(\,|\;|\n)?/g, '');
-					text = "importScripts('../ROBrowser/Vendors/require.js');\n\n" + text;
+					text = "importScripts('../src/Vendors/require.js');\n\n" + text;
 				}
 
 				output.value = [
