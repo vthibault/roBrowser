@@ -99,7 +99,7 @@ define(function()
 				break;
 
 			case 'error':
-				if( this.complete ) {
+				if( this.complete && this._error ) {
 					callback(this._error);
 					return;
 				}

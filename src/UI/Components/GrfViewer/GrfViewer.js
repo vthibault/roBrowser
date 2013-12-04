@@ -527,7 +527,7 @@ define(function(require)
 
 					// Fetch next range.
 					if ( (++load) >= total ) {
-						Process();
+						setTimeout( Process, 4 );
 					}
 				});
 			});

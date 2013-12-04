@@ -255,8 +255,11 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 
 		// RGBA
 		if( frame.type === SPR.TYPE_RGBA ) {
-			for( i = 0, count = ImageData.data.length; i < count; ++i ) {
-				ImageData.data[i] = frame.data[i];
+			for( i = 0, count = ImageData.data.length; i < count; i+=4 ) {
+				ImageData.data[i+0] = frame.data[i+3];
+				ImageData.data[i+1] = frame.data[i+2];
+				ImageData.data[i+2] = frame.data[i+1];
+				ImageData.data[i+3] = frame.data[i+0];
 			}
 		}
 
