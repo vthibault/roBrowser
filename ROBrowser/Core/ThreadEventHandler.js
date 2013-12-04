@@ -49,6 +49,12 @@ function(      FileManager,           MapLoader )
 				break;
 
 
+			// Clean GRFs files
+			case "CLEAN_GRF":
+				FileManager.clean();
+				break;
+
+
 			// Load GRF File
 			case "LOAD_GRF":
 				try {

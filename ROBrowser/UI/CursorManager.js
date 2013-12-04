@@ -87,6 +87,12 @@ function( require,         jQuery,        Client,           Sprite,           Ac
 	 */
 	Cursor.init = function Init(fn)
 	{
+		// Already loaded
+		if( this.images.length ) {
+			fn();
+			return;
+		}
+
 		Client.getFiles( ["data/sprite/cursors.spr", "data/sprite/cursors.act"], function( spr, act ) {
 			Cursor.sprite = new Sprite( spr );
 			Cursor.action = new Action( act );

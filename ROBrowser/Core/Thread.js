@@ -55,10 +55,10 @@ define(function( require )
 		var uid = null;
 
 		if( callback ) {
-			uid = ++_uid;
+			uid          = ++_uid;
+			_memory[uid] = callback;
 		}
 
-		_memory[uid] = callback;
 		_worker.postMessage({
 			type: type,
 			data: data,

@@ -20,10 +20,21 @@ function(       jQuery,         Texture,      DB,          Client )
 
 
 	/**
+	 * @var {boolean} does the scrollbar completely loaded ?
+	 */
+	ScrollBar.complete = false;
+
+
+	/**
 	 * Initialize scrollbar
 	 */
 	ScrollBar.init = function Init()
 	{
+		// Already loaded
+		if( ScrollBar.complete ) {
+			return;
+		}
+
 		//Custom scrollbar
 		Client.loadFiles(
 			[ DB.INTERFACE_PATH + 'scroll0down.bmp',
@@ -67,6 +78,8 @@ function(       jQuery,         Texture,      DB,          Client )
 								'::-webkit-scrollbar-track-piece:vertical { background-image: url('+ mid +');}',
 								'::-webkit-scrollbar-thumb:vertical{ -webkit-border-image: url('+ base.toDataURL() +') 4 0 4 0;}'
 							].join("\n"));
+
+							ScrollBar.complete = true;
 						});
 					});
 				});

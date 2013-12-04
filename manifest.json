@@ -8,13 +8,13 @@
 
 	"minimum_chrome_version": "23",
 	"icons": {
-		"16":  "app/icon_16.png",
-		"128": "app/icon_128.png"
+		"16":  "chrome-app/icon_16.png",
+		"128": "chrome-app/icon_128.png"
 	},
 
 	"app": {
 		"background": {
-		  "scripts": ["app/index.js"]
+		  "scripts": ["chrome-app/index.js"]
 		}
 	},
 

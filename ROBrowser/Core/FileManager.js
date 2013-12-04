@@ -49,6 +49,15 @@ function(          GameFile,           Targa,           LuaByte,           World
 
 
 	/**
+	 * Clean up Game files
+	 */
+	FileManager.clean = function Clean()
+	{
+		this.gameFiles.length = 0;
+	};
+
+
+	/**
 	 * Search a file in each GameFile
 	 *
 	 * @param {RegExp} regex

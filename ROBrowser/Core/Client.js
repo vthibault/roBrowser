@@ -158,6 +158,7 @@ function(        Executable,                  PACKETVER,       Thread,      Memo
 			return;
 		}
 
+		Thread.send("CLEAN_GRF", null);
 		console.info('Loading GRFs:', grfs);
 
 		// TODO: using Queue ?
