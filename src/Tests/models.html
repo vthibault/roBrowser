@@ -1,90 +1,29 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>Tests : RSM files</title>
-	</head>
-	<body>
-		<h1>Model tester</h1>
-		<p>Load each RSM files and find if there is errors</p>
-		<div><strong>Progress:</strong> <span id="log"></span></div>
-		<br/>
-		<div id="error">
-			<h1>Errors :</h1>
-		</div>
-	</body>
+	<body></body>
 	<script type="text/javascript" src="../Vendors/require.js"></script>
 	<script type="text/javascript">
-
-// Always in development mode when running test (easier to debug)
-window.ROConfig = {
-	development: true
-};
-
-
 require({
 	baseUrl: '../',
 	paths: {
 		text:   "Vendors/text.require",
 		jquery: "Vendors/jquery-1.9.1"
 	}
-}, ['Core/Client', 'Core/Thread', 'UI/Components/Intro/Intro', 'Loaders/Model'],
-function( Client,        Thread,                       Intro,           Model ) {
+}, ['Tests/FileTester', 'Loaders/Model'], function( FileTester, Model )
+{
+	var param = {
+		position: new Float32Array(3),
+		scale:    new Float32Array([1,1,1]),
+		rotation: new Float32Array(3)
+	};
 
-
-	/**
-	 * Wait for initialisation
-	 */
-	Thread.hook("THREAD_READY", function(){
-		Intro.onFilesSubmit = function( files ) {
-			Client.onFilesLoaded = Init;
-			Client.init( files );
-		};
-		Intro.append();
+	var ft = new FileTester("rsm",function(data){
+		var model = new Model(data);
+		model.createInstance( param, 0, 0);
+		model.compile();
 	});
-	Thread.init();
 
-
-	/**
-	 * Initialize the test
-	 */
-	function Init()
-	{
-		Client.search(/data\\[^\0]+\.rsm/gi, function(list){
-			var param = {
-				position: new Float32Array(3),
-				scale:    new Float32Array([1,1,1]),
-				rotation: new Float32Array(3)
-			};
-
-			Intro.remove();
-			document.body.style.backgroundColor = "white";
-			var log   = document.getElementById('log');
-			var error = document.getElementById('error');
-			var errors = 0;
-
-			for( var i = 0, count = list.length; i<count; ++i ) {
-				(function(i){
-					Client.getFile( list[i], function(data){
-						try {
-							log.textContent = '[' + (i+1) + '/' + count + '] ' + list[i];
-
-							var model = new Model(data);
-							model.createInstance( param, 0, 0);
-							model.compile();
-						}
-						catch(e){
-							error.innerHTML += '<div style="margin-left:30px;"><h2>' + list[i] + '</h2><pre>'+ e.stack +'</pre></div>';
-							errors++;
-						}
-
-						if( i+1 === count ) {
-							alert( log.textContent = count + ' rsm files loaded and compiled, found ' + errors +' errors' );
-						}
-					});
-				})(i);
-			}
-		});
-	}
-
+	ft.start();
 });
-</script>
+	</script>
+</html>
