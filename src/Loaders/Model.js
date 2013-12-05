@@ -79,8 +79,9 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 
 		// Read infos
 		this.version    = fp.readByte() + fp.readByte()/10;
-		this.animLen    =   fp.readLong();
-		this.shadeType  =   fp.readLong();
+		this.animLen    = fp.readLong();
+		this.shadeType  = fp.readLong();
+		this.main_node  = null;
 
 		this.alpha      =   ( this.version >= 1.4 ) ? fp.readUByte() / 255.0 : 1.0;
 		fp.seek( 16, SEEK_CUR ); // reserved.
@@ -103,6 +104,12 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 			if ( nodes[i].name === name ) {
 				this.main_node = nodes[i];
 			}
+		}
+
+		// In some custom models, the default name don't match nodes name.
+		// So by default, assume the main node is the first one.
+		if( this.main_node === null ) {
+			this.main_node = nodes[0];
 		}
 
 		// Read poskeyframes
