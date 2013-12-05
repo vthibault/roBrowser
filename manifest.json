@@ -22,5 +22,11 @@
 		{ "socket": ["tcp-connect:*:*"] },
 		"storage",
 		"http://*/*"
-	]
+	],
+
+	"requirements": {
+		"3D": {
+			"features": ["webgl"]
+		}
+	}
 }

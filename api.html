@@ -18,21 +18,30 @@
 				ROConfig.remoteClient = event.data.remoteClient || '';
 				ROConfig.packetver    = event.data.packetver    || 'auto';
 				ROConfig.development  = event.data.development  || false;
+				ROConfig.API          = event.data.api          || false;
 
-				var script = document.createElement('script');
-				script.src = 'src/Vendors/require.js';
+				var script  = document.createElement('script');
+				script.src  = 'src/Vendors/require.js';
+				script.type = 'text/javascript';
 
 				if( ROConfig.development ) {
 					script.setAttribute('data-main', 'src/App/' + event.data.application);
+					document.getElementsByTagName('head')[0].appendChild(script);
 				}
 				else {
-					var app     = document.createElement('script');
-					app.src     = 'build/' + event.data.application + '.js';
-					app.charset = "UTF-8";
-					document.getElementsByTagName('head')[0].appendChild(app);
+					document.getElementsByTagName('head')[0].appendChild(script);
+
+					// Seems like a bug occured some times in Chrome
+					// By don't loading javascript resources in the good order.
+					setTimeout(function(){
+						var app     = document.createElement('script');
+						app.type    = 'text/javascript';
+						app.src     = 'build/' + event.data.application + '.js';
+						app.charset = 'UTF-8';
+						document.getElementsByTagName('head')[0].appendChild(app);
+					}, 4);
 				}
 
-				document.getElementsByTagName('head')[0].appendChild(script);
 			}, false);
 		</script>
 	</head>

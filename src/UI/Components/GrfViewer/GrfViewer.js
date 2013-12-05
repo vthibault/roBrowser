@@ -1,7 +1,7 @@
 /**
  * UI/Components/GrfViewer/GrfViewer.js
  *
- * Intro Manager
+ * Game File Viewer
  *
  * This file is part of ROBrowser, Ragnarok Online in the Web Browser (http://www.robrowser.com/).
  *
@@ -32,6 +32,10 @@ define(function(require)
 	var htmlText           = require('text!./GrfViewer.html');
 	var cssText            = require('text!./GrfViewer.css');
 	var History            = require('./History');
+
+
+	// Ugly, require api.js to display models
+	require('../../../../api');
 
 
 
@@ -724,37 +728,72 @@ define(function(require)
 	 */
 	Viewer.onObjectClick = function OnObjectClick()
 	{
-		/*
 		var path = jQuery(this).data('path');
-		this.ui.find('#progress').show();
+		var ready = false;
+		Viewer.ui.find('#progress').show();
 
-		Client.getFile( path, function(data) {
-			// Show iframe
-			$('#preview .box').css('top', ($(window).height()-300)/2 ).html('<iframe src="tools/rsm-viewer/#API" width="500" height="300"/></iframe>');
-			$('#preview').show();
-			$('#progress').hide();
+		// Show iframe
+		jQuery('#preview .box').css('top', (jQuery(window).height()-300)* 0.5 );
+		jQuery('#preview').show();
+		jQuery('#progress').hide();
 
-			// Request from the frame to load a ressource
-			function LoadRessource(event){
-				Client.getFile( event.data, function(data) {
-					win.postMessage({type:'get_file', data:data, filename:event.data}, location.href);
-				});
-			}
-
-			// Run API when frame loaded
-			var win = $('iframe:first')[0].contentWindow;
-			win.onload = function(){
-				win.postMessage({type:'init', data:data}, location.href);
-				window.addEventListener("message", LoadRessource, false);
-			};
-
-			// Unload iframe
-			$('#preview').one('click',function(){
-				$(this).hide();
-				window.removeEventListener('message', LoadRessource, false);
-			});
+		// Include App
+		var App = new ROBrowser({
+			target:        jQuery('#preview .box').get(0),
+			type:          ROBrowser.TYPE.FRAME,
+			application:   ROBrowser.APP.MODELVIEWER,
+			development:   ROConfig.development,
+			api:           true,
+			width:         500,
+			height:        300
 		});
-		*/
+		App.start();
+
+		// Ressource sharing
+		function OnMessage(event) {
+			ready = true;
+
+			switch( event.data.type ) {
+				case 'SYNC':
+				case 'SET_HOST':
+				case 'CLEAN_GRF':
+					break;
+
+				default:
+					Thread.send( event.data.type, event.data.data, function(){
+						var data = {
+							arguments: Array.prototype.slice.call(arguments, 0),
+							uid:       event.data.uid
+						}
+						App._APP.postMessage( data, location.origin);
+					});
+			}
+			event.stopPropagation();
+			return false;
+		}
+
+		// Wait for synchronisation with frame
+		function Synchronise(){
+			if( !ready ) {
+				App._APP.postMessage('SYNC', location.origin);
+				setTimeout(Synchronise, 4);
+			}
+		}
+
+		// Once app is ready
+		App.onReady = function(){
+			App._APP.location.href = "#" + path.replace(/\\/g,'/');
+			App._APP.frameElement.style.border = "1px solid grey";
+			App._APP.frameElement.style.backgroundColor = "#45484d";
+			window.addEventListener("message", OnMessage, false);
+			Synchronise();
+		};
+
+		// Unload app
+		jQuery('#preview').one('click',function(){
+			jQuery(this).hide();
+			window.removeEventListener('message', OnMessage, false);
+		});
 	};
 
 

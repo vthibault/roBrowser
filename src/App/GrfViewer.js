@@ -21,7 +21,7 @@ require.onError = function (err) {
 };
 
 require({
-	baseUrl: document.scripts[document.scripts.length-1].src.replace(/\/([^\/]+)\/([^\/]+)$/, '') + '/',
+	baseUrl: './src/',
 	paths: {
 		text:   "Vendors/text.require",
 		jquery: "Vendors/jquery-1.9.1"

@@ -30,17 +30,21 @@ define(function( require )
 
 
 	/**
-	 * Initialize the Thread
-	 *
-	 * @var Worker
-	 */
-	var _worker = null;
-
-
-	/**
 	 * @var {number} uid
 	 */
 	var _uid = 0;
+
+
+	/**
+	 * @var {mixed} origin for security
+	 */
+	var _origin = [];
+
+
+	/**
+	 * @var {window|Worker} context to send data to
+	 */
+	var _source = null;
 
 
 	/**
@@ -59,11 +63,11 @@ define(function( require )
 			_memory[uid] = callback;
 		}
 
-		_worker.postMessage({
+		_source.postMessage({
 			type: type,
 			data: data,
 			uid:  uid
-		});
+		}, _origin );
 	}
 
 
@@ -104,13 +108,38 @@ define(function( require )
 
 
 	/**
+	 * Modify where to send informations
+	 *
+	 * @param {Window} source
+	 * @param {string} origin
+	 */
+	function Delegate( source, origin )
+	{
+		_source = source;
+		_origin = origin;
+	}
+
+
+	/**
 	 * Initialize Thread
 	 */
 	function Init()
 	{
-		var url = ROConfig.development ? './ThreadEventHandler.js' : '../../build/ThreadEventHandler.js';
-		_worker = new Worker( require.toUrl(url) );
-		_worker.addEventListener('message', Receive, false);
+		if( !_source ) {
+			var url = ROConfig.development ? './ThreadEventHandler.js' : './../../build/ThreadEventHandler.js';
+			_source = new Worker( require.toUrl(url) );
+		}
+
+		// Worker context
+		if( _source instanceof Worker ) {
+			_source.addEventListener('message', Receive, false);
+		}
+
+		// Other frame worker
+		else {
+			window.addEventListener('message', Receive, false );
+			_source.postMessage({type:'SYNC'}, _origin );
+		}
 	}
 
 
@@ -118,8 +147,9 @@ define(function( require )
 	 * Exports
 	 */
 	return {
-		send: Send,
-		hook: Hook,
-		init: Init
+		send:     Send,
+		hook:     Hook,
+		init:     Init,
+		delegate: Delegate
 	};
 });

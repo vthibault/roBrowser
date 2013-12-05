@@ -44,9 +44,10 @@
 	 * @Enum Robrowser Applications
 	 */
 	ROBrowser.APP = {
-		ONLINE:    1,
-		MAPVIEWER: 2,
-		GRFVIEWER: 3
+		ONLINE:      1,
+		MAPVIEWER:   2,
+		GRFVIEWER:   3,
+		MODELVIEWER: 4
 	};
 
 
@@ -136,11 +137,23 @@
 
 
 	/**
+	 * @var {function} callback to execute once roBrowser is ready
+	 */
+	ROBrowser.prototype.onReady = null;
+
+
+	/**
+	 * @var {boolean} use API once ready ?
+	 */
+	ROBrowser.prototype.api = false;
+
+
+	/**
 	 * @var {string} roBrowser api window path
 	 */
 	ROBrowser.prototype.baseUrl = (function(){
 		var script = document.getElementsByTagName('script');
-		return script[ script.length -1 ].src;
+		return script[ script.length -1 ].src.replace(/\/build\/[^\/]+\.js$/, '/api.js');
 	})().replace('.js', '.html');
 
 
@@ -216,6 +229,10 @@
 			case ROBrowser.APP.GRFVIEWER:
 				this.application = 'GrfViewer';
 				break;
+
+			case ROBrowser.APP.MODELVIEWER:
+				this.application = 'ModelViewer';
+				break;
 		}
 
 
@@ -225,6 +242,10 @@
 			if( _this.baseUrl.indexOf(event.origin) === 0 ) {
 				clearInterval( _this._Interval );
 				window.removeEventListener( 'message', OnMessage, false );
+
+				if( _this.onReady ) {
+					_this.onReady();
+				}
 			}
 		}
 
@@ -246,7 +267,8 @@
 			grfList:      this.grfList,
 			remoteClient: this.remoteClient,
 			packetver:    this.packetver,
-			development:  this.development
+			development:  this.development,
+			api:          this.api
 		}, '*');
 	}
 

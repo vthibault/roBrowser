@@ -91,7 +91,7 @@ define(function( require )
 	/**
 	 * Initialize renderer
 	 */
-	Renderer.init = function Renderer()
+	Renderer.init = function Init( param )
 	{
 		if( !this.gl ) {
 			this.canvas.style.position = "absolute";
@@ -99,7 +99,7 @@ define(function( require )
 			this.canvas.style.left     = "0px";
 			this.canvas.style.zIndex   =  0;
 
-			this.gl = WebGL.getContext( this.canvas );
+			this.gl = WebGL.getContext( this.canvas, param );
 
 			jQuery(window).resize(this.onResize.bind(this));
 			this.render(null);
