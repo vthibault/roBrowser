@@ -415,6 +415,7 @@ define(function(require)
 				else if ( type === 'img' )   attr = ' onclick="Viewer.onImageClick.call(this)"';
 				else if ( type === '3d' )    attr = ' onclick="Viewer.onObjectClick.call(this)"';
 				else if ( type === 'txt' )   attr = ' onclick="Viewer.onTextClick.call(this)"';
+				else if ( type === 'map' )   attr = ' onclick="Viewer.onWorldClick.call(this)"';
 
 				html +=
 					'<div class="icon '+ type +'" data-path="'+ list[j+i] +'"'+ attr +' oncontextmenu="Viewer.showContextMenu(this,event); return false;">\
@@ -479,6 +480,10 @@ define(function(require)
 
 			case 'rsm':
 				img = '3d';
+				break;
+
+			case 'rsw':
+				img = 'map';
 				break;
 		}
 
@@ -724,7 +729,7 @@ define(function(require)
 
 
 	/**
-	 * User click on a model, render it using RSMViewer
+	 * User click on a model, render it using ModelViewer
 	 */
 	Viewer.onObjectClick = function OnObjectClick()
 	{
@@ -757,19 +762,16 @@ define(function(require)
 				case 'SYNC':
 				case 'SET_HOST':
 				case 'CLEAN_GRF':
-					break;
+					return;
 
 				default:
 					Thread.send( event.data.type, event.data.data, function(){
-						var data = {
+						App._APP.postMessage({
 							arguments: Array.prototype.slice.call(arguments, 0),
 							uid:       event.data.uid
-						}
-						App._APP.postMessage( data, location.origin);
+						}, location.origin);
 					});
 			}
-			event.stopPropagation();
-			return false;
 		}
 
 		// Wait for synchronisation with frame
@@ -792,6 +794,97 @@ define(function(require)
 		// Unload app
 		jQuery('#preview').one('click',function(){
 			jQuery(this).hide();
+			window.removeEventListener('message', OnMessage, false);
+		});
+	};
+
+
+	/**
+	 * User click on a map, render it using MapViewer
+	 */
+	Viewer.onWorldClick = function OnWorldClick()
+	{
+		var path = jQuery(this).data('path');
+		var ready = false;
+		Viewer.ui.find('#progress').show();
+
+		// Show iframe
+		jQuery('#preview .box').css('top', (jQuery(window).height()-600)* 0.5 );
+		jQuery('#preview').show();
+		jQuery('#progress').hide();
+		document.body.style.overflow = "hidden";
+
+		// Include App
+		var App = new ROBrowser({
+			target:        jQuery('#preview .box').get(0),
+			type:          ROBrowser.TYPE.FRAME,
+			application:   ROBrowser.APP.MAPVIEWER,
+			development:   ROConfig.development,
+			api:           true,
+			width:         800,
+			height:        600
+		});
+		App.start();
+
+		// Wait for synchronisation with frame
+		function Synchronise(){
+			if( !ready ) {
+				App._APP.postMessage('SYNC', location.origin);
+				setTimeout(Synchronise, 4);
+			}
+		}
+
+		// Ressource sharing
+		function OnMessage(event) {
+			ready = true;
+
+			switch( event.data.type ) {
+				case 'SYNC':
+				case 'SET_HOST':
+				case 'CLEAN_GRF':
+					return;
+
+				default:
+					Thread.send( event.data.type, event.data.data, function(){
+						App._APP.postMessage({
+							arguments: Array.prototype.slice.call(arguments, 0),
+							uid:       event.data.uid
+						}, location.origin);
+					});
+			}
+		}
+
+		// Redirect Thread result to frame
+		function ThreadRedirect( type ) {
+			Thread.hook( type, function(data){
+				App._APP.postMessage({
+					type: type,
+					data: data
+				}, location.origin );
+			});
+		}
+
+		// Once app is ready
+		App.onReady = function(){
+			App._APP.location.href = "#" + path.replace(/\\/g,'/');
+			App._APP.frameElement.style.border = "1px solid grey";
+			App._APP.frameElement.style.backgroundColor = "#45484d";
+
+			// Hook Tread Map loading
+			ThreadRedirect('MAP_PROGRESS');
+			ThreadRedirect('MAP_WORLD');
+			ThreadRedirect('MAP_GROUND');
+			ThreadRedirect('MAP_ALTITUDE');
+			ThreadRedirect('MAP_MODELS');
+
+			window.addEventListener("message", OnMessage, false);
+			Synchronise();
+		};
+
+		// Unload app
+		jQuery('#preview').one('click',function(){
+			jQuery(this).hide();
+			document.body.style.overflow = "auto";
 			window.removeEventListener('message', OnMessage, false);
 		});
 	};

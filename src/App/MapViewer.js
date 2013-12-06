@@ -28,15 +28,17 @@ require({
 		jquery: "Vendors/jquery-1.9.1"
 	}
 },
-	['Utils/Queue',
+	['Utils/Queue', 'Audio/BGM',
 	 'Core/Client', 'Core/Thread',
+	 'Engine/SessionStorage',
 	 'Renderer/Renderer', 'Renderer/MapRenderer', 'Renderer/Camera', 'Renderer/Map/Altitude', 'Renderer/Entity/Entity',
 	 'Controls/MouseEventHandler', 'Controls/MapControl',
 	 'UI/Components/Intro/Intro'],
 
 function(
-	Queue,
+	Queue, BGM,
 	Client, Thread,
+	Session,
 	Renderer, MapRenderer, Camera, Altitude, Entity,
 	Mouse, MapControl,
 	Intro
@@ -54,7 +56,7 @@ function(
 	/**
 	 * @var {object} Entity to target
 	 */
-	MapViewer.spot = new Entity();
+	MapViewer.spot = Session.Entity = new Entity();
 
 
 	/**
@@ -70,26 +72,46 @@ function(
 	{
 		var q = new Queue();
 
-		// Waiting for the Thread to be ready
-		q.add(function(){
-			Thread.hook("THREAD_READY", q.next );
-			Thread.init();
-		});
+		// Resources sharing
+		if( ROConfig.API ) {
+			q.add(function(){
+				function Synchronise( event ) {
+					Thread.delegate( event.source, event.origin );
+					Thread.init();
+					Renderer.init();
+					q._next();
+		
+					window.removeEventListener('message', Synchronise, false);
+				}
+		
+				window.addEventListener('message', Synchronise, false);
+			});
+		}
 
-		// Initialize renderer
-		q.add(function(){
-			Renderer.init();
-			q._next();
-		});
+		// Normal access
+		else {
+			// Waiting for the Thread to be ready
+			q.add(function(){
+				Thread.hook("THREAD_READY", q.next );
+				Thread.init();
+			});
+	
+			// Initialize renderer
+			q.add(function(){
+				Renderer.init();
+				q._next();
+			});
+	
+			// Start Intro, wait the user to add files
+			q.add(function(){
+				Intro.onFilesSubmit = function( files ) {
+					Client.onFilesLoaded = q.next;
+					Client.init( files );
+				};
+				Intro.append();
+			});
+		}
 
-		// Start Intro, wait the user to add files
-		q.add(function(){
-			Intro.onFilesSubmit = function( files ) {
-				Client.onFilesLoaded = q.next;
-				Client.init( files );
-			};
-			Intro.append();
-		});
 
 		// Start the MapViewer instance
 		q.add(function(){
@@ -98,6 +120,12 @@ function(
 			MapRenderer.onLoad = MapViewer.onLoad;
 			MapRenderer.setMap('guild_vs4.rsw');
 			MapControl.call(MapViewer);
+
+			// Direct access from API
+			if( ROConfig.API ) {
+				MapRenderer.setMap( location.hash.substr(1).replace('data/','') );
+				return;
+			}
 
 			// Initialize dropdown
 			Client.search(/data\\([^\0]+\.rsw)/gi, function( mapList ) {
@@ -131,7 +159,11 @@ function(
 	 */
 	MapViewer.onLoad = function()
 	{
-		document.body.appendChild( MapViewer.dropDown );
+		BGM.stop();
+
+		if( !ROConfig.API ) {
+			document.body.appendChild( MapViewer.dropDown );
+		}
 
 		MapViewer.spot.position[0] = Altitude.width  >> 1;
 		MapViewer.spot.position[1] = Altitude.height >> 1;
