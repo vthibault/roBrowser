@@ -289,7 +289,6 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 
 	/**
 	 * Create ShadowMap data (only used to render shadow on Entities)
-	 * TODO: implement ShadowMap
 	 */
 	GND.prototype.createShadowmapData = function CreateShadowmapData()
 	{
@@ -303,12 +302,22 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 			for( x = 0; x < width; ++x ) {
 
 				cell = this.surfaces[ x + y * width ];
+
 				if( cell.tile_up > -1 && this.tiles[ cell.tile_up ].light > -1 ) {
 					lightmap = this.lightmap[ this.tiles[ cell.tile_up ].light ];
 
 					for( i=0; i<8; ++i ) {
 						for( j=0; j<8; ++j ) {
 							data[ ( x * 8 + i ) + ( y * 8 + j ) * ( width * 8) ] = lightmap[ ( i + j * 8 ) * 4 + 3 ];
+						}
+					}
+				}
+
+				// If no ground, shadow should be 1.0
+				else {
+					for( i=0; i<8; ++i ) {
+						for( j=0; j<8; ++j ) {
+							data[ ( x * 8 + i ) + ( y * 8 + j ) * ( width * 8) ] = 255;
 						}
 					}
 				}
