@@ -73,6 +73,12 @@ function( require,         jQuery,        Client,           Sprite,           Ac
 
 
 	/**
+	 * @var {number} to don't render the same frame twice
+	 */
+	Cursor.lastAnim = -1;
+
+
+	/**
 	 * @var {Array} images link list
 	 */
 	Cursor.images = [];
@@ -182,6 +188,7 @@ function( require,         jQuery,        Client,           Sprite,           Ac
 		this.type     = type;
 		this.tick     = Date.now();
 		this.norepeat = !!norepeat;
+		this.lastAnim = -1; // reset
 
 		if( typeof animation !== "undefined" ) {
 			this.animation = animation;
@@ -204,6 +211,7 @@ function( require,         jQuery,        Client,           Sprite,           Ac
 			return;
 		}
 
+
 		// New way
 		var i, count;
 		var action    = this.action.actions[this.type];
@@ -223,6 +231,13 @@ function( require,         jQuery,        Client,           Sprite,           Ac
 			anim = this.animation;
 		}
 
+		// Don't render the same animation twice
+		// Save CPU...
+		if( anim === this.lastAnim ) {
+			return;
+		}
+
+		this.lastAnim = anim;
 		var pos       = [ 0, 0 ];
 		var animation = action.animations[anim];
 		var layers    = animation.layers;
