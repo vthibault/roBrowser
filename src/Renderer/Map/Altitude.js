@@ -162,7 +162,7 @@ function(       WebGL,         PathFinding )
 	 */
 	function GetPositionByColor( color )
 	{
-		return _colors[ color[0] | color[1]<<8 | color[2]<<16 ];
+		return _colors[ color[0] | color[1]<<8 | color[2]<<16 ] || 0;
 	}
 
 

@@ -28,8 +28,9 @@ define( function( require )
 	 * Import
 	 */
 	var mat4    = glMatrix.mat4;
-	var _matrix = new Float32Array(4*4);
-	var _vector = new Float32Array(4);
+	var vec4    = glMatrix.vec4;
+	var _matrix = mat4.create();
+	var _vector = vec4.create();
 
 
 	/**
@@ -102,7 +103,7 @@ define( function( require )
 		_vector[2] = 0.0;
 		_vector[3] = 1.0;
 
-		mat4.multiplyVec4( _matrix, _vector );
+		vec4.transformMat4( _vector, _vector, _matrix );
 		this.depth = _vector[3];
 
 		// Display UI

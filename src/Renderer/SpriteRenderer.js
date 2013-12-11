@@ -233,7 +233,7 @@ function(      WebGL,         glMatrix,      Camera )
 		gl.useProgram( this.program );
 		gl.uniformMatrix4fv( uniform.uProjectionMat, false,  projection );
 		gl.uniformMatrix4fv( uniform.uModelViewMat,  false,  modelView );
-		gl.uniformMatrix4fv( uniform.uViewModelMat,  false,  mat4.inverse(modelView, this.matrix) );
+		gl.uniformMatrix4fv( uniform.uViewModelMat,  false,  mat4.invert(this.matrix, modelView) );
 
 		// Fog settings
 		gl.uniform1i(  uniform.uFogUse,   !picking && fog.use && fog.exist );

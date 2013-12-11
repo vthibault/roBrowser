@@ -15,7 +15,7 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 	/**
 	 * Global methods
 	 */
-	var mat4  = glMatrix.mat4;
+	var vec4  = glMatrix.vec4;
 	var _pos  = new Float32Array(4);
 	var _size = new Float32Array(2);
 
@@ -136,7 +136,7 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 		_size[1] = Renderer.height / 2;
 
 		// Project point to scene
-		mat4.multiplyVec4( matrix, _pos );
+		vec4.transformMat4( _pos, _pos, matrix );
 
 		// Calculate position
 		z = _pos[3] === 0.0 ? 1.0 : ( 1.0 / _pos[3] );
