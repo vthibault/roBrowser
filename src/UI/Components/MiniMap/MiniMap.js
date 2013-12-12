@@ -15,6 +15,7 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
+	var DB                 = require('DB/DBManager');
 	var Client             = require('Core/Client');
 	var Preferences        = require('Core/Preferences');
 	var Session            = require('Engine/SessionStorage');
@@ -99,7 +100,7 @@ define(function(require)
 	 */
 	MiniMap.setMap = function SetMap( mapname )
 	{
-		Client.loadFile('map/' + mapname.replace(/\..*/,'.bmp'), function(dataURI){
+		Client.loadFile( DB.INTERFACE_PATH + 'map/' + mapname.replace(/\..*/,'.bmp'), function(dataURI){
 			MiniMap.map.src = dataURI;
 		});
 	};

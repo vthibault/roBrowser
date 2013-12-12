@@ -75,13 +75,13 @@ define( ['Core/FileManager'], function( FileManager )
 
 
 		// Loading 3 main files
-		this.world    = FileManager.load(mapname);
+		this.world    = FileManager.load('data/' + mapname);
 		this.setProgress( 1 );
 
-		this.ground   = FileManager.load(this.world.files.gnd);
+		this.ground   = FileManager.load('data/' + this.world.files.gnd);
 		this.setProgress( 2 );
 
-		this.altitude = FileManager.load(this.world.files.gat);
+		this.altitude = FileManager.load('data/' + this.world.files.gat);
 		this.setProgress( 3 );
 
 		// Compiling ground
