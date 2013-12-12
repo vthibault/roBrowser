@@ -87,8 +87,10 @@ define(function( require )
 		for( i=0; i<MAX_CLOUDS; i++ ) {
 			if( !_clouds[i] ) {
 				_clouds[i] = {
-					position:  vec3.create(),
-					direction: vec3.create()
+					position:   vec3.create(),
+					direction:  vec3.create(),
+					born_tick:  0,
+					death_tick: 0
 				};
 			}
 			CloudInit(_clouds[i]);
@@ -119,7 +121,12 @@ define(function( require )
 		cloud.direction[1] = Math.random()*0.02 - 0.01;
 		cloud.direction[2] = Math.random()*0.002 - 0.001;
 
-		cloud.born_tick    = Date.now();
+		if( cloud.death_tick ) {
+			cloud.born_tick  = cloud.death_tick + 2000;
+		}
+		else {
+			cloud.born_tick = Date.now();
+		}
 		cloud.death_tick   = cloud.born_tick + 6*1000;
 	}
 
