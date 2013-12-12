@@ -21,7 +21,7 @@
 
 	// Search Feature
 	if ( isset($_POST['filter']) && is_string($_POST['filter']) ) {
-		header("Status: 200 OK");
+		header("HTTP/1.1 200 OK");
 		header('Content-type: text/plain');
 		$filter = ini_get('magic_quotes_gpc') ? stripslashes($_POST['filter']) : $_POST['filter'];
 		$filter = '/'. $filter. '/i';
@@ -44,13 +44,10 @@
 	$args = explode('/', $path);
 
 	// Allowed directory
-	if( !preg_match( "/^(data|BGM)$/", $args[1]) ) {
+	if( !preg_match( "/^(data|BGM)$/", $args[0]) ) {
 		exit;
 	}
 
-	if( $args[1] === "data" ) {
-		array_shift($args);
-	}
 	$path = implode($args, '\\');
 	$ext  = end( explode('.',$path) );
 
@@ -64,7 +61,7 @@
 		die();
 	}
 
-	header("Status: 200 OK");
+	header("HTTP/1.1 200 OK");
 	switch( strtolower($ext) ) {
 		case 'jpg':
 		case 'jpeg': header('Content-type:image/jpeg'); break;
