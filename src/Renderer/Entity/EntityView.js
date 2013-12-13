@@ -95,7 +95,7 @@ define(['Core/Client', 'DB/DBManager', './EntityAction'], function( Client, DB, 
 		}
 
 		// Loading
-		Client.loadFile(path + ".act", null, null, []);
+		Client.loadFile(path + ".act");
 		Client.loadFile(path + ".spr", function(){
 			_this.files.body.spr = path + ".spr";
 			_this.files.body.act = path + ".act";
@@ -104,7 +104,7 @@ define(['Core/Client', 'DB/DBManager', './EntityAction'], function( Client, DB, 
 			_this.bodypalette = _this._bodypalette;
 			_this.weapon      = _this._weapon;
 			_this.shield      = _this._shield;
-		}, null, []);
+		}, null, {to_rgba:_this.objecttype !== Entity.TYPE_PC});
 	}
 
 
@@ -120,7 +120,7 @@ define(['Core/Client', 'DB/DBManager', './EntityAction'], function( Client, DB, 
 			Client.loadFile( path, function(){
 				_this._bodypalette   = pal;
 				_this.files.body.pal = path;
-			}, null, []);
+			});
 		}
 		else {
 			this.files.body.pal = null;
@@ -137,14 +137,14 @@ define(['Core/Client', 'DB/DBManager', './EntityAction'], function( Client, DB, 
 		var path   = DB.getHeadPath( head, this._sex );
 		this._head = head;
 
-		Client.loadFile(path + ".act", null, null, []);
+		Client.loadFile(path + ".act");
 		Client.loadFile(path + ".spr", function(){
 			_this.files.head.spr = path + ".spr";
 			_this.files.head.act = path + ".act";
 
 			// Reload head palette
 			_this.headpalette = _this._headpalette;
-		}, null, null, []);
+		});
 	}
 
 
@@ -160,7 +160,7 @@ define(['Core/Client', 'DB/DBManager', './EntityAction'], function( Client, DB, 
 			var path = DB.getHeadPalPath( this._head, pal, this._sex);
 			Client.loadFile( path, function(){
 				_this.files.head.pal = path;
-			}, null, []);
+			});
 		}
 		else {
 			this.files.head.pal = null;

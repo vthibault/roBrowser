@@ -283,7 +283,7 @@ define(function( require )
 				}
 
 				document.body.appendChild(img);
-			})
+			});
 		}
 	}
 

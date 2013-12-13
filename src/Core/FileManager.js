@@ -182,7 +182,7 @@ function(          GameFile,           Targa,           LuaByte,           World
 	 * @param {string} filename
 	 * @return {string|object}
 	 */
-	FileManager.load = function Load( filename, noerror )
+	FileManager.load = function Load( filename, noerror, args )
 	{
 		var buffer;
 		var ext;
@@ -239,12 +239,19 @@ function(          GameFile,           Targa,           LuaByte,           World
 				}
 				return str;
 
+			// Sprite
+			case 'spr':
+				var spr = new Sprite(buffer);
+				if( args && args.to_rgba ) {
+					spr.switchToRGBA();
+				}
+				return spr.compile();
+
 			// Binary
 			case 'rsw': return new World(buffer);
 			case 'gnd': return new Ground(buffer);
 			case 'gat': return new Altitude(buffer);
 			case 'rsm': return new Model(buffer);
-			case 'spr': return new Sprite(buffer).compile();
 			case 'act': return new Action(buffer).compile();
 			case 'lub': return new LuaByte(buffer).reverse();
 		}

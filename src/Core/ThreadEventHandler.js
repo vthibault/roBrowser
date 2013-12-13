@@ -89,7 +89,7 @@ function(      FileManager,           MapLoader )
 			// Get and load a file from client/grf
 			case "LOAD_FILE":
 				try {
-					args[0] = FileManager.load( msg.data.filename );
+					args[0] = FileManager.load( msg.data.filename, false, msg.data.args );
 					args[1] = null;
 				}
 				catch( error ) {

@@ -392,19 +392,20 @@ define( function( require )
 
 		var index   = layer.index + 0;
 		var is_rgba = layer.spr_type === 1 || spr.rgba_index === 0;
-		var width   = spr.frames[ index ].width;
-		var height  = spr.frames[ index ].height;
 
 		if( !is_rgba ) {
 			SpriteRenderer.image.palette = pal.texture;
-			SpriteRenderer.image.size[0] = width;
-			SpriteRenderer.image.size[1] = height;
+			SpriteRenderer.image.size[0] = spr.frames[ index ].width
+			SpriteRenderer.image.size[1] = spr.frames[ index ].height
 		}
 
 		// RGBA is at the end of the spr.
 		else if ( layer.spr_type === 1 ) {
 			index += spr.old_rgba_index;
 		}
+
+		var width   = spr.frames[ index ].width;
+		var height  = spr.frames[ index ].height;
 
 		// Image inverted
 		if ( layer.is_mirror ) {

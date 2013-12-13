@@ -194,7 +194,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 		var i, count = this.indexed_count;
 		var data, width, height, x, y;
 		var out, pal = this.palette;
-		var idx;
+		var idx1, idx2;
 
 		for ( i=0; i<count; ++i ) {
 			// Avoid look up
@@ -210,14 +210,16 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 			out = new Uint8Array( width * height * 4 );
 	
 			// reverse height
-			for ( y=0; y<height; ++y )
+			for ( y=0; y<height; ++y ) {
 				for ( x = 0; x<width; ++x ) {
-					idx = data[ x + y * width ] * 4;
-					out[ ( x + (height-y-1) * width ) * 4 + 3 ] = pal[ idx + 0 ];
-					out[ ( x + (height-y-1) * width ) * 4 + 2 ] = pal[ idx + 1 ];
-					out[ ( x + (height-y-1) * width ) * 4 + 1 ] = pal[ idx + 2 ];
-					out[ ( x + (height-y-1) * width ) * 4 + 0 ] = idx ? 255  : 0;
+					idx1 = data[ x + y * width ] * 4;
+					idx2 = ( x + (height-y-1) * width ) * 4
+					out[ idx2 + 3 ] = pal[ idx1 + 0 ];
+					out[ idx2 + 2 ] = pal[ idx1 + 1 ];
+					out[ idx2 + 1 ] = pal[ idx1 + 2 ];
+					out[ idx2 + 0 ] = idx1 ? 255  : 0;
 				}
+			}
 
 			frame.data = out;
 			frame.type = SPR.TYPE_RGBA;
@@ -241,6 +243,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 		var ctx    = canvas.getContext('2d');
 		var ImageData, frame;
 		var i, count;
+		var x, y, j, width, height;
 
 		frame = this.frames[index];
 
@@ -251,25 +254,29 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 
 		canvas.width  = frame.width;
 		canvas.height = frame.height;
+		width         = frame.width;
+		height        = frame.height;
 		ImageData     = ctx.createImageData( frame.width, frame.height );
 
 		// RGBA
 		if( frame.type === SPR.TYPE_RGBA ) {
-			for( i = 0, count = ImageData.data.length; i < count; i+=4 ) {
-				ImageData.data[i+0] = frame.data[i+3];
-				ImageData.data[i+1] = frame.data[i+2];
-				ImageData.data[i+2] = frame.data[i+1];
-				ImageData.data[i+3] = frame.data[i+0];
+			for ( y = 0; y < height; ++y ) {
+				for ( x = 0; x < width; ++x ) {
+					i = (x + y * width ) * 4;
+					j = (x + (height-y-1) * width ) * 4;
+					ImageData.data[j+0] = frame.data[i+3];
+					ImageData.data[j+1] = frame.data[i+2];
+					ImageData.data[j+2] = frame.data[i+1];
+					ImageData.data[j+3] = frame.data[i+0];
+				}
 			}
 		}
 
 		// Palette
 		else {
 
-			var x, y, j, width, height;
+			
 			var pal = this.palette;
-			width  = frame.width;
-			height = frame.height;
 
 			// reverse height
 			for ( y = 0; y < height; ++y ) {

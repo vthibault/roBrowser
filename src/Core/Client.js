@@ -310,11 +310,13 @@ function(        Executable,                  PACKETVER,       Thread,      Memo
 								}
 
 								// Send palette to GPU
-								data.texture = gl.createTexture();
-								gl.bindTexture( gl.TEXTURE_2D, data.texture );
-								gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 256, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, data.palette );
-								gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-								gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+								if( data.rgba_index !== 0 ) {
+									data.texture = gl.createTexture();
+									gl.bindTexture( gl.TEXTURE_2D, data.texture );
+									gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 256, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, data.palette );
+									gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+									gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+								}
 
 								Memory.set( filename, data, error);
 								break;

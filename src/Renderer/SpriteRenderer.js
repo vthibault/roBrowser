@@ -429,20 +429,36 @@ function(      WebGL,         glMatrix,      Camera )
 		canvas.height = height = frame.height;
 		imageData = ctx.createImageData( width, height );
 
-		// Draw sprite into canvas
-		for ( y=0; y<height; ++y ) {
-			for ( x=0; x<width; ++x ) {
-				if( frame.data[y * width + x] ) {
-					idx1 = ( y * width + x ) * 4;
-					idx2 = frame.data[y * width + x] * 4;
-					imageData.data[ idx1 + 0 ] = pal[ idx2 + 0 ] * this.color[0];
-					imageData.data[ idx1 + 1 ] = pal[ idx2 + 1 ] * this.color[1];
-					imageData.data[ idx1 + 2 ] = pal[ idx2 + 2 ] * this.color[2];
-					imageData.data[ idx1 + 3 ] = 255 * this.color[3];
+		// RGBA images
+		if( this.sprite.type === 1 ) {
+			for ( y = 0; y < height; ++y ) {
+				for ( x = 0; x < width; ++x ) {
+					idx1 = (x + y * width ) * 4;
+					imageData.data[ idx1 + 0 ] = frame.data[ idx1 + 0 ] * this.color[0];
+					imageData.data[ idx1 + 1 ] = frame.data[ idx1 + 1 ] * this.color[1];
+					imageData.data[ idx1 + 2 ] = frame.data[ idx1 + 2 ] * this.color[2];
+					imageData.data[ idx1 + 3 ] = frame.data[ idx1 + 3 ] * this.color[3];
 				}
 			}
 		}
 
+		// Palettes
+		else {
+			for ( y=0; y<height; ++y ) {
+				for ( x=0; x<width; ++x ) {
+					if( frame.data[y * width + x] ) {
+						idx1 = ( y * width + x ) * 4;
+						idx2 = frame.data[y * width + x] * 4;
+						imageData.data[ idx1 + 0 ] = pal[ idx2 + 0 ] * this.color[0];
+						imageData.data[ idx1 + 1 ] = pal[ idx2 + 1 ] * this.color[1];
+						imageData.data[ idx1 + 2 ] = pal[ idx2 + 2 ] * this.color[2];
+						imageData.data[ idx1 + 3 ] = 255 * this.color[3];
+					}
+				}
+			}
+		}
+
+		// Insert into the canvas
 		ctx.putImageData( imageData, 0, 0 );
 
 		// Render sprite in context

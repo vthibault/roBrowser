@@ -143,8 +143,8 @@ define( function( require )
 		});
 
 		// Load shadow
-		Client.loadFile(this.files.shadow.spr, null, null, [{to_rgba:true}]);
-		Client.loadFile(this.files.shadow.act, null, null, []);
+		Client.loadFile(this.files.shadow.spr, null, null, {to_rgba:true});
+		Client.loadFile(this.files.shadow.act);
 
 		// First thing to set to initialize action, etc.
 		if( unit.hasOwnProperty('job') ) {
