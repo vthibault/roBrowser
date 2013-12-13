@@ -271,7 +271,7 @@ define(function(require)
 			case 'weight':
 				this.ui.find('.weight_value').text(val1 / 10 | 0);
 				this.ui.find('.weight_total').text(val2 / 10 | 0);
-				this.ui.find('.weight').css('color',  val1 > (val2>>1) * 2 ? '' : 'red');
+				this.ui.find('.weight').css('color',  val1 > (val2/2) ? '' : 'red');
 				break;
 
 			case 'hp':
@@ -287,19 +287,19 @@ define(function(require)
 				}
 				else {
 					Client.loadFile(DB.INTERFACE_PATH + 'basic_interface/gze'+ color +'_left.bmp', function(url){
-						BasicInfo.ui.find('.'+ type +'_bar_left').css('backgroundImage', 'url('+ Client.loadFile(DB.INTERFACE_PATH + 'basic_interface/gze'+ color +'_left.bmp') +')');
+						BasicInfo.ui.find('.'+ type +'_bar_left').css('backgroundImage', 'url('+ url +')');
 					});
 
 					Client.loadFile(DB.INTERFACE_PATH + 'basic_interface/gze'+ color +'_mid.bmp', function(url){
 						BasicInfo.ui.find('.'+ type +'_bar_middle').css({
-							backgroundImage: 'url('+ Client.loadFile(DB.INTERFACE_PATH + 'basic_interface/gze'+ color +'_mid.bmp') +')',
+							backgroundImage: 'url('+ url +')',
 							width: Math.floor( Math.min( perc, 100 ) * 1.27 ) + 'px'
 						});
 					});
 
 					Client.loadFile(DB.INTERFACE_PATH + 'basic_interface/gze'+ color +'_right.bmp', function(url){
 						BasicInfo.ui.find('.'+ type +'_bar_right').css({
-							backgroundImage: 'url('+ Client.loadFile(DB.INTERFACE_PATH + 'basic_interface/gze'+ color +'_right.bmp') +')',
+							backgroundImage: 'url('+ url +')',
 							left: Math.floor( Math.min( perc, 100) * 1.27 ) + 'px'
 						});
 					});
