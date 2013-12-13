@@ -271,7 +271,7 @@ define(function(require)
 			case 'weight':
 				this.ui.find('.weight_value').text(val1 / 10 | 0);
 				this.ui.find('.weight_total').text(val2 / 10 | 0);
-				this.ui.find('.weight').css('color',  val1 > (val2/2) ? '' : 'red');
+				this.ui.find('.weight').css('color',  val1 < (val2/2) ? '' : 'red');
 				break;
 
 			case 'hp':
