@@ -20,6 +20,16 @@ define( function( require )
 
 
 	/**
+	 * Direction look up table
+	 */
+	var DIRECTION = [
+		[1,2,3],
+		[0,0,4],
+		[7,6,5]
+	];
+
+
+	/**
 	 * Walk save structure
 	 */
 	function WalkStructure()
@@ -82,11 +92,6 @@ define( function( require )
 
 		var x, y, speed;
 		var TICK = Renderer.tick;
-		var direction = [
-			[1,2,3],
-			[0,0,4],
-			[7,6,5]
-		];
 
 		if( path.length ) {
 
@@ -115,7 +120,7 @@ define( function( require )
 
 			// Update player direction while walking
 			if( path.length ) {
-				this.direction = direction[(x>0?1:x<0?-1:0)+1][(y>0?1:y<0?-1:0)+1];
+				this.direction = DIRECTION[(x>0?1:x<0?-1:0)+1][(y>0?1:y<0?-1:0)+1];
 				return;
 			}
 		}

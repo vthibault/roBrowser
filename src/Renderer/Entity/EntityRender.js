@@ -25,15 +25,6 @@ define( function( require )
 
 
 	/**
-	 * Import
-	 */
-	var mat4    = glMatrix.mat4;
-	var vec4    = glMatrix.vec4;
-	var _matrix = mat4.create();
-	var _vector = vec4.create();
-
-
-	/**
 	 * Render an Entity
 	 *
 	 * @param {mat4} modelView
@@ -80,38 +71,45 @@ define( function( require )
 	 * @param {mat4} modelView
 	 * @param {mat4} projection
 	 */
-	function RenderGUI( modelView, projection )
+	var RenderGUI = function RenderGUIClosure()
 	{
-		// Set up Camera
-		mat4.translate( _matrix, modelView, [
-			 this.position[0] + 0.5,
-			-this.position[2],
-			 this.position[1] + 0.5
-		]);
+		var mat4    = glMatrix.mat4;
+		var vec4    = glMatrix.vec4;
+		var _matrix = mat4.create();
+		var _vector = vec4.create();
 
-		// Set-up Spherical billboard
-		_matrix[0] = 1.0; _matrix[1] = 0.0; _matrix[2]  = 0.0;
-		_matrix[4] = 0.0; _matrix[5] = 1.0; _matrix[6]  = 0.0;
-		_matrix[8] = 0.0; _matrix[9] = 0.0; _matrix[10] = 1.0;
-
-		// Project to screen
-		mat4.multiply( _matrix, projection, _matrix );
-
-		// Get depth for rendering order
-		_vector[0] = 0.0;
-		_vector[1] = 0.0;
-		_vector[2] = 0.0;
-		_vector[3] = 1.0;
-
-		vec4.transformMat4( _vector, _vector, _matrix );
-		this.depth = _vector[3];
-
-		// Display UI
-		if( this.life.display )    this.life.render( _matrix );
-		if( this.display.display ) this.display.render( _matrix );
-		if( this.dialog.display )  this.dialog.render( _matrix );
-		if( this.cast.display )    this.cast.render( _matrix );
-	}
+		return function RenderGUI( modelView, projection )
+		{
+			// Move to camera
+			_vector[0] =  this.position[0] + 0.5;
+			_vector[1] = -this.position[2];
+			_vector[2] =  this.position[1] + 0.5;
+			mat4.translate( _matrix, modelView, _vector);
+	
+			// Set-up Spherical billboard
+			_matrix[0] = 1.0; _matrix[1] = 0.0; _matrix[2]  = 0.0;
+			_matrix[4] = 0.0; _matrix[5] = 1.0; _matrix[6]  = 0.0;
+			_matrix[8] = 0.0; _matrix[9] = 0.0; _matrix[10] = 1.0;
+	
+			// Project to screen
+			mat4.multiply( _matrix, projection, _matrix );
+	
+			// Get depth for rendering order
+			_vector[0] = 0.0;
+			_vector[1] = 0.0;
+			_vector[2] = 0.0;
+			_vector[3] = 1.0;
+	
+			vec4.transformMat4( _vector, _vector, _matrix );
+			this.depth = _vector[3];
+	
+			// Display UI
+			if( this.life.display )    this.life.render( _matrix );
+			if( this.display.display ) this.display.render( _matrix );
+			if( this.dialog.display )  this.dialog.render( _matrix );
+			if( this.cast.display )    this.cast.render( _matrix );
+		};
+	}();
 
 
 
@@ -120,90 +118,96 @@ define( function( require )
 	 *
 	 * @param {number} pick_color - color index for picking
 	 */
-	function RenderSub( pick_color )
+	var RenderSub = function RenderSubClosure()
 	{
-		// Update shadow
-		SpriteRenderer.shadow    = Ground.getShadowFactor( this.position[0], this.position[1] );
-		SpriteRenderer.pickindex = pick_color;
+		var _position = new Int32Array(2);
 
-		var animation  = this.animation;
-		var position   = [0, 0];
-		var Entity     = this.constructor;
-
-		// Animation change ! Get it now
-		if ( animation.save && animation.delay < Renderer.tick ) {
-			this.setAction(animation.save);
-		}
-
-		// Picking only render body.
-		if( pick_color ) {
+		return function RenderSub( pick_color )
+		{
+			// Update shadow
+			SpriteRenderer.shadow    = Ground.getShadowFactor( this.position[0], this.position[1] );
+			SpriteRenderer.pickindex = pick_color;
+	
+			var animation  = this.animation;
+			var Entity     = this.constructor;
+			_position[0]   = 0;
+			_position[1]   = 0;
+	
+			// Animation change ! Get it now
+			if ( animation.save && animation.delay < Renderer.tick ) {
+				this.setAction(animation.save);
+			}
+	
+			// Picking only render body.
+			if( pick_color ) {
+				SpriteRenderer.position.set(this.position);
+				this._renderElement( this.files.body, 'body', _position, true );
+				return;
+			}
+	
+			// Avoid look up, render as IDLE all not supported frames
+			var action    = this.action === -1 ? this.ACTION.IDLE : this.action;
+			var direction = ( Camera.direction + this.direction + 8 ) % 8;
+			var behind    = direction > 1 && direction < 6;
+	
+			// Render shadow (shadow isn't render when player is sit or dead).
+			if( action !== this.ACTION.DIE && action !== this.ACTION.SIT ) {
+	
+				// Shadow is base on gat height
+				SpriteRenderer.position[0] = this.position[0];
+				SpriteRenderer.position[1] = this.position[1];
+				SpriteRenderer.position[2] = Altitude.getCellHeight(this.position[0], this.position[1]);
+	
+				// Item shadow is smaller
+				// TODO: find a better way
+				if( this.objecttype === Entity.TYPE_ITEM ) {
+					this.xSize = this.ySize = 10;
+					this._renderElement( this.files.shadow, 'shadow', _position, false );
+					this.xSize = this.ySize = 5;
+				}
+				else {
+					this._renderElement( this.files.shadow, 'shadow', _position, false );
+				}
+			}
+	
 			SpriteRenderer.position.set(this.position);
-			this._renderElement( this.files.body, 'body', position, true );
-			return;
-		}
-
-		// Avoid look up, render as IDLE all not supported frames
-		var action    = this.action === -1 ? this.ACTION.IDLE : this.action;
-		var direction = ( Camera.direction + this.direction + 8 ) % 8;
-		var behind    = direction > 1 && direction < 6;
-
-		// Render shadow (shadow isn't render when player is sit or dead).
-		if( action !== this.ACTION.DIE && action !== this.ACTION.SIT ) {
-
-			// Shadow is base on gat height
-			SpriteRenderer.position[0] = this.position[0];
-			SpriteRenderer.position[1] = this.position[1];
-			SpriteRenderer.position[2] = Altitude.getCellHeight(this.position[0], this.position[1]);
-
-			// Item shadow is smaller
-			// TODO: find a better way
-			if( this.objecttype === Entity.TYPE_ITEM ) {
-				this.xSize = this.ySize = 10;
-				this._renderElement( this.files.shadow, 'shadow', position, false );
-				this.xSize = this.ySize = 5;
+	
+			// Shield is behind on some position, seems to be hardcoded by the client
+			if( this.objecttype === Entity.TYPE_PC && this.shield && behind ) {
+				this._renderElement( this.files.shield, 'shield', _position, true );
 			}
-			else {
-				this._renderElement( this.files.shadow, 'shadow', position, false );
+	
+			// Draw body, get head position
+			this._renderElement( this.files.body, 'body', _position, true );
+	
+			if( this.objecttype === Entity.TYPE_PC ) {
+				// Draw Head
+				this._renderElement( this.files.head, 'head', _position, false);
+	
+				// Draw Hats
+				if( this.accessory ) {
+					this._renderElement( this.files.accessory, 'head', _position, false);
+				}
+	
+				if( this.accessory2 && this.accessory2 !== this.accessory ) {
+					this._renderElement( this.files.accessory2, 'head', _position, false);
+				}
+	
+				if( this.accessory3 && this.accessory3 !== this.accessory2 && this.accessory3 !== this.accessory ) {
+					this._renderElement( this.files.accessory3, 'head', _position, false);
+				}
+	
+				// Draw Others elements
+				if( this.weapon ) {
+					this._renderElement( this.files.weapon, 'weapon', _position, true );
+				}
+	
+				if( this.shield && !behind ) {
+					this._renderElement( this.files.shield, 'shield', _position, true );
+				}
 			}
-		}
-
-		SpriteRenderer.position.set(this.position);
-
-		// Shield is behind on some position, seems to be hardcoded by the client
-		if( this.objecttype === Entity.TYPE_PC && this.shield && behind ) {
-			this._renderElement( this.files.shield, 'shield', position, true );
-		}
-
-		// Draw body, get head position
-		this._renderElement( this.files.body, 'body', position, true );
-
-		if( this.objecttype === Entity.TYPE_PC ) {
-			// Draw Head
-			this._renderElement( this.files.head, 'head', position, false);
-
-			// Draw Hats
-			if( this.accessory ) {
-				this._renderElement( this.files.accessory, 'head', position, false);
-			}
-
-			if( this.accessory2 && this.accessory2 !== this.accessory ) {
-				this._renderElement( this.files.accessory2, 'head', position, false);
-			}
-
-			if( this.accessory3 && this.accessory3 !== this.accessory2 && this.accessory3 !== this.accessory ) {
-				this._renderElement( this.files.accessory3, 'head', position, false);
-			}
-
-			// Draw Others elements
-			if( this.weapon ) {
-				this._renderElement( this.files.weapon, 'weapon', position, true );
-			}
-
-			if( this.shield && !behind ) {
-				this._renderElement( this.files.shield, 'shield', position, true );
-			}
-		}
-	}
+		};
+	}();
 
 
 
@@ -216,78 +220,88 @@ define( function( require )
 	 * @param {vec2}   position (reference)
 	 * @param {boolean} is_main - true if it's the main element (body)
 	 */
-	function RenderElement( files, type, position, is_main )
+	var RenderElement = function RenderElementClosure()
 	{
-		// Nothing to render
-		if( !files.spr || !files.act ) {
-			return;
-		}
+		var _result   = new Array(2);
+		var _position = new Int32Array(2);
 
-		// Get back sprite and act
-		var spr = Client.loadFile(files.spr);
-		var act = Client.loadFile(files.act);
+		return function RenderElement( files, type, position, is_main )
+		{
+			// Nothing to render
+			if( !files.spr || !files.act ) {
+				return;
+			}
+	
+			// Get back sprite and act
+			var spr = Client.loadFile(files.spr);
+			var act = Client.loadFile(files.act);
+	
+			// Not loaded yet
+			if( !spr || !act ) {
+				return;
+			}
+	
+			// If palette, load palette, else get back sprite palette
+			var pal = (files.pal && Client.loadFile(files.pal)) || spr;
+	
+			// Obtain animations from the action and direction.
+			var action = act.actions[
+				(( this.action * 8 ) +                         // Action
+				( Camera.direction + this.direction + 8 ) % 8  // Direction
+				) % act.actions.length ];                      // Avoid overflow on action (ex: if there is just one action)
+	
+			// Find animation
+			var info         = this._calcAnimation( this.action, action, type, Renderer.tick - this.animation.tick, _result );
+			var animation_id = _result[0];
+			var sound_delay  = _result[1];
+			var animation    = action.animations[animation_id];
+			var layers       = animation.layers;
 
-		// Not loaded yet
-		if( !spr || !act ) {
-			return;
-		}
+			// Play sound
+			if( animation.sound > -1 ) {
+				this.soundPlay( act.sounds [animation.sound], sound_delay );
+			}
+	
+			_position[0] = 0;
+			_position[1] = 0;
 
-		// If palette, load palette, else get back sprite palette
-		var pal = (files.pal && Client.loadFile(files.pal)) || spr;
+			if ( animation.pos.length && !is_main ) {
+				_position[0] = position[0] - animation.pos[0].x;
+				_position[1] = position[1] - animation.pos[0].y;
+			}
+	
+			// Render all frames
+			for ( var i=0, count=layers.length; i<count; ++i ) {
+				this._renderLayer( layers[i], spr, pal, _position );
+			}
 
-		// Obtain animations from the action and direction.
-		var action = act.actions[
-			(( this.action * 8 ) +                         // Action
-			( Camera.direction + this.direction + 8 ) % 8  // Direction
-			) % act.actions.length ];                      // Avoid overflow on action (ex: if there is just one action)
-
-		// Find animation
-		var info         = this._calcAnimation( this.action, action, type, Renderer.tick - this.animation.tick );
-		var animation_id = info[0];
-		var sound_delay  = info[1];
-		var animation    = action.animations[animation_id];
-		var layers       = animation.layers;
-
-		// Play sound
-		if( animation.sound > -1 ) {
-			this.soundPlay( act.sounds [animation.sound], sound_delay );
-		}
-
-		var pos = [0, 0];
-		if ( animation.pos.length && !is_main ) {
-			pos[0] = position[0] - animation.pos[0].x;
-			pos[1] = position[1] - animation.pos[0].y;
-		}
-
-		// Render all frames
-		for ( var i=0, count=layers.length; i<count; ++i ) {
-			this._renderLayer( layers[i], spr, pal, pos );
-		}
-
-		// Save reference
-		if( is_main && animation.pos.length ) {
-			position[0] = animation.pos[0].x;
-			position[1] = animation.pos[0].y;
-		}
-	}
+			// Save reference
+			if( is_main && animation.pos.length ) {
+				position[0] = animation.pos[0].x;
+				position[1] = animation.pos[0].y;
+			}
+		};
+	}();
 
 
 	/**
 	 * Calculate animations
 	 */
-	function CalcAnimation( ACTION, action, type, time_passed )
+	function CalcAnimation( ACTION, action, type, time_passed, out )
 	{
+		// Fix for shadow
+		if( type === "shadow" ) {
+			out[0] = 0;
+			out[1] = 0;
+			return;
+		}
+
 		// To avoid look up
 		var animations_count  = action.animations.length;
 		var animations_length = animations_count + 0;
 		var delay             = action.delay + 0;
 		var Entity            = this.constructor;
 		var headDir           = 0;
-
-		// Fix for shadow
-		if( type === "shadow" ) {
-			return [0, 0];
-		}
 
 		// Delay on walk
 		// TODO: search how works the delay on walk and aspd.
@@ -351,9 +365,9 @@ define( function( require )
 			anim = Math.min( anim, animations_count-1 );
 		}
 
-		// anim %= animations_length;
-
-		return [ anim, delay ];
+		// Export
+		out[0] = anim;
+		out[1] = delay;
 	}
 
 

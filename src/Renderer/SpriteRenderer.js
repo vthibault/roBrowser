@@ -405,9 +405,8 @@ function(      WebGL,         glMatrix,      Camera )
 		this.size[1] *= 35;
 
 		// Mirror feature
-		var scale = [1, 1];
-		if( this.size[0] < 0 ) { scale[0] = -1; }
-		if( this.size[1] < 0 ) { scale[1] = -1; }
+		var scale_x = this.size[0] < 0 ? -1 : 1;
+		var scale_y = this.size[1] < 0 ? -1 : 1;
 
 		var _x   = this.pos[0] + this.offset[0] * 35;
 		var _y   = this.pos[1] + this.offset[1] * 35;
@@ -451,7 +450,7 @@ function(      WebGL,         glMatrix,      Camera )
 		ctx.save();
 		ctx.translate( _x | 0, _y | 0 );
 		ctx.rotate( this.angle / 180 * Math.PI );
-		ctx.scale( scale[0], scale[1] );
+		ctx.scale( scale_x, scale_y );
 		ctx.drawImage(
 			 canvas,
 			-this.size[0] >> 1, -this.size[1] >> 1,
