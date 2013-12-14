@@ -2,6 +2,8 @@
 :focus {outline:none;}
 ::-moz-focus-inner {border:0;}
 
+* { -moz-user-select:none; }
+
 html, body {
 	margin:0;
 }
