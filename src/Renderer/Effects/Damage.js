@@ -106,6 +106,11 @@ function(
 	 */
 	Damage.add = function Add( damage, entity, tick, type )
 	{
+		// Can not display negative damages.
+		if( damage < 0 ) {
+			return;
+		}
+
 		var PADDING = 2;
 		var i, count, start_x, start_y;
 		var frame;
