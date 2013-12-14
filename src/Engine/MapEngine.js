@@ -33,6 +33,7 @@ define(function( require )
 	var Mouse            = require('Controls/MouseEventHandler');
 	var KEYS             = require('Controls/KeyEventHandler');
 	var UIManager        = require('UI/UIManager');
+	var Background       = require('UI/Background');
 	var Escape           = require('UI/Components/Escape/Escape');
 	var WinPopup         = require('UI/Components/WinPopup/WinPopup');
 	var ChatBox          = require('UI/Components/ChatBox/ChatBox');
@@ -251,10 +252,10 @@ define(function( require )
 		SoundManager.stop();
 		BGM.stop();
 
-		window.close();
-
-		// TOFIX
-		require('Engine/GameEngine').init();
+		Background.remove(function(){
+			window.close();
+			require('Engine/GameEngine').init();
+		});
 	}
 
 
@@ -286,10 +287,10 @@ define(function( require )
 		SoundManager.stop();
 		BGM.stop();
 
-		window.close();
-
-		// TOFIX
-		require('Engine/GameEngine').init();
+		Background.remove(function(){
+			window.close();
+			require('Engine/GameEngine').init();
+		});
 	}
 
 
