@@ -76,7 +76,7 @@ function(      WebGL,         glMatrix,      Camera )
 			// Hack for billboarding
 			"if( aIsUp == 1.0 ) {",
 				"vec3 camPosition = vec3( uViewModelMat[0].w, uViewModelMat[1].w, uViewModelMat[2].w);",
-				"gl_Position.z   -= uCameraLatitude * 0.025 / distance( gl_Position.xyz, camPosition.xyz);",
+				"gl_Position.z   -= uCameraLatitude * 0.25 / distance( gl_Position.xyz, camPosition.xyz);",
 			"}",
 		"}"
 	].join("\n");
