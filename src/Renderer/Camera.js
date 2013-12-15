@@ -18,6 +18,7 @@ define(['Controls/KeyEventHandler', 'Controls/MouseEventHandler', 'Preferences/C
 	var mat3              = glMatrix.mat3;
 	var vec2              = glMatrix.vec2;
 	var vec3              = glMatrix.vec3;
+	var _position         = vec3.create();
 
 
 	/**
@@ -291,7 +292,12 @@ define(['Controls/KeyEventHandler', 'Controls/MouseEventHandler', 'Preferences/C
 		mat4.translateZ( matrix, (this.altitudeFrom - this.zoom) / 2 );
 		mat4.rotateX( matrix, matrix, this.angle[0] / 180 * Math.PI );
 		mat4.rotateY( matrix, matrix, this.angle[1] / 180 * Math.PI );
-		mat4.translate( matrix, matrix, [ this.position[0]-.5, this.position[2], this.position[1]-.5 ] ); // Center of the cell and inversed Y-Z axis
+
+		// Center of the cell and inversed Y-Z axis
+		_position[0] = this.position[0] - 0.5;
+		_position[1] = this.position[2];
+		_position[2] = this.position[1] - 0.5;
+		mat4.translate( matrix, matrix, _position );
 
 		mat4.toInverseMat3(matrix, this.normalMat);
 		mat3.transpose(this.normalMat, this.normalMat);
