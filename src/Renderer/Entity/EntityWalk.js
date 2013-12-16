@@ -53,7 +53,7 @@ define( function( require )
 	function WalkTo( from_x, from_y, to_x, to_y, range )
 	{
 		var path  = [];
-		var count = PathFinding.search( [from_x, from_y], [to_x, to_y], range || 0, path );
+		var count = PathFinding.search( from_x | 0, from_y | 0, to_x | 0, to_y | 0, range || 0, path );
 
 		if( count ) {
 			path.length = count;
@@ -99,15 +99,15 @@ define( function( require )
 			while( path.length ) {
 				x = path[0][0] - (walk.pos[0]);
 				y = path[0][1] - (walk.pos[1]);
-	
+
 				// Seems like walking on diagonal is slower ?
 				speed = ( x && y ) ? walk.speed / 0.6 : walk.speed;
-	
+
 				// New position :)
 				if( TICK - walk.tick <= speed ) {
 					break;
 				}
-	
+
 				walk.tick += speed;
 				walk.pos.set(path.shift());
 			}

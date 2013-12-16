@@ -215,24 +215,27 @@ function(        Executable,                  PACKETVER,       Thread,      Memo
 	 * @param {function} onerror
 	 * @param {Array} args - optional
 	 */
-	function getFile( filename, onload, onerror, args )
+	var getFile = function getFilClosure()
 	{
-		if( !Memory.exist(filename) ) {
-			Thread.send(
-				"GET_FILE",
-				{
-					filename: filename,
-					args:     args || null
-				},
-				function(data, error)
-				{
-					Memory.set( filename, data, error);
-				}
-			);
+		var _input = { filename:"", args:null };
+
+		function callback(data, error, input)
+		{
+			Memory.set( input.filename, data, error);
 		}
 
-		return Memory.get( filename, onload, onerror );
-	}
+		return function getFile( filename, onload, onerror, args )
+		{
+			if( !Memory.exist(filename) ) {
+				_input.filename = filename;
+				_input.args     = args || null;
+
+				Thread.send( "GET_FILE", _input, callback );
+			}
+
+			return Memory.get( filename, onload, onerror );
+		};
+	}();
 
 
 	/**
@@ -269,82 +272,85 @@ function(        Executable,                  PACKETVER,       Thread,      Memo
 	 * @param {function} onerror
 	 * @param {Array} args - optional
 	 */
-	function loadFile( filename, onload, onerror, args )
+	var loadFile = function loadFileClosure()
 	{
-		if( !Memory.exist(filename) ) {
-			Thread.send(
-				"LOAD_FILE",
-				{
-					filename: filename,
-					args:     args || null
-				},
-				function(data, error)
-				{
-					var i, count;
-					var gl, frames, texture, palette;
-					var precision, size;
+		var _input = { filename:"", args:null };
 
-					if( !error ) {
-						switch( filename.substr(-3) ){
-							// Remove magenta on textures
-							case 'bmp':
-								Texture( data, function(){
-									Memory.set( filename, this.toDataURL(), error);
-								});
-								return;
+		function callback(data, error, input)
+		{
+			var i, count;
+			var gl, frames, texture, palette;
+			var precision, size;
 
-							case 'spr':
-								gl     = require('Renderer/Renderer').getContext();
-								frames = data.frames;
-								count  = frames.length;
+			if( !error ) {
+				switch( input.filename.substr(-3) ){
+					// Remove magenta on textures
+					case 'bmp':
+						Texture( data, function(){
+							Memory.set( input.filename, this.toDataURL(), error);
+						});
+					return;
 
-								// Send sprites to GPU
-								for( i = 0; i < count; i++ ) {
-									frames[i].texture = gl.createTexture();
-									precision  = frames[i].type ? gl.LINEAR : gl.NEAREST;
-									size       = frames[i].type ? gl.RGBA   : gl.LUMINANCE;
-									gl.bindTexture( gl.TEXTURE_2D, frames[i].texture );
-									gl.texImage2D(gl.TEXTURE_2D, 0, size, frames[i].width, frames[i].height, 0, size, gl.UNSIGNED_BYTE, frames[i].data );
-									gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, precision);
-									gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, precision);
-								}
+				case 'spr':
+					gl     = require('Renderer/Renderer').getContext();
+					frames = data.frames;
+					count  = frames.length;
 
-								// Send palette to GPU
-								if( data.rgba_index !== 0 ) {
-									data.texture = gl.createTexture();
-									gl.bindTexture( gl.TEXTURE_2D, data.texture );
-									gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 256, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, data.palette );
-									gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-									gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-								}
-
-								Memory.set( filename, data, error);
-								break;
-
-							// Build palette
-							case 'pal':
-								gl      = require('Renderer/Renderer').getContext();
-								texture = gl.createTexture();
-								palette = new Uint8Array(data);
-
-								gl.bindTexture( gl.TEXTURE_2D, texture );
-								gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 256, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, palette );
-								gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-								gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-								gl.generateMipmap( gl.TEXTURE_2D );
-
-								Memory.set( filename, { palette:palette, texture:texture }, error);
-								return;
-						}
+					// Send sprites to GPU
+					for( i = 0; i < count; i++ ) {
+						frames[i].texture = gl.createTexture();
+						precision  = frames[i].type ? gl.LINEAR : gl.NEAREST;
+						size       = frames[i].type ? gl.RGBA   : gl.LUMINANCE;
+						gl.bindTexture( gl.TEXTURE_2D, frames[i].texture );
+						gl.texImage2D(gl.TEXTURE_2D, 0, size, frames[i].width, frames[i].height, 0, size, gl.UNSIGNED_BYTE, frames[i].data );
+						gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, precision);
+						gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, precision);
 					}
 
-					Memory.set( filename, data, error);
+					// Send palette to GPU
+					if( data.rgba_index !== 0 ) {
+						data.texture = gl.createTexture();
+						gl.bindTexture( gl.TEXTURE_2D, data.texture );
+						gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 256, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, data.palette );
+						gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+						gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+					}
+
+					Memory.set( input.filename, data, error);
+					return;
+
+				// Build palette
+				case 'pal':
+					gl      = require('Renderer/Renderer').getContext();
+					texture = gl.createTexture();
+					palette = new Uint8Array(data);
+
+					gl.bindTexture( gl.TEXTURE_2D, texture );
+					gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 256, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, palette );
+					gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+					gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+					gl.generateMipmap( gl.TEXTURE_2D );
+
+					Memory.set( input.filename, { palette:palette, texture:texture }, error);
+					return;
 				}
-			);
+			}
+
+			Memory.set( input.filename, data, error);
 		}
 
-		return Memory.get( filename, onload, onerror );
-	}
+		return function loadFile( filename, onload, onerror, args )
+		{
+			if( !Memory.exist(filename) ) {
+				_input.filename = filename;
+				_input.args     = args || null;
+
+				Thread.send("LOAD_FILE", _input, callback);
+			}
+	
+			return Memory.get( filename, onload, onerror );
+		};
+	}();
 
 
 	/**

@@ -286,9 +286,8 @@ define(function()
 	 * @param {number} range
 	 * @param {Array} out
 	 */
-	function search( from, to, range, out )
+	function search( x0, y0, x1, y1, range, out )
 	{
-		var x0, x1, y0, y1;
 		var heap;
 		var x, y, i, j, rp, xs, ys;
 		var e, f, len, dist, cost;
@@ -299,15 +298,11 @@ define(function()
 		var types  = GAT.cells;
 		var TYPE   = GAT.type;
 
-		// Initialized
-		x0       = from[0] | 0;
-		y0       = from[1] | 0;
-		x1       =   to[0] | 0;
-		y1       =   to[1] | 0;
-
 		// Direct search
-		if( i = searchLong( x0, y0, x1, y1, range, out, TYPE.WALKABLE ) ) {
-			return out.length = i;
+		i = searchLong( x0, y0, x1, y1, range, out, TYPE.WALKABLE )
+		if( i ) {
+			out.length = i;
+			return i;
 		}
 
 		// Clean variables (avoid garbage collection problem)

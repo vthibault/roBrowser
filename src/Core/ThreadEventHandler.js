@@ -127,6 +127,8 @@ function(      FileManager,           MapLoader )
 
 		// If there is an uid, get back the answer
 		if( msg.uid ) {
+			args[2] = msg.data;
+
 			postMessage({
 				uid:       msg.uid,
 				arguments: args

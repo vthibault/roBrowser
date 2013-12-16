@@ -207,6 +207,41 @@ function(         Entity,     SpriteRenderer )
 
 
 	/**
+	 * Sort entities by z-Index
+	 *
+	 * @param {Entity} a
+	 * @param {Entity} b
+	 */
+	function Sort( a, b )
+	{
+		var aDepth = a.depth + (a.GID%100) / 1000;
+		var bDepth = b.depth + (b.GID%100) / 1000;
+
+		return bDepth - aDepth;
+	}
+
+
+	/**
+	 * Sort entities by z-index and priorities
+	 *
+	 * @param {Entity} a
+	 * @param {Entity} b
+	 */
+	function SortByPriority( a, b )
+	{
+		var aDepth = a.depth + (a.GID%100) / 1000;
+		var bDepth = b.depth + (b.GID%100) / 1000;
+
+		if( a.objecttype !== b.objecttype ) {
+			aDepth -= Entity.PickingPriority[a.objecttype] * 100;
+			bDepth -= Entity.PickingPriority[b.objecttype] * 100;
+		}
+
+		return bDepth - aDepth;
+	}
+
+
+	/**
 	 * Render all entities (picking or not)
 	 *
 	 * @param {object} gl webgl context
@@ -227,17 +262,7 @@ function(         Entity,     SpriteRenderer )
 			return;
 		}
 
-		_list.sort(function(a, b){
-			var aDepth = a.depth + (a.GID%100) / 1000;
-			var bDepth = b.depth + (b.GID%100) / 1000;
-
-			if( picking && a.objecttype !== b.objecttype ) {
-				aDepth -= Entity.PickingPriority[a.objecttype] * 100;
-				bDepth -= Entity.PickingPriority[b.objecttype] * 100;
-			}
-
-			return bDepth - aDepth;
-		});
+		_list.sort( picking ? SortByPriority : Sort);
 
 		// Use program
 		SpriteRenderer.bind3DContext( gl, modelView, projection, picking, fog );

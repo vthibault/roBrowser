@@ -377,8 +377,8 @@ define(function( require )
 	{
 		var out   = [];
 		var count = PathFinding.search(
-			[ pkt.xPos,	pkt.yPos ],
-			[ pkt.targetXPos, pkt.targetYPos ],
+			pkt.xPos,	pkt.yPos,
+			pkt.targetXPos, pkt.targetYPos,
 			pkt.currentAttRange,
 			out
 		);

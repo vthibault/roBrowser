@@ -54,21 +54,26 @@ define(function( require )
 	 * @param {mixed} data
 	 * @param {function} callback
 	 */
-	function Send( type, data, callback )
+	var Send = function SendClosure()
 	{
-		var uid = null;
+		var _input = { type: '', data: null, uid: 0 };
 
-		if( callback ) {
-			uid          = ++_uid;
-			_memory[uid] = callback;
-		}
+		return function Send( type, data, callback )
+		{
+			var uid = 0;
+	
+			if( callback ) {
+				uid          = ++_uid;
+				_memory[uid] = callback;
+			}
 
-		_source.postMessage({
-			type: type,
-			data: data,
-			uid:  uid
-		}, _origin );
-	}
+			_input.type = type;
+			_input.data = data;
+			_input.uid  = uid;
+
+			_source.postMessage( _input, _origin );
+		};
+	}();
 
 
 	/**

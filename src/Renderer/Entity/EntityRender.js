@@ -336,7 +336,7 @@ define( function( require )
 			anim = Math.min(animation.frame, animations_length-1);
 		}
 
-		// Repeatable, so stop at the last frame.
+		// Repeatable
 		else if ( animation.repeat ) {
 			anim = (
 				Math.floor( time_passed / delay )  // animation based on time (with floor hack)
@@ -351,7 +351,7 @@ define( function( require )
 			anim = (
 				Math.min( time_passed / delay | 0, animations_count || animations_count -1 )  // Avoid an error if animation = 0, search for -1 :(
 				+ animations_count * headDir // get rid of doridori
-				+ animation.frame                 // previous frame
+				+ animation.frame            // previous frame
 			);
 
 			if ( type === "body" && anim >= animations_length - 1 ) {
@@ -395,8 +395,8 @@ define( function( require )
 
 		if( !is_rgba ) {
 			SpriteRenderer.image.palette = pal.texture;
-			SpriteRenderer.image.size[0] = spr.frames[ index ].width
-			SpriteRenderer.image.size[1] = spr.frames[ index ].height
+			SpriteRenderer.image.size[0] = spr.frames[ index ].width;
+			SpriteRenderer.image.size[1] = spr.frames[ index ].height;
 		}
 
 		// RGBA is at the end of the spr.
