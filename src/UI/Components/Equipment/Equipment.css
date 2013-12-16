@@ -3,7 +3,7 @@
 #Equipment .clear { clear:both; }
 
 #Equipment .titlebar { width:280px; height:17px; background-color:white; background-repeat:repeat-x; border-radius:3px 3px 0px 0px; }
-#Equipment .titlebar .base { width:11px; height:11px; border:none; background-color:transparent; background-repeat:no-repeat; }
+#Equipment .titlebar .base { width:11px; height:11px; border:none; background-color:transparent; background-repeat:no-repeat; vertical-align:middle;}
 #Equipment .titlebar .text { text-shadow:1px 1px white; vertical-align:-2px; 
  /* chrome bug */ display: inline-block; width: 32px; height:13px; }
 
