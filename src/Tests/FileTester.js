@@ -87,17 +87,14 @@ define(function( require )
 
 		Intro.remove();
 
-		document.open();
-		document.write(
+		document.body.innerHTML =
 			'<h1>'+ ext.toUpperCase() +' tester</h1>'
-		+	'<p>Load each '+ ext +' files and find if there is errors</p>'
+		+	'<p>Load each '+ ext +' files to detect errors</p>'
 		+	'<div><strong>Progress:</strong> <span id="log"></span></div>'
 		+	'<br/>'
 		+	'<div id="error">'
 		+		'<h1>Errors :</h1>'
-		+	'</div>'
-		);
-		document.close();
+		+	'</div>';
 
 		document.body.style.backgroundColor = "white";
 		document.body.style.overflow = "auto";
@@ -119,7 +116,7 @@ define(function( require )
 						callback(data);
 					}
 					catch(e){
-						error.innerHTML += '<div style="margin-left:30px;"><h2>' + list[i] + '</h2><pre>'+ e.stack +'</pre></div>';
+						error.innerHTML += '<div style="margin-left:30px;"><h2>' + list[i] + '</h2>'+ e.message +'<pre>'+ e.stack +'</pre></div>';
 						errors++;
 					}
 
