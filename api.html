@@ -5,44 +5,44 @@
 		<script type="text/javascript">
 			var ROConfig = {};
 
-			addEventListener('message', function( event ) {
-				if( ROConfig.ready ) {
-					return;
-				}
+			addEventListener('message', function()
+			{
+				return function OnMessage( event )
+				{
+					removeEventListener( 'message', OnMessage, false );
 
-				event.source.postMessage('ready', '*' );
+					ROConfig.grfList      = event.data.grfList      || null;
+					ROConfig.servers      = event.data.servers      || 'data/clientinfo.xml';
+					ROConfig.remoteClient = event.data.remoteClient || '';
+					ROConfig.packetver    = event.data.packetver    || 'auto';
+					ROConfig.development  = event.data.development  || false;
+					ROConfig.API          = event.data.api          || false;
 
-				ROConfig.ready        = true;
-				ROConfig.grfList      = event.data.grfList      || null;
-				ROConfig.servers      = event.data.servers      || 'data/clientinfo.xml';
-				ROConfig.remoteClient = event.data.remoteClient || '';
-				ROConfig.packetver    = event.data.packetver    || 'auto';
-				ROConfig.development  = event.data.development  || false;
-				ROConfig.API          = event.data.api          || false;
+					var script  = document.createElement('script');
+					script.src  = 'src/Vendors/require.js';
+					script.type = 'text/javascript';
+	
+					if( ROConfig.development ) {
+						script.setAttribute('data-main', 'src/App/' + event.data.application);
+						document.getElementsByTagName('head')[0].appendChild(script);
+						event.source.postMessage('ready', '*' );
+					}
+					else {
+						document.getElementsByTagName('head')[0].appendChild(script);
 
-				var script  = document.createElement('script');
-				script.src  = 'src/Vendors/require.js';
-				script.type = 'text/javascript';
-
-				if( ROConfig.development ) {
-					script.setAttribute('data-main', 'src/App/' + event.data.application);
-					document.getElementsByTagName('head')[0].appendChild(script);
-				}
-				else {
-					document.getElementsByTagName('head')[0].appendChild(script);
-
-					// Seems like a bug occured some times in Chrome
-					// By don't loading javascript resources in the good order.
-					setTimeout(function(){
-						var app     = document.createElement('script');
-						app.type    = 'text/javascript';
-						app.src     = 'build/' + event.data.application + '.js';
-						app.charset = 'UTF-8';
-						document.getElementsByTagName('head')[0].appendChild(app);
-					}, 4);
-				}
-
-			}, false);
+						// Seems like a bug occured some times in Chrome
+						// By don't loading javascript resources in the good order.
+						setTimeout(function(){
+							var app     = document.createElement('script');
+							app.type    = 'text/javascript';
+							app.src     = 'build/' + event.data.application + '.js';
+							app.charset = 'UTF-8';
+							document.getElementsByTagName('head')[0].appendChild(app);
+							event.source.postMessage('ready', '*' );
+						}, 4);
+					}
+				};
+			}(), false);
 		</script>
 	</head>
 </html>

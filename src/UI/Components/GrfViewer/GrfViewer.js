@@ -34,7 +34,7 @@ define(function(require)
 	var History            = require('./History');
 
 
-	// Ugly, require api.js to display models
+	// Ugly, require api.js to display models and map
 	require('../../../../api');
 
 
@@ -784,7 +784,7 @@ define(function(require)
 
 		// Once app is ready
 		App.onReady = function(){
-			App._APP.location.href = "#" + path.replace(/\\/g,'/');
+			App._APP.location.hash = path.replace(/\\/g,'/');
 			App._APP.frameElement.style.border = "1px solid grey";
 			App._APP.frameElement.style.backgroundColor = "#45484d";
 			window.addEventListener("message", OnMessage, false);
@@ -866,7 +866,7 @@ define(function(require)
 
 		// Once app is ready
 		App.onReady = function(){
-			App._APP.location.href = "#" + path.replace(/\\/g,'/');
+			App._APP.location.hash = path.replace(/\\/g,'/');
 			App._APP.frameElement.style.border = "1px solid grey";
 			App._APP.frameElement.style.backgroundColor = "#45484d";
 

@@ -153,7 +153,9 @@
 	 */
 	ROBrowser.prototype.baseUrl = (function(){
 		var script = document.getElementsByTagName('script');
-		return script[ script.length -1 ].src.replace(/\/build\/[^\/]+\.js$/, '/api.js');
+		return script[ script.length -1 ].src
+			.replace(/\/build\/[^\/]+\.js$/, '/api.js') // redirect compiled script
+			.replace(/\/src\/.*/, '/api.js')            // fix error with cache
 	})().replace('.js', '.html');
 
 
@@ -195,7 +197,7 @@
 				this.height = this.height || '100%';
 
 				var frame          = document.createElement('iframe');
-				frame.src          = this.baseUrl;
+				frame.src          = this.baseUrl + "?" + Math.random(); // fix bug on firefox
 				frame.width        = this.width;
 				frame.height       = this.height;
 				frame.style.border = "none";

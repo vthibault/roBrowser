@@ -176,7 +176,7 @@ define(function(require)
 			var data;
 			var i, count, j, size, total, offset, length, pos;
 			var objects = [], infos = [], meshes, index, object;
-			var buffer   = new Float32Array(total);
+			var buffer;
 
 			// Create model in world
 			_GlobalParameters.filename = filename.replace('data/model/','');
