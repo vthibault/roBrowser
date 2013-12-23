@@ -185,56 +185,6 @@ define(function( require )
 
 
 	/**
-	 * Color picking buffer
-	 */
-	Renderer._color = new Uint8Array(4);
-
-
-	/**
-	 * Save mouse position to avoid read pixel if no change since the last time.
-	 */
-	Renderer._mouseInfo = new Int32Array(3);
-
-
-	/**
-	 * Render all elements with an unique color for each
-	 * Get back the color at mouse position to know the element.
-	 *
-	 * @param {function} callback to get the color from
-	 * @return {Uint8Array} rgba color from mouse pixel
-	 */
-	Renderer.getPickingColor = function GetPickingColor( callback )
-	{
-		var gl      = this.gl;
-
-		var quality = ( ROConfig.quality || 100 ) / 100;
-		var x       = Math.floor( Mouse.screen.x * quality );
-		var y       = Math.floor( (this.height - Mouse.screen.y) * quality );
-
-		if( x === this._mouseInfo[0] && y === this._mouseInfo[1] && ++this._mouseInfo[2] % 10 ) {
-			return this._color;
-		}
-
-		// Set up box context
-		gl.enable( gl.SCISSOR_TEST );
-		gl.scissor( x, y, 1, 1) ;
-
-		// Rendering color
-		callback();
-
-		// Get back the pixel.
-		gl.readPixels( x, y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, this._color );
-		gl.disable( gl.SCISSOR_TEST );
-
-		// Save last coords
-		this._mouseInfo[0] = x;
-		this._mouseInfo[1] = y;
-
-		return this._color;
-	};
-
-
-	/**
 	 * @var {boolean} Rendering ?
 	 */
 	Renderer.rendering = false;

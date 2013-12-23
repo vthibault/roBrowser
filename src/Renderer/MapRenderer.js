@@ -36,9 +36,7 @@ define(function( require )
 	var SpriteRenderer = require('Renderer/SpriteRenderer');
 	var Sky            = require('Renderer/Effects/Sky');
 	var Damage         = require('Renderer/Effects/Damage');
-
 	var MapPreferences = require('Preferences/Map');
-
 
 
 	/**
@@ -225,7 +223,7 @@ define(function( require )
 	MapRenderer.onAltitudeComplete = function OnAltitudeComplete( data )
 	{
 		var gl = Renderer.getContext();
-		Altitude.init( gl, data );
+		Altitude.init( data );
 		GridSelector.init( gl );
 	};
 
@@ -290,6 +288,7 @@ define(function( require )
 	 * @param {number} tick - game tick
 	 * @param {object} gl context
 	 */
+	var _pos = new Uint16Array(2);
 	MapRenderer.onRender = function OnRender( tick, gl )
 	{
 		var fog   = MapRenderer.fog;
@@ -297,8 +296,7 @@ define(function( require )
 		var light = MapRenderer.light;
 
 		var modelView, projection, normalMat;
-		var color;
-		var pos, x, y;
+		var x, y;
 
 		// Clean mouse position in world
 		Mouse.world.x =  -1;
@@ -313,22 +311,12 @@ define(function( require )
 		projection = Camera.projection;
 		normalMat  = Camera.normalMat;
 
-		// Find color from picking elements
-		color = Renderer.getPickingColor(function(){
-			Altitude.render( gl, modelView, projection );
-			EntityManager.render( gl, modelView, projection, true, fog );
-		});
-
 		Ground.render(gl, modelView, projection, normalMat, fog, light );
 		Models.render(gl, modelView, projection, normalMat, fog, light );
 
-		EntityManager.setOverEntityByColor( color );
-
-		// Gat picking
-		pos = Altitude.getPositionByColor( color );
-		if( pos ) {
-			x    = pos[0];
-			y    = pos[1];
+		if( Altitude.intersect( modelView, projection, _pos)) {
+			x = _pos[0];
+			y = _pos[1];
 
 			// Walkable
 			if( (Altitude.getCellType( x, y ) & Altitude.TYPE.WALKABLE) ) {
@@ -339,7 +327,8 @@ define(function( require )
 			}
 		}
 
-		EntityManager.render( gl, modelView, projection, false, fog );
+		EntityManager.render( gl, modelView, projection, fog );
+
 		Water.render( gl, modelView, projection, fog, light, tick );
 
 		// Display clouds on maps
@@ -352,6 +341,9 @@ define(function( require )
 		// Play sounds
 		Sounds.render( Session.Entity.position, tick );
 
+		// Find entity over the cursor
+		var entity = EntityManager.intersect( modelView, projection );
+		EntityManager.setOverEntity( entity );
 
 		// Clean up
 		MemoryManager.clean(gl, tick);

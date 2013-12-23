@@ -398,7 +398,7 @@ define(function(require)
 			CharSelect.ctx[i].clearRect(0, 0, CharSelect.ctx[i].canvas.width, CharSelect.ctx[i].canvas.height );
 			if( CharSelect.entitySlots[idx+i] ) {
 				SpriteRenderer.bind2DContext( CharSelect.ctx[i], 63, 130 );
-				CharSelect.entitySlots[idx+i]._renderSub(0);
+				CharSelect.entitySlots[idx+i].renderEntity();
 			}
 		}
 	};

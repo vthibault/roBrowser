@@ -94,7 +94,6 @@ function(      WebGL,         glMatrix,      Camera )
 
 		"uniform bool uUsePal;",
 		"uniform vec4 uSpriteRendererColor;",
-		"uniform vec2 uSpriteRendererPickIndex;",
 
 		"uniform bool  uFogUse;",
 		"uniform float uFogNear;",
@@ -154,12 +153,6 @@ function(      WebGL,         glMatrix,      Camera )
 			// No alpha, skip.
 			"if ( texture.a == 0.0 )",
 				"discard;",
-
-			// Picking, find a better way ?
-			"if ( uSpriteRendererPickIndex.r > 0.0 || uSpriteRendererPickIndex.g > 0.0 ) {",
-				"gl_FragColor = vec4( uSpriteRendererPickIndex.rg, 1.0, 1.0 );",
-				"return;",
-			"}",
 
 			// Apply shadow, apply color
 			"texture.rgb   *= uShadow;",
@@ -222,10 +215,9 @@ function(      WebGL,         glMatrix,      Camera )
 	 * @param {object} gl context
 	 * @param {mat4} modelView
 	 * @param {mat4} projection
-	 * @param {boolean} picking enable ?
 	 * @param {object} fog structure
 	 */
-	SpriteRenderer.bind3DContext = function Bind3dContext( gl, modelView, projection, picking, fog )
+	SpriteRenderer.bind3DContext = function Bind3dContext( gl, modelView, projection, fog )
 	{
 		var attribute = this.program.attribute;
 		var uniform   = this.program.uniform;
@@ -236,7 +228,7 @@ function(      WebGL,         glMatrix,      Camera )
 		gl.uniformMatrix4fv( uniform.uViewModelMat,  false,  mat4.invert(this.matrix, modelView) );
 
 		// Fog settings
-		gl.uniform1i(  uniform.uFogUse,   !picking && fog.use && fog.exist );
+		gl.uniform1i(  uniform.uFogUse,   fog.use && fog.exist );
 		gl.uniform1f(  uniform.uFogNear,  fog.near );
 		gl.uniform1f(  uniform.uFogFar,   fog.far );
 		gl.uniform3fv( uniform.uFogColor, fog.color );
@@ -304,7 +296,6 @@ function(      WebGL,         glMatrix,      Camera )
 	/**
 	 * 2D SpriteRenderer parameters
 	 */
-	SpriteRenderer.pickindex =   0;
 	SpriteRenderer.shadow    = 1.0;
 	SpriteRenderer.angle     =   0;
 	SpriteRenderer.position  = new Float32Array(3);
@@ -328,7 +319,6 @@ function(      WebGL,         glMatrix,      Camera )
 	SpriteRenderer._texture   = null;
 	SpriteRenderer._shadow    = null;
 	SpriteRenderer._usepal    = null;
-	SpriteRenderer._pickindex = null;
 
 	SpriteRenderer.groupId    = 0;
 	SpriteRenderer._groupId   = 0;
@@ -339,7 +329,7 @@ function(      WebGL,         glMatrix,      Camera )
 	function RenderCanvas3D()
 	{
 		// Nothing to render ?
-		if( !this.image.texture ) {
+		if( !this.image.texture || !this.color[3] ) {
 			return;
 		}
 
@@ -379,11 +369,6 @@ function(      WebGL,         glMatrix,      Camera )
 			gl.uniformMatrix4fv( uniform.uSpriteRendererAngle, false, this.matrix );
 		}
 
-		// Send data
-		if( this.pickindex !== this._pickindex ) {
-			gl.uniform2f(  uniform.uSpriteRendererPickIndex, (0xFF & (this.pickindex))/255, (0xFF & (this.pickindex >> 8))/255 );
-			this._pickindex = this.pickindex;
-		}
 		gl.uniform4fv( uniform.uSpriteRendererColor,     this.color );
 		gl.uniform2fv( uniform.uSpriteRendererSize,      this.size );
 		gl.uniform2fv( uniform.uSpriteRendererOffset,    this.offset );

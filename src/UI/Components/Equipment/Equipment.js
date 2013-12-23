@@ -282,7 +282,7 @@ define(function(require)
 			ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height );
 
 			Camera.direction = 4;
-			Equipment.entity._renderSub(0);
+			Equipment.entity.renderEntity();
 		}
 	};
 

@@ -7,8 +7,8 @@
  *
  * @author Vincent Thibault
  */
-define(['./Entity/Entity', './SpriteRenderer'],
-function(         Entity,     SpriteRenderer )
+define(['./Entity/Entity', './SpriteRenderer', 'Controls/MouseEventHandler'],
+function(         Entity,     SpriteRenderer,            Mouse )
 {
 	"use strict";
 
@@ -117,9 +117,26 @@ function(         Entity,     SpriteRenderer )
 	/**
 	 * Set over entity
 	 */
-	function SetOverEntity( entity )
+	function SetOverEntity( target )
 	{
-		_over = entity;
+		var target;
+		var current = this.getOverEntity();
+
+		if( target === current ) {
+			return;
+		}
+
+		if( current ) {
+			current.onMouseOut();
+		}
+
+		if( target ) {
+			_over = target;
+			target.onMouseOver();
+		}
+		else {
+			_over = null;
+		}
 	}
 
 
@@ -149,64 +166,6 @@ function(         Entity,     SpriteRenderer )
 
 
 	/**
-	 * Return entity by it's color
-	 *
-	 * @param {Array} color
-	 * @return {Entity}
-	 */
-	function GetEntityByColor( color )
-	{
-		var index  = color[0] | color[1] << 8;
-		return _list[index - 1];
-	}
-
-
-	/**
-	 * Process the mouse over / out based on sent color
-	 *
-	 * @param {Array} color (rgba)
-	 */
-	var _color = new Uint8Array(4);
-	function SetOverEntityByColor( color )
-	{
-		// Picking isn't done at all frames but the entities list order change at each frames
-		// so if it's the same color, there is a lot of chance to be the same entity and it's a good idea to
-		// stop processing here.
-		if( _color[0] === color[0]
-		 && _color[1] === color[1] ) {
-			return; 
-		}
-
-		var target;
-		var current = this.getOverEntity();
-		_color.set(color);
-
-		// Flag to detect an entity
-		if( color[2] === 0xff  ) {
-			target = GetEntityByColor( color );
-
-			if( current ) {
-				if( current === target ) {
-					return;
-				}
-				current.onMouseOut();
-			}
-
-			if( target ) {
-				SetOverEntity( target );
-				target.onMouseOver();
-			}
-		}
-
-		// Well, not over an entity.
-		else if( current ) {
-			current.onMouseOut();
-			SetOverEntity( null );
-		}
-	}
-
-
-	/**
 	 * Sort entities by z-Index
 	 *
 	 * @param {Entity} a
@@ -218,6 +177,50 @@ function(         Entity,     SpriteRenderer )
 		var bDepth = b.depth + (b.GID%100) / 1000;
 
 		return bDepth - aDepth;
+	}
+
+
+	/**
+	 * Render all entities (picking or not)
+	 *
+	 * @param {object} gl webgl context
+	 * @param {mat4} modelView
+	 * @param {mat4} projection
+	 * @param {object} fog structure
+	 *
+	 * Infos: RO Game doesn't seems to render ambiant and diffuse on Sprites
+	 */
+	function Render( gl, modelView, projection, fog )
+	{
+		var i, count;
+		var tick = Date.now();
+
+		// Stop rendering if no units to render (should never happened...)
+		if( !_list.length ) {
+			return;
+		}
+
+		_list.sort(Sort);
+
+		// Use program
+		SpriteRenderer.bind3DContext( gl, modelView, projection, fog );
+
+		// Rendering
+		for ( i = 0, count = _list.length; i < count; ++i ) {
+			// Remove from list
+			if( _list[i].remove_tick && _list[i].remove_tick + _list[i].remove_delay < tick ) {
+				_list[i].clean();
+				_list.splice(i, 1);
+				i--;
+				count--;
+				continue;
+			}
+
+			_list[i].render( modelView, projection);
+		}
+
+		// Clean program
+		SpriteRenderer.unbind( gl );
 	}
 
 
@@ -237,74 +240,64 @@ function(         Entity,     SpriteRenderer )
 			bDepth -= Entity.PickingPriority[b.objecttype] * 100;
 		}
 
-		return bDepth - aDepth;
+		return aDepth - bDepth;
 	}
 
 
 	/**
-	 * Render all entities (picking or not)
+	 * Intersect Entities
 	 *
-	 * @param {object} gl webgl context
 	 * @param {mat4} modelView
 	 * @param {mat4} projection
-	 * @param {boolean} picking - do we render picking ?
-	 * @param {object} fog structure
-	 *
-	 * Infos: RO Game doesn't seems to render ambiant and diffuse on Sprites
 	 */
-	function Render( gl, modelView, projection, picking, fog )
+	function Intersect( modelView, projection )
 	{
-		var i, count, j = 0;
-		var tick = Date.now();
+		var i, count;
+		var entity;
 
 		// Stop rendering if no units to render (should never happened...)
 		if( !_list.length ) {
 			return;
 		}
 
-		_list.sort( picking ? SortByPriority : Sort);
+		_list.sort(SortByPriority);
 
-		// Use program
-		SpriteRenderer.bind3DContext( gl, modelView, projection, picking, fog );
+		var x = Mouse.screen.x;
+		var y = Mouse.screen.y;
 
-		// Rendering
 		for ( i = 0, count = _list.length; i < count; ++i ) {
-			if( picking ) {
-				j++;
-			}
+			entity = _list[i];
 
-			// Remove from list
-			if( _list[i].remove_tick && _list[i].remove_tick + _list[i].remove_delay < tick ) {
-				_list[i].clean();
-				_list.splice(i, 1);
-				i--;
-				count--;
-				continue;
+			// No picking on dead entites
+			if ( (entity.action !== entity.ACTION.DIE || entity.objecttype === Entity.TYPE_PC) && entity.remove_tick === 0 ) {
+				if( x > entity.boundingRect.x1
+				 && x < entity.boundingRect.x2
+				 && y > entity.boundingRect.y1
+				 && y < entity.boundingRect.y2
+				) {
+					return entity;
+				}
 			}
-
-			_list[i].render( modelView, projection, j);
 		}
 
-		// Clean program
-		SpriteRenderer.unbind( gl );
+		return null;
 	}
 
 
 
 	var EntityManager = {
-		free:   Free,
-		add:    AddEntity,
-		remove: RemoveEntity,
-		get:    GetEntity,
+		free:                 Free,
+		add:                  AddEntity,
+		remove:               RemoveEntity,
+		get:                  GetEntity,
 
 		getOverEntity:        GetOverEntity,
 		setOverEntity:        SetOverEntity,
 		getFocusEntity:       GetFocusEntity,
 		setFocusEntity:       SetFocusEntity,
-		getEntityByColor:     GetEntityByColor,
-		setOverEntityByColor: SetOverEntityByColor,
 
-		render: Render
+		render:               Render,
+		intersect:            Intersect
 	};
 
 

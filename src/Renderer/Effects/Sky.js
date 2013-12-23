@@ -150,7 +150,7 @@ define(function( require )
 		var i, cloud, opacity;
 
 		// Init program
-		SpriteRenderer.bind3DContext( gl, modelView, projection, false, fog );
+		SpriteRenderer.bind3DContext( gl, modelView, projection, fog );
 
 		// Base parameters
 		SpriteRenderer.color.set(_color);

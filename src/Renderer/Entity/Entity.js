@@ -41,6 +41,7 @@ define( function( require )
 		require('./EntityWalk').call(this);
 		require('./EntityRender').call(this);
 
+		this.boundingRect = { x1:0, y1:0, x2:0, y2:0 };
 		this.matrix    = mat4.create();
 		this.position  = vec3.create();
 

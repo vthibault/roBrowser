@@ -266,7 +266,7 @@ define(function(require)
 		// Rendering
 		SpriteRenderer.bind2DContext( CharCreate.chargen.ctx, 32, 115 );
 		CharCreate.chargen.ctx.clearRect(0, 0, CharCreate.chargen.ctx.canvas.width, CharCreate.chargen.ctx.canvas.height );
-		CharCreate.chargen.entity._renderSub(0);
+		CharCreate.chargen.entity.renderEntity();
 	};
 
 

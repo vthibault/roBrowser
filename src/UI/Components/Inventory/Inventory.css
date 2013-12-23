@@ -10,7 +10,7 @@
 #Inventory .titlebar .right { float:right; margin-right:3px;}
 #Inventory .titlebar .clear { clear:both; }
 
-#Inventory .tabs { border-left:1px solid #ccc; width:50px; background-repeat:no-repeat; background-color:transparent; vertical-align:top; background-position: -1px 0px; }
+#Inventory .tabs { border-left:1px solid #ccc; width:50px; background-repeat:no-repeat; background-color:white; vertical-align:top; background-position: -1px 0px; }
 #Inventory .tabs button { width:20px; height:27px; border:none; background-color:transparent; display:block; }
 
 #Inventory .container { padding-left: 16px; border-right:1px solid #ccc; background:white; }

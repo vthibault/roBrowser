@@ -137,7 +137,7 @@ define( [
 				pkt = new PACKET.CZ.ITEM_PICKUP();
 				pkt.ITAID = this.GID;
 				Network.sendPacket(pkt);
-				break;
+				return true;
 
 			case Entity.TYPE_NPC:
 				pkt      = new PACKET.CZ.CONTACTNPC();
@@ -151,11 +151,13 @@ define( [
 				pkt.headDir = Session.Entity.headDir;
 				pkt.dir     = Session.Entity.direction;
 				Network.sendPacket(pkt);
-				break;
+				return true;
 
 			case Entity.TYPE_WARP:
 				break;
 		}
+
+		return false;
 	}
 
 
@@ -194,8 +196,10 @@ define( [
 				pkt.action = 7;
 				pkt.targetGID = this.GID;
 				Network.sendPacket(pkt);
-				break;
+				return true;
 		}
+
+		return false;
 	}
 
 

@@ -7,54 +7,64 @@
  *
  * @author Vincent Thibault
  */
-define( ['Utils/WebGL', 'Utils/PathFinding'],
-function(       WebGL,         PathFinding )
+define( ['Utils/gl-matrix', 'Utils/PathFinding', 'Controls/MouseEventHandler'],
+function(       glMatrix,          PathFinding,            Mouse )
 {
 	"use strict";
 
 
-	/**
-	 * Private variables
-	 */
-	var _program     = null;
-	var _buffer      = null;
-	var _vertCount   = 0;
+	var mat4 = glMatrix.mat4;
+	var vec3 = glMatrix.vec3;
+	var vec4 = glMatrix.vec4;
 
-	var _colors      = null;
+
+	/**
+	 * @var {array} Cells where stored altitude
+	 */
 	var _cells       = null;
+
+
+	/**
+	 * @var {array} Altitudes cells type
+	 */
 	var _types       = null;
 
+
+	/**
+	 * @var {number} map width
+	 */
 	var _width       = 0;
+
+
+	/**
+	 * @var {number} map height
+	 *
+	 */
 	var _height      = 0;
 
 
 	/**
-	 * @var {string} vertex shader
+	 * @var {vec3} Ray start
 	 */
-	var _vertexShader   = '\
-		attribute vec3 aPosition;\
-		attribute vec3 aPickColor;\
-		\
-		varying vec3 vPickColor;\
-		\
-		uniform mat4 uModelViewMat;\
-		uniform mat4 uProjectionMat;\
-		\
-		void main(void) {\
-			vPickColor  =  aPickColor;\
-			gl_Position =  uProjectionMat * uModelViewMat * vec4( aPosition, 1.0);\
-		}';
+	var _from     = vec3.create();
 
 
 	/**
-	 * @var {string} fragment shader
+	 * @var {vec4} Ray end
 	 */
-	var _fragmentShader = '\
-		varying vec3 vPickColor;\
-		\
-		void main(void) {\
-			gl_FragColor = vec4( vPickColor, 1.0 );\
-		}';
+	var _to       = vec4.create();
+
+
+	/**
+	 * @var {vec3} Ray direction
+	 */
+	var _unit     = vec3.create();
+
+
+	/**
+	 * @var {mat4} temporary matrix
+	 */
+	var _matrix   = mat4.create();
 
 
 	/**
@@ -63,7 +73,7 @@ function(       WebGL,         PathFinding )
 	 * @param {object} gl context
 	 * @param {object} data Altitude { mesh, vertCount, cells, width, height, colors }
 	 */
-	function Init( gl, data )
+	function Init( data )
 	{
 		// Extract 'type' from cells
 		var cells = data.cells;
@@ -75,94 +85,15 @@ function(       WebGL,         PathFinding )
 		}
 
 		// Save information
-		_vertCount = data.vertCount;
 		_cells     = data.cells;
 		_types     = types;
 		_width     = data.width;
 		_height    = data.height;
-		_colors    = data.colors;
 
 		// Initialize PathFinding
 		PathFinding.setGat({ width:_width, height:_height, cells:types, types:this.TYPE });
 		this.width  = _width;
 		this.height = _height;
-
-		// Bind new mesh
-		if( !_buffer ) {
-			_buffer = gl.createBuffer();
-		}
-
-		// Link program	if not loaded
-		if( !_program ) {
-			_program = WebGL.createShaderProgram( gl, _vertexShader, _fragmentShader );
-		}
-
-		gl.bindBuffer( gl.ARRAY_BUFFER, _buffer );
-		gl.bufferData( gl.ARRAY_BUFFER, data.mesh, gl.STATIC_DRAW );
-	}
-
-
-	/**
-	 * Rendering Altitude
-	 *
-	 * @param {object} gl context
-	 * @param {mat4} modelView
-	 * @param {mat4} projection
-	 */
-	function Render( gl, modelView, projection )
-	{
-		var uniform   = _program.uniform;
-		var attribute = _program.attribute;
-	
-		gl.useProgram( _program );
-
-		// Bind matrix
-		gl.uniformMatrix4fv( uniform.uModelViewMat,  false,  modelView );
-		gl.uniformMatrix4fv( uniform.uProjectionMat, false,  projection );
-
-		gl.enableVertexAttribArray( attribute.aPosition );
-		gl.enableVertexAttribArray( attribute.aPickColor );
-		gl.bindBuffer( gl.ARRAY_BUFFER, _buffer );
-	
-		// Link attribute
-		gl.vertexAttribPointer( attribute.aPosition,  3, gl.FLOAT, false, 6*4,   0);
-		gl.vertexAttribPointer( attribute.aPickColor, 3, gl.FLOAT, false, 6*4, 3*4);
-		gl.drawArrays( gl.TRIANGLES, 0, _vertCount );
-
-		// Is it needed ?
-		gl.disableVertexAttribArray( attribute.aPosition );
-		gl.disableVertexAttribArray( attribute.aPickColor );
-	}
-
-
-	/**
-	 * Clean texture/buffer from memory
-	 *
-	 * @param {object} gl context
-	 */
-	function Free( gl )
-	{
-		if( _buffer ) {
-			gl.deleteBuffer( _buffer );
-			_buffer = null;
-		}
-
-		if( _program ) {
-			gl.deleteProgram( _program );
-			_program = null;
-		}
-	}
-
-
-	/**
-	 * Return cell position by a color
-	 *
-	 * @param {Array} color (rgba)
-	 * @return {object} cell
-	 */
-	function GetPositionByColor( color )
-	{
-		return _colors[ color[0] | color[1]<<8 | color[2]<<16 ] || 0;
 	}
 
 
@@ -235,6 +166,60 @@ function(       WebGL,         PathFinding )
 
 
 	/**
+	 * Intersect cell
+	 *
+	 * @param {mat4} modelView matrix
+	 * @param {mat4} projection matrix
+	 * @param {vec2} output vector
+	 * @return {bool} success
+	 */
+	function Intersect( modelView, projection, out )
+	{
+		var i;
+
+		// Extract camera position
+		mat4.invert( _matrix, modelView );
+		_from[0] = _matrix[12];
+		_from[1] = _matrix[13];
+		_from[2] = _matrix[14];
+
+		// set two vectors with opposing z values
+		_to[0] = (Mouse.screen.x / Mouse.screen.width)  * 2 - 1;
+		_to[1] =-(Mouse.screen.y / Mouse.screen.height) * 2 + 1;
+		_to[2] =  1.0; 
+		_to[3] =  1.0;
+
+		// Unproject
+		mat4.multiply( _matrix, projection, modelView);
+		mat4.invert( _matrix, _matrix );
+		vec4.transformMat4( _to, _to, _matrix );
+
+		_to[0] /= _to[3];
+		_to[1] /= _to[3];
+		_to[2] /= _to[3];
+
+		// Extract direction
+		vec3.sub( _unit, _to, _from );
+		vec3.normalize(_unit, _unit);
+
+		// Search
+		for( i=0; i < 100; ++i ) {
+			_from[0] += _unit[0];
+			_from[1] += _unit[1];
+			_from[2] += _unit[2];
+
+			if( Math.abs( GetCellHeight( _from[0], _from[2]) + _from[1] ) < 0.5 ) {
+				out[0] = _from[0];
+				out[1] = _from[2];
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+
+	/**
 	 * Export
 	 */
 	return new function Altitude()
@@ -248,14 +233,12 @@ function(       WebGL,         PathFinding )
 		};
 
 		this.init               = Init;
-		this.render             = Render;
-		this.free               = Free;
 		this.width              = 0;
 		this.height             = 0;
 
-		this.getPositionByColor = GetPositionByColor;
 		this.getCellType        = GetCellType;
 		this.getCellHeight      = GetCellHeight;
 		this.getCell            = GetCell;
+		this.intersect          = Intersect;
 	};
 });

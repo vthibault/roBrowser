@@ -272,7 +272,7 @@ function( require,         jQuery,        Client,           Sprite,           Ac
 
 		// Render layers
 		for ( i=0, count=layers.length; i<count; ++i ) {
-			this.entity._renderLayer( layers[i], this.sprite, this.sprite, pos );
+			this.entity.renderLayer( layers[i], this.sprite, this.sprite, pos, false );
 		}
 
 		// Display icons

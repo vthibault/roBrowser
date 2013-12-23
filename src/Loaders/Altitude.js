@@ -100,62 +100,11 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 	 */
 	GAT.prototype.compile = function Compile()
 	{
-		var width, height, n, x, y, r, g, b, i = 1;
-		var cells, colors, mesh;
-
-		// Some shortcut
-		width  = this.width ;
-		height = this.height;
-		cells  = this.cells;
-
-		// Initialised array
-		colors = new Array(cells.length/5); // Maximum cells possible
-		mesh   = [];
-
-		// Create a mesh with unique color for each cell (to get the mouse pos easily).
-		// It seems that complex maths in javascript (ray) is a little slow to get the mouse coord, here a
-		// method to display all cells with uniques colors. So:
-		// - Draw the mesh
-		// - Get the pixel in xy pos
-		// - Get the cell xy from the pixel color.
-		// - clean framebuffer
-
-		for ( y=2; y<height-2; ++y ) {
-			for ( x=2; x<width-2; ++x ) {
-				n = (x + y * width) * 5;
-
-				if ( cells[n+4] & GAT.TYPE.WALKABLE ) { // type
-					colors[i] = [ x, y ];
-					r         = (0xFF & (i     ))/255;
-					g         = (0xFF & (i >> 8))/255;
-					b         = (0xFF & (i >>16))/255;
-
-					// Hard coded the height/5 part.
-					mesh.push(
-						(x+0), cells[n+0], (y+0), r, g, b,
-						(x+1), cells[n+1], (y+0), r, g, b,
-						(x+1), cells[n+3], (y+1), r, g, b,
-						(x+1), cells[n+3], (y+1), r, g, b,
-						(x+0), cells[n+2], (y+1), r, g, b,
-						(x+0), cells[n+0], (y+0), r, g, b
-					);
-
-					i++;
-				}
-			}
-		}
-
-		// Remove unused slots.
-		colors.length = i;
-
 		// Return some usefulls things.
 		return {
-			mesh:         new Float32Array(mesh),
-			vertCount:    mesh.length/6,
-			cells:        cells,
-			width:        width,
-			height:       height,
-			colors:       colors
+			cells:        this.cells,
+			width:        this.width,
+			height:       this.height,
 		};
 	};
 

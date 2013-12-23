@@ -46,6 +46,7 @@ function(
 			case 1:
 				var entityFocus = EntityManager.getFocusEntity();
 				var entityOver  = EntityManager.getOverEntity();
+				var stop        = false;
 
 				if( entityFocus && entityFocus != entityOver ) {
 					entityFocus.onFocusEnd();
@@ -54,10 +55,14 @@ function(
 
 				// Entity picking ?
 				if( entityOver ) {
-					entityOver.onMouseDown();
-					entityOver.onFocus();
+					stop = stop || entityOver.onMouseDown();
+					stop = stop || entityOver.onFocus();
 					EntityManager.setFocusEntity(entityOver);
-					return;
+
+					// Know if propagate to map mousedown
+					if( stop ) {
+						return;
+					}
 				}
 
 				// Start walking
