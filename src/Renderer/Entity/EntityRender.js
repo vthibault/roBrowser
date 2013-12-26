@@ -121,6 +121,18 @@ define( function( require )
 		{
 			var z;
 
+			// No body ? Default picking (sprite 110 for example)
+			if( !isFinite(entity.boundingRect.x1)
+			 || !isFinite(entity.boundingRect.x2)
+			 || !isFinite(entity.boundingRect.y1)
+			 || !isFinite(entity.boundingRect.y2)
+			) {
+				entity.boundingRect.x1 = -25;
+				entity.boundingRect.x2 = +25;
+				entity.boundingRect.y1 = +45;
+				entity.boundingRect.y2 =   0;
+			}
+
 			size[0]   = Renderer.width  / 2;
 			size[1]   = Renderer.height / 2;
 			vector[2] =  0.0;
