@@ -11,12 +11,14 @@ define( [
 	'Utils/gl-matrix', 'Controls/KeyEventHandler',
 	'Renderer/Camera', 'Engine/SessionStorage',
 	'Network/PacketStructure', 'Network/NetworkManager',
-	'UI/CursorManager', 'Preferences/Controls'
+	'UI/CursorManager', 'UI/Components/InputBox/InputBox',
+	'Preferences/Controls'
 ], function(
 	glMatrix, KEYS,
 	Camera, Session,
 	PACKET, Network,
-	Cursor, Preferences
+	Cursor, InputBox,
+	Preferences
 )
 {
 	"use strict";
@@ -227,6 +229,51 @@ define( [
 
 
 	/**
+	 * Open entity room (chat room, shop, ...)
+	 */
+	function OnRoomEnter()
+	{
+		var pkt;
+		var Room = this.room.constructor;
+
+		switch( this.room.type ) {
+
+			case Room.Type.SELL_SHOP:
+				pkt = new PACKET.CZ.REQ_CLICK_TO_BUYING_STORE();
+				pkt.makerAID = this.room.id;
+				Network.sendPacket(pkt);
+				break;
+
+			case Room.Type.BUY_SHOP:
+				pkt = new PACKET.CZ.REQ_BUY_FROMMC();
+				pkt.AID = this.room.id;
+				Network.sendPacket(pkt);
+				break;
+
+			case Room.Type.PUBLIC_CHAT:
+				pkt = new PACKET.CZ.REQ_ENTER_ROOM();
+				pkt.roomID = this.room.id;
+				pkt.passwd = '';
+				Network.sendPacket(pkt);
+				break;
+
+			case Room.Type.PRIVATE_CHAT:
+				pkt = new PACKET.CZ.REQ_ENTER_ROOM();
+				pkt.roomID = this.room.id;
+
+				InputBox.append();
+				InputBox.setType('pass', true);
+				InputBox.onSubmitRequest = function( pass ) {
+					InputBox.remove();
+					pkt.passwd = pass;
+					Network.sendPacket(pkt);
+				};
+				return;
+		}
+	}
+
+
+	/**
 	 * Export
 	 */
 	return function Init()
@@ -237,5 +284,6 @@ define( [
 		this.onMouseUp   = OnMouseUp;
 		this.onFocus     = OnFocus;
 		this.onFocusEnd  = OnFocusEnd;
+		this.onRoomEnter = OnRoomEnter;
 	};
 });

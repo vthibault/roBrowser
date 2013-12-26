@@ -130,6 +130,12 @@ define(function(require)
 				this.ui.find('input').attr('type', 'text');
 				break;
 
+			case 'pass':
+				this.ui.removeClass('number');
+				this.ui.find('.text').text('');
+				this.ui.find('input').attr('type', 'password');
+				break;
+
 			case 'mail':
 				this.ui.removeClass('number');
 				this.ui.find('.text').text( DB.msgstringtable[300] );

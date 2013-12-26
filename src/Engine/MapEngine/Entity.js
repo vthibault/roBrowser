@@ -547,6 +547,84 @@ define(function( require )
 
 
 	/**
+	 * Display a shop above entity's head
+	 * @param {object} pkt - PACKET.ZC.STORE_ENTRY / PACKET.ZC.DISAPPEAR_BUYING_STORE_ENTRY
+	 */
+	function RoomCreate( pkt )
+	{
+		var entity;
+
+		switch( pkt.constructor.name ) {
+			case "PACKET_ZC_STORE_ENTRY":
+				entity = EntityManager.get( pkt.makerAID );
+				if( entity ) {
+					entity.room.create(
+						pkt.storeName,
+						pkt.makerAID,
+						entity.room.constructor.Type.BUY_SHOP,
+						true
+					);
+				}
+				break;
+
+			case "PACKET_ZC_DISAPPEAR_BUYING_STORE_ENTRY":
+				entity = EntityManager.get( pkt.makerAID );
+				if( entity ) {
+					entity.room.create(
+						pkt.storeName,
+						pkt.makerAID,
+						entity.room.constructor.Type.SELL_SHOP,
+						true
+					);
+				}
+				break;
+
+			case "PACKET_ZC_ROOM_NEWENTRY":
+				entity = EntityManager.get( pkt.AID );
+				if( entity ) {
+
+					var type  = entity.room.constructor.PUBLIC_CHAT;
+					var title = pkt.title + '('+ pkt.curcount +'/'+ pkt.maxcount +')';
+
+					switch( type ) {
+						case 0: // password
+							type = entity.room.constructor.PRIVATE_CHAT;
+							break;
+
+						case 1: break; // public
+						case 2: break; // arena (npc waiting room)
+
+						case 3: // PK zone - non clickable ???
+							title = pkt.title; // no user limit
+							break;
+					}
+
+					entity.room.create(
+						pkt.title + '('+ pkt.curcount +'/'+ pkt.maxcount +')',
+						pkt.roomID,
+						entity.room.constructor.Type.SELL_SHOP,
+						true
+					);
+				}
+				break;
+		}
+	}
+
+
+	/**
+	 * Remove entity room
+	 * @param {object} pkt - PACKET.ZC.DISAPPEAR_ENTRY
+	 */
+	function RoomRemove( pkt )
+	{
+		var entity = EntityManager.get( pkt.makerAID );
+		if( entity ) {
+			entity.room.remove();
+		}
+	}
+
+
+	/**
 	 * Initialize
 	 */
 	return function EntityEngine()
@@ -590,5 +668,11 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.USESKILL_ACK2,         CastSkill );
 		Network.hookPacket( PACKET.ZC.MSG_STATE_CHANGE,      UpdateStatus );
 		Network.hookPacket( PACKET.ZC.MSG_STATE_CHANGE2,     UpdateStatus );
+		Network.hookPacket( PACKET.ZC.STORE_ENTRY,           RoomCreate );
+		Network.hookPacket( PACKET.ZC.DISAPPEAR_ENTRY,       RoomRemove );
+		Network.hookPacket( PACKET.ZC.BUYING_STORE_ENTRY,    RoomCreate );
+		Network.hookPacket( PACKET.ZC.DISAPPEAR_BUYING_STORE_ENTRY, RoomRemove );
+		Network.hookPacket( PACKET.ZC.ROOM_NEWENTRY,         RoomCreate );
+		Network.hookPacket( PACKET.ZC.DESTROY_ROOM,          RoomRemove );
 	};
 });
