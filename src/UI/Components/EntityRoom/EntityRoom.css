@@ -1,0 +1,40 @@
+.EntityRoom {
+	position:absolute;
+	z-index:45;
+	width:140px;
+	border-radius:5px;
+	background-color:white;
+	padding:2px;
+	letter-spacing:0px;
+}
+
+.EntityRoom button {
+	height:24px;
+	width:100%;
+	text-align:left;
+	padding:0px;
+	padding-left:28px;
+	border-radius:5px;
+	border:1px solid #c1c6c2;
+	background-color:transparent;
+	background-repeat:no-repeat;
+	white-space:nowrap;
+}
+
+.EntityRoom .overlay {
+	position: absolute;
+	top: 4px;
+	left: 26px;
+	display: none;
+	white-space: nowrap;
+	z-index:900;
+	height:13px;
+	padding:5px;
+	background-color:rgba(0,0,0,0.6);
+	color:white;
+	text-shadow:1px 1px black;
+}
+
+.EntityRoom button:hover .overlay {
+	display:block;
+}

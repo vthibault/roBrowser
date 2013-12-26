@@ -7,7 +7,8 @@
  *
  * @author Vincent Thibault
  */
-define(['Utils/gl-matrix', 'Renderer/Renderer', 'Core/Client', 'DB/DBManager' ], function( glMatrix, Renderer, Client, DB )
+define(['Utils/gl-matrix', 'Renderer/Renderer', 'Core/Client', 'DB/DBManager', 'UI/Components/EntityRoom/EntityRoom' ],
+function(       glMatrix,            Renderer,        Client,      DB,                                   EntityRoom)
 {
 	"use strict";
 
@@ -28,7 +29,7 @@ define(['Utils/gl-matrix', 'Renderer/Renderer', 'Core/Client', 'DB/DBManager' ],
 		this.owner   = owner;
 		this.text    = '';
 		this.display = false;
-		this.ui      = null;
+		this.node    = null;
 		this.type    = Room.Type.BUY_SHOP;
 		this.id      = 0;
 	}
@@ -56,61 +57,46 @@ define(['Utils/gl-matrix', 'Renderer/Renderer', 'Core/Client', 'DB/DBManager' ],
 	 */
 	Room.prototype.create = function Create( title, id, type, clickable )
 	{
-		var filename;
+		var self = this;
 
-		if( this.ui === null ) {
-			this.ui                       = document.createElement('div');
-			this.ui.style.position        = 'absolute';
-			this.ui.style.zIndex          = '45';
-			this.ui.style.width           = '140px';
-			this.ui.style.borderRadius    = '5px';
-			this.ui.style.backgroundColor = 'white';
-			this.ui.style.padding         = '2px';
-			this.ui.style.letterSpacing   = '0px';
-	
-			var text = document.createElement('button');
-			text.style.backgroundColor = 'transparent';
-			text.style.border          = '1px solid #c1c6c2';
-			text.style.height          = '24px';
-			text.style.padding         = '0px';
-			text.style.borderRadius    = '5px';
-			text.style.width           = '100%';
-			text.style.textAlign       = 'left';
-			this.ui.appendChild(text);
-		}
+		this.node = EntityRoom.clone('EntityRoom', true);
+		this.node.init = function Init()
+		{
+			var filename;
 
-		switch( type ) {
-			case Room.Type.SELL_SHOP:
-				filename = "buyingshop";
-				break;
+			switch( type ) {
+				case Room.Type.SELL_SHOP:
+					filename = "buyingshop";
+					break;
 
-			case Room.Type.BUY_SHOP:
-				filename = "shop";
-				break;
+				case Room.Type.BUY_SHOP:
+					filename = "shop";
+					break;
 
-			case Room.Type.PRIVATE_CHAT:
-				filename = "chat_close";
-				break;
+				case Room.Type.PRIVATE_CHAT:
+					filename = "chat_close";
+					break;
 
-			default:
-			case Room.Type.PUBLIC_CHAT:
-				filename = "chat_open";
-				break;
-		}
+				default:
+				case Room.Type.PUBLIC_CHAT:
+					filename = "chat_open";
+					break;
+			}
 
-		this.display    = true;
-		this.type       = type;
-		this.id         = id;
-		text.ondblclick = clickable ? this.owner.onRoomEnter.bind(this.owner) : null;
+			self.type       = type;
+			self.id         = id;
 
+			if( clickable ) {
+				self.node.onEnter  = self.owner.onRoomEnter.bind(self.owner);
+			}
 
-		Client.loadFile( DB.INTERFACE_PATH + filename + ".bmp", function(url){
-			text.innerHTML          = '<img src="'+ url +'" style="vertical-align:-8px"/> ' + title;
-		});
+			Client.loadFile( DB.INTERFACE_PATH + filename + ".bmp", function(url){
+				self.display    = true;
+				self.node.setTitle( title, url );
+			});
+		};
 
-		if( !this.ui.parentNode ) {
-			document.body.appendChild(this.ui);
-		}
+		this.node.append();
 	};
 
 
@@ -120,8 +106,8 @@ define(['Utils/gl-matrix', 'Renderer/Renderer', 'Core/Client', 'DB/DBManager' ],
 	Room.prototype.remove = function Remove()
 	{
 		this.display = false;
-		if ( this.ui && this.ui.parentNode ) {
-			document.body.removeChild(this.ui);
+		if( this.node ) {
+			this.node.remove();
 		}
 	};
 
@@ -132,7 +118,7 @@ define(['Utils/gl-matrix', 'Renderer/Renderer', 'Core/Client', 'DB/DBManager' ],
 	Room.prototype.clean = function Clean()
 	{
 		this.remove();
-		this.ui = null;
+		this.node = null;
 	};
 
 
@@ -144,7 +130,7 @@ define(['Utils/gl-matrix', 'Renderer/Renderer', 'Core/Client', 'DB/DBManager' ],
 	 */
 	Room.prototype.render = function Render( matrix )
 	{
-		var ui = this.ui;
+		var ui = this.node.ui[0];
 		var z;
 
 		// Cast position
