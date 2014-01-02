@@ -167,25 +167,25 @@ function(       Queue,        Client,     ClassTable,     ClassPalTable,     Mon
 		 */
 
 		// PC data
-		q.add( DB.loadLuaByteTable('data\\lua files\\admin\\pcidentity.lub',      q.next) );
-		q.add( DB.loadLuaByteTable('data\\lua files\\admin\\pcjobname.lub',       q.next) );
-		q.add( DB.loadLuaByteTable('data\\lua files\\admin\\pcjobnamegender.lub', q.next) );
+		q.add( DB.loadLuaByteTable('data/lua files/admin/pcidentity.lub',      q.next) );
+		q.add( DB.loadLuaByteTable('data/lua files/admin/pcjobname.lub',       q.next) );
+		q.add( DB.loadLuaByteTable('data/lua files/admin/pcjobnamegender.lub', q.next) );
 
 		// hats
-		q.add( DB.loadLuaByteTable('data\\lua files\\datainfo\\accessoryid.lub',  q.next) );
-		q.add( DB.loadLuaByteTable('data\\lua files\\datainfo\\accname.lub',      q.next) );
+		q.add( DB.loadLuaByteTable('data/lua files/datainfo/accessoryid.lub',  q.next) );
+		q.add( DB.loadLuaByteTable('data/lua files/datainfo/accname.lub',      q.next) );
 
 		// npc/mobs
-		q.add( DB.loadLuaByteTable('data\\lua files\\datainfo\\npcidentity.lub',  q.next) );
-		q.add( DB.loadLuaByteTable('data\\lua files\\datainfo\\jobname.lub',      q.next) );
-		q.add( DB.loadLuaByteTable('data\\lua files\\datainfo\\petinfo.lub',      q.next) );
+		q.add( DB.loadLuaByteTable('data/lua files/datainfo/npcidentity.lub',  q.next) );
+		q.add( DB.loadLuaByteTable('data/lua files/datainfo/jobname.lub',      q.next) );
+		q.add( DB.loadLuaByteTable('data/lua files/datainfo/petinfo.lub',      q.next) );
 
 		// others
-		q.add( DB.loadLuaByteTable('data\\lua files\\datainfo\\weapontable.lub',  q.next) );
+		q.add( DB.loadLuaByteTable('data/lua files/datainfo/weapontable.lub',  q.next) );
 
 
 		// skills
-		q.add( DB.loadLuaByteTable('data\\lua files\\skillinfoz\\skillid.lub',  q.next) );
+		q.add( DB.loadLuaByteTable('data/lua files/skillinfoz/skillid.lub',  q.next) );
 
 
 		// Callback

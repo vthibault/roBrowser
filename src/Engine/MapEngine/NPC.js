@@ -186,9 +186,9 @@ define(function( require )
 
 				jQuery('<button/>').
 					addClass('btn').
-					data('background', '/btn_buy.bmp').
-					data('hover',      '/btn_buy_a.bmp').
-					data('down',       '/btn_buy_b.bmp').
+					data('background', 'btn_buy.bmp').
+					data('hover',      'btn_buy_a.bmp').
+					data('down',       'btn_buy_b.bmp').
 					one('click',function(){
 						WinDeal.remove();
 						var _pkt = new PACKET.CZ.ACK_SELECT_DEALTYPE();
@@ -200,9 +200,9 @@ define(function( require )
 
 				jQuery('<button/>').
 					addClass('btn').
-					data('background', '/btn_sell.bmp').
-					data('hover',      '/btn_sell_a.bmp').
-					data('down',       '/btn_sell_b.bmp').
+					data('background', 'btn_sell.bmp').
+					data('hover',      'btn_sell_a.bmp').
+					data('down',       'btn_sell_b.bmp').
 					one('click',function(){
 						WinDeal.remove();
 						var _pkt = new PACKET.CZ.ACK_SELECT_DEALTYPE();
@@ -214,9 +214,9 @@ define(function( require )
 
 				jQuery('<button/>').
 					addClass('btn').
-					data('background', '/btn_cancel.bmp').
-					data('hover',      '/btn_cancel_a.bmp').
-					data('down',       '/btn_cancel_b.bmp').
+					data('background', 'btn_cancel.bmp').
+					data('hover',      'btn_cancel_a.bmp').
+					data('down',       'btn_cancel_b.bmp').
 					one('click',function(){
 						WinDeal.remove();
 					}).
