@@ -56,6 +56,12 @@ function(
 
 
 	/**
+	 * @var {boolean} is thread ready ? (fix)
+	 */
+	var _thread_ready = false;
+
+
+	/**
 	 * Initialize Game
 	 */
 	function Init()
@@ -64,9 +70,17 @@ function(
 
 		// Waiting for the Thread to be ready
 		q.add(function(){
-			Thread.hook("THREAD_ERROR", OnThreadError );
-			Thread.hook("THREAD_READY", q.next );
-			Thread.init();
+			if (!_thread_ready) {
+				Thread.hook("THREAD_ERROR", OnThreadError );
+				Thread.hook("THREAD_READY", function(){
+					_thread_ready = true;
+					q._next();
+				});
+				Thread.init();
+			}
+			else {
+				q._next();
+			}
 		});
 
 		// Initialize renderer
