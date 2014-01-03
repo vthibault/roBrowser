@@ -206,6 +206,20 @@ define(function(require)
 	{
 		var $window = jQuery(window);
 		var $intro  = this.ui.find('.intro');
+		var temporaryStorage  = navigator.temporaryStorage || navigator.webkitTemporaryStorage;
+		var requestFileSystem = self.requestFileSystem     || self.webkitRequestFileSystem;
+
+		if (temporaryStorage && requestFileSystem) {
+			temporaryStorage.queryUsageAndQuota(function(used, remaining){
+				if (used) {
+					requestFileSystem( window.TEMPORARY, used, function( fs ){
+						fs.root.getFile( 'upload.complete', { create:false }, function(){
+							Intro.ui.find('.msg').text( (used / 1024 / 1024 / 1024).toFixed(2) + ' Go saved' );
+						})
+					});
+				}
+			});
+		}
 
 		$window.on('resize.intro',function(){
 			$intro.css(
@@ -233,7 +247,7 @@ define(function(require)
 	{
 		jQuery(window).off('resize.intro');
 		Particle.stop();
-		this.ui.find('.overlay.loading').hide();
+		this.ui.find('.overlay').hide();
 	}
 
 
@@ -380,16 +394,78 @@ define(function(require)
 	 */
 	Intro.process = function Process( event )
 	{
-		jQuery(this).removeClass('over');
+		var i, count;
 
-		var files = this.files || ( event.originalEvent.dataTransfer && event.originalEvent.dataTransfer.files ) || [];
-
-		if( files.length ) {
-			Intro.files.push.apply( Intro.files, files );
-			Intro.ui.find('.msg').text( Intro.files.length + ' files selected' );
-		}
+		var _dir_count   = 0;
+		var _dir_loaded  = 0;
+		var _file_count  = 0;
+		var _file_loaded = 0;
+		var _files       = [];
 
 		event.stopImmediatePropagation();
+		jQuery(this).removeClass('over');
+
+
+		function Process(files) {
+			if( files.length ) {
+				Intro.files.push.apply( Intro.files, files );
+				Intro.ui.find('.msg').text( Intro.files.length + ' files selected' );
+			}
+		}
+
+
+		function RecursiveReader(entry){
+			if (entry.isFile) {
+				++_file_count;
+				entry.file(function(file){
+					file.fullPath = entry.fullPath.substr(1); // get rid of the "/"
+					_files.push(file);
+					if ((++_file_loaded) === _file_count && _dir_loaded === _dir_count) {
+						Process(_files);
+					}
+				});
+			}
+			else if (entry.isDirectory) {
+				++_dir_count;
+				entry.createReader().readEntries(function(entries){
+					for (var i = 0, count = entries.length; i < count; ++i) {
+						RecursiveReader(entries[i]);
+					}
+					if ((++_dir_loaded) === _dir_count && _file_loaded === _file_count) {
+						Process(_files);
+					}
+				});
+			}
+		}
+
+
+		// input[type="file"]
+		if ('files' in this) {
+			Process(this.files);
+			return false;
+		}
+
+
+		// drag drop
+		if (event.originalEvent.dataTransfer) {
+			var data = event.originalEvent.dataTransfer;
+
+			// Read directory content
+			if (data.items && data.items.length && data.items[0].webkitGetAsEntry) {
+				for (i = 0, count = data.items.length; i < count; ++i) {
+					RecursiveReader(data.items[0].webkitGetAsEntry());
+				}
+				return false;
+			}
+			// Read files directly
+			else if (data.files) {
+				Process(data.files);
+				return false;
+			}
+		}
+
+
+		Process(_files);
 		return false;
 	};
 

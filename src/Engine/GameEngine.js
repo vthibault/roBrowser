@@ -72,6 +72,7 @@ function(
 		q.add(function(){
 			if (!_thread_ready) {
 				Thread.hook("THREAD_ERROR", OnThreadError );
+				Thread.hook("THREAD_LOG",   OnThreadLog );
 				Thread.hook("THREAD_READY", function(){
 					_thread_ready = true;
 					q._next();
@@ -268,12 +269,22 @@ function(
 	/**
 	 * When getting an error from Thread
 	 *
-	 * @param {string} message
+	 * @param {Array} data
 	 */
-	function OnThreadError( message )
+	function OnThreadError( data )
 	{
-		console.warn( message );
-		// UI error ?
+		console.warn.apply( console, data );
+	}
+
+
+	/**
+	 * Received log from Thread
+	 *
+	 * @param {Array} data
+	 */
+	function OnThreadLog( data )
+	{
+		console.log.apply( console, data );
 	}
 
 

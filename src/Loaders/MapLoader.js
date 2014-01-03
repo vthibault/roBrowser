@@ -56,8 +56,10 @@ define( ['Core/FileManager'], function( FileManager )
 	{
 		var progress = Math.floor(percent);
 
-		if( progress !== this.progress ) {
-			postMessage({ type:'MAP_PROGRESS', data:progress });
+		if (progress !== this.progress) {
+			if (this.onprogress) {
+				this.onprogress(progress);
+			}
 			this.progress = progress;
 		}
 	};

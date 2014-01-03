@@ -16,29 +16,20 @@ function(        Executable,                  PACKETVER,       Thread,      Memo
 
 
 	/**
-	 * Client files
-	 * @var array files
-	 */
-	var _files = [];
-
-
-	/**
 	 * Initialize Client
 	 * Load interesting files (executable, data.ini, GRFs, ...)
 	 *
-	 * @param {File[]} files to load
+	 * @param {Array} FileList to load
 	 */
 	function Init( files )
 	{
-		var i, count = files.length;
+		var i, count;
+
 		window.ROConfig = window.ROConfig || {};
 
-		// Move to global
-		_files = files;
-
 		// Find executable and set the packetver
-		if( ROConfig.packetver && ROConfig.packetver.match(/^(executable|auto)$/i) ) {
-			for( i=0; i<count; ++i ) {
+		if (!ROConfig.packetver || ROConfig.packetver.match(/^(executable|auto)$/i)) {
+			for (i = 0, count = files.length; i < count; ++i) {
 				if( Executable.isROExec(files[i]) ) {
 					Executable.getDate(files[i], function(date){
 						// Avoid errors
@@ -53,157 +44,96 @@ function(        Executable,                  PACKETVER,       Thread,      Memo
 		}
 
 		// GRF Host config
-		if( ROConfig.remoteClient ) {
+		if (ROConfig.remoteClient) {
 			Thread.send( "SET_HOST", ROConfig.remoteClient );
 		}
 
-		// GRF List config
-		var data_ini = ROConfig.grfList || 'data.ini';
-		if( data_ini instanceof Array ) {
-			LoadGRFsFiles(data_ini);
-			return;
-		} 
-
-		// Find data.ini
-		for( i = 0; i < count; ++i ) {
-			if( files[i].name === data_ini ) {
-				var reader    = new FileReader();
-				reader.onload = ParseGRFListFile;
-				reader.readAsText(files[i]);
-				return;
-			}
-		}
-
-		// No data.ini ? Load from a regex
-		var regex;
-		var list = [];
-		var out  = [];
-
-		if ( ROConfig.grfList && ROConfig.grfList instanceof RegExp ) {
-			regex = ROConfig.grfList;
-		}
-		else {
-			regex = /\.grf$/i;
-		}
-
-		// Find GRFs files
-		for( i = 0; i < count; ++i ) {
-			if( files[i].name.match(regex) ) {
-				list.push( files[i] );
-			}
-		}
-
-		if( list.length ) {
-			// Guess list order based on size.
-			list.sort(function(a,b){
-				return a.size - b.size;
-			});
-			// Just get the names
-			for( i = 0, count = list.length; i < count; ++i ) {
-				out[i] = list[i].name;
-			}
-			LoadGRFsFiles(out);
-			return;
-		}
-
-		console.warn('%cClient::init() - No grf files found.', 'color:red');
-		Client.onFilesLoaded(0);
+		// Save full client
+		SavingFiles( files );
 	}
 
 
 	/**
-	 * Parse DATA.INI file and load the GRFs
+	 * Saving fullclient files in filesystem, display a progressbar during the upload
 	 *
-	 * @param event - File Event
+	 * @param {Array} FileList
 	 */
-	function ParseGRFListFile(event)
+	function SavingFiles( files )
 	{
-		var regex = /(\d+)=([^\s]+)/g;
-		var result, list = [];
+		var progressbar = document.createElement('div');
+		var info        = document.createElement('div');
+		var last_tick   = Date.now();
+		var list        = [];
 		var i, count;
 
-		// Get a list of GRF
-		while( result = regex.exec(event.target.result) ) {
-			list[ parseInt(result[1]) ] = result[2];
-		}
-	
-		// Remove empty slot from list
-		for( i=0, count = list.length; i<count; ) {
-			if( list[i] == undefined ) {
-				list.splice(i, 1);
-				count--;
-				continue;
-			}
-			i++;
-		}
-	
-		// Start loading GRFs
-		LoadGRFsFiles(list);
-	}
+		if (files.length) {
+			// Progressbar
+			progressbar.style.position        = "fixed";
+			progressbar.style.zIndex          = "2147483647";
+			progressbar.style.top             = "0px";
+			progressbar.style.left            = "0px";
+			progressbar.style.backgroundColor = "rgb(180,0,0)";
+			progressbar.style.transition      = "width 500ms linear";
+			progressbar.style.width           = "0px";
+			progressbar.style.height          = "3px";
+			progressbar.onmouseover = function(){ info.style.opacity = 1; };
+			progressbar.onmouseout  = function(){ info.style.opacity = 0; };
 
+			// Progress text on hover "Saving fullclient... (x%)"
+			info.textContent                   = "Saving fullclient... (0.00 %)"
+			info.style.position                = "absolute";
+			info.style.left                    = "20px";
+			info.style.top                     = "0px";
+			info.style.whiteSpace              = "nowrap";
+			info.style.zIndex                  = "2147483646";
+			info.style.height                  = "12px";
+			info.style.padding                 = "5px";
+			info.style.background              = "linear-gradient( rgb(180,0,0), rgb(136,0,0) 30%)";
+			info.style.color                   = "white";
+			info.style.textShadow              = "1px 1px black";
+			info.style.borderBottomLeftRadius  = "5px";
+			info.style.borderBottomRightRadius = "5px";
+			info.style.textAlign               = "center";
+			info.style.width                   = "160px";
+			info.style.transition              = "opacity 500ms ease-in-out";
+			info.style.opacity                 = "0";
 
-	/**
-	 * Load GRF Files
-	 *
-	 * @param {Array} grfs filenames
-	 */
-	function LoadGRFsFiles( grfs )
-	{
-		var _index = -1;
-		var _total = grfs.length;
-		var _count = _files.length;
-		var load   = 0;
-	
-		if( !grfs.length ) {
-			return;
-		}
+			document.body.appendChild(progressbar);
+			document.body.appendChild(info);
 
-		Thread.send("CLEAN_GRF", null);
-		console.info('Loading GRFs:', grfs);
-
-		// TODO: using Queue ?
-		// @param {boolean} success to load file
-		// @param {string} error - optional
-		function LoadNextGRF( success, error ) {
-			_index++;
-	
-			// GRF loaded ?
-			if( _index > 0 ) {
-				console.info( success ? 'Success to load GRF file "' + grfs[_index-1] + '"' : ( error || 'Error loading GRF file' ) );
-				load += success;
-			}
-
-			// Ending entry ?
-			if( _index >= _total ) {
-				Client.onFilesLoaded(load);
-				return;
-			}
-
-			// Find the GRF and load it
-			for( var i=0; i < _count; ++i ) {
-				if( _files[i].name === grfs[_index] ) {
-					LoadGRF( _files[i], LoadNextGRF );
-					return;
+			// Get progress on saving the client
+			Thread.hook( "CLIENT_SAVE_PROGRESS", function(data){
+				var now = Date.now();
+				if( last_tick + 400 < now ) {
+					progressbar.style.width = data.total.perc + '%';
+					info.textContent = "Saving fullclient... ("+ data.total.perc +" %)"
+					last_tick = now;
 				}
+			});
+
+			Thread.hook( "CLIENT_SAVE_COMPLETE", function(data){
+				if (progressbar.parentNode) {
+					document.body.removeChild(progressbar);
+				}
+				if (info.parentNode) {
+					document.body.removeChild(info);
+				}
+			});
+
+			// Seems like files property are reset when sent to another thread
+			for (i=0, count = files.length; i < count; ++i) {
+				list.push({
+					file: files[i],
+					path: files[i].fullPath || files[i].relativePath || files[i].webkitRelativePath || files[i].name
+				});
 			}
-	
-			LoadNextGRF( false, 'Fail to find GRF file "'+ grfs[_index] +'"');
 		}
-	
-		// Start the queue
-		LoadNextGRF( true, '');
-	}
 
-
-	/**
-	 * Load A GRF (Thread job)
-	 *
-	 * @param file
-	 * @param callback
-	 */
-	function LoadGRF(file, callback)
-	{
-		Thread.send("LOAD_GRF", file, callback );
+		// Initialize client files (load GRF, etc).
+		Thread.send( "CLIENT_INIT", {
+			files:   list,
+			grfList: ROConfig.grfList || 'DATA.INI'
+		}, Client.onFilesLoaded );
 	}
 
 
@@ -399,7 +329,6 @@ function(        Executable,                  PACKETVER,       Thread,      Memo
 	 */
 	var Client = {
 		init:          Init,
-		addGRF:        LoadGRF,
 		getFile:       getFile,
 		getFiles:      getFiles,
 		loadFile:      loadFile,

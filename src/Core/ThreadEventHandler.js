@@ -14,8 +14,8 @@ requirejs.config({
 	baseUrl: "../"
 });
 
-require(['Core/FileManager', 'Loaders/MapLoader'],
-function(      FileManager,           MapLoader )
+require(['Core/FileManager', 'Core/FileSystem', 'Loaders/MapLoader'],
+function(      FileManager,        FileSystem,           MapLoader )
 {
 	"use strict";
 
@@ -25,9 +25,20 @@ function(      FileManager,           MapLoader )
 	 *
 	 * @param {string} error
 	 */
-	function SendError( error )
+	function SendError()
 	{
-		postMessage({ type:"THREAD_ERROR", data: error });
+		postMessage({ type:"THREAD_ERROR", data: Array.prototype.slice.call(arguments,0) });
+	}
+
+
+	/**
+	 *	Send a message log to main thread
+	 *
+	 * @param {string} error
+	 */
+	function SendLog()
+	{
+		postMessage({ type:"THREAD_LOG", data: Array.prototype.slice.call(arguments,0) });
 	}
 
 
@@ -49,25 +60,41 @@ function(      FileManager,           MapLoader )
 				break;
 
 
-			// Clean GRFs files
-			case "CLEAN_GRF":
-				FileManager.clean();
-				break;
+			// Save full client and use it
+			case "CLIENT_INIT":
+				FileSystem.bind('onprogress', function(progress){
+					postMessage({ type:'CLIENT_SAVE_PROGRESS', data:progress });
+				});
 
+				// full client saved !
+				FileSystem.bind('onuploaded', function(){
+					postMessage({ type:'CLIENT_SAVE_COMPLETE' });
+				});
 
-			// Load GRF File
-			case "LOAD_GRF":
-				try {
-					FileManager.addGameFile( msg.data );
-					args[0] = true;
+				FileManager.onGameFileLoaded = function(filename){
+					SendLog('Success to load GRF file "' + filename + '"');
+				};
+
+				FileManager.onGameFileError = function(filename, error){
+					SendError('Error loading GRF file "' + filename + '" : ' + error);
+				};
+
+				// Start loading GRFs files
+				FileSystem.bind('onready', function(){
+					FileManager.clean();
+					FileManager.init( msg.data.grfList );
+
+					args[0] = FileManager.gameFiles.length;
 					args[1] = null;
-				}
-				catch( error ) {
-					args[0] = false;
-					args[1] = error.message;
+	
+					postMessage({
+						uid:       msg.uid,
+						arguments: args
+					});
+				});
 
-					SendError( error.message + " (" + msg.data + ")" );
-				}
+				// Saving full client
+				FileSystem.init( msg.data.files );
 				break;
 
 
@@ -81,7 +108,7 @@ function(      FileManager,           MapLoader )
 					args[0] = null;
 					args[1] = error.message;
 
-					SendError( error.message + " (" + msg.data.filename  + ")" );
+					SendError( '[Thread] ' + error.message + " (" + msg.data.filename  + ")" );
 				}
 				break;
 
@@ -96,7 +123,7 @@ function(      FileManager,           MapLoader )
 					args[0] = null;
 					args[1] = error.message;
 
-					SendError( error.message + " (" + msg.data.filename  + ")" );
+					SendError( '[Thread] ' + error.message + " (" + msg.data.filename  + ")" );
 				}
 
 				break;
@@ -112,6 +139,9 @@ function(      FileManager,           MapLoader )
 			case "LOAD_MAP":
 				try {
 					var map = new MapLoader();
+					map.onprogress = function(progress){
+						postMessage({ type:'MAP_PROGRESS', data:progress });
+					};
 					map.load( msg.data );
 					args[0] = true;
 				}
@@ -119,14 +149,13 @@ function(      FileManager,           MapLoader )
 					args[0] = false;
 					args[1] = error.message;
 
-					SendError( error.message + " (" + msg.data  + ")" );
+					SendError( '[Thread] ' + error.message + " (" + msg.data  + ")" );
 				}
 				break;
-				
 		}
 
 		// If there is an uid, get back the answer
-		if( msg.uid ) {
+		if( msg.uid && args.length ) {
 			args[2] = msg.data;
 
 			postMessage({

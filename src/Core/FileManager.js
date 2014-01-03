@@ -8,8 +8,8 @@
  * @author Vincent Thibault
  */
 
-define(  ['Loaders/GameFile', 'Loaders/Targa', 'Loaders/LuaByte', 'Loaders/World', 'Loaders/Ground', 'Loaders/Altitude', 'Loaders/Model', 'Loaders/Sprite', 'Loaders/Action'],
-function(          GameFile,           Targa,           LuaByte,           World,           Ground,           Altitude,           Model,           Sprite,           Action )
+define(  ['Loaders/GameFile', 'Loaders/Targa', 'Loaders/LuaByte', 'Loaders/World', 'Loaders/Ground', 'Loaders/Altitude', 'Loaders/Model', 'Loaders/Sprite', 'Loaders/Action', 'Core/FileSystem'],
+function(          GameFile,           Targa,           LuaByte,           World,           Ground,           Altitude,           Model,           Sprite,           Action,        FileSystem )
 {
 	"use strict";
 
@@ -22,29 +22,108 @@ function(          GameFile,           Targa,           LuaByte,           World
 
 	/**
 	 * Where is the remote client located ? 
-	 * @var string http
+	 * @var {string} http
 	 */
 	FileManager.remoteClient = "";
 
 
 	/**
 	 * List of Game Archives loads
-	 * @var GameFile[]
+	 * @var {array} GameFile[]
 	 */
 	FileManager.gameFiles = [];
 
 
 	/**
+	 * Initialize file manager with a list of files
+	 *
+	 * @param {mixed} grf list
+	 */
+	FileManager.init = function Init( grfList )
+	{
+		
+		var i, count;
+		var list = [];
+
+		// load GRFs from a file (DATA.INI)
+		if (typeof grfList === 'string') {
+			var files = FileSystem.search( grfList );
+
+			if (files.length) {
+				var content = (new FileReaderSync()).readAsText(files[0]);
+
+				var result;
+				var regex = /(\d+)=([^\s]+)/g;
+
+				// Get a list of GRF
+				while (result = regex.exec(content)) {
+					list[ parseInt(result[1]) ] = result[2];
+				}
+	
+				// Remove empty slot from list
+				for (i = 0, count = list.length; i < count; ) {
+					if (list[i] == undefined) {
+						list.splice(i, 1);
+						count--;
+						continue;
+					}
+					i++;
+				}
+
+				grfList = list;
+			}
+
+			else {
+				grfList = /\.grf$/i;
+			}
+		}
+
+		// Load grfs from a list defined by the user
+		if (grfList instanceof Array) {
+			list = grfList;
+			for (i = 0, count = list.length; i < count; ++i) {
+				list[i] = FileSystem.getFile( list[i] );
+			}
+
+			list.sort(function(a,b){
+				return a.size - b.size;
+			});
+		}
+
+		// Search GRF from a regex
+		if (grfList instanceof RegExp) {
+			list = FileSystem.search( grfList );
+		}
+
+		// Load Game files
+		for (i = 0, count = list.length; i < count; ++i) {
+			FileManager.addGameFile(list[i]);
+		}
+	};
+
+
+	/**
 	 * Add a game archive to the list
 	 *
-	 * @param file to load
+	 * @param {File} file to load
 	 */
 	FileManager.addGameFile = function AddGameFile( file )
 	{
-		var grf = new GameFile();
-		grf.load(file);
+		try {
+			var grf = new GameFile();
+			grf.load(file);
+	
+			this.gameFiles.push(grf);
 
-		this.gameFiles.push(grf);
+			if (this.onGameFileLoaded) {
+				this.onGameFileLoaded( file.name );
+			}
+		}
+		catch(e) {
+			if (this.onGameFileError) {
+				this.onGameFileError( file.name, e.message );
+			}
+		}
 	};
 
 
@@ -106,11 +185,18 @@ function(          GameFile,           Targa,           LuaByte,           World
 	FileManager.get = function Get( filename, noerror )
 	{
 		var i, count;
-		var path, buffer;
+		var path, buffer, file;
 		var fileList;
 
 		// GRF path is as window : dir\to\location.txt
 		filename = filename.replace(/^\s+|\s+$/g, '');
+
+		// Search in filesystem
+		file = FileSystem.getFile(filename);
+		if (file) {
+			return (new FileReaderSync()).readAsArrayBuffer(file);
+		}
+
 		path     = filename.replace( /\//g, '\\');
 		fileList = this.gameFiles;
 		count    = fileList.length;
