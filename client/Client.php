@@ -37,7 +37,26 @@ final class Client
 				$grfs[] = $grf_filename;
 			}
 
+			if (DEBUG) {
+				echo "Loading file : ". self::$path . self::$data_ini ."\n";
+				echo "GRFs to load if needed :\n";
+				print_r( $grfs );
+				echo "\n";
+			}
+
 			return;
+		}
+
+		if (DEBUG) {
+			if (empty(self::$data_ini)) {
+				echo "Empty Client::\$data_ini in index.php\n";
+			}
+			elseif (!file_exists(self::$path . self::$data_ini)) {
+				echo "File not found : ". self::$path . self::$data_ini ."\n";
+			}
+			elseif (!is_readable(self::$path . self::$data_ini)) {
+				echo "Can't read file : ". self::$path . self::$data_ini ."\n";
+			}
 		}
 	}
 
@@ -52,9 +71,15 @@ final class Client
 		$local_path .= str_replace('\\', '/', $path );
 		$grf_path    = str_replace('/', '\\', $path );
 
+		if (DEBUG) {
+			echo "\nSearching file : {$path}\n";
+		}
 
 		// Read data first
 		if ( file_exists($local_path) && !is_dir($local_path) && is_readable($local_path) ) {
+			if (DEBUG) {
+				echo "File found at : {$local_path}\n";
+			}
 
 			// Store file
 			if( self::$AutoExtract ) {
@@ -63,16 +88,26 @@ final class Client
 
 			return file_get_contents($local_path);
 		}
+		elseif (DEBUG) {
+			echo "No file found at : {$local_path}\n";
+		}
+
 
 		foreach( self::$grfs as $grf ) {
 
 			// Load GRF just if needed
 			if( !$grf->loaded ) {
+				if (DEBUG) {
+					echo "Loading GRF : {$grf->filename}\n";
+				}
 				$grf->load();
 			}
 
 			// If file is found
 			if( $grf->getFile($grf_path, $content) ) {
+				if (DEBUG) {
+					echo "File found in grf : {$grf->filename}\n";
+				}
 
 				// Store file
 				if( self::$AutoExtract ) {
@@ -80,6 +115,9 @@ final class Client
 				}
 
 				return $content;
+			}
+			elseif (DEBUG) {
+				echo "No file found in grf : {$grf->filename}\n";
 			}
 		}
 
@@ -109,7 +147,7 @@ final class Client
 		}
 
 		// storing bmp images as png
-		if( end( explode('.',$path) ) === "bmp" )  {
+		if( pathinfo($path, PATHINFO_EXTENSION) === "bmp" )  {
 			$img  = imagecreatefrombmpstring( $content );
 			$path = str_replace(".bmp", ".png", $local_path);
 			imagepng($img, $path );

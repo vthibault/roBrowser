@@ -1,8 +1,16 @@
 <?php
+	define('DEBUG', false);
+
+	if (DEBUG) {
+		ini_set('display_errors', 1);
+		error_reporting(E_ALL);
+		header('Content-type:text/plain');
+	}
+
 	ini_set('memory_limit', '1000M');
 
 	// Set header
-	header("Access-Control-Allow-Origin: *");
+	//header("Access-Control-Allow-Origin: *"); // Should already be set by .htaccess
 	header("Cache-Control: max-age=2592000, public");
 	header("Expires: Sat, 31 Jan 2015 05:00:00 GMT");
 
@@ -40,8 +48,13 @@
 	// Decode path
 	$path      = utf8_decode(urldecode($_SERVER['REQUEST_URI']));
 	$directory = basename(dirname(__FILE__));
-	$path = end(explode($directory . '/', $path, 2 ));
-	$args = explode('/', $path);
+	$args      = explode($directory . '/', $path, 2 );
+	$path      = end($args);
+	$args      = explode('/', $path);
+
+	if( empty($args[0]) ) {
+		array_shift($args);
+	}
 
 	// Allowed directory
 	if( !preg_match( "/^(data|BGM)$/", $args[0]) ) {
@@ -49,7 +62,7 @@
 	}
 
 	$path = implode($args, '\\');
-	$ext  = end( explode('.',$path) );
+	$ext  = pathinfo($path, PATHINFO_EXTENSION);
 
 
 	// Search the file
@@ -57,7 +70,7 @@
 
 
 	// File not found, end.
-	if ( $file === false ) {
+	if ( $file === false || DEBUG ) {
 		die();
 	}
 
