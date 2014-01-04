@@ -38,7 +38,7 @@ define(function(require)
 	 */
 	WinLogin.init = function Init()
 	{
-		this.preferences = Preferences.get('WinLogin', { saveID:true, ID:'' });
+		this.preferences = Preferences.get('WinLogin', { saveID:true, ID:'' }, 1.0);
 
 		var ui = this.ui;
 
@@ -159,7 +159,7 @@ define(function(require)
 			this.preferences.ID     = "";
 		}
 
-		Preferences.save( this.preferences );
+		this.preferences.save();
 
 		// Connect
 		this.onConnectionRequest( user, pass );
