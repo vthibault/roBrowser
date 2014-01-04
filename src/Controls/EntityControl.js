@@ -67,7 +67,7 @@ define( [
 
 			case Entity.TYPE_WARP:
 				Cursor.setType( Cursor.ACTION.WARP );
-				break;
+				return;
 
 			case Entity.TYPE_ITEM:
 				Cursor.setType( Cursor.ACTION.PICK, true, 0 );
