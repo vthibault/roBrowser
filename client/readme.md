@@ -18,6 +18,8 @@ Just put your fullclient files in this directory. If you want to put only the re
  - *data/* folder
  - *BGM/* folder
 
+**Note: to be sure to use a compatible version of your GRFs, download *GRF Builder* and repack them manually, it will ensure the GRFs files are converted in the proper version (*0x200*) and without the *DES encryption***
+
 -----------------
 
 ###Configure the remote client###
