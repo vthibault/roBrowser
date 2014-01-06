@@ -131,7 +131,8 @@ function(        Executable,                  PACKETVER,       Thread,      Memo
 		// Initialize client files (load GRF, etc).
 		Thread.send( "CLIENT_INIT", {
 			files:   list,
-			grfList: ROConfig.grfList || 'DATA.INI'
+			grfList: ROConfig.grfList || 'DATA.INI',
+			save:    !!ROConfig.saveFiles
 		}, Client.onFilesLoaded );
 	}
 
