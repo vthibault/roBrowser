@@ -46,8 +46,9 @@ define(function(require)
 		quality:      100,
 		serverfile:  'clientinfo.xml',
 		serverlist:  [],
-		serverdef:   'serverfile'
-	}, 1.0 );
+		serverdef:   'serverfile',
+		save:        true
+	}, 1.1 );
 
 
 	/**
@@ -286,9 +287,20 @@ define(function(require)
 		this.ui.find('.screensize').val( this.preferences.screensize );
 		this.ui.find('.quality').val( this.preferences.quality ).trigger('change');
 
-		this.ui.find('.serverdef').attr('checked', 'false' );
+		this.ui.find('.serverdef').attr('checked', false );
 		this.ui.find('.serverdef[value="'+ this.preferences.serverdef +'"]').attr('checked', 'true').trigger('click');
 		this.ui.find('.clientinfo').val( this.preferences.serverfile );
+
+		if( !self.requestFileSystem && !self.webkitRequestFileSystem ) {
+			this.ui.find('.save').attr('disabled', 'disabled');
+		}
+
+		else if( ROConfig.hasOwnProperty('saveFiles') && ROConfig.saveFiles === false) {
+			this.ui.find('.save').attr('disabled', 'disabled');
+		}
+		else {
+			this.ui.find('.save').attr('checked', this.preferences.saveFiles ? 'checked' : false );
+		}
 
 		var i, count;
 		var serverlist = this.preferences.serverlist;
@@ -318,6 +330,7 @@ define(function(require)
 	{
 		this.preferences.screensize = this.ui.find('.screensize').val();
 		this.preferences.quality    = this.ui.find('.quality').val();
+		this.preferences.saveFiles  = this.ui.find('.save:checked').length ? true : false;
 
 		var $servers = this.ui.find('.servers');
 		var i, count = $servers.find('tr').length;
@@ -381,6 +394,10 @@ define(function(require)
 			else {
 				ROConfig.servers = 'data/' + this.preferences.serverfile;
 			}
+		}
+
+		if( !ROConfig.hasOwnProperty('saveFiles') || ROConfig.saveFiles === true ) {
+			ROConfig.saveFiles = this.preferences.saveFiles;
 		}
 
 		ROConfig.quality = this.preferences.quality;
