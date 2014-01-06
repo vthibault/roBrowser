@@ -4,6 +4,8 @@
 	if (DEBUG) {
 		ini_set('display_errors', 1);
 		error_reporting(E_ALL);
+
+		header("HTTP/1.1 200 OK");
 		header('Content-type:text/plain');
 	}
 
@@ -41,6 +43,9 @@
 
 	// Nothing to do
 	if( empty($_SERVER['REDIRECT_STATUS']) || $_SERVER['REDIRECT_STATUS'] != 404 || empty($_SERVER['REQUEST_URI']) ) {
+		if (DEBUG) {
+			echo 'No file requested';
+		}
 		die();	
 	}
 
@@ -58,6 +63,9 @@
 
 	// Allowed directory
 	if( !preg_match( "/^(data|BGM)$/", $args[0]) ) {
+		if (DEBUG) {
+			echo 'Forbidden directory';
+		}
 		exit;
 	}
 
@@ -70,7 +78,14 @@
 
 
 	// File not found, end.
-	if ( $file === false || DEBUG ) {
+	if ($file === false) {
+		if (DEBUG) {
+			echo 'File not found';
+		}
+		die();
+	}
+
+	if (DEBUG) {
 		die();
 	}
 
