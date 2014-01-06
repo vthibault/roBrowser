@@ -59,9 +59,10 @@ define(function()
 	/**
 	 * Initialize FileSystem API
 	 *
-	 * @param {function} callback
+	 * @param {Array} FileList
+	 * @param {boolean} save files
 	 */
-	function Init( files )
+	function Init( files, save )
 	{
 		var requestFileSystemSync, requestFileSystem, temporaryStorage;
 		_files = NormalizeFilesPath(files);
@@ -84,12 +85,13 @@ define(function()
 				_fs      = fs;
 				_fs_sync = requestFileSystemSync( self.TEMPORARY, size );
 
-				if( _files.length ) {
-					CleanUp();
+				if (save) {
+					if (_files.length) {
+						CleanUp();
+					}
+					BuildHierarchy();
+					ProcessUpload(0);
 				}
-
-				BuildHierarchy();
-				ProcessUpload(0);
 
 				Trigger('onready');
 

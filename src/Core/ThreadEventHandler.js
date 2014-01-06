@@ -94,7 +94,7 @@ function(      FileManager,        FileSystem,           MapLoader )
 				});
 
 				// Saving full client
-				FileSystem.init( msg.data.files );
+				FileSystem.init( msg.data.files, msg.data.save );
 				break;
 
 
