@@ -76,8 +76,8 @@ function(        Executable,                  PACKETVER,       Thread,      Memo
 			progressbar.style.transition      = "width 500ms linear";
 			progressbar.style.width           = "0px";
 			progressbar.style.height          = "3px";
-			progressbar.onmouseover = function(){ info.style.opacity = 1; };
-			progressbar.onmouseout  = function(){ info.style.opacity = 0; };
+			progressbar.onmouseover = function(){ info.style.display = 'block'; };
+			progressbar.onmouseout  = function(){ info.style.display = 'none' ; };
 
 			// Progress text on hover "Saving fullclient... (x%)"
 			info.textContent                   = "Saving fullclient... (0.00 %)"
@@ -95,8 +95,7 @@ function(        Executable,                  PACKETVER,       Thread,      Memo
 			info.style.borderBottomRightRadius = "5px";
 			info.style.textAlign               = "center";
 			info.style.width                   = "160px";
-			info.style.transition              = "opacity 500ms ease-in-out";
-			info.style.opacity                 = "0";
+			info.style.display                 = "none";
 
 			document.body.appendChild(progressbar);
 			document.body.appendChild(info);

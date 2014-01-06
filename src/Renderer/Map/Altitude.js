@@ -175,7 +175,7 @@ function(       glMatrix,          PathFinding,            Mouse )
 	 */
 	function Intersect( modelView, projection, out )
 	{
-		var i;
+		var i, count = this.MAX_INTERSECT_COUNT;
 
 		// Extract camera position
 		mat4.invert( _matrix, modelView );
@@ -203,7 +203,7 @@ function(       glMatrix,          PathFinding,            Mouse )
 		vec3.normalize(_unit, _unit);
 
 		// Search
-		for( i=0; i < 100; ++i ) {
+		for( i=0; i < count; ++i ) {
 			_from[0] += _unit[0];
 			_from[1] += _unit[1];
 			_from[2] += _unit[2];
@@ -232,13 +232,14 @@ function(       glMatrix,          PathFinding,            Mouse )
 			SNIPABLE: 1 << 3
 		};
 
-		this.init               = Init;
-		this.width              = 0;
-		this.height             = 0;
+		this.init                = Init;
+		this.width               = 0;
+		this.height              = 0;
+		this.MAX_INTERSECT_COUNT = 100;
 
-		this.getCellType        = GetCellType;
-		this.getCellHeight      = GetCellHeight;
-		this.getCell            = GetCell;
-		this.intersect          = Intersect;
+		this.getCellType         = GetCellType;
+		this.getCellHeight       = GetCellHeight;
+		this.getCell             = GetCell;
+		this.intersect           = Intersect;
 	};
 });

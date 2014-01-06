@@ -70,6 +70,9 @@ function(
 	 */
 	MapViewer.init = function Init()
 	{
+		// Increase max intersection test (because of the max zoom)
+		Altitude.MAX_INTERSECT_COUNT = 500;
+
 		var q = new Queue();
 
 		// Resources sharing
