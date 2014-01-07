@@ -120,12 +120,14 @@ define( function( require )
 		return function CalculateBoundingRect( entity, matrix )
 		{
 			var z;
+			var xFactor = 1 / (7 * entity.xSize);
+			var yFactor = 1 / (7 * entity.ySize);
 
 			// No body ? Default picking (sprite 110 for example)
-			if( !isFinite(entity.boundingRect.x1)
-			 || !isFinite(entity.boundingRect.x2)
-			 || !isFinite(entity.boundingRect.y1)
-			 || !isFinite(entity.boundingRect.y2)
+			if( entity.boundingRect.x1 === Infinity
+			 || entity.boundingRect.x2 ===-Infinity
+			 || entity.boundingRect.y1 ===-Infinity
+			 || entity.boundingRect.y2 === Infinity
 			) {
 				entity.boundingRect.x1 = -25;
 				entity.boundingRect.x2 = +25;
@@ -133,8 +135,8 @@ define( function( require )
 				entity.boundingRect.y2 =   0;
 			}
 
-			size[0]   = Renderer.width  / 2;
-			size[1]   = Renderer.height / 2;
+			size[0]   = Renderer.width  * 0.5;
+			size[1]   = Renderer.height * 0.5;
 			vector[2] =  0.0;
 			vector[3] =  1.0;
 
@@ -147,8 +149,8 @@ define( function( require )
 
 
 			// Top left
-			vector[0] = entity.boundingRect.x1 / (7 * entity.xSize);
-			vector[1] = entity.boundingRect.y1 / (7 * entity.ySize);
+			vector[0] = entity.boundingRect.x1 * xFactor;
+			vector[1] = entity.boundingRect.y1 * yFactor;
 			vec4.transformMat4( out, vector, matrix );
 
 			z = out[3] === 0.0 ? 1.0 : ( 1.0 / out[3] );
@@ -157,8 +159,8 @@ define( function( require )
 
 
 			// Bottom right
-			vector[0] = entity.boundingRect.x2 / (7 * entity.xSize);
-			vector[1] = entity.boundingRect.y2 / (7 * entity.ySize);
+			vector[0] = entity.boundingRect.x2 * xFactor;
+			vector[1] = entity.boundingRect.y2 * yFactor;
 			vec4.transformMat4( out, vector, matrix );
 
 			z = out[3] === 0.0 ? 1.0 : ( 1.0 / out[3] );
@@ -167,19 +169,18 @@ define( function( require )
 
 
 			// Don't resize item
-			if( entity.objecttype === entity.constructor.TYPE_ITEM ) {
-				return;
-			}
+			if( entity.objecttype !== entity.constructor.TYPE_ITEM ) {
 
-			// Minimum picking size is 45x45 (official client feature)
-			if( entity.boundingRect.x2 - entity.boundingRect.x1 < 90 ) {
-				entity.boundingRect.x1 = (entity.boundingRect.x1 + entity.boundingRect.x2 ) / 2 - 45;
-				entity.boundingRect.x2 = (entity.boundingRect.x1 + entity.boundingRect.x2 ) / 2 + 45;
-			}
+				// Minimum picking size is 45x45 (official client feature)
+				if( entity.boundingRect.x2 - entity.boundingRect.x1 < 90 ) {
+					entity.boundingRect.x1 = (entity.boundingRect.x1 + entity.boundingRect.x2) * 0.5 - 45;
+					entity.boundingRect.x2 = (entity.boundingRect.x1 + entity.boundingRect.x2) * 0.5 + 45;
+				}
 
-			if( entity.boundingRect.y2 - entity.boundingRect.y1 < 90 ) {
-				entity.boundingRect.y1 = (entity.boundingRect.y1 + entity.boundingRect.y2 ) / 2 - 45;
-				entity.boundingRect.y2 = (entity.boundingRect.y1 + entity.boundingRect.y2 ) / 2 + 45;
+				if( entity.boundingRect.y2 - entity.boundingRect.y1 < 90 ) {
+					entity.boundingRect.y1 = (entity.boundingRect.y1 + entity.boundingRect.y2) * 0.5 - 45;
+					entity.boundingRect.y2 = (entity.boundingRect.y1 + entity.boundingRect.y2) * 0.5 + 45;
+				}
 			}
 		}
 	}();
