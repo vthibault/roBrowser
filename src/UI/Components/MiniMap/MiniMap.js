@@ -85,7 +85,7 @@ define(function(require)
 		this.updateZoom( this.preferences.zoom );
 		this.toggleOpacity( this.preferences.opacity );
 
-		Client.loadFile('/map/map_arrow.bmp', function(dataURI){
+		Client.loadFile( DB.INTERFACE_PATH + 'map/map_arrow.bmp', function(dataURI){
 			MiniMap.arrow.src = dataURI;
 		});
 

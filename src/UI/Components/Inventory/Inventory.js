@@ -286,7 +286,7 @@ define(function(require)
 		}
 
 		this.tab = this.preferences.tab;
-		Client.loadFile("basic_interface/tab_itm_0"+ (this.tab+1) +".bmp", function(data){
+		Client.loadFile( DB.INTERFACE_PATH + "basic_interface/tab_itm_0"+ (this.tab+1) +".bmp", function(data){
 			Inventory.ui.find('.tabs').css('backgroundImage', 'url("' + data + '")');
 		});
 

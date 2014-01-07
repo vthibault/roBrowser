@@ -1,4 +1,17 @@
 <?php
+	// To set the header as 200 OK
+	function set_http_ok()
+	{
+		if (function_exists('http_response_code')) {
+			http_response_code(200);
+			return;
+		}
+	
+		$protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');
+		header("Status: 200 OK"); // fast cgi
+		header($protocol . ' 200 OK');
+	}
+
 	define('DEBUG', false);
 
 	if (DEBUG) {
@@ -10,11 +23,6 @@
 	}
 
 	ini_set('memory_limit', '1000M');
-
-	// Set header
-	//header("Access-Control-Allow-Origin: *"); // Should already be set by .htaccess
-	header("Cache-Control: max-age=2592000, public");
-	header("Expires: Sat, 31 Jan 2015 05:00:00 GMT");
 
 
 	// Include library
@@ -31,7 +39,7 @@
 
 	// Search Feature
 	if ( isset($_POST['filter']) && is_string($_POST['filter']) ) {
-		header("HTTP/1.1 200 OK");
+		set_http_ok();
 		header('Content-type: text/plain');
 		$filter = ini_get('magic_quotes_gpc') ? stripslashes($_POST['filter']) : $_POST['filter'];
 		$filter = '/'. $filter. '/i';
@@ -89,7 +97,10 @@
 		die();
 	}
 
-	header("HTTP/1.1 200 OK");
+	set_http_ok();
+	header("Cache-Control: max-age=2592000, public");
+	header("Expires: Sat, 31 Jan 2015 05:00:00 GMT");
+
 	switch( strtolower($ext) ) {
 		case 'jpg':
 		case 'jpeg': header('Content-type:image/jpeg'); break;
@@ -98,6 +109,7 @@
 		case 'xml':  header('Content-type:text/xml');   ob_start("ob_gzhandler"); break;
 		case 'txt':  header('Content-type:text/plain'); ob_start("ob_gzhandler"); break;
 		case 'mp3':  header('Content-type:audio/mp3');  break;
+		default:     header('Content-type:application/octet-stream'); break;
 	}
 
 	echo $file;
