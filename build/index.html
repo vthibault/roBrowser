@@ -74,7 +74,11 @@
 				].join("\n") + "\n\n" +  text;
 
 				file.textContent = ' Save this content as "build/' + appName.replace(/^[^\/]+\//,'') + '.js"';
-			}
+			},
+			optimize: "uglify",
+			uglify: {
+				ascii_only: true
+			},
 		}, function (buildText) {
 			trace.value = buildText;
 		}, function (error){

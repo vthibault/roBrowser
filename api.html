@@ -36,7 +36,6 @@
 							var app     = document.createElement('script');
 							app.type    = 'text/javascript';
 							app.src     = 'build/' + event.data.application + '.js';
-							app.charset = 'UTF-8';
 							document.getElementsByTagName('head')[0].appendChild(app);
 							event.source.postMessage('ready', '*' );
 						}, 4);
