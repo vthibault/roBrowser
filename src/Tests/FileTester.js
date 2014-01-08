@@ -17,7 +17,8 @@ define(function( require )
 
 	// Always in development mode when running test (easier to debug)
 	window.ROConfig = {
-		development: true
+		development: true,
+		saveFiles:   false
 	};
 
 

@@ -189,7 +189,7 @@ function(        Executable,                  PACKETVER,       Thread,      Memo
 		index  = 0;
 	
 		for ( i=0; i<count; ++i ) {
-			getFile( filenames[i], onload, onload, [] );
+			getFile( filenames[i], onload);
 		}
 	}
 

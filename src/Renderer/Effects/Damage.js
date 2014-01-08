@@ -67,7 +67,10 @@ function(
 			return;
 		}
 
-		Client.getFiles( ['sprite/ÀÌÆÑÆ®/¼ýÀÚ.spr', 'sprite/ÀÌÆÑÆ®/msg.spr'], function( damage, miss ) {
+		Client.getFiles(
+			['data/sprite/\xc0\xcc\xc6\xd1\xc6\xae/\xbc\xfd\xc0\xda.spr',
+			'data/sprite/\xc0\xcc\xc6\xd1\xc6\xae/msg.spr'],
+		function( damage, miss ) {
 			var sprite = new Sprite(damage);
 
 			// Create SpriteSheet
