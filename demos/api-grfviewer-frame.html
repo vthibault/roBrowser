@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>ROBrowser's App from http://www.robrowser.com</title>
+		<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+		<script type="text/javascript" src="../api.js"></script>
+		<script type="text/javascript">
+			function initialize() {
+				var ROConfig = {
+					target:        document.getElementById("robrowser"),
+					type:          ROBrowser.TYPE.FRAME,
+					application:   ROBrowser.APP.GRFVIEWER,
+					remoteClient:  "http://grf.robrowser.com/",
+					width:          800,
+					height:         600,
+					development:    true
+				};
+				var RO = new ROBrowser(ROConfig);
+				RO.start();
+			}
+			window.addEventListener("load", initialize, false);
+		</script>
+	</head>
+	<body>
+		<h1>Game File Viewer</h1>
+		<div id="robrowser">Initializing roBrowser...</div>
+	</body>
+</html>
