@@ -16,16 +16,15 @@ define(function()
 	/**
 	 * HTML5 WebSocket System
 	 *
-	 * @param string host
-	 * @param integer port
+	 * @param {string} url
 	 */
-	function Socket( host, port )
+	function Socket( url )
 	{
 		var self           = this;
 		this.connected     = false;
 
 		// Open Websocket
-		this.ws            = new WebSocket('ws://'+ host +':' + port + '/');
+		this.ws            = new WebSocket(url);
 		this.ws.binaryType = 'arraybuffer';
 
 		this.ws.onopen = function OnOpen()
@@ -60,7 +59,7 @@ define(function()
 	/**
 	 * Sending packet to applet
 	 *
-	 * @param ArrayBuffer buffer
+	 * @param {ArrayBuffer} buffer
 	 */
 	Socket.prototype.send = function Send( buffer )
 	{

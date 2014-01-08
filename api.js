@@ -149,6 +149,12 @@
 
 
 	/**
+	 * @var {string} proxy server ex: "ws://pserver.com:5200/"
+	 */
+	ROBrowser.prototype.socketProxy = null;
+
+	
+	/**
 	 * @var {string} roBrowser api window path
 	 */
 	ROBrowser.prototype.baseUrl = (function(){
@@ -270,7 +276,8 @@
 			remoteClient: this.remoteClient,
 			packetver:    this.packetver,
 			development:  this.development,
-			api:          this.api
+			api:          this.api,
+			socketProxy:  this.socketProxy
 		}, '*');
 	}
 

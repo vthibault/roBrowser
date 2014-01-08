@@ -18,31 +18,38 @@ define( ['./WebSocket', 'Utils/BinaryWriter'], function( WebSocket, BinaryWriter
 	 *
 	 * @param {string} host - server host
 	 * @param {number} port - server port
-	 * @param {string} proxy url ex: http://127.0.0.1:6001/
+	 * @param {string} proxy url ex: ws://127.0.0.1:6001/
 	 */
 	function Socket( host, port, proxy )
 	{
-		var fragments  = proxy.match(/(\/\/)?([^:]+):(\d+)$/);
-		var _connected = false;
+		var self = this;
 
-		WebSocket.call( this, fragments[2], fragments[3] );
+		if (!proxy.match(/\/$/)) {
+			proxy += '/';
+		}
 
-		// Hook to send game server to proxy
-		this.__defineSetter( 'connected', function( value ) {
+		proxy += host + ':' + port;
 
-			if( value ) {
-				var data = host + ":" + port;
-				var fp   = new BinaryWriter( data.length );
-				fp.writeString(data);
-				this.send( fp.buffer );
-			}
+		// send as ws://127.0.0.1:6001/127.0.0.1:6900
+		WebSocket.call( this, proxy );
 
-			_connected = value;
-		});
+		// Erase to avoid sending onComplete data
+		this.ws.onopen = function OnOpen(){
+			// nothing here
+		};
 
-		this.__defineGetter( 'connected', function() {
-			return _connected;
-		});
+		// Hook on message (wait for initialization).
+		this.ws.onmessage = function OnMessage( event )
+		{
+			// Normal behavior
+			this.onmessage = function OnMessage( event )
+			{
+				self.onMessage( event.data );
+			};
+
+			self.connected = (event.data === 'true');
+			self.onComplete( self.connected ); // success/fail
+		};
 	}
 
 

@@ -17,6 +17,7 @@
 					ROConfig.packetver    = event.data.packetver    || 'auto';
 					ROConfig.development  = event.data.development  || false;
 					ROConfig.API          = event.data.api          || false;
+					ROConfig.socketProxy  = event.data.socketProxy  || null;
 
 					var script  = document.createElement('script');
 					script.src  = 'src/Vendors/require.js';

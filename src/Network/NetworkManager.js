@@ -9,8 +9,8 @@
  * @author Vincent Thibault
  */
 
-define([ 'require', 'Core/Context', 'Utils/BinaryReader',   './PacketVerManager', './PacketVersions', './PacketRegister', './PacketGuess', './SocketHelpers/ChromeSocket', './SocketHelpers/JavaSocket'],
-function( require,        Context,         BinaryReader,       PACKETVER,            PacketVersions,     PacketRegister,     PacketGuess,                   ChromeSocket,                   JavaSocket)
+define([ 'require', 'Core/Context', 'Utils/BinaryReader',   './PacketVerManager', './PacketVersions', './PacketRegister', './PacketGuess', './SocketHelpers/ChromeSocket', './SocketHelpers/JavaSocket', './SocketHelpers/WebSocketProxy'],
+function( require,        Context,         BinaryReader,       PACKETVER,            PacketVersions,     PacketRegister,     PacketGuess,                   ChromeSocket,                   JavaSocket,                   WebSocketProxy)
 {
 	"use strict";
 
@@ -19,6 +19,11 @@ function( require,        Context,         BinaryReader,       PACKETVER,       
 	// Native socket
 	if( Context.Is.APP ) {
 		Socket = ChromeSocket;
+	}
+
+	// Web Socket with proxy
+	else if( ROConfig.socketProxy ) {
+		Socket = WebSocketProxy;
 	}
 
 	// Java socket...
@@ -90,8 +95,9 @@ function( require,        Context,         BinaryReader,       PACKETVER,       
 	function Connect( host, port, callback )
 	{
 		var socket;
+		var proxy = ROConfig.socketProxy || null;
 
-		socket            = new Socket(host, port);
+		socket            = new Socket(host, port, proxy);
 		socket.onClose    = OnClose;
 		socket.onComplete = function OnComplete(success)
 		{
