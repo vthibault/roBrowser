@@ -27,8 +27,8 @@ require({
 		jquery: "Vendors/jquery-1.9.1"
 	}
 },
-   ['Core/Thread', 'Core/Context', 'UI/Components/ModelViewer/ModelViewer'],
-function( Thread,        Context,                 ModelViewer ) {
+   ['Core/Thread', 'Core/Context', 'Core/Client', 'UI/Components/ModelViewer/ModelViewer'],
+function( Thread,        Context,        Client,                             ModelViewer ) {
 
 	// Resources sharing
 	if( ROConfig.API ) {
@@ -46,9 +46,10 @@ function( Thread,        Context,                 ModelViewer ) {
 
 	// Wait for thread to be ready and run the modelviewer
 	Thread.hook("THREAD_READY", function(){
-		Thread.send( "SET_HOST", ROConfig.remoteClient );
-
-		ModelViewer.append();
+		Client.onFilesLoaded = function(){
+			ModelViewer.append();
+		};
+		Client.init([]);
 	});
 	Thread.init();
 
