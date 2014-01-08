@@ -129,8 +129,8 @@ define(function(require)
 			default:                                           return;
 			case KEYS.ENTER:  this.selectIndex();              break;
 			case KEYS.ESCAPE: this.exit();                     break;
-			case KEYS.UP:     this.setIndex( this.index + 1 ); break;
-			case KEYS.DOWN:   this.setIndex( this.index - 1 ); break;
+			case KEYS.UP:     this.setIndex( this.index - 1 ); break;
+			case KEYS.DOWN:   this.setIndex( this.index + 1 ); break;
 		}
 		event.stopImmediatePropagation();
 	};
