@@ -1994,6 +1994,23 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 
 
+	// 0x19c
+	PACKET.CZ.LOCALBROADCAST = function PACKET_CZ_LOCALBROADCAST() {
+		this.msg          = '';
+
+		this.build = function() {
+			var pkt_len = 2 + 2 + this.msg.length + 1;
+			var pkt_buf = new BinaryWriter(pkt_len);
+
+			pkt_buf.writeShort(0x19c);
+			pkt_buf.writeShort(pkt_len);
+			pkt_buf.writeString(this.msg);
+			return pkt_buf.buffer;
+		};
+	};
+
+
+
 	// 0x19d
 	PACKET.CZ.CHANGE_EFFECTSTATE = function PACKET_CZ_CHANGE_EFFECTSTATE() {
 		this.EffectState = 0;
@@ -3835,12 +3852,12 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 		this.characterName = '';
 
 		this.build = function() {
-			var pkt_len = 2 + 24;
-			var pkt_buf = new BinaryWriter(pkt_len);
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
 
-			pkt_buf.writeShort(0x2c4);
-			pkt_buf.writeString(this.characterName, 24);
-			return pkt_buf.buffer;
+			pkt.writeShort( ver[1] );
+			pkt.writeString(this.characterName, 24);
+			return pkt.buffer;
 		};
 	};
 
@@ -4890,6 +4907,19 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 		};
 	};
 
+
+	// 0x843
+	PACKET.CZ.REMOVE_AID_SSO = function PACKET_CZ_REMOVE_AID_SSO() {
+		this.AID = '';
+
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+
+			pkt.writeShort( ver[1] );
+			pkt.view.setUint32( ver[3], this.AID,    true );
+		};
+	};
 
 
 	// 0x970
