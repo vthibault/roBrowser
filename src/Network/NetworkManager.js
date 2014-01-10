@@ -329,6 +329,8 @@ function( require,        Context,         BinaryReader,       PACKETVER,       
 			if( _socket.ping ) {
 				clearInterval(_socket.ping);
 			}
+
+			require('UI/UIManager').showErrorBox('Disconnected from Server.');
 		}
 
 		if( idx !== -1 ) {
