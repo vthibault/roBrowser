@@ -358,8 +358,11 @@ function(          GameFile,           Targa,           LuaByte,           World
 				case 'lub':
 					callback(new LuaByte(buffer).reverse());
 					return;
-			}
 
+				default:
+					callback(buffer);
+					return;
+			}
 		});
 	};
 
