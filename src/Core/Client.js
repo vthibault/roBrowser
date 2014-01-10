@@ -212,7 +212,7 @@ function(        Executable,                  PACKETVER,       Thread,      Memo
 			var gl, frames, texture, palette;
 			var precision, size;
 
-			if( !error ) {
+			if( data && !error) {
 				switch( input.filename.substr(-3) ){
 					// Remove magenta on textures
 					case 'bmp':

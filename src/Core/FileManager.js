@@ -222,40 +222,38 @@ function(          GameFile,           Targa,           LuaByte,           World
 	 */
 	FileManager.getHTTP = function GetHTTP( filename, callback )
 	{
-		var xhr;
-
 		// Use http request here (ajax)
-		if( this.remoteClient ) {
-
-			filename = filename.replace( /\\/g, '/');
-
-			// Don't load mp3 sounds to avoid blocking the queue
-			// They can be load by the HTML5 Audio / Flash directly.
-			if( filename.match(/\.(mp3|wav)$/) ) {
-				callback(this.remoteClient + filename);
-				return;
-			}
-
-			xhr = new XMLHttpRequest();
-			xhr.open('GET', this.remoteClient + filename, true);
-			xhr.responseType = "arraybuffer";
-			xhr.onload = function(){
-				callback( xhr.response );
-			};
-			xhr.onerror = function(){
-				callback( null, "Can't get file " + filename );
-			};
-
-			// Can throw an error if not connected to internet
-			try {
-				xhr.send(null);
-			}
-			catch(e) {
-				callback( null, "Can't get file " + filename );
-			}
+		if (!this.remoteClient) {
+			callback(null);
+			return;
 		}
 
-		return null;
+		filename = filename.replace( /\\/g, '/');
+
+		// Don't load mp3 sounds to avoid blocking the queue
+		// They can be load by the HTML5 Audio / Flash directly.
+		if (filename.match(/\.(mp3|wav)$/)) {
+			callback(this.remoteClient + filename);
+			return;
+		}
+
+		var xhr = new XMLHttpRequest();
+		xhr.open('GET', this.remoteClient + filename, true);
+		xhr.responseType = "arraybuffer";
+		xhr.onload = function(){
+			callback( xhr.response );
+		};
+		xhr.onerror = function(){
+			callback( null, "Can't get file " + filename );
+		};
+
+		// Can throw an error if not connected to internet
+		try {
+			xhr.send(null);
+		}
+		catch(e) {
+			callback( null, "Can't get file " + filename );
+		}
 	};
 
 
