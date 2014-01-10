@@ -194,7 +194,7 @@ define( ['Core/FileManager'], function( FileManager )
 				}
 
 				// Loading Gound and Water textures
-				this.loadGroundTextures( world, ground, function( waters, textures){
+				this.loadGroundTextures( world, CompiledGround, function( waters, textures){
 					world.water.images      = waters;
 					CompiledGround.textures = textures;
 

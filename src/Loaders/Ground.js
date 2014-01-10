@@ -547,7 +547,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 		return {
 			width:           this.width,
 			height:          this.height,
-			textures:        new Array(this.textures.length),
+			textures:        this.textures,
 
 			lightmap:        lightmap,
 			lightmapSize:    this.lightmap.length,
