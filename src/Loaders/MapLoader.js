@@ -14,6 +14,81 @@ define( ['Core/FileManager'], function( FileManager )
 
 
 	/**
+	 * Helper to load list
+	 *
+	 * @param {array} file list to load
+	 */
+	function Loader( list )
+	{
+		this.files = list;
+		this.list  = list.slice(0);
+		this.offset = 0;
+		this.count = list.length;
+		this.out   = new Array(this.count);
+	}
+
+
+	/**
+	 * @var {number} How many files do you want to load at the same time ?
+	 */
+	Loader.prototype.parallelDownload = 6;
+
+
+	/**
+	 * Start to load the list
+	 */
+	Loader.prototype.start = function Start()
+	{
+		var i, count;
+		this.offset = 0;
+
+		// No files...
+		if (!this.list.length) {
+			this.onload( this.list, this.list );
+			return;
+		}
+
+		for (i = 0; i < this.count && i < this.parallelDownload; ++i) {
+			this._next();
+		}
+	};
+
+
+	/**
+	 * Next file to load
+	 *
+	 * @param {number} index in list
+	 */
+	Loader.prototype._next = function Next(i)
+	{
+		var filename = this.list.shift();
+		FileManager.load( filename, function(data) {
+
+			// Store the result
+			this.out[ this.files.indexOf(filename) ] = data;
+			this.offset++;
+
+			// Start the progress
+			if (this.onprogress) {
+				this.onprogress( this.offset, this.count );
+			}
+
+			// Ended ?
+			if (this.offset === this.count) {
+				this.onload( this.out, this.files );
+				return;
+			}
+
+			// Continue the queue
+			if (this.list.length) {
+				this._next();
+			}
+		}.bind(this));
+	};
+
+
+
+	/**
 	 * MapLoader constructor
 	 *
 	 * @param {string} mapname
@@ -77,39 +152,61 @@ define( ['Core/FileManager'], function( FileManager )
 
 
 		// Loading 3 main files
-		this.world    = FileManager.load('data/' + mapname);
-		this.setProgress( 1 );
+		FileManager.load('data\\' + mapname, function(world){
+			if (!world) {
+				this.onload(false, "Can't find file " + mapname + " ! ");
+				return;
+			}
 
-		this.ground   = FileManager.load('data/' + this.world.files.gnd);
-		this.setProgress( 2 );
+			this.setProgress( 1 );
 
-		this.altitude = FileManager.load('data/' + this.world.files.gat);
-		this.setProgress( 3 );
+			// Load Altitude
+			FileManager.load('data\\' + world.files.gat, function(altitude) {
+				if (!altitude) {
+					this.onload(false, "Can't find file " + world.files.gat + " !");
+					return;
+				}
 
-		// Compiling ground
-		var CompiledGround = this.ground.compile( this.world.water.level, this.world.water.waveHeight );
+				this.setProgress( 2 );
+				this.ondata('MAP_ALTITUDE', altitude.compile());
+			}.bind(this));
 
-		// Just to approximate, guess we have 2 textures for each models
-		// To get a more linear loading
-		this.fileCount = this.ground.textures.length + this.world.models.length * 3;
 
-		// Add water to the list
-		if( CompiledGround.waterVertCount ) {
-			this.fileCount += 32;
-		}
+			// Load ground
+			FileManager.load('data\\' + world.files.gnd, function(ground) {
+				if (!ground) {
+					this.onload(false, "Can't find file " + world.files.gnd + " !");
+					return;
+				}
 
-		// Loading Gound and Water textures
-		this.loadGroundTextures( CompiledGround );
+				this.setProgress( 3 );
 
-		// Sending data to main Thread
-		postMessage({ type:'MAP_WORLD', data:   this.world.compile() });
-		postMessage({ type:'MAP_GROUND', data:  CompiledGround });
-		postMessage({ type:'MAP_ALTITUDE', data: this.altitude.compile() });
+				// Compiling ground
+				var CompiledGround = ground.compile( world.water.level, world.water.waveHeight );
 
-		// Loading models
-		this.models = this.loadModels();
-		postMessage({ type:'MAP_MODELS', data: this.models });
+				// Just to approximate, guess we have 2 textures for each models
+				// To get a more linear loading
+				this.fileCount = ground.textures.length + world.models.length * 3;
 
+				// Add water to the list
+				if (CompiledGround.waterVertCount) {
+					this.fileCount += 32;
+				}
+
+				// Loading Gound and Water textures
+				this.loadGroundTextures( world, ground, function( waters, textures){
+					world.water.images      = waters;
+					CompiledGround.textures = textures;
+
+					this.ondata('MAP_WORLD',  world.compile());
+					this.ondata('MAP_GROUND', CompiledGround );
+
+					// Start loading models
+					this.loadModels(world.models, ground);
+				}.bind(this));
+
+			}.bind(this));
+		}.bind(this));
 	};
 
 
@@ -117,118 +214,142 @@ define( ['Core/FileManager'], function( FileManager )
 	 * Loading Ground and Water textures
 	 *
 	 * @param {object} CompiledGround
+	 * @param {function} callback
 	 */
-	MapLoader.prototype.loadGroundTextures = function LoadGroundTextures( CompiledGround )
+	MapLoader.prototype.loadGroundTextures = function LoadGroundTextures( world, ground, callback )
 	{
-		var i = 0, j = 0, count;
-		var path;
+		var i, count;
+		var textures = [];
 
-		// Load water
-		if( CompiledGround.waterVertCount ) {
-			path = "data/texture/\xbf\xf6\xc5\xcd/water" + this.world.water.type;
-
-			for(; i<32; ++i ) {
-				this.world.water.images[i] = FileManager.load( path + ( i<10 ? "0"+i : i) + ".jpg", true );
-				this.setProgress( 3 + 97 / this.fileCount * (i+1) );
+		// Get water textures
+		if (ground.waterVertCount) {
+			var path = "data\\texture\\\xbf\xf6\xc5\xcd/water" + world.water.type;
+			for (i = 0; i < 32; ++i) {
+				textures.push(path + ( i<10 ? "0"+i : i) + ".jpg");
 			}
 		}
 
 		// Load ground textures
-		for( count = this.ground.textures.length; j<count; ++j ) {
-			CompiledGround.textures[j] = FileManager.load("data/texture/" + this.ground.textures[j], true );
-			this.setProgress( 3 + 97 / this.fileCount * (i+j+1) );
+		for (i = 0, count = ground.textures.length; i < count; ++i ) {
+			textures.push("data\\texture\\" + ground.textures[i]);
 		}
 
-		this.offset = i + j;
+		// Start loading
+		var loader = new Loader(textures);
+
+		// On progress
+		loader.onprogress = function OnProgress() {
+			this.setProgress( 3 + 97 / this.fileCount * (++this.offset) );
+		}.bind(this);
+
+		// Once load
+		loader.onload = function( textures ) {
+			callback( textures.splice(0, ground.waterVertCount ? 32 : 0), textures );
+		}.bind(this);
+
+		// Start the queue
+		loader.start();
 	};
 
 
 	/**
 	 * Loading World Models
 	 *
+	 * @param {Array} model list
+	 * @param {Ground}
 	 * @returns {object} compiled mesh
 	 */
-	MapLoader.prototype.loadModels = function LoadModels()
+	MapLoader.prototype.loadModels = function LoadModels( models, ground )
 	{
 		var i, count;
-		var models;
-		var Memory = {};
-		var filename;
+		var files = [];
 
-		models = this.world.models;
-		count  = models.length;
+		// Get a list of files to load
+		for (i = 0, count = models.length; i < count; ++i) {
+			models[i].filename = 'data\\model\\' + models[i].filename;
 
-		// Load each models
-		for( i=0; i<count; ++i ) {
-			filename = models[i].filename;
-
-			// Don't load the same file twice
-			if( !Memory[filename] ) {
-				Memory[filename] = FileManager.load('data/model/' + filename, true);
+			if (files.indexOf(models[i].filename) < 0) {
+				files.push(models[i].filename);
 			}
-
-			// Create a new instance with specify informations
-			// (position, rotation, scale, ...)
-			Memory[filename].createInstance(
-				models[i],
-				this.ground.width,
-				this.ground.height
-			);
-
-			this.setProgress( 3 + 97 / this.fileCount * (++this.offset) );
 		}
 
-		return this.compileModels( Memory );
+		var loader = new Loader(files);
+
+		// Update the progressbar
+		loader.onprogress = function(){
+			this.setProgress( 3 + 97 / this.fileCount * (++this.offset) );
+		}.bind(this);
+
+		// Start creating instances
+		loader.onload = function(objects, filenames){
+			var i, count, pos;
+
+			for (i = 0, count = models.length; i < count; ++i) {
+				pos = filenames.indexOf(models[i].filename);
+
+				// Fail to load model
+				if (!objects[pos] ) {
+					objects.splice(pos, 1);
+					filenames.splice(pos, 1);
+					continue;
+				}
+
+				objects[pos].filename = filenames[pos];
+				objects[pos].createInstance(
+					models[i],
+					ground.width,
+					ground.height
+				);
+			}
+
+			this.compileModels(objects);
+		}.bind(this);
+
+		// Start loading models
+		loader.start();
 	};
 
 
 	/**
-	 * Compile models to get mesh
+	 * Extract model meshes
 	 *
-	 * @param {object} Models list
+	 * @param {Array} objects list
 	 */
-	MapLoader.prototype.compileModels = function CompileModels( Models )
+	MapLoader.prototype.compileModels = function CompileModels( objects )
 	{
-		var progress = +this.progress;
-		var i, count, j, size, k, len, total;
-		var keys, filename, index, model, objects, meshes;
+		var i, j, count, size, bufferSize;
+		var object, nodes, meshes;
+		var index;
+		var progress = this.progress;
+		var models = [];
 
-		total   = 0;
-		keys    = Object.keys(Models);
-		count   = keys.length;
-		objects = [];
+		bufferSize = 0;
 
-		// Compile all models
-		for( i=0; i<count; ++i ) {
-			filename = keys[i];
-			model   = Models[filename].compile();
-			size    = model.meshes.length;
+		for (i = 0, count = objects.length; i < count; ++i) {
 
-			// Extract each mesh for each node
-			for( j=0; j<size; ++j ) {
-				meshes = model.meshes[j];
+			object = objects[i].compile();
+			nodes  = object.meshes;
 
-				index = Object.keys(meshes);
-				len   = index.length;
-				for( k = 0; k < len; ++k ) {
-					objects.push({
-						texture: model.textures[index[k]],
-						alpha:   Models[filename].alpha,
-						mesh:    meshes[index[k]]
+			for (j = 0, size = nodes.length; j < size; ++j) {
+
+				meshes = nodes[j];
+
+				for (index in meshes) { 
+					models.push({
+						texture: 'data\\texture\\' + object.textures[index],
+						alpha:   objects[i].alpha,
+						mesh:    meshes[index]
 					});
 
-					total += meshes[index[k]].length;
+					bufferSize += meshes[index].length;
 				}
 			}
 
 			this.setProgress( progress + (100-progress) / count * (i+1) / 2 );
 		}
 
-		// Organize mesh by Textures alpha to avoid some problem in the render.
-		objects.sort(this.sortMeshByTextures);
-
 		// Merge mesh
-		return this.mergeMeshes( objects, total);
+		this.mergeMeshes( models, bufferSize);
 	};
 
 
@@ -241,7 +362,7 @@ define( ['Core/FileManager'], function( FileManager )
 	 * @param {Object} b
 	 * @return {number}
 	 */
-	MapLoader.prototype.sortMeshByTextures = function SortMeshByTextures( a, b )
+	function SortMeshByTextures( a, b )
 	{
 		var reg_tga = /\.tga$/i;
 
@@ -266,59 +387,91 @@ define( ['Core/FileManager'], function( FileManager )
 		}
 
 		return 0;
-	};
+	}
 
 
 	/**
 	 * Merge objects using the same texture to avoid drawcall
 	 *
 	 * @param {Array} objects list
-	 * @param {number} total
-	 * @return {object} Compiled mesh
+	 * @param {number} BufferSize
 	 */
-	MapLoader.prototype.mergeMeshes = function MergeMeshes( objects, total )
+	MapLoader.prototype.mergeMeshes = function MergeMeshes( objects, bufferSize )
 	{
-		var buffer   = new Float32Array(total);
-		var infos    = [];
-		var object, last;
-		var i, pos, count, offset, progress, length;
+		var i, j, count, size, offset;
+		var object, texture;
+		var textures = [], infos = [];
+		var buffer;
 
-		count    = objects.length;
-		pos      = 0;
-		offset   = 0;
-		progress = +this.progress;
+		var fcount = 1 / 9;
+		var progress = this.progress;
 
-		for ( i=0; i<count; ++i ) {
+		// Create buffer where to concat meshes
+		buffer = new Float32Array(bufferSize);
+		offset = 0;
+
+		// Sort objects by textures type
+		objects.sort(SortMeshByTextures);
+
+
+		// Merge meshes
+		for (i = 0, j = 0, count = objects.length; i < count; ++i) {
+
 			object = objects[i];
-			length = object.mesh.length;
+			size   = object.mesh.length;
 
 			// Same texture, just change vertCount to save drawcall
 			// and avoid loading multiple time the same texture.
-			if( last === object.texture ) {
-				infos[pos-1].vertCount += length / 9;
+			if (texture === object.texture) {
+				infos[j-1].vertCount += size * fcount;
 			}
 
 			// Load the texture
 			else {
-				last   = object.texture;
-				infos[pos++] = {
-					texture:    FileManager.load( 'data/texture/' + last, true ),
-					vertOffset: offset / 9,
-					vertCount:  length / 9
+				texture = object.texture;
+				textures.push(texture);
+
+				infos[j++] = {
+					filename:   texture,
+					vertOffset: offset * fcount,
+					vertCount:  size   * fcount
 				};
 			}
 
 			// Add to buffer
 			buffer.set( object.mesh, offset );
-			offset += length;
-
-			this.setProgress( progress + (100-progress) / count * (i+1) );
+			offset += size;
 		}
 
-		return {
-			buffer: buffer,
-			infos:  infos
-		};
+
+		// Load texture
+		var loader = new Loader(textures);
+
+		// On Progress
+		loader.onprogress = function( index, count ){
+			this.setProgress( progress + (100-progress) / count * (index+1) );
+		}.bind(this);
+
+		// Once texture loaded, push the textures
+		// in the resulted mesh, and send it back
+		loader.onload = function( textures, filenames ){
+			var i, count, pos;
+
+			for (i = 0, count = infos.length; i < count; ++i) {
+				pos = filenames.indexOf(infos[i].filename);
+				infos[i].texture = textures[pos];
+			}
+
+			this.ondata('MAP_MODELS', {
+				buffer: buffer,
+				infos:  infos
+			});
+			this.onload(true);
+
+		}.bind(this);
+
+
+		loader.start();
 	};
 
 

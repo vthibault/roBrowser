@@ -163,9 +163,9 @@ function(    GameFileDecrypt,         BinaryReader,         Struct,         Infl
 	 * Find a file in the GRF
 	 *
 	 * @param {string} filename
-	 * @return {ArrayBuffer}
+	 * @param {function} callback
 	 */
-	GRF.prototype.getFile = function getFile( filename )
+	GRF.prototype.getFile = function getFile( filename, callback )
 	{
 		// Not case sensitive...
 		var path  = filename.toLowerCase();
@@ -173,7 +173,7 @@ function(    GameFileDecrypt,         BinaryReader,         Struct,         Infl
 
 		var fp    = this.table.fp;
 		var pos  = table.indexOf( path + "\0" );
-		var entry, buffer, data, out;
+		var entry;
 
 		// If filename is find in GRF table list
 		if ( pos !== -1 ) {
@@ -183,26 +183,37 @@ function(    GameFileDecrypt,         BinaryReader,         Struct,         Infl
 			entry = fp.readStruct(GRF.struct_entry);
 
 			// Load into memory
-			buffer = this.reader.load( entry.offset + GRF.struct_header.size, entry.length_aligned );
-			data   = new Uint8Array( buffer );
+			var reader = new FileReader();
+			reader.onload = function(){
+				var out, data = new Uint8Array( reader.result );
 
-			// Decode the file
-			if( (entry.type & GRF.FILELIST_TYPE_ENCRYPT_MIXED) ) {
-				GameFileDecrypt.decodeFull( data, entry.length_aligned, entry.pack_size);
-			}
+				// Decode the file
+				if( (entry.type & GRF.FILELIST_TYPE_ENCRYPT_MIXED) ) {
+					GameFileDecrypt.decodeFull( data, entry.length_aligned, entry.pack_size);
+				}
 
-			else if( (entry.type & GRF.FILELIST_TYPE_ENCRYPT_HEADER) ) {
-				GameFileDecrypt.decodeHeader( data, entry.length_aligned );
-			}
+				else if( (entry.type & GRF.FILELIST_TYPE_ENCRYPT_HEADER) ) {
+					GameFileDecrypt.decodeHeader( data, entry.length_aligned );
+				}
 
-			// Uncompress
-			out = new Uint8Array(entry.real_size);
-			(new Inflate(data)).getBytes(out);
+				// Uncompress
+				out = new Uint8Array(entry.real_size);
+				(new Inflate(data)).getBytes(out);
 
-			return out.buffer;
+				callback(out.buffer);
+			};
+
+			reader.readAsArrayBuffer(
+				this.file.slice(
+					entry.offset + GRF.struct_header.size,
+					entry.offset + GRF.struct_header.size + entry.length_aligned
+				)
+			);
+
+			return true;
 		}
 
-		return null;
+		return false;
 	};
 
 

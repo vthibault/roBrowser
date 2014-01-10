@@ -84,12 +84,9 @@ function(      FileManager,        FileSystem,           MapLoader )
 					FileManager.clean();
 					FileManager.init( msg.data.grfList );
 
-					args[0] = FileManager.gameFiles.length;
-					args[1] = null;
-	
 					postMessage({
 						uid:       msg.uid,
-						arguments: args
+						arguments: [ FileManager.gameFiles.length, null, msg.data ]
 					});
 				});
 
@@ -100,68 +97,72 @@ function(      FileManager,        FileSystem,           MapLoader )
 
 			// Get a file from client/grf
 			case "GET_FILE":
-				try {
-					args[0] = FileManager.get( msg.data.filename );
-					args[1] = null;
-				}
-				catch( error ) {
-					args[0] = null;
-					args[1] = error.message;
+				FileManager.get( msg.data.filename, function( result, error){
+					if (error) {
+						SendError( '[Thread] ' + error );
+					}
 
-					SendError( '[Thread] ' + error.message + " (" + msg.data.filename  + ")" );
-				}
+					if (msg.uid) {
+						postMessage({
+							uid:       msg.uid,
+							arguments: [ result, error, msg.data ]
+						});
+					}
+				});
 				break;
 
 
 			// Get and load a file from client/grf
 			case "LOAD_FILE":
-				try {
-					args[0] = FileManager.load( msg.data.filename, false, msg.data.args );
-					args[1] = null;
-				}
-				catch( error ) {
-					args[0] = null;
-					args[1] = error.message;
+				FileManager.load( msg.data.filename, function( result, error){
+					if (error) {
+						SendError( '[Thread] ' + error );
+					}
 
-					SendError( '[Thread] ' + error.message + " (" + msg.data.filename  + ")" );
-				}
-
+					if (msg.uid) {
+						postMessage({
+							uid:       msg.uid,
+							arguments: [ result, error, msg.data ]
+						});
+					}
+				});
 				break;
 
 
 			// Search a file in Client
 			case "SEARCH_FILE":
-				args[0] = FileManager.search( msg.data );
+				if (msg.uid) {
+					postMessage({
+						uid:       msg.uid,
+						arguments: [ FileManager.search( msg.data ), null, msg.data ]
+					});
+				}
 				break;
 
 
 			// Start loading a map
 			case "LOAD_MAP":
-				try {
-					var map = new MapLoader();
-					map.onprogress = function(progress){
-						postMessage({ type:'MAP_PROGRESS', data:progress });
-					};
-					map.load( msg.data );
-					args[0] = true;
-				}
-				catch( error ) {
-					args[0] = false;
-					args[1] = error.message;
+				var map = new MapLoader();
 
-					SendError( '[Thread] ' + error.message + " (" + msg.data  + ")" );
-				}
+				map.onprogress = function(progress){
+					postMessage({ type:'MAP_PROGRESS', data:progress });
+				};
+
+				map.onload = function( success, error){
+					if (msg.uid) {
+						postMessage({
+							uid:       msg.uid,
+							arguments:[ success, error, msg.data ]
+						});
+					}
+				};
+
+				map.ondata = function( type, data ) {
+					postMessage({ type: type, data:data });
+				};
+
+				map.load( msg.data );
 				break;
-		}
-
-		// If there is an uid, get back the answer
-		if( msg.uid && args.length ) {
-			args[2] = msg.data;
-
-			postMessage({
-				uid:       msg.uid,
-				arguments: args
-			});
 		}
 	};
 
