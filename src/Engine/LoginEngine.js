@@ -84,15 +84,13 @@ function(
 
 		// Add support for "packetver" definition in Server listing
 		if (server.packetver) {
-			ROConfig.packetver = server.packetver;
+			ROConfig.packetver = String(server.packetver);
 
-			if (server.packetver.match(/^\d+$/)) {
-				PACKETVER.min = date;
-				PACKETVER.max = date;
+			if (ROConfig.packetver.match(/^\d+$/)) {
+				PACKETVER.set( parseInt(ROConfig.packetver, 10) );
 			}
-			else if (server.packetver.match(/auto/i)) {
-				PACKETVER.min = 0;
-				PACKETVER.max = Infinity;
+			else if (ROConfig.packetver.match(/auto/i)) {
+				PACKETVER.set( 0, Infinity);
 			}
 			// executable already used
 		}

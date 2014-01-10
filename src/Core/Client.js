@@ -28,7 +28,7 @@ function(        Executable,                  PACKETVER,       Thread,      Memo
 		window.ROConfig = window.ROConfig || {};
 
 		// Find executable and set the packetver
-		if (!ROConfig.packetver || ROConfig.packetver.match(/^(executable|auto)$/i)) {
+		if (!ROConfig.packetver || String(ROConfig.packetver).match(/^(executable|auto)$/i)) {
 			for (i = 0, count = files.length; i < count; ++i) {
 				if( Executable.isROExec(files[i]) ) {
 					Executable.getDate(files[i], function(date){

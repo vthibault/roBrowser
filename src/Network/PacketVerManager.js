@@ -85,6 +85,11 @@ define(function()
 			}
 		},
 
+		set: function Set(min, max) {
+			_min = min;
+			_max = max || min;
+		},
+
 		// Add support for packet version
 		addSupport: AddSupport
 	};
