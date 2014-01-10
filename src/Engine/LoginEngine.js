@@ -83,13 +83,18 @@ function(
 		_server = server;
 
 		// Add support for "packetver" definition in Server listing
-		if( server.packetver ) {
+		if (server.packetver) {
 			ROConfig.packetver = server.packetver;
 
-			if( server.packetver.match(/^\d+$/) ) {
+			if (server.packetver.match(/^\d+$/)) {
 				PACKETVER.min = date;
 				PACKETVER.max = date;
 			}
+			else if (server.packetver.match(/auto/i)) {
+				PACKETVER.min = 0;
+				PACKETVER.max = Infinity;
+			}
+			// executable already used
 		}
 
 		// Hooking win_login
