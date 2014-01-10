@@ -243,8 +243,8 @@ function(       Queue,        Client,     ClassTable,     ClassPalTable,     Mon
 	 */
 	DB.loadLuaByteTable = function loadLuaByteTable( filename, onEnd )
 	{
-		console.log('Loading file "'+ filename +'"...');
 		return function() {
+			console.log('Loading file "'+ filename +'"...');
 			Client.loadFile( filename, function(js) {
 				// TODO: fix Lub decoder
 				try {
