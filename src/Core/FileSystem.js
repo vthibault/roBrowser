@@ -57,6 +57,12 @@ define(function()
 
 
 	/**
+	 * @param {boolean} save data to file system ?
+	 */
+	var _save = false;
+
+
+	/**
 	 * Initialize FileSystem API
 	 *
 	 * @param {Array} FileList
@@ -85,16 +91,14 @@ define(function()
 				_fs      = fs;
 				_fs_sync = requestFileSystemSync( self.TEMPORARY, size );
 
-				if (save) {
-					if (_files.length) {
-						CleanUp();
-					}
+				if (save && _files.length) {
+					CleanUp();
 					BuildHierarchy();
 					ProcessUpload(0);
 				}
 
+				_save = save;
 				Trigger('onready');
-
 			}, ErrorHandler);
 
 		});
@@ -199,8 +203,17 @@ define(function()
 					_streamOffset += file.size;
 					ProcessUpload( index + 1);
 				};
-		
+
+				var last_tick = Date.now();
 				writer.onprogress= function(evt){
+
+					// Do not spam the main thread
+					var now = Date.now();
+					if (last_tick + 100 > now) {
+						return;
+					}
+
+					last_tick = now;
 					Trigger('onprogress', {
 						filename: file.name,
 						filePath: file._path,
@@ -338,6 +351,35 @@ define(function()
 
 
 	/**
+	 * Save the content of a files in file system
+	 * (used to save the remote client)
+	 *
+	 * @param {string} filePath
+	 * @param {ArrayBuffer} buffer
+	 */
+	function SaveFile( filePath, buffer )
+	{
+		if (!_save || !_available) {
+			return;
+		}
+
+		var directories = filePath.split('/').slice(0,-1);
+		var path        = "";
+
+		// Create hierarchy
+		while (directories.length) {
+			path += directories.shift() + "/";
+			_fs_sync.root.getDirectory( path, {create: true});
+		}
+
+		var fileEntry = _fs_sync.root.getFile(filePath, {create:true});
+		var writer    = fileEntry.createWriter();
+
+		writer.write(new Blob([buffer]));
+	}
+
+
+	/**
 	 * Search a file from FileSystem using a regex
 	 *
 	 * @param {RegExp|string} to match the filename
@@ -382,6 +424,7 @@ define(function()
 		getFile:   GetFile,
 		init:      Init,
 		cleanup:   CleanUp,
-		search:    Search
+		search:    Search,
+		saveFile:  SaveFile
 	};
 });

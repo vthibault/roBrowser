@@ -350,3 +350,5 @@ input[type='radio']:checked::before {
 /** Window settings **/
 .screen { width:100%; }
 .screen td { width: 40%; }
+
+#intro .clean { display:none; }

@@ -242,6 +242,9 @@ function(          GameFile,           Targa,           LuaByte,           World
 		xhr.responseType = "arraybuffer";
 		xhr.onload = function(){
 			callback( xhr.response );
+			if (xhr.response.byteLength) {
+				FileSystem.saveFile( filename, xhr.response );
+			}
 		};
 		xhr.onerror = function(){
 			callback( null, "Can't get file " + filename );
@@ -271,7 +274,7 @@ function(          GameFile,           Targa,           LuaByte,           World
 		this.get( filename, function(buffer, error){
 			var ext = filename.match(/.[^\.]+$/).toString().substr(1).toLowerCase();
 
-			if (!buffer || !buffer.byteLength) {
+			if (!buffer || buffer.byteLength === 0) {
 				callback(null, error);
 				return;
 			}

@@ -26,6 +26,9 @@ define(function(require)
 	var Context     = require('Core/Context');
 
 
+	var _fs;
+
+
 	/**
 	 * Create Intro component
 	 */
@@ -141,6 +144,41 @@ define(function(require)
 				ui.find('.quality_result').text( this.value + '%' );
 			});
 
+		ui.find('.clean').parent().append('<span><img src="'+ require.toUrl('./images/loading.gif')  +'"/> <i>Cleaning cache...</i></span>');
+	
+		// Clean cache
+		ui.find('.clean')
+			.click(function(){
+				var parent = jQuery(this).hide().parent();
+
+				parent.append(
+					'<span><img src="'+ require.toUrl('./images/loading.gif')  +'"/> <i>Cleaning cache...</i></span>'
+				);
+
+				// Clean up
+				var dirReader = _fs.root.createReader();
+				dirReader.readEntries(function(entries){
+					var i, count =entries.length, j = 0;
+
+					function Removed(){
+						if ((++j) === count) {
+							parent.find('span').remove();
+							Intro.ui.find('.msg').text('');
+						}
+					}
+
+					for (i = 0; i < count; ++i) {
+						if (entries[i].isDirectory) {
+							entries[i].removeRecursively(Removed);
+						}
+						else {
+							entries[i].remove(Removed);
+						}
+					}
+				})
+			});
+	
+
 		// Stop propagation in overlay to avoid hiding the page
 		ui.find('.overlay')
 			.on('click', 'input[type="text"], a, button', function( event ){
@@ -210,13 +248,27 @@ define(function(require)
 		var temporaryStorage  = navigator.temporaryStorage || navigator.webkitTemporaryStorage;
 		var requestFileSystem = self.requestFileSystem     || self.webkitRequestFileSystem;
 
+		this.ui.find('.clean').hide();
+
 		if (temporaryStorage && requestFileSystem) {
 			temporaryStorage.queryUsageAndQuota(function(used, remaining){
 				if (used) {
 					requestFileSystem( window.TEMPORARY, used, function( fs ){
-						fs.root.getFile( 'upload.complete', { create:false }, function(){
-							Intro.ui.find('.msg').text( (used / 1024 / 1024 / 1024).toFixed(2) + ' Go saved' );
-						})
+						_fs = fs;
+						Intro.ui.find('.clean').show();
+						//fs.root.getFile( 'upload.complete', { create:false }, function(){
+							var msg = '';
+							if (used > 1024 * 1024 * 1024) {
+								msg = (used / 1024 / 1024 / 1024).toFixed(2) + ' Go saved';
+							}
+							else if (used > 1024 * 1024) {
+								msg = (used / 1024 / 1024).toFixed(2) + ' Mo saved';
+							}
+							else {
+								msg = (used / 1024).toFixed(2) + ' Mo saved';
+							}
+							Intro.ui.find('.msg').text(msg);
+						//})
 					});
 				}
 			});
