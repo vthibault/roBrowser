@@ -144,8 +144,6 @@ define(function(require)
 				ui.find('.quality_result').text( this.value + '%' );
 			});
 
-		ui.find('.clean').parent().append('<span><img src="'+ require.toUrl('./images/loading.gif')  +'"/> <i>Cleaning cache...</i></span>');
-	
 		// Clean cache
 		ui.find('.clean')
 			.click(function(){
