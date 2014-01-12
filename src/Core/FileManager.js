@@ -202,7 +202,7 @@ function(          GameFile,           Targa,           LuaByte,           World
 		fileList = this.gameFiles;
 		count    = fileList.length;
 
-		for( i=0; i<count; ++i ) {
+		for (i = 0; i < count; ++i) {
 			if (fileList[i].getFile( path, callback)) {
 				return;
 			}
@@ -269,6 +269,11 @@ function(          GameFile,           Targa,           LuaByte,           World
 	 */
 	FileManager.load = function Load( filename, callback, args )
 	{
+		if (!filename) {
+			callback(null, 'undefined ?');
+			return;
+		}
+
 		filename = filename.replace(/^\s+|\s+$/g, '');
 
 		this.get( filename, function(buffer, error){

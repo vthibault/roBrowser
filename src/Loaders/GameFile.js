@@ -160,6 +160,34 @@ function(    GameFileDecrypt,         BinaryReader,         Struct,         Infl
 
 
 	/**
+	 * Decode entry to return its content
+	 *
+	 * @param {ArrayBuffer}
+	 * @param {Entry}
+	 * @param {function} callback
+	 */
+	GRF.prototype.decodeEntry = function DecodeEntry( buffer, entry, callback )
+	{
+		var out;
+		var data = new Uint8Array( buffer );
+
+		// Decode the file
+		if (entry.type & GRF.FILELIST_TYPE_ENCRYPT_MIXED) {
+			GameFileDecrypt.decodeFull( data, entry.length_aligned, entry.pack_size);
+		}
+		else if (entry.type & GRF.FILELIST_TYPE_ENCRYPT_HEADER) {
+			GameFileDecrypt.decodeHeader( data, entry.length_aligned );
+		}
+
+		// Uncompress
+		out = new Uint8Array(entry.real_size);
+		(new Inflate(data)).getBytes(out);
+
+		callback(out.buffer);
+	};
+
+
+	/**
 	 * Find a file in the GRF
 	 *
 	 * @param {string} filename
@@ -173,42 +201,42 @@ function(    GameFileDecrypt,         BinaryReader,         Struct,         Infl
 
 		var fp    = this.table.fp;
 		var pos  = table.indexOf( path + "\0" );
-		var entry;
+		var entry, blob;
+		var reader;
 
 		// If filename is find in GRF table list
-		if ( pos !== -1 ) {
+		if (pos !== -1) {
 
 			// Skip filename, read file info
 			fp.seek( pos + path.length + 1, SEEK_SET );
 			entry = fp.readStruct(GRF.struct_entry);
 
-			// Load into memory
-			var reader = new FileReader();
-			reader.onload = function(){
-				var out, data = new Uint8Array( reader.result );
+			// Directory ?
+			if (!(entry.type & GRF.FILELIST_TYPE_FILE)) {
+				return false;
+			}
 
-				// Decode the file
-				if( (entry.type & GRF.FILELIST_TYPE_ENCRYPT_MIXED) ) {
-					GameFileDecrypt.decodeFull( data, entry.length_aligned, entry.pack_size);
-				}
-
-				else if( (entry.type & GRF.FILELIST_TYPE_ENCRYPT_HEADER) ) {
-					GameFileDecrypt.decodeHeader( data, entry.length_aligned );
-				}
-
-				// Uncompress
-				out = new Uint8Array(entry.real_size);
-				(new Inflate(data)).getBytes(out);
-
-				callback(out.buffer);
-			};
-
-			reader.readAsArrayBuffer(
-				this.file.slice(
-					entry.offset + GRF.struct_header.size,
-					entry.offset + GRF.struct_header.size + entry.length_aligned
-				)
+			blob = this.file.slice(
+				entry.offset + GRF.struct_header.size,
+				entry.offset + GRF.struct_header.size + entry.length_aligned
 			);
+
+			// Load into memory
+			if (self.FileReader) {
+				var grf = this;
+
+				reader = new FileReader();
+				reader.onload = function(){
+					grf.decodeEntry( reader.result, entry, callback);
+				};
+				reader.readAsArrayBuffer(blob);
+			}
+
+			// Firefox doesn't seems to support FileReader in web worker
+			else {
+				reader = new FileReaderSync();
+				this.decodeEntry( reader.readAsArrayBuffer(blob), entry, callback );
+			}
 
 			return true;
 		}
