@@ -257,8 +257,10 @@ define(function(require)
 				if (used) {
 					requestFileSystem( window.TEMPORARY, used, function( fs ){
 						_fs = fs;
-						Intro.ui.find('.clean').show();
-						//fs.root.getFile( 'upload.complete', { create:false }, function(){
+
+						function OnDataStored(used) {
+							Intro.ui.find('.clean').show();
+
 							var msg = '';
 							if (used > 1024 * 1024 * 1024) {
 								msg = (used / 1024 / 1024 / 1024).toFixed(2) + ' Go saved';
@@ -269,8 +271,28 @@ define(function(require)
 							else {
 								msg = (used / 1024).toFixed(2) + ' Mo saved';
 							}
+
 							Intro.ui.find('.msg').text(msg);
-						//})
+						}
+
+						// Remove upload folder
+						fs.root.getDirectory('/__tmp_upload/', {create:false}, function(dirEntry){
+							dirEntry.removeRecursively(function(){
+								// Resize quota
+								temporaryStorage.queryUsageAndQuota(function(used, remaining){
+									if (used) {
+										requestFileSystem( window.TEMPORARY, used, function( fs ){
+											_fs = fs;
+											OnDataStored(used);
+										});
+									}
+								});
+							});
+
+						// no upload directory, listening content
+						}, function(){
+							OnDataStored(used);
+						});
 					});
 				}
 			});

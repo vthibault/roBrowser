@@ -184,8 +184,20 @@ define(function()
 
 		// Finished.
 		if (index >= _files.length) {
-			_fs_sync.root.getFile( 'upload.complete', {create: true});
+			var i, count;
+
+			// Move all files from the directory to root.
+			var tmpDir    = _fs_sync.root.getDirectory('/__tmp_upload/', {});
+			var dirReader = tmpDir.createReader();
+			var entries   = dirReader.readEntries();
+
+			for (i = 0, count = entries.length; i < count; ++i) {
+				entries[i].moveTo( _fs_sync.root, entries[i].name );
+			}
+
+			tmpDir.removeRecursively();
 			_files.length = 0;
+
 			Trigger('onuploaded');
 			return;
 		}
@@ -196,7 +208,7 @@ define(function()
 			return;
 		}
 
-		_fs.root.getFile( file._path, {create: true}, function(fileEntry){
+		_fs.root.getFile( '/__tmp_upload/' + file._path, {create: true}, function(fileEntry){
 			fileEntry.createWriter(function(writer){
 				writer.onerror     = ErrorHandler;
 				writer.onwriteend  = function() {
@@ -259,8 +271,11 @@ define(function()
 		keys  = Object.keys(cache);
 		keys.sort();
 
+		// Directory where to upload data
+		_fs_sync.root.getDirectory( '/__tmp_upload/', {create: true});
+
 		for (i = 0, count = keys.length; i < count ; ++i) {
-			_fs_sync.root.getDirectory( keys[i], {create: true});
+			_fs_sync.root.getDirectory( '/__tmp_upload/' + keys[i], {create: true});
 		}
 	}
 
