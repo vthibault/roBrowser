@@ -99,7 +99,7 @@ function(      FileManager,        FileSystem,           MapLoader )
 			case "GET_FILE":
 				FileManager.get( msg.data.filename, function( result, error){
 					if (error) {
-						SendError( '[Thread] ' + error );
+						SendError( '[Thread] ' + error + ' ('+ msg.data.filename +')' );
 					}
 
 					if (msg.uid) {
@@ -116,7 +116,7 @@ function(      FileManager,        FileSystem,           MapLoader )
 			case "LOAD_FILE":
 				FileManager.load( msg.data.filename, function( result, error){
 					if (error) {
-						SendError( '[Thread] ' + error );
+						SendError( '[Thread] ' + error + ' ('+ msg.data.filename +')' );
 					}
 
 					if (msg.uid) {

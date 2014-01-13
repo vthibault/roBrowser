@@ -100,8 +100,15 @@ function( require,         jQuery,        Client,           Sprite,           Ac
 		}
 
 		Client.getFiles( ["data/sprite/cursors.spr", "data/sprite/cursors.act"], function( spr, act ) {
-			Cursor.sprite = new Sprite( spr );
-			Cursor.action = new Action( act );
+			try {
+				Cursor.sprite = new Sprite( spr );
+				Cursor.action = new Action( act );
+			}
+			catch(e) {
+				console.error("Cursor::init() - " + e.message );
+				return;
+			}
+
 			Cursor.generateImages();
 			Cursor.bindMouseEvent();
 			fn();

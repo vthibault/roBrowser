@@ -241,13 +241,16 @@ function(          GameFile,           Targa,           LuaByte,           World
 		xhr.open('GET', this.remoteClient + filename, true);
 		xhr.responseType = "arraybuffer";
 		xhr.onload = function(){
-			callback( xhr.response );
-			if (xhr.response.byteLength) {
+			if (xhr.status == 200) {
+				callback( xhr.response );
 				FileSystem.saveFile( filename, xhr.response );
+			}
+			else {
+				callback( null, "Can't get file");
 			}
 		};
 		xhr.onerror = function(){
-			callback( null, "Can't get file " + filename );
+			callback( null, "Can't get file");
 		};
 
 		// Can throw an error if not connected to internet
@@ -255,7 +258,7 @@ function(          GameFile,           Targa,           LuaByte,           World
 			xhr.send(null);
 		}
 		catch(e) {
-			callback( null, "Can't get file " + filename );
+			callback( null, "Can't get file");
 		}
 	};
 
@@ -277,100 +280,111 @@ function(          GameFile,           Targa,           LuaByte,           World
 		filename = filename.replace(/^\s+|\s+$/g, '');
 
 		this.get( filename, function(buffer, error){
-			var ext = filename.match(/.[^\.]+$/).toString().substr(1).toLowerCase();
+			var ext    = filename.match(/.[^\.]+$/).toString().substr(1).toLowerCase();
+			var result = null;
 
 			if (!buffer || buffer.byteLength === 0) {
 				callback(null, error);
 				return;
 			}
 
-			switch( ext ) {
-	
-				// Regular images files
-				case 'jpg':
-				case 'jpeg':
-				case 'bmp':
-				case 'gif':
-				case 'png':
-					callback(URL.createObjectURL(
-						new Blob( [buffer], { type: "image/" + ext })
-					));
-					return;
-	
-				// Audio
-				case 'wav':
-				case 'mp3':
-					// From GRF : change the data to an URI
-					if( buffer instanceof ArrayBuffer ) {
-						callback(URL.createObjectURL(
-							new Blob( [buffer], { type: "audio/" + ext })
-						));
-						return;
-					}
-					//no break intended
+			error  = null;
 
-				case 'tga':
-					callback(buffer);
-					return;
+			try {
+				switch( ext ) {
 
-				// Texts
-				case 'txt':
-				case 'xml':
-				case 'lua':
-					var i, count, str, uint8;
-					uint8 = new Uint8Array(buffer);
-					count = uint8.length;
-					str   = "";
-	
-					for ( i=0; i<count; ++i ) {
-						if( uint8[i] === 0 ) {
+					// Regular images files
+					case 'jpg':
+					case 'jpeg':
+					case 'bmp':
+					case 'gif':
+					case 'png':
+						result = URL.createObjectURL(
+							new Blob( [buffer], { type: "image/" + ext })
+						);
+						break;
+
+					// Audio
+					case 'wav':
+					case 'mp3':
+						// From GRF : change the data to an URI
+						if( buffer instanceof ArrayBuffer ) {
+							result = URL.createObjectURL(
+								new Blob( [buffer], { type: "audio/" + ext })
+							);
 							break;
 						}
-						str += String.fromCharCode( uint8[i] );
-					}
+						//no break intended
 
-					callback(str);
-					return;
-	
-				// Sprite
-				case 'spr':
-					var spr = new Sprite(buffer);
-					if( args && args.to_rgba ) {
-						spr.switchToRGBA();
-					}
+					case 'tga':
+						result = buffer;
+						break;
 
-					callback(spr.compile());
-					return;
-	
-				// Binary
-				case 'rsw':
-					callback(new World(buffer));
-					return;
+					// Texts
+					case 'txt':
+					case 'xml':
+					case 'lua':
+						var i, count, str, uint8;
+						uint8 = new Uint8Array(buffer);
+						count = uint8.length;
+						str   = "";
 
-				case 'gnd':
-					callback(new Ground(buffer))
-					return;
+						for ( i=0; i<count; ++i ) {
+							if( uint8[i] === 0 ) {
+								break;
+							}
+							str += String.fromCharCode( uint8[i] );
+						}
 
-				case 'gat':
-					callback(new Altitude(buffer));
-					return;
-	
-				case 'rsm':
-					callback(new Model(buffer));
-					return;
+						result = str;
+						break;
 
-				case 'act':
-					callback(new Action(buffer).compile());
-					return;
+					// Sprite
+					case 'spr':
+						var spr = new Sprite(buffer);
+						if( args && args.to_rgba ) {
+							spr.switchToRGBA();
+						}
 
-				case 'lub':
-					callback(new LuaByte(buffer).reverse());
-					return;
+						result = spr.compile();
+						break;
 
-				default:
-					callback(buffer);
-					return;
+					// Binary
+					case 'rsw':
+						result = new World(buffer);
+						break;
+
+					case 'gnd':
+						result = new Ground(buffer)
+						break;
+
+					case 'gat':
+						result = new Altitude(buffer);
+						break;
+
+					case 'rsm':
+						result = new Model(buffer);
+						break;
+
+					case 'act':
+						result = new Action(buffer).compile();
+						break;
+
+					case 'lub':
+						result = new LuaByte(buffer).reverse();
+						break;
+
+					default:
+						result = buffer;
+						break;
+				}
 			}
+
+			catch(e) {
+				error = e.message;
+			}
+
+			callback( result, error );
 		});
 	};
 

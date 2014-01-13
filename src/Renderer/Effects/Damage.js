@@ -71,14 +71,21 @@ function(
 			['data/sprite/\xc0\xcc\xc6\xd1\xc6\xae/\xbc\xfd\xc0\xda.spr',
 			'data/sprite/\xc0\xcc\xc6\xd1\xc6\xae/msg.spr'],
 		function( damage, miss ) {
-			var sprite = new Sprite(damage);
+			try {
+				var sprDamage = new Sprite(damage);
+				var sprMiss   = new Sprite(miss);
+			}
+			catch(e) {
+				console.error("Damage::init() - " + e.message );
+				return;
+			}
 
 			// Create SpriteSheet
 			for( var i = 0; i < 10; ++i ) {
-				Damage.sprite[i]  = sprite.getCanvasFromFrame(i);
+				Damage.sprite[i]  = sprDamage.getCanvasFromFrame(i);
 			}
 
-			var source = (new Sprite(miss)).getCanvasFromFrame(0);
+			var source = sprMiss.getCanvasFromFrame(0);
 			var canvas = document.createElement('canvas');
 			var ctx    = canvas.getContext('2d');
 
@@ -90,6 +97,7 @@ function(
 				texture: gl.createTexture(),
 				canvas:  canvas
 			};
+
 			gl.bindTexture( gl.TEXTURE_2D, Damage.sprite[10].texture );
 			gl.texImage2D( gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, canvas );
 			gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
