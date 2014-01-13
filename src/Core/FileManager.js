@@ -8,8 +8,8 @@
  * @author Vincent Thibault
  */
 
-define(  ['Loaders/GameFile', 'Loaders/Targa', 'Loaders/LuaByte', 'Loaders/World', 'Loaders/Ground', 'Loaders/Altitude', 'Loaders/Model', 'Loaders/Sprite', 'Loaders/Action', 'Core/FileSystem'],
-function(          GameFile,           Targa,           LuaByte,           World,           Ground,           Altitude,           Model,           Sprite,           Action,        FileSystem )
+define(  ['Loaders/GameFile', 'Loaders/LuaByte', 'Loaders/World', 'Loaders/Ground', 'Loaders/Altitude', 'Loaders/Model', 'Loaders/Sprite', 'Loaders/Action', 'Core/FileSystem'],
+function(          GameFile,           LuaByte,           World,           Ground,           Altitude,           Model,           Sprite,           Action,        FileSystem )
 {
 	"use strict";
 

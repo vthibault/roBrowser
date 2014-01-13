@@ -34,10 +34,17 @@ define(['Loaders/Targa'], function( Targa )
 
 		// TGA Support
 		if( data instanceof ArrayBuffer ) {
-			var tga = new Targa();
-			tga.load( new Uint8Array(data) );
-			args.unshift(true);
-			oncomplete.apply( tga.getCanvas(), args );
+			try {
+				var tga = new Targa();
+				tga.load( new Uint8Array(data) );
+				args.unshift(true);
+				oncomplete.apply( tga.getCanvas(), args );
+			}
+			catch(e) {
+				console.error( e.message );
+				args.unshift(false);
+				oncomplete.apply( null, args);
+			}
 			return;
 		}
 

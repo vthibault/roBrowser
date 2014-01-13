@@ -204,7 +204,7 @@ define(['Core/Client', 'DB/DBManager', './EntityAction'], function( Client, DB, 
 			var _val = val;
 
 			function LoadView( path, final ) {
-				Client.loadFile(path + ".act", null, null, []);
+				Client.loadFile(path + ".act");
 				Client.loadFile(path + ".spr", function(){
 					_this['_'+type] = _val;
 					_this.files[type].spr = path + ".spr";
