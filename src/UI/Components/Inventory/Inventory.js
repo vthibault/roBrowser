@@ -24,7 +24,8 @@ define(function(require)
 	var KEYS               = require('Controls/KeyEventHandler');
 	var UIManager          = require('UI/UIManager');
 	var UIComponent        = require('UI/UIComponent');
-	var ItemInfo           = require('UI/Components/ItemInfo/ItemInfo')
+	var InputBox           = require('UI/Components/InputBox/InputBox');
+	var ItemInfo           = require('UI/Components/ItemInfo/ItemInfo');
 	var Equipment          = require('UI/Components/Equipment/Equipment');
 	var htmlText           = require('text!./Inventory.html');
 	var cssText            = require('text!./Inventory.css');
@@ -114,13 +115,56 @@ define(function(require)
 		});
 
 
+		// on drop item
+		this.ui.on('drop', function(event){
+			var item, data;
+
+			try {
+				data = JSON.parse(
+					event.originalEvent.dataTransfer.getData("Text")
+				);
+			}
+			catch(e) {}
+
+			// Just support items for now ?
+			if( data && data.type === "item" && data.from === "storage") {
+				item = data.data;
+
+				// Have to specify how much
+				if( item.count > 1 ) {
+					InputBox.append();
+					InputBox.setType("number", false);
+					InputBox.onSubmitRequest = function OnSubmitRequest( count ) {
+						InputBox.remove();
+						require('UI/Components/Storage/Storage').reqRemoveItem(
+							item.index,
+							parseInt(count, 10 )
+						);
+					};
+				}
+
+				// Only one, don't have to specify
+				else {
+					require('UI/Components/Storage/Storage').reqRemoveItem( item.index, 1 );
+				}
+			}
+
+			event.stopImmediatePropagation();
+			return false;
+		})
+
+		this.ui.on('dragover', function(){
+			event.stopImmediatePropagation();
+			return false;
+		});
+
 		var overlay = this.ui.find('.overlay');
 		var lastScrollPos = 0;
 
 		this.ui.find('.container .content')
 
 			// Scroll feature should block at each line
-			.on('scroll', function(){	
+			.on('scroll', function(){
 				if( this.scrollTop > lastScrollPos ) {
 					this.scrollTop = Math.ceil(this.scrollTop/32) * 32;
 				}
@@ -189,6 +233,7 @@ define(function(require)
 						event.originalEvent.dataTransfer.setData("Text",
 							JSON.stringify( window._OBJ_DRAG_ = {
 								type: "item",
+								from: "inventory",
 								data:  list[i]
 							})
 						);

@@ -4,8 +4,6 @@
  * Account Storage
  *
  * This file is part of ROBrowser, Ragnarok Online in the Web Browser (http://www.robrowser.com/).
- *
- * @author Vincent Thibault
  */
 define(function(require)
 {
@@ -24,6 +22,7 @@ define(function(require)
 	var KEYS               = require('Controls/KeyEventHandler');
 	var UIManager          = require('UI/UIManager');
 	var UIComponent        = require('UI/UIComponent');
+	var InputBox           = require('UI/Components/InputBox/InputBox');
 	var ItemInfo           = require('UI/Components/ItemInfo/ItemInfo')
 	var Equipment          = require('UI/Components/Equipment/Equipment');
 	var htmlText           = require('text!./Storage.html');
@@ -77,13 +76,18 @@ define(function(require)
 	/**
 	 * @var {number} tab
 	 */
-	Storage.tab = Storage.TAB.ITEM;
+	Storage.tab = -1;
 
 
 	/**
-	 * @var {number} used to remember the window height
+	 * @var {Preference} structure to save
 	 */
-	Storage.realSize = 0;
+	Storage.preferences = Preferences.get('Storage', {
+		x:      200,
+		y:      500,
+		height:   8,
+		tab:      Storage.TAB.ITEM
+	}, 1.0);
 
 
 	/**
@@ -91,29 +95,19 @@ define(function(require)
 	 */
 	Storage.init = function Init()
 	{
-		// Preferences structure
-		this.preferences = Preferences.get('Storage', {
-			x:        200,
-			y:        500,
-			width:    8,
-			height:   60,
-			tab:      0
-		}, 1.0);
-
 		// Bind buttons
 		this.ui.find('.tabs button').mousedown(this.switchTab);
 		this.ui.find('.footer .extend').mousedown( this.extend.bind(this) );
 		this.ui.find('.footer .close').click( function() {
-            console.log('close pressed');
-            console.log(this)
-            Storage.ui.hide();
             Storage.onClosePressed();
 		} );
-		
+
 		// drag, drop items
-		//this.ui.on('dragover',  this.onDragOver.bind(this) );
-		//this.ui.on('dragleave', this.onDragLeave.bind(this) );
-		//this.ui.on('drop',      this.onDragDrop.bind(this) );
+		this.ui.on('drop', this.onDragDrop.bind(this));
+		this.ui.on('dragover', function(){
+			event.stopImmediatePropagation();
+			return false;
+		});
 
 		var overlay = this.ui.find('.overlay');
 		var lastScrollPos = 0;
@@ -121,18 +115,15 @@ define(function(require)
 		this.ui.find('.container .content')
 
 			// Scroll feature should block at each line
-			.on('scroll', function(){	
+			.on('scroll', function(){
 				if( this.scrollTop > lastScrollPos ) {
-					this.scrollTop = Math.ceil(this.scrollTop/32) * 32;
+					this.scrollTop = Math.floor(this.scrollTop/32) * 32;
 				}
 				else {
-					this.scrollTop = Math.floor(this.scrollTop/32) * 32;
+					this.scrollTop = Math.ceil(this.scrollTop/32) * 32;
 				}
 				lastScrollPos = this.scrollTop;
 			})
-
-
-		// TODO: move all this part to GenericItemSkill.js
 
 			// Title feature
 			.on('mouseover', '.item', function(){
@@ -150,7 +141,7 @@ define(function(require)
 
 						// Display box
 						overlay.show();
-						overlay.css({top: pos.top, left:pos.left+35});
+						overlay.css({top: pos.top-10, left:pos.left+35});
 						overlay.html(
 							( item.RefiningLevel ? '+' + item.RefiningLevel + ' ' : '') +
 							( item.IsIdentified ? it.identifiedDisplayName : it.unidentifiedDisplayName ) +
@@ -190,6 +181,7 @@ define(function(require)
 						event.originalEvent.dataTransfer.setData("Text",
 							JSON.stringify( window._OBJ_DRAG_ = {
 								type: "item",
+								from: "storage",
 								data:  list[i]
 							})
 						);
@@ -226,7 +218,7 @@ define(function(require)
 						// Add ui to window
 						ItemInfo.append();
 						ItemInfo.uid = list[i].ITID;
-						ItemInfo.I( list[i] );
+						ItemInfo.setItem( list[i] );
 						break;
 					}
 				}
@@ -243,20 +235,19 @@ define(function(require)
 	 * Apply preferences once append to body
 	 */
 	Storage.onAppend = function OnAppend()
-    {   console.log('on append');
+    {
         this.tab = this.preferences.tab;
+
 		Client.loadFile( DB.INTERFACE_PATH + "basic_interface/tab_itm_ex_0"+ (this.tab+1) +".bmp", function(data){
 			Storage.ui.find('.tabs').css('backgroundImage', 'url("' + data + '")');
 		});
 
-		this.resize( this.preferences.width, this.preferences.height );
+		this.resizeHeight(this.preferences.height);
 
 		this.ui.css({
 			top:  Math.min( Math.max( 0, this.preferences.y), Renderer.height - this.ui.height()),
 			left: Math.min( Math.max( 0, this.preferences.x), Renderer.width  - this.ui.width())
 		});
-
-		Storage.realSize = this.preferences.reduce ? 0 : this.ui.height();
 	};
 
 
@@ -267,25 +258,13 @@ define(function(require)
 	{
 		this.ui.find('.container .content').empty();
 		this.list.length = 0;
-		jQuery('.ItemInfo').remove();
 
 		// Save preferences
-		this.preferences.reduce = !!this.realSize;
 		this.preferences.tab    =  this.tab;
 		this.preferences.y      =  parseInt(this.ui.css('top'), 10);
 		this.preferences.x      =  parseInt(this.ui.css('left'), 10);
-		this.preferences.width  =  Math.floor( (this.ui.width()  - (23 + 16 + 16 - 30)) / 32 );
-		this.preferences.height =  Math.floor( (this.ui.height() - (31 + 19 - 30     )) / 32 );
+		this.preferences.height =  Math.floor( (this.ui.height() - (31 + 19 - 30)) / 32 );
 		this.preferences.save();
-	};
-
-
-	/**
-	 * Storage requested
-	 */
-	Storage.openRequest = function openRequest( )
-	{
-			this.ui[0].parentNode.appendChild(this.ui[0]);
 	};
 
 
@@ -296,40 +275,24 @@ define(function(require)
 	{
 		var ui      = this.ui;
 		var content = ui.find('.container .content');
-		var hide    = ui.find('.hide');
 		var top     = ui.position().top;
-		var left    = ui.position().left;
-		var lastWidth  = 0;
 		var lastHeight = 0;
 		var _Interval;
 
 		function Resizing()
 		{
-			var extraX = 23 + 16 + 16 - 30;
 			var extraY = 31 + 19 - 30;
-
-			var w = Math.floor( (Mouse.screen.x - left - extraX) / 32 );
 			var h = Math.floor( (Mouse.screen.y - top  - extraY) / 32 );
 
 			// Maximum and minimum window size
-			w = Math.min( Math.max(w, 6), 9);
-			h = Math.min( Math.max(h, 2), 6);
+			h = Math.min( Math.max(h, 8), 17);
 
-			if( w === lastWidth && h === lastHeight ) {
+			if( h === lastHeight ) {
 				return;
 			}
 
-			Storage.resize( w, h );
-			lastWidth  = w;
+			Storage.resizeHeight( h );
 			lastHeight = h;
-
-			//Show or hide scrollbar
-			if( content.height() === content[0].scrollHeight ) {
-				hide.show();
-			}
-			else {
-				hide.hide();
-			}
 		}
 
 		// Start resizing
@@ -351,21 +314,19 @@ define(function(require)
 	/**
 	 * Extend Storage window size
 	 */
-	Storage.resize = function Resize( width, height )
+	Storage.resizeHeight = function ResizeHeight(height)
 	{
-		width  = Math.min( Math.max(width,  6), 9);
-		height = Math.min( Math.max(height, 2), 6);
+		height = Math.min( Math.max(height, 8), 17);
 
 		this.ui.find('.container .content').css({
-			width:  width  * 32 + 13, // 13 = scrollbar
 			height: height * 32
 		});
 
 		this.ui.css({
-			width:  23 + 16 + 16 + width  * 32,
-			height: 31 + 19      + height * 32
+			height: 31 + 19 + height * 32
 		});
 	};
+
 
 
 	/**
@@ -435,33 +396,34 @@ define(function(require)
 		var ui = this.ui;
 		
 		switch( item.type ) {
-            case Storage.ITEM.HEALING:
+			case Storage.ITEM.HEALING:
 			case Storage.ITEM.USABLE:
-				tab = Storage.TAB.ITEM;
-				break;
-				
 			case Storage.ITEM.USABLE_SKILL:
 			case Storage.ITEM.USABLE_SKILL_UNK:
-				tab = Storage.TAB.KAFRA;
+				tab = Storage.TAB.ITEM;
 				break;
-				
-			case Storage.ITEM.USABLE.EQUIP:
-			case Storage.ITEM.USABLE.PETEQUIP:
-                tab = Storage.TAB.ARMOR;
-                break;
 
-            case Storage.ITEM.USABLE.WEAPON:
-                tab = Storage.TAB.ARMS;
-                break;
-                
-            case Storage.ITEM.USABLE.AMMO:
-                tab = Storage.TAB.AMMO;
-                break;
-                
-            case Storage.ITEM.USABLE.CARD:
-                tab = Storage.TAB.CARD;
-                break;
-			 
+			// TOFIX: WTH is it for ?
+			//	tab = Storage.TAB.KAFRA;
+			//	break;
+
+			case Storage.ITEM.EQUIP:
+			case Storage.ITEM.PETEQUIP:
+				tab = Storage.TAB.ARMOR;
+				break;
+
+			case Storage.ITEM.WEAPON:
+				tab = Storage.TAB.ARMS;
+				break;
+
+			case Storage.ITEM.AMMO:
+				tab = Storage.TAB.AMMO;
+				break;
+
+			case Storage.ITEM.CARD:
+				tab = Storage.TAB.CARD;
+				break;
+
 			default:
 			case Storage.ITEM.ETC:
 			case Storage.ITEM.PETEGG:
@@ -482,10 +444,6 @@ define(function(require)
 						'<span class="name">' + ( item.RefiningLevel ? '+' + item.RefiningLevel + ' ' : '') + ( item.IsIdentified ? it.identifiedDisplayName : it.unidentifiedDisplayName ) + '</span>' +
 					'</div>'
 				);
-
-				if( content.height() < content[0].scrollHeight ) {
-					ui.find('.hide').hide();
-				}
 			});
 		}
 
@@ -543,26 +501,22 @@ define(function(require)
 			this.addItemSub( this.list[i] );
 		}
 	};
-	
+
+
 	/**
 	 * Update or set the current amount of items in storage in ui
 	 */
-	Storage.setCurrent = function setCurrent( current ) {
+	Storage.setItemInfo = function SetItemInfo( current, limit ) {
 	    this.ui.find('.footer .current').text(current);
-	}
-	
-	/**
-	 * Update or set the current limit of the storage in ui
-	 */
-	Storage.setLimit = function setCurrent( limit ) {
-	    this.ui.find('.footer .limit').text(limit);
-	}
+		this.ui.find('.footer .limit').text(limit);
+	};
+
 
     /**
-     * Drag  & drop over item to storage
+     * Drag & drop over item to storage
      */
 	Storage.onDragDrop = function onDragDrop( event )
-	{ console.log(1);
+	{
 		var item, data;
 
 		try {
@@ -571,24 +525,42 @@ define(function(require)
 			);
 		}
 		catch(e) {}
-        console.log(data);
+
 		// Just support items for now ?
-		if( data && data.type === "item") {
+		if (data && data.type === "item" && data.from === "inventory") {
 			item = data.data;
-            console.log(item);
-            Storage.onDragToStorage( item.index, item.count );
+
+			// Have to specify how much
+			if( item.count > 1 ) {
+				InputBox.append();
+				InputBox.setType("number", false);
+				InputBox.onSubmitRequest = function OnSubmitRequest( count ) {
+					InputBox.remove();
+					Storage.reqAddItem(
+						item.index,
+						parseInt(count, 10 )
+					);
+				};
+			}
+
+			// Only one, don't have to specify
+			else {
+				Storage.reqAddItem( item.index, 1 );
+			}
+           
 		}
 
 		event.stopImmediatePropagation();
 		return false;
 	};
 
+
 	/**
 	 * Callbacks
 	 */
-	Storage.onClosePressed = function(){};
-	Storage.onDragToStorage = function(){};
-	Storage.onDragFromStorage = function(){};
+	Storage.onClosePressed  = function(){};
+	Storage.reqAddItem      = function(){};
+	Storage.reqRemoveItem   = function(){};
 
 
 	/**

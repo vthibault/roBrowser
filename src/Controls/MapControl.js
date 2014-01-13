@@ -163,7 +163,7 @@ function(
 		catch(e) {}
 
 		// Just support items for now ?
-		if( data && data.type === "item" ) {
+		if( data && data.type === "item" && data.from === "inventory") {
 
 			// Can't drop an item on map if Equipment window is open
 			if( Equipment.ui.is(':visible') ) {
