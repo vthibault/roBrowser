@@ -412,7 +412,7 @@ function(       Queue,        Client,     ClassTable,     ClassPalTable,     Mon
 			return null;
 		}
 
-		return "data/sprite/\xc0\xce\xb0\xa3\xc1\xb7/" + ClassTable[job] + "/" + ClassTable[job] + "_" + DB.SEX[sex] + ( WeaponTable.WeaponNameTable[id] || id ) ;
+		return "data/sprite/\xc0\xce\xb0\xa3\xc1\xb7/" + ClassTable[job] + "/" + ClassTable[job] + "_" + DB.SEX[sex] + ( WeaponTable.WeaponNameTable[id] || ("_" + id) ) ;
 	};
 
 
