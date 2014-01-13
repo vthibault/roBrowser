@@ -159,7 +159,7 @@ define(function(require)
 					var i, count =entries.length, j = 0;
 
 					function Removed(){
-						if ((++j) === count) {
+						if ((++j) >= count) {
 							parent.find('span').remove();
 							Intro.ui.find('.msg').text('');
 						}
@@ -172,6 +172,10 @@ define(function(require)
 						else {
 							entries[i].remove(Removed);
 						}
+					}
+
+					if (!count) {
+						Removed();
 					}
 				})
 			});
