@@ -175,22 +175,25 @@ function(        Executable,                  PACKETVER,       Thread,      Memo
 	 * @param {function} callback once loaded
 	 */
 	function getFiles( filenames, callback ) {
-		var i, count, index;
+		var count, index;
 		var out;
 	
 		function onload( data ) {
 			out[ index++ ] = data;
-			if ( index === count && callback )
+
+			if (index === count && callback) {
 				callback.apply( null, out);
+				return;
+			}
+
+			getFile( filenames[index], onload);
 		}
 
 		count  = filenames.length;
 		out    = new Array(count);
 		index  = 0;
 	
-		for ( i=0; i<count; ++i ) {
-			getFile( filenames[i], onload);
-		}
+		getFile( filenames[index], onload);
 	}
 
 
@@ -290,22 +293,25 @@ function(        Executable,                  PACKETVER,       Thread,      Memo
 	 * @param {function} callback once loaded
 	 */
 	function loadFiles( filenames, callback ) {
-		var i, count, index;
+		var count, index;
 		var out;
-	
+
 		function onload( data ) {
 			out[ index++ ] = data;
-			if ( index === count && callback )
+	
+			if (index === count && callback) {
 				callback.apply( null, out);
+				return;
+			}
+
+			loadFile( filenames[index], onload );
 		}
 
 		count  = filenames.length;
 		out    = new Array(count);
 		index  = 0;
-	
-		for ( i=0; i<count; ++i ) {
-			loadFile( filenames[i], onload, onload, [] );
-		}
+
+		loadFile( filenames[index], onload );
 	}
 
 
