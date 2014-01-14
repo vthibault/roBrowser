@@ -21,12 +21,10 @@ define(function(require)
 	var UIComponent = require('UI/UIComponent');
 	var htmlText    = require('text!./Intro.html');
 	var cssText     = require('text!./Intro.css');
-	var Particle    = require('./Particle');
-	var Preferences = require('Core/Preferences');
 	var Context     = require('Core/Context');
-
-
-	var _fs;
+	var Particle    = require('./Particle');
+	var Preferences = require('./Preferences');
+	var FileSystem  = require('./FileSystem');
 
 
 	/**
@@ -36,22 +34,9 @@ define(function(require)
 
 
 	/**
-	 * Files to load
+	 * @var {FileList}
 	 */
 	Intro.files = [];
-
-
-	/**
-	 * Intro preferences
-	 */
-	Intro.preferences = Preferences.get('Window', {
-		screensize:  '800x600',
-		quality:      100,
-		serverfile:  'clientinfo.xml',
-		serverlist:  [],
-		serverdef:   'serverfile',
-		save:        true
-	}, 1.1 );
 
 
 	/**
@@ -87,7 +72,7 @@ define(function(require)
 
 		var ui = this.ui;
 
-		this.preloadImages();
+		PreloadImages();
 
 		// About page
 		ui.find('.btn_about')
@@ -122,7 +107,7 @@ define(function(require)
 			.click(function(){
 				ui.find('input[type="file"]').click();
 			})
-			.on('drop', this.process )
+			.on('drop', Process )
 			.on('dragover', function(){
 				jQuery(this).addClass('over');
 				return false;
@@ -132,11 +117,9 @@ define(function(require)
 				return false;
 			})
 
-		// Input handler
+		// Set file by clicking the box
 		ui.find('input[type="file"]')
-			.on('change', this.process );
-
-
+			.on('change', Process );
 
 		// Modify quality
 		ui.find('.quality')
@@ -148,39 +131,16 @@ define(function(require)
 		ui.find('.clean')
 			.click(function(){
 				var parent = jQuery(this).hide().parent();
-
 				parent.append(
 					'<span><img src="'+ require.toUrl('./images/loading.gif')  +'"/> <i>Cleaning cache...</i></span>'
 				);
 
-				// Clean up
-				var dirReader = _fs.root.createReader();
-				dirReader.readEntries(function(entries){
-					var i, count =entries.length, j = 0;
-
-					function Removed(){
-						if ((++j) >= count) {
-							parent.find('span').remove();
-							Intro.ui.find('.msg').text('');
-						}
-					}
-
-					for (i = 0; i < count; ++i) {
-						if (entries[i].isDirectory) {
-							entries[i].removeRecursively(Removed);
-						}
-						else {
-							entries[i].remove(Removed);
-						}
-					}
-
-					if (!count) {
-						Removed();
-					}
-				})
+				FileSystem.cleanup(function(){
+					parent.find('span').remove();
+					Intro.ui.find('.msg').text('');
+				});
 			});
 	
-
 		// Stop propagation in overlay to avoid hiding the page
 		ui.find('.overlay')
 			.on('click', 'input[type="text"], a, button', function( event ){
@@ -216,7 +176,7 @@ define(function(require)
 
 		ui.find('.btn_save')
 			.on('click', function(){
-				Intro.savePreferences();
+				Preferences.save( ui );
 				ui.find('.overlay')
 					.animate({opacity:0}, 200, function(){
 						ui.find('.overlay').hide();
@@ -241,63 +201,34 @@ define(function(require)
 
 
 	/**
-	 * Resize window
+	 * Once append to body
 	 */
 	Intro.onAppend = function OnAppend()
 	{
+		// Show content saved
+		this.ui.find('.clean').hide();
+		FileSystem.getSize(function(used){
+			var msg = '';
+
+			if (used) {
+				if (used > 1024 * 1024 * 1024) {
+					msg = (used / 1024 / 1024 / 1024).toFixed(2) + ' Go saved';
+				}
+				else if (used > 1024 * 1024) {
+					msg = (used / 1024 / 1024).toFixed(2) + ' Mo saved';
+				}
+				else {
+					msg = (used / 1024).toFixed(2) + ' Mo saved';
+				}
+
+				this.ui.find('.msg').text(msg);
+				this.ui.find('.clean').show();
+			}
+		}.bind(this));
+
+		// Hook resize
 		var $window = jQuery(window);
 		var $intro  = this.ui.find('.intro');
-		var temporaryStorage  = navigator.temporaryStorage || navigator.webkitTemporaryStorage;
-		var requestFileSystem = self.requestFileSystem     || self.webkitRequestFileSystem;
-
-		this.ui.find('.clean').hide();
-
-		if (temporaryStorage && requestFileSystem) {
-			temporaryStorage.queryUsageAndQuota(function(used, remaining){
-				if (used) {
-					requestFileSystem( window.TEMPORARY, used, function( fs ){
-						_fs = fs;
-
-						function OnDataStored(used) {
-							Intro.ui.find('.clean').show();
-
-							var msg = '';
-							if (used > 1024 * 1024 * 1024) {
-								msg = (used / 1024 / 1024 / 1024).toFixed(2) + ' Go saved';
-							}
-							else if (used > 1024 * 1024) {
-								msg = (used / 1024 / 1024).toFixed(2) + ' Mo saved';
-							}
-							else {
-								msg = (used / 1024).toFixed(2) + ' Mo saved';
-							}
-
-							Intro.ui.find('.msg').text(msg);
-						}
-
-						// Remove upload folder
-						fs.root.getDirectory('/__tmp_upload/', {create:false}, function(dirEntry){
-							dirEntry.removeRecursively(function(){
-								// Resize quota
-								temporaryStorage.queryUsageAndQuota(function(used, remaining){
-									if (used) {
-										requestFileSystem( window.TEMPORARY, used, function( fs ){
-											_fs = fs;
-											OnDataStored(used);
-										});
-									}
-								});
-							});
-
-						// no upload directory, listening content
-						}, function(){
-							OnDataStored(used);
-						});
-					});
-				}
-			});
-		}
-
 		$window.on('resize.intro',function(){
 			$intro.css(
 				'transform',
@@ -308,30 +239,29 @@ define(function(require)
 				')'
 			);
 		});
-
 		$window.trigger('resize.intro');
 
+		// Initialize window and particle
 		Particle.init( 100, this.ui.find('canvas')[0] );
-
-		this.loadPreferences();
+		Preferences.load( this.ui );
 	};
 
 
 	/**
-	 * Remove auto-resize
+	 * Once removed
 	 */
 	Intro.onRemove = function OnRemove()
 	{
 		jQuery(window).off('resize.intro');
 		Particle.stop();
 		this.ui.find('.overlay').hide();
-	}
+	};
 
 
 	/**
-	 * Load images to add some styles to the Intro
+	 * Start loading images
 	 */
-	Intro.preloadImages = function PreloadImages()
+	function PreloadImages()
 	{
 		// Background images
 		jQuery('style:first').append([
@@ -346,138 +276,13 @@ define(function(require)
 		].join('\n'));
 
 		// Add images to IMG tag
-		this.ui.find('.icon img').attr('src', require.toUrl('./images/icon.png') );
-		this.ui.find('.btn_about img').attr('src', require.toUrl('./images/about.png') );
-		this.ui.find('.btn_settings img').attr('src', require.toUrl('./images/settings.png') );
+		Intro.ui.find('.icon img').attr('src', require.toUrl('./images/icon.png') );
+		Intro.ui.find('.btn_about img').attr('src', require.toUrl('./images/about.png') );
+		Intro.ui.find('.btn_settings img').attr('src', require.toUrl('./images/settings.png') );
 
 		// Preload image
 		(new Image).src = require.toUrl('./images/play-down.png');
-	};
-
-
-	/**
-	 * Bind html with preferences
-	 */
-	Intro.loadPreferences = function LoadPreferences()
-	{
-		this.ui.find('.screensize').val( this.preferences.screensize );
-		this.ui.find('.quality').val( this.preferences.quality ).trigger('change');
-
-		this.ui.find('.serverdef').attr('checked', false );
-		this.ui.find('.serverdef[value="'+ this.preferences.serverdef +'"]').attr('checked', 'true').trigger('click');
-		this.ui.find('.clientinfo').val( this.preferences.serverfile );
-
-		if( !self.requestFileSystem && !self.webkitRequestFileSystem ) {
-			this.ui.find('.save').attr('disabled', 'disabled');
-		}
-
-		else if( ROConfig.hasOwnProperty('saveFiles') && ROConfig.saveFiles === false) {
-			this.ui.find('.save').attr('disabled', 'disabled');
-		}
-		else {
-			this.ui.find('.save').attr('checked', this.preferences.saveFiles ? 'checked' : false );
-		}
-
-		var i, count;
-		var serverlist = this.preferences.serverlist;
-		var $servers = this.ui.find('.servers').empty();
-
-		for( i = 0, count = serverlist.length; i < count; ++i ) {
-			$servers.append(
-				'<tr>' +
-				'	<td><input type="text" class="display" value="'+ serverlist[i].display +'"/></td>' +
-				'	<td><input type="text" class="address" value="'+ serverlist[i].address +':'+ serverlist[i].port +'"/></td>' +
-				'	<td><input type="text" class="version" value="'+ serverlist[i].version +'"/></td>' +
-				'	<td><input type="text" class="langtype" value="'+ serverlist[i].langtype +'"/></td>' +
-				'	<td><input type="text" class="packetver" value="'+ serverlist[i].packetver + '"/></td>' +
-				'	<td><button class="btn_delete"></button></td>' +
-				'</tr>'
-			);
-		}
-
-		this.applyPreferences();
-	};
-
-
-	/**
-	 * Save preferences to user storage.
-	 */
-	Intro.savePreferences = function SavePreferences()
-	{
-		this.preferences.screensize = this.ui.find('.screensize').val();
-		this.preferences.quality    = this.ui.find('.quality').val();
-		this.preferences.saveFiles  = this.ui.find('.save:checked').length ? true : false;
-
-		var $servers = this.ui.find('.servers');
-		var i, count = $servers.find('tr').length;
-		var $server;
-
-		if( ROConfig.serverEditMode ) {
-			this.preferences.serverdef  = this.ui.find('.serverdef:checked').val();
-			this.preferences.serverfile = this.ui.find('.clientinfo').val();
-			this.preferences.serverlist = [];
-
-			for( i = 0; i < count; ++i ) {
-				$server = $servers.find('tr:eq('+ i +')');
-				this.preferences.serverlist.push({
-					display:   $server.find('.display').val(),
-					address:   $server.find('.address').val().split(':')[0],
-					port:      parseInt( $server.find('.address').val().split(':')[1], 10),
-					version:   $server.find('.version').val(),
-					langtype:  $server.find('.langtype').val(),
-					packetver: $server.find('.packetver').val()
-				});
-			}
-		}
-
-		this.preferences.save();
-		this.applyPreferences();
-	};
-
-
-	/**
-	 * Apply preferences, resize window, etc
-	 */
-	Intro.applyPreferences = function ApplyPreferences()
-	{
-		var isFullScreen = Context.isFullScreen();
-
-		// Full Screen support
-		if( this.preferences.screensize === "full" ) {
-			if(!isFullScreen ) {
-				Context.requestFullScreen();
-			}
-		}
-		else {
-	
-			if( isFullScreen ) {
-				Context.cancelFullScreen();
-			}
-
-			// Resizing
-			if( Context.Is.POPUP ) {
-				var size = this.preferences.screensize.split("x");
-				window.resizeTo( size[0], size[1] );
-				window.moveTo( (screen.availWidth - size[0]) / 2, (screen.availHeight - size[1]) / 2 );
-			}
-		}
-
-		if( ROConfig.serverEditMode ) {
-			// Bind data
-			if( this.preferences.serverdef === 'serverlist' ) {
-				ROConfig.servers = this.preferences.serverlist;
-			}
-			else {
-				ROConfig.servers = 'data/' + this.preferences.serverfile;
-			}
-		}
-
-		if( !ROConfig.hasOwnProperty('saveFiles') || ROConfig.saveFiles === true ) {
-			ROConfig.saveFiles = this.preferences.saveFiles;
-		}
-
-		ROConfig.quality = this.preferences.quality;
-	};
+	}
 
 
 	/**
@@ -485,7 +290,7 @@ define(function(require)
 	 * @param {object} event
 	 * @return {boolean} false
 	 */
-	Intro.process = function Process( event )
+	function Process( event )
 	{
 		var i, count;
 
@@ -498,7 +303,6 @@ define(function(require)
 		event.stopImmediatePropagation();
 		jQuery(this).removeClass('over');
 
-
 		function Process(files) {
 			if( files.length ) {
 				Intro.files.push.apply( Intro.files, files );
@@ -506,7 +310,7 @@ define(function(require)
 			}
 		}
 
-
+		// Extract files from directory
 		function RecursiveReader(entry){
 			if (entry.isFile) {
 				++_file_count;
@@ -531,13 +335,11 @@ define(function(require)
 			}
 		}
 
-
 		// input[type="file"]
 		if ('files' in this) {
 			Process(this.files);
 			return false;
 		}
-
 
 		// drag drop
 		if (event.originalEvent.dataTransfer) {
@@ -556,7 +358,6 @@ define(function(require)
 				return false;
 			}
 		}
-
 
 		Process(_files);
 		return false;
