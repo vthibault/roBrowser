@@ -99,7 +99,7 @@ define(function(require)
 		this.ui.find('.tabs button').mousedown(this.switchTab);
 		this.ui.find('.footer .extend').mousedown( this.extend.bind(this) );
 		this.ui.find('.footer .close').click( function() {
-            Storage.onClosePressed();
+			Storage.onClosePressed();
 		} );
 
 		// drag, drop items
@@ -235,8 +235,8 @@ define(function(require)
 	 * Apply preferences once append to body
 	 */
 	Storage.onAppend = function OnAppend()
-    {
-        this.tab = this.preferences.tab;
+	{
+		this.tab = this.preferences.tab;
 
 		Client.loadFile( DB.INTERFACE_PATH + "basic_interface/tab_itm_ex_0"+ (this.tab+1) +".bmp", function(data){
 			Storage.ui.find('.tabs').css('backgroundImage', 'url("' + data + '")');
@@ -507,14 +507,14 @@ define(function(require)
 	 * Update or set the current amount of items in storage in ui
 	 */
 	Storage.setItemInfo = function SetItemInfo( current, limit ) {
-	    this.ui.find('.footer .current').text(current);
+		this.ui.find('.footer .current').text(current);
 		this.ui.find('.footer .limit').text(limit);
 	};
 
 
-    /**
-     * Drag & drop over item to storage
-     */
+	/**
+	 * Drag & drop over item to storage
+	 */
 	Storage.onDragDrop = function onDragDrop( event )
 	{
 		var item, data;
@@ -547,7 +547,6 @@ define(function(require)
 			else {
 				Storage.reqAddItem( item.index, 1 );
 			}
-           
 		}
 
 		event.stopImmediatePropagation();

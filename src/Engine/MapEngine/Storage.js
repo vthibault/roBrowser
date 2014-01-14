@@ -99,6 +99,10 @@ define(function( require )
 	 */
 	Storage.reqAddItem = function ReqAddItem( index, count )
 	{
+		if (count <= 0) {
+			return;
+		}
+
 		var pkt   = new PACKET.CZ.MOVE_ITEM_FROM_BODY_TO_STORE();
 		pkt.index = index;
 		pkt.count = count;
@@ -112,6 +116,10 @@ define(function( require )
 	 */
 	Storage.reqRemoveItem = function ReqRemoveItem( index, count )
 	{
+		if (count <= 0) {
+			return;
+		}
+
 		var pkt   = new PACKET.CZ.MOVE_ITEM_FROM_STORE_TO_BODY();
 		pkt.index = index;
 		pkt.count = count;
@@ -124,12 +132,16 @@ define(function( require )
 	 */
 	return function ItemEngine()
 	{
-		Network.hookPacket( PACKET.ZC.STORE_NORMAL_ITEMLIST3,           StorageAddItemList );
-		Network.hookPacket( PACKET.ZC.STORE_EQUIPMENT_ITEMLIST3,        StorageAddItemList ); 
-		Network.hookPacket( PACKET.ZC.NOTIFY_STOREITEM_COUNTINFO,       OnStorageInfo);
-		Network.hookPacket( PACKET.ZC.ADD_ITEM_TO_STORE,                OnStorageItemAdded );
-		Network.hookPacket( PACKET.ZC.ADD_ITEM_TO_STORE2,               OnStorageItemAdded );
-		Network.hookPacket( PACKET.ZC.CLOSE_STORE,                      OnStorageClose );
-		Network.hookPacket( PACKET.ZC.DELETE_ITEM_FROM_STORE,           OnStorageItemRemoved );
+		Network.hookPacket( PACKET.ZC.STORE_NORMAL_ITEMLIST,      StorageAddItemList );
+		Network.hookPacket( PACKET.ZC.STORE_NORMAL_ITEMLIST2,     StorageAddItemList );
+		Network.hookPacket( PACKET.ZC.STORE_NORMAL_ITEMLIST3,     StorageAddItemList );
+		Network.hookPacket( PACKET.ZC.STORE_EQUIPMENT_ITEMLIST,   StorageAddItemList );
+		Network.hookPacket( PACKET.ZC.STORE_EQUIPMENT_ITEMLIST2,  StorageAddItemList ); 
+		Network.hookPacket( PACKET.ZC.STORE_EQUIPMENT_ITEMLIST3,  StorageAddItemList ); 
+		Network.hookPacket( PACKET.ZC.NOTIFY_STOREITEM_COUNTINFO, OnStorageInfo);
+		Network.hookPacket( PACKET.ZC.ADD_ITEM_TO_STORE,          OnStorageItemAdded );
+		Network.hookPacket( PACKET.ZC.ADD_ITEM_TO_STORE2,         OnStorageItemAdded );
+		Network.hookPacket( PACKET.ZC.CLOSE_STORE,                OnStorageClose );
+		Network.hookPacket( PACKET.ZC.DELETE_ITEM_FROM_STORE,     OnStorageItemRemoved );
 	};
 });
