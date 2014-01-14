@@ -616,6 +616,10 @@ define(function(require)
 	Inventory.removeItem = function RemoveItem( index, count )
 	{
 		var i, size;
+		
+		if(count === 0) { //Count === 0 means the emulator failed to complete the operation, so dont remove the item frm the ui
+            return null;
+		}
 
 		for( i = 0, size = this.list.length; i < size; ++i ) {
 
