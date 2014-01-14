@@ -1,11 +1,9 @@
 /**
- * UI/Components/Inventory/Inventory.js
+ * UI/Components/Storage/Storage.js
  *
- * Chararacter Inventory
+ * Account Storage
  *
  * This file is part of ROBrowser, Ragnarok Online in the Web Browser (http://www.robrowser.com/).
- *
- * @author Vincent Thibault
  */
 define(function(require)
 {
@@ -25,23 +23,22 @@ define(function(require)
 	var UIManager          = require('UI/UIManager');
 	var UIComponent        = require('UI/UIComponent');
 	var InputBox           = require('UI/Components/InputBox/InputBox');
-	var ItemInfo           = require('UI/Components/ItemInfo/ItemInfo');
+	var ItemInfo           = require('UI/Components/ItemInfo/ItemInfo')
 	var Equipment          = require('UI/Components/Equipment/Equipment');
-	var htmlText           = require('text!./Inventory.html');
-	var cssText            = require('text!./Inventory.css');
-
+	var htmlText           = require('text!./Storage.html');
+	var cssText            = require('text!./Storage.css');
 
 
 	/**
 	 * Create Component
 	 */
-	var Inventory = new UIComponent( 'Inventory', htmlText, cssText );
+	var Storage = new UIComponent( 'Storage', htmlText, cssText );
 
 
 	/**
 	 * Item type constants
 	 */
-	Inventory.ITEM = {
+	Storage.ITEM = {
 		HEALING:       0,
 		USABLE:        2,
 		ETC:           3,
@@ -59,100 +56,54 @@ define(function(require)
 	/**
 	 * Tab constant
 	 */
-	Inventory.TAB = {
-		USABLE: 0,
-		EQUIP:  1,
-		ETC:    2
+	Storage.TAB = {
+		ITEM:   0,
+		KAFRA:  1,
+		ARMOR:  2,
+		ARMS:   3,
+		AMMO:   4,
+		CARD:   5,
+		ETC:    6
 	};
 
 
 	/**
 	 * Store inventory items
 	 */
-	Inventory.list = [];
+	Storage.list = [];
 
 
 	/**
 	 * @var {number} tab
 	 */
-	Inventory.tab = Inventory.TAB.USABLE;
+	Storage.tab = -1;
 
 
 	/**
-	 * @var {number} used to remember the window height
+	 * @var {Preference} structure to save
 	 */
-	Inventory.realSize = 0;
+	Storage.preferences = Preferences.get('Storage', {
+		x:      200,
+		y:      500,
+		height:   8,
+		tab:      Storage.TAB.ITEM
+	}, 1.0);
 
 
 	/**
 	 * Initialize UI
 	 */
-	Inventory.init = function Init()
+	Storage.init = function Init()
 	{
-		// Preferences structure
-		this.preferences = Preferences.get('Inventory', {
-			x:        200,
-			y:        200,
-			width:    7,
-			height:   4,
-			show:     false,
-			reduce:   false,
-			tab:      this.TAB.USABLE
-		}, 1.0);
-
-		// Don't activate drag drop when clicking on buttons
-		this.ui.find('.titlebar .base').mousedown(function( event ){
-			event.stopImmediatePropagation();
-		})
-
 		// Bind buttons
-		this.ui.find('.titlebar .mini').click(this.toggleReduction.bind(this));
 		this.ui.find('.tabs button').mousedown(this.switchTab);
 		this.ui.find('.footer .extend').mousedown( this.extend.bind(this) );
-		this.ui.find('.titlebar .close').click(function(){
-			Inventory.ui.hide();
-			return false;
-		});
+		this.ui.find('.footer .close').click( function() {
+			Storage.onClosePressed();
+		} );
 
-
-		// on drop item
-		this.ui.on('drop', function(event){
-			var item, data;
-
-			try {
-				data = JSON.parse(
-					event.originalEvent.dataTransfer.getData("Text")
-				);
-			}
-			catch(e) {}
-
-			// Just support items for now ?
-			if( data && data.type === "item" && data.from === "storage") {
-				item = data.data;
-
-				// Have to specify how much
-				if( item.count > 1 ) {
-					InputBox.append();
-					InputBox.setType("number", false);
-					InputBox.onSubmitRequest = function OnSubmitRequest( count ) {
-						InputBox.remove();
-						require('UI/Components/Storage/Storage').reqRemoveItem(
-							item.index,
-							parseInt(count, 10 )
-						);
-					};
-				}
-
-				// Only one, don't have to specify
-				else {
-					require('UI/Components/Storage/Storage').reqRemoveItem( item.index, 1 );
-				}
-			}
-
-			event.stopImmediatePropagation();
-			return false;
-		})
-
+		// drag, drop items
+		this.ui.on('drop', this.onDragDrop.bind(this));
 		this.ui.on('dragover', function(){
 			event.stopImmediatePropagation();
 			return false;
@@ -166,21 +117,18 @@ define(function(require)
 			// Scroll feature should block at each line
 			.on('scroll', function(){
 				if( this.scrollTop > lastScrollPos ) {
-					this.scrollTop = Math.ceil(this.scrollTop/32) * 32;
+					this.scrollTop = Math.floor(this.scrollTop/32) * 32;
 				}
 				else {
-					this.scrollTop = Math.floor(this.scrollTop/32) * 32;
+					this.scrollTop = Math.ceil(this.scrollTop/32) * 32;
 				}
 				lastScrollPos = this.scrollTop;
 			})
 
-
-		// TODO: move all this part to GenericItemSkill.js
-
 			// Title feature
 			.on('mouseover', '.item', function(){
 				var i, count;
-				var items = Inventory.list;
+				var items = Storage.list;
 				var idx  = parseInt( this.className.match(/ (\d+)$/)[1], 10);
 
 				for( i = 0, count = items.length; i < count ; ++i ) {
@@ -193,7 +141,7 @@ define(function(require)
 
 						// Display box
 						overlay.show();
-						overlay.css({top: pos.top, left:pos.left+35});
+						overlay.css({top: pos.top-10, left:pos.left+35});
 						overlay.html(
 							( item.RefiningLevel ? '+' + item.RefiningLevel + ' ' : '') +
 							( item.IsIdentified ? it.identifiedDisplayName : it.unidentifiedDisplayName ) +
@@ -228,12 +176,12 @@ define(function(require)
 				var index   = parseInt(matches[2], 10);
 				var list, i, count;
 
-				for( i = 0, list = Inventory.list, count = list.length; i < count; ++i ) {
+				for( i = 0, list = Storage.list, count = list.length; i < count; ++i ) {
 					if( list[i].index === index ) {
 						event.originalEvent.dataTransfer.setData("Text",
 							JSON.stringify( window._OBJ_DRAG_ = {
 								type: "item",
-								from: "inventory",
+								from: "storage",
 								data:  list[i]
 							})
 						);
@@ -258,7 +206,7 @@ define(function(require)
 				var list;
 				var i, count;
 
-				for( i = 0, list = Inventory.list, count = list.length; i < count; ++i ) {
+				for( i = 0, list = Storage.list, count = list.length; i < count; ++i ) {
 					if( list[i].index === index ) {
 
 						// Don't add the same UI twice, remove it
@@ -279,43 +227,6 @@ define(function(require)
 				return false;
 			})
 
-			// Equip/Use item
-			.on('dblclick', '.item', function(event) {
-				var matches = this.className.match(/(\w+) (\d+)/);
-				var index   = parseInt(matches[2], 10);
-				var list;
-				var i, count;
-
-				for( i = 0, list = Inventory.list, count = list.length; i < count; ++i ) {
-					if( list[i].index === index ) {
-						switch( list[i].type ) {
-							// Usable item
-							case Inventory.ITEM.HEALING:
-							case Inventory.ITEM.USABLE:
-							//case Inventory.ITEM.USABLE_SKILL:
-							case Inventory.ITEM.USABLE_UNK:
-								Inventory.onUseItem( index );
-								overlay.hide();
-								break;
-
-							// Equip item
-							case Inventory.ITEM.WEAPON:
-							case Inventory.ITEM.EQUIP:
-							case Inventory.ITEM.PETEQUIP:
-								if( list[i].IsIdentified && !list[i].IsDamaged ) {
-									Inventory.onEquipItem( index, list[i].location );
-									overlay.hide();
-								}
-								break;
-						}
-						break;
-					}
-				}
-
-				event.stopImmediatePropagation();
-				return false;
-			});
-
 		this.draggable();
 	};
 
@@ -323,113 +234,65 @@ define(function(require)
 	/**
 	 * Apply preferences once append to body
 	 */
-	Inventory.onAppend = function OnAppend()
+	Storage.onAppend = function OnAppend()
 	{
-		// Apply preferences
-		if( !this.preferences.show ) {
-			this.ui.hide();
-		}
-
 		this.tab = this.preferences.tab;
-		Client.loadFile( DB.INTERFACE_PATH + "basic_interface/tab_itm_0"+ (this.tab+1) +".bmp", function(data){
-			Inventory.ui.find('.tabs').css('backgroundImage', 'url("' + data + '")');
+
+		Client.loadFile( DB.INTERFACE_PATH + "basic_interface/tab_itm_ex_0"+ (this.tab+1) +".bmp", function(data){
+			Storage.ui.find('.tabs').css('backgroundImage', 'url("' + data + '")');
 		});
 
-		this.resize( this.preferences.width, this.preferences.height );
+		this.resizeHeight(this.preferences.height);
 
 		this.ui.css({
 			top:  Math.min( Math.max( 0, this.preferences.y), Renderer.height - this.ui.height()),
 			left: Math.min( Math.max( 0, this.preferences.x), Renderer.width  - this.ui.width())
 		});
-
-		Inventory.realSize = this.preferences.reduce ? 0 : this.ui.height();
-		this.ui.find('.titlebar .mini').trigger('mousedown');
 	};
 
 
 	/**
-	 * Remove Inventory from window (and so clean up items)
+	 * Remove Storage from window (and so clean up items)
 	 */
-	Inventory.onRemove = function OnRemove()
+	Storage.onRemove = function OnRemove()
 	{
 		this.ui.find('.container .content').empty();
 		this.list.length = 0;
-		jQuery('.ItemInfo').remove();
 
 		// Save preferences
-		this.preferences.show   =  this.ui.is(':visible');
-		this.preferences.reduce = !!this.realSize;
 		this.preferences.tab    =  this.tab;
 		this.preferences.y      =  parseInt(this.ui.css('top'), 10);
 		this.preferences.x      =  parseInt(this.ui.css('left'), 10);
-		this.preferences.width  =  Math.floor( (this.ui.width()  - (23 + 16 + 16 - 30)) / 32 );
-		this.preferences.height =  Math.floor( (this.ui.height() - (31 + 19 - 30     )) / 32 );
+		this.preferences.height =  Math.floor( (this.ui.height() - (31 + 19 - 30)) / 32 );
 		this.preferences.save();
 	};
 
 
 	/**
-	 * Key Listener
-	 *
-	 * @param {object} event
-	 * @return {boolean}
+	 * Extend Storage window size
 	 */
-	Inventory.onKeyDown = function OnKeyDown( event )
-	{
-		if( KEYS.ALT && event.which === KEYS.E ) {
-			this.ui.toggle();
-			if( this.ui.is(':visible') ) {
-				this.ui[0].parentNode.appendChild(this.ui[0]);
-			}
-			event.stopImmediatePropagation();
-			return false;
-		}
-
-		return true;
-	};
-
-
-	/**
-	 * Extend inventory window size
-	 */
-	Inventory.extend = function Extend( event )
+	Storage.extend = function Extend( event )
 	{
 		var ui      = this.ui;
 		var content = ui.find('.container .content');
-		var hide    = ui.find('.hide');
 		var top     = ui.position().top;
-		var left    = ui.position().left;
-		var lastWidth  = 0;
 		var lastHeight = 0;
 		var _Interval;
 
 		function Resizing()
 		{
-			var extraX = 23 + 16 + 16 - 30;
 			var extraY = 31 + 19 - 30;
-
-			var w = Math.floor( (Mouse.screen.x - left - extraX) / 32 );
 			var h = Math.floor( (Mouse.screen.y - top  - extraY) / 32 );
 
 			// Maximum and minimum window size
-			w = Math.min( Math.max(w, 6), 9);
-			h = Math.min( Math.max(h, 2), 6);
+			h = Math.min( Math.max(h, 8), 17);
 
-			if( w === lastWidth && h === lastHeight ) {
+			if( h === lastHeight ) {
 				return;
 			}
 
-			Inventory.resize( w, h );
-			lastWidth  = w;
+			Storage.resizeHeight( h );
 			lastHeight = h;
-
-			//Show or hide scrollbar
-			if( content.height() === content[0].scrollHeight ) {
-				hide.show();
-			}
-			else {
-				hide.hide();
-			}
 		}
 
 		// Start resizing
@@ -449,59 +312,35 @@ define(function(require)
 
 
 	/**
-	 * Extend inventory window size
+	 * Extend Storage window size
 	 */
-	Inventory.resize = function Resize( width, height )
+	Storage.resizeHeight = function ResizeHeight(height)
 	{
-		width  = Math.min( Math.max(width,  6), 9);
-		height = Math.min( Math.max(height, 2), 6);
+		height = Math.min( Math.max(height, 8), 17);
 
 		this.ui.find('.container .content').css({
-			width:  width  * 32 + 13, // 13 = scrollbar
 			height: height * 32
 		});
 
 		this.ui.css({
-			width:  23 + 16 + 16 + width  * 32,
-			height: 31 + 19      + height * 32
+			height: 31 + 19 + height * 32
 		});
 	};
+
 
 
 	/**
 	 * Modify tab, filter display entries
 	 */
-	Inventory.switchTab = function SwitchTab( event )
+	Storage.switchTab = function SwitchTab( event )
 	{
 		var idx = jQuery(this).index();
-		Inventory.tab = idx;
+		Storage.tab = idx;
 
-		Client.loadFile("basic_interface/tab_itm_0"+ (idx+1) +".bmp", function(data){
-			Inventory.ui.find('.tabs').css('backgroundImage', 'url("' + data + '")');
-			Inventory.filter(idx);
+		Client.loadFile("basic_interface/tab_itm_ex_0"+ (idx+1) +".bmp", function(data){
+			Storage.ui.find('.tabs').css('backgroundImage', 'url("' + data + '")');
+			Storage.filter(idx);
 		});
-
-		event.stopImmediatePropagation();
-		return false;
-	};
-
-
-	/**
-	 * Hide/show inventory's content
-	 */
-	Inventory.toggleReduction = function ToggleReduction( event )
-	{
-		// TODO: fix this part
-		if( this.realSize ) {
-			this.ui.find('.panel').show();
-			this.ui.height(this.realSize);
-			this.realSize = 0;
-		}
-		else {
-			this.realSize = this.ui.height();
-			this.ui.height(17);
-			this.ui.find('.panel').hide();
-		}
 
 		event.stopImmediatePropagation();
 		return false;
@@ -511,7 +350,7 @@ define(function(require)
 	/**
 	 * Add items to the list
 	 */
-	Inventory.setItems = function SetItems(items)
+	Storage.setItems = function SetItems(items)
 	{
 		var i, count;
 
@@ -524,11 +363,11 @@ define(function(require)
 
 
 	/**
-	 * Insert Item to inventory
+	 * Insert Item to Storage
 	 *
 	 * @param {object} Item
 	 */
-	Inventory.addItem = function AddItem( item )
+	Storage.addItem = function AddItem( item )
 	{
 		var i, size;
 
@@ -547,42 +386,49 @@ define(function(require)
 
 
 	/**
-	 * Add item to inventory
+	 * Add item to Storage
 	 *
 	 * @param {object} Item
 	 */
-	Inventory.addItemSub = function AddItemSub( item )
+	Storage.addItemSub = function AddItemSub( item )
 	{
 		var tab;
 		var ui = this.ui;
-
+		
 		switch( item.type ) {
-			case Inventory.ITEM.HEALING:
-			case Inventory.ITEM.USABLE:
-			case Inventory.ITEM.USABLE_SKILL:
-			case Inventory.ITEM.USABLE_UNK:
-				tab = Inventory.TAB.USABLE;
+			case Storage.ITEM.HEALING:
+			case Storage.ITEM.USABLE:
+			case Storage.ITEM.USABLE_SKILL:
+			case Storage.ITEM.USABLE_SKILL_UNK:
+				tab = Storage.TAB.ITEM;
 				break;
 
-			case Inventory.ITEM.WEAPON:
-			case Inventory.ITEM.EQUIP:
-			case Inventory.ITEM.PETEGG:
-			case Inventory.ITEM.PETEQUIP:
-				tab = Inventory.TAB.EQUIP;
+			// TOFIX: WTH is it for ?
+			//	tab = Storage.TAB.KAFRA;
+			//	break;
+
+			case Storage.ITEM.EQUIP:
+			case Storage.ITEM.PETEQUIP:
+				tab = Storage.TAB.ARMOR;
+				break;
+
+			case Storage.ITEM.WEAPON:
+				tab = Storage.TAB.ARMS;
+				break;
+
+			case Storage.ITEM.AMMO:
+				tab = Storage.TAB.AMMO;
+				break;
+
+			case Storage.ITEM.CARD:
+				tab = Storage.TAB.CARD;
 				break;
 
 			default:
-			case Inventory.ITEM.ETC:
-			case Inventory.ITEM.CARD:
-			case Inventory.ITEM.AMMO:
-				tab = Inventory.TAB.ETC;
+			case Storage.ITEM.ETC:
+			case Storage.ITEM.PETEGG:
+				tab = Storage.TAB.ETC;
 				break;
-		}
-
-		// Equip item (if not arrow)
-		if( item.WearState && item.WearState !== 32768 ) {
-			Equipment.equip(item);
-			return false;
 		}
 
 		if( tab === this.tab ) {
@@ -595,12 +441,9 @@ define(function(require)
 					'<div class="item '+ item.index +'" draggable="true">' +
 						'<button style="background-image:url(' + data + ')"></button>' +
 						'<div class="amount">'+ (item.count ? '<span class="count">' + item.count + '</span>' + ' ' : '') + '</div>' +
+						'<span class="name">' + ( item.RefiningLevel ? '+' + item.RefiningLevel + ' ' : '') + ( item.IsIdentified ? it.identifiedDisplayName : it.unidentifiedDisplayName ) + '</span>' +
 					'</div>'
 				);
-
-				if( content.height() < content[0].scrollHeight ) {
-					ui.find('.hide').hide();
-				}
 			});
 		}
 
@@ -609,17 +452,13 @@ define(function(require)
 
 
 	/**
-	 * Remove item from inventory
+	 * Remove item from Storage
 	 *
-	 * @param {number} index in inventory
+	 * @param {number} index in Storage
 	 */
-	Inventory.removeItem = function RemoveItem( index, count )
+	Storage.removeItem = function RemoveItem( index, count )
 	{
 		var i, size;
-		
-		if(count === 0) { //Count === 0 means the emulator failed to complete the operation, so dont remove the item frm the ui
-			return null;
-		}
 
 		for( i = 0, size = this.list.length; i < size; ++i ) {
 
@@ -653,7 +492,7 @@ define(function(require)
 	/**
 	 * Update tabulation
 	 */
-	Inventory.filter = function Filter(tab)
+	Storage.filter = function Filter( tab )
 	{
 		this.ui.find('.container .content').empty();
 		var i, count;
@@ -665,14 +504,66 @@ define(function(require)
 
 
 	/**
-	 * Abstract function to define
+	 * Update or set the current amount of items in storage in ui
 	 */
-	Inventory.onUseItem   = function OnUseItem( index ){};
-	Inventory.onEquipItem = function OnEquipItem( index, location ){};
+	Storage.setItemInfo = function SetItemInfo( current, limit ) {
+		this.ui.find('.footer .current').text(current);
+		this.ui.find('.footer .limit').text(limit);
+	};
+
+
+	/**
+	 * Drag & drop over item to storage
+	 */
+	Storage.onDragDrop = function onDragDrop( event )
+	{
+		var item, data;
+
+		try {
+			data = JSON.parse(
+				event.originalEvent.dataTransfer.getData("Text")
+			);
+		}
+		catch(e) {}
+
+		// Just support items for now ?
+		if (data && data.type === "item" && data.from === "inventory") {
+			item = data.data;
+
+			// Have to specify how much
+			if( item.count > 1 ) {
+				InputBox.append();
+				InputBox.setType("number", false);
+				InputBox.onSubmitRequest = function OnSubmitRequest( count ) {
+					InputBox.remove();
+					Storage.reqAddItem(
+						item.index,
+						parseInt(count, 10 )
+					);
+				};
+			}
+
+			// Only one, don't have to specify
+			else {
+				Storage.reqAddItem( item.index, 1 );
+			}
+		}
+
+		event.stopImmediatePropagation();
+		return false;
+	};
+
+
+	/**
+	 * Callbacks
+	 */
+	Storage.onClosePressed  = function(){};
+	Storage.reqAddItem      = function(){};
+	Storage.reqRemoveItem   = function(){};
 
 
 	/**
 	 * Create component and export it
 	 */
-	return UIManager.addComponent(Inventory);
+	return UIManager.addComponent(Storage);
 });

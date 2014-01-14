@@ -110,6 +110,7 @@ define(function( require )
 		require('./MapEngine/Entity').call();
 		require('./MapEngine/Item').call();
 		require('./MapEngine/PrivateMessage').call();
+		require('./MapEngine/Storage').call();
 	}
 
 
