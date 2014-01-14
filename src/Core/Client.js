@@ -181,8 +181,10 @@ function(        Executable,                  PACKETVER,       Thread,      Memo
 		function onload( data ) {
 			out[ index++ ] = data;
 
-			if (index === count && callback) {
-				callback.apply( null, out);
+			if (index === count) {
+				if (callback) {
+					callback.apply( null, out);
+				}
 				return;
 			}
 
@@ -299,8 +301,10 @@ function(        Executable,                  PACKETVER,       Thread,      Memo
 		function onload( data ) {
 			out[ index++ ] = data;
 	
-			if (index === count && callback) {
-				callback.apply( null, out);
+			if (index === count) {
+				if (callback) {
+					callback.apply( null, out);
+				}
 				return;
 			}
 
