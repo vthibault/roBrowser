@@ -326,14 +326,25 @@ define(function( require )
 	 */
 	function OnBroadcast( pkt )
 	{
-		var color = "#FFFF00";
-		
-		if ( pkt.msg.match(/^blue/) ) {
+		var color;
+
+		if ( pkt.fontColor ) {
+			color = 'rgb(' + ([
+				( pkt.fontColor & 0x00ff0000 ) >> 16,
+				( pkt.fontColor & 0x0000ff00 ) >> 8,
+				( pkt.fontColor & 0x000000ff )
+			]).join(',') + ')';
+		}
+		else if ( pkt.msg.match(/^blue/) ) {
 			color = "#00FFFF";
 			pkt.msg = pkt.msg.substr(4);
 		}
 		else if ( pkt.msg.match(/^ssss/) ) {
+			color = "#FFFF00";
 			pkt.msg = pkt.msg.substr(4);
+		}
+		else {
+			color = "#FFFF00";
 		}
 		//TODO: Find colors in broadcast
 
@@ -504,6 +515,7 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.STATUS_CHANGE_ACK,           UpdateStatusParameterAck );
 		Network.hookPacket( PACKET.ZC.ATTACK_RANGE,                UpdateAttackRange );
 		Network.hookPacket( PACKET.ZC.BROADCAST,                   OnBroadcast );
+		Network.hookPacket( PACKET.ZC.BROADCAST2,                  OnBroadcast );
 		Network.hookPacket( PACKET.ZC.USER_COUNT,                  OnPlayerCount );
 		Network.hookPacket( PACKET.ZC.NOTIFY_PLAYERCHAT,           OnPlayerMessage );
 		Network.hookPacket( PACKET.ZC.ATTACK_FAILURE_FOR_DISTANCE, OnPlayerTooFarToAttack );
