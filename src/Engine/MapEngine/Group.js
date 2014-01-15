@@ -107,14 +107,14 @@ define(function( require )
 	{
 		var GRID = pkt.GRID;
 
-		var OnAnswer = function(accept){
+		function OnAnswer(accept){
 			return function(){
 				var pkt  = new PACKET.CZ.PARTY_JOIN_REQ_ACK();
 				pkt.GRID = GRID;
 				pkt.bAccept = accept;
 				Network.sendPacket(pkt);
 			};
-		}();
+		}
 
 		UIManager.showPromptBox( pkt.groupName + DB.msgstringtable[94], 'ok', 'cancel', OnAnswer(1), OnAnswer(0) );
 	}
