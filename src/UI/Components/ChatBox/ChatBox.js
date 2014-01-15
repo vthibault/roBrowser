@@ -315,6 +315,12 @@ define(function(require)
 			if( (type & ChatBox.TYPE.PUBLIC) && (type & ChatBox.TYPE.SELF) ) {
 				color = '#00FF00';
 			}
+			else if( type & ChatBox.TYPE.PARTY ) {
+				color = ( type & ChatBox.TYPE.SELF ) ? 'rgb(200, 200, 100)' : 'rgb(230,215,200)';
+			}
+			else if( type & ChatBox.TYPE.GUILD ) {
+				color = 'rgb(180, 255, 180)';
+			}
 			else if( type & ChatBox.TYPE.PRIVATE ) {
 				color = '#FFFF00';
 			}

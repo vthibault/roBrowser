@@ -111,6 +111,8 @@ define(function( require )
 		require('./MapEngine/Item').call();
 		require('./MapEngine/PrivateMessage').call();
 		require('./MapEngine/Storage').call();
+		require('./MapEngine/Group').call();
+		require('./MapEngine/Guild').call();
 	}
 
 
