@@ -21,6 +21,7 @@ define(function( require )
 	var PACKET        = require('Network/PacketStructure');
 	var ItemObject    = require('Renderer/ItemObject');
 	var Altitude      = require('Renderer/Map/Altitude');
+	var Session       = require('Engine/SessionStorage');
 	var ChatBox       = require('UI/Components/ChatBox/ChatBox');
 	var ItemObtain    = require('UI/Components/ItemObtain/ItemObtain');
 	var Inventory     = require('UI/Components/Inventory/Inventory');
@@ -141,7 +142,7 @@ define(function( require )
 	{
 		if( pkt.result ) {
 			var item = Equipment.unEquip( pkt.index, pkt.wearLocation );
-			if( item ) {
+			if (item) {
 				item.WearState = 0;
 	
 				var it = DB.getItemInfo( item.ITID );
@@ -152,6 +153,14 @@ define(function( require )
 	
 				Inventory.addItem(item);
 			}
+
+			if (pkt.wearLocation & Equipment.LOCATION.HEAD_TOP)    Session.Entity.accessory2 = 0;
+			if (pkt.wearLocation & Equipment.LOCATION.HEAD_MID)    Session.Entity.accessory3 = 0;
+			if (pkt.wearLocation & Equipment.LOCATION.HEAD_BOTTOM) Session.Entity.accessory  = 0;
+			if (pkt.wearLocation & Equipment.LOCATION.WEAPON)      Session.Entity.weapon     = 0;
+			if (pkt.wearLocation & Equipment.LOCATION.SHIELD)      Session.Entity.shield     = 0;
+
+			Equipment.entity.set(Session.Entity);
 		}
 	}
 
@@ -163,7 +172,7 @@ define(function( require )
 	 */
 	function ItemEquip( pkt )
 	{
-		if( pkt.result === 1 ) {
+		if (pkt.result === 1) {
 			var item = Inventory.removeItem( pkt.index, 1 );
 			var it   = DB.getItemInfo( item.ITID );
 			Equipment.equip( item, pkt.wearLocation );
@@ -171,6 +180,15 @@ define(function( require )
 				it.identifiedDisplayName + " " + DB.msgstringtable[170],
 				ChatBox.TYPE.BLUE
 			);
+
+			// Display
+			if (pkt.wearLocation & Equipment.LOCATION.HEAD_TOP)    Session.Entity.accessory2 = pkt.viewid;
+			if (pkt.wearLocation & Equipment.LOCATION.HEAD_MID)    Session.Entity.accessory3 = pkt.viewid;
+			if (pkt.wearLocation & Equipment.LOCATION.HEAD_BOTTOM) Session.Entity.accessory  = pkt.viewid;
+			if (pkt.wearLocation & Equipment.LOCATION.WEAPON)      Session.Entity.weapon     = pkt.viewid;
+			if (pkt.wearLocation & Equipment.LOCATION.SHIELD)      Session.Entity.shield     = pkt.viewid;
+
+			Equipment.entity.set(Session.Entity);
 		}
 
 		// Fail to equip
