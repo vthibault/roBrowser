@@ -267,11 +267,9 @@ define(function( require )
 		if( entity ) {
 			entity.display.name = pkt.CName;
 
-			if( pkt.PName ) {
-				entity.display.party_name = pkt.PName;
-				entity.display.guild_name = pkt.GName;
-				entity.display.guild_rank = pkt.RName;
-			}
+			entity.display.party_name = pkt.PName || '';
+			entity.display.guild_name = pkt.GName || '';
+			entity.display.guild_rank = pkt.RName || '';
 
 			entity.display.load = entity.display.TYPE.COMPLETE;
 			entity.display.update(

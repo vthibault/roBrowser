@@ -130,7 +130,7 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 		// Add guild name
 		if ( this.guild_name.length ) {
 			lines[1]  = this.guild_name;
-	
+
 			// Add guild rank
 			if ( this.guild_rank.length ) {
 				lines[1] +=  " [" + this.guild_rank + "]";
@@ -140,7 +140,7 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 		// Setup the canvas
 		ctx.font          = fontSize + "px Arial";
 		width             = Math.max( ctx.measureText(lines[0]).width, ctx.measureText(lines[1]).width ) + start_x + 5;
-		height            = fontSize * 3;
+		height            = fontSize * 3 * (lines[1].length ? 2 : 1);
 		ctx.canvas.width  = width;
 		ctx.canvas.height = height;
 
