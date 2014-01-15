@@ -567,7 +567,7 @@ define(function( require )
 				}
 				break;
 
-			case "PACKET_ZC_DISAPPEAR_BUYING_STORE_ENTRY":
+			case "PACKET_ZC_BUYING_STORE_ENTRY":
 				entity = EntityManager.get( pkt.makerAID );
 				if( entity ) {
 					entity.room.create(
