@@ -50,7 +50,7 @@ define(function( require )
 	 */
 	function StorageAddItemList( pkt )
 	{
-		itemBuffer = itemBuffer.concat( pkt.ItemInfo  );
+		itemBuffer = itemBuffer.concat( pkt.ItemInfo );
 	}
 
 
