@@ -18,7 +18,14 @@ define(function( require )
 	var Network       = require('Network/NetworkManager');
 	var PACKET        = require('Network/PacketStructure');
 	var Storage       = require('UI/Components/Storage/Storage');
-
+	
+	
+	/*
+	 * This will hold the items to append to storage
+	 * Since STORE_EQUIPMENT_ITEMLIST packets are sent before NOTIFY_STOREITEM_COUNTINFO
+	 * And they are only sent if theres item's on storage!
+	 */
+	var itemBuffer = [];
 
 	/**
 	 * Get storage informations
@@ -27,7 +34,11 @@ define(function( require )
 	 */
 	function OnStorageInfo( pkt )
 	{
+		Storage.append();
 		Storage.setItemInfo( pkt.curCount, pkt.maxCount );
+		Storage.setItems( itemBuffer );
+		
+		itemBuffer = [];
 	}
 
 
@@ -38,12 +49,7 @@ define(function( require )
 	 */
 	function StorageAddItemList( pkt )
 	{
-		Storage.append();
-
-		// Just a ugly fix
-		setTimeout(function(){
-			Storage.setItems( pkt.ItemInfo );
-		}, 10);
+		itemBuffer = itemBuffer.concat( pkt.ItemInfo  );
 	}
 
 
