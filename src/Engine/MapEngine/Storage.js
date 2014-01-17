@@ -27,6 +27,7 @@ define(function( require )
 	 */
 	var itemBuffer = [];
 
+
 	/**
 	 * Get storage informations
 	 *
