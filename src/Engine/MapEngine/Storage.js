@@ -145,7 +145,7 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.STORE_EQUIPMENT_ITEMLIST,   StorageAddItemList );
 		Network.hookPacket( PACKET.ZC.STORE_EQUIPMENT_ITEMLIST2,  StorageAddItemList ); 
 		Network.hookPacket( PACKET.ZC.STORE_EQUIPMENT_ITEMLIST3,  StorageAddItemList ); 
-		Network.hookPacket( PACKET.ZC.NOTIFY_STOREITEM_COUNTINFO, OnStorageInfo);
+		Network.hookPacket( PACKET.ZC.NOTIFY_STOREITEM_COUNTINFO, OnStorageInfo );
 		Network.hookPacket( PACKET.ZC.ADD_ITEM_TO_STORE,          OnStorageItemAdded );
 		Network.hookPacket( PACKET.ZC.ADD_ITEM_TO_STORE2,         OnStorageItemAdded );
 		Network.hookPacket( PACKET.ZC.CLOSE_STORE,                OnStorageClose );
