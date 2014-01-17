@@ -23,7 +23,6 @@ define(function(require)
 	var Renderer           = require('Renderer/Renderer');
 	var Camera             = require('Renderer/Camera');
 	var SpriteRenderer     = require('Renderer/SpriteRenderer');
-	var Entity             = require('Renderer/Entity/Entity');
 	var KEYS               = require('Controls/KeyEventHandler');
 	var UIManager          = require('UI/UIManager');
 	var UIComponent        = require('UI/UIComponent');
@@ -77,7 +76,6 @@ define(function(require)
 		}, 1.0);
 
 		this.ctx       = this.ui.find('canvas')[0].getContext('2d');
-		this.entity    = new Entity(Session.Entity);
 		this.showEquip = false;
 
 		// Append WinStats to content
@@ -120,10 +118,10 @@ define(function(require)
 				var index   = parseInt(matches[2], 10);
 				var item    = Equipment.list[index];
 
-				if( item ) {
+				if (item) {
 
 					// Don't add the same UI twice, remove it
-					if( ItemInfo.uid === item.ITID ) {
+					if (ItemInfo.uid === item.ITID) {
 						ui.remove();
 					}
 
@@ -160,24 +158,26 @@ define(function(require)
 		});
 
 		// Hide window ?
-		if( !this.preferences.show ) {
+		if (!this.preferences.show) {
 			this.ui.hide();
 		}
 
 		// Reduce window ?
-		if( this.preferences.reduce ) {
+		if (this.preferences.reduce) {
 			this.ui.find('.panel').hide();
 		}
 
 		// Show status window ?
-		if( !this.preferences.stats ) {
+		if (!this.preferences.stats) {
 			this.ui.find('.status_component').hide();
 			Client.loadFile( DB.INTERFACE_PATH + 'basic_interface/viewon.bmp', function(data){
 				Equipment.ui.find('.view_status').css('backgroundImage', 'url(' + data + ')');
 			});
 		}
 
-		Renderer.render(this.renderCharacter);
+		if (this.ui.find('canvas').is(':visible')) {
+			Renderer.render(this.renderCharacter);
+		}
 	};
 
 
@@ -211,10 +211,13 @@ define(function(require)
 	 */
 	Equipment.onKeyDown = function OnKeyDown( event )
 	{
-		if( KEYS.ALT && event.which === KEYS.Q ) {
+		if (KEYS.ALT && event.which === KEYS.Q) {
 			this.ui.toggle();
-			if( this.ui.is(':visible') ) {
-				this.ui[0].parentNode.appendChild(this.ui[0]);
+			if (this.ui.is(':visible')) {
+				Renderer.render(this.renderCharacter);
+			}
+			else {
+				Renderer.stop(this.renderCharacter);
 			}
 			event.stopImmediatePropagation();
 			return false;
@@ -271,20 +274,46 @@ define(function(require)
 	/**
 	 * Rendering character
 	 */
-	Equipment.renderCharacter = function RenderCharacter()
+	Equipment.renderCharacter = function RenderCharacterClosure()
 	{
-		// 2D render use much CPU, dont render it if not visible.
-		if( Equipment.ui.is(':visible') ) {
-			var ctx = Equipment.ctx;
+		var _animation = {
+			tick:  0,
+			frame: 0,
+			repeat:true,
+			play:  true,
+			next:  false,
+			delay: 0,
+			save:  false
+		};
+
+		return function RencerCharacter()
+		{
+			var ctx       = Equipment.ctx;
+			var character = Session.Entity;
+			var direction = character.direction;
+			var headDir   = character.headDir;
+			var action    = character.action;
+			var animation = character.animation;
+
+			// Set action
+			Camera.direction    = 4;
+			character.direction = 4;
+			character.headDir   = 0;
+			character.action    = character.ACTION.IDLE;
+			character.animation = _animation;
 
 			// Rendering
 			SpriteRenderer.bind2DContext( ctx, 30, 130 );
 			ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height );
+			character.renderEntity();
 
-			Camera.direction = 4;
-			Equipment.entity.renderEntity();
-		}
-	};
+			// Revert changes
+			character.direction = direction;
+			character.headDir   = headDir;
+			character.action    = action;
+			character.animation = animation;
+		};
+	}();
 
 
 	/**
@@ -297,16 +326,16 @@ define(function(require)
 	{
 		var selector = [];
 
-		if( location & Equipment.LOCATION.HEAD_TOP )    selector.push(".head_top");
-		if( location & Equipment.LOCATION.HEAD_MID )    selector.push(".head_mid");
-		if( location & Equipment.LOCATION.HEAD_BOTTOM ) selector.push(".head_bottom");
-		if( location & Equipment.LOCATION.ARMOR )       selector.push(".armor");
-		if( location & Equipment.LOCATION.WEAPON )      selector.push(".weapon");
-		if( location & Equipment.LOCATION.SHIELD )      selector.push(".shield");
-		if( location & Equipment.LOCATION.GARMENT )     selector.push(".garment");
-		if( location & Equipment.LOCATION.SHOES )       selector.push(".shoes");
-		if( location & Equipment.LOCATION.ACCESSORY1 )  selector.push(".accessory1");
-		if( location & Equipment.LOCATION.ACCESSORY2 )  selector.push(".accessory2");
+		if (location & Equipment.LOCATION.HEAD_TOP)    selector.push(".head_top");
+		if (location & Equipment.LOCATION.HEAD_MID)    selector.push(".head_mid");
+		if (location & Equipment.LOCATION.HEAD_BOTTOM) selector.push(".head_bottom");
+		if (location & Equipment.LOCATION.ARMOR)       selector.push(".armor");
+		if (location & Equipment.LOCATION.WEAPON)      selector.push(".weapon");
+		if (location & Equipment.LOCATION.SHIELD)      selector.push(".shield");
+		if (location & Equipment.LOCATION.GARMENT)     selector.push(".garment");
+		if (location & Equipment.LOCATION.SHOES)       selector.push(".shoes");
+		if (location & Equipment.LOCATION.ACCESSORY1)  selector.push(".accessory1");
+		if (location & Equipment.LOCATION.ACCESSORY2)  selector.push(".accessory2");
 
 		return selector.join(', ');
 	}
@@ -322,11 +351,11 @@ define(function(require)
 		this.list[ item.index] = item;
 		var it = DB.getItemInfo( item.ITID );
 
-		if( arguments.length === 1 ) {
-			if( 'location' in item ) {
+		if (arguments.length === 1) {
+			if ('location' in item) {
 				location = item.location;
 			}
-			else if( 'WearState' in item ) {
+			else if ('WearState' in item) {
 				location = item.WearState;
 			}
 		}
@@ -336,7 +365,7 @@ define(function(require)
 		Client.loadFile( DB.INTERFACE_PATH + 'item/' + it.identifiedResourceName + '.bmp', function(data){
 			var name  = ( item.RefiningLevel ? '+' + item.RefiningLevel + ' ' : '') + it.identifiedDisplayName;
 			var lines = []
-			while( name.length ) {
+			while (name.length) {
 				lines.push( name.substr(0,13) );
 				name = name.substr(13);
 			}
@@ -375,16 +404,16 @@ define(function(require)
 	 */
 	Equipment.onDragOver = function OnDragOver( event )
 	{
-		if( window._OBJ_DRAG_ ) {
+		if (window._OBJ_DRAG_) {
 			var data = window._OBJ_DRAG_;
 			var item, selector, ui;
 
 			// Just support items for now ?
-			if( data.type === "item") {
+			if (data.type === "item") {
 				item = data.data;
 
 				// Only for TYPE.WEAPON and TYPE.EQUIP
-				if( (item.type ===  4 || item.type === 5 || item.type === 10) && item.IsIdentified && !item.IsDamaged ) {
+				if ((item.type ===  4 || item.type === 5 || item.type === 10) && item.IsIdentified && !item.IsDamaged) {
 					selector = GetSelectorFromLocation( 'location' in item ? item.location : item.WearLocation );
 					ui       = this.ui.find(selector);
 
@@ -427,11 +456,11 @@ define(function(require)
 		catch(e) {}
 
 		// Just support items for now ?
-		if( data && data.type === "item") {
+		if (data && data.type === "item") {
 			item = data.data;
 
 			// Only for TYPE.WEAPON and TYPE.EQUIP
-			if( (item.type ===  4 || item.type === 5 || item.type === 10 ) && item.IsIdentified && !item.IsDamaged ) {
+			if ((item.type ===  4 || item.type === 5 || item.type === 10 ) && item.IsIdentified && !item.IsDamaged) {
 				this.ui.find('td').css('backgroundImage','none');
 				this.onEquipItem( item.index, 'location' in item ? item.location : item.WearState );
 			}
@@ -443,7 +472,7 @@ define(function(require)
 
 
 	/**
-	 * Abstract method to define
+	 * Method to define
 	 */
 	Equipment.onUnEquip      = function OnUnEquip( index ){};
 	Equipment.onConfigUpdate = function OnConfigUpdate( type, value ){};
