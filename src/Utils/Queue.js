@@ -50,8 +50,8 @@ define(function()
 	/**
 	 * To avoid problem with constructor, define it
 	 */
-	Queue.prototype.__defineGetter__('next', function Next(){
-		return this._next.bind(this);
+	Object.defineProperty( Queue.prototype, 'next', {
+		get : function(){ return this._next.bind(this); }
 	});
 
 

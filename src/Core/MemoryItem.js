@@ -70,10 +70,11 @@ define(function()
 	 *
 	 * @return mixed
 	 */
-	MemoryItem.prototype.__defineGetter__('data', function getData()
-	{
-		this.lastTimeUsed = Date.now();
-		return this._data;
+	Object.defineProperty( MemoryItem.prototype, 'data', {
+		get : function(){ 
+			this.lastTimeUsed = Date.now();
+			return this._data;
+		}
 	});
 
 

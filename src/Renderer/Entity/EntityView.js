@@ -243,28 +243,54 @@ define(['Core/Client', 'DB/DBManager', './EntityAction'], function( Client, DB, 
 	{
 		this.files = new View();
 
-		// Getters
-		this.__defineGetter__("job",         function(){ return this._job });
-		this.__defineGetter__("sex",         function(){ return this._sex });
-		this.__defineGetter__("bodypalette", function(){ return this._bodypalette });
-		this.__defineGetter__("head",        function(){ return this._head });
-		this.__defineGetter__("headpalette", function(){ return this._headpalette });
-		this.__defineGetter__("weapon",      function(){ return this._weapon });
-		this.__defineGetter__("shield",      function(){ return this._shield });
-		this.__defineGetter__("accessory",   function(){ return this._accessory });
-		this.__defineGetter__("accessory2",  function(){ return this._accessory2 });
-		this.__defineGetter__("accessory3",  function(){ return this._accessory3 });
+		Object.defineProperty(this, "sex", {
+			get: function(){ return this._sex },
+			set: UpdateSex
+		});
 
-		// Setters
-		this.__defineSetter__("sex",         UpdateSex );
-		this.__defineSetter__("job",         UpdateBody );
-		this.__defineSetter__("bodypalette", UpdateBodyPalette );
-		this.__defineSetter__("head",        UpdateHead );
-		this.__defineSetter__("headpalette", UpdateHeadPalette );
-		this.__defineSetter__("weapon",      UpdateGeneric("weapon", "getWeaponPath", "getWeaponViewID") );
-		this.__defineSetter__("shield",      UpdateGeneric("shield", "getShieldPath") );
-		this.__defineSetter__("accessory",   UpdateGeneric("accessory", "getHatPath") );
-		this.__defineSetter__("accessory2",  UpdateGeneric("accessory2", "getHatPath") );
-		this.__defineSetter__("accessory3",  UpdateGeneric("accessory3", "getHatPath") );
+		Object.defineProperty(this, "job", {
+			get: function(){ return this._job },
+			set: UpdateBody
+		});
+
+		Object.defineProperty(this, "bodypalette", {
+			get: function(){ return this._bodypalette },
+			set: UpdateBodyPalette
+		});
+
+		Object.defineProperty(this, "head", {
+			get: function(){ return this._head },
+			set: UpdateHead
+		});
+
+		Object.defineProperty(this, "headpalette", {
+			get: function(){ return this._headpalette },
+			set: UpdateHeadPalette
+		});
+
+		Object.defineProperty(this, "weapon", {
+			get: function(){ return this._weapon },
+			set: UpdateGeneric("weapon", "getWeaponPath", "getWeaponViewID")
+		});
+
+		Object.defineProperty(this, "shield", {
+			get: function(){ return this._shield },
+			set: UpdateGeneric("shield", "getShieldPath")
+		});
+
+		Object.defineProperty(this, "accessory", {
+			get: function(){ return this._accessory },
+			set: UpdateGeneric("accessory", "getHatPath")
+		});
+
+		Object.defineProperty(this, "accessory2", {
+			get: function(){ return this._accessory2 },
+			set: UpdateGeneric("accessory2", "getHatPath")
+		});
+
+		Object.defineProperty(this, "accessory3", {
+			get: function(){ return this._accessory3 },
+			set: UpdateGeneric("accessory3", "getHatPath")
+		});
 	};
 });
