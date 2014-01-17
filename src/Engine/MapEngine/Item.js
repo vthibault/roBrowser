@@ -159,8 +159,6 @@ define(function( require )
 			if (pkt.wearLocation & Equipment.LOCATION.HEAD_BOTTOM) Session.Entity.accessory  = 0;
 			if (pkt.wearLocation & Equipment.LOCATION.WEAPON)      Session.Entity.weapon     = 0;
 			if (pkt.wearLocation & Equipment.LOCATION.SHIELD)      Session.Entity.shield     = 0;
-
-			Equipment.entity.set(Session.Entity);
 		}
 	}
 
@@ -187,8 +185,6 @@ define(function( require )
 			if (pkt.wearLocation & Equipment.LOCATION.HEAD_BOTTOM) Session.Entity.accessory  = pkt.viewid;
 			if (pkt.wearLocation & Equipment.LOCATION.WEAPON)      Session.Entity.weapon     = pkt.viewid;
 			if (pkt.wearLocation & Equipment.LOCATION.SHIELD)      Session.Entity.shield     = pkt.viewid;
-
-			Equipment.entity.set(Session.Entity);
 		}
 
 		// Fail to equip
