@@ -108,8 +108,8 @@ define(['Core/Context', 'Core/Preferences', 'Preferences/Audio'], function( Cont
 		
 		Audio.BGM.volume    = ui.find('.bgmvol').val() / 100;
 		Audio.BGM.play      = Audio.BGM.volume > 0 ? true : false;
-		Audio.Sound.volume    = ui.find('.soundvol').val() / 100;
-		Audio.Sound.play      = Audio.Sound.volume > 0 ? true : false;
+		Audio.Sound.volume  = ui.find('.soundvol').val() / 100;
+		Audio.Sound.play    = Audio.Sound.volume > 0 ? true : false;
 
         Audio.save();
 
