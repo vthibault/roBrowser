@@ -218,17 +218,17 @@ body {
 #intro .about .info td { font-size:12px; min-width:60px; }
 #intro .about .concept { font-size:14px; margin-top:30px; text-align:justify; line-height:20px; }
 
-#intro .settings { padding-left:150px; padding-right:150px; width:500px; font-size:14px; }
-#intro .settings h1 { font-size:24px; font-weight:normal; margin-top:40px;}
-#intro .settings p { margin-bottom:30px; }
-#intro .settings dd { margin-bottom:20px; }
+#intro .settings { padding-left:150px; padding-right:150px; width:500px; font-size:10px; }
+#intro .settings h1 { font-size:20px; font-weight:normal; margin-top:20px;}
+#intro .settings p { margin-bottom:15px; }
+#intro .settings dd { margin-bottom:10px; }
 #intro .settings .clientinfo {
 	background-color:transparent;
 	border:1px solid transparent;
 	cursor:pointer;
 	color:#66a1dd;
 	text-decoration:underline;
-	font-size:14px;
+	font-size:10px;
 }
 #intro .settings .clientinfo:focus {
 	cursor:text;
@@ -268,11 +268,11 @@ input[type='radio']:checked::before {
 }
 
 #intro .servercontainer {
-	max-height: 160px;
-	overflow-y: scroll;
-	overflow-x: hidden;
-	margin-top: 20px;
-	padding-right: 10px;
+    max-height: 70px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    margin-top: 15px;
+    padding-right: 10px;
 }
 
 #intro .btn_delete {
@@ -291,12 +291,12 @@ input[type='radio']:checked::before {
 /** Server LIST **/
 #intro .serverlist {
 	border-collapse: collapse;
-	font-size:12px;
+	font-size:10px;
 	width: 100%;
 }
 #intro .serverlist td {
 	text-align:center;
-	height:25px;
+	height:20px;
 }
 #intro .serverlist thead td {
 	color:#a76d9b;

@@ -154,6 +154,16 @@ define(function(require)
 		if( !ROConfig.serverEditMode ) {
 			ui.find('.serveredit').hide();
 		}
+		
+		// Modify volume
+		ui.find('.bgmvol')
+			.on('change', function(){
+				ui.find('.bgmvol_result').text( this.value + '%' );
+			});
+		ui.find('.soundvol')
+			.on('change', function(){
+				ui.find('.soundvol_result').text( this.value + '%' );
+			});
 
 		// Add Server
 		ui.find('.btn_add')

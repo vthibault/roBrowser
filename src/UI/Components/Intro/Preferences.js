@@ -6,7 +6,7 @@
  * @author Vincent Thibault
  */
 
-define(['Core/Context', 'Core/Preferences'], function( Context, Preferences )
+define(['Core/Context', 'Core/Preferences', 'Preferences/Audio'], function( Context, Preferences, Audio )
 {
 	"use strict";
 
@@ -37,6 +37,9 @@ define(['Core/Context', 'Core/Preferences'], function( Context, Preferences )
 		ui.find('.serverdef').attr('checked', false );
 		ui.find('.serverdef[value="'+ _preferences.serverdef +'"]').attr('checked', 'true').trigger('click');
 		ui.find('.clientinfo').val( _preferences.serverfile );
+		
+		ui.find('.bgmvol').val( Audio.BGM.volume * 100 ).trigger('change');;
+		ui.find('.soundvol').val( Audio.Sound.volume * 100 ).trigger('change');
 
 		if (!window.requestFileSystem && !window.webkitRequestFileSystem) {
 			ui.find('.save').attr('disabled', 'disabled');
@@ -102,6 +105,13 @@ define(['Core/Context', 'Core/Preferences'], function( Context, Preferences )
 				});
 			}
 		}
+		
+		Audio.BGM.volume    = ui.find('.bgmvol').val() / 100;
+		Audio.BGM.play      = Audio.BGM.volume > 0 ? true : false;
+		Audio.Sound.volume    = ui.find('.soundvol').val() / 100;
+		Audio.Sound.play      = Audio.Sound.volume > 0 ? true : false;
+
+        Audio.save();
 
 		_preferences.save();
 
