@@ -13,7 +13,7 @@ define([
 	'Renderer/MapRenderer',
 	'Engine/SessionStorage',
 	'Network/PacketStructure', 'Network/NetworkManager',
-	'Preferences/Controls',    'Preferences/Audio',       'Preferences/Map',    'Preferences/Camera'
+	'Preferences/Controls',    'Preferences/Audio',       'Preferences/Map',    'Preferences/Camera', 'UI/Components/ChatRoomCreate/ChatRoomCreate'
 ],
 function(
 	DB,
@@ -21,7 +21,7 @@ function(
 	MapRenderer,
 	Session,
 	PACKET,              Network,
-	ControlPreferences,  AudioPreferences,  MapPreferences,  CameraPreferences
+	ControlPreferences,  AudioPreferences,  MapPreferences,  CameraPreferences, ChatRoomCreate
 ) {
 	"use strict";
 
@@ -142,6 +142,9 @@ function(
 			case 'w':
 				pkt = new PACKET.CZ.REQ_USER_COUNT();
 				Network.sendPacket(pkt);
+				return;
+			case 'chat':
+				ChatRoomCreate.Show();
 				return;
 		}
 

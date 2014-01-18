@@ -32,6 +32,9 @@ function(       glMatrix,            Renderer,        Client,      DB,          
 		this.node    = null;
 		this.type    = Room.Type.BUY_SHOP;
 		this.id      = 0;
+		this.title   = '';
+		this.count   = 0;
+		this.limit   = 0;
 	}
 
 

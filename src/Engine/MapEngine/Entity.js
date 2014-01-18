@@ -581,12 +581,12 @@ define(function( require )
 				entity = EntityManager.get( pkt.AID );
 				if( entity ) {
 
-					var type  = entity.room.constructor.PUBLIC_CHAT;
+					var type  = entity.room.constructor.Type.PUBLIC_CHAT;
 					var title = pkt.title + '('+ pkt.curcount +'/'+ pkt.maxcount +')';
 
 					switch( type ) {
 						case 0: // password
-							type = entity.room.constructor.PRIVATE_CHAT;
+							type = entity.room.constructor.Type.PRIVATE_CHAT;
 							break;
 
 						case 1: break; // public
@@ -596,11 +596,15 @@ define(function( require )
 							title = pkt.title; // no user limit
 							break;
 					}
+					
+					entity.room.title = pkt.title;
+					entity.room.limit = pkt.maxcount;
+					entity.room.count = pkt.curcount;
 
 					entity.room.create(
-						pkt.title + '('+ pkt.curcount +'/'+ pkt.maxcount +')',
+						title,
 						pkt.roomID,
-						entity.room.constructor.Type.SELL_SHOP,
+						type,
 						true
 					);
 				}

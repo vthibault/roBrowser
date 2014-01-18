@@ -53,6 +53,7 @@ define( ['Utils/jquery'], function( jQuery )
 		E:        69,
 		Q:        81,
 		V:        86,
+		C:        67
 	};
 
 

@@ -43,6 +43,7 @@ define(function( require )
 	var Inventory        = require('UI/Components/Inventory/Inventory');
 	var Equipment        = require('UI/Components/Equipment/Equipment');
 	var StatusIcons      = require('UI/Components/StatusIcons/StatusIcons');
+	var ChatRoomCreate   = require('UI/Components/ChatRoomCreate/ChatRoomCreate');
 
 
 	/**
@@ -113,6 +114,7 @@ define(function( require )
 		require('./MapEngine/Storage').call();
 		require('./MapEngine/Group').call();
 		require('./MapEngine/Guild').call();
+		require('./MapEngine/ChatRoom').call();
 	}
 
 
@@ -208,6 +210,7 @@ define(function( require )
 			Inventory.append();
 			Equipment.append();
 			StatusIcons.append();
+			ChatRoomCreate.append();
 
 			// Map loaded
 			Network.sendPacket(
