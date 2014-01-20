@@ -25,6 +25,7 @@ define(function( require )
 	var Entity        = require('Renderer/Entity/Entity');
 	var Altitude      = require('Renderer/Map/Altitude');
 	var ChatBox       = require('UI/Components/ChatBox/ChatBox');
+	var ChatRoom      = require('UI/Components/ChatRoom/ChatRoom');
 	var StatusIcons   = require('UI/Components/StatusIcons/StatusIcons');
 	var Damage        = require('Renderer/Effects/Damage');
 
@@ -239,6 +240,11 @@ define(function( require )
 	{
 		// Remove "pseudo : |00Dialogue
 		pkt.msg = pkt.msg.replace(/\: \|\d{2}/, ': ');
+		
+		if(ChatRoom.OPEN) {
+			ChatRoom.message(pkt.msg);
+			return;
+		}
 
 		var entity = EntityManager.get(pkt.GID);
 		if( entity ) {

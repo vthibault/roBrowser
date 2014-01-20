@@ -20,6 +20,7 @@ define(function(require)
 	var Renderer           = require('Renderer/Renderer');
 	var Mouse              = require('Controls/MouseEventHandler');
 	var KEYS               = require('Controls/KeyEventHandler');
+	var ChatBox            = require('UI/Components/ChatBox/ChatBox') 
 	var UIManager          = require('UI/UIManager');
 	var UIComponent        = require('UI/UIComponent');
 	var htmlText           = require('text!./ChatRoom.html');
@@ -65,7 +66,13 @@ define(function(require)
 	/**
 	 * Chat Owner
 	 */
-	ChatRoom.OWNER = null; 
+	ChatRoom.OWNER = null;
+	
+	
+	/**
+	 * Temporary fix to determine if chat is open
+	 */
+	ChatRoom.OPEN = 0;
 	
 
 
@@ -87,7 +94,7 @@ define(function(require)
 	{
 		// Bindings
 		this.ui.find('.extend').mousedown( this.extend.bind(this) );
-		this.ui.find('.close').on('click', this.remove );
+		this.ui.find('.close').on('click', this.remove.bind(this) );
 		
 		//Dont activate drag
 		this.ui.find('input, select, button').mousedown(function( event ) {
@@ -102,6 +109,8 @@ define(function(require)
 	 * After init()
 	 */
 	ChatRoom.onAppend = function onAppend() {
+		this.OPEN = 1;
+		
 		this.resize( this.preferences.width, this.preferences.height );
 
 		this.ui.css({
@@ -116,13 +125,14 @@ define(function(require)
 	/**
 	 * On remove() chat ui
 	 */
-	ChatRoom.onRemove = function onRemove() { console.log('removing this', this)
+	ChatRoom.onRemove = function onRemove() {
 		this.TITLE = null;
 		this.LIMIT = 0;
 		this.TYPE = 0;
 		this.COUNT = 0;
 		this.MEMBERS = [];
 		this.OWNER = null;
+		this.OPEN = 0;
 
 		ChatRoom.ExitRoom();
 	}
@@ -155,10 +165,12 @@ define(function(require)
 	 */
 	ChatRoom.Send = function ParseChatSend() {
 		var message = this.ui.find('.send input[name=message]').val();
-		
+
 		if(message.length < 1) return false;
+
+		ChatBox.onRequestTalk('', message);
 		
-		ChatRoom.SendMes(message);
+		this.ui.find('.send input[name=message]').val('');
 		
 		return true;
 	};
@@ -265,7 +277,7 @@ define(function(require)
 		});
 	};
 	
-	
+
 	/**
 	 * Key Event Handler
 	 *
@@ -274,18 +286,14 @@ define(function(require)
 	 */
 	ChatRoom.onKeyDown = function OnKeyDown( event )
 	{
-		var is_focus = document.activeElement === this.ui.find('.message')[0];
-
 		if(event.which === KEYS.ENTER) {
-			if( document.activeElement.tagName === 'INPUT' && !is_focus ) { console.log('return true')
-				return true;
-			}
-
 			this.Send();
+			
+			event.stopImmediatePropagation();
+			return false;
 		}
-	
-		event.stopImmediatePropagation();
-		return false;
+
+		return true;
 	};
 
 
