@@ -153,7 +153,7 @@ define(function(require)
 			return false;
 		})
 
-		this.ui.on('dragover', function(){
+		this.ui.on('dragover', function(event){
 			event.stopImmediatePropagation();
 			return false;
 		});
@@ -166,10 +166,10 @@ define(function(require)
 			// Scroll feature should block at each line
 			.on('scroll', function(){
 				if( this.scrollTop > lastScrollPos ) {
-					this.scrollTop = Math.ceil(this.scrollTop/32) * 32;
+					this.scrollTop = Math.floor(this.scrollTop/32) * 32;
 				}
 				else {
-					this.scrollTop = Math.floor(this.scrollTop/32) * 32;
+					this.scrollTop = Math.ceil(this.scrollTop/32) * 32;
 				}
 				lastScrollPos = this.scrollTop;
 			})
@@ -221,7 +221,10 @@ define(function(require)
 			.on('dragstart', '.item', function(event){
 				// Set image to the drag drop element
 				var img = new Image();
-				img.src = this.firstChild.style.backgroundImage.match(/\(([^\)]+)/)[1];
+				var url = this.firstChild.style.backgroundImage.match(/\(([^\)]+)/)[1];
+				url     = url = url.replace(/^\"/, '').replace(/\"$/, ''); // Firefox bug
+				img.src = url;
+
 				event.originalEvent.dataTransfer.setDragImage( img, 12, 12 );
 
 				var matches = this.className.match(/(\w+) (\d+)/);
@@ -593,7 +596,7 @@ define(function(require)
 
 				content.append(
 					'<div class="item '+ item.index +'" draggable="true">' +
-						'<button style="background-image:url(' + data + ')"></button>' +
+						'<div class="icon" style="background-image:url(' + data + ')"></div>' +
 						'<div class="amount">'+ (item.count ? '<span class="count">' + item.count + '</span>' + ' ' : '') + '</div>' +
 					'</div>'
 				);

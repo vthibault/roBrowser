@@ -58,8 +58,8 @@ define(function(require)
 	Storage.TAB = {
 		ITEM:   0,
 		KAFRA:  1,
-		ARMOR:  2,
-		ARMS:   3,
+		ARMS:   2,
+		ARMOR:  3,
 		AMMO:   4,
 		CARD:   5,
 		ETC:    6
@@ -70,12 +70,6 @@ define(function(require)
 	 * Store inventory items
 	 */
 	Storage.list = [];
-
-
-	/**
-	 * @var {number} tab
-	 */
-	Storage.tab = -1;
 
 
 	/**
@@ -103,7 +97,7 @@ define(function(require)
 
 		// drag, drop items
 		this.ui.on('drop', this.onDragDrop.bind(this));
-		this.ui.on('dragover', function(){
+		this.ui.on('dragover', function(event){
 			event.stopImmediatePropagation();
 			return false;
 		});
@@ -168,8 +162,9 @@ define(function(require)
 			.on('dragstart', '.item', function(event){
 				// Set image to the drag drop element
 				var img = new Image();
-				img.src = this.firstChild.style.backgroundImage.match(/\(([^\)]+)/)[1];
-				event.originalEvent.dataTransfer.setDragImage( img, 12, 12 );
+				var url = this.firstChild.style.backgroundImage.match(/\(([^\)]+)/)[1];
+				url     = url = url.replace(/^\"/, '').replace(/\"$/, ''); // Firefox bug
+				img.src = url;
 
 				var matches = this.className.match(/(\w+) (\d+)/);
 				var index   = parseInt(matches[2], 10);
@@ -235,9 +230,7 @@ define(function(require)
 	 */
 	Storage.onAppend = function OnAppend()
 	{
-		this.tab = this.preferences.tab;
-
-		Client.loadFile( DB.INTERFACE_PATH + "basic_interface/tab_itm_ex_0"+ (this.tab+1) +".bmp", function(data){
+		Client.loadFile( DB.INTERFACE_PATH + "basic_interface/tab_itm_ex_0"+ (this.preferences.tab+1) +".bmp", function(data){
 			Storage.ui.find('.tabs').css('backgroundImage', 'url("' + data + '")');
 		});
 
@@ -259,7 +252,6 @@ define(function(require)
 		this.list.length = 0;
 
 		// Save preferences
-		this.preferences.tab    =  this.tab;
 		this.preferences.y      =  parseInt(this.ui.css('top'), 10);
 		this.preferences.x      =  parseInt(this.ui.css('left'), 10);
 		this.preferences.height =  Math.floor( (this.ui.height() - (31 + 19 - 30)) / 32 );
@@ -334,7 +326,7 @@ define(function(require)
 	Storage.switchTab = function SwitchTab( event )
 	{
 		var idx = jQuery(this).index();
-		Storage.tab = idx;
+		Storage.preferences.tab = idx;
 
 		Client.loadFile("basic_interface/tab_itm_ex_0"+ (idx+1) +".bmp", function(data){
 			Storage.ui.find('.tabs').css('backgroundImage', 'url("' + data + '")');
@@ -430,7 +422,7 @@ define(function(require)
 				break;
 		}
 
-		if( tab === this.tab ) {
+		if( tab === this.preferences.tab ) {
 			var it      = DB.getItemInfo( item.ITID );
 
 			Client.loadFile( DB.INTERFACE_PATH + 'item/' + ( item.IsIdentified ? it.identifiedResourceName : it.unidentifiedResourceName ) + '.bmp', function(data){
@@ -438,7 +430,7 @@ define(function(require)
 
 				content.append(
 					'<div class="item '+ item.index +'" draggable="true">' +
-						'<button style="background-image:url(' + data + ')"></button>' +
+						'<div class="icon" style="background-image:url(' + data + ')"></div>' +
 						'<div class="amount">'+ (item.count ? '<span class="count">' + item.count + '</span>' + ' ' : '') + '</div>' +
 						'<span class="name">' + ( item.RefiningLevel ? '+' + item.RefiningLevel + ' ' : '') + ( item.IsIdentified ? it.identifiedDisplayName : it.unidentifiedDisplayName ) + '</span>' +
 					'</div>'
