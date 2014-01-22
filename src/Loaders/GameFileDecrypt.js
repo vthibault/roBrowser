@@ -337,7 +337,7 @@ define(function()
 		}
 
 		return out;
-	});
+	})();
 
 
 	/**
