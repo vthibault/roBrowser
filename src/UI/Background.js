@@ -30,7 +30,7 @@ define( function( require )
 	 * Background canvas element
 	 */
 	Background.canvas = jQuery('<canvas/>')
-		.css({ position: 'absolute', top: 0, left: 0, zIndex:0 });
+		.css({ position: 'absolute', top: 0, left: 0, zIndex:5 });
 
 
 	/**
