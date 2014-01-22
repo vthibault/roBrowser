@@ -104,31 +104,37 @@ define(function( require )
 		var log   = document.getElementById('log');
 		var error = document.getElementById('error');
 		var errors = 0;
-		var i, count = list.length;
+		var i, index = 0, count = list.length;
 		var start = Date.now();
 
-		for( i = 0; i < count; ++i ) {
-			(function(i){
-				Client.getFile( list[i], function(data){
+		for( i = 0; i < 5 && i < count; ++i ) {
+			LoadNext(index++);
+		}
 
-					try {
-						var tick = (Date.now()-start);
-						log.textContent = '[' + (i+1) + '/' + count + '] ' + '(' + Math.floor(((tick / i * count) - tick) * 0.001) + ' seconds) ' + list[i];
-						callback(data);
-					}
-					catch(e){
-						error.innerHTML += '<div style="margin-left:30px;"><h2>' + list[i] + '</h2>'+ e.message +'<pre>'+ e.stack +'</pre></div>';
-						errors++;
-					}
+		function LoadNext(i){
+			Client.getFile( list[i], function(data){
+				try {
+					var tick = (Date.now()-start);
+					log.textContent = '[' + (i+1) + '/' + count + '] ' + '(' + Math.floor(((tick / i * count) - tick) * 0.001 + 1) + ' seconds) ' + list[i];
+					callback(data);
+				}
+				catch(e){
+					error.innerHTML += '<div style="margin-left:30px;"><h2>' + list[i] + '</h2>'+ e.message +'<pre>'+ e.stack +'</pre></div>';
+					errors++;
+				}
 
-					if( i+1 === count ) {
-						alert( log.textContent = count + ' '+ ext +' files loaded and compiled, found ' + errors +' errors' );
-					}
+				// Remove from memory
+				Memory.remove( null, list[i] );
+				index++;
 
-					// Remove from memory
-					Memory.remove( null, list[i] );
-				});
-			})(i);
+				if (index < count) {
+					LoadNext(index);
+				}
+	
+				if (index === count+4) {
+					alert( log.textContent = count + ' '+ ext +' files loaded and compiled, found ' + errors +' errors' );
+				}
+			});
 		}
 	};
 
