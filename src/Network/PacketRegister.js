@@ -507,9 +507,48 @@ define( ['./PacketStructure' ], function( PACKET )
 		0x83a: PACKET.ZC.OPEN_SEARCH_STORE_INFO,
 		0x83d: PACKET.ZC.SSILIST_ITEM_CLICK_ACK,
 		0x83e: PACKET.AC.REFUSE_LOGIN_R2,  // ok
+		0x84b: PACKET.ZC.ITEM_FALL_ENTRY2, // ok
 		0x856: PACKET.ZC.NOTIFY_MOVEENTRY6, // ok
 		0x857: PACKET.ZC.NOTIFY_NEWENTRY6, // ok
 		0x858: PACKET.ZC.NOTIFY_STANDENTRY6, // ok
-		0x99d: PACKET.HC.ACCEPT_ENTER_NEO_UNION_LIST  // ok
+		0x859: PACKET.ZC.EQUIPWIN_MICROSCOPE2,
+		0x8c7: PACKET.ZC.SKILL_ENTRY3,
+		0x8d0: PACKET.ZC.REQ_WEAR_EQUIP_ACK2, // ok
+		0x8d1: PACKET.ZC.REQ_TAKEOFF_EQUIP_ACK2, // ok
+		0x8d6: PACKET.ZC.CLOSE_SCRIPT, // ok
+		0x8ff: PACKET.ZC.MSG_STATE_CHANGE3, // ok
+		0x90f: PACKET.ZC.NOTIFY_STANDENTRY7, // ok
+		0x914: PACKET.ZC.NOTIFY_MOVEENTRY7, // ok
+		0x915: PACKET.ZC.NOTIFY_NEWENTRY7, // ok
+		0x977: PACKET.ZC.NOTIFY_MONSTER_HP,
+		0x983: PACKET.ZC.MSG_STATE_CHANGE4, // ok
+		0x984: PACKET.ZC.MSG_STATE_CHANGE5, // ok
+		0x990: PACKET.ZC.ITEM_PICKUP_ACK5, // partially
+		0x991: PACKET.ZC.NORMAL_ITEMLIST4, // ok
+		0x992: PACKET.ZC.EQUIPMENT_ITEMLIST4, // ok
+		0x993: PACKET.ZC.CART_NORMAL_ITEMLIST4,
+		0x994: PACKET.ZC.CART_EQUIPMENT_ITEMLIST4,
+		0x995: PACKET.ZC.STORE_NORMAL_ITEMLIST4, // ok
+		0x996: PACKET.ZC.STORE_EQUIPMENT_ITEMLIST4, // ok
+		0x997: PACKET.ZC.EQUIPWIN_MICROSCOPE_V5,
+		0x999: PACKET.ZC.ACK_WEAR_EQUIP_V5, // ok
+		0x99a: PACKET.ZC.ACK_TAKEOFF_EQUIP_V5, // ok
+		0x99b: PACKET.ZC.NOTIFY_MAPPROPERTY2,
+		0x99f: PACKET.ZC.SKILL_ENTRY4,
+/*
+        bgqueue_ackType = 0x8d8,
+        bgqueue_notice_deleteType = 0x8db,
+        bgqueue_registerType = 0x8d7,
+        bgqueue_updateinfoType = 0x8d9,
+        bgqueue_checkstateType = 0x90a,
+        bgqueue_revokereqType = 0x8da,
+        bgqueue_battlebeginackType = 0x8e0,
+        bgqueue_notify_entryType = 0x8d9,
+        bgqueue_battlebeginsType = 0x8df,
+*/
+		0x99d: PACKET.HC.ACCEPT_ENTER_NEO_UNION_LIST,  // ok
+		0x9ca: PACKET.ZC.SKILL_ENTRY5,
+		//0x9d5: npcmarketopenType
+		//0x9d7: npcmarketresultackType
 	};
 });

@@ -286,6 +286,22 @@ define(function( require )
 
 
 	/**
+	 * Update entity's life
+	 *
+	 * @param {object} pkt - PACKET.ZC.NOTIFY_MONSTER_HP
+	 */
+	function UpdateLife( pkt )
+	{
+		var entity = EntityManager.get(pkt.AID);
+		if( entity ) {
+			entity.life.hp = pkt.hp;
+			entity.life.hp_max = pkt.maxhp;
+			entity.life.update();
+		}
+	}
+
+
+	/**
 	 * Updating entity direction
 	 *
 	 * @param {object} pkt - PACKET.ZC.CHANGE_DIRECTION
@@ -647,6 +663,9 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.NOTIFY_STANDENTRY6,    Create );
 		Network.hookPacket( PACKET.ZC.NOTIFY_NEWENTRY6,      Create );
 		Network.hookPacket( PACKET.ZC.NOTIFY_MOVEENTRY6,     Create );
+		Network.hookPacket( PACKET.ZC.NOTIFY_STANDENTRY7,    Create );
+		Network.hookPacket( PACKET.ZC.NOTIFY_NEWENTRY7,      Create );
+		Network.hookPacket( PACKET.ZC.NOTIFY_MOVEENTRY7,     Create );
 		Network.hookPacket( PACKET.ZC.NOTIFY_VANISH,         Remove );
 		Network.hookPacket( PACKET.ZC.NOTIFY_MOVE,           Walk );
 		Network.hookPacket( PACKET.ZC.STOPMOVE,              Stop );
@@ -666,6 +685,9 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.USESKILL_ACK2,         CastSkill );
 		Network.hookPacket( PACKET.ZC.MSG_STATE_CHANGE,      UpdateStatus );
 		Network.hookPacket( PACKET.ZC.MSG_STATE_CHANGE2,     UpdateStatus );
+		Network.hookPacket( PACKET.ZC.MSG_STATE_CHANGE3,     UpdateStatus );
+		Network.hookPacket( PACKET.ZC.MSG_STATE_CHANGE4,     UpdateStatus );
+		Network.hookPacket( PACKET.ZC.MSG_STATE_CHANGE5,     UpdateStatus );
 		Network.hookPacket( PACKET.ZC.STORE_ENTRY,           RoomCreate );
 		Network.hookPacket( PACKET.ZC.DISAPPEAR_ENTRY,       RoomRemove );
 		Network.hookPacket( PACKET.ZC.BUYING_STORE_ENTRY,    RoomCreate );

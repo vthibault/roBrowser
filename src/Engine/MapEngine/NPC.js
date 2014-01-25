@@ -81,6 +81,25 @@ define(function( require )
 
 
 	/**
+	 * Server want to close a npc
+	 *
+	 * @param {object} pkt - PACKET.ZC.CLOSE_SCRIPT
+	 */
+	function OnCloseScript( pkt )
+	{
+		if (NpcBox.ownerID === pkt.NAID) {
+			NpcBox.remove();
+			NpcMenu.remove();
+
+			var cutin = document.getElementById('cutin');
+			if (cutin && cutin.parentNode) {
+				document.body.removeChild(cutin);
+			}
+		}
+	}
+
+
+	/**
 	 * Close button pressed
 	 * @param {number} NAID - npc id
 	 */
@@ -416,5 +435,6 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.PROGRESS_CANCEL, OnProgressBarStop );
 		Network.hookPacket( PACKET.ZC.SOUND,           OnSound );
 		Network.hookPacket( PACKET.ZC.PLAY_NPC_BGM,    OnBGM );
+		Network.hookPacket( PACKET.ZC.CLOSE_SCRIPT,    OnCloseScript );
 	};
 });

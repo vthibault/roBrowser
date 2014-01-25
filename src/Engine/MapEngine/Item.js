@@ -170,7 +170,7 @@ define(function( require )
 	 */
 	function ItemEquip( pkt )
 	{
-		if (pkt.result === 1) {
+		if (pkt.result == 1) {
 			var item = Inventory.removeItem( pkt.index, 1 );
 			var it   = DB.getItemInfo( item.ITID );
 			Equipment.equip( item, pkt.wearLocation );
@@ -214,19 +214,27 @@ define(function( require )
 	{
 		Network.hookPacket( PACKET.ZC.ITEM_ENTRY,            Exist );
 		Network.hookPacket( PACKET.ZC.ITEM_FALL_ENTRY,       Create );
+		Network.hookPacket( PACKET.ZC.ITEM_FALL_ENTRY2,      Create );
 		Network.hookPacket( PACKET.ZC.ITEM_DISAPPEAR,        Remove );
 		Network.hookPacket( PACKET.ZC.ITEM_PICKUP_ACK,       PickAnswer );
 		Network.hookPacket( PACKET.ZC.ITEM_PICKUP_ACK2,      PickAnswer );
 		Network.hookPacket( PACKET.ZC.ITEM_PICKUP_ACK3,      PickAnswer );
+		Network.hookPacket( PACKET.ZC.ITEM_PICKUP_ACK5,      PickAnswer );
 		Network.hookPacket( PACKET.ZC.ITEM_THROW_ACK,        InventoryRemoveItem );
 		Network.hookPacket( PACKET.ZC.NORMAL_ITEMLIST,       InventoryList );
 		Network.hookPacket( PACKET.ZC.NORMAL_ITEMLIST2,      InventoryList );
 		Network.hookPacket( PACKET.ZC.NORMAL_ITEMLIST3,      InventoryList );
+		Network.hookPacket( PACKET.ZC.NORMAL_ITEMLIST4,      InventoryList );
 		Network.hookPacket( PACKET.ZC.EQUIPMENT_ITEMLIST,    InventoryList );
 		Network.hookPacket( PACKET.ZC.EQUIPMENT_ITEMLIST2,   InventoryList );
 		Network.hookPacket( PACKET.ZC.EQUIPMENT_ITEMLIST3,   InventoryList );
+		Network.hookPacket( PACKET.ZC.EQUIPMENT_ITEMLIST4,   InventoryList );
 		Network.hookPacket( PACKET.ZC.REQ_TAKEOFF_EQUIP_ACK, ItemTakeOff );
+		Network.hookPacket( PACKET.ZC.REQ_TAKEOFF_EQUIP_ACK2,ItemTakeOff );
+		Network.hookPacket( PACKET.ZC.ACK_TAKEOFF_EQUIP_V5,  ItemTakeOff );
 		Network.hookPacket( PACKET.ZC.REQ_WEAR_EQUIP_ACK,    ItemEquip );
+		Network.hookPacket( PACKET.ZC.REQ_WEAR_EQUIP_ACK2,   ItemEquip );
+		Network.hookPacket( PACKET.ZC.ACK_WEAR_EQUIP_V5,     ItemEquip );
 		Network.hookPacket( PACKET.ZC.DELETE_ITEM_FROM_BODY, ItemRemove );
 	};
 });
