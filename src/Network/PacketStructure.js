@@ -11188,9 +11188,9 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 		this.state        = fp.readUChar();
 		this.clevel       = fp.readShort();
 		this.font         = fp.readShort();
-		this.hp            = fp.readLong();
-		this.maxhp         = fp.readLong();
-		this.isBoss        = fp.readUChar();
+		this.hp           = fp.readLong();
+		this.maxhp        = fp.readLong();
+		this.isBoss       = fp.readUChar();
 		this.name         = fp.readString(end-fp.tell());
 	};
 	PACKET.ZC.NOTIFY_NEWENTRY7.size = -1;
@@ -11263,7 +11263,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 	// 0x991
 	PACKET.ZC.NORMAL_ITEMLIST4 = function PACKET_ZC_NORMAL_ITEMLIST4(fp, end) {
 		this.ItemInfo     = (function(){
-			var i, count=(end-fp.tell())/26|0, out=new Array(count);
+			var i, count=(end-fp.tell())/24|0, out=new Array(count);
 			var flag;
 			for ( i=0; i<count; ++i ) {
 				out[i] = {};
@@ -11291,7 +11291,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 	// 0x992
 	PACKET.ZC.EQUIPMENT_ITEMLIST4 = function PACKET_ZC_EQUIPMENT_ITEMLIST4(fp, end) {
 		this.ItemInfo     = (function(){
-			var i, count=(end-fp.tell())/34|0, out=new Array(count);
+			var i, count=(end-fp.tell())/31|0, out=new Array(count);
 			var flag;
 			for ( i=0; i<count; ++i ) {
 				out[i] = {};
@@ -11309,9 +11309,6 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 				out[i].HireExpireDate    = fp.readLong();
 				out[i].bindOnEquipType   = fp.readUShort();
 				out[i].wItemSpriteNumber = fp.readUShort();
-				out[i].IsIdentified      = fp.readUChar();
-				out[i].IsDamaged         = fp.readUChar();
-				out[i].PlaceETCTab       = fp.readUChar();
 				flag                     = fp.readUChar();
 				out[i].IsIdentified      = flag & 1;
 				out[i].IsDamaged         = flag & 2;
@@ -11326,7 +11323,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 	// 0x993
 	PACKET.ZC.CART_NORMAL_ITEMLIST4 = function PACKET_ZC_CART_NORMAL_ITEMLIST4(fp, end) {
 		this.ItemInfo     = (function(){
-			var i, count=(end-fp.tell())/26|0, out=new Array(count);
+			var i, count=(end-fp.tell())/24|0, out=new Array(count);
 			var flag;
 			for ( i=0; i<count; ++i ) {
 				out[i] = {};
@@ -11354,7 +11351,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 	// 0x994
 	PACKET.ZC.CART_EQUIPMENT_ITEMLIST4 = function PACKET_ZC_CART_EQUIPMENT_ITEMLIST4(fp, end) {
 		this.ItemInfo     = (function(){
-			var i, count=(end-fp.tell())/34|0, out=new Array(count);
+			var i, count=(end-fp.tell())/31|0, out=new Array(count);
 			var flag;
 			for ( i=0; i<count; ++i ) {
 				out[i] = {};
@@ -11385,8 +11382,9 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 	// 0x995
 	PACKET.ZC.STORE_NORMAL_ITEMLIST4 = function PACKET_ZC_STORE_NORMAL_ITEMLIST4(fp, end) {
+		this.Name         = fp.readString(24);
 		this.ItemInfo     = (function(){
-			var i, count=(end-fp.tell())/26|0, out=new Array(count);
+			var i, count=(end-fp.tell())/24|0, out=new Array(count);
 			var flag;
 			for ( i=0; i<count; ++i ) {
 				out[i] = {};
@@ -11413,8 +11411,9 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 	// 0x996
 	PACKET.ZC.STORE_EQUIPMENT_ITEMLIST4 = function PACKET_ZC_STORE_EQUIPMENT_ITEMLIST4(fp, end) {
+		this.Name         = fp.readString(24);
 		this.ItemInfo     = (function(){
-			var i, count=(end-fp.tell())/34|0, out=new Array(count);
+			var i, count=(end-fp.tell())/31|0, out=new Array(count);
 			var flag;
 			for ( i=0; i<count; ++i ) {
 				out[i] = {};
