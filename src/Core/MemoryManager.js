@@ -65,7 +65,7 @@ define( ['Core/MemoryItem'], function( MemoryItem )
 		}
 
 		if( onerror ) {
-			item.addEventListener('error', onerror );	
+			item.addEventListener('error', onerror );
 		}
 
 		return item.data;
@@ -98,7 +98,7 @@ define( ['Core/MemoryItem'], function( MemoryItem )
 			_memory[filename] = new MemoryItem();
 		}
 
-		if( error ) {
+		if( error || !data) {
 			_memory[filename].onerror( error );
 		}
 		else {

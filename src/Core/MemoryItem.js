@@ -91,8 +91,10 @@ define(function()
 
 		switch( event.toLowerCase() ) {
 			case 'load':
-				if( this.complete ) {
-					callback(this._data);
+				if (this.complete) {
+					if (this._data) {
+						callback(this._data);
+					}
 					return;
 				}
 
@@ -100,8 +102,10 @@ define(function()
 				break;
 
 			case 'error':
-				if( this.complete && this._error ) {
-					callback(this._error);
+				if (this.complete) {
+					if (this._error) {
+						callback(this._error);
+					}
 					return;
 				}
 
