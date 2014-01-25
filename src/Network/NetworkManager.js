@@ -354,7 +354,8 @@ function( require,        Context,         BinaryReader,       PACKETVER,       
 				clearInterval(_socket.ping);
 			}
 
-			idx = _sockets.indexOf(_socket);
+			idx     = _sockets.indexOf(_socket);
+			_socket = null;
 
 			if( idx !== -1 ) {
 				_sockets.splice(idx, 1);
