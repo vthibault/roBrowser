@@ -40,19 +40,10 @@ define( ['Utils/jquery'], function( jQuery )
 	};
 
 
-	// Get mouse position
-	jQuery( window ).
-		mousemove(function( event ){
-			Mouse.screen.x = event.pageX;
-			Mouse.screen.y = event.pageY;
-		}).
-		mouseout(function(){
-			Mouse.screen.x = -1;
-			Mouse.screen.y = -1;
-			Mouse.world.x  = -1;
-			Mouse.world.y  = -1;
-			Mouse.world.z  = -1;
-		});
+	/**
+	 * @var {boolean} Do we intersect object ?
+	 */
+	Mouse.intersect = true;
 
 
 	/**

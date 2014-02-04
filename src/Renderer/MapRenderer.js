@@ -314,12 +314,12 @@ define(function( require )
 		Ground.render(gl, modelView, projection, normalMat, fog, light );
 		Models.render(gl, modelView, projection, normalMat, fog, light );
 
-		if( Altitude.intersect( modelView, projection, _pos)) {
+		if (Mouse.intersect && Altitude.intersect( modelView, projection, _pos)) {
 			x = _pos[0];
 			y = _pos[1];
 
 			// Walkable
-			if( (Altitude.getCellType( x, y ) & Altitude.TYPE.WALKABLE) ) {
+			if (Altitude.getCellType( x, y ) & Altitude.TYPE.WALKABLE) {
 				GridSelector.render( gl, modelView, projection, fog, x, y );
 				Mouse.world.x =  x;
 				Mouse.world.y =  y;
@@ -342,8 +342,10 @@ define(function( require )
 		Sounds.render( Session.Entity.position, tick );
 
 		// Find entity over the cursor
-		var entity = EntityManager.intersect( modelView, projection );
-		EntityManager.setOverEntity( entity );
+		if (Mouse.intersect) {
+			var entity = EntityManager.intersect( modelView, projection );
+			EntityManager.setOverEntity( entity );
+		}
 
 		// Clean up
 		MemoryManager.clean(gl, tick);

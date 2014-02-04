@@ -15,7 +15,7 @@ define([
 	'UI/Components/InputBox/InputBox',
 	'UI/Components/ChatBox/ChatBox',
 	'UI/Components/Equipment/Equipment',
-	'Controls/KeyEventHandler',
+	'Controls/KeyEventHandler', 'Controls/MouseEventHandler',
 	'Renderer/Renderer', 'Renderer/Camera', 'Renderer/EntityManager',
 	'Preferences/Controls'
 ],
@@ -27,12 +27,43 @@ function(
 	InputBox,
 	ChatBox,
 	Equipment,
-	KEYS,
+	KEYS, Mouse,
 	Renderer, Camera, EntityManager,
 	Preferences
 )
 {
 	"use strict";
+
+
+	/**
+	 * Moving the mouse on the scene
+	 */
+	function OnMouseMove( event )
+	{
+		Mouse.screen.x = event.pageX;
+		Mouse.screen.y = event.pageY;
+	}
+
+
+	/**
+	 * When the mouse is no longer on the canvas
+	 * Just block actions and reset default cursor
+	 */
+	function OnMouseOut()
+	{
+		Mouse.intersect = false;
+		Cursor.setType( Cursor.ACTION.DEFAULT );
+	}
+
+
+	/**
+	 * When the mouse is now on the canvas
+	 * Just allow action
+	 */
+	function OnMouseOver()
+	{
+		Mouse.intersect = true;
+	}
 
 
 	/**
@@ -209,12 +240,16 @@ function(
 	{
 		// Attach events
 		jQuery( Renderer.canvas )
+			.mouseout( OnMouseOut )
+			.mouseover( OnMouseOver )
 			.mousedown( OnMouseDown.bind(this) )
 			.mouseup( OnMouseUp.bind(this) )
 			.on('mousewheel DOMMouseScroll', OnMouseWheel)
 			.on('dragover', OnDragOver )
 			.on('drop', OnDrop.bind(this));
 
-		jQuery(window).on('contextmenu', function(){ return false; });
+		jQuery(window)
+			.on('contextmenu', function(){ return false; })
+			.mousemove( OnMouseMove );
 	};
 });
