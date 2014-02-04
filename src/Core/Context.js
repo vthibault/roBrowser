@@ -90,6 +90,58 @@ define(function()
 
 
 	/**
+	 * Check list of API the web browser have to support to
+	 * be able to execute roBrowser without problem.
+	 *
+	 * (2D graphics, 3D graphics, Threads, File API, ...)
+	 */
+	Context.checkSupport = function CheckSupport()
+	{
+		var div, canvas, element, gl;
+
+		// Drag drop
+		div = document.createElement('div');
+		if (!('draggable' in div) && !('ondragstart' in div && 'ondrop' in div)) {
+			throw "Your web browser need to be update, it does not support Drag 'nd Drop features.";
+		}
+
+		// Canvas
+		canvas = document.createElement('canvas');
+		if (!canvas.getContext || !canvas.getContext('2d')) {
+			throw "Your web browser need to be update, it does not support &lt;canvas&gt; element.";
+		}
+
+		// WebGL
+		if (!window.WebGLRenderingContext) {
+			throw "Your web browser need to be update, it does not support 3D graphics.";
+		}
+
+		element = document.createElement('canvas');
+		try { gl = element.getContext('webgl'); } catch(e){}
+		try { gl = gl || element.getContext('experimental-webgl'); } catch(e){}
+
+		if (!gl) {
+			throw "Your web browser OR your Graphics Card OR Drivers need to be update, it does not support 3D graphics.\nFor more informations check <a href='http://get.webgl.org/' target='_blank'>get.webgl.org</a>";
+		}
+
+		// Web Worker
+		if (!window.Worker) {
+			throw "Your web browser need to be update, it does not support Threads (Web Worker API).";
+		}
+
+		// FileReader API
+		if (!window.File || !window.FileList || !window.FileReader) {
+			throw "Your web browser need to be update, it does not support File API.";
+		}
+
+		// DataView
+		if (!window.DataView || !DataView.prototype.getFloat64) {
+			throw "Your web browser need to be update, it does not support File API (DataView).";
+		}
+	};
+
+
+	/**
 	 * Export
 	 */
 	return Context;

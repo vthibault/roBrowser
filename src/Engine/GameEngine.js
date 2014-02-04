@@ -17,6 +17,7 @@ define([
 	'DB/DBManager',
 	'Core/Client',
 	'Core/Thread',
+	'Core/Context',
 	'Engine/LoginEngine',
 	'Network/NetworkManager',
 	'Renderer/Renderer',
@@ -35,6 +36,7 @@ function(
 	DB,
 	Client,
 	Thread,
+	Context,
 	LoginEngine,
 	Network,
 	Renderer,
@@ -133,6 +135,9 @@ function(
 		q.add(function(){
 			Reload();
 		});
+
+
+		Context.checkSupport();
 
 		// Execute
 		q.run();
