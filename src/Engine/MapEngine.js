@@ -89,7 +89,7 @@ define(function( require )
 				ping.time = Date.now();
 				Network.sendPacket(ping);
 			});
-		});
+		}, true);
 
 
 		// Hook packets

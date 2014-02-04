@@ -46,7 +46,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeString(this.ID, 24);
 			pkt_buf.writeString(this.Passwd, 24);
 			pkt_buf.writeUChar(this.clienttype);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -70,7 +70,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeULong(this.userLevel);
 			pkt_buf.writeUShort(this.clientType);
 			pkt_buf.writeUChar(this.Sex);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -86,7 +86,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x66);
 			pkt_buf.writeUChar(this.CharNum);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -120,7 +120,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeUChar(this.CharNum);
 			pkt_buf.writeShort(this.headPal);
 			pkt_buf.writeShort(this.head);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -138,7 +138,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0x68);
 			pkt_buf.writeULong(this.GID);
 			pkt_buf.writeString(this.key, 40);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -163,7 +163,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt.view.setUint32( ver[6], this.ClientTime, true );
 			pkt.view.setUint8(  ver[7], this.Sex,        true );
 
-			return pkt.buffer;
+			return pkt;
 		};
 	};
 
@@ -177,7 +177,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			var pkt_buf = new BinaryWriter(pkt_len);
 
 			pkt_buf.writeShort(0x7d);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -193,7 +193,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt.writeShort(ver[1]);
 			pkt.view.setUint32( ver[3], this.clientTime, true );
-			return pkt.buffer;
+			return pkt;
 		};
 	};
 
@@ -207,7 +207,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			var pkt_buf = new BinaryWriter(pkt_len);
 
 			pkt_buf.writeShort(0x82);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -223,7 +223,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt.writeShort(ver[1]);
 			pkt.view.setPos( ver[3], this.dest, true );
-			return pkt.buffer;
+			return pkt;
 		};
 	};
 
@@ -241,7 +241,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt.writeShort(ver[1]);
 			pkt.view.setUint32( ver[3], this.targetGID, true );
 			pkt.view.setUint8(  ver[4], this.action,    true );
-			return pkt.buffer;
+			return pkt;
 		};
 	};
 
@@ -260,7 +260,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.view.setInt16(  version[3], pkt_len, true );
 			pkt_buf.view.setString( version[4], this.msg );
 
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -278,7 +278,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0x90);
 			pkt_buf.writeULong(this.NAID);
 			pkt_buf.writeUChar(this.type);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -294,7 +294,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt.writeShort(ver[1]);
 			pkt.view.setUint32( ver[3], this.AID, true);
-			return pkt.buffer;
+			return pkt;
 		};
 	};
 
@@ -313,7 +313,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(pkt_len);
 			pkt_buf.writeString(this.receiver, 24);
 			pkt_buf.writeString(this.msg);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -330,7 +330,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0x99);
 			pkt_buf.writeShort(pkt_len);
 			pkt_buf.writeString(this.msg);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -348,7 +348,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt.writeShort(ver[1]);
 			pkt.view.setInt16( ver[3], this.headDir, true );
 			pkt.view.setUint8( ver[4], this.dir, true );
-			return pkt.buffer;
+			return pkt;
 		};
 	};
 
@@ -364,7 +364,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt.writeShort(ver[1]);
 			pkt.view.setUint32( ver[3], this.ITAID, true );
-			return pkt.buffer;
+			return pkt;
 		};
 	};
 
@@ -382,7 +382,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt.writeShort(ver[1]);
 			pkt.view.setUint16( ver[3], this.Index, true );
 			pkt.view.setInt16(  ver[4], this.count, true );
-			return pkt.buffer;
+			return pkt;
 		};
 	};
 
@@ -400,7 +400,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt.writeShort(ver[1]);
 			pkt.view.setUint16( ver[3], this.Index, true );
 			pkt.view.setUint32( ver[4], this.AID,   true );
-			return pkt.buffer;
+			return pkt;
 		};
 	};
 
@@ -418,7 +418,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt.writeShort(ver[1]);
 			pkt.view.setUint16( ver[3], this.index,          true );
 			pkt.view.setUint16( ver[4], this.wearLocation,   true );
-			return pkt.buffer;
+			return pkt;
 		};
 	};
 
@@ -434,7 +434,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0xab);
 			pkt_buf.writeUShort(this.index);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -450,7 +450,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0xb2);
 			pkt_buf.writeUChar(this.type);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -468,7 +468,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0xb8);
 			pkt_buf.writeULong(this.NAID);
 			pkt_buf.writeUChar(this.num);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -484,7 +484,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0xb9);
 			pkt_buf.writeULong(this.NAID);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -498,7 +498,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			var pkt_buf = new BinaryWriter(pkt_len);
 
 			pkt_buf.writeShort(0xba);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -516,7 +516,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0xbb);
 			pkt_buf.writeUShort(this.statusID);
 			pkt_buf.writeUChar(this.changeAmount);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -532,7 +532,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0xbf);
 			pkt_buf.writeUChar(this.type);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -546,7 +546,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			var pkt_buf = new BinaryWriter(pkt_len);
 
 			pkt_buf.writeShort(0xc1);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -564,7 +564,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0xc5);
 			pkt_buf.writeULong(this.NAID);
 			pkt_buf.writeUChar(this.type);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -587,7 +587,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 					pkt_buf.writeUShort(this.itemList[i].ITID);
 				}
 			})()
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -610,7 +610,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 					pkt_buf.writeShort(this.itemList[i].count);
 				}
 			})()
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -626,7 +626,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0xcc);
 			pkt_buf.writeULong(this.AID);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -640,7 +640,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			var pkt_buf = new BinaryWriter(pkt_len);
 
 			pkt_buf.writeShort(0xce);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -658,7 +658,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0xcf);
 			pkt_buf.writeString(this.name, 24);
 			pkt_buf.writeUChar(this.type);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -674,7 +674,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0xd0);
 			pkt_buf.writeUChar(this.type);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -688,7 +688,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			var pkt_buf = new BinaryWriter(pkt_len);
 
 			pkt_buf.writeShort(0xd3);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -711,7 +711,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeUChar(this.type);
 			pkt_buf.writeString(this.passwd, 8);
 			pkt_buf.writeString(this.title);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -729,7 +729,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0xd9);
 			pkt_buf.writeULong(this.roomID);
 			pkt_buf.writeString(this.passwd, 8);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -752,7 +752,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeUChar(this.type);
 			pkt_buf.writeString(this.passwd, 8);
 			pkt_buf.writeString(this.title);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -770,7 +770,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0xe0);
 			pkt_buf.writeULong(this.role);
 			pkt_buf.writeString(this.name, 24);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -786,7 +786,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0xe2);
 			pkt_buf.writeString(this.name, 24);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -800,7 +800,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			var pkt_buf = new BinaryWriter(pkt_len);
 
 			pkt_buf.writeShort(0xe3);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -816,7 +816,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0xe4);
 			pkt_buf.writeULong(this.AID);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -832,7 +832,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0xe6);
 			pkt_buf.writeUChar(this.result);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -850,7 +850,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0xe8);
 			pkt_buf.writeShort(this.index);
 			pkt_buf.writeLong(this.count);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -864,7 +864,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			var pkt_buf = new BinaryWriter(pkt_len);
 
 			pkt_buf.writeShort(0xeb);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -878,7 +878,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			var pkt_buf = new BinaryWriter(pkt_len);
 
 			pkt_buf.writeShort(0xed);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -892,7 +892,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			var pkt_buf = new BinaryWriter(pkt_len);
 
 			pkt_buf.writeShort(0xef);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -910,7 +910,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt.writeShort(ver[1]);
 			pkt.view.setInt16( ver[3], this.index, true);
 			pkt.view.setInt32( ver[4], this.count, true);
-			return pkt.buffer;
+			return pkt;
 		};
 	};
 
@@ -928,7 +928,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt.writeShort(ver[1]);
 			pkt.view.setInt16( ver[3], this.index, true);
 			pkt.view.setInt32( ver[4], this.count, true);
-			return pkt.buffer;
+			return pkt;
 		};
 	};
 
@@ -943,7 +943,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt.writeShort(ver[1]);
 
-			return pkt.buffer;
+			return pkt;
 		};
 	};
 
@@ -959,7 +959,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0xf9);
 			pkt_buf.writeString(this.groupName, 24);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -981,7 +981,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			else {
 				pkt.view.setInt32( ver[3], this.AID, true );
 			}
-			return pkt.buffer;
+			return pkt;
 		};
 	};
 
@@ -999,7 +999,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0xff);
 			pkt_buf.writeULong(this.GRID);
 			pkt_buf.writeLong(this.answer);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -1013,7 +1013,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			var pkt_buf = new BinaryWriter(pkt_len);
 
 			pkt_buf.writeShort(0x100);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -1029,7 +1029,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x102);
 			pkt_buf.writeULong(this.expOption);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -1047,7 +1047,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0x103);
 			pkt_buf.writeULong(this.AID);
 			pkt_buf.writeString(this.characterName, 24);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -1064,7 +1064,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0x108);
 			pkt_buf.writeShort(pkt_len);
 			pkt_buf.writeString(this.msg);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -1080,7 +1080,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x112);
 			pkt_buf.writeUShort(this.SKID);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -1100,7 +1100,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt.view.setInt16(  ver[3], this.selectedLevel, true );
 			pkt.view.setUint16( ver[4], this.SKID,          true );
 			pkt.view.setUint32( ver[5], this.targetID,      true );
-			return pkt.buffer;
+			return pkt;
 		};
 	};
 
@@ -1122,7 +1122,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt.view.setInt16( ver[4], this.SKID,          true );
 			pkt.view.setInt16( ver[5], this.xPos,          true );
 			pkt.view.setInt16( ver[6], this.yPos,          true );
-			return pkt.buffer;
+			return pkt;
 		};
 	};
 
@@ -1136,7 +1136,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			var pkt_buf = new BinaryWriter(pkt_len);
 
 			pkt_buf.writeShort(0x118);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -1154,7 +1154,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0x11b);
 			pkt_buf.writeUShort(this.SKID);
 			pkt_buf.writeString(this.mapName, 16);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -1168,7 +1168,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			var pkt_buf = new BinaryWriter(pkt_len);
 
 			pkt_buf.writeShort(0x11d);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -1186,7 +1186,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0x126);
 			pkt_buf.writeShort(this.index);
 			pkt_buf.writeLong(this.count);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -1204,7 +1204,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0x127);
 			pkt_buf.writeShort(this.index);
 			pkt_buf.writeLong(this.count);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -1222,7 +1222,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0x128);
 			pkt_buf.writeShort(this.index);
 			pkt_buf.writeLong(this.count);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -1240,7 +1240,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0x129);
 			pkt_buf.writeShort(this.index);
 			pkt_buf.writeLong(this.count);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -1254,7 +1254,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			var pkt_buf = new BinaryWriter(pkt_len);
 
 			pkt_buf.writeShort(0x12a);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -1268,7 +1268,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			var pkt_buf = new BinaryWriter(pkt_len);
 
 			pkt_buf.writeShort(0x12e);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -1294,7 +1294,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 				pkt_buf.writeLong(this.storeList[i].Price);
 			}
 
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -1310,7 +1310,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x130);
 			pkt_buf.writeULong(this.AID);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -1335,7 +1335,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 				pkt_buf.writeShort(this.itemList[i].index);
 			}
 
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -1351,7 +1351,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x138);
 			pkt_buf.writeUChar(this.isTurnOn);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -1367,7 +1367,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x13f);
 			pkt_buf.writeString(this.itemName, 24);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -1387,7 +1387,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeString(this.mapName, 16);
 			pkt_buf.writeShort(this.xPos);
 			pkt_buf.writeShort(this.yPos);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -1405,7 +1405,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0x143);
 			pkt_buf.writeULong(this.NAID);
 			pkt_buf.writeLong(this.value);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -1421,7 +1421,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x146);
 			pkt_buf.writeULong(this.NAID);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -1441,7 +1441,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeULong(this.otherAID);
 			pkt_buf.writeUChar(this.type);
 			pkt_buf.writeShort(this.point);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -1455,7 +1455,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			var pkt_buf = new BinaryWriter(pkt_len);
 
 			pkt_buf.writeShort(0x14d);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -1471,7 +1471,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x14f);
 			pkt_buf.writeLong(this.Type);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -1487,7 +1487,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x151);
 			pkt_buf.writeLong(this.GDID);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -1504,7 +1504,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0x153);
 			pkt_buf.writeShort(pkt_len);
 			pkt_buf.writeString(this.img);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -1528,7 +1528,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 				pkt_buf.writeLong(this.memberInfo[i].positionID);
 			}
 
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -1544,7 +1544,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x157);
 			pkt_buf.writeLong(this.AID);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -1566,7 +1566,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeLong(this.AID);
 			pkt_buf.writeLong(this.GID);
 			pkt_buf.writeString(this.reasonDesc, 40);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -1588,7 +1588,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeLong(this.AID);
 			pkt_buf.writeLong(this.GID);
 			pkt_buf.writeString(this.reasonDesc, 40);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -1604,7 +1604,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x15d);
 			pkt_buf.writeString(this.key, 40);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -1630,7 +1630,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 				pkt_buf.writePos(this.memberList[i].posName);
 			}
 
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -1648,7 +1648,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0x165);
 			pkt_buf.writeULong(this.GID);
 			pkt_buf.writeString(this.GName, 24);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -1668,7 +1668,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeULong(this.AID);
 			pkt_buf.writeULong(this.MyAID);
 			pkt_buf.writeULong(this.MyGID);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -1686,7 +1686,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0x16b);
 			pkt_buf.writeULong(this.GDID);
 			pkt_buf.writeLong(this.answer);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -1706,7 +1706,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeULong(this.GDID);
 			pkt_buf.writeString(this.subject, 60);
 			pkt_buf.writeString(this.notice, 120);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -1726,7 +1726,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeULong(this.AID);
 			pkt_buf.writeULong(this.MyAID);
 			pkt_buf.writeULong(this.MyGID);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -1744,7 +1744,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0x172);
 			pkt_buf.writeULong(this.otherAID);
 			pkt_buf.writeLong(this.answer);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -1760,7 +1760,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x175);
 			pkt_buf.writeLong(this.GID);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -1776,7 +1776,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x178);
 			pkt_buf.writeShort(this.index);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -1792,7 +1792,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x17a);
 			pkt_buf.writeShort(this.cardIndex);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -1810,7 +1810,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0x17c);
 			pkt_buf.writeShort(this.cardIndex);
 			pkt_buf.writeShort(this.equipIndex);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -1827,7 +1827,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0x17e);
 			pkt_buf.writeShort(pkt_len);
 			pkt_buf.writeString(this.msg);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -1843,7 +1843,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x180);
 			pkt_buf.writeULong(this.AID);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -1861,7 +1861,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0x183);
 			pkt_buf.writeULong(this.OpponentGDID);
 			pkt_buf.writeLong(this.Relation);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -1877,7 +1877,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x187);
 			pkt_buf.writeULong(this.AID);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 	PACKET.CZ.PING.size = 6;
@@ -1894,7 +1894,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x18a);
 			pkt_buf.writeShort(this.type);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -1912,7 +1912,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeUShort(this.info.ITID);
 			pkt_buf.writeUShort(this.info.material_ID[0]);
 			pkt_buf.writeUShort(this.info.material_ID[1]);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -1936,7 +1936,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt.view.setInt16(  ver[5], this.xPos,          true );
 			pkt.view.setInt16(  ver[6], this.yPos,          true );
 			pkt.view.setString( ver[7], this.contents, 80        );
-			return pkt.buffer;
+			return pkt;
 		};
 	};
 
@@ -1952,7 +1952,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt.writeShort(ver[1]);
 			pkt.view.setUint32( ver[3], this.GID, true );
-			return pkt.buffer;
+			return pkt;
 		};
 	};
 
@@ -1968,7 +1968,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x197);
 			pkt_buf.writeShort(this.type);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -1988,7 +1988,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(this.xPos);
 			pkt_buf.writeShort(this.yPos);
 			pkt_buf.writeShort(this.type);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2005,7 +2005,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0x19c);
 			pkt_buf.writeShort(pkt_len);
 			pkt_buf.writeString(this.msg);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2021,7 +2021,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x19d);
 			pkt_buf.writeLong(this.EffectState);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2037,7 +2037,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x19f);
 			pkt_buf.writeULong(this.targetAID);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2053,7 +2053,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x1a1);
 			pkt_buf.writeChar(this.cSub);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2069,7 +2069,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x1a5);
 			pkt_buf.writeString(this.szName, 24);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2085,7 +2085,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x1a7);
 			pkt_buf.writeShort(this.index);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2101,7 +2101,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x1a8);
 			pkt_buf.writeShort(this.index);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2117,7 +2117,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x1a9);
 			pkt_buf.writeLong(this.data);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2133,7 +2133,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x1ae);
 			pkt_buf.writeUShort(this.id);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2149,7 +2149,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x1af);
 			pkt_buf.writeShort(this.num);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2177,7 +2177,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 				pkt_buf.writeLong(this.storeList[i].Price);
 			}
 
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2193,7 +2193,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x1b7);
 			pkt_buf.writeLong(this.zeny);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2209,7 +2209,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x1ba);
 			pkt_buf.writeString(this.AccountName, 24);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2225,7 +2225,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x1bb);
 			pkt_buf.writeString(this.CharacterName, 24);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2241,7 +2241,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x1bc);
 			pkt_buf.writeString(this.AccountName, 24);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2257,7 +2257,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x1bd);
 			pkt_buf.writeString(this.CharacterName, 24);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2273,7 +2273,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x1bf);
 			pkt_buf.writeUChar(this.Permission);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2287,7 +2287,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			var pkt_buf = new BinaryWriter(pkt_len);
 
 			pkt_buf.writeShort(0x1c0);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2305,7 +2305,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0x1c6);
 			pkt_buf.writeChar(this.encCount);
 			pkt_buf.writeChar(this.decCount);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2321,7 +2321,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x1ca);
 			pkt_buf.writeUChar(this.result);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2343,7 +2343,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeUChar(this.stateId);
 			pkt_buf.writeUChar(this.skillId);
 			pkt_buf.writeUChar(this.arg1);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2359,7 +2359,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x1ce);
 			pkt_buf.writeLong(this.SKID);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2378,7 +2378,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(pkt_len);
 			pkt_buf.writeULong(this.NAID);
 			pkt_buf.writeString(this.msg);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2392,7 +2392,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			var pkt_buf = new BinaryWriter(pkt_len);
 
 			pkt_buf.writeShort(0x1db);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2414,7 +2414,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeString(this.ID, 24);
 			pkt_buf.writeString(this.PasswdMD5, 16);
 			pkt_buf.writeUChar(this.clienttype);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2430,7 +2430,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt.writeShort(ver[1]);
 			pkt.view.setUint32( ver[3], this.AID, true );
-			return pkt.buffer;
+			return pkt;
 		};
 	};
 
@@ -2450,7 +2450,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeULong(this.AID);
 			pkt_buf.writeULong(this.GID);
 			pkt_buf.writeLong(this.answer);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2466,7 +2466,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x1e5);
 			pkt_buf.writeULong(this.AID);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2480,7 +2480,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			var pkt_buf = new BinaryWriter(pkt_len);
 
 			pkt_buf.writeShort(0x1e7);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2500,7 +2500,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeString(this.groupName, 24);
 			pkt_buf.writeUChar(this.ItemPickupRule);
 			pkt_buf.writeUChar(this.ItemDivisionRule);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2514,7 +2514,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			var pkt_buf = new BinaryWriter(pkt_len);
 
 			pkt_buf.writeShort(0x1ed);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2534,7 +2534,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeULong(this.AID);
 			pkt_buf.writeULong(this.GID);
 			pkt_buf.writeLong(this.answer);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2550,7 +2550,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x1f9);
 			pkt_buf.writeULong(this.AID);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2574,7 +2574,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeString(this.PasswdMD5, 16);
 			pkt_buf.writeUChar(this.clienttype);
 			pkt_buf.writeUChar(this.ClientInfo);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2592,7 +2592,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0x1fb);
 			pkt_buf.writeULong(this.GID);
 			pkt_buf.writeString(this.key, 50);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2619,7 +2619,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 				pkt.view.setUint16( pos + 11, this.TargetItemInfo.slot.card1,    true );
 			}
 
-			return pkt.buffer;
+			return pkt;
 		};
 	};
 
@@ -2635,7 +2635,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x200);
 			pkt_buf.writeString(this.ID, 24);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2651,7 +2651,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt.writeShort( ver[1] );
 			pkt.view.setString( ver[3], this.name, 24 );
-			return pkt.buffer;
+			return pkt;
 		};
 	};
 
@@ -2669,7 +2669,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0x203);
 			pkt_buf.writeULong(this.AID);
 			pkt_buf.writeULong(this.GID);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2685,7 +2685,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x204);
 			pkt_buf.writeString(this.HashValue, 16);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2712,7 +2712,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 				pkt.view.setInt32( ver[4], this.Result, true );
 			}
 
-			return pkt.buffer;
+			return pkt;
 		};
 	};
 
@@ -2730,7 +2730,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0x20b);
 			pkt_buf.writeUChar(this.ClientType);
 			pkt_buf.writeString(this.HashValue, 16);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2748,7 +2748,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0x20c);
 			pkt_buf.writeUChar(this.ClientType);
 			pkt_buf.writeString(this.HashValue, 16);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2766,7 +2766,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0x20f);
 			pkt_buf.writeULong(this.AID);
 			pkt_buf.writeULong(this.GID);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2782,7 +2782,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x212);
 			pkt_buf.writeString(this.CharName, 24);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2798,7 +2798,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x213);
 			pkt_buf.writeString(this.CharName, 24);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2812,7 +2812,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			var pkt_buf = new BinaryWriter(pkt_len);
 
 			pkt_buf.writeShort(0x217);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2826,7 +2826,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			var pkt_buf = new BinaryWriter(pkt_len);
 
 			pkt_buf.writeShort(0x218);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2842,7 +2842,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x21d);
 			pkt_buf.writeLong(this.isLess);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2858,7 +2858,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x222);
 			pkt_buf.writeLong(this.Index);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2872,7 +2872,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			var pkt_buf = new BinaryWriter(pkt_len);
 
 			pkt_buf.writeShort(0x225);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2891,7 +2891,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeULong(this.AuthData[1]);
 			pkt_buf.writeULong(this.AuthData[2]);
 			pkt_buf.writeULong(this.AuthData[3]);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2909,7 +2909,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt.writeShort( ver[1] );
 			pkt.view.setInt16( ver[3], this.type,    true );
 			pkt.view.setInt8(  ver[4], this.command, true );
-			return pkt.buffer;
+			return pkt;
 		};
 	};
 
@@ -2925,7 +2925,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x231);
 			pkt_buf.writeString(this.name, 24);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2943,7 +2943,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0x232);
 			pkt_buf.writeULong(this.GID);
 			pkt_buf.writePos(this.dest);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2963,7 +2963,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeULong(this.GID);
 			pkt_buf.writeULong(this.targetGID);
 			pkt_buf.writeUChar(this.action);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2979,7 +2979,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x234);
 			pkt_buf.writeULong(this.GID);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -2993,7 +2993,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			var pkt_buf = new BinaryWriter(pkt_len);
 
 			pkt_buf.writeShort(0x237);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -3013,7 +3013,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt.view.setInt16(  ver[3], this.Type,      true );
 			pkt.view.setString( ver[4], this.Password,    16 );
 			pkt.view.setString( ver[5], this.NewPassword, 16 );
-			return pkt.buffer;
+			return pkt;
 		};
 	};
 
@@ -3027,7 +3027,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			var pkt_buf = new BinaryWriter(pkt_len);
 
 			pkt_buf.writeShort(0x23f);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -3043,7 +3043,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x241);
 			pkt_buf.writeLong(this.MailID);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -3059,7 +3059,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x243);
 			pkt_buf.writeLong(this.MailID);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -3075,7 +3075,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x244);
 			pkt_buf.writeLong(this.MailID);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -3091,7 +3091,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x246);
 			pkt_buf.writeShort(this.Type);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -3109,7 +3109,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0x247);
 			pkt_buf.writeShort(this.index);
 			pkt_buf.writeLong(this.count);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -3132,7 +3132,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeString(this.Header, 40);
 			pkt_buf.writeULong(this.msg_len);
 			pkt_buf.writeString(this.msg);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -3148,7 +3148,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x24b);
 			pkt_buf.writeShort(this.Type);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -3166,7 +3166,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0x24c);
 			pkt_buf.writeShort(this.index);
 			pkt_buf.writeLong(this.count);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -3186,7 +3186,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeULong(this.NowMoney);
 			pkt_buf.writeULong(this.MaxMoney);
 			pkt_buf.writeShort(this.DeleteHour);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -3202,7 +3202,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x24e);
 			pkt_buf.writeULong(this.AuctionID);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -3220,7 +3220,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0x24f);
 			pkt_buf.writeULong(this.AuctionID);
 			pkt_buf.writeULong(this.Money);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -3242,7 +3242,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeULong(this.AuctionID);
 			pkt_buf.writeString(this.Name, 24);
 			pkt_buf.writeUShort(this.Page);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -3258,7 +3258,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x254);
 			pkt_buf.writeChar(this.which);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -3272,7 +3272,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			var pkt_buf = new BinaryWriter(pkt_len);
 
 			pkt_buf.writeShort(0x258);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -3290,7 +3290,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0x25b);
 			pkt_buf.writeShort(this.mkType);
 			pkt_buf.writeUShort(this.id);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -3306,7 +3306,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x25c);
 			pkt_buf.writeShort(this.Type);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -3322,7 +3322,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x25d);
 			pkt_buf.writeULong(this.AuctionID);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -3340,7 +3340,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0x264);
 			pkt_buf.writeString(this.m_SeedValue, 9);
 			pkt_buf.writeString(this.m_EKey, 9);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -3358,7 +3358,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0x265);
 			pkt_buf.writeString(this.m_SeedValue, 9);
 			pkt_buf.writeString(this.m_EKey, 9);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -3374,7 +3374,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x266);
 			pkt_buf.writeString(this.m_cardPass, 28);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -3394,7 +3394,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(this.sex);
 			pkt_buf.writeShort(this.bPoint);
 			pkt_buf.writeString(this.E_mail, 34);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -3412,7 +3412,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0x273);
 			pkt_buf.writeLong(this.MailID);
 			pkt_buf.writeString(this.ReceiveName, 24);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -3440,7 +3440,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeUChar(this.Sex);
 			pkt_buf.writeString(this.macData, 16);
 			pkt_buf.writeLong(this.iAccountSID);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -3466,7 +3466,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeUChar(this.clienttype);
 			pkt_buf.writeString(this.IP, 16);
 			pkt_buf.writeString(this.MacAdress, 13);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -3480,7 +3480,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			var pkt_buf = new BinaryWriter(pkt_len);
 
 			pkt_buf.writeShort(0x279);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -3504,7 +3504,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeString(this.PasswdMD5, 16);
 			pkt_buf.writeUChar(this.clienttype);
 			pkt_buf.writeString(this.macData, 13);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -3522,7 +3522,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0x27f);
 			pkt_buf.writeShort(this.ClientType);
 			pkt_buf.writeLong(this.nVer);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -3538,7 +3538,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x281);
 			pkt_buf.writeShort(this.PacketSwitch);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -3554,7 +3554,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x286);
 			pkt_buf.writeShort(this.Qanswer);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -3596,7 +3596,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 					break;
 			}
 
-			return pkt.buffer;
+			return pkt;
 		};
 	};
 
@@ -3619,7 +3619,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeULong(this.ardwSelectedGID[1]);
 			pkt_buf.writeULong(this.ardwSelectedGID[2]);
 			pkt_buf.writeULong(this.ardwSelectedGID[3]);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -3639,7 +3639,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeULong(this.dwAID);
 			pkt_buf.writeULong(this.dwGID);
 			pkt_buf.writeString(this.szCharName, 24);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -3655,7 +3655,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x28f);
 			pkt_buf.writeULong(this.dwGID);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -3669,7 +3669,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			var pkt_buf = new BinaryWriter(pkt_len);
 
 			pkt_buf.writeShort(0x292);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -3685,7 +3685,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x29f);
 			pkt_buf.writeChar(this.command);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -3705,7 +3705,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(this.selectedLevel);
 			pkt_buf.writeUShort(this.SKID);
 			pkt_buf.writeULong(this.targetID);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -3721,7 +3721,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x2a1);
 			pkt_buf.writeUShort(this.SKID);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -3739,7 +3739,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0x2a5);
 			pkt_buf.writeShort(this.index);
 			pkt_buf.writeLong(this.count);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -3759,7 +3759,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(this.Type);
 			pkt_buf.writeString(this.Password, 16);
 			pkt_buf.writeString(this.NewPassword, 16);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -3787,7 +3787,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeString(this.m_szIP, 16);
 			pkt_buf.writeString(this.m_szMacAddr, 13);
 			pkt_buf.writeUChar(this.isHanGameUser);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -3805,7 +3805,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0x2b6);
 			pkt_buf.writeULong(this.questID);
 			pkt_buf.writeUChar(this.active);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -3825,7 +3825,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeChar(this.ShortCutKey.isSkill);
 			pkt_buf.writeULong(this.ShortCutKey.ID);
 			pkt_buf.writeShort(this.ShortCutKey.count);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -3841,7 +3841,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x2c0);
 			pkt_buf.writeUShort(this.ProtectFactor);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -3857,7 +3857,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt.writeShort( ver[1] );
 			pkt.writeString(this.characterName, 24);
-			return pkt.buffer;
+			return pkt;
 		};
 	};
 
@@ -3875,7 +3875,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0x2c7);
 			pkt_buf.writeULong(this.GRID);
 			pkt_buf.writeUChar(this.bAccept);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -3891,7 +3891,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x2c8);
 			pkt_buf.writeUChar(this.bRefuseJoinMsg);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -3907,7 +3907,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x2cf);
 			pkt_buf.writeLong(this.Command);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -3923,7 +3923,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x2d6);
 			pkt_buf.writeULong(this.AID);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -3941,7 +3941,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0x2d8);
 			pkt_buf.writeLong(this.Config);
 			pkt_buf.writeLong(this.Value);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -3958,7 +3958,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0x2db);
 			pkt_buf.writeShort(pkt_len);
 			pkt_buf.writeString(this.msg);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -3974,7 +3974,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x2e6);
 			pkt_buf.writeLong(this.IsBot);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -3988,7 +3988,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			var pkt_buf = new BinaryWriter(pkt_len);
 
 			pkt_buf.writeShort(0x2f1);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -4002,7 +4002,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			var pkt_buf = new BinaryWriter(pkt_len);
 
 			pkt_buf.writeShort(0x35c);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -4016,7 +4016,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			var pkt_buf = new BinaryWriter(pkt_len);
 
 			pkt_buf.writeShort(0x35e);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -4032,7 +4032,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x35f);
 			pkt_buf.writePos(this.dest);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -4056,7 +4056,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeULong(this.AuthCode);
 			pkt_buf.writeULong(this.clientTime);
 			pkt_buf.writeUChar(this.Sex);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -4074,7 +4074,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0x437);
 			pkt_buf.writeULong(this.targetGID);
 			pkt_buf.writeUChar(this.action);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -4094,7 +4094,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(this.selectedLevel);
 			pkt_buf.writeUShort(this.SKID);
 			pkt_buf.writeULong(this.targetID);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -4112,7 +4112,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0x439);
 			pkt_buf.writeUShort(this.index);
 			pkt_buf.writeULong(this.AID);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -4130,7 +4130,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0x443);
 			pkt_buf.writeLong(this.why);
 			pkt_buf.writeUShort(this.SKID);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -4148,7 +4148,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0x445);
 			pkt_buf.writeUShort(this.ITID);
 			pkt_buf.writeShort(this.count);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -4162,7 +4162,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			var pkt_buf = new BinaryWriter(pkt_len);
 
 			pkt_buf.writeShort(0x447);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -4178,7 +4178,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x44a);
 			pkt_buf.writeLong(this.clientVer);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -4192,7 +4192,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			var pkt_buf = new BinaryWriter(pkt_len);
 
 			pkt_buf.writeShort(0x44b);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -4206,7 +4206,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			var pkt_buf = new BinaryWriter(pkt_len);
 
 			pkt_buf.writeShort(0x7d1);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -4222,7 +4222,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x7d3);
 			pkt_buf.writeShort(this.esNo);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -4238,7 +4238,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x7d4);
 			pkt_buf.writeShort(this.esNo);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -4258,7 +4258,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeULong(this.expOption);
 			pkt_buf.writeUChar(this.ItemPickupRule);
 			pkt_buf.writeUChar(this.ItemDivisionRule);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -4274,7 +4274,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x7da);
 			pkt_buf.writeULong(this.AID);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -4290,7 +4290,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x7dc);
 			pkt_buf.writeULong(this.Option);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -4312,7 +4312,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeULong(this.Level);
 			pkt_buf.writeString(this.mapName, 16);
 			pkt_buf.writeULong(this.Option);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -4340,7 +4340,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 				pos += 4;
 			}
 
-			return pkt.buffer;
+			return pkt;
 		};
 	};
 
@@ -4359,7 +4359,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(pkt_len);
 			pkt_buf.writeULong(this.dwAID);
 			pkt_buf.writeString(this.szStringInfo);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -4378,7 +4378,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(pkt_len);
 			pkt_buf.writeULong(this.dwAID);
 			pkt_buf.writeString(this.szStringInfo, 24);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -4392,7 +4392,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			var pkt_buf = new BinaryWriter(pkt_len);
 
 			pkt_buf.writeShort(0x7ea);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -4410,7 +4410,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0x7ec);
 			pkt_buf.writeULong(this.BFNO);
 			pkt_buf.writeShort(this.JoinTeam);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -4426,7 +4426,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x7ee);
 			pkt_buf.writeULong(this.BFNO);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -4444,7 +4444,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0x7f0);
 			pkt_buf.writeULong(this.BFNO);
 			pkt_buf.writeShort(this.PowerSwitch);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -4460,7 +4460,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x7f5);
 			pkt_buf.writeULong(this.TargetAID);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -4486,7 +4486,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 				pkt_buf.writeShort(this.itemList[i].count);
 				pkt_buf.writeShort(this.itemList[i].index);
 			}
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -4514,7 +4514,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 				pkt.writeShort(this.RegisterInfo.Level);
 				pkt.writeString(this.RegisterInfo.Notice, 37 );
 			}
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -4541,7 +4541,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt.writeULong(this.LastIndex);
 			pkt.writeShort(this.ResultCount);
-			return pkt.buffer;
+			return pkt;
 		};
 	};
 
@@ -4555,7 +4555,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			var pkt = new BinaryWriter(ver[2]);
 
 			pkt.writeShort( ver[1] );
-			return pkt.buffer;
+			return pkt;
 		};
 	};
 
@@ -4572,7 +4572,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0x808);
 			pkt_buf.writeShort(this.Job[0]);
 			pkt_buf.writeShort(this.Job[1]);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -4586,7 +4586,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			var pkt_buf = new BinaryWriter(pkt_len);
 
 			pkt_buf.writeShort(0x80c);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -4616,7 +4616,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 				pkt.writeLong(this.ItemList[i].price);
 			}
 
-			return pkt.buffer;
+			return pkt;
 		};
 	};
 
@@ -4630,7 +4630,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			var pkt = new BinaryWriter(ver[2]);
 
 			pkt.writeShort( ver[1] );
-			return pkt.buffer;
+			return pkt;
 		};
 	};
 
@@ -4646,7 +4646,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt.writeShort( ver[1] );
 			pkt.view.setUint32( ver[3], this.makerAID, true);
-			return pkt.buffer;
+			return pkt;
 		};
 	};
 
@@ -4674,7 +4674,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 				pkt.writeShort(this.ItemList[i].count);
 			}
 
-			return pkt.buffer;
+			return pkt;
 		};
 	};
 
@@ -4690,7 +4690,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x822);
 			pkt_buf.writeString(this.OTPCode, 7);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -4717,7 +4717,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeString(this.MacAddr, 17);
 			pkt_buf.writeString(this.IpAddr, 15);
 			pkt_buf.writeString(this.t1);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -4746,7 +4746,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeString(this.MacAdress, 17);
 			pkt_buf.writeString(this.IP, 15);
 			pkt_buf.writeString(this.t1);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -4762,7 +4762,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x827);
 			pkt_buf.writeULong(this.GID);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -4780,7 +4780,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0x829);
 			pkt_buf.writeULong(this.GID);
 			pkt_buf.writeString(this.Birth, 6);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -4796,7 +4796,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x82b);
 			pkt_buf.writeULong(this.GID);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -4836,7 +4836,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 				offset += 2;
 			}
 
-			return pkt.buffer;
+			return pkt;
 		};
 	};
 
@@ -4850,7 +4850,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			var pkt = new BinaryWriter(ver[2]);
 
 			pkt.writeShort( ver[1] );
-			return pkt.buffer;
+			return pkt;
 		};
 	};
 
@@ -4864,7 +4864,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			var pkt = new BinaryWriter(ver[2]);
 
 			pkt.writeShort( ver[1] );
-			return pkt.buffer;
+			return pkt;
 		};
 	};
 
@@ -4885,7 +4885,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt.view.setULong(  ver[4], this.SSI_ID, true );
 			pkt.view.setUShort( ver[5], this.ITID,   true );
 
-			return pkt.buffer;
+			return pkt;
 		};
 	};
 
@@ -4903,7 +4903,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeShort(0x841);
 			pkt_buf.writeUChar(this.CharNum);
 			pkt_buf.writeUChar(this.mapListNum);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
@@ -4938,7 +4938,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeUChar(this.CharNum);
 			pkt_buf.writeShort(this.headPal);
 			pkt_buf.writeShort(this.head);
-			return pkt_buf.buffer;
+			return pkt_buf;
 		};
 	};
 
