@@ -70,6 +70,12 @@ define(function( require )
 
 
 	/**
+	 * @var {array} is loading a map ?
+	 */
+	MapRenderer.loading = false;
+
+
+	/**
 	 * @var {Object} Fog structure
 	 */
 	MapRenderer.fog = {
@@ -89,6 +95,11 @@ define(function( require )
 	 */
 	MapRenderer.setMap = function LoadMap( mapname )
 	{
+		// TODO: stop the map loading, and start to load the new map.
+		if (this.loading) {
+			return;
+		}
+
 		// Clean objects
 		SoundManager.stop();
 		Renderer.stop();
@@ -96,6 +107,7 @@ define(function( require )
 
 		// Don't reload a map when it's just a local teleportation
 		if( this.currentMap !== mapname ) {
+			this.loading = true;
 			BGM.stop();
 			this.currentMap = mapname;
 
@@ -107,16 +119,16 @@ define(function( require )
 
 			Background.setLoading(function() {
 				// Hooking Thread
-				Thread.hook('MAP_PROGRESS', MapRenderer.onProgressUpdate.bind(MapRenderer) );
-				Thread.hook('MAP_WORLD',    MapRenderer.onWorldComplete.bind(MapRenderer) );
-				Thread.hook('MAP_GROUND',   MapRenderer.onGroundComplete.bind(MapRenderer) );
-				Thread.hook('MAP_ALTITUDE', MapRenderer.onAltitudeComplete.bind(MapRenderer) );
-				Thread.hook('MAP_MODELS',   MapRenderer.onModelsComplete.bind(MapRenderer) );
+				Thread.hook('MAP_PROGRESS', OnProgressUpdate.bind(MapRenderer) );
+				Thread.hook('MAP_WORLD',    OnWorldComplete.bind(MapRenderer) );
+				Thread.hook('MAP_GROUND',   OnGroundComplete.bind(MapRenderer) );
+				Thread.hook('MAP_ALTITUDE', OnAltitudeComplete.bind(MapRenderer) );
+				Thread.hook('MAP_MODELS',   OnModelsComplete.bind(MapRenderer) );
 
 				// Start Loading
 				MapRenderer.free();
 				Renderer.remove();
-				Thread.send('LOAD_MAP', filename, MapRenderer.onMapComplete.bind(MapRenderer) );
+				Thread.send('LOAD_MAP', filename, OnMapComplete.bind(MapRenderer) );
 			});
 
 			return;
@@ -162,7 +174,7 @@ define(function( require )
 	 *
 	 * @param {number} percent (progress)
 	 */
-	MapRenderer.onProgressUpdate = function OnProgressUpdate( percent )
+	function OnProgressUpdate( percent )
 	{
 		Background.setPercent( percent );
 	};
@@ -171,7 +183,7 @@ define(function( require )
 	/**
 	 * Received parsed world
 	 */
-	MapRenderer.onWorldComplete = function OnWorldComplete( data )
+	function OnWorldComplete( data )
 	{
 		this.light  = data.light;
 		this.water  = data.water;
@@ -191,7 +203,7 @@ define(function( require )
 	/**
 	 * Received ground data from Thread
 	 */
-	MapRenderer.onGroundComplete = function OnGroundComplete( data )
+	function OnGroundComplete( data )
 	{
 		var gl = Renderer.getContext();
 
@@ -220,7 +232,7 @@ define(function( require )
 	/**
 	 * Receiving parsed GAT from Thread
 	 */
-	MapRenderer.onAltitudeComplete = function OnAltitudeComplete( data )
+	function OnAltitudeComplete( data )
 	{
 		var gl = Renderer.getContext();
 		Altitude.init( data );
@@ -231,7 +243,7 @@ define(function( require )
 	/**
 	 * Receiving parsed RSMs from Thread
 	 */
-	MapRenderer.onModelsComplete = function OnModelsComplete( data )
+	function OnModelsComplete( data )
 	{
 		Models.init( Renderer.getContext(), data );
 	};
@@ -240,7 +252,7 @@ define(function( require )
 	/**
 	 * Once the map finished to load
 	 */
-	MapRenderer.onMapComplete = function OnMapComplete( success, error )
+	function OnMapComplete( success, error )
 	{
 		var worldResource = this.currentMap.replace(/\.gat$/i, '.rsw');
 
@@ -272,6 +284,7 @@ define(function( require )
 
 		// Starting to render
 		Background.remove(function(){
+			MapRenderer.loading = false;
 			MapRenderer.onLoad();
 			Sky.setUpCloudData();
 

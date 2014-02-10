@@ -414,7 +414,7 @@ define([
 	 */
 	function OnReceiveMapInfo( pkt )
 	{
-		MapEngine.init( pkt.addr.ip, pkt.addr.port, pkt.GID );
+		MapEngine.init( pkt.addr.ip, pkt.addr.port, pkt.GID, pkt.mapName);
 	}
 
 

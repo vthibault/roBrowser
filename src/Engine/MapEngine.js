@@ -46,14 +46,23 @@ define(function( require )
 
 
 	/**
+	 * @var {string mapname}
+	 */
+	var _mapName = "";
+
+
+	/**
 	 * Connect to Map Server
 	 *
 	 * @param {number} IP
 	 * @param {number} port
 	 * @param {number} Character ID
+	 * @param {string} mapName
 	 */
-	function Init( ip, port, GID )
+	function Init( ip, port, GID, mapName )
 	{
+		_mapName = mapName;
+
 		// Connect to char server
 		Network.connect( Network.utils.longToIP( ip ), port, function( success ){
 
@@ -164,6 +173,13 @@ define(function( require )
 		Escape.onCharSelectionRequest   = OnRestartRequest;
 		Escape.onReturnSavePointRequest = OnReturnSavePointRequest;
 		Escape.onResurectionRequest     = OnResurectionRequest;
+
+		// Fix http://forum.robrowser.com/?topic=32177.0
+		OnMapChange({
+			xPos:    pkt.PosDir[0],
+			yPos:    pkt.PosDir[1],
+			mapName: _mapName
+		});
 	}
 
 
@@ -235,7 +251,7 @@ define(function( require )
 			pkt.addr.ip
 			pkt.addr.port
 		*/
-		// Add to resend authcode sex etc ?
+		// Have to resend authcode sex etc ?
 	}
 
 
