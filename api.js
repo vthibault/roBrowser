@@ -153,7 +153,22 @@
 	 */
 	ROBrowser.prototype.socketProxy = null;
 
-	
+
+	/**
+	 * @var {integer|boolean|array} packetKeys
+	 * see: http://hercules.ws/board/topic/1105-hercules-wpe-free-june-14th-patch/
+	 *
+	 * Supported value:
+	 * - integer : client date,
+	 *         ex: packetKeys: 20131223,
+	 * - boolean : supported ? If it's the case, will use the executable compiled date to get the keys
+	 *         ex: packetKeys: true,
+	 * - array: the keys you want to use:
+	 *         ex: packetKeys: [0xFF2615DE, 0x96AAE533, 0x1166CC33],
+	 */
+	ROBrowser.prototype.packetKeys = false;
+
+
 	/**
 	 * @var {string} roBrowser api window path
 	 */
@@ -271,13 +286,14 @@
 	{
 		this._APP.postMessage({
 			application:  this.application,
-			servers:      this.server,
+			servers:      this.servers,
 			grfList:      this.grfList,
 			remoteClient: this.remoteClient,
 			packetver:    this.packetver,
 			development:  this.development,
 			api:          this.api,
-			socketProxy:  this.socketProxy
+			socketProxy:  this.socketProxy,
+			packetKeys:   this.packetKeys
 		}, '*');
 	}
 

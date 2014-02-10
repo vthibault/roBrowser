@@ -13,6 +13,7 @@ define([
 	'require',
 	'DB/DBManager',
 	'Audio/SoundManager',
+	'Core/Thread',
 	'Engine/SessionStorage',
 	'Engine/CharEngine',
 	'Network/NetworkManager',
@@ -28,6 +29,7 @@ function(
 	require,
 	DB,
 	Sound,
+	Thread,
 	Session,
 	CharEngine,
 	Network,
@@ -83,7 +85,7 @@ function(
 		_server = server;
 
 		// Add support for "packetver" definition in Server listing
-		if (server.packetver) {
+		if ("packetver" in server) {
 			ROConfig.packetver = String(server.packetver);
 
 			if (ROConfig.packetver.match(/^\d+$/)) {
@@ -93,6 +95,22 @@ function(
 				PACKETVER.set( 0, Infinity);
 			}
 			// executable already used
+		}
+
+		// Add support for "packetkeys" definition in server definition
+		if ("packetKeys" in server) {
+			ROConfig.packetKeys = server.packetKeys;
+		}
+
+		// Add support for remote client in server definition
+		if ("remoteClient" in server) {
+			ROConfig.remoteClient = server.remoteClient;
+			Thread.send( "SET_HOST", ROConfig.remoteClient );
+		}
+
+		// Add support for "socketProxy" in server definition
+		if ("socketProxy" in server) {
+			ROConfig.socketProxy = server.socketProxy;
 		}
 
 		// Hooking win_login
