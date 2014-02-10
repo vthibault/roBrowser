@@ -18,10 +18,22 @@ define(function()
 	 *
 	 * @param {string} url
 	 */
-	function Socket( url )
+	function Socket( host, port, proxy )
 	{
+		var url            = 'ws://' + host + ':' + port + '/';
 		var self           = this;
 		this.connected     = false;
+
+		// Use of a proxy
+		if (proxy) {
+			url = proxy;
+
+			if (!url.match(/\/$/)) {
+				url += '/';
+			}
+
+			url += host + ':' + port;
+		}
 
 		// Open Websocket
 		this.ws            = new WebSocket(url);
@@ -42,7 +54,7 @@ define(function()
 
 		this.ws.onmessage = function OnMessage( event )
 		{
-			this.onMessage( event.data );	
+			self.onMessage( event.data );
 		};
 
 		this.ws.onclose = function OnClose()

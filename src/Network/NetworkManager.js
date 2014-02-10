@@ -9,27 +9,10 @@
  * @author Vincent Thibault
  */
 
-define([ 'require', 'Core/Context', 'Utils/BinaryReader',   './PacketVerManager', './PacketVersions', './PacketRegister', './PacketGuess', './PacketCrypt', './SocketHelpers/ChromeSocket', './SocketHelpers/JavaSocket', './SocketHelpers/WebSocketProxy'],
-function( require,        Context,         BinaryReader,       PACKETVER,            PacketVersions,     PacketRegister,     PacketGuess,     PacketCrypt,                   ChromeSocket,                   JavaSocket,                   WebSocketProxy)
+define([ 'require', 'Core/Context', 'Utils/BinaryReader',   './PacketVerManager', './PacketVersions', './PacketRegister', './PacketGuess', './PacketCrypt', './SocketHelpers/ChromeSocket', './SocketHelpers/JavaSocket', './SocketHelpers/WebSocket'],
+function( require,        Context,         BinaryReader,       PACKETVER,            PacketVersions,     PacketRegister,     PacketGuess,     PacketCrypt,                   ChromeSocket,                   JavaSocket,                   WebSocket)
 {
 	"use strict";
-
-	var Socket;
-
-	// Native socket
-	if (Context.Is.APP) {
-		Socket = ChromeSocket;
-	}
-
-	// Web Socket with proxy
-	else if (ROConfig.socketProxy) {
-		Socket = WebSocketProxy;
-	}
-
-	// Java socket...
-	else {
-		Socket = JavaSocket;
-	}
 
 
 	/**
@@ -95,8 +78,23 @@ function( require,        Context,         BinaryReader,       PACKETVER,       
 	 */
 	function Connect( host, port, callback, isZone)
 	{
-		var socket;
+		var socket, Socket;
 		var proxy = ROConfig.socketProxy || null;
+
+		// Native socket
+		if (Context.Is.APP) {
+			Socket = ChromeSocket;
+		}
+
+		// Web Socket with proxy
+		else if (ROConfig.socketProxy) {
+			Socket = WebSocket;
+		}
+	
+		// Java socket...
+		else {
+			Socket = JavaSocket;
+		}
 
 		socket            = new Socket(host, port, proxy);
 		socket.isZone     = !!isZone;
