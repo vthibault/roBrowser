@@ -11034,7 +11034,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 		this.xPos       = fp.readShort();
 		this.yPos       = fp.readShort();
 		this.job        = fp.readUChar();
-		this.range      = fp.readShort();
+		this.range      = fp.readShort(); // TODO: check if it's not a char
 		this.isVisible  = fp.readUChar();
 		this.isContens  = fp.readUChar();
 		this.msg        = fp.readString(80);
@@ -11574,9 +11574,9 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 		this.xPos       = fp.readShort();
 		this.yPos       = fp.readShort();
 		this.job        = fp.readULong();
-		this.range      = fp.readShort();
+		this.range      = fp.readChar();
 		this.isVisible  = fp.readUChar();
-		this.msg        = fp.readString(80);
+		this.msg        = fp.readString(end-fp.tell());
 	};
 	PACKET.ZC.SKILL_ENTRY4.size = -1;
 
@@ -11588,10 +11588,10 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 		this.xPos       = fp.readShort();
 		this.yPos       = fp.readShort();
 		this.job        = fp.readULong();
-		this.range      = fp.readShort();
+		this.range      = fp.readChar();
 		this.isVisible  = fp.readUChar();
 		this.level      = fp.readUChar();
-		this.msg        = fp.readString(80);
+		this.msg        = fp.readString(end-fp.tell());
 	};
 	PACKET.ZC.SKILL_ENTRY5.size = -1;
 
