@@ -532,6 +532,11 @@ define(function(require)
 					// Display image
 					if( url ) {
 						self.find('img:first').attr('src', url );
+
+						// There is a limit of blob url the browser can support
+						if( url.match(/^blob\:/) ){
+							URL.revokeObjectURL(url);
+						}
 					}
 
 					// Fetch next range.
@@ -714,6 +719,8 @@ define(function(require)
 						box
 							.css('top', (jQuery(window).height()-this.height)/2 )
 							.html(this);
+
+						URL.revokeObjectURL(url);
 					};
 					break;
 			}

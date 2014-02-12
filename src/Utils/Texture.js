@@ -3,7 +3,7 @@
  *
  * WebGL Helper function
  *
- * Trying to define here some functions related to webgl.
+ * Trying to define here some functions related to textures.
  *
  * This file is part of ROBrowser, Ragnarok Online in the Web Browser (http://www.robrowser.com/).
  *
