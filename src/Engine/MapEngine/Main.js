@@ -127,7 +127,7 @@ define(function( require )
 	function UpdateParameter( pkt )
 	{
 		var amount = pkt.amount || pkt.count || 0;
-		var type   = pkt.varID  || pkt.statusType;
+		var type   = pkt.varID  || pkt.statusType || 0;
 
 		switch( type ) {
 
