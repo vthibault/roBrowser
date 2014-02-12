@@ -375,7 +375,7 @@ define(function( require )
 		});
 
 		// Only mob to don't display skill name ?
-		if( srcEntity.type !== Entity.TYPE_MOB ) {
+		if( srcEntity.objecttype !== Entity.TYPE_MOB ) {
 			srcEntity.dialog.set(
 				( ( DB.skillList[pkt.SKID] && DB.skillList[pkt.SKID].name ) || 'Unknown Skill' ) + ' !!',
 				'white'
