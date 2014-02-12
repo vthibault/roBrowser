@@ -163,6 +163,7 @@ define(function(require)
 	Viewer.showContextMenu = function ShowContextMenu( icon, event )
 	{
 		var _contextmenu = this.ui.find('#contextmenu');
+		var _overlay = this.ui.find('.overlay');
 		var _open = _contextmenu.find('.open:first');
 		var _save = _contextmenu.find('.save:first');
 		var _info = _contextmenu.find('.info:first');
@@ -173,9 +174,10 @@ define(function(require)
 			top:  event.pageY
 		}).show();
 
-		 jQuery(window).one('mousedown', function(){
-			 _contextmenu.hide();
-		 });
+		_overlay.one('mousedown', function(){
+			_contextmenu.hide();
+			_overlay.hide();
+		}).show();
 
 		 // Clean up
 		_open.removeClass('disable').off('mousedown');
@@ -189,32 +191,32 @@ define(function(require)
 		else {
 			_open.one('mousedown', function(){
 				_icon.click();
+				_overlay.mousedown();
 			})
 		}
 
 		// Save
 		if( _icon.hasClass('directory') ) {
 			_save.addClass('disable');
+			_save.attr('href', 'javascript:void(0)');
+			_save.get(0).removeAttribute('download');
 		}
+
 		else {
-			_save.one('mousedown', function(){
-				Client.getFile( _icon.data('path'), function( buffer) {
-					// Create temporary url, move to it and release it
-					var url       = URL.createObjectURL(new Blob([buffer],{type: "application/octet-stream"}));
-					location.href = url;
-					setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
-				});
-			})
+			_save.one('mouseup', function(){
+				_overlay.mousedown();
+			});
+
+			Client.getFile( _icon.data('path'), function( buffer) {
+				// Create temporary url, move to it and release it
+				var url       = URL.createObjectURL(new Blob([buffer],{type: "application/octet-stream"}));
+				_save.attr({ href:url, download:_icon.text().trim()});
+			});
 		}
 
 		// Properties
 		// not supported yet.
 		_info.addClass('disable');
-
-		// Don't remove the contextmenu when clicking on disable options.
-		_contextmenu.find('.disable').on('mousedown',function(){
-			return false;
-		});
 	};
 
 

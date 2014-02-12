@@ -4,6 +4,16 @@
 }
 
 /** CONTEXTMENU **/
+.overlay {
+	position:fixed;
+	top:0px;
+	left:0px;
+	width:100%;
+	height:100%;
+	text-align:center;
+	display:none;
+	z-index:99;
+}
 #contextmenu {
 	position:absolute;
 	width:150px;
@@ -15,6 +25,12 @@
 	border:1px solid #bababa;
 	box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
 	display:none;
+	z-index:100;
+}
+#contextmenu a {
+	text-decoration:none;
+	color:black;
+	display:block;
 }
 #contextmenu hr {
 	padding:0px;
@@ -23,16 +39,16 @@
 	border:none;
 	background-color:#DDD;
 }
-#contextmenu div {
+#contextmenu div, #contextmenu a {
 	padding-top:5px;
 	padding-bottom:5px;
 	padding-left:25px;
 	cursor:default;
 }
-#contextmenu div:hover {
+#contextmenu div:hover, #contextmenu a:hover {
 	background-color:#efefef;
 }
-#contextmenu div.disable {
+#contextmenu .disable, #contextmenu a.disable {
 	color: #a1a192;
 	font-weight:bold;
 }
