@@ -79,10 +79,12 @@ define(function(require)
 				break;
 
 			case KEYS.UP:
-				this.ui.find('div').removeClass('selected');
-				this.index = Math.max( this.index - 1, 0);
+				var count  = this.ui.find('.content div').length;
+				this.index = Math.max( this.index - 1, 0 );
+
+				this.ui.find('.content div').removeClass('selected');
 				this.ui.find('.content div:eq('+ this.index +')').addClass('selected');
-				
+
 				var content = this.ui.find('.content')[0];
 				var top     = this.index * 20;
 
@@ -92,10 +94,12 @@ define(function(require)
 				break;
 
 			case KEYS.DOWN:
-				this.ui.find('div').removeClass('selected');
-				this.index = Math.min( this.index + 1, this.list.length -1 );
+				var count  = this.ui.find('.content div').length;
+				this.index = Math.min( this.index + 1, count -1 );
+
+				this.ui.find('.content div').removeClass('selected');
 				this.ui.find('.content div:eq('+ this.index +')').addClass('selected');
-	
+
 				var content = this.ui.find('.content')[0];
 				var top     = this.index * 20;
 
