@@ -33,10 +33,16 @@ define( ['./BinaryReader'], function( BinaryReader )
 	{
 		var reader    = new FileReader();
 		reader.onload = function(event){
-			_binary = event.target.result;
+			var data = new Uint8Array(event.target.result);
+			var i, count;
+			_binary = "";
+
+			for (i = 0, count = data.length; i < count; ++i) {
+				_binary += String.fromCharCode( data[i] );
+			}
 			callback( GetDateSub() );
 		};
-		reader.readAsBinaryString(executable);
+		reader.readAsArrayBuffer(executable);
 	}
 
 
