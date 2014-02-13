@@ -42,7 +42,7 @@ function(              Altitude,        Client,         WebGL,         Texture )
 		\
 		void main(void) {\
 			gl_Position    = uProjectionMat * uModelViewMat * vec4( aPosition.xyz, 1.0) ;\
-			gl_Position.z -= 0.001;\
+			gl_Position.z -= 0.01;\
 			vTextureCoord  = aTextCoord;\
 		}';
 
