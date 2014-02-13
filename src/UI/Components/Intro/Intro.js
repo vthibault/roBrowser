@@ -215,6 +215,11 @@ define(function(require)
 	 */
 	Intro.onAppend = function OnAppend()
 	{
+		// Can't resize the window if it's not a popup/App
+		if (!Context.Is.POPUP) {
+			this.ui.find('.resolution').hide();
+		}
+
 		// Show content saved
 		this.ui.find('.clean').hide();
 		FileSystem.getSize(function(used){
