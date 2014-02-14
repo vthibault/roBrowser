@@ -17,7 +17,7 @@ define(function()
 	/**
 	 * @param {Array} FileList
 	 */
-	var _files;
+	var _files = [];
 
 
 	/**
