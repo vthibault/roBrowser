@@ -326,11 +326,11 @@ define(function(require)
 		}
 
 		// Extract files from directory
-		function RecursiveReader(entry){
+		function RecursiveReader(entry, skip){
 			if (entry.isFile) {
 				++_file_count;
 				entry.file(function(file){
-					file.fullPath = entry.fullPath.substr(1); // get rid of the "/"
+					file.fullPath = entry.fullPath.substr(skip); // get rid of the "/"
 					_files.push(file);
 					if ((++_file_loaded) === _file_count && _dir_loaded === _dir_count) {
 						Process(_files);
@@ -341,7 +341,7 @@ define(function(require)
 				++_dir_count;
 				entry.createReader().readEntries(function(entries){
 					for (var i = 0, count = entries.length; i < count; ++i) {
-						RecursiveReader(entries[i]);
+						RecursiveReader(entries[i], skip);
 					}
 					if ((++_dir_loaded) === _dir_count && _file_loaded === _file_count) {
 						Process(_files);
@@ -362,9 +362,19 @@ define(function(require)
 
 			// Read directory content
 			if (data.items && data.items.length && data.items[0].webkitGetAsEntry) {
-				for (i = 0, count = data.items.length; i < count; ++i) {
-					RecursiveReader(data.items[0].webkitGetAsEntry());
+
+				// If select a directory, have to remove the root folder for all files
+				// inside this directory
+				var skip  = 1;
+				var entry = data.items[0].webkitGetAsEntry();
+				if (data.items.length === 1 && entry.isDirectory) {
+					skip = entry.fullPath.split('/')[1].length + 2;
 				}
+
+				for (i = 0, count = data.items.length; i < count; ++i) {
+					RecursiveReader( data.items[i].webkitGetAsEntry(), skip);
+				}
+
 				return false;
 			}
 			// Read files directly
