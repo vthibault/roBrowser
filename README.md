@@ -29,8 +29,6 @@ This section is a very brief set of installation instructions and subject to cha
 
 4. Helpful Links
 ----------------
-The following list of links point to various help files within the GIT, articles or
-pages on the Wiki or topics within the Hercules forum.
 
 * [roBrowser website](http://www.robrowser.com/)
 * [roBrowser forum](http://forum.robrowser.com/)
