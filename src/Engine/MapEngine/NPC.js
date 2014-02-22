@@ -262,7 +262,7 @@ define(function( require )
 
 		// Load it
 		if( pkt.imageName.length ) {
-			Client.loadFile( '/illust/' + pkt.imageName + '.bmp', function( url ){
+			Client.loadFile( DB.INTERFACE_PATH + 'illust/' + pkt.imageName + '.bmp', function( url ){
 				var img = new Image();
 				img.src = url;
 				img.style.position = "absolute";
