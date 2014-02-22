@@ -30,9 +30,10 @@ final class Client
 			// Setup GRF context
 			$data_ini = parse_ini_file( self::$path . self::$data_ini, true );
 			$grfs     = array();
+			$info     = pathinfo(self::$path . self::$data_ini);
 
 			foreach( $data_ini['Data'] as $index => $grf_filename ) {
-				self::$grfs[$index] = new Grf(self::$path . $grf_filename);
+				self::$grfs[$index] = new Grf($info['dirname'] . '/' . $grf_filename);
 				self::$grfs[$index]->filename = $grf_filename;
 				$grfs[] = $grf_filename;
 			}
@@ -105,19 +106,12 @@ final class Client
 
 			// If file is found
 			if( $grf->getFile($grf_path, $content) ) {
-				if (DEBUG) {
-					echo "File found in grf : {$grf->filename}\n";
-				}
-
 				// Store file
 				if( self::$AutoExtract ) {
 					return self::store( $path, $content );
 				}
 
 				return $content;
-			}
-			elseif (DEBUG) {
-				echo "No file found in grf : {$grf->filename}\n";
 			}
 		}
 

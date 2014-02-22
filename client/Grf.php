@@ -98,21 +98,32 @@ class Grf
 		}
 
 		// File not found
-		if( $position === false )
+		if( $position === false ) {
+			if( DEBUG ) {
+				echo "File not found in grf : {$this->filename}\n";
+			}
 			return false;
+		}
 
 		// Extract file info from fileList
 		$position += strlen($filename) + 1;
 		$fileInfo  = unpack('Lpack_size/Llength_aligned/Lreal_size/Cflags/Lposition', substr($this->fileTable, $position, 17) );
 
 		// Just open file.
-		if( $fileInfo['flags'] !== 1 )
+		if( $fileInfo['flags'] !== 1 ) {
+			if( DEBUG ) {
+				echo "File found in grf : {$this->filename} but can't extract it (encrypted ? flag = {$fileInfo['flags']})\n";
+			}
 			return false;
+		}
 
 		// Extract file
 		fseek( $this->fp, $fileInfo['position'] + self::HEADER_SIZE, SEEK_SET );
 		$content = gzuncompress( fread($this->fp, $fileInfo['pack_size']), $fileInfo['real_size'] );
 
+		if (DEBUG) {
+			echo "File found in grf : {$this->filename}\n";
+		}
 		return true;
 	}
 
