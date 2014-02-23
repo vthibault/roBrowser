@@ -83,7 +83,7 @@ define(function()
 		20130605: [0x646E08D9,0x5F153AB5,0x61B509B5],
 		20130612: [0x6D166F66,0x3C000FCF,0x295B0FCB],
 		20130618: [0x434115DE,0x34A10FE9,0x6791428E],
-		20130626: [0x38F453EF,0x6A040FD8,0X65BD6668],
+		20130626: [0x38F453EF,0x6A040FD8,0x65BD6668],
 		20130703: [0x4FF90E23,0x0F1432F2,0x4CFA1EDA],
 		20130807: [0x7E241DE0,0x5E805580,0x3D807D80],
 		20131223: [0x631C511C,0x111C111C,0x111C111C]
@@ -120,6 +120,7 @@ define(function()
 
 			// Custom keys
 			if (ROConfig.packetKeys instanceof Array) {
+				_available = true;
 				_keys.set(ROConfig.packetKeys);
 			}
 
@@ -137,15 +138,16 @@ define(function()
 				// Get the available keys
 				for (key in KeysTable) {
 					if (date >= key) {
-						_keys.set(KeysTable[key]);
 						_available = true;
+						_keys.set(KeysTable[key]);
 					}
 				}
 
-				if (_available) {
-					console.log( "%c[PACKETCRYPT] Encrypt sent packets using keys", "color:#007000", KeysTable[key] );
-				}
-			}		
+			}
+
+			if (_available) {
+				console.log( "%c[PACKETCRYPT] Encrypt sent packets using keys", "color:#007000", _keys );
+			}
 		}
 	}
 
