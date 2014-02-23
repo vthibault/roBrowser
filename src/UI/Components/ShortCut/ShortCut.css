@@ -1,0 +1,13 @@
+#ShortCut { position:absolute; overflow:hidden; width:280px; background-repeat:repeat-y;}
+#ShortCut .close { position:absolute; top:2px; right:2px; border:none; background-color:transparent; width:11px; height:11px; }
+#ShortCut .resize { position:absolute; bottom:1px; right:1px; border:none; background-color:transparent; width:13px; height:13px; }
+
+#ShortCut .row { position:relative; }
+#ShortCut .row .container { float:left; width:24px; height:24px; margin-top:4px; margin-left:5px; margin-bottom:6px; }
+#ShortCut .row .index { float:left; position:relative; top:13px; left:5px; }
+#ShortCut .row .clear {}
+
+#ShortCut .icon { position:relative; }
+#ShortCut .icon .img { width:24px; height:24px; background-repeat:no-repeat; border:none; background-color:transparent;}
+#ShortCut .icon .name { display:none; }
+#ShortCut .icon .amount { font-size:10px; position:absolute; right:1px; top:20px; text-shadow:1px 1px 0px white; text-align:right; font-weight:bold; }

@@ -16,7 +16,8 @@ define(function( require )
 	/**
 	 * Load dependencies
 	 */
-	var DB            = require('DB/DBManager');
+	var SkillId       = require('DB/SkillId');
+	var SkillInfo     = require('DB/SkillInfo');
 	var Session       = require('Engine/SessionStorage');
 	var Network       = require('Network/NetworkManager');
 	var PACKET        = require('Network/PacketStructure');
@@ -377,7 +378,7 @@ define(function( require )
 		// Only mob to don't display skill name ?
 		if( srcEntity.objecttype !== Entity.TYPE_MOB ) {
 			srcEntity.dialog.set(
-				( ( DB.skillList[pkt.SKID] && DB.skillList[pkt.SKID].name ) || 'Unknown Skill' ) + ' !!',
+				( (SkillInfo[pkt.SKID] && SkillInfo[pkt.SKID].SkillName ) || 'Unknown Skill' ) + ' !!',
 				'white'
 			);
 		}
@@ -386,7 +387,7 @@ define(function( require )
 			srcEntity.lookTo( dstEntity.position[0], dstEntity.position[1] );
 
 			// Don't know why Gravity did this...
-			if ( pkt.SKID === DB.skillList.AL_HEAL ) {
+			if ( pkt.SKID === SkillId.AL_HEAL ) {
 				Damage.add( pkt.level, dstEntity, Renderer.tick, Damage.TYPE.HEAL );
 			}
 			else {
@@ -426,7 +427,7 @@ define(function( require )
 			});
 
 			if ( srcEntity.objecttype !== Entity.TYPE_MOB ) {
-				srcEntity.dialog.set( ( ( DB.skillList[pkt.SKID] && DB.skillList[pkt.SKID].name ) || "Unknown Skill" ) + " !!" );
+				srcEntity.dialog.set( ( (SkillInfo[pkt.SKID] && SkillInfo[pkt.SKID].SkillName ) || "Unknown Skill" ) + " !!" );
 			}
 		}
 
@@ -508,7 +509,7 @@ define(function( require )
 		// Only mob to don't display skill name ?
 		if( srcEntity.objecttype !== Entity.TYPE_MOB ) {
 			srcEntity.dialog.set(
-				( ( DB.skillList[pkt.SKID] && DB.skillList[pkt.SKID].name ) || 'Unknown Skill' ) + ' !!',
+				( ( SkillInfo[pkt.SKID] && SkillInfo[pkt.SKID].SkillName ) || 'Unknown Skill' ) + ' !!',
 				'white'
 			);
 		}

@@ -31,7 +31,6 @@ function(       Queue,        Client,     ClassTable,     ClassPalTable,     Mon
 	DB.mapname        = {};
 	DB.weather        = Weather;
 	DB.itemList       = {};
-	DB.skillList      = {};
 
 
 	// Lua
@@ -185,7 +184,7 @@ function(       Queue,        Client,     ClassTable,     ClassPalTable,     Mon
 
 
 		// skills
-		q.add( DB.loadLuaByteTable('data/lua files/skillinfoz/skillid.lub',  q.next) );
+		//q.add( DB.loadLuaByteTable('data/lua files/skillinfoz/skillid.lub',  q.next) );
 
 
 		// Callback
