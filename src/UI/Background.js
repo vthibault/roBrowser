@@ -214,14 +214,14 @@ define( function( require )
 	{
 		this.overlay
 			.stop()
-			.css( 'opacity', 0 )
+			.css( 'opacity', 0.01 )
 			.appendTo('body')
 			.animate({ opacity: 1.0 }, 500, function(){
 				callback();
 
 				Background.overlay
 					.stop()
-					.animate({ opacity: 0 }, 500,function(){
+					.animate({ opacity: 0.01 }, 500, function(){
 						Background.overlay.remove();
 					});
 			});
