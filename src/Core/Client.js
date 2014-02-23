@@ -42,6 +42,10 @@ function(        Executable,                  PACKETVER,       Thread,      Memo
 				}
 			}
 		}
+		else if (typeof ROConfig.packetver === "number") {
+			PACKETVER.min = ROConfig.packetver;
+			PACKETVER.max = ROConfig.packetver;
+		}
 
 		// GRF Host config
 		if (ROConfig.remoteClient) {
