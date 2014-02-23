@@ -398,7 +398,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			var pkt = new BinaryWriter(ver[2]);
 
 			pkt.writeShort(ver[1]);
-			pkt.view.setUint16( ver[3], this.Index, true );
+			pkt.view.setUint16( ver[3], this.index, true );
 			pkt.view.setUint32( ver[4], this.AID,   true );
 			return pkt;
 		};

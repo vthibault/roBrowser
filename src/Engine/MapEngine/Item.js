@@ -208,6 +208,23 @@ define(function( require )
 
 
 	/**
+	 * Answer from the server to use an item
+	 * @param {object} pkt - PACKET.ZC.USE_ITEM_ACK
+	 */
+	function OnUseItem( pkt )
+	{
+		if (!pkt.hasOwnProperty("AID") || Session.Entity.GID === pkt.AID) {
+			if (pkt.result) {
+				Inventory.updateItem( pkt.index, pkt.count );
+			}
+			else {
+				// should we show a msg in chatbox ?
+			}
+		}
+	}
+
+
+	/**
 	 * Initialize
 	 */
 	return function ItemEngine()
@@ -236,5 +253,7 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.REQ_WEAR_EQUIP_ACK2,   ItemEquip );
 		Network.hookPacket( PACKET.ZC.ACK_WEAR_EQUIP_V5,     ItemEquip );
 		Network.hookPacket( PACKET.ZC.DELETE_ITEM_FROM_BODY, ItemRemove );
+		Network.hookPacket( PACKET.ZC.USE_ITEM_ACK,          OnUseItem );
+		Network.hookPacket( PACKET.ZC.USE_ITEM_ACK2,         OnUseItem );
 	};
 });

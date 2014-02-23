@@ -103,12 +103,13 @@ define(function(require)
 		// Don't activate drag drop when clicking on buttons
 		this.ui.find('.titlebar .base').mousedown(function( event ){
 			event.stopImmediatePropagation();
-		})
+			return false;
+		});
 
 		// Bind buttons
-		this.ui.find('.titlebar .mini').click(this.toggleReduction.bind(this));
-		this.ui.find('.tabs button').mousedown(this.switchTab);
-		this.ui.find('.footer .extend').mousedown( this.extend.bind(this) );
+		this.ui.find('.titlebar .mini').click(ToggleReduction.bind(this));
+		this.ui.find('.tabs button').mousedown(SwitchTab);
+		this.ui.find('.footer .extend').mousedown(OnResize.bind(this));
 		this.ui.find('.titlebar .close').click(function(){
 			Inventory.ui.hide();
 			return false;
@@ -116,47 +117,12 @@ define(function(require)
 
 
 		// on drop item
-		this.ui.on('drop', function(event){
-			var item, data;
-
-			try {
-				data = JSON.parse(
-					event.originalEvent.dataTransfer.getData("Text")
-				);
-			}
-			catch(e) {}
-
-			// Just support items for now ?
-			if( data && data.type === "item" && data.from === "storage") {
-				item = data.data;
-
-				// Have to specify how much
-				if( item.count > 1 ) {
-					InputBox.append();
-					InputBox.setType("number", false);
-					InputBox.onSubmitRequest = function OnSubmitRequest( count ) {
-						InputBox.remove();
-						require('UI/Components/Storage/Storage').reqRemoveItem(
-							item.index,
-							parseInt(count, 10 )
-						);
-					};
-				}
-
-				// Only one, don't have to specify
-				else {
-					require('UI/Components/Storage/Storage').reqRemoveItem( item.index, 1 );
-				}
-			}
-
-			event.stopImmediatePropagation();
-			return false;
-		})
-
-		this.ui.on('dragover', function(event){
-			event.stopImmediatePropagation();
-			return false;
-		});
+		this.ui
+			.on('drop', OnDrop)
+			.on('dragover', function(event){
+				event.stopImmediatePropagation();
+				return false;
+			});
 
 		var overlay = this.ui.find('.overlay');
 		var lastScrollPos = 0;
@@ -174,41 +140,34 @@ define(function(require)
 				lastScrollPos = this.scrollTop;
 			})
 
-
-		// TODO: move all this part to GenericItemSkill.js
-
 			// Title feature
 			.on('mouseover', '.item', function(){
-				var i, count;
-				var items = Inventory.list;
 				var idx  = parseInt( this.className.match(/ (\d+)$/)[1], 10);
+				var item = GetItemByIndex(idx);
 
-				for( i = 0, count = items.length; i < count ; ++i ) {
-					if( items[i].index === idx ) {
+				if (!item) {
+					return;
+				}
 
-						// Get back data
-						var item = items[i];
-						var it   = DB.getItemInfo( item.ITID );
-						var pos  = jQuery(this).position();
+				// Get back data
+				var it   = DB.getItemInfo( item.ITID );
+				var pos  = jQuery(this).position();
 
-						// Display box
-						overlay.show();
-						overlay.css({top: pos.top, left:pos.left+35});
-						overlay.html(
-							( item.RefiningLevel ? '+' + item.RefiningLevel + ' ' : '') +
-							( item.IsIdentified ? it.identifiedDisplayName : it.unidentifiedDisplayName ) +
-							( it.slotCount ? ' [' + it.slotCount + ']' : '') + 
-							' ' + ( item.count || 1 ) + ' ea'
-						);
+				// Display box
+				overlay.show();
+				overlay.css({top: pos.top, left:pos.left+35});
+				overlay.html(
+					( item.RefiningLevel ? '+' + item.RefiningLevel + ' ' : '') +
+					( item.IsIdentified ? it.identifiedDisplayName : it.unidentifiedDisplayName ) +
+					( it.slotCount ? ' [' + it.slotCount + ']' : '') + 
+					' ' + ( item.count || 1 ) + ' ea'
+				);
 
-						if( item.IsIdentified ) {
-							overlay.removeClass('grey');
-						}
-						else {
-							overlay.addClass('grey');
-						}
-						break;
-					}
+				if( item.IsIdentified ) {
+					overlay.removeClass('grey');
+				}
+				else {
+					overlay.addClass('grey');
 				}
 			})
 
@@ -229,20 +188,19 @@ define(function(require)
 
 				var matches = this.className.match(/(\w+) (\d+)/);
 				var index   = parseInt(matches[2], 10);
-				var list, i, count;
+				var item    = GetItemByIndex(index);
 
-				for( i = 0, list = Inventory.list, count = list.length; i < count; ++i ) {
-					if( list[i].index === index ) {
-						event.originalEvent.dataTransfer.setData("Text",
-							JSON.stringify( window._OBJ_DRAG_ = {
-								type: "item",
-								from: "inventory",
-								data:  list[i]
-							})
-						);
-						break;
-					}
+				if (!item) {
+					return;
 				}
+
+				event.originalEvent.dataTransfer.setData("Text",
+					JSON.stringify( window._OBJ_DRAG_ = {
+						type: "item",
+						from: "inventory",
+						data:  item
+					})
+				);
 
 				// Stop component to be draggable
 				jQuery(window).trigger('mouseup');
@@ -250,7 +208,7 @@ define(function(require)
 			})
 
 			// Clean up
-			.on('dragend', '.item', function(event){
+			.on('dragend', '.item', function(){
 				delete window._OBJ_DRAG_;
 			})
 
@@ -258,27 +216,24 @@ define(function(require)
 			.on('contextmenu', '.item', function(event) {
 				var matches = this.className.match(/(\w+) (\d+)/);
 				var index   = parseInt(matches[2], 10);
-				var list;
-				var i, count;
-
-				for( i = 0, list = Inventory.list, count = list.length; i < count; ++i ) {
-					if( list[i].index === index ) {
-
-						// Don't add the same UI twice, remove it
-						if( ItemInfo.uid === list[i].ITID ) {
-							ItemInfo.remove();
-							break;
-						}
-
-						// Add ui to window
-						ItemInfo.append();
-						ItemInfo.uid = list[i].ITID;
-						ItemInfo.setItem( list[i] );
-						break;
-					}
-				}
+				var item    = GetItemByIndex(index);
 
 				event.stopImmediatePropagation();
+
+				if (!item) {
+					return false;
+				}
+
+				// Don't add the same UI twice, remove it
+				if (ItemInfo.uid === item.ITID) {
+					ItemInfo.remove();
+					return false;
+				}
+
+				// Add ui to window
+				ItemInfo.append();
+				ItemInfo.uid = item.ITID;
+				ItemInfo.setItem(item);
 				return false;
 			})
 
@@ -286,34 +241,12 @@ define(function(require)
 			.on('dblclick', '.item', function(event) {
 				var matches = this.className.match(/(\w+) (\d+)/);
 				var index   = parseInt(matches[2], 10);
-				var list;
-				var i, count;
+				var item    = GetItemByIndex(index);
 
-				for( i = 0, list = Inventory.list, count = list.length; i < count; ++i ) {
-					if( list[i].index === index ) {
-						switch( list[i].type ) {
-							// Usable item
-							case Inventory.ITEM.HEALING:
-							case Inventory.ITEM.USABLE:
-							//case Inventory.ITEM.USABLE_SKILL:
-							case Inventory.ITEM.USABLE_UNK:
-								Inventory.onUseItem( index );
-								overlay.hide();
-								break;
-
-							// Equip item
-							case Inventory.ITEM.WEAPON:
-							case Inventory.ITEM.EQUIP:
-							case Inventory.ITEM.PETEQUIP:
-								if( list[i].IsIdentified && !list[i].IsDamaged ) {
-									Inventory.onEquipItem( index, list[i].location );
-									overlay.hide();
-								}
-								break;
-						}
-						break;
-					}
-				}
+				if (item) {
+					Inventory.useItem(item);
+					overlay.hide();
+				}			
 
 				event.stopImmediatePropagation();
 				return false;
@@ -395,7 +328,7 @@ define(function(require)
 	/**
 	 * Extend inventory window size
 	 */
-	Inventory.extend = function Extend( event )
+	function OnResize( event )
 	{
 		var ui      = this.ui;
 		var content = ui.find('.container .content');
@@ -448,11 +381,14 @@ define(function(require)
 
 		event.stopImmediatePropagation();
 		return false;
-	};
+	}
 
 
 	/**
 	 * Extend inventory window size
+	 *
+	 * @param {number} width
+	 * @param {number} height
 	 */
 	Inventory.resize = function Resize( width, height )
 	{
@@ -474,25 +410,25 @@ define(function(require)
 	/**
 	 * Modify tab, filter display entries
 	 */
-	Inventory.switchTab = function SwitchTab( event )
+	function SwitchTab( event )
 	{
 		var idx = jQuery(this).index();
 		Inventory.tab = idx;
 
-		Client.loadFile("basic_interface/tab_itm_0"+ (idx+1) +".bmp", function(data){
+		Client.loadFile(DB.INTERFACE_PATH + "basic_interface/tab_itm_0"+ (idx+1) +".bmp", function(data){
 			Inventory.ui.find('.tabs').css('backgroundImage', 'url("' + data + '")');
-			Inventory.filter(idx);
+			Filter.call(Inventory, idx);
 		});
 
 		event.stopImmediatePropagation();
 		return false;
-	};
+	}
 
 
 	/**
 	 * Hide/show inventory's content
 	 */
-	Inventory.toggleReduction = function ToggleReduction( event )
+	function ToggleReduction( event )
 	{
 		// TODO: fix this part
 		if( this.realSize ) {
@@ -508,7 +444,86 @@ define(function(require)
 
 		event.stopImmediatePropagation();
 		return false;
-	};
+	}
+
+
+	/**
+	 * Update tabulation
+	 */
+	function Filter()
+	{
+		this.ui.find('.container .content').empty();
+		var i, count;
+
+		for( i = 0, count = this.list.length; i < count; ++i ) {
+			this.addItemSub( this.list[i] );
+		}
+	}
+
+	/**
+	 * Search in a list for an item by its index
+	 *
+	 * @param {number} index
+	 * @returns {Item}
+	 */
+	function GetItemByIndex( index )
+	{
+		var i, count;
+		var list = Inventory.list;
+
+		for (i = 0, count = list.length; i < count; ++i) {
+			if (list[i].index === index) {
+				return list[i];
+			}
+		}
+
+		return null;
+	}
+
+
+	/**
+	 * Drop an item from storage to inventory
+	 *
+	 * @param {event}
+	 */
+	function OnDrop( event )
+	{
+		var item, data;
+		event.stopImmediatePropagation();
+
+		try {
+			data = JSON.parse(event.originalEvent.dataTransfer.getData("Text"));
+			item = data.data;
+		}
+		catch(e) {
+			return false;
+		}
+
+		// Just allow item from storage
+		if (data.type !== "item" || data.from !== "storage") {
+			return false;
+		}
+
+		// Have to specify how much
+		if (item.count > 1) {
+			InputBox.append();
+			InputBox.setType("number", false);
+			InputBox.onSubmitRequest = function OnSubmitRequest( count ) {
+				InputBox.remove();
+				require('UI/Components/Storage/Storage').reqRemoveItem(
+					item.index,
+					parseInt(count, 10 )
+				);
+			};
+		}
+
+		// Only one, don't have to specify
+		else {
+			require('UI/Components/Storage/Storage').reqRemoveItem( item.index, 1 );
+		}
+
+		return false;
+	}
 
 
 	/**
@@ -534,17 +549,18 @@ define(function(require)
 	Inventory.addItem = function AddItem( item )
 	{
 		var i, size;
+		var object = GetItemByIndex(item.index);
 
-		for( i = 0, size = this.list.length; i < size; ++i ) {
-			if( this.list[i].index === item.index ) {
-				this.list[i].count += item.count;
-				this.ui.find('.item.'+ item.index + ' .count').text( this.list[i].count )
-				return;
-			}
+		if (object) {
+			object.count += item.count;
+			this.ui.find('.item.'+ item.index + ' .count').text( object.count );
+			this.onUpdateItem(object.ITID, object.count);
+			return;
 		}
 
 		if( this.addItemSub(item) ) {
 			this.list.push(item);
+			this.onUpdateItem(item.ITID, item.count);
 		}
 	};
 
@@ -589,7 +605,7 @@ define(function(require)
 		}
 
 		if( tab === this.tab ) {
-			var it      = DB.getItemInfo( item.ITID );
+			var it = DB.getItemInfo( item.ITID );
 
 			Client.loadFile( DB.INTERFACE_PATH + 'item/' + ( item.IsIdentified ? it.identifiedResourceName : it.unidentifiedResourceName ) + '.bmp', function(data){
 				var content = ui.find('.container .content');
@@ -615,37 +631,127 @@ define(function(require)
 	 * Remove item from inventory
 	 *
 	 * @param {number} index in inventory
+	 * @param {number} count
 	 */
 	Inventory.removeItem = function RemoveItem( index, count )
 	{
-		var i, size;
-		
-		if(count === 0) { //Count === 0 means the emulator failed to complete the operation, so dont remove the item frm the ui
+		var item = GetItemByIndex(index);
+
+		// Emulator failed to complete the operation
+		// do not remove item from inventory
+		if (!item || count <= 0) {
 			return null;
 		}
 
-		for( i = 0, size = this.list.length; i < size; ++i ) {
+		if (item.count) {
+			item.count -= count;
 
-			if( this.list[i].index === index ) {
-				if( this.list[i].count ) {
-					this.list[i].count -= count;
-
-					if( this.list[i].count > 0 ) {
-						this.ui.find('.item.'+index + ' .count').text( this.list[i].count )
-						return this.list[i];
-					}
-				}
-
-				var item = this.list[i];
-				this.list.splice( i, 1 );
-				this.ui.find('.item.'+index).remove();
-
-				var content = this.ui.find('.container .content');
-				if( content.height() === content[0].scrollHeight ) {
-					this.ui.find('.hide').show();
-				}
-
+			if (item.count > 0) {
+				this.ui.find('.item.' + index + ' .count').text( item.count );
+				this.onUpdateItem(item.ITID, item.count);
 				return item;
+			}
+		}
+
+		this.list.splice( this.list.indexOf(item), 1 );
+		this.ui.find('.item.' + index).remove();
+		this.onUpdateItem(item.ITID, 0);
+
+		var content = this.ui.find('.container .content');
+		if (content.height() === content[0].scrollHeight) {
+			this.ui.find('.hide').show();
+		}
+
+		return item;
+	};
+
+
+	/**
+	 * Remove item from inventory
+	 *
+	 * @param {number} index in inventory
+	 * @param {number} count
+	 */
+	Inventory.updateItem = function UpdateItem( index, count )
+	{
+		var item = GetItemByIndex(index);
+
+		if (!item) {
+			return;
+		}
+
+		item.count = count;
+
+		// Update quantity
+		if (item.count > 0) {
+			this.ui.find('.item.' + index + ' .count').text( item.count );
+			this.onUpdateItem(item.ITID, item.count);
+			return;
+		}
+
+		// no quantity, remove
+		this.list.splice( this.list.indexOf(item), 1 );
+		this.ui.find('.item.' + index).remove();
+		this.onUpdateItem(item.ITID, 0);
+
+		var content = this.ui.find('.container .content');
+		if (content.height() === content[0].scrollHeight) {
+			this.ui.find('.hide').show();
+		}
+	};
+
+
+
+	/**
+	 * Use an item
+	 *
+	 * @param {Item} item
+	 */
+	Inventory.useItem = function UseItem( item )
+	{
+		switch (item.type) {
+
+			// Usable item
+			case Inventory.ITEM.HEALING:
+			case Inventory.ITEM.USABLE:
+			case Inventory.ITEM.USABLE_UNK:
+				Inventory.onUseItem( item.index );
+				break;
+
+			case Inventory.ITEM.USABLE_SKILL:
+				break;
+
+			// Equip item
+			case Inventory.ITEM.WEAPON:
+			case Inventory.ITEM.EQUIP:
+			case Inventory.ITEM.PETEQUIP:
+				if (item.IsIdentified && !item.IsDamaged) {
+					Inventory.onEquipItem( item.index, item.location );
+				}
+				break;
+
+			case Inventory.ITEM.AMMO:
+				break;
+		}
+
+		return;
+	};
+
+
+	/**
+	 * Get item object
+	 *
+	 * @param {number} id
+	 * @returns {Item}
+	 */
+	Inventory.getItemById = function GetItemById( id )
+	{
+		var i, count;
+		var list = Inventory.list;
+
+		for (i = 0, count = list.length; i < count; ++i) {
+			if (list[i].ITID === id) {
+				return list[i];
 			}
 		}
 
@@ -654,24 +760,32 @@ define(function(require)
 
 
 	/**
-	 * Update tabulation
+	 * Get item object by it's index
+	 *
+	 * @param {number} id
+	 * @returns {Item}
 	 */
-	Inventory.filter = function Filter(tab)
+	function GetItemByIndex( index )
 	{
-		this.ui.find('.container .content').empty();
 		var i, count;
+		var list = Inventory.list;
 
-		for( i = 0, count = this.list.length; i < count; ++i ) {
-			this.addItemSub( this.list[i] );
+		for (i = 0, count = list.length; i < count; ++i) {
+			if (list[i].index === index) {
+				return list[i];
+			}
 		}
-	};
+
+		return null;
+	}
 
 
 	/**
 	 * Abstract function to define
 	 */
-	Inventory.onUseItem   = function OnUseItem( index ){};
-	Inventory.onEquipItem = function OnEquipItem( index, location ){};
+	Inventory.onUseItem    = function OnUseItem( index ){};
+	Inventory.onEquipItem  = function OnEquipItem( index, location ){};
+	Inventory.onUpdateItem = function OnUpdateItem( index, amount ){}
 
 
 	/**
