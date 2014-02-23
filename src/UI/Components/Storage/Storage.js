@@ -328,7 +328,7 @@ define(function(require)
 		var idx = jQuery(this).index();
 		Storage.preferences.tab = idx;
 
-		Client.loadFile("basic_interface/tab_itm_ex_0"+ (idx+1) +".bmp", function(data){
+		Client.loadFile(DB.INTERFACE_PATH + "basic_interface/tab_itm_ex_0"+ (idx+1) +".bmp", function(data){
 			Storage.ui.find('.tabs').css('backgroundImage', 'url("' + data + '")');
 			Storage.filter(idx);
 		});
