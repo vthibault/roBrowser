@@ -11,16 +11,15 @@
 #ChatRoom .titlebar .clear { clear:both; }
 
 #ChatRoom .panel { background-color:white; }
-#ChatRoom .container { padding-left: 16px; border-right:1px solid #ccc; }
-#ChatRoom .content td { min-height:170px; overflow:auto;  }
-#ChatRoom .messages { width:70%; }
-#ChatRoom .members { width:30%; }
-#ChatRoom .owner { color:#7FFFD4; }
+#ChatRoom .content { min-height:170px; }
+#ChatRoom .content .messages { width:70%; height:170px; float:left; border-right:1px solid #ccc; overflow:auto;  }
+#ChatRoom .content .members { height:170px; float:left; overflow:auto; }
+#ChatRoom .content .owner { color:#7FFFD4; }
 
 #ChatRoom .send { height:17px; }
-#ChatRoom .send input { width:100%; vertical-align:-4px; }
+#ChatRoom .send input { width:250px; vertical-align:-4px; }
 
 #ChatRoom .overlay { position:absolute; display:none; white-space:nowrap; z-index:900; height:13px; padding:5px; background:rgba(0,0,0,0.7); color:white; text-shadow:1px 1px black;}
 #ChatRoom .overlay.grey { color:#aaa; }
 
-#ChatRoom .extend { position:absolute; right:0px; bottom:1px; width:13px; height:13px; border:none; background-repeat:no-repeat; background-color:transparent; }
+#ChatRoom .extend { width:13px; height:13px; border:none; background-repeat:no-repeat; background-color:transparent; }

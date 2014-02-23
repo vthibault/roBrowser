@@ -234,12 +234,14 @@ define(function(require)
 			lastHeight = h;
 
 			//Show or hide scrollbar
+			/*
 			if( content.height() === content[0].scrollHeight ) {
 				hide.show();
 			}
 			else {
 				hide.hide();
 			}
+			*/
 		}
 
 		// Start resizing
