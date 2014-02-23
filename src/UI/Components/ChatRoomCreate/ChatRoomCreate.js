@@ -68,22 +68,16 @@ define(function(require)
 		this.ui.find('.ok').on('click', this.Submit.bind(this) );
 		
 		//Dont activate drag
-		this.ui.find('input, select, button').mousedown(function( event ) {
+		this.ui.find('input, button').mousedown(function( event ) {
 			event.stopImmediatePropagation();
+			return false;
 		})
 
 		this.draggable();
-	};
-	
-	
-	/*
-	 * After init()
-	 */
-	ChatRoomCreate.onAppend = function onAppend() {
 		this.ui.hide();
-	}
-	 
-	
+	};
+
+
 	/*
 	 * Show the setup for room creation
 	 */
@@ -124,7 +118,8 @@ define(function(require)
 
 		return true;
 	};
-	
+
+
 	/**
 	 * Parse and send chat room request
 	 */
