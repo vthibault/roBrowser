@@ -11,13 +11,13 @@
 #ChatRoom .titlebar .clear { clear:both; }
 
 #ChatRoom .panel { background-color:white; }
-#ChatRoom .content { min-height:170px; }
-#ChatRoom .content .messages { width:70%; height:170px; float:left; border-right:1px solid #ccc; overflow-y:auto; padding-top:5px; padding-left:3px; }
+#ChatRoom .content { height:120px; }
+#ChatRoom .content .messages { width:70%; height:120px; float:left; border-right:1px solid #ccc; overflow-y:auto; padding-top:5px; padding-left:3px; }
 #ChatRoom .content .messages .self { color:#315937; }
 #ChatRoom .content .messages .join { color:#416d6c;}
 #ChatRoom .content .messages .leave { color:#481b22;}
 
-#ChatRoom .content .members { height:170px; float:left; overflow-y:auto; overflow-x:hidden; padding-top:5px; padding-left:3px;}
+#ChatRoom .content .members { height:120px; float:left; overflow-y:auto; overflow-x:hidden; padding-top:5px; padding-left:3px;}
 #ChatRoom .content .owner { color:#36716d; }
 
 #ChatRoom .send { height:30px; position:relative; padding-left:5px; }

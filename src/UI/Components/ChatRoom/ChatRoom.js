@@ -140,7 +140,11 @@ define(function(require)
 
 		this.ui.find('.messages').empty();
 
-		// TODO: preferences ?
+		this.preferences.y      =  parseInt(this.ui.css('top'), 10);
+		this.preferences.x      =  parseInt(this.ui.css('left'), 10);
+		this.preferences.width  =  Math.floor( (this.ui.width()  - (23 + 16 + 16 - 30)) / 32 );
+		this.preferences.height =  Math.floor( (this.ui.height() - (-30)) / 32 );
+		this.preferences.save();
 
 		this.ExitRoom();
 	};
@@ -176,8 +180,16 @@ define(function(require)
 	{
 		var message = this.ui.find('.send input[name=message]').val();
 
+		// Nothing to submit
 		if (message.length < 1) {
 			return false;
+		}
+
+		// Process commands
+		if( message[0] === '/' ) {
+			require('Controls/ProcessCommand').call( ChatBox, message.substr(1) );
+			this.ui.find('.send input[name=message]').val('');
+			return true;
 		}
 
 		ChatBox.onRequestTalk('', message);
@@ -193,6 +205,7 @@ define(function(require)
 	 */
 	ChatRoom.message = function displayMessage( message, type )
 	{
+		// Escape html tag
 		var element = jQuery('<div/>');
 		element.text(message);
 
@@ -203,7 +216,12 @@ define(function(require)
 			element.addClass('self');
 		}
 
-		this.ui.find('.messages').append(element);
+		var content = this.ui.find('.messages');
+
+		// Append content, move to the bottom
+		content.append(element);
+		content[0].scrollTop = content[0].scrollHeight;
+
 		return true;
 	};
 
@@ -248,8 +266,8 @@ define(function(require)
 			var h = Math.floor( (Mouse.screen.y - top  - extraY) / 32 );
 
 			// Maximum and minimum window size
-			w = Math.min( Math.max(w, 6), 9);
-			h = Math.min( Math.max(h, 2), 6);
+			w = Math.min( Math.max(w, 7), 14);
+			h = Math.min( Math.max(h, 3), 8);
 
 			if( w === lastWidth && h === lastHeight ) {
 				return;
@@ -258,16 +276,6 @@ define(function(require)
 			ChatRoom.resize( w, h );
 			lastWidth  = w;
 			lastHeight = h;
-
-			//Show or hide scrollbar
-			/*
-			if( content.height() === content[0].scrollHeight ) {
-				hide.show();
-			}
-			else {
-				hide.hide();
-			}
-			*/
 		}
 
 		// Start resizing
@@ -291,18 +299,11 @@ define(function(require)
 	 */
 	ChatRoom.resize = function Resize( width, height )
 	{
-		width  = Math.min( Math.max(width,  6), 9);
-		height = Math.min( Math.max(height, 2), 6);
+		width  = Math.min( Math.max(width,  7), 14);
+		height = Math.min( Math.max(height, 3), 8);
 
-		this.ui.find('.container .content').css({
-			width:  width  * 32 + 13, // 13 = scrollbar
-			height: height * 32
-		});
-
-		this.ui.css({
-			width:  23 + 16 + 16 + width  * 32,
-			height: 31 + 19      + height * 32
-		});
+		this.ui.css('width', 23 + 16 + 16 + width  * 32);
+		this.ui.find('.resize').css('height', height * 32);
 	};
 	
 

@@ -127,7 +127,7 @@ function( require,         jQuery,     UIComponent,            KEYS,            
 	 * @param {string} button name
 	 * @param {function} callback once the button is pressed
 	 */
-	UIManager.showMessageBox = function ShowMessageBox( text, btn_name, callback )
+	UIManager.showMessageBox = function ShowMessageBox( text, btn_name, callback, keydown )
 	{
 		var WinMSG;
 
@@ -166,7 +166,7 @@ function( require,         jQuery,     UIComponent,            KEYS,            
 
 
 		// Just keydown
-		if( !btn_name ) {
+		if( !btn_name || keydown ) {
 			WinMSG.onKeyDown = function(event){
 				switch( event.which ) {
 					case KEYS.ENTER:
