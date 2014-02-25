@@ -15,6 +15,7 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
+	var jQuery      = require('Utils/jquery');
 	var DB          = require('DB/DBManager');
 	var KEYS        = require('Controls/KeyEventHandler');
 	var Renderer    = require('Renderer/Renderer');
@@ -74,7 +75,7 @@ define(function(require)
 	ChatRoomCreate.init = function Init()
 	{
 		// Bindings
-		this.ui.find('.close').on('click', this.Remove.bind(this) );
+		this.ui.find('.close, .cancel').on('click', this.Remove.bind(this) );
 		this.ui.find('.ok').on('click', ParseChatSetup.bind(this) );
 		this.ui.find('.setup').submit(function() {
 			return false;
@@ -103,6 +104,10 @@ define(function(require)
 			top:  Math.min( Math.max( 0, this.preferences.y), Renderer.height - this.ui.height()),
 			left: Math.min( Math.max( 0, this.preferences.x), Renderer.width  - this.ui.width())
 		});
+
+		// Escape key order
+		var events = jQuery._data( window, 'events').keydown;
+		events.unshift( events.pop() );
 	};
 
 
