@@ -8,6 +8,7 @@
  * @author Vincent Thibault
  */
 define([
+	'require',
 	'DB/DBManager',
 	'Audio/BGM',               'Audio/SoundManager',
 	'Renderer/MapRenderer',
@@ -16,6 +17,7 @@ define([
 	'Preferences/Controls',    'Preferences/Audio',       'Preferences/Map',    'Preferences/Camera'
 ],
 function(
+	require,
 	DB,
 	BGM,                 Sound,
 	MapRenderer,
@@ -142,6 +144,14 @@ function(
 			case 'w':
 				pkt = new PACKET.CZ.REQ_USER_COUNT();
 				Network.sendPacket(pkt);
+				return;
+
+			case 'chat':
+				require('UI/Components/ChatRoomCreate/ChatRoomCreate').Show();
+				return;
+
+			case 'q':
+				require('UI/Components/ChatRoom/ChatRoom').remove();
 				return;
 		}
 

@@ -192,17 +192,20 @@ function(       jQuery,      DB,               Client,            Mouse )
 		element.mousedown( function(event) {
 
 			// Only on left click
-			if ( event.which !== 1 ) {
+			if (event.which !== 1) {
 				return;
 			}
 
 			var x, y, width, height, drag;
+			var updateDepth = element.css('zIndex') == 50;
 
 			// Don't propagate event.
 			event.stopImmediatePropagation();
 
 			// Set element over others components
-			element.css('zIndex', 51);
+			if (updateDepth) {
+				element.css('zIndex', 51);
+			}
 
 			x = container.position().left - Mouse.screen.x;
 			y = container.position().top  - Mouse.screen.y;
@@ -217,18 +220,18 @@ function(       jQuery,      DB,               Client,            Mouse )
 				var opacity = parseFloat(container.css('opacity')||1) - 0.02;
 
 				// Magnet on border
-				if ( x_ < 10 && x_ > -10 ) {
+				if (x_ < 10 && x_ > -10) {
 					x_ = 0;
 				}
-				if ( y_ < 10 && y_ > -10 ) {
+				if (y_ < 10 && y_ > -10) {
 					y_ = 0;
 				}
 
-				if ( x_ + width > Mouse.screen.width  - 10 && x_ + width < Mouse.screen.width + 10 ) {
+				if (x_ + width > Mouse.screen.width  - 10 && x_ + width < Mouse.screen.width + 10) {
 					x_ = Mouse.screen.width - width;
 				}
 
-				if ( y_ + height > Mouse.screen.height - 10 && y_ + height < Mouse.screen.height+ 10 ) {
+				if (y_ + height > Mouse.screen.height - 10 && y_ + height < Mouse.screen.height+ 10) {
 					y_ = Mouse.screen.height- height;
 				}
 
@@ -238,17 +241,19 @@ function(       jQuery,      DB,               Client,            Mouse )
 			// Stop the drag (need to focus on window to avoid possible errors...)
 			jQuery(window).on('mouseup.dragdrop', function(event){
 				// Only on left click
-				if ( event.which !== 1 && !event.isTrigger ) {
+				if (event.which !== 1 && !event.isTrigger) {
 					return;
 				}
 
 				// Get back zIndex, push the element to the end to be over others components
-				setTimeout(function(){
-					element.css('zIndex', 50);
-					if( element[0].parentNode ) {
-						element[0].parentNode.appendChild(element[0]);
-					}
-				}, 1);
+				if (updateDepth) {
+					setTimeout(function(){
+						element.css('zIndex', 50);
+						if( element[0].parentNode ) {
+							element[0].parentNode.appendChild(element[0]);
+						}
+					}, 1);
+				}
 
 				container.stop().animate({ opacity:1.0 }, 500 );
 				clearInterval(drag);

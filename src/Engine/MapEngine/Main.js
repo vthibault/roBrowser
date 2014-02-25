@@ -24,6 +24,7 @@ define(function( require )
 	var EntityManager = require('Renderer/EntityManager');
 	var Altitude      = require('Renderer/Map/Altitude');
 	var ChatBox       = require('UI/Components/ChatBox/ChatBox');
+	var ChatRoom      = require('UI/Components/ChatRoom/ChatRoom');
 	var BasicInfo     = require('UI/Components/BasicInfo/BasicInfo');
 	var WinStats      = require('UI/Components/WinStats/WinStats');
 	var Escape        = require('UI/Components/Escape/Escape');
@@ -347,7 +348,7 @@ define(function( require )
 			color = "#FFFF00";
 		}
 		//TODO: Find colors in broadcast
-
+		
 		ChatBox.addText( pkt.msg, ChatBox.TYPE.ANNOUNCE, color );
 
 		Announce.append();
@@ -372,6 +373,11 @@ define(function( require )
 	 */
 	function OnPlayerMessage( pkt )
 	{
+		if(ChatRoom.isOpen) {
+			ChatRoom.message(pkt.msg);
+			return;
+		}
+		
 		ChatBox.addText( pkt.msg, ChatBox.TYPE.PUBLIC | ChatBox.TYPE.SELF );
 		if( Session.Entity ) {
 			Session.Entity.dialog.set( pkt.msg );
@@ -455,6 +461,7 @@ define(function( require )
 				case 8:  error = 247; break;
 				case 9:  error = 580; break;
 				case 10: error = 285; break;
+				case 83: error = 661; break;
 			}
 		}
 

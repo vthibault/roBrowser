@@ -26,6 +26,7 @@ define(function( require )
 	var Entity        = require('Renderer/Entity/Entity');
 	var Altitude      = require('Renderer/Map/Altitude');
 	var ChatBox       = require('UI/Components/ChatBox/ChatBox');
+	var ChatRoom      = require('UI/Components/ChatRoom/ChatRoom');
 	var StatusIcons   = require('UI/Components/StatusIcons/StatusIcons');
 	var Damage        = require('Renderer/Effects/Damage');
 
@@ -240,6 +241,11 @@ define(function( require )
 	{
 		// Remove "pseudo : |00Dialogue
 		pkt.msg = pkt.msg.replace(/\: \|\d{2}/, ': ');
+		
+		if( ChatRoom.isOpen ) {
+			ChatRoom.message(pkt.msg);
+			return;
+		}
 
 		var entity = EntityManager.get(pkt.GID);
 		if( entity ) {
@@ -598,12 +604,12 @@ define(function( require )
 				entity = EntityManager.get( pkt.AID );
 				if( entity ) {
 
-					var type  = entity.room.constructor.PUBLIC_CHAT;
+					var type  = entity.room.constructor.Type.PUBLIC_CHAT;
 					var title = pkt.title + '('+ pkt.curcount +'/'+ pkt.maxcount +')';
 
-					switch( type ) {
+					switch( pkt.type ) {
 						case 0: // password
-							type = entity.room.constructor.PRIVATE_CHAT;
+							type = entity.room.constructor.Type.PRIVATE_CHAT;
 							break;
 
 						case 1: break; // public
@@ -613,11 +619,15 @@ define(function( require )
 							title = pkt.title; // no user limit
 							break;
 					}
+					
+					entity.room.title = pkt.title;
+					entity.room.limit = pkt.maxcount;
+					entity.room.count = pkt.curcount;
 
 					entity.room.create(
-						pkt.title + '('+ pkt.curcount +'/'+ pkt.maxcount +')',
+						title,
 						pkt.roomID,
-						entity.room.constructor.Type.SELL_SHOP,
+						type,
 						true
 					);
 				}
@@ -632,6 +642,17 @@ define(function( require )
 	 */
 	function RoomRemove( pkt )
 	{
+		if ('roomID' in pkt) {
+			EntityManager.forEach(function(entity){
+				if (entity.room.id === pkt.roomID) {
+					entity.room.remove();
+					return false;
+				}
+				return true;
+			})
+			return;
+		}
+
 		var entity = EntityManager.get( pkt.makerAID );
 		if( entity ) {
 			entity.room.remove();

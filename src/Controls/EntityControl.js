@@ -12,13 +12,15 @@ define( [
 	'Renderer/Camera', 'Engine/SessionStorage',
 	'Network/PacketStructure', 'Network/NetworkManager',
 	'UI/CursorManager', 'UI/Components/InputBox/InputBox',
-	'Preferences/Controls'
+	'Preferences/Controls',
+	'UI/Components/ChatRoom/ChatRoom'
 ], function(
 	glMatrix, KEYS,
 	Camera, Session,
 	PACKET, Network,
 	Cursor, InputBox,
-	Preferences
+	Preferences,
+	ChatRoom
 )
 {
 	"use strict";
@@ -255,6 +257,12 @@ define( [
 				pkt.roomID = this.room.id;
 				pkt.passwd = '';
 				Network.sendPacket(pkt);
+				
+				/* Prepare the chat room UI */
+				ChatRoom.type  = 1; //public
+				ChatRoom.title = this.room.title;
+				ChatRoom.limit = this.room.limit;
+				ChatRoom.count = this.room.count;
 				break;
 
 			case Room.Type.PRIVATE_CHAT:
@@ -263,10 +271,17 @@ define( [
 
 				InputBox.append();
 				InputBox.setType('pass', true);
+				var self = this;
 				InputBox.onSubmitRequest = function( pass ) {
 					InputBox.remove();
 					pkt.passwd = pass;
 					Network.sendPacket(pkt);
+					
+					/* Prepare the chat room UI */
+					ChatRoom.type  = 0; //private
+					ChatRoom.title = self.room.title;
+					ChatRoom.limit = self.room.limit;
+					ChatRoom.count = self.room.count;
 				};
 				return;
 		}

@@ -35,6 +35,23 @@ function(         Entity,     SpriteRenderer,            Mouse )
 
 
 	/**
+	 * Fetch all entities using a callback
+	 *
+	 * @param {function} callback
+	 */
+	function ForEach( callback )
+	{
+		var i, count = _list.length;
+	
+		for ( i=0; i<count; ++i ) {
+			if (callback(_list[i]) === false) {
+				return;
+			}
+		}
+	}
+
+
+	/**
 	 * Find an Entity and return it
 	 *
 	 * @param {number} gid
@@ -290,6 +307,7 @@ function(         Entity,     SpriteRenderer,            Mouse )
 		add:                  AddEntity,
 		remove:               RemoveEntity,
 		get:                  GetEntity,
+		forEach:              ForEach,
 
 		getOverEntity:        GetOverEntity,
 		setOverEntity:        SetOverEntity,

@@ -44,6 +44,7 @@ define(function( require )
 	var ShortCut         = require('UI/Components/ShortCut/ShortCut');
 	var Equipment        = require('UI/Components/Equipment/Equipment');
 	var StatusIcons      = require('UI/Components/StatusIcons/StatusIcons');
+	var ChatRoomCreate   = require('UI/Components/ChatRoomCreate/ChatRoomCreate');
 
 
 	/**
@@ -124,6 +125,7 @@ define(function( require )
 		require('./MapEngine/Group').call();
 		require('./MapEngine/Guild').call();
 		require('./MapEngine/Skill').call();
+		require('./MapEngine/ChatRoom').call();
 	}
 
 
@@ -227,6 +229,7 @@ define(function( require )
 			Equipment.append();
 			StatusIcons.append();
 			ShortCut.append();
+			ChatRoomCreate.append();
 
 			// Map loaded
 			Network.sendPacket(
