@@ -8,20 +8,22 @@
  * @author Vincent Thibault
  */
 define([
+	'require',
 	'DB/DBManager',
 	'Audio/BGM',               'Audio/SoundManager',
 	'Renderer/MapRenderer',
 	'Engine/SessionStorage',
 	'Network/PacketStructure', 'Network/NetworkManager',
-	'Preferences/Controls',    'Preferences/Audio',       'Preferences/Map',    'Preferences/Camera', 'UI/Components/ChatRoomCreate/ChatRoomCreate'
+	'Preferences/Controls',    'Preferences/Audio',       'Preferences/Map',    'Preferences/Camera'
 ],
 function(
+	require,
 	DB,
 	BGM,                 Sound,
 	MapRenderer,
 	Session,
 	PACKET,              Network,
-	ControlPreferences,  AudioPreferences,  MapPreferences,  CameraPreferences, ChatRoomCreate
+	ControlPreferences,  AudioPreferences,  MapPreferences,  CameraPreferences
 ) {
 	"use strict";
 
@@ -143,8 +145,13 @@ function(
 				pkt = new PACKET.CZ.REQ_USER_COUNT();
 				Network.sendPacket(pkt);
 				return;
+
 			case 'chat':
-				ChatRoomCreate.Show();
+				require('UI/Components/ChatRoomCreate/ChatRoomCreate').Show();
+				return;
+
+			case 'q':
+				require('UI/Components/ChatRoom/ChatRoom').remove();
 				return;
 		}
 

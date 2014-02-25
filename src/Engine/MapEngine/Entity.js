@@ -241,7 +241,7 @@ define(function( require )
 		// Remove "pseudo : |00Dialogue
 		pkt.msg = pkt.msg.replace(/\: \|\d{2}/, ': ');
 		
-		if(ChatRoom.OPEN) {
+		if( ChatRoom.isOpen ) {
 			ChatRoom.message(pkt.msg);
 			return;
 		}
@@ -590,7 +590,7 @@ define(function( require )
 					var type  = entity.room.constructor.Type.PUBLIC_CHAT;
 					var title = pkt.title + '('+ pkt.curcount +'/'+ pkt.maxcount +')';
 
-					switch( type ) {
+					switch( pkt.type ) {
 						case 0: // password
 							type = entity.room.constructor.Type.PRIVATE_CHAT;
 							break;
@@ -625,6 +625,17 @@ define(function( require )
 	 */
 	function RoomRemove( pkt )
 	{
+		if ('roomID' in pkt) {
+			EntityManager.forEach(function(entity){
+				if (entity.room.id === pkt.roomID) {
+					entity.room.remove();
+					return false;
+				}
+				return true;
+			})
+			return;
+		}
+
 		var entity = EntityManager.get( pkt.makerAID );
 		if( entity ) {
 			entity.room.remove();

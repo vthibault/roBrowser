@@ -6,20 +6,24 @@
 #ChatRoom .titlebar .text { text-shadow:1px 1px white; vertical-align:-2px; 
  /* chrome bug */ display: inline-block; height:13px; }
 
-#ChatRoom .titlebar .left { margin-left:3px; float:left; }
+#ChatRoom .titlebar .left { margin-left:3px; float:left; padding-left: 5px; padding-top: 2px; text-shadow: 1px 1px 1px white;}
 #ChatRoom .titlebar .right { float:right; margin-right:3px;}
 #ChatRoom .titlebar .clear { clear:both; }
 
 #ChatRoom .panel { background-color:white; }
 #ChatRoom .content { min-height:170px; }
-#ChatRoom .content .messages { width:70%; height:170px; float:left; border-right:1px solid #ccc; overflow:auto;  }
-#ChatRoom .content .members { height:170px; float:left; overflow:auto; }
-#ChatRoom .content .owner { color:#7FFFD4; }
+#ChatRoom .content .messages { width:70%; height:170px; float:left; border-right:1px solid #ccc; overflow-y:auto; padding-top:5px; padding-left:3px; }
+#ChatRoom .content .messages .self { color:#315937; }
+#ChatRoom .content .messages .join { color:#416d6c;}
+#ChatRoom .content .messages .leave { color:#481b22;}
 
-#ChatRoom .send { height:17px; }
-#ChatRoom .send input { width:250px; vertical-align:-4px; }
+#ChatRoom .content .members { height:170px; float:left; overflow-y:auto; overflow-x:hidden; padding-top:5px; padding-left:3px;}
+#ChatRoom .content .owner { color:#36716d; }
+
+#ChatRoom .send { height:30px; position:relative; padding-left:5px; }
+#ChatRoom .send input { width:100%; border:none; border-top: 1px solid #ccc;}
 
 #ChatRoom .overlay { position:absolute; display:none; white-space:nowrap; z-index:900; height:13px; padding:5px; background:rgba(0,0,0,0.7); color:white; text-shadow:1px 1px black;}
 #ChatRoom .overlay.grey { color:#aaa; }
 
-#ChatRoom .extend { width:13px; height:13px; border:none; background-repeat:no-repeat; background-color:transparent; }
+#ChatRoom .extend { width:13px; height:13px; border:none; background-repeat:no-repeat; background-color:transparent; position:absolute; bottom:0px; right:0px; }

@@ -15,16 +15,17 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
-	var Preferences        = require('Core/Preferences');
-	var jQuery             = require('Utils/jquery');
-	var Renderer           = require('Renderer/Renderer');
-	var Mouse              = require('Controls/MouseEventHandler');
-	var KEYS               = require('Controls/KeyEventHandler');
-	var ChatBox            = require('UI/Components/ChatBox/ChatBox') 
-	var UIManager          = require('UI/UIManager');
-	var UIComponent        = require('UI/UIComponent');
-	var htmlText           = require('text!./ChatRoom.html');
-	var cssText            = require('text!./ChatRoom.css');
+	var Preferences  = require('Core/Preferences');
+	var jQuery       = require('Utils/jquery');
+	var Renderer     = require('Renderer/Renderer');
+	var Session      = require('Engine/SessionStorage');
+	var Mouse        = require('Controls/MouseEventHandler');
+	var KEYS         = require('Controls/KeyEventHandler');
+	var ChatBox      = require('UI/Components/ChatBox/ChatBox');
+	var UIManager    = require('UI/UIManager');
+	var UIComponent  = require('UI/UIComponent');
+	var htmlText     = require('text!./ChatRoom.html');
+	var cssText      = require('text!./ChatRoom.css');
 
 
 	/**
@@ -34,52 +35,51 @@ define(function(require)
 	
 	
 	/**
-	 * Chat room title
+	 * @var {string} Chat Room title
 	 */
-	ChatRoom.TITLE = null;
+	ChatRoom.title = '';
 
 
 	/**
-	 * Chat room limit
+	 * @var {number} limit
 	 */
-	ChatRoom.LIMIT = 0;
+	ChatRoom.limit = 20;
 
 
 	/**
-	 * Chat room type
+	 * @var {number} type
 	 */
-	ChatRoom.TYPE = 0;
+	ChatRoom.type = 0;
 	
 	
 	/**
-	 * Number of players in the chat
+	 * @var {number} Number of players in the chat
 	 */
-	ChatRoom.COUNT = 0;
+	ChatRoom.count = 0;
 	
 	
 	/**
-	 * Members list
+	 * @var {Array} Members list
 	 */
-	ChatRoom.MEMBERS = [];
-	
-	
+	ChatRoom.members = [];
+
+
 	/**
-	 * Chat Owner
+	 * @var {string} Chat Owner
 	 */
-	ChatRoom.OWNER = null;
-	
-	
+	ChatRoom.owner = '';
+
+
 	/**
-	 * Temporary fix to determine if chat is open
+	 * @var {boolean} is ChatRoom open ? (Temporary fix)
 	 */
-	ChatRoom.OPEN = 0;
-	
+	ChatRoom.isOpen = false;
 
 
 	/**
 	 * @var {Preference} structure to save
 	 */
-	ChatRoom.preferences = Preferences.get( 'ChatRoom', {
+	ChatRoom.preferences = Preferences.get('ChatRoom', {
 		x:        480,
 		y:        200,
 		width:    7,
@@ -93,8 +93,8 @@ define(function(require)
 	ChatRoom.init = function Init()
 	{
 		// Bindings
-		this.ui.find('.extend').mousedown( this.extend.bind(this) );
-		this.ui.find('.close').on('click', this.remove.bind(this) );
+		this.ui.find('.extend').mousedown( this.extend.bind(this));
+		this.ui.find('.close').on('click', this.remove.bind(this));
 		
 		//Dont activate drag
 		this.ui.find('input, select, button').mousedown(function( event ) {
@@ -103,14 +103,15 @@ define(function(require)
 
 		this.draggable();
 	};
-	
-	
+
+
 	/**
-	 * After init()
+	 * Initialize UI
 	 */
-	ChatRoom.onAppend = function onAppend() {
-		this.OPEN = 1;
-		
+	ChatRoom.onAppend = function onAppend()
+	{
+		this.isOpen = true;
+
 		this.resize( this.preferences.width, this.preferences.height );
 
 		this.ui.css({
@@ -118,83 +119,108 @@ define(function(require)
 			left: Math.min( Math.max( 0, this.preferences.x), Renderer.width  - this.ui.width())
 		});
 
+		this.ui.find('.sendmsg').focus();
+
 		this.UpdateChat();
 	};
-	
-	
-	/**
-	 * On remove() chat ui
-	 */
-	ChatRoom.onRemove = function onRemove() {
-		this.TITLE = null;
-		this.LIMIT = 0;
-		this.TYPE = 0;
-		this.COUNT = 0;
-		this.MEMBERS = [];
-		this.OWNER = null;
-		this.OPEN = 0;
 
-		ChatRoom.ExitRoom();
-	}
-	 
-	
+
 	/**
-	 * Update chat
+	 * Clean up variables once removed from DOM
+	 */
+	ChatRoom.onRemove = function onRemove()
+	{
+		this.title   = '';
+		this.limit   = 20;
+		this.type    = 0;
+		this.count   = 0;
+		this.members = [];
+		this.owner   = '';
+		this.isOpen  = false;
+
+		this.ui.find('.messages').empty();
+
+		// TODO: preferences ?
+
+		this.ExitRoom();
+	};
+
+
+	/**
+	 * Update ChatRoom parameters
 	 */
 	ChatRoom.UpdateChat = function UpdateChat()
 	{
 		var members = '';
-		
-		this.ui.find('.titlebar .title').html( this.TITLE );
-		this.ui.find('.titlebar .count').html( this.COUNT + '/' + this.LIMIT );
-		
-		for(var i in this.MEMBERS) {
-			if(this.MEMBERS[i] == this.OWNER) {
-				members = '<span class="owner">' + this.MEMBERS[i] + '</span><br/>' + members;
+		var i, count = this.members.length;
+
+		this.ui.find('.titlebar .title').html( this.title );
+		this.ui.find('.titlebar .count').html( this.count + '/' + this.limit );
+
+		for (i = 0; i < count; ++i) {
+			if (this.members[i] == this.owner) {
+				members = '<span class="owner">' + this.members[i] + '</span><br/>' + members;
 				continue;
 			}
-			members += this.MEMBERS[i] + '<br/>';
+			members += this.members[i] + '<br/>';
 		}
-		
+
 		this.ui.find('.members').html( members );
 	};
-	
-	
+
+
 	/**
 	 * Parse and send chat room messages
 	 */
-	ChatRoom.Send = function ParseChatSend() {
+	ChatRoom.Send = function ParseChatSend()
+	{
 		var message = this.ui.find('.send input[name=message]').val();
 
-		if(message.length < 1) return false;
+		if (message.length < 1) {
+			return false;
+		}
 
 		ChatBox.onRequestTalk('', message);
-		
 		this.ui.find('.send input[name=message]').val('');
-		
+
 		return true;
 	};
-	
-	
+
+
 	/**
 	 * Display a message in the chat room
+	 * @param {string} message
 	 */
-	ChatRoom.message = function displayMessage( message ) {
-		this.ui.find('.messages').append(message + '<br/>');
-		
+	ChatRoom.message = function displayMessage( message, type )
+	{
+		var element = jQuery('<div/>');
+		element.text(message);
+
+		if (type) {
+			element.addClass(type);
+		}
+		else if (message.indexOf(Session.Entity.display.name + ' : ') === 0) {
+			element.addClass('self');
+		}
+
+		this.ui.find('.messages').append(element);
 		return true;
 	};
-	 
+
+
 	/**
 	 * Remove a member from the chat
+	 * @param {string} member name
 	 */
-	ChatRoom.removeMember = function RemoveMember( name ) {
-		for(var i in this.MEMBERS) {
-			if(this.MEMBERS[i] == name) {
-				this.MEMBERS.splice(i, 1);
-				return true;
-			}
+	ChatRoom.removeMember = function RemoveMember( name )
+	{
+		var pos = this.members.indexOf(name);
+
+		if (pos > -1) {
+			this.members.splice(pos, 1);
+			return true;
 		}
+
 		return false;
 	}
 	
@@ -300,9 +326,9 @@ define(function(require)
 
 
 	/**
-	 * Pseudo functions :)
+	 * Functions to define
 	 */
-	ChatRoom.SendMes = function SendMes() {};
+	ChatRoom.ExitRoom = function ExitRoom(){};
 
 
 	/**

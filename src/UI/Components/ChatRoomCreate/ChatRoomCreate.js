@@ -15,11 +15,13 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
-	var KEYS               = require('Controls/KeyEventHandler');
-	var UIManager          = require('UI/UIManager');
-	var UIComponent        = require('UI/UIComponent');
-	var htmlText           = require('text!./ChatRoomCreate.html');
-	var cssText            = require('text!./ChatRoomCreate.css');
+	var DB          = require('DB/DBManager');
+	var KEYS        = require('Controls/KeyEventHandler');
+	var UIManager   = require('UI/UIManager');
+	var UIComponent = require('UI/UIComponent');
+	//var ChatBox     = require('UI/Components/ChatBox/ChatBox');
+	var htmlText    = require('text!./ChatRoomCreate.html');
+	var cssText     = require('text!./ChatRoomCreate.css');
 
 
 	/**
@@ -29,32 +31,29 @@ define(function(require)
 	
 	
 	/**
-	 * Chat room title
-	 * Default: ''
+	 * @var {string} chat room title
 	 */
-	ChatRoomCreate.TITLE = null;
+	ChatRoomCreate.title = '';
 
 
 	/**
-	 * Chat room limit
-	 * Default: 20
+	 * @var {number} chat room limit
 	 */
-	ChatRoomCreate.LIMIT = 0;
+	ChatRoomCreate.limit = 20;
 
 
 	/**
-	 * Chat room types
+	 * @var {number} type
 	 * 0 = Private
-	 * 1 = Public * Default
+	 * 1 = Public
 	 */
-	ChatRoomCreate.TYPE = 0;
-	
-	
+	ChatRoomCreate.type = 1;
+
+
 	/**
-	 * Chat Room Password
-	 * Default: ''
+	 * @var {string} password
 	 */
-	ChatRoomCreate.SIGN = null;
+	ChatRoomCreate.password = '';
 
 
 	/**
@@ -64,14 +63,15 @@ define(function(require)
 	{
 		// Bindings
 		this.ui.find('.close').on('click', this.Remove.bind(this) );
-		this.ui.find('.setup').submit(function() { return false; });
-		this.ui.find('.ok').on('click', this.Submit.bind(this) );
-		
-		//Dont activate drag
-		this.ui.find('input, button').mousedown(function( event ) {
-			event.stopImmediatePropagation();
+		this.ui.find('.ok').on('click', ParseChatSetup.bind(this) );
+		this.ui.find('.setup').submit(function() {
 			return false;
-		})
+		});
+
+		//Dont activate drag
+		this.ui.find('input, button, select').mousedown(function(event) {
+			event.stopImmediatePropagation();
+		});
 
 		this.draggable();
 		this.ui.hide();
@@ -84,6 +84,7 @@ define(function(require)
 	ChatRoomCreate.Show = function ShowSetup()
 	{
 		this.ui.show();
+		this.ui.find('.title').focus();
 	};
 	
 	
@@ -94,7 +95,7 @@ define(function(require)
 	{
 		this.ui.hide();
 		this.ui.find('.setup')[0].reset();
-	}
+	};
 	
 
 	/**
@@ -105,8 +106,8 @@ define(function(require)
 	 */
 	ChatRoomCreate.onKeyDown = function OnKeyDown( event )
 	{
-		if( KEYS.ALT && event.which === KEYS.C ) {
-			if( this.ui.is(':visible') ) {
+		if (KEYS.ALT && event.which === KEYS.C) {
+			if (this.ui.is(':visible')) {
 				this.Remove();
 			}
 			else {
@@ -123,25 +124,27 @@ define(function(require)
 	/**
 	 * Parse and send chat room request
 	 */
-	ChatRoomCreate.Submit = function ParseChatSetup() {
-		this.TITLE = this.ui.find('input[name=title]').val();
-		this.LIMIT = this.ui.find('select[name=limit]').val();
-		this.TYPE  = this.ui.find('input[name=public]').val();
-		this.SIGN  = this.ui.find('input[name=password]').val();
-		
-		if(this.TITLE.length < 1) return false;
+	function ParseChatSetup()
+	{
+		this.title    = this.ui.find('input[name=title]').val();
+		this.limit    = parseInt( this.ui.find('select[name=limit]').val(), 10);
+		this.type     = parseInt( this.ui.find('input[name=public]:checked').val(), 10);
+		this.password = this.ui.find('input[name=password]').val();
+
+		if (this.title.length < 1) {
+			ChatBox.addText( DB.msgstringtable[13], ChatBox.Type.ERROR);
+			return;
+		}
 
 		this.RequestRoom();
 		this.Remove();
-		
-		return true;
-	};
+	}
 
 
 	/**
 	 * Pseudo functions :)
 	 */
-	ChatRoomCreate.RequestRoom = function RequestRoom() {};
+	ChatRoomCreate.RequestRoom = function RequestRoom(){};
 
 
 	/**

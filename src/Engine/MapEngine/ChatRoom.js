@@ -15,10 +15,13 @@ define(function( require )
 	/**
 	 * Load dependencies
 	 */
+	var DB              = require('DB/DBManager');
 	var Network			= require('Network/NetworkManager');
 	var PACKET			= require('Network/PacketStructure');
+	var EntityManager   = require('Renderer/EntityManager');
 	var ChatRoomCreate	= require('UI/Components/ChatRoomCreate/ChatRoomCreate');
 	var ChatRoom		= require('UI/Components/ChatRoom/ChatRoom');
+	var ChatBox         = require('UI/Components/ChatBox/ChatBox');
 	var Session         = require('Engine/SessionStorage');
 
 
@@ -28,22 +31,11 @@ define(function( require )
 	 */
 	ChatRoomCreate.RequestRoom = function RequestRoom()
 	{
-		var pkt   = new PACKET.CZ.CREATE_CHATROOM();
-		pkt.size = this.LIMIT;
-		pkt.type = this.TYPE;
-		pkt.passwd = this.SIGN;
-		pkt.title = this.TITLE;
-		Network.sendPacket( pkt );
-	};
-
-
-	/**
-	 * Request a chat room
-	 * PACKET.CZ.REQ_ENTER_ROOM
-	 */
-	ChatRoom.RequestEnterRoom = function RequestEnterRoom()
-	{
-		var pkt   = new PACKET.CZ.REQ_ENTER_ROOM();
+		var pkt    = new PACKET.CZ.CREATE_CHATROOM();
+		pkt.size   = this.limit;
+		pkt.type   = this.type;
+		pkt.passwd = this.password;
+		pkt.title  = this.title;
 		Network.sendPacket( pkt );
 	};
 
@@ -54,7 +46,13 @@ define(function( require )
 	 */
 	ChatRoom.ChangeChatRoom = function ChangeChatRoom()
 	{
-		var pkt   = new PACKET.CZ.CHANGE_CHATROOM();
+		var pkt = new PACKET.CZ.CHANGE_CHATROOM();
+		/*
+		this.size         = 0;
+		this.type         = 0;
+		this.passwd       = '';
+		this.title        = '';
+		*/
 		Network.sendPacket( pkt );
 	};
 
@@ -66,7 +64,11 @@ define(function( require )
 	ChatRoom.RequestRoleChange = function RequestRoleChange()
 	{
 		var pkt   = new PACKET.CZ.REQ_ROLE_CHANGE();
-		Network.sendPacket( pkt );
+		/*
+			this.role       = 0;
+			this.name       = '';
+		*/
+		Network.sendPacket(pkt);
 	};
 
 
@@ -77,6 +79,9 @@ define(function( require )
 	ChatRoom.RequestExpelMember = function RequestExpelMember()
 	{
 		var pkt   = new PACKET.CZ.REQ_EXPEL_MEMBER();
+		/*
+			this.name       = '';
+		*/
 		Network.sendPacket( pkt );
 	};
 
@@ -90,129 +95,191 @@ define(function( require )
 		var pkt   = new PACKET.CZ.EXIT_ROOM();
 		Network.sendPacket( pkt );
 	};
-	
-	
+
+
 	/**
 	 * Response from the server if the chat creating was succesful or not.
-	 * 
 	 * @param {object} pkt - PACKET.ZC.ACK_CREATE_CHATROOM
-	 * @rcv object.result
-	 *  -> 0 = Room has been successfully created (opens chat room)
-	 *  -> 1 = Room limit exceeded
-	 *  -> 2 = Same room already exists
 	 */
 	function CreateACK( pkt )
 	{
-		var chat = ChatRoomCreate;
-
-		switch( pkt.result ) {
+		switch (pkt.result) {
+			// Success
 			case 0:
-				ChatRoom.TITLE = chat.TITLE;
-				ChatRoom.LIMIT = chat.LIMIT;
-				ChatRoom.TYPE  = chat.TYPE;
-				ChatRoom.COUNT = 1;
-				ChatRoom.MEMBERS = [Session.Entity.display.name];
-				ChatRoom.OWNER = Session.Entity.display.name;
+				ChatRoom.title   = ChatRoomCreate.title;
+				ChatRoom.limit   = ChatRoomCreate.limit;
+				ChatRoom.type    = ChatRoomCreate.type;
+				ChatRoom.count   = 1;
+				ChatRoom.members = [Session.Entity.display.name];
+				ChatRoom.owner   = Session.Entity.display.name;
 				ChatRoom.append();
+
+				ChatBox.addText( DB.msgstringtable[64], ChatBox.TYPE.BLUE );
 				break;
-			/* !TODO! */
+
+			// Room limit exceeded
 			case 1:
+				ChatBox.addText( DB.msgstringtable[65], ChatBox.TYPE.ERROR );
 				break;
+
+			// Same room already exists
 			case 2:
+				ChatBox.addText( DB.msgstringtable[66], ChatBox.TYPE.ERROR );
 				break;
-			/* <---- */
 		}
 	}
-	
-	
-	/*
+
+
+	/**
+	 *
+	 * @param {object} pkt - PACKET.ZC.REFUSE_ENTER_ROOM
+	 *  0 = room full
+	 *  1 = wrong password
+	 *  2 = kicked
+	 *  3 = success (no message)
+	 *  4 = no enough zeny
+	 *  5 = too low level
+	 *  6 = too high level
+	 *  7 = unsuitable job class
+	 */
+	function EnterACK( pkt )
+	{
+		switch (pkt.result) {
+			// full
+			case 0:
+				ChatBox.addText( DB.msgstringtable[65], ChatBox.TYPE.ERROR );
+				break;
+
+			// TODO:
+			case 1:
+			case 2:
+			case 3:
+			case 4:
+			case 5:
+			case 6:
+			case 7:
+		}
+
+	}
+
+
+	/**
 	 * Notify a entry of a new member
+	 * @param {object} pkt - PACKET_ZC_MEMBER_NEWENTRY
 	 */
 	function EnterMember( pkt )
 	{
-		ChatRoom.COUNT = pkt.curcount;
-		ChatRoom.MEMBERS.push( pkt.name );
+		ChatRoom.count = pkt.curcount;
+		ChatRoom.members.push( pkt.name );
+
 		ChatRoom.UpdateChat();
+		ChatRoom.message(DB.msgstringtable[179].replace('%s', pkt.name), 'join');	
 	}
-	
-	
-	/*
+
+
+	/**
 	 * Change room owner
+	 * @param {object} pkt - PACKET.ZC.ROLE_CHANGE
 	 */
 	function RoleChange( pkt )
 	{
-		if(pkt.role === 1) { //The server will send two of this packets! One to remove the ownership and one to add ownership, we dont need to first packet!
-			ChatRoom.OWNER = pkt.name;
+		// The server will send two of this packets!
+		// One to remove the ownership and one to add ownership, we dont need the first packet !
+
+		if (pkt.role === 1) {
+			ChatRoom.owner = pkt.name;
 			ChatRoom.UpdateChat();
 		}
 	}
-	
-	
-	/*
+
+
+	/**
 	 * Member exit
+	 * @param {object} pkt - PACKET.ZC.MEMBER_EXIT
 	 */
 	function MemberExit( pkt )
 	{
-		ChatRoom.COUNT = pkt.curcount;
+		// Seems like the server send us we are disconnect,
+		// we do not care.
+		if (!ChatRoom.isOpen) {
+			return;
+		}
+
+		ChatRoom.count = pkt.curcount;
 		ChatRoom.removeMember( pkt.name );
 		ChatRoom.UpdateChat();
-		
-		if(pkt.type === 0) { //type = 0 = he left the room
-			ChatRoom.message( pkt.name + ' left the room.');	
+
+		// Leave the room
+		if (pkt.type === 0) {
+			ChatRoom.message(DB.msgstringtable[180].replace('%s', pkt.name), 'leave');	
 		}
-		else { //type = 1 = he was kicked form the room
-			ChatRoom.message( pkt.name + ' was kicked from the room.');
+
+		// Kick out of the room
+		else {
+			ChatRoom.message(DB.msgstringtable[181].replace('%s', pkt.name), 'leave');	
 		}
 	}
-	
-	
-	/*
+
+
+	/**
 	 * Change chat room properties
+	 * @param {object} pkt - PACKET.ZC.CHANGE_CHATROOM
 	 */
 	function Change( pkt )
 	{
-		console.log('aid', pkt.AID);
-		console.log('room id', pkt.roomID)
-		ChatRoom.LIMIT = pkt.maxcount;
-		ChatRoom.COUNT = pkt.curcount;
-		ChatRoom.TYPE  = pkt.type;
-		ChatRoom.TITLE = pkt.title;
+		// TODO: switch chat owner (AID-roomID).
+		ChatRoom.limit = pkt.maxcount;
+		ChatRoom.count = pkt.curcount;
+		ChatRoom.type  = pkt.type;
+		ChatRoom.title = pkt.title;
 		ChatRoom.UpdateChat();
 	}
-	
-	
+
+
 	/**
 	 * Enter a room
+	 * @param {object} pkt - PACKET.ZC.ENTER_ROOM
 	 */
 	function Enter( pkt )
 	{
-		for(var i in pkt.memberList) {
-			if(pkt.memberList[i].role === 0) {
-				ChatRoom.OWNER = pkt.memberList[i].name;
+		//this.roomID       = fp.readULong();
+		var i, count = pkt.memberList.length;
+		ChatRoom.members = new Array();
+
+		for (i = 0; i < count; ++i) {
+			if (pkt.memberList[i].role === 0) {
+				ChatRoom.owner = pkt.memberList[i].name;
 			}
-			ChatRoom.MEMBERS.push( pkt.memberList[i].name );
+			ChatRoom.members.push( pkt.memberList[i].name );
 		}
-		//ChatRoom.TITLE = 'beta';
-		//ChatRoom.LIMIT = 20;
-		//ChatRoom.TYPE  = 1;
-		//ChatRoom.COUNT++;
+
+		// Remove room
+		EntityManager.forEach(function(entity){
+			if (entity.room.id === pkt.roomID) {
+				entity.room.remove();
+				return false;
+			}
+			return true;
+		});
+
+		ChatRoom.count = count;
 		ChatRoom.append();
 	}
-	
-	
-	
+
+
 	/**
 	 * Initialize
 	 */
 	return function MainEngine()
 	{
-		Network.hookPacket(PACKET.ZC.ACK_CREATE_CHATROOM,	CreateACK);
-		//Network.hookPacket(PACKET.ZC.ROOM_NEWENTRY,			Display); //This is holded up at Entity.js
-		Network.hookPacket(PACKET.ZC.CHANGE_CHATROOM,		Change);
-		//Network.hookPacket(PACKET.ZC.DESTROY_ROOM,			Destroy); //This is holded up at Entity.js
-		Network.hookPacket(PACKET.ZC.ENTER_ROOM,			Enter);
-		Network.hookPacket(PACKET.ZC.MEMBER_NEWENTRY,		EnterMember);
-		Network.hookPacket(PACKET.ZC.ROLE_CHANGE,			RoleChange);
-		Network.hookPacket(PACKET.ZC.MEMBER_EXIT,			MemberExit);
+		Network.hookPacket(PACKET.ZC.ACK_CREATE_CHATROOM, CreateACK);
+		//Network.hookPacket(PACKET.ZC.ROOM_NEWENTRY,     Display); //This is holded up at Entity.js
+		Network.hookPacket(PACKET.ZC.CHANGE_CHATROOM,     Change);
+		//Network.hookPacket(PACKET.ZC.DESTROY_ROOM,      Destroy); //This is holded up at Entity.js
+		Network.hookPacket(PACKET.ZC.ENTER_ROOM,          Enter);
+		Network.hookPacket(PACKET.ZC.MEMBER_NEWENTRY,     EnterMember);
+		Network.hookPacket(PACKET.ZC.ROLE_CHANGE,         RoleChange);
+		Network.hookPacket(PACKET.ZC.MEMBER_EXIT,         MemberExit);
+		Network.hookPacket(PACKET.ZC.REFUSE_ENTER_ROOM,   EnterACK)
 	};
 });

@@ -373,7 +373,7 @@ define(function( require )
 	 */
 	function OnPlayerMessage( pkt )
 	{
-		if(ChatRoom.OPEN) {
+		if(ChatRoom.isOpen) {
 			ChatRoom.message(pkt.msg);
 			return;
 		}
@@ -461,6 +461,7 @@ define(function( require )
 				case 8:  error = 247; break;
 				case 9:  error = 580; break;
 				case 10: error = 285; break;
+				case 83: error = 661; break;
 			}
 		}
 
