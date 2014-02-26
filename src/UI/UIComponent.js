@@ -31,7 +31,7 @@ function(       jQuery,      DB,               Client,            Mouse )
 	/**
 	 * @var {boolean} is Component ready ?
 	 */
-	UIComponent.__loaded = false;
+	UIComponent.prototype.__loaded = false;
 
 
 	/**
