@@ -129,7 +129,6 @@ define(function(require)
 		}
 		else {
 			this.ui.addClass('large');
-			this.ui.find('.buttons').hide(); 
 		}
 	};
 
