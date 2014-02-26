@@ -114,8 +114,7 @@ define(function(require)
 
 			// Right click on item
 			.on('contextmenu', '.item', function(event) {
-				var matches = this.className.match(/(\w+) (\d+)/);
-				var index   = parseInt(matches[2], 10);
+				var index   = parseInt(this.getAttribute('data-index'), 10);
 				var item    = Equipment.list[index];
 
 				if (item) {
@@ -139,9 +138,37 @@ define(function(require)
 
 			// Want to unequip
 			.on('dblclick', '.item', function(event) {
-				var matches = this.className.match(/(\w+) (\d+)/);
-				var index   = parseInt(matches[2], 10);
+				var index   = parseInt(this.getAttribute('data-index'), 10);
 				Equipment.onUnEquip( index );
+			})
+
+			// Title feature
+			.on('mouseover', 'button', function(){
+				var idx  = parseInt( this.parentNode.getAttribute('data-index'), 10);
+				var item = Equipment.list[idx];
+
+				if (!item) {
+					return;
+				}
+
+				// Get back data
+				var overlay = Equipment.ui.find('.overlay');
+				var it      = DB.getItemInfo( item.ITID );
+				var pos     = jQuery(this).position();
+
+				// Display box
+				overlay.show();
+				overlay.css({top: pos.top-22, left:pos.left-22});
+				overlay.html(
+					( item.RefiningLevel ? '+' + item.RefiningLevel + ' ' : '') +
+					( item.IsIdentified ? it.identifiedDisplayName : it.unidentifiedDisplayName ) +
+					( it.slotCount ? ' [' + it.slotCount + ']' : '')
+				);
+			})
+
+			// Stop title feature
+			.on('mouseout', 'button', function(){
+				Equipment.ui.find('.overlay').hide();
 			});
 	};
 
@@ -371,7 +398,7 @@ define(function(require)
 			}
 
 			ui.html(
-				'<div class="item '+ item.index +'">' +
+				'<div class="item" data-index="'+ item.index +'">' +
 					'<button style="background-image:url(' + data + ')"></button>' +
 					'<span>' +
 						 lines.join("\n") +
