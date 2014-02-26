@@ -19,6 +19,7 @@ define(function(require)
 	var Renderer           = require('Renderer/Renderer');
 	var UIManager          = require('UI/UIManager');
 	var UIComponent        = require('UI/UIComponent');
+	var SoundOption        = require('UI/Components/SoundOption/SoundOption');
 	var htmlText           = require('text!./Escape.html');
 	var cssText            = require('text!./Escape.css');
 
@@ -36,6 +37,27 @@ define(function(require)
 	{
 		this.ui.css({ top: (Renderer.height-this.ui.height()) * 0.75, left:(Renderer.width-this.ui.width()) * 0.5 });
 		this.draggable();
+
+		
+
+		// Only used in specific case
+		this.ui.find('button').show();
+		this.ui.find('.resurection, .savepoint').hide();
+
+		this.ui.find('.sound').click(function(){
+			if (!SoundOption.ui || !SoundOption.ui[0].parentNode) {
+				SoundOption.append();
+			}
+			else {
+				SoundOption.remove();
+			}
+		});
+
+		this.ui.find('.resurection').click(this.onResurectionRequest);
+		this.ui.find('.savepoint').click(this.onReturnSavePointRequest);
+		this.ui.find('.charselect').click(this.onCharSelectionRequest);
+		this.ui.find('.exit').click(this.onExitRequest);
+		this.ui.find('.cancel').click(function(){ Escape.ui.hide(); });
 	};
 
 
@@ -46,16 +68,6 @@ define(function(require)
 	Escape.onAppend = function OnAppend()
 	{
 		this.ui.hide();
-
-		// Only used in specific case
-		this.ui.find('button').show();
-		this.ui.find('.resurection, .savepoint').hide();
-
-		this.ui.find('.resurection').click(this.onResurectionRequest);
-		this.ui.find('.savepoint').click(this.onReturnSavePointRequest);
-		this.ui.find('.charselect').click(this.onCharSelectionRequest);
-		this.ui.find('.exit').click(this.onExitRequest);
-		this.ui.find('.cancel').click(function(){ Escape.ui.hide(); });
 	};
 
 
