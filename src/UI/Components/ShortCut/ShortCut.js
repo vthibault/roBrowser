@@ -88,7 +88,7 @@ define(function(require)
 		this.ui.on('dragstart', '.icon', OnDrag);
 		this.ui.on('dragend', '.icon', function(){
 			delete window._OBJ_DRAG_;
-		})
+		});
 
 		// Click.
 		this.ui.on('dblclick', '.icon', function(event){
@@ -96,7 +96,7 @@ define(function(require)
 			ClickElement(index);
 			event.stopImmediatePropagation();
 			return false;
-		})
+		});
 
 		this.ui.on('contextmenu', '.icon', OnElementInfo);
 

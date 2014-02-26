@@ -3,11 +3,13 @@
 #ShortCut .resize { position:absolute; bottom:1px; right:1px; border:none; background-color:transparent; width:13px; height:13px; }
 
 #ShortCut .row { position:relative; }
-#ShortCut .row .container { float:left; width:24px; height:24px; margin-top:4px; margin-left:5px; margin-bottom:6px; }
+#ShortCut .row .container { float:left; width:24px; height:23px; margin-top:5px; margin-left:5px; margin-bottom:6px; }
+#ShortCut .row .container:hover { background-color:#b5ffb5;}
 #ShortCut .row .index { float:left; position:relative; top:13px; left:5px; }
 #ShortCut .row .clear {}
 
 #ShortCut .icon { position:relative; }
 #ShortCut .icon .img { width:24px; height:24px; background-repeat:no-repeat; border:none; background-color:transparent;}
-#ShortCut .icon .name { display:none; }
+#ShortCut .icon .name { display:none; z-index:1; position:absolute; top:0px; left:0px; background-color:rgba(0,0,0,0.6); text-shadow:1px 1px black; color:white; padding:5px; white-space:nowrap; }
+#ShortCut .icon:hover .name { display:block; }
 #ShortCut .icon .amount { font-size:10px; position:absolute; right:1px; top:20px; text-shadow:1px 1px 0px white; text-align:right; font-weight:bold; }
