@@ -112,17 +112,17 @@ define(function( require )
 		var target;
 
 		// Entity out of the screen ?
-		if( !srcEntity ) {
+		if (!srcEntity) {
 			return;
 		}
 
-		switch( pkt.action ) {
+		switch (pkt.action) {
 
 			// Damage
 			case 8:
 			case 0:
-				if ( dstEntity ) {
-					if ( pkt.damage ) {
+				if (dstEntity) {
+					if (pkt.damage) {
 						dstEntity.setAction({
 							delay:  Renderer.tick + pkt.attackMT,
 							action: dstEntity.ACTION.HURT,
@@ -142,20 +142,22 @@ define(function( require )
 
 					target = pkt.damage ? dstEntity : srcEntity;
 
-					// Display damage
-					if( pkt.action === 0 ) {
-						Damage.add( pkt.damage, target, Renderer.tick + pkt.attackMT );
-					}
-					else if( pkt.action === 8 ) {
-
-						// Display combo only if entity is mob and the attack don't miss
-						if( dstEntity.objecttype === Entity.TYPE_MOB && pkt.damage > 0 ) {
-							Damage.add( pkt.damage / 2, dstEntity, Renderer.tick + pkt.attackMT * 1, Damage.TYPE.COMBO );
-							Damage.add( pkt.damage ,    dstEntity, Renderer.tick + pkt.attackMT * 2, Damage.TYPE.COMBO | Damage.TYPE.COMBO_FINAL );
+					if (target) {
+						// Display damage
+						if (pkt.action === 0) {
+							Damage.add( pkt.damage, target, Renderer.tick + pkt.attackMT );
 						}
+						else if( pkt.action === 8 ) {
 
-						Damage.add( pkt.damage / 2, target, Renderer.tick + pkt.attackMT * 1 );
-						Damage.add( pkt.damage / 2, target, Renderer.tick + pkt.attackMT * 2 );
+							// Display combo only if entity is mob and the attack don't miss
+							if( dstEntity.objecttype === Entity.TYPE_MOB && pkt.damage > 0 ) {
+								Damage.add( pkt.damage / 2, dstEntity, Renderer.tick + pkt.attackMT * 1, Damage.TYPE.COMBO );
+								Damage.add( pkt.damage ,    dstEntity, Renderer.tick + pkt.attackMT * 2, Damage.TYPE.COMBO | Damage.TYPE.COMBO_FINAL );
+							}
+
+							Damage.add( pkt.damage / 2, target, Renderer.tick + pkt.attackMT * 1 );
+							Damage.add( pkt.damage / 2, target, Renderer.tick + pkt.attackMT * 2 );
+						}
 					}
 
 					// Update entity position
