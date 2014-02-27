@@ -261,6 +261,13 @@ function( require,        Context,         BinaryReader,       PACKETVER,       
 		while (fp.tell() < fp.length) {
 
 			offset = fp.tell();
+
+			// Not enough bytes...
+			if (offset + 2 >= fp.length) {
+				_save_buffer = new Uint8Array( buffer, offset, fp.length - offset);
+				return;
+			}
+
 			id     = fp.readUShort();
 
 			// Packet not defined ?
@@ -277,12 +284,8 @@ function( require,        Context,         BinaryReader,       PACKETVER,       
 
 			if (packet.size < 0) {
 				// Not enough bytes...
-				if (fp.tell() + 2 >= fp.length) {
-					_save_buffer = new Uint8Array(
-						buffer,
-						offset,
-						fp.length - offset
-					);
+				if (offset + 4 >= fp.length) {
+					_save_buffer = new Uint8Array( buffer, offset, fp.length - offset );
 					return;
 				}
 				length = fp.readUShort();
@@ -290,6 +293,7 @@ function( require,        Context,         BinaryReader,       PACKETVER,       
 			else {
 				length = packet.size;
 			}
+
 			offset += length;
 
 			// Try to guess the packet version
