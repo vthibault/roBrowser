@@ -388,8 +388,10 @@ function(      WebGL,         glMatrix,      Camera )
 		this.size[1] *= 35;
 
 		// Mirror feature
-		var scale_x = this.size[0] < 0 ? -1 : 1;
-		var scale_y = this.size[1] < 0 ? -1 : 1;
+		var scale_x  = this.size[0] < 0 ? -1 : 1;
+		var scale_y  = this.size[1] < 0 ? -1 : 1;
+		this.size[0] = Math.abs(this.size[0]);
+		this.size[1] = Math.abs(this.size[1]);
 
 		var _x   = this.pos[0] + this.offset[0] * 35;
 		var _y   = this.pos[1] + this.offset[1] * 35;
