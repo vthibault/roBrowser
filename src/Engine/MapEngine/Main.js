@@ -17,6 +17,7 @@ define(function( require )
 	 * Load dependencies
 	 */
 	var DB            = require('DB/DBManager');
+	var SkillId       = require('DB/SkillId');
 	var PathFinding   = require('Utils/PathFinding');
 	var Session       = require('Engine/SessionStorage');
 	var Network       = require('Network/NetworkManager');
@@ -431,19 +432,19 @@ define(function( require )
 					error = 204;
 					break;
 
-				case DB.SKID.NV_BASIC:
+				case SkillId.NV_BASIC:
 					error = pkt.NUM < 7 ? 159 + pkt.NUM : pkt.NUM == 7 ? 383 : 0;
 					break;
 
-				case DB.SKID.AL_WARP:
+				case SkillId.AL_WARP:
 					error = 214;
 					break;
 
-				case DB.SKID.TF_STEAL:
+				case SkillId.TF_STEAL:
 					error = 205;
 					break;
 
-				case DB.SKID.TF_POISON:
+				case SkillId.TF_POISON:
 					error = 207;
 					break;
 			}
