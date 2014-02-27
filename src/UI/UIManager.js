@@ -72,6 +72,41 @@ function( require,         jQuery,     UIComponent,            KEYS,            
 
 
 	/**
+	 * When resizing window, some components can be outside the screen size and
+	 * it sucks a lot. Try to correct the problem.
+	 *
+	 * @param {number} Game screen width
+	 * @param {number} Game screen height
+	 */
+	UIManager.fixResizeOverflow = function FixResizeOverflow( WIDTH, HEIGHT)
+	{
+		var keys = Object.keys(this.components);
+		var i, count = keys.length;
+		var ui;
+		var x, y, width, height;
+
+		for (i = 0; i < count; ++i) {
+			ui = this.components[ keys[i] ].ui;
+
+			if (ui) {
+				x      = parseInt(ui.css('left'), 10);
+				y      = parseInt(ui.css('top'), 10);
+				width  = parseInt(ui.css('width'), 10);
+				height = parseInt(ui.css('height'), 10);
+
+				if (y + height > HEIGHT && HEIGHT > height) {
+					ui.css('top', HEIGHT - height);
+				}
+
+				if (x + width > WIDTH && WIDTH > width) {
+					ui.css('left', WIDTH - width);
+				}
+			}
+		}
+	};
+
+
+	/**
 	 * Display an error box component
 	 * Will reload the game once selected
 	 *

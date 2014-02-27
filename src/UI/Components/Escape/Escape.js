@@ -20,6 +20,7 @@ define(function(require)
 	var UIManager          = require('UI/UIManager');
 	var UIComponent        = require('UI/UIComponent');
 	var SoundOption        = require('UI/Components/SoundOption/SoundOption');
+	var GraphicsOption     = require('UI/Components/GraphicsOption/GraphicsOption');
 	var htmlText           = require('text!./Escape.html');
 	var cssText            = require('text!./Escape.css');
 
@@ -52,6 +53,15 @@ define(function(require)
 				SoundOption.remove();
 			}
 		});
+
+		this.ui.find('.graphics').click(function(){
+			if (!GraphicsOption.ui || !GraphicsOption.ui[0].parentNode) {
+				GraphicsOption.append();
+			}
+			else {
+				GraphicsOption.remove();
+			}
+		})
 
 		this.ui.find('.resurection').click(this.onResurectionRequest);
 		this.ui.find('.savepoint').click(this.onReturnSavePointRequest);

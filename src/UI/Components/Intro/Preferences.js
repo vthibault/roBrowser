@@ -6,7 +6,7 @@
  * @author Vincent Thibault
  */
 
-define(['Core/Context', 'Core/Preferences', 'Preferences/Audio'], function( Context, Preferences, Audio )
+define(['Core/Context', 'Core/Preferences', 'Preferences/Audio', 'Preferences/Graphics'], function( Context, Preferences, Audio, Graphics )
 {
 	"use strict";
 
@@ -15,8 +15,6 @@ define(['Core/Context', 'Core/Preferences', 'Preferences/Audio'], function( Cont
 	 * Preferences structure
 	 */
 	var _preferences = Preferences.get('Window', {
-		screensize:  '800x600',
-		quality:      100,
 		serverfile:  'clientinfo.xml',
 		serverlist:  [],
 		serverdef:   'serverfile',
@@ -31,8 +29,8 @@ define(['Core/Context', 'Core/Preferences', 'Preferences/Audio'], function( Cont
 	 */
 	function Load( ui )
 	{
-		ui.find('.screensize').val( _preferences.screensize );
-		ui.find('.quality').val( _preferences.quality ).trigger('change');
+		ui.find('.screensize').val( Graphics.screensize );
+		ui.find('.quality').val( Graphics.quality ).trigger('change');
 
 		ui.find('.serverdef').attr('checked', false );
 		ui.find('.serverdef[value="'+ _preferences.serverdef +'"]').attr('checked', 'true').trigger('click');
@@ -80,9 +78,9 @@ define(['Core/Context', 'Core/Preferences', 'Preferences/Audio'], function( Cont
 	 */
 	function Save( ui )
 	{
-		_preferences.screensize = ui.find('.screensize').val();
-		_preferences.quality    = ui.find('.quality').val();
-		_preferences.saveFiles  = ui.find('.save:checked').length ? true : false;
+		Graphics.screensize    = ui.find('.screensize').val();
+		Graphics.quality       = ui.find('.quality').val();
+		_preferences.saveFiles = ui.find('.save:checked').length ? true : false;
 
 		var $servers = ui.find('.servers');
 		var i, count = $servers.find('tr').length;
@@ -112,7 +110,7 @@ define(['Core/Context', 'Core/Preferences', 'Preferences/Audio'], function( Cont
 		Audio.Sound.play    = Audio.Sound.volume > 0 ? true : false;
 
         Audio.save();
-
+        Graphics.save();
 		_preferences.save();
 
 		Apply()
@@ -140,7 +138,7 @@ define(['Core/Context', 'Core/Preferences', 'Preferences/Audio'], function( Cont
 
 			// Resizing
 			if (Context.Is.POPUP) {
-				var size = _preferences.screensize.split("x");
+				var size = Graphics.screensize.split("x");
 
 				// Only resize/move if needed
 				if (size[0] != window.innerWidth && size[1] != window.innerHeight) {
@@ -164,7 +162,7 @@ define(['Core/Context', 'Core/Preferences', 'Preferences/Audio'], function( Cont
 			ROConfig.saveFiles = _preferences.saveFiles;
 		}
 
-		ROConfig.quality = _preferences.quality;
+		ROConfig.quality = Graphics.quality;
 	}
 
 

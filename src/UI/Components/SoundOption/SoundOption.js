@@ -1,7 +1,7 @@
 /**
  * UI/Components/SoundOption/SoundOption.js
  *
- * Chararacter Basic information windows
+ * Manage sound volume
  *
  * This file is part of ROBrowser, Ragnarok Online in the Web Browser (http://www.robrowser.com/).
  *

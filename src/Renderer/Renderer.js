@@ -181,6 +181,7 @@ define(function( require )
 		mat4.perspective( 20.0, width/height, 1, 1000, Camera.projection );
 
 		Background.resize( this.width, this.height );
+		require('UI/UIManager').fixResizeOverflow( this.width, this.height );
 	};
 
 
