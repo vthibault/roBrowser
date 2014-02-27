@@ -47,8 +47,7 @@ define(function(require)
 			.css('zIndex', 30)
 			.click(function(){
 				self.remove();
-			})
-		;
+			});
 	};
 
 
@@ -57,7 +56,7 @@ define(function(require)
 	 */
 	InputBox.onAppend = function OnAppend()
 	{
-		this.ui.find('input').focus();
+		this.ui.find('input').select();
 	};
 
 
@@ -80,7 +79,7 @@ define(function(require)
 	 */
 	InputBox.onKeyDown = function OnKeyDown( event )
 	{
-		if( !this.isPersistent && event.which === KEYS.ENTER ) {
+		if (!this.isPersistent && event.which === KEYS.ENTER) {
 			this.validate();
 			event.stopImmediatePropagation();
 			return false;
@@ -98,7 +97,13 @@ define(function(require)
 	InputBox.validate = function Validate()
 	{
 		var text = this.ui.find('input').val();
-		if( !this.isPersistent || text.length && ( !this.ui.hasClass('number') || parseInt(text, 10) > 0 )) {
+
+		if (!this.isPersistent || text.length) {
+
+			if (this.ui.hasClass('number')) {
+				text = parseInt(text, 10) | 0;
+			}
+
 			this.onSubmitRequest( text );
 		}
 	};
@@ -108,22 +113,25 @@ define(function(require)
 	 * Set input type
 	 *
 	 * @param {string} input type (number or text)
+	 * @param {boolean} is the popup persistent ? false : clicking in any part of the game will remove the input
+	 * @param {string|number} default value to show in the input
 	 */
-	InputBox.setType = function( type, isPersistent )
+	InputBox.setType = function( type, isPersistent, defaultVal )
 	{
 		this.isPersistent = !!isPersistent;
 
-		if( !this.isPersistent ) {
+		if (!this.isPersistent) {
 			this.overlay.appendTo('body');
 		}
 
-		switch( type ) {
+		switch (type) {
 			case 'number':
 				this.ui.addClass('number');
 				this.ui.find('.text').text( DB.msgstringtable[1259] );
-				this.ui.find('input').attr('type', 'text').val(0).select();
+				this.ui.find('input').attr('type', 'text');
+				defaultVal = defaultVal || 0;
 				break;
-	
+
 			case 'text':
 				this.ui.removeClass('number');
 				this.ui.find('.text').text('');
@@ -141,6 +149,12 @@ define(function(require)
 				this.ui.find('.text').text( DB.msgstringtable[300] );
 				this.ui.find('input').attr('type', 'password');
 				break;
+		}
+
+		if (typeof defaultVal !== "undefined") {
+			this.ui.find('input')
+				.val( defaultVal )
+				.select();
 		}
 	};
 

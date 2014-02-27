@@ -210,7 +210,7 @@ function(
 			// Have to specify how much
 			if( item.count > 1 ) {
 				InputBox.append();
-				InputBox.setType("number", false);
+				InputBox.setType("number", false, item.count);
 				InputBox.onSubmitRequest = function OnSubmitRequest( count ) {
 					InputBox.remove();
 					MapEngine.onDropItem(

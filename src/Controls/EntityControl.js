@@ -270,7 +270,7 @@ define( [
 				pkt.roomID = this.room.id;
 
 				InputBox.append();
-				InputBox.setType('pass', true);
+				InputBox.setType('pass', false);
 				var self = this;
 				InputBox.onSubmitRequest = function( pass ) {
 					InputBox.remove();
