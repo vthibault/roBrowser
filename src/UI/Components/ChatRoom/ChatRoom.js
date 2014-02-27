@@ -250,7 +250,6 @@ define(function(require)
 	{
 		var ui      = this.ui;
 		var content = ui.find('.container .content');
-		var hide    = ui.find('.hide');
 		var top     = ui.position().top;
 		var left    = ui.position().left;
 		var lastWidth  = 0;
