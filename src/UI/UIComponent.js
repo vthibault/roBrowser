@@ -293,16 +293,16 @@ function(       jQuery,      DB,               Client,            Mouse )
 		if ( hover ) {
 			Client.loadFile( DB.INTERFACE_PATH + hover, function(dataURI){
 				hover_uri = dataURI;
-				$node.mouseover(function(){ $node.css('backgroundImage', 'url(' + hover_uri + ')') });
-				$node.mouseout( function(){ $node.css('backgroundImage', 'url(' + bg_uri    + ')') });
+				$node.mouseover(function(){ this.style.backgroundImage = 'url(' + hover_uri + ')'; });
+				$node.mouseout( function(){ this.style.backgroundImage = 'url(' + bg_uri    + ')'; });
 			});
 		}
 	
 		// On mouse down
 		if ( down ) {
 			Client.loadFile( DB.INTERFACE_PATH + down, function(dataURI){
-				$node.mousedown(function(event){ $node.css('backgroundImage', 'url(' + dataURI + ')'); event.stopImmediatePropagation(); });
-				$node.mouseup(  function()     { $node.css('backgroundImage', 'url(' + (hover_uri||bg_uri) + ')') });
+				$node.mousedown(function(event){ this.style.backgroundImage = 'url(' + dataURI + ')'; event.stopImmediatePropagation(); });
+				$node.mouseup(  function()     { this.style.backgroundImage = 'url(' + (hover_uri||bg_uri) + ')'; });
 			});
 		}
 	
