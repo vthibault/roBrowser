@@ -181,7 +181,20 @@ define(function( require )
 		mat4.perspective( 20.0, width/height, 1, 1000, Camera.projection );
 
 		Background.resize( this.width, this.height );
-		require('UI/UIManager').fixResizeOverflow( this.width, this.height );
+
+		/*
+		* Note about this hack:
+		 * require.js parse function and search for "require()" string.
+		 * Once done, it get the files to use as dependencies for this function and
+		 * load them before executing the function.
+		 *
+		 * As UI/UIManager was loaded as dependencies before Renderer/Renderer
+		 * and in the file UI/UIManager, there were a dependencies for Renderer/Renderer,
+		 * we just cause a big circular dependencies resulting as having Renderer variable as null in
+		 * UI/UIManager.
+		 */
+		var require_fix = require;
+		require_fix('UI/UIManager').fixResizeOverflow( this.width, this.height );
 	};
 
 
