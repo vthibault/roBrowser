@@ -462,23 +462,27 @@ define(function( require )
 				});
 
 				// Combo
-				for ( i = 0; i<pkt.count; ++i ) {
-					Damage.add(
-						Math.floor( pkt.damage / pkt.count * (i+1) ),
-						target,
-						Renderer.tick + aspd + ( 200 * i ), //TOFIX: why 200 ?
-						Damage.TYPE.COMBO | ( (i+1) === pkt.count ? Damage.TYPE.COMBO_FINAL : 0 )
-					);
+				if (target) {
+					for ( i = 0; i<pkt.count; ++i ) {
+						Damage.add(
+							Math.floor( pkt.damage / pkt.count * (i+1) ),
+							target,
+							Renderer.tick + aspd + ( 200 * i ), //TOFIX: why 200 ?
+							Damage.TYPE.COMBO | ( (i+1) === pkt.count ? Damage.TYPE.COMBO_FINAL : 0 )
+						);
+					}
 				}
 			}
 
 			// Damage
-			for ( i = 0; i<pkt.count; ++i ) {
-				Damage.add(
-					Math.floor( pkt.damage / pkt.count ),
-					target,
-					Renderer.tick + aspd + ( 200 * i )
-				);
+			if (target) {
+				for ( i = 0; i<pkt.count; ++i ) {
+					Damage.add(
+						Math.floor( pkt.damage / pkt.count ),
+						target,
+						Renderer.tick + aspd + ( 200 * i )
+					);
+				}
 			}
 		}
 	}
