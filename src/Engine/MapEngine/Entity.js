@@ -28,6 +28,7 @@ define(function( require )
 	var ChatBox       = require('UI/Components/ChatBox/ChatBox');
 	var ChatRoom      = require('UI/Components/ChatRoom/ChatRoom');
 	var StatusIcons   = require('UI/Components/StatusIcons/StatusIcons');
+	var BasicInfo     = require('UI/Components/BasicInfo/BasicInfo');
 	var Damage        = require('Renderer/Effects/Damage');
 
 
@@ -339,7 +340,12 @@ define(function( require )
 		}
 
 		switch( pkt.type ) {
-			case 0: entity.job         = pkt.value; break;
+			case 0:
+				entity.job = pkt.value;
+				if (entity === Session.Entity) {
+					BasicInfo.update('job', pkt.value);
+				}
+				break;
 			case 1: entity.head        = pkt.value; break;
 			case 2: entity.weapon      = pkt.value; break;
 			case 3: entity.accessory3  = pkt.value; break;
