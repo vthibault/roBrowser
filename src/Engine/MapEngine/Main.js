@@ -317,6 +317,14 @@ define(function( require )
 				}
 				break;
 
+			// Required Stats point to update a stat
+			case 32: WinStats.update('str3', amount); break; // str
+			case 33: WinStats.update('agi3', amount); break; // agi
+			case 34: WinStats.update('vit3', amount); break; // vit
+			case 35: WinStats.update('int3', amount); break; // int
+			case 36: WinStats.update('dex3', amount); break; // dex
+			case 37: WinStats.update('luk3', amount); break; // luk
+
 			// Stats window
 			case 41: WinStats.update('atak',     amount); break; // atk1
 			case 42: WinStats.update('atak2',    amount); break; // atk2
