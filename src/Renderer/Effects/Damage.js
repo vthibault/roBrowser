@@ -118,7 +118,8 @@ function(
 	Damage.add = function Add( damage, entity, tick, type )
 	{
 		// Can not display negative damages.
-		if( damage < 0 ) {
+		// Need to wait the client to load damage sprite
+		if( damage < 0 || !Damage.sprite[0] ) {
 			return;
 		}
 
