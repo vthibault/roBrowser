@@ -45,8 +45,15 @@ define( function( require )
 			this.walkProcess();
 		}
 
-		// Render it
-		this.renderEntity();
+		this.boundingRect.x1 =  Infinity;
+		this.boundingRect.y1 = -Infinity;
+		this.boundingRect.x2 = -Infinity;
+		this.boundingRect.y2 =  Infinity;
+
+		// Render it only if visible
+		if (this.effectColor[3]) {
+			this.renderEntity();
+		}
 
 		// Update character UI (life, dialog, etc.)
 		RenderGUI( this, modelView, projection );
@@ -83,7 +90,9 @@ define( function( require )
 			// Project to screen
 			mat4.multiply( _matrix, projection, _matrix );
 
-			CalculateBoundingRect( entity, _matrix );
+			if (entity.effectColor[3]) {
+				CalculateBoundingRect( entity, _matrix );
+			}
 
 			// Get depth for rendering order
 			_vector[0] = 0.0;
@@ -195,11 +204,6 @@ define( function( require )
 
 		return function RenderEntity()
 		{
-			this.boundingRect.x1 =  Infinity;
-			this.boundingRect.y1 = -Infinity;
-			this.boundingRect.x2 = -Infinity;
-			this.boundingRect.y2 =  Infinity;
-
 			// Update shadow
 			SpriteRenderer.shadow    = Ground.getShadowFactor( this.position[0], this.position[1] );
 
@@ -507,10 +511,10 @@ define( function( require )
 
 
 		// copy color
-		SpriteRenderer.color[0] = layer.color[0];
-		SpriteRenderer.color[1] = layer.color[1];
-		SpriteRenderer.color[2] = layer.color[2];
-		SpriteRenderer.color[3] = layer.color[3];
+		SpriteRenderer.color[0] = layer.color[0] * this.effectColor[0];
+		SpriteRenderer.color[1] = layer.color[1] * this.effectColor[1];
+		SpriteRenderer.color[2] = layer.color[2] * this.effectColor[2];
+		SpriteRenderer.color[3] = layer.color[3] * this.effectColor[3];
 
 		// apply disapear
 		if ( this.remove_tick ) {

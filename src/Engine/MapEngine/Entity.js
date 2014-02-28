@@ -18,6 +18,7 @@ define(function( require )
 	 */
 	var SkillId       = require('DB/SkillId');
 	var SkillInfo     = require('DB/SkillInfo');
+	var Options       = require('DB/StatusConst');
 	var Session       = require('Engine/SessionStorage');
 	var Network       = require('Network/NetworkManager');
 	var PACKET        = require('Network/PacketStructure');
@@ -548,7 +549,7 @@ define(function( require )
 	function UpdateStatus( pkt )
 	{
 		var entity = EntityManager.get( pkt.AID );
-		if ( entity === false ) {
+		if (!entity) {
 			return;
 		}
 
@@ -576,6 +577,114 @@ define(function( require )
 		if ( entity === Session.Entity ) {
 			StatusIcons.update( pkt.index, pkt.state, pkt.RemainMS );
 		}
+	}
+
+
+	/**
+	 * Update player option
+	 *
+	 * @param {object} pkt - PACKET.ZC.STATE_CHANGE
+	 */
+	function UpdateOption( pkt )
+	{
+		var entity = EntityManager.get( pkt.AID );
+		if ( !entity ) {
+			return;
+		}
+
+		entity.effectColor[0] = 1.0;
+		entity.effectColor[1] = 1.0;
+		entity.effectColor[2] = 1.0;
+		entity.effectColor[3] = 1.0;
+
+		// Invisible
+		if (pkt.effectState & (
+			Options.EffectState.HIDE      |
+			Options.EffectState.CLOAK     |
+			Options.EffectState.INVISIBLE |
+			Options.EffectState.CHASEWALK)) {
+				if (Session.intravision) {
+					entity.effectColor[0] = 0;
+					entity.effectColor[1] = 0;
+					entity.effectColor[2] = 0;
+				}
+				else {
+					entity.effectColor[3] = 0.0;
+				}
+				return;
+		}
+
+		// Curse
+		if (pkt.healthState & Options.HealthState.Curse) {
+			// entity.attachEffect("data/sprite/ÀÌÆÑÆ®/status-curse")
+			entity.effectColor[0] = 0.50;
+			entity.effectColor[1] = 0.15;
+			entity.effectColor[2] = 0.10;
+		}
+		else if (entity.healthState & Options.HealthState.Curse) {
+			// entity.detachEffect("data/sprite/ÀÌÆÑÆ®/status-curse")
+		}
+
+		// Poison
+		if (pkt.healthState & Options.HealthState.POISON) {
+			entity.effectColor[0] = 0.9;
+			entity.effectColor[1] = 0.4;
+			entity.effectColor[2] = 0.8;
+		}
+
+
+		// Remove previous effect
+		if (pkt.bodyState !== entity.bodyState) {
+			switch (entity.bodyState) {
+				case Options.BodyState.SLEEP:
+					//entity.detachEffect("data\sprite\ÀÌÆÑÆ®\status-sleep");
+					break;
+
+				case Options.BodyState.FREEZE:
+					//entity.detachEffect("data\sprite\ÀÌÆÑÆ®\¾óÀ½¶¯");
+					break;
+
+				case Options.BodyState.STUN:
+					//entity.detachEffect("data\sprite\ÀÌÆÑÆ®\status-stun")
+					break;
+			}
+		}
+
+		switch (pkt.bodyState) {
+			case Options.BodyState.STONE:
+				entity.effectColor[0] = 0.1;
+				entity.effectColor[1] = 0.1;
+				entity.effectColor[2] = 0.1;
+				break;
+
+			case Options.BodyState.STONEWAIT:
+				entity.effectColor[0] = 0.3;
+				entity.effectColor[1] = 0.3;
+				entity.effectColor[2] = 0.3;
+				break;
+
+			case Options.BodyState.SLEEP:
+				//entity.attachEffect("data\sprite\ÀÌÆÑÆ®\status-sleep");
+				break;
+
+
+			case Options.BodyState.FREEZE:
+				entity.effectColor[0] = 0.0;
+				entity.effectColor[1] = 0.4;
+				entity.effectColor[2] = 0.8;
+				//entity.attachEffect("data\sprite\ÀÌÆÑÆ®\¾óÀ½¶¯");
+				break;
+
+			case Options.BodyState.STUN:
+				//entity.attachEffect("data\sprite\ÀÌÆÑÆ®\status-stun")
+				break;
+		}
+
+
+		entity.bodyState   = pkt.bodyState;
+		entity.healthState = pkt.healthState;
+		entity.effectState = pkt.effectState;
+		entity.isPKModeON  = pkt.isPKModeON;
 	}
 
 
@@ -717,6 +826,8 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.NOTIFY_SKILL_POSITION, UseSkillDamage );
 		Network.hookPacket( PACKET.ZC.USESKILL_ACK,          CastSkill );
 		Network.hookPacket( PACKET.ZC.USESKILL_ACK2,         CastSkill );
+		Network.hookPacket( PACKET.ZC.STATE_CHANGE,          UpdateOption );
+		Network.hookPacket( PACKET.ZC.STATE_CHANGE3,         UpdateOption );
 		Network.hookPacket( PACKET.ZC.MSG_STATE_CHANGE,      UpdateStatus );
 		Network.hookPacket( PACKET.ZC.MSG_STATE_CHANGE2,     UpdateStatus );
 		Network.hookPacket( PACKET.ZC.MSG_STATE_CHANGE3,     UpdateStatus );

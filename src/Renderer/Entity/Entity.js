@@ -43,8 +43,9 @@ define( function( require )
 		require('./EntityRoom').call(this);
 
 		this.boundingRect = { x1:0, y1:0, x2:0, y2:0 };
-		this.matrix    = mat4.create();
-		this.position  = vec3.create();
+		this.matrix       = mat4.create();
+		this.position     = vec3.create();
+		this.effectColor  = new Float32Array([1, 1, 1, 1]);
 
 		// Bind data
 		if( data ) {
@@ -94,6 +95,7 @@ define( function( require )
 	Entity.prototype.GID          = 0;
 	Entity.prototype.bodyState    = 0;
 	Entity.prototype.healthState  = 0;
+	Entity.prototype.effectState  = 0;
 	Entity.prototype._sex         = 0;
 	Entity.prototype._job         = 0;
 	Entity.prototype._bodypalette = 0;
@@ -125,6 +127,7 @@ define( function( require )
 	Entity.prototype.attack_speed = 300;
 
 	Entity.prototype.weapon_sound = "";
+	Entity.prototype.effectColor  = null;
 
 
 	/**
