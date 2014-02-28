@@ -100,9 +100,11 @@ define(function(require)
 	 */
 	MiniMap.setMap = function SetMap( mapname )
 	{
+		this.map.src = "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
+
 		Client.loadFile( DB.INTERFACE_PATH + 'map/' + mapname.replace(/\..*/,'.bmp'), function(dataURI){
 			MiniMap.map.src = dataURI;
-		});
+		});	
 	};
 
 
