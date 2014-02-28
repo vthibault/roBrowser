@@ -128,8 +128,30 @@ define(function( require )
 	 */
 	function UpdateParameter( pkt )
 	{
-		var amount = pkt.amount || pkt.count || 0;
-		var type   = pkt.varID  || pkt.statusType || 0;
+		var amount = 0, type;
+
+		if (pkt.hasOwnProperty('varID')) {
+			type = pkt.varID;
+		}  
+		else if (pkt.hasOwnProperty('statusType')) {
+			type = pkt.statusType;
+		}
+		else if (pkt.hasOwnProperty('statusID')) {
+			type = pkt.statusID;
+		}
+		else {
+			type = -1; // goto "default".
+		}
+
+		if (pkt.hasOwnProperty('amount')) {
+			amount = pkt.amount;
+		}
+		else if (pkt.hasOwnProperty('count')) {
+			amount = pkt.count;
+		}
+		else if (pkt.hasOwnProperty('value')) {
+			amount = pkt.value;
+		}
 
 		switch( type ) {
 

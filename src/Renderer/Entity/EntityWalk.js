@@ -92,6 +92,7 @@ define( function( require )
 
 		var x, y, speed;
 		var TICK = Renderer.tick;
+		var delay = 0;
 
 		if( path.length ) {
 
@@ -111,11 +112,19 @@ define( function( require )
 				walk.tick += speed;
 				walk.pos.set(path.shift());
 			}
-	
+
 			// Calculate and store new position
 			// TODO: check the min() part.
-			pos[0] = walk.pos[0] + x / ( speed / Math.min(speed, TICK-walk.tick) ) ;
-			pos[1] = walk.pos[1] + y / ( speed / Math.min(speed, TICK-walk.tick) ) ;
+
+			delay  = Math.min(speed, TICK-walk.tick);
+
+			// Should not happened, avoid division by 0
+			if (!delay) {
+				delay = 150;
+			}
+
+			pos[0] = walk.pos[0] + x / (speed / delay);
+			pos[1] = walk.pos[1] + y / (speed / delay);
 			pos[2] = Altitude.getCellHeight( pos[0], pos[1] );
 
 			// Update player direction while walking
