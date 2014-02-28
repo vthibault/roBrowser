@@ -11,7 +11,6 @@ define([
 	'require',
 	'DB/DBManager',
 	'Audio/BGM',               'Audio/SoundManager',
-	'Renderer/MapRenderer',
 	'Engine/SessionStorage',
 	'Network/PacketStructure', 'Network/NetworkManager',
 	'Preferences/Controls',    'Preferences/Audio',       'Preferences/Map',    'Preferences/Camera'
@@ -20,7 +19,6 @@ function(
 	require,
 	DB,
 	BGM,                 Sound,
-	MapRenderer,
 	Session,
 	PACKET,              Network,
 	ControlPreferences,  AudioPreferences,  MapPreferences,  CameraPreferences
@@ -133,9 +131,10 @@ function(
 				return;
 
 			case 'where':
+				var currentMap = require('Renderer/MapRenderer').currentMap;
 				this.addText(
-					( DB.mapname[ MapRenderer.currentMap.replace('.gat','.rsw') ] || DB.msgstringtable[187] ) +
-					"(" + MapRenderer.currentMap + ") : " + Math.floor(Session.Entity.position[0]) + ", " + Math.floor(Session.Entity.position[1]),
+					( DB.mapname[ currentMap.replace('.gat','.rsw') ] || DB.msgstringtable[187] ) +
+					"(" + currentMap + ") : " + Math.floor(Session.Entity.position[0]) + ", " + Math.floor(Session.Entity.position[1]),
 					this.TYPE.INFO
 				);
 				return;
