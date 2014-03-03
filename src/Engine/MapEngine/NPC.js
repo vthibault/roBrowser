@@ -157,7 +157,11 @@ define(function( require )
 				break;
 		}
 
-		InputBox.setType(type, true);
+		InputBox.onAppend = function OnAppend()
+		{
+			InputBox.setType(type, true);
+		};
+
 		InputBox.onSubmitRequest = function OnSubmitRequest( data )
 		{
 			InputBox.remove();
