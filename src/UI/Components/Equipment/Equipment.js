@@ -142,6 +142,11 @@ define(function(require)
 				Equipment.onUnEquip( index );
 			})
 
+			// Stop drag drop feature
+			.on('mousedown', '.item', function(event){
+				event.stopImmediatePropagation();
+			})
+
 			// Title feature
 			.on('mouseover', 'button', function(){
 				var idx  = parseInt( this.parentNode.getAttribute('data-index'), 10);

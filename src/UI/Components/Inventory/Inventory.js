@@ -176,6 +176,11 @@ define(function(require)
 				overlay.hide();
 			})
 
+			// Stop drag drop feature
+			.on('mousedown', '.item', function(event){
+				event.stopImmediatePropagation();
+			})
+
 			// Item drag drop feature
 			.on('dragstart', '.item', function(event){
 				// Set image to the drag drop element

@@ -100,6 +100,11 @@ define(function(require)
 
 		this.ui.on('contextmenu', '.icon', OnElementInfo);
 
+		// Stop drag drop feature
+		this.ui.on('mousedown', '.icon', function(event){
+			event.stopImmediatePropagation();
+		});
+
 		this.draggable();
 	};
 
