@@ -11596,6 +11596,14 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 	PACKET.ZC.SKILL_ENTRY5.size = -1;
 
 
+	// 0x9df
+	PACKET.ZC.ACK_WHISPER2 = function PACKET_ZC_ACK_WHISPER2(fp, end) {
+		this.result     = fp.readUChar();
+		this.unknown    = fp.readULong(); // AID ?
+	};
+	PACKET.ZC.ACK_WHISPER2.size = 7;
+
+
 	/**
 	 * Export
 	 */

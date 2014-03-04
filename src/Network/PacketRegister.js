@@ -547,6 +547,7 @@ define( ['./PacketStructure' ], function( PACKET )
         bgqueue_battlebeginsType = 0x8df,
 */
 		0x99d: PACKET.HC.ACCEPT_ENTER_NEO_UNION_LIST,  // ok
+		0x9d7: PACKET.ZC.ACK_WHISPER2,
 		0x9ca: PACKET.ZC.SKILL_ENTRY5,
 		//0x9d5: npcmarketopenType
 		//0x9d7: npcmarketresultackType
