@@ -332,7 +332,7 @@ define( function( require )
 
 			// Play sound
 			if( animation.sound > -1 ) {
-				entity.soundPlay( act.sounds [animation.sound], sound_delay );
+				entity.soundPlay( act.sounds[animation.sound], sound_delay );
 			}
 
 			_position[0] = 0;
@@ -406,7 +406,8 @@ define( function( require )
 
 		// Don't play, so stop at the current frame.
 		else if ( animation.play === false ) {
-			anim = Math.min(animation.frame, animations_length-1);
+			anim  = Math.min(animation.frame, animations_length-1);
+			delay = Infinity;
 		}
 
 		// Repeatable
@@ -435,7 +436,8 @@ define( function( require )
 				}
 			}
 
-			anim = Math.min( anim, animations_count-1 );
+			anim  = Math.min( anim, animations_count-1 );
+			delay = Infinity;
 		}
 
 		// Export
