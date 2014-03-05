@@ -304,6 +304,10 @@ function(       jQuery,      DB,               Client,            Mouse )
 				$node.mousedown(function(event){ this.style.backgroundImage = 'url(' + dataURI + ')'; event.stopImmediatePropagation(); });
 				$node.mouseup(  function()     { this.style.backgroundImage = 'url(' + (hover_uri||bg_uri) + ')'; });
 			});
+
+			if (!hover) {
+				$node.mouseout( function(){ this.style.backgroundImage = 'url(' + bg_uri + ')'; });
+			}
 		}
 	
 		// Preload images ?
