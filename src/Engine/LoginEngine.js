@@ -135,6 +135,8 @@ function(
 		WinLogin.onConnectionRequest = OnConnectionRequest;
 		WinLogin.onExitRequest       = OnExitRequest;
 		WinLogin.append();
+
+		Network.close();
 	}
 
 

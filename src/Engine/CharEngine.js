@@ -110,6 +110,7 @@ define([
 	 */
 	function Reload()
 	{
+		Network.close();
 		Background.setImage( 'bgi_temp.bmp', function() {
 			UIManager.removeComponents();
 			Init( _server );
