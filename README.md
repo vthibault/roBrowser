@@ -11,10 +11,13 @@ Table of Contents
 1. What is roBrowser?
 ---------------------
 roBrowser is an Open Source adaptation of Ragnarok Online client for the web. Written mostly in javascript/html5, the program is very flexible and in constant evolution. The project is managed by a group of volunteers located around the world.
+Simply, it looks like :
+
+![screen](http://upload.robrowser.com/demo.jpg?a)
 
 2. Prerequisites
 ----------------
-To execute roBrowser you will require a recent Browser that support WebGL and an OpenGL ES 2.0 GPU compatible.
+To execute roBrowser you will require a recent Browser that support WebGL and an OpenGL ES 2.0 GPU compatible. It's tested and working on *Chrome*, *Firefox* and *Opera*.
 If you don't run roBrowser as a Chrome App and don't set a WebSocketProxy server, it will require Java plugin installed in your web browser to send sockets.
 
 3. Installation
@@ -33,4 +36,5 @@ This section is a very brief set of installation instructions and subject to cha
 * [roBrowser website](http://www.robrowser.com/)
 * [roBrowser forum](http://forum.robrowser.com/)
 * [GIT Repository URL](https://github.com/vthibault/roBrowser/)
+* [Demo](http://demo.robrowser.com/)
 * IRC Channel: *irc.rizon.net* / Channel: *#roBrowser*
