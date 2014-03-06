@@ -14,6 +14,10 @@ define(['Core/Client', 'DB/DBManager', './EntityAction'], function( Client, DB, 
 
 	/**
 	 * Files to display a view
+	 *
+	 * @param {optional|string} sprite path
+	 * @param {optional|string} action path
+	 * @param {optional|string} palette path
 	 */
 	function ViewFiles( spr, act, pal )
 	{
@@ -42,16 +46,21 @@ define(['Core/Client', 'DB/DBManager', './EntityAction'], function( Client, DB, 
 	/**
 	 * If changing sex, all files have to be reload
 	 * (not used in game but can be used in a next update or in offline mode)
+	 *
+	 * @param {number} sex (mal/female)
 	 */
 	function UpdateSex( sex )
 	{
+		// Not defined yet, no update others
+		if (this._sex === -1) {
+			this._sex = sex;
+			return;
+		}
+
+		// Update other elements
 		this._sex        = sex;
-		this.job         = this._job;
-		this.bodypalette = this._bodypalette;
-		this.head        = this._head;
-		this.headpalette = this._headpalette;
-		this.weapon      = this._weapon;
-		this.shield      = this._shield;
+		this.job         = this._job;  // will update body, body palette, weapon, shield
+		this.head        = this._head; // will update hair color
 		this.accessory   = this._accessory;
 		this.accessory2  = this._accessory2;
 		this.accessory3  = this._accessory3;
@@ -60,136 +69,172 @@ define(['Core/Client', 'DB/DBManager', './EntityAction'], function( Client, DB, 
 
 	/**
 	 * Updating job
+	 *
+	 * @param {number} job id
 	 */
 	function UpdateBody( job )
 	{
 		var path   = DB.getBodyPath( job, this._sex );
-		var  _this = this;
 		var Entity = this.constructor;
-		_this._job = job;
-
-		// Define Object type based on its id
-		// TODO: find a better way ?
-		this.objecttype = (
-			job < 45   ? Entity.TYPE_PC   :
-			job < 46   ? Entity.TYPE_WARP :
-			job < 1000 ? Entity.TYPE_NPC  :
-			job < 4000 ? Entity.TYPE_MOB  :
-			job < 6000 ? Entity.TYPE_PC   :
-			job < 7000 ? Entity.TYPE_HOM  :
-						 Entity.TYPE_MERC
-		);
-
-		// Reload actions frames (the type can change...)
-		EntityAction.call(this);
+		this._job  = -1;
 
 		// warp ?
-		if( path === null ) {
+		if (path === null) {
 			return;
 		}
 
-		// granny model ? :(
+		// granny model not supported yet :(
 		// Display a poring instead
-		if( path.match(/\.gr2$/i) ) {
+		if (path.match(/\.gr2$/i)) {
 			path = DB.getBodyPath( 1002, this._sex );
 		}
 
 		// Loading
 		Client.loadFile(path + ".act");
 		Client.loadFile(path + ".spr", function(){
-			_this.files.body.spr = path + ".spr";
-			_this.files.body.act = path + ".act";
-
-			// Update sprites
-			_this.bodypalette = _this._bodypalette;
-			_this.weapon      = _this._weapon;
-			_this.shield      = _this._shield;
-		}, null, {to_rgba:_this.objecttype !== Entity.TYPE_PC});
-	}
+			this.files.body.spr = path + ".spr";
+			this.files.body.act = path + ".act";
 
 
-	/**
-	 * Update body palette
-	 */
-	function UpdateBodyPalette( pal )
-	{
-		var _this = this;
+			// Define Object type based on its id
+			// TODO: find a better way ?
+			this._job       = job;
+			this.objecttype = (
+				job < 45   ? Entity.TYPE_PC   :
+				job < 46   ? Entity.TYPE_WARP :
+				job < 1000 ? Entity.TYPE_NPC  :
+				job < 4000 ? Entity.TYPE_MOB  :
+				job < 6000 ? Entity.TYPE_PC   :
+				job < 7000 ? Entity.TYPE_HOM  :
+							 Entity.TYPE_MERC
+			);
 
-		if( pal ) {
-			var path = DB.getBodyPalPath( this._job, pal, this._sex);
-			Client.loadFile( path, function(){
-				_this._bodypalette   = pal;
-				_this.files.body.pal = path;
-			});
-		}
-		else {
-			this.files.body.pal = null;
-		}
-	}
+			// Reload actions frames (the type can change...)
+			EntityAction.call(this);
 
+			// Update linked attachments
+			this.bodypalette = this._bodypalette;
+			this.weapon      = this._weapon;
+			this.shield      = this._shield;
 
-	/**
-	 * Update head
-	 */
-	function UpdateHead( head )
-	{
-		var _this  = this;
-		var path   = DB.getHeadPath( head, this._sex );
-		this._head = head;
-
-		Client.loadFile(path + ".act");
-		Client.loadFile(path + ".spr", function(){
-			_this.files.head.spr = path + ".spr";
-			_this.files.head.act = path + ".act";
-
-			// Reload head palette
-			_this.headpalette = _this._headpalette;
+		}.bind(this), null, {
+			to_rgba: this.objecttype !== Entity.TYPE_PC
 		});
 	}
 
 
 	/**
+	 * Update body palette
+	 *
+	 * @param {number} body palette number
+	 */
+	function UpdateBodyPalette( pal )
+	{
+		this._bodypalette = pal;
+
+		// Internal palette
+		if (pal <= 0) {
+			this.files.body.pal = null;
+			return;
+		}
+
+		// Wait body to be loaded
+		if (this._job === -1) {
+			return;
+		}
+
+		var path = DB.getBodyPalPath( this._job, this._bodypalette, this._sex);
+		Client.loadFile( path, function(){
+			this.files.body.pal = path;
+		}.bind(this));
+	}
+
+
+	/**
+	 * Update head
+	 *
+	 * @param {number} head index
+	 */
+	function UpdateHead( head )
+	{
+		var path   = DB.getHeadPath( head, this._sex );
+		this._head = -1;
+
+		Client.loadFile(path + ".act");
+		Client.loadFile(path + ".spr", function(){
+			this._head          = head;
+			this.files.head.spr = path + ".spr";
+			this.files.head.act = path + ".act";
+			this.files.head.pal = null;
+
+			// Update head palette
+			this.headpalette    = this._headpalette;
+		}.bind(this));
+	}
+
+
+	/**
 	 * Update head palette
+	 *
+	 * @param {number} palette id
 	 */
 	function UpdateHeadPalette( pal )
 	{
-		var _this         = this;
 		this._headpalette = pal;
 
-		if( pal ) {
-			var path = DB.getHeadPalPath( this._head, pal, this._sex);
-			Client.loadFile( path, function(){
-				_this.files.head.pal = path;
-			});
-		}
-		else {
+		// Using internal palette stored in sprite
+		if (pal <= 0) {
 			this.files.head.pal = null;
+			return;
 		}
+
+		// Wait head to load before
+		if (this._head === -1) {
+			return;
+		}
+
+		var path = DB.getHeadPalPath( this._head, this._headpalette, this._sex);
+
+		Client.loadFile( path, function(){
+			this.files.head.pal = path;
+		}.bind(this));
 	}
 
 
 	/**
 	 * Update Generic function to load hats, weapons and shields
+	 *
+	 * @param {string} type - weapon / shield / etc
+	 * @param {string} method from DB to get path
+	 * @param {function} callback if fail
 	 */
 	function UpdateGeneric( type, func, fallback )
 	{
-		return function( val ) {
-			if( !val ) {
+		return function (val) {
+			var path;
+			var _this = this;
+			var _val  = val;
+
+			// Nothing to load
+			if (val <= 0) {
 				this["_"+type] = 0;
 				return;
 			}
-	
-			var _this = this;
-			var path;
 
-			if( type === 'weapon' || type === 'shield' ) {
-				path  = DB[func]( val, this._job, this._sex );
-			}
-			else {
-				path  = DB[func]( val, this._sex );
+			// Find file path
+			switch (type) {
+				case 'weapon':
+				case 'shield':
+					path  = DB[func]( val, this._job, this._sex );
+					break;
+
+				default:
+					path  = DB[func]( val, this._sex );
+					break;
 			}
 
-			if( !path ) {
+			// No path found, remove current files used
+			if (!path) {
 				this.files[type].spr = null;
 				this.files[type].act = null;
 				this.files[type].pal = null;
@@ -198,10 +243,9 @@ define(['Core/Client', 'DB/DBManager', './EntityAction'], function( Client, DB, 
 				if( type === 'weapon') {
 					this.weapon_sound = DB.getWeaponSound( val );
 				}
+
 				return;
 			}
-
-			var _val = val;
 
 			function LoadView( path, final ) {
 				Client.loadFile(path + ".act");
@@ -211,17 +255,17 @@ define(['Core/Client', 'DB/DBManager', './EntityAction'], function( Client, DB, 
 					_this.files[type].act = path + ".act";
 
 					// Load weapon sound
-					if( type === 'weapon' ) {
+					if (type === 'weapon') {
 						_this.weapon_sound = DB.getWeaponSound( _val );
 					}
 				},
 
 				// if weapon isn't loaded, try to load the default sprite for the weapon type
 				function(){
-					if( fallback && !final ) {
+					if (fallback && !final) {
 						_val = DB[fallback](val);
 						path = DB[func]( _val, _this._job, _this._sex );
-						if( path ) {
+						if (path) {
 							LoadView( path, true );
 						}
 					}
@@ -231,6 +275,7 @@ define(['Core/Client', 'DB/DBManager', './EntityAction'], function( Client, DB, 
 				}, {to_rgba:true});
 			}
 
+			// Start loading view
 			LoadView(path);
 		};
 	}

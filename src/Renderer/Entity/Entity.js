@@ -96,16 +96,16 @@ define( function( require )
 	Entity.prototype.bodyState    = 0;
 	Entity.prototype.healthState  = 0;
 	Entity.prototype.effectState  = 0;
-	Entity.prototype._sex         = 0;
-	Entity.prototype._job         = 0;
-	Entity.prototype._bodypalette = 0;
-	Entity.prototype._head        = 2;
-	Entity.prototype._headpalette = 0;
-	Entity.prototype._weapon      = 0;
-	Entity.prototype._shield      = 0;
-	Entity.prototype._accessory   = 0;
-	Entity.prototype._accessory2  = 0;
-	Entity.prototype._accessory3  = 0;
+	Entity.prototype._sex         = -1;
+	Entity.prototype._job         = -1;
+	Entity.prototype._bodypalette = -1;
+	Entity.prototype._head        = -1;
+	Entity.prototype._headpalette = -1;
+	Entity.prototype._weapon      = -1;
+	Entity.prototype._shield      = -1;
+	Entity.prototype._accessory   = -1;
+	Entity.prototype._accessory2  = -1;
+	Entity.prototype._accessory3  = -1;
 	Entity.prototype.GUID         = 0;
 	Entity.prototype.GEmblemVer   = 0;
 	Entity.prototype.honor        = 0;
@@ -151,15 +151,10 @@ define( function( require )
 		Client.loadFile(this.files.shadow.spr, null, null, {to_rgba:true});
 		Client.loadFile(this.files.shadow.act);
 
-		// First thing to set to initialize action, etc.
-		if( unit.hasOwnProperty('job') ) {
-			this._job = unit.job;
-		}
 		this.sex = unit.hasOwnProperty('sex') ? unit.sex : this._sex;
-
-
-		keys  = Object.keys( unit );
-		count = keys.length;
+		this.job = unit.hasOwnProperty('job') ? unit.job : this._job;
+		keys     = Object.keys( unit );
+		count    = keys.length;
 
 		for( i=0; i<count; ++i ) {
 			switch( keys[i] ) {
