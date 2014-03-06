@@ -17,9 +17,9 @@ define( ['./BinaryReader'], function( BinaryReader )
 
 	/**
 	 * Binary data of the executable
-	 * @var string
+	 * @var {BinaryReader}
 	 */
-	var _binary = null;
+	var _fp;
 
 
 	/**
@@ -33,13 +33,7 @@ define( ['./BinaryReader'], function( BinaryReader )
 	{
 		var reader    = new FileReader();
 		reader.onload = function(event){
-			var data = new Uint8Array(event.target.result);
-			var i, count;
-			_binary = "";
-
-			for (i = 0, count = data.length; i < count; ++i) {
-				_binary += String.fromCharCode( data[i] );
-			}
+			_fp = new BinaryReader(event.target.result);
 			callback( GetDateSub() );
 		};
 		reader.readAsArrayBuffer(executable);
@@ -53,25 +47,32 @@ define( ['./BinaryReader'], function( BinaryReader )
 	 */
 	function GetDateSub()
 	{
-		if( _binary === null ) {
-			throw new Error('Executable::getDate() - Executable is not loaded yet, or not specify.');
+		var offset, date;
+
+		if (!_fp) {
+			throw new Error('Executable::getDate() - Executable is not loaded yet, or not specified');
 		}
 
-		var offset;
-		var bin, date, fp;
-	
-		// Search PE Header ("PE..")
-		offset = _binary.indexOf("\x50\x45\x00\x00");
+		// Jump to header and extract
+		// PEHeader structure position
+		_fp.seek( 0x3c, SEEK_SET);
+		offset = _fp.readULong();
 
-		// Invalid exe ?
-		if( offset === -1 ) {
+		if (offset > _fp.length ) {
 			throw new Error('Executable::getDate() - Invalid executable specified.');
 		}
 
-		bin  = _binary.substr( offset + 0x08, 0x04);
-		fp   = new BinaryReader(bin);
-		date = new Date( fp.readULong() * 1000);
+		// Jump to PEHeader structure
+		_fp.seek( offset, SEEK_SET);
+		if (_fp.readString(4) !== 'PE') {
+			throw new Error('Executable::getDate() - Invalid executable specified.');
+		}
 
+		// Extract compiled date from executable
+		_fp.seek(0x04, SEEK_CUR);
+		date = new Date(_fp.readULong() * 1000);
+
+		// Convert date to YYYYMMDD
 		return (
 			 date.getFullYear()   * 1E4 +
 			(date.getMonth() + 1) * 1E2 +
@@ -88,12 +89,12 @@ define( ['./BinaryReader'], function( BinaryReader )
 	 */
 	function isROExec(file)
 	{
-		if( !file.name.match(/\.exe$/i) ) {
+		if (!file.name.match(/\.exe$/i)) {
 			return false;
 		}
 
 		// TODO: check in the Executable binary
-		if( file.size < 1024 * 1024 * 3 || file.size > 1024 * 1024 * 5 ) {
+		if (file.size < 1024 * 1024 * 3 || file.size > 1024 * 1024 * 5) {
 			return false;
 		}
 
