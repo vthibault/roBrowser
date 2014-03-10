@@ -9,7 +9,7 @@
  */
 define(function(require)
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -33,10 +33,13 @@ define(function(require)
 	/**
 	 * Initialize UI
 	 */
-	WinList.init = function Init()
+	WinList.init = function init()
 	{
 		// Show at center.
-		this.ui.css({ top: (Renderer.height - 280)/1.5, left: (Renderer.width - 280)/2 });
+		this.ui.css({
+			top: (Renderer.height - 280)/1.5,
+			left: (Renderer.width - 280)/2
+		});
 		this.draggable();
 
 		this.ui_list = this.ui.find('.list:first');
@@ -54,14 +57,14 @@ define(function(require)
 	 *
 	 * @param {Array} list object to display
 	 */
-	WinList.setList = function SetList( list )
+	WinList.setList = function setList( list )
 	{
 		var i, count;
 
 		this.list = list;
 		this.ui_list.empty();
 
-		for( i=0, count=list.length; i<count; ++i ) {
+		for (i = 0, count = list.length; i < count; ++i) {
 			this.ui_list.append(
 				jQuery('<div/>').
 					addClass('menu_node').
@@ -81,7 +84,7 @@ define(function(require)
 	/**
 	 *  Cancel window
 	 */
-	WinList.exit = function Exit()
+	WinList.exit = function exit()
 	{
 		WinList.onExitRequest();
 	};
@@ -90,8 +93,8 @@ define(function(require)
 	/**
 	 * Callback to use
 	 */
-	WinList.onExitRequest   = function OnExitRequest(){};
-	WinList.onIndexSelected = function OnIndexSelected(){};
+	WinList.onExitRequest   = function onExitRequest(){};
+	WinList.onIndexSelected = function onIndexSelected(){};
 
 
 	/**
@@ -99,9 +102,9 @@ define(function(require)
 	 *
 	 * @param {number} id in list
 	 */
-	WinList.setIndex = function SetIndex( id )
+	WinList.setIndex = function setIndex( id )
 	{
-		if( id > -1 && id < this.list.length ) {
+		if (id > -1 && id < this.list.length) {
 			this.ui_list.find('div:eq('+ this.index +')').css('backgroundColor', 'transparent');
 			this.ui_list.find('div:eq('+ id +')').css('backgroundColor', '#cde0ff');
 			this.index = id;
@@ -112,7 +115,7 @@ define(function(require)
 	/**
 	 * Select a server, callback
 	 */
-	WinList.selectIndex = function SelectIndex()
+	WinList.selectIndex = function selectIndex()
 	{
 		this.onIndexSelected( this.index );
 	};
@@ -123,9 +126,9 @@ define(function(require)
 	 *
 	 * @param {object} event
 	 */
-	WinList.onKeyDown = function OnKeyDown( event )
+	WinList.onKeyDown = function onKeyDown( event )
 	{
-		switch( event.which ) {
+		switch (event.which) {
 			default:                                           return;
 			case KEYS.ENTER:  this.selectIndex();              break;
 			case KEYS.ESCAPE: this.exit();                     break;
@@ -139,7 +142,7 @@ define(function(require)
 	/**
 	 * Free variables once removed from HTML
 	 */
-	WinList.onRemove = function OnRemove()
+	WinList.onRemove = function onRemove()
 	{
 		this.ui_list.empty();
 		this.list  = null;

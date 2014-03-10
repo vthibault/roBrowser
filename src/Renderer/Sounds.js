@@ -10,13 +10,12 @@
 define( ['Utils/gl-matrix', 'Audio/SoundManager'],
 function(        glMatrix,         SoundManager )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
 	 * Sound renderer namespace
 	 */
-	var Sounds = new Array();
 	var vec3   = glMatrix.vec3;
 	var _list  = [];
 
@@ -24,7 +23,7 @@ function(        glMatrix,         SoundManager )
 	/**
 	 * Add 3D sound to the list
 	 */
-	function Add( sound )
+	function add( sound )
 	{
 		_list.push( sound );
 	}
@@ -33,7 +32,7 @@ function(        glMatrix,         SoundManager )
 	/**
 	 * Remove data from memory
 	 */
-	function Free()
+	function free()
 	{
 		_list.length = 0;
 	}
@@ -44,16 +43,16 @@ function(        glMatrix,         SoundManager )
 	 *
 	 * @param {vec3} position
 	 */
-	function Render( position, tick )
+	function render( position, tick )
 	{
 		var sound;
 		var i, count = _list.length;
 
-		for ( i = 0; i < count; ++i ) {
+		for (i = 0; i < count; ++i) {
 			sound = _list[i];
 
 			// TODO: check for sound.height
-			if( sound.tick < tick && vec3.dist(sound.pos, position) <= sound.range + sound.height ) {
+			if (sound.tick < tick && vec3.dist(sound.pos, position) <= sound.range + sound.height) {
 				SoundManager.play( sound.file, sound.vol );
 				sound.tick = tick + sound.cycle * 1000;
 			}
@@ -65,8 +64,8 @@ function(        glMatrix,         SoundManager )
 	 * Export
 	 */
 	return {
-		add:    Add,
-		free:   Free,
-		render: Render
+		add:    add,
+		free:   free,
+		render: render
 	};
 });

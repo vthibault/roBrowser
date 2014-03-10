@@ -10,7 +10,7 @@
 
 define(function()
 {
-	"use strict";
+	'use strict';
 
 	var codeLenCodeMap = new Uint32Array([
 		16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15
@@ -144,7 +144,7 @@ define(function()
 		this.codeSize     = 0;
 		this.codeBuf      = 0;
 
-		while( !this.readBlock() );
+		while (!this.readBlock());
 	};
 
 	/**
@@ -265,7 +265,7 @@ define(function()
 		var len;
 		hdr >>= 1;
 
-		if (hdr == 0) { // uncompressed block
+		if (hdr === 0) { // uncompressed block
 			var bytes       = this.bytes;
 			var bytesPos    = this.bytesPos;
 			var bytesLength = this.bytesLength;
@@ -356,7 +356,7 @@ define(function()
 			if (code1 < 256) {
 				buffer[pos++] = code1;
 				continue;
-		  	}
+			}
 			if (code1 == 256) {
 				this.bufferPos = pos;
 				return stop;

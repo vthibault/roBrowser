@@ -10,16 +10,79 @@
 
 define(function( require )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
 	 * Load dependencies
 	 */
 	var DB            = require('DB/DBManager');
+	var SkillId       = require('DB/SkillId');
 	var Network       = require('Network/NetworkManager');
 	var PACKET        = require('Network/PacketStructure');
 	var ShortCut      = require('UI/Components/ShortCut/ShortCut');
+	var ChatBox       = require('UI/Components/ChatBox/ChatBox');
+
+
+	/**
+	 * Failed to cast a skill
+	 *
+	 * @param {object} pkt - PACKET.ZC.ACK_TOUSESKILL
+	 */
+	function onSkillResult( pkt )
+	{
+		// Yeah success !
+		if (pkt.success) {
+			return;
+		}
+
+		var error = 0;
+
+		if (pkt.NUM) {
+			switch (pkt.SKID) {
+
+				default:
+					error = 204;
+					break;
+
+				case SkillId.NV_BASIC:
+					error = pkt.NUM < 7 ? 159 + pkt.NUM : pkt.NUM == 7 ? 383 : 0;
+					break;
+
+				case SkillId.AL_WARP:
+					error = 214;
+					break;
+
+				case SkillId.TF_STEAL:
+					error = 205;
+					break;
+
+				case SkillId.TF_POISON:
+					error = 207;
+					break;
+			}
+		}
+
+		else {
+			switch (pkt.cause) {
+				case 1:  error = 202; break;
+				case 2:  error = 203; break;
+				case 3:  error = 808; break;
+				case 4:  error = 219; break;
+				case 5:  error = 233; break;
+				case 6:  error = 239; break;
+				case 7:  error = 246; break;
+				case 8:  error = 247; break;
+				case 9:  error = 580; break;
+				case 10: error = 285; break;
+				case 83: error = 661; break;
+			}
+		}
+
+		if (error) {
+			ChatBox.addText( DB.msgstringtable[error], ChatBox.TYPE.ERROR );
+		}
+	}
 
 
 	/**
@@ -27,7 +90,7 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET_ZC_SKILLINFO_LIST
 	 */
-	function SkillList( pkt )
+	function onSkillList( pkt )
 	{
 		// skillList
 		/*
@@ -47,7 +110,7 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET_ZC_SHORTCUT_KEY_LIST_V2
 	 */
-	function HotkeyList( pkt )
+	function onShortCutList( pkt )
 	{
 		ShortCut.setList( pkt.ShortCutKey );
 	}
@@ -79,8 +142,9 @@ define(function( require )
 	 */
 	return function SkillEngine()
 	{
-		//Network.hookPacket( PACKET.ZC.SKILLINFO_LIST,       SkillList );
-		Network.hookPacket( PACKET.ZC.SHORTCUT_KEY_LIST,    HotkeyList );
-		Network.hookPacket( PACKET.ZC.SHORTCUT_KEY_LIST_V2, HotkeyList );
+		Network.hookPacket( PACKET.ZC.SKILLINFO_LIST,       onSkillList );
+		Network.hookPacket( PACKET.ZC.SHORTCUT_KEY_LIST,    onShortCutList );
+		Network.hookPacket( PACKET.ZC.SHORTCUT_KEY_LIST_V2, onShortCutList );
+		Network.hookPacket( PACKET.ZC.ACK_TOUSESKILL,       onSkillResult );
 	};
 });

@@ -10,7 +10,7 @@
 define(['Utils/gl-matrix', 'Renderer/Renderer', 'Core/Client', 'DB/DBManager', 'UI/Components/EntityRoom/EntityRoom' ],
 function(       glMatrix,            Renderer,        Client,      DB,                                   EntityRoom)
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -58,42 +58,42 @@ function(       glMatrix,            Renderer,        Client,      DB,          
 	 * @param {const} Room.Type constant
 	 * @param {bool} is clickable ?
 	 */
-	Room.prototype.create = function Create( title, id, type, clickable )
+	Room.prototype.create = function create( title, id, type, clickable )
 	{
 		var self = this;
 
 		this.node = EntityRoom.clone('EntityRoom', true);
-		this.node.init = function Init()
+		this.node.init = function init()
 		{
 			var filename;
 
-			switch( type ) {
+			switch (type) {
 				case Room.Type.SELL_SHOP:
-					filename = "buyingshop";
+					filename = 'buyingshop';
 					break;
 
 				case Room.Type.BUY_SHOP:
-					filename = "shop";
+					filename = 'shop';
 					break;
 
 				case Room.Type.PRIVATE_CHAT:
-					filename = "chat_close";
+					filename = 'chat_close';
 					break;
 
 				default:
 				case Room.Type.PUBLIC_CHAT:
-					filename = "chat_open";
+					filename = 'chat_open';
 					break;
 			}
 
 			self.type       = type;
 			self.id         = id;
 
-			if( clickable ) {
+			if (clickable) {
 				self.node.onEnter  = self.owner.onRoomEnter.bind(self.owner);
 			}
 
-			Client.loadFile( DB.INTERFACE_PATH + filename + ".bmp", function(url){
+			Client.loadFile( DB.INTERFACE_PATH + filename + '.bmp', function(url){
 				self.display    = true;
 				self.node.setTitle( title, url );
 			});
@@ -106,10 +106,10 @@ function(       glMatrix,            Renderer,        Client,      DB,          
 	/**
 	 * Remove Room
 	 */
-	Room.prototype.remove = function Remove()
+	Room.prototype.remove = function remove()
 	{
 		this.display = false;
-		if( this.node ) {
+		if (this.node) {
 			this.node.remove();
 		}
 	};
@@ -118,7 +118,7 @@ function(       glMatrix,            Renderer,        Client,      DB,          
 	/**
 	 * Clean Room
 	 */
-	Room.prototype.clean = function Clean()
+	Room.prototype.clean = function clean()
 	{
 		this.remove();
 		this.node = null;
@@ -131,7 +131,7 @@ function(       glMatrix,            Renderer,        Client,      DB,          
 	 *
 	 * @param {mat4} matrix
 	 */
-	Room.prototype.render = function Render( matrix )
+	Room.prototype.render = function render( matrix )
 	{
 		var ui = this.node.ui[0];
 		var z;
@@ -154,8 +154,8 @@ function(       glMatrix,            Renderer,        Client,      DB,          
 		_pos[0] = _size[0] + Math.round(_size[0] * (_pos[0] * z));
 		_pos[1] = _size[1] - Math.round(_size[1] * (_pos[1] * z));
 
-		ui.style.top  = (_pos[1] | 0 ) + "px";
-		ui.style.left = ((_pos[0] - 70) | 0) + "px";
+		ui.style.top  = (_pos[1] | 0 ) + 'px';
+		ui.style.left = ((_pos[0] - 70) | 0) + 'px';
 	};
 
 

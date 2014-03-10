@@ -10,25 +10,27 @@
 
 // Errors Handler (hack)
 require.onError = function (err) {
-	if( require.defined('UI/Components/Error/Error') ) {
+	'use strict';
+
+	if (require.defined('UI/Components/Error/Error')) {
 		require('UI/Components/Error/Error').addTrace(err);
 		return;
 	}
 
 	require(['UI/Components/Error/Error'], function( Errors ){
-		Errors.addTrace(err)
+		Errors.addTrace(err);
 	});
 };
 
 require({
 	baseUrl: './src/',
 	paths: {
-		text:   "Vendors/text.require",
-		jquery: "Vendors/jquery-1.9.1"
+		text:   'Vendors/text.require',
+		jquery: 'Vendors/jquery-1.9.1'
 	}
 }, ['UI/Components/GrfViewer/GrfViewer'], function( GRFViewer )
 {
-	"use strict";
+	'use strict';
 
 	GRFViewer.append();
 });

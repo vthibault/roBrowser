@@ -8,7 +8,7 @@
  * @author Vincent Thibault
  */
 
-define(['./SkillId', './JobID'], function( SKID, JOBID )
+define(["./SkillId", "./JobID"], function( SKID, JOBID )
 {
 	"use strict";
 
@@ -268,7 +268,7 @@ define(['./SkillId', './JobID'], function( SKID, JOBID )
 		SpAmount : [ 10 ],
 		bSeperateLv : false,
 		AttackRange : [ 9 ],
-		_NeedSkillList : [ 
+		_NeedSkillList : [
 			[ SKID.AL_WARP,4 ]
 		]
 	};
@@ -874,7 +874,7 @@ define(['./SkillId', './JobID'], function( SKID, JOBID )
 		MaxLv : 10,
 		SpAmount : [ 14, 18, 22, 26, 30, 34, 38, 42, 46, 50 ],
 		bSeperateLv : false,
-		AttackRange : [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ] 
+		AttackRange : [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ]
 	};
 
 	exports[SKID.SL_CRUSADER] = {
@@ -1237,7 +1237,7 @@ define(['./SkillId', './JobID'], function( SKID, JOBID )
 
 	exports[SKID.AL_DECAGI] = {
 		Name: "AL_DECAGI",
-		SkillName : "Decrease Agility",		
+		SkillName : "Decrease Agility",
 		MaxLv : 10,
 		SpAmount : [ 15, 17, 19, 21, 23, 25, 27, 29, 31, 33 ],
 		bSeperateLv : true,
@@ -1778,7 +1778,7 @@ define(['./SkillId', './JobID'], function( SKID, JOBID )
 
 	exports[SKID.AL_CRUCIS] = {
 		Name: "AL_CRUCIS",
-		SkillName : "Signum Crucis",		
+		SkillName : "Signum Crucis",
 		MaxLv : 10,
 		SpAmount : [ 35, 35, 35, 35, 35, 35, 35, 35, 35, 35 ],
 		bSeperateLv : false,
@@ -2165,7 +2165,7 @@ define(['./SkillId', './JobID'], function( SKID, JOBID )
 
 	exports[SKID.AL_BLESSING] = {
 		Name: "AL_BLESSING",
-		SkillName : "Blessing",		
+		SkillName : "Blessing",
 		MaxLv : 10,
 		SpAmount : [ 28, 32, 36, 40, 44, 48, 52, 56, 60, 64 ],
 		bSeperateLv : true,
@@ -5098,7 +5098,7 @@ define(['./SkillId', './JobID'], function( SKID, JOBID )
 		SpAmount : [ 35 ],
 		bSeperateLv : false,
 		AttackRange : [ 1 ]
-	};	
+	};
 
 	exports[SKID.MH_ANGRIFFS_MODUS] = {
 		Name: "MH_ANGRIFFS_MODUS",
@@ -6244,7 +6244,7 @@ define(['./SkillId', './JobID'], function( SKID, JOBID )
 
 	exports[SKID.NV_TRICKDEAD] = {
 		Name: "NV_TRICKDEAD",
-		SkillName : "Trick Dead",	
+		SkillName : "Trick Dead",
 		MaxLv : 1,
 		Type : "Quest",
 		SpAmount : [ 5 ],
@@ -6604,7 +6604,7 @@ define(['./SkillId', './JobID'], function( SKID, JOBID )
 		_NeedSkillList : [
 			[ SKID.SO_EL_SYMPATHY,1 ]
 		]
-	};	
+	};
 
 	exports[SKID.SO_EARTH_INSIGNIA] = {
 		Name: "SO_EARTH_INSIGNIA",
@@ -6615,7 +6615,7 @@ define(['./SkillId', './JobID'], function( SKID, JOBID )
 		AttackRange : [ 9, 9, 9 ],
 		_NeedSkillList : [
 			[ SKID.SO_SUMMON_TERA,3 ]
-		]		
+		]
 	};
 
 	exports[SKID.MC_LOUD] = {
@@ -6827,11 +6827,11 @@ define(['./SkillId', './JobID'], function( SKID, JOBID )
 			[ SKID.MG_NAPALMBEAT,7],
 			[ SKID.MG_SOULSTRIKE,5 ]
 		],
-		NeedSkillList : new function(){ 
+		NeedSkillList : new function(){
 			this[JOBID.JT_PRIEST] = [
 				[ SKID.PR_SANCTUARY,3 ],
 				[ SKID.PR_ASPERSIO,4 ],
-			]
+			];
 		}
 	};
 

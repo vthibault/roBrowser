@@ -11,7 +11,7 @@
 define( ['Utils/Queue', 'Core/Client', './ClassTable', './ClassPalTable', './MonsterTable', './PetInfo', './HatTable', './WeaponTable', './WeaponAction', './ShieldTable', './Weather' ],
 function(       Queue,        Client,     ClassTable,     ClassPalTable,     MonsterTable,     PetInfo,     HatTable,     WeaponTable,     WeaponAction,     ShieldTable,     Weather)
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -189,7 +189,7 @@ function(       Queue,        Client,     ClassTable,     ClassPalTable,     Mon
 
 		// Callback
 		q.add(function(){
-			if( DB.onReady ) {
+			if (DB.onReady) {
 				DB.onReady();
 			}
 		});
@@ -212,14 +212,14 @@ function(       Queue,        Client,     ClassTable,     ClassPalTable,     Mon
 		console.log('Loading file "'+ filename +'"...');
 		Client.loadFile( filename, function(data) {
 			// Remove commented lines
-			var content  = ("\n" + data).replace(/\n\s?\/\/[^\n]+\n/g, '');
-			var elements = content.split("#");
+			var content  = ('\n' + data).replace(/\n\s?\/\/[^\n]+\n/g, '');
+			var elements = content.split('#');
 			var i, count = elements.length;
 			var args     = new Array(size+1);
 
-			for( i=0; i<count; i++ ) {
-				if( i%size === 0 ) {
-					if( i ) {
+			for (i = 0; i < count; i++) {
+				if (i%size === 0) {
+					if (i) {
 						callback.apply( null, args );
 					}
 					args[i%size] = i;
@@ -259,7 +259,7 @@ function(       Queue,        Client,     ClassTable,     ClassPalTable,     Mon
 	/**
 	 * ASCII sex
 	 */
-	DB.SEX = [ "\xbf\xa9", "\xb3\xb2" ];
+	DB.SEX = [ '\xbf\xa9', '\xb3\xb2' ];
 
 
 	/**
@@ -271,37 +271,37 @@ function(       Queue,        Client,     ClassTable,     ClassPalTable,     Mon
 	DB.getBodyPath = function GetBodyPath( id, sex )
 	{
 		// PC
-		if ( id < 45 ) {
-			return "data/sprite/\xc0\xce\xb0\xa3\xc1\xb7/\xb8\xf6\xc5\xeb/" + DB.SEX[sex] + "/" + ( ClassTable[id] || ClassTable[0] ) + "_" + DB.SEX[sex];
+		if (id < 45) {
+			return 'data/sprite/\xc0\xce\xb0\xa3\xc1\xb7/\xb8\xf6\xc5\xeb/' + DB.SEX[sex] + '/' + ( ClassTable[id] || ClassTable[0] ) + '_' + DB.SEX[sex];
 		}
 
 		// TODO: Warp STR file
-		if ( id == 45 ) {
+		if (id == 45) {
 			return null;
 		}
 
 		// Not visible sprite
-		if( id === 111 ) {
+		if (id === 111) {
 			return null;
 		}
 
 		// NPC
-		if ( id < 1000 ) {
-			return "data/sprite/npc/" + ( MonsterTable[id] || MonsterTable[46] ).toLowerCase();
+		if (id < 1000) {
+			return 'data/sprite/npc/' + ( MonsterTable[id] || MonsterTable[46] ).toLowerCase();
 		}
 
 		// Monsters
-		if ( id < 4000 ) {
-			return "data/sprite/\xb8\xf3\xbd\xba\xc5\xcd/" + ( MonsterTable[id] || MonsterTable[1001] ).toLowerCase();
+		if (id < 4000) {
+			return 'data/sprite/\xb8\xf3\xbd\xba\xc5\xcd/' + ( MonsterTable[id] || MonsterTable[1001] ).toLowerCase();
 		}
 
 		// PC
-		if ( id < 6000 ) {
-			return "data/sprite/\xc0\xce\xb0\xa3\xc1\xb7/\xb8\xf6\xc5\xeb/" + DB.SEX[sex] + "/" + ( ClassTable[id] || ClassTable[0] ) + "_" + DB.SEX[sex];
+		if (id < 6000) {
+			return 'data/sprite/\xc0\xce\xb0\xa3\xc1\xb7/\xb8\xf6\xc5\xeb/' + DB.SEX[sex] + '/' + ( ClassTable[id] || ClassTable[0] ) + '_' + DB.SEX[sex];
 		}
 
 		// Homunculus
-		return "data/sprite/homun/" + ( MonsterTable[id] || MonsterTable[1002] ).toLowerCase();
+		return 'data/sprite/homun/' + ( MonsterTable[id] || MonsterTable[1002] ).toLowerCase();
 
 		// TODO: add support for mercenary
 	};
@@ -315,11 +315,11 @@ function(       Queue,        Client,     ClassTable,     ClassPalTable,     Mon
 	 */
 	DB.getBodyPalPath = function GetBodyPalettePath( id, pal, sex )
 	{
-		if( id === 0 || !(id in ClassPalTable) ) {
+		if (id === 0 || !(id in ClassPalTable)) {
 			return null;
 		}
 
-		return "data/palette/\xb8\xf6/" + ClassPalTable[id] + "_" + DB.SEX[sex] + "_" + pal + ".pal";
+		return 'data/palette/\xb8\xf6/' + ClassPalTable[id] + '_' + DB.SEX[sex] + '_' + pal + '.pal';
 	};
 
 
@@ -330,7 +330,7 @@ function(       Queue,        Client,     ClassTable,     ClassPalTable,     Mon
 	 */
 	DB.getHeadPath = function GetHeadPath( id, sex )
 	{
-		return "data/sprite/\xc0\xce\xb0\xa3\xc1\xb7/\xb8\xd3\xb8\xae\xc5\xeb/" + DB.SEX[sex] + "/" + id + "_" + DB.SEX[sex];
+		return 'data/sprite/\xc0\xce\xb0\xa3\xc1\xb7/\xb8\xd3\xb8\xae\xc5\xeb/' + DB.SEX[sex] + '/' + id + '_' + DB.SEX[sex];
 	};
 
 
@@ -342,7 +342,7 @@ function(       Queue,        Client,     ClassTable,     ClassPalTable,     Mon
 	 */
 	DB.getHeadPalPath = function GetHeadPalPath( id, pal, sex )
 	{
-		return "data/palette/\xb8\xd3\xb8\xae/\xb8\xd3\xb8\xae" + id + "_" + DB.SEX[sex] + "_" + pal + ".pal";
+		return 'data/palette/\xb8\xd3\xb8\xae/\xb8\xd3\xb8\xae' + id + '_' + DB.SEX[sex] + '_' + pal + '.pal';
 	};
 
 
@@ -353,10 +353,10 @@ function(       Queue,        Client,     ClassTable,     ClassPalTable,     Mon
 	 */
 	DB.getHatPath = function GetHatPath( id, sex )
 	{
-		if( id === 0 || (!(id in HatTable) && !(id in DB.AccNameTable)) ) {
+		if (id === 0 || (!(id in HatTable) && !(id in DB.AccNameTable))) {
 			return null;
 		}
-		return "data/sprite/\xbe\xc7\xbc\xbc\xbb\xe7\xb8\xae/" + DB.SEX[sex] + "/" + DB.SEX[sex] + ( DB.AccNameTable[id] || HatTable[id] );
+		return 'data/sprite/\xbe\xc7\xbc\xbc\xbb\xe7\xb8\xae/' + DB.SEX[sex] + '/' + DB.SEX[sex] + ( DB.AccNameTable[id] || HatTable[id] );
 	};
 
 
@@ -366,11 +366,11 @@ function(       Queue,        Client,     ClassTable,     ClassPalTable,     Mon
 	 */
 	DB.getPetEquipPath = function GetPetEquipPath( id )
 	{
-		if( id === 0 || !(id in PetInfo.EquipAct) ) {
+		if (id === 0 || !(id in PetInfo.EquipAct)) {
 			return null;
 		}
 
-		return "data/texture/" + PetInfo.EquipAct[id];
+		return 'data/texture/' + PetInfo.EquipAct[id];
 	};
 
 
@@ -380,7 +380,7 @@ function(       Queue,        Client,     ClassTable,     ClassPalTable,     Mon
 	 */
 	DB.getPetIllustPath = function GetPetIllustPath( id )
 	{
-		return "data/sprite/" + (PetInfo.IllustPath[id] || PetInfo.IllustPath[1002]);
+		return 'data/sprite/' + (PetInfo.IllustPath[id] || PetInfo.IllustPath[1002]);
 	};
 
 
@@ -392,10 +392,10 @@ function(       Queue,        Client,     ClassTable,     ClassPalTable,     Mon
 	 */
 	DB.getShieldPath = function GetShieldPath( id, job, sex )
 	{
-		if( id === 0 || !(job in ClassTable) ) {
+		if (id === 0 || !(job in ClassTable)) {
 			return null;
 		}
-		return "data/sprite/\xb9\xe6\xc6\xd0/" + ClassTable[job] + "/" + ClassTable[job] + "_" + DB.SEX[sex] + "_" + ( ShieldTable[id] || ShieldTable[1] );
+		return 'data/sprite/\xb9\xe6\xc6\xd0/' + ClassTable[job] + '/' + ClassTable[job] + '_' + DB.SEX[sex] + '_' + ( ShieldTable[id] || ShieldTable[1] );
 	};
 
 
@@ -407,11 +407,11 @@ function(       Queue,        Client,     ClassTable,     ClassPalTable,     Mon
 	 */
 	DB.getWeaponPath = function GetWeaponPath( id, job, sex )
 	{
-		if( id === 0 || !(job in ClassTable) ) {
+		if (id === 0 || !(job in ClassTable)) {
 			return null;
 		}
 
-		return "data/sprite/\xc0\xce\xb0\xa3\xc1\xb7/" + ClassTable[job] + "/" + ClassTable[job] + "_" + DB.SEX[sex] + ( WeaponTable.WeaponNameTable[id] || ("_" + id) ) ;
+		return 'data/sprite/\xc0\xce\xb0\xa3\xc1\xb7/' + ClassTable[job] + '/' + ClassTable[job] + '_' + DB.SEX[sex] + ( WeaponTable.WeaponNameTable[id] || ('_' + id) ) ;
 	};
 
 
@@ -424,8 +424,8 @@ function(       Queue,        Client,     ClassTable,     ClassPalTable,     Mon
 		var type = DB.getWeaponViewID(id);
 
 		// TODO: implement basejob
-		if( type === 0 ) {
-			// return "_" + ( basejob ) + "_attack.wav";
+		if (type === 0) {
+			// return '_' + ( basejob ) + '_attack.wav';
 		}
 
 		return WeaponTable.WeaponHitWaveNameTable[type];
@@ -439,52 +439,52 @@ function(       Queue,        Client,     ClassTable,     ClassPalTable,     Mon
 	DB.getWeaponViewID = function GetWeaponViewID(id)
 	{
 		// Already weapon type.
-		if( id < 32 )    return id;
+		if (id < 32)    return id;
 
 		// Weapon  ID starting at 1100
-		if( id <  1100 ) return  0;
+		if (id <  1100) return  0;
 
 		// Specific weapon range inside other range (wtf gravity ?)
-		if( id >= 1116 && id <= 1118 ) return  3;  // Katana
-		if( id >= 1314 && id <= 1315 ) return  7;  // 2 axe
-		if( id >= 1410 && id <= 1412 ) return  5;  // 2 spear
-		if( id >= 1472 && id <= 1473 ) return 10;  // 2 rod
-		if( id === 1599 ) return  8;  // angra manyu 
-		if( (id >= 13157 && id <= 13159) || id === 13172 || id === 13177 ) return 19; // gatling gun
-		if( (id >= 13154 && id <= 13156) || id === 13167 || id === 13168 || id === 13169 || id === 13173 || id === 13178) return 20; // rifle
-		if( (id >= 13160 && id <= 13162) || id === 13174 || id === 13179 ) return 21;
+		if (id >= 1116 && id <= 1118) return  3;  // Katana
+		if (id >= 1314 && id <= 1315) return  7;  // 2 axe
+		if (id >= 1410 && id <= 1412) return  5;  // 2 spear
+		if (id >= 1472 && id <= 1473) return 10;  // 2 rod
+		if (id === 1599 ) return  8;  // angra manyu 
+		if ((id >= 13157 && id <= 13159) || id === 13172 || id === 13177) return 19; // gatling gun
+		if ((id >= 13154 && id <= 13156) || id === 13167 || id === 13168 || id === 13169 || id === 13173 || id === 13178) return 20; // rifle
+		if ((id >= 13160 && id <= 13162) || id === 13174 || id === 13179) return 21;
 
 		// Ranges
-		if( id <  1150 ) return  2; // 1100-1149 -> 1 sword
-		if( id <  1200 ) return  3; // 1150-1199 -> 2 sword
-		if( id <  1250 ) return  1; // 1200-1249 ->   dagger
-		if( id <  1300 ) return 16; // 1250-1299 ->   katar
-		if( id <  1350 ) return  6; // 1300-1349 -> 1 axe
-		if( id <  1400 ) return  7; // 1314-1399 -> 2 axe
-		if( id <  1450 ) return  4; // 1400-1449 -> 1 spear
-		if( id <  1500 ) return  5; // 1450-1499 -> 2 spear
-		if( id <  1550 ) return  8; // 1500-1549 ->   mace
-		if( id <  1600 ) return 15; // 1550-1599 ->   book
-		if( id <  1650 ) return 10; // 1600-1649 ->   rod
-		if( id <  1700 ) return  0;
-		if( id <  1750 ) return 11; // 1700-1749 ->   bow
-		if( id <  1800 ) return  0;
-		if( id <  1850 ) return 12; // 1800-1849 ->   knuckle
-		if( id <  1900 ) return  0;
-		if( id <  1950 ) return 13; // 1900-1949 ->   instrument
-		if( id <  2000 ) return 14; // 1950-1999 ->   whip
-		if( id <  2050 ) return 23; // 2000-2049 -> 2 rod
-		if( id < 13000 ) return 0;
-		if( id < 13050 ) return  1; // 13000-13050 -> dagger
-		if( id < 13100 ) return  0;
-		if( id < 13150 ) return 17; // 13100-13149 -> revolver
-		if( id < 13200 ) return 18; // 13150-13199 -> rifle
-		if( id < 13300 ) return  0;
-		if( id < 13350 ) return 22; // 13300-13349 -> shurikens
-		if( id < 13400 ) return  0;
-		if( id < 13450 ) return  2; // 13400-13449 -> sword
-		if( id < 18100 ) return  0;
-		if( id < 18150 ) return 11; // 18100-18149 -> bow
+		if (id <  1150) return  2; // 1100-1149 -> 1 sword
+		if (id <  1200) return  3; // 1150-1199 -> 2 sword
+		if (id <  1250) return  1; // 1200-1249 ->   dagger
+		if (id <  1300) return 16; // 1250-1299 ->   katar
+		if (id <  1350) return  6; // 1300-1349 -> 1 axe
+		if (id <  1400) return  7; // 1314-1399 -> 2 axe
+		if (id <  1450) return  4; // 1400-1449 -> 1 spear
+		if (id <  1500) return  5; // 1450-1499 -> 2 spear
+		if (id <  1550) return  8; // 1500-1549 ->   mace
+		if (id <  1600) return 15; // 1550-1599 ->   book
+		if (id <  1650) return 10; // 1600-1649 ->   rod
+		if (id <  1700) return  0;
+		if (id <  1750) return 11; // 1700-1749 ->   bow
+		if (id <  1800) return  0;
+		if (id <  1850) return 12; // 1800-1849 ->   knuckle
+		if (id <  1900) return  0;
+		if (id <  1950) return 13; // 1900-1949 ->   instrument
+		if (id <  2000) return 14; // 1950-1999 ->   whip
+		if (id <  2050) return 23; // 2000-2049 -> 2 rod
+		if (id < 13000) return 0;
+		if (id < 13050) return  1; // 13000-13050 -> dagger
+		if (id < 13100) return  0;
+		if (id < 13150) return 17; // 13100-13149 -> revolver
+		if (id < 13200) return 18; // 13150-13199 -> rifle
+		if (id < 13300) return  0;
+		if (id < 13350) return 22; // 13300-13349 -> shurikens
+		if (id < 13400) return  0;
+		if (id < 13450) return  2; // 13400-13449 -> sword
+		if (id < 18100) return  0;
+		if (id < 18150) return 11; // 18100-18149 -> bow
 
 		// Not found ?
 		return 0;
@@ -500,12 +500,12 @@ function(       Queue,        Client,     ClassTable,     ClassPalTable,     Mon
 	{
 		var type = DB.getWeaponViewID(id);
 
-		if( job in WeaponAction ) {
-			if( type in WeaponAction[job] ) {
+		if (job in WeaponAction) {
+			if (type in WeaponAction[job]) {
 				return WeaponAction[job][type];
 			}
 
-			if( 0 in WeaponAction[job] ) {
+			if (0 in WeaponAction[job]) {
 				return WeaponAction[job][0];
 			}
 		}
@@ -530,7 +530,7 @@ function(       Queue,        Client,     ClassTable,     ClassPalTable,     Mon
 	DB.getItemPath = function GetItemPath( itemid, identify )
 	{
 		var it   = DB.getItemInfo( itemid );
-		return "data/sprite/\xbe\xc6\xc0\xcc\xc5\xdb/" + ( identify ? it.identifiedResourceName : it.unidentifiedResourceName );
+		return 'data/sprite/\xbe\xc6\xc0\xcc\xc5\xdb/' + ( identify ? it.identifiedResourceName : it.unidentifiedResourceName );
 	};
 
 

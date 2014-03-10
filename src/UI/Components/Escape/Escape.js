@@ -9,7 +9,7 @@
  */
 define(function(require)
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -34,11 +34,13 @@ define(function(require)
 	/**
 	 * Initialize UI
 	 */
-	Escape.init = function Init()
+	Escape.init = function init()
 	{
-		this.ui.css({ top: (Renderer.height-this.ui.height()) * 0.75, left:(Renderer.width-this.ui.width()) * 0.5 });
+		this.ui.css({
+			top: (Renderer.height-this.ui.height()) * 0.75,
+			left:(Renderer.width -this.ui.width())  * 0.5
+		});
 		this.draggable();
-
 		
 
 		// Only used in specific case
@@ -61,7 +63,7 @@ define(function(require)
 			else {
 				GraphicsOption.remove();
 			}
-		})
+		});
 
 		this.ui.find('.resurection').click(this.onResurectionRequest);
 		this.ui.find('.savepoint').click(this.onReturnSavePointRequest);
@@ -89,9 +91,9 @@ define(function(require)
 	 */
 	Escape.onKeyDown = function OnKeyDown( event )
 	{
-		if( event.which === KEYS.ESCAPE ) {
+		if (event.which === KEYS.ESCAPE) {
 
-			if( this.ui.is(':visible') ) {
+			if (this.ui.is(':visible')) {
 				this.ui.hide();
 			}
 			else {

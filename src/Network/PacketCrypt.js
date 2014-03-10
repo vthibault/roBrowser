@@ -130,7 +130,7 @@ define(function()
 				var date, key;
 
 				// Define a date or use the defined packetver ?
-				if (typeof ROConfig.packetKeys === 'number') {
+				if (typeof ROConfig.packetKeys === "number") {
 					date = ROConfig.packetKeys;
 				}
 				else {

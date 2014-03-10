@@ -9,7 +9,7 @@
  */
 define( function( require )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -30,10 +30,10 @@ define( function( require )
 	 * @param {mat4} modelView
 	 * @param {mat4} projection
 	 */
-	function Render( modelView, projection )
+	function render( modelView, projection )
 	{
 		// Item falling
-		if( this.objecttype === this.constructor.TYPE_ITEM ) {
+		if (this.objecttype === this.constructor.TYPE_ITEM) {
 			this.position[2] = Math.max(
 				Altitude.getCellHeight( this.position[0], this.position[1] ),
 				this.position[2] - 0.4
@@ -41,7 +41,7 @@ define( function( require )
 		}
 
 		// Move character if walking
-		if ( this.action === this.ACTION.WALK ) {
+		if (this.action === this.ACTION.WALK) {
 			this.walkProcess();
 		}
 
@@ -56,7 +56,7 @@ define( function( require )
 		}
 
 		// Update character UI (life, dialog, etc.)
-		RenderGUI( this, modelView, projection );
+		renderGUI( this, modelView, projection );
 	}
 
 
@@ -67,14 +67,14 @@ define( function( require )
 	 * @param {mat4} modelView
 	 * @param {mat4} projection
 	 */
-	var RenderGUI = function RenderGUIClosure()
+	var renderGUI = function renderGUIClosure()
 	{
 		var mat4    = glMatrix.mat4;
 		var vec4    = glMatrix.vec4;
 		var _matrix = mat4.create();
 		var _vector = vec4.create();
 
-		return function RenderGUI( entity, modelView, projection )
+		return function renderGUI( entity, modelView, projection )
 		{
 			// Move to camera
 			_vector[0] =  entity.position[0] + 0.5;
@@ -91,7 +91,7 @@ define( function( require )
 			mat4.multiply( _matrix, projection, _matrix );
 
 			if (entity.effectColor[3]) {
-				CalculateBoundingRect( entity, _matrix );
+				calculateBoundingRect( entity, _matrix );
 			}
 
 			// Get depth for rendering order
@@ -104,11 +104,11 @@ define( function( require )
 			entity.depth = _vector[3];
 
 			// Display UI
-			if( entity.life.display )    entity.life.render( _matrix );
-			if( entity.display.display ) entity.display.render( _matrix );
-			if( entity.dialog.display )  entity.dialog.render( _matrix );
-			if( entity.cast.display )    entity.cast.render( _matrix );
-			if( entity.room.display )    entity.room.render( _matrix );
+			if (entity.life.display)    entity.life.render( _matrix );
+			if (entity.display.display) entity.display.render( _matrix );
+			if (entity.dialog.display)  entity.dialog.render( _matrix );
+			if (entity.cast.display)    entity.cast.render( _matrix );
+			if (entity.room.display)    entity.room.render( _matrix );
 		};
 	}();
 
@@ -119,25 +119,24 @@ define( function( require )
 	 * @param {Entity}
 	 * @param {mat4}
 	 */
-	var CalculateBoundingRect = function CalculateBoundingRectClosure()
+	var calculateBoundingRect = function calculateBoundingRectClosure()
 	{
 		var vec4   = glMatrix.vec4;
 		var size   = glMatrix.vec2.create();
 		var vector = vec4.create();
 		var out    = vec4.create();
 
-		return function CalculateBoundingRect( entity, matrix )
+		return function calculateBoundingRect( entity, matrix )
 		{
 			var z;
 			var xFactor = 1 / (7 * entity.xSize);
 			var yFactor = 1 / (7 * entity.ySize);
 
 			// No body ? Default picking (sprite 110 for example)
-			if( entity.boundingRect.x1 === Infinity
-			 || entity.boundingRect.x2 ===-Infinity
-			 || entity.boundingRect.y1 ===-Infinity
-			 || entity.boundingRect.y2 === Infinity
-			) {
+			if (entity.boundingRect.x1 === Infinity ||
+			    entity.boundingRect.x2 ===-Infinity ||
+			    entity.boundingRect.y1 ===-Infinity ||
+			    entity.boundingRect.y2 === Infinity) {
 				entity.boundingRect.x1 = -25;
 				entity.boundingRect.x2 = +25;
 				entity.boundingRect.y1 = +45;
@@ -150,7 +149,7 @@ define( function( require )
 			vector[3] =  1.0;
 
 			// Swap x1 and x2 if needed
-			if( entity.boundingRect.x1 > entity.boundingRect.x2 ) {
+			if (entity.boundingRect.x1 > entity.boundingRect.x2) {
 				z = entity.boundingRect.x1;
 				entity.boundingRect.x1 = entity.boundingRect.x2;
 				entity.boundingRect.x2 = z;
@@ -178,34 +177,34 @@ define( function( require )
 
 
 			// Don't resize item
-			if( entity.objecttype !== entity.constructor.TYPE_ITEM ) {
+			if (entity.objecttype !== entity.constructor.TYPE_ITEM) {
 
 				// Minimum picking size is 45x45 (official client feature)
-				if( entity.boundingRect.x2 - entity.boundingRect.x1 < 90 ) {
+				if (entity.boundingRect.x2 - entity.boundingRect.x1 < 90) {
 					entity.boundingRect.x1 = (entity.boundingRect.x1 + entity.boundingRect.x2) * 0.5 - 45;
 					entity.boundingRect.x2 = (entity.boundingRect.x1 + entity.boundingRect.x2) * 0.5 + 45;
 				}
 
-				if( entity.boundingRect.y2 - entity.boundingRect.y1 < 90 ) {
+				if (entity.boundingRect.y2 - entity.boundingRect.y1 < 90) {
 					entity.boundingRect.y1 = (entity.boundingRect.y1 + entity.boundingRect.y2) * 0.5 - 45;
 					entity.boundingRect.y2 = (entity.boundingRect.y1 + entity.boundingRect.y2) * 0.5 + 45;
 				}
 			}
-		}
+		};
 	}();
 
 
 	/**
 	 * Render Entity
 	 */
-	var RenderEntity = function RenderEntityClosure()
+	var renderEntity = function renderEntityClosure()
 	{
 		var _position = new Int32Array(2);
 
-		return function RenderEntity()
+		return function renderEntity()
 		{
 			// Update shadow
-			SpriteRenderer.shadow    = Ground.getShadowFactor( this.position[0], this.position[1] );
+			SpriteRenderer.shadow = Ground.getShadowFactor( this.position[0], this.position[1] );
 
 			var animation  = this.animation;
 			var Entity     = this.constructor;
@@ -213,17 +212,17 @@ define( function( require )
 			_position[1]   = 0;
 
 			// Animation change ! Get it now
-			if ( animation.save && animation.delay < Renderer.tick ) {
+			if (animation.save && animation.delay < Renderer.tick) {
 				this.setAction(animation.save);
 			}
 
 			// Avoid look up, render as IDLE all not supported frames
 			var action    = this.action === -1 ? this.ACTION.IDLE : this.action;
-			var direction = ( Camera.direction + this.direction + 8 ) % 8;
+			var direction = (Camera.direction + this.direction + 8) % 8;
 			var behind    = direction > 1 && direction < 6;
 
 			// Render shadow (shadow isn't render when player is sit or dead).
-			if( action !== this.ACTION.DIE && action !== this.ACTION.SIT ) {
+			if (action !== this.ACTION.DIE && action !== this.ACTION.SIT) {
 	
 				// Shadow is base on gat height
 				SpriteRenderer.position[0] = this.position[0];
@@ -232,50 +231,50 @@ define( function( require )
 
 				// Item shadow is smaller
 				// TODO: find a better way
-				if( this.objecttype === Entity.TYPE_ITEM ) {
+				if (this.objecttype === Entity.TYPE_ITEM) {
 					this.xSize = this.ySize = 10;
-					RenderElement( this, this.files.shadow, 'shadow', _position, false );
+					renderElement( this, this.files.shadow, 'shadow', _position, false );
 					this.xSize = this.ySize = 5;
 				}
 				else {
-					RenderElement( this, this.files.shadow, 'shadow', _position, false );
+					renderElement( this, this.files.shadow, 'shadow', _position, false );
 				}
 			}
 
 			SpriteRenderer.position.set(this.position);
 
 			// Shield is behind on some position, seems to be hardcoded by the client
-			if( this.objecttype === Entity.TYPE_PC && this.shield && behind ) {
-				RenderElement( this, this.files.shield, 'shield', _position, true );
+			if (this.objecttype === Entity.TYPE_PC && this.shield && behind) {
+				renderElement( this, this.files.shield, 'shield', _position, true );
 			}
 
 			// Draw body, get head position
-			RenderElement( this, this.files.body, 'body', _position, true );
+			renderElement( this, this.files.body, 'body', _position, true );
 
-			if( this.objecttype === Entity.TYPE_PC ) {
+			if (this.objecttype === Entity.TYPE_PC) {
 				// Draw Head
-				RenderElement( this, this.files.head, 'head', _position, false);
+				renderElement( this, this.files.head, 'head', _position, false);
 
 				// Draw Hats
-				if( this.accessory ) {
-					RenderElement( this, this.files.accessory, 'head', _position, false);
+				if (this.accessory > 0) {
+					renderElement( this, this.files.accessory, 'head', _position, false);
 				}
 	
-				if( this.accessory2 && this.accessory2 !== this.accessory ) {
-					RenderElement( this, this.files.accessory2, 'head', _position, false);
+				if (this.accessory2 > 0 && this.accessory2 !== this.accessory) {
+					renderElement( this, this.files.accessory2, 'head', _position, false);
 				}
 
-				if( this.accessory3 && this.accessory3 !== this.accessory2 && this.accessory3 !== this.accessory ) {
-					RenderElement( this, this.files.accessory3, 'head', _position, false);
+				if (this.accessory3 > 0 && this.accessory3 !== this.accessory2 && this.accessory3 !== this.accessory) {
+					renderElement( this, this.files.accessory3, 'head', _position, false);
 				}
 
 				// Draw Others elements
-				if( this.weapon ) {
-					RenderElement( this, this.files.weapon, 'weapon', _position, true );
+				if (this.weapon > 0) {
+					renderElement( this, this.files.weapon, 'weapon', _position, true );
 				}
 
-				if( this.shield && !behind ) {
-					RenderElement( this, this.files.shield, 'shield', _position, true );
+				if (this.shield > 0 && !behind) {
+					renderElement( this, this.files.shield, 'shield', _position, true );
 				}
 			}
 		};
@@ -293,15 +292,15 @@ define( function( require )
 	 * @param {vec2}   position (reference)
 	 * @param {boolean} is_main - true if it's the main element (body)
 	 */
-	var RenderElement = function RenderElementClosure()
+	var renderElement = function renderElementClosure()
 	{
 		var _result   = new Array(2);
 		var _position = new Int32Array(2);
 
-		return function RenderElement( entity, files, type, position, is_main )
+		return function renderElement( entity, files, type, position, is_main )
 		{
 			// Nothing to render
-			if( !files.spr || !files.act ) {
+			if (!files.spr || !files.act) {
 				return;
 			}
 
@@ -310,7 +309,7 @@ define( function( require )
 			var act = Client.loadFile(files.act);
 	
 			// Not loaded yet
-			if( !spr || !act ) {
+			if (!spr || !act) {
 				return;
 			}
 
@@ -324,32 +323,32 @@ define( function( require )
 				) % act.actions.length ];                      // Avoid overflow on action (ex: if there is just one action)
 
 			// Find animation
-			var info         = CalcAnimation( entity, entity.action, action, type, Renderer.tick - entity.animation.tick, _result );
+			calcAnimation( entity, entity.action, action, type, Renderer.tick - entity.animation.tick, _result );
 			var animation_id = _result[0];
 			var sound_delay  = _result[1];
 			var animation    = action.animations[animation_id];
 			var layers       = animation.layers;
 
 			// Play sound
-			if( animation.sound > -1 ) {
+			if (animation.sound > -1) {
 				entity.soundPlay( act.sounds[animation.sound], sound_delay );
 			}
 
 			_position[0] = 0;
 			_position[1] = 0;
 
-			if ( animation.pos.length && !is_main ) {
+			if (animation.pos.length && !is_main) {
 				_position[0] = position[0] - animation.pos[0].x;
 				_position[1] = position[1] - animation.pos[0].y;
 			}
 
 			// Render all frames
-			for ( var i=0, count=layers.length; i<count; ++i ) {
+			for (var i=0, count=layers.length; i<count; ++i) {
 				entity.renderLayer( layers[i], spr, pal, _position, type === 'body' );
 			}
 
 			// Save reference
-			if( is_main && animation.pos.length ) {
+			if (is_main && animation.pos.length) {
 				position[0] = animation.pos[0].x;
 				position[1] = animation.pos[0].y;
 			}
@@ -360,10 +359,10 @@ define( function( require )
 	/**
 	 * Calculate animations
 	 */
-	function CalcAnimation( entity, ACTION, action, type, time_passed, out )
+	function calcAnimation( entity, ACTION, action, type, time_passed, out )
 	{
 		// Fix for shadow
-		if( type === "shadow" ) {
+		if (type === 'shadow') {
 			out[0] = 0;
 			out[1] = 0;
 			return;
@@ -378,19 +377,19 @@ define( function( require )
 
 		// Delay on walk
 		// TODO: search how works the delay on walk and aspd.
-		if( type === "body" && ACTION === entity.ACTION.WALK ) {
+		if (type === 'body' && ACTION === entity.ACTION.WALK) {
 			delay = delay / 150 * entity.walk.speed;
 		}
 
 		// Delay on attack
-		else if( ACTION === entity.ACTION.ATTACK  || ACTION === entity.ACTION.ATTACK2 || ACTION === entity.ACTION.ATTACK3 ) {
+		else if (ACTION === entity.ACTION.ATTACK  || ACTION === entity.ACTION.ATTACK2 || ACTION === entity.ACTION.ATTACK3) {
 			delay = entity.attack_speed / animations_count * 2;
 		}
 
 
 		// If hat/hair, divide to 3 since there is doridori include
 		// TODO: fixed, just on IDLE and SIT ?
-		if( type === "head" && ( ACTION === entity.ACTION.IDLE || ACTION === entity.ACTION.SIT ) ) {
+		if (type === 'head' && ( ACTION === entity.ACTION.IDLE || ACTION === entity.ACTION.SIT )) {
 			animations_count  = Math.floor( animations_count / 3 );
 			headDir           = entity.headDir + 0;
 		}
@@ -400,18 +399,18 @@ define( function( require )
 		var anim, animation = entity.animation;
 
 		// Get rid of doridori
-		if ( type === "body" && entity.objecttype === Entity.TYPE_PC && ( ACTION === entity.ACTION.IDLE || ACTION === entity.ACTION.SIT ) ) {
+		if (type === 'body' && entity.objecttype === Entity.TYPE_PC && ( ACTION === entity.ACTION.IDLE || ACTION === entity.ACTION.SIT )) {
 			anim = entity.headDir;
 		}
 
 		// Don't play, so stop at the current frame.
-		else if ( animation.play === false ) {
+		else if (animation.play === false) {
 			anim  = Math.min(animation.frame, animations_length-1);
 			delay = Infinity;
 		}
 
 		// Repeatable
-		else if ( animation.repeat ) {
+		else if (animation.repeat) {
 			anim = (
 				Math.floor( time_passed / delay )  // animation based on time (with floor hack)
 				% animations_count                 // avoid overflow, it's repeatable
@@ -428,10 +427,10 @@ define( function( require )
 				+ animation.frame            // previous frame
 			);
 
-			if ( type === "body" && anim >= animations_length - 1 ) {
+			if (type === 'body' && anim >= animations_length - 1) {
 				animation.frame = anim = animations_length - 1;
 				animation.play  = false;
-				if ( animation.next ) {
+				if (animation.next) {
 					entity.setAction( animation.next );
 				}
 			}
@@ -455,10 +454,10 @@ define( function( require )
 	 * @param {Array} pos [x,y] where to render the sprite
 	 * @param {bool} is main body
 	 */
-	function RenderLayer( layer, spr, pal, pos, isbody )
+	function renderLayer( layer, spr, pal, pos, isbody )
 	{
 		// If there is nothing to render
-		if ( layer.index < 0 ) {
+		if (layer.index < 0) {
 			return;
 		}
 
@@ -469,14 +468,14 @@ define( function( require )
 		var index   = layer.index + 0;
 		var is_rgba = layer.spr_type === 1 || spr.rgba_index === 0;
 
-		if( !is_rgba ) {
+		if (!is_rgba) {
 			SpriteRenderer.image.palette = pal.texture;
 			SpriteRenderer.image.size[0] = spr.frames[ index ].width;
 			SpriteRenderer.image.size[1] = spr.frames[ index ].height;
 		}
 
 		// RGBA is at the end of the spr.
-		else if ( layer.spr_type === 1 ) {
+		else if (layer.spr_type === 1) {
 			index += spr.old_rgba_index;
 		}
 
@@ -489,7 +488,7 @@ define( function( require )
 
 
 		// Get the entity bounding rect
-		if( isbody ) {
+		if (isbody) {
 			this.boundingRect.x1 = Math.min( this.boundingRect.x1,  (layer.pos[0] + pos[0]) - width /2 );
 			this.boundingRect.y1 = Math.max( this.boundingRect.y1, -(layer.pos[1] + pos[1]) + height/2 );
 			this.boundingRect.x2 = Math.max( this.boundingRect.x2,  (layer.pos[0] + pos[0]) + width /2 );
@@ -500,7 +499,7 @@ define( function( require )
 		SpriteRenderer.angle = layer.angle;
 
 		// Image inverted
-		if ( layer.is_mirror ) {
+		if (layer.is_mirror) {
 			width = -width;
 		}
 
@@ -519,7 +518,7 @@ define( function( require )
 		SpriteRenderer.color[3] = layer.color[3] * this.effectColor[3];
 
 		// apply disapear
-		if ( this.remove_tick ) {
+		if (this.remove_tick) {
 			SpriteRenderer.color[3] *= 1 - ( Renderer.tick - this.remove_tick  ) / this.remove_delay;
 		}
 
@@ -540,8 +539,8 @@ define( function( require )
 	 */
 	return function Init()
 	{
-		this.render         = Render;
-		this.renderLayer    = RenderLayer;
-		this.renderEntity   = RenderEntity;
+		this.render         = render;
+		this.renderLayer    = renderLayer;
+		this.renderEntity   = renderEntity;
 	};
 });

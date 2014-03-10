@@ -25,7 +25,7 @@ define(function()
 		var x = value[0];
 		var y = value[1];
 	
-		if( littleEndian ) {
+		if (littleEndian) {
 			this.setInt8( offset + 0, x >> 2, true);
 			this.setInt8( offset + 1, ((x % 4) << 6) | (y >> 4), true);
 			this.setInt8( offset + 2, (y % 16) << 4, true);
@@ -46,11 +46,13 @@ define(function()
 	 * @param {number} len
 	 */
 	DataView.prototype.setString = function SetString( offset, str, len) {
-		if ( len )
+		if (len) {
 			str = String(str).substr(0,len);
+		}
 	
-		for ( var i=0, count=str.length; i<count; ++i )
+		for (var i = 0, count = str.length; i < count; ++i) {
 			this.setUint8( offset+i, str.charCodeAt(i));
+		}
 	};
 
 
@@ -74,8 +76,8 @@ define(function()
 	 * @param {number} value
 	 * @return {BinaryWriter}
 	 */
-	BinaryWriter.prototype.setInt8   = 
-	BinaryWriter.prototype.writeChar = 
+	BinaryWriter.prototype.setInt8   =
+	BinaryWriter.prototype.writeChar =
 	BinaryWriter.prototype.writeByte = function setInt8( value )
 	{
 		this.view.setInt8( this.offset++, value, true );
@@ -90,7 +92,7 @@ define(function()
 	 * @return {BinaryWriter}
 	 */
 	BinaryWriter.prototype.setUint8   =
-	BinaryWriter.prototype.writeUChar = 
+	BinaryWriter.prototype.writeUChar =
 	BinaryWriter.prototype.writeUByte = function setUint8( value )
 	{
 		this.view.setUint8( this.offset++, value, true );

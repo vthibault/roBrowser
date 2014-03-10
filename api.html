@@ -24,7 +24,7 @@
 					script.src  = 'src/Vendors/require.js';
 					script.type = 'text/javascript';
 	
-					if( ROConfig.development ) {
+					if (ROConfig.development) {
 						script.setAttribute('data-main', 'src/App/' + event.data.application);
 						document.getElementsByTagName('head')[0].appendChild(script);
 						event.source.postMessage('ready', '*' );

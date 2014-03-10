@@ -29,8 +29,8 @@ define(function()
 		var versions = this.versions;
 		var i, count = versions.length;
 	
-		for( i=0; i<count-1; ++i ) {
-			if( _min < versions[i+1][0] ) {
+		for (i = 0; i < count-1; ++i) {
+			if (_min < versions[i+1][0]) {
 				return versions[i];
 			}
 		}
@@ -48,12 +48,12 @@ define(function()
 		var packet, param;
 		var i, count = list.length;
 
-		for( i=0; i<count; ++i ) {
+		for (i = 0; i < count; ++i) {
 			param    = list[i];
 			packet   = param[0];
 			param[0] = date;
 
-			if( !packet.prototype.versions )
+			if (!packet.prototype.versions)
 				packet.prototype.versions = [];
 	
 			packet.prototype.versions.push(list[i]);
@@ -72,14 +72,14 @@ define(function()
 		get min() { return _min; },
 
 		set max(v) {
-			if( v < _max ) {
+			if (v < _max) {
 				_max = Math.max(v, _min );
 				console.log( "%c[PACKETVER] Guess packet version between", "color:#007000", _min , "-", _max );
 			}
 		},
 
 		set min(v) {
-			if( v > _min ) {
+			if (v > _min) {
 				_min = Math.min(v, _max);
 				console.log( "%c[PACKETVER] Guess packet version between", "color:#007000", _min , "-", _max );
 			}

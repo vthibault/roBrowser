@@ -9,7 +9,7 @@
  */
 define( ['Core/Preferences'], function( Preferences )
 {
-	"use strict";
+	'use strict';
 
 
 	/**

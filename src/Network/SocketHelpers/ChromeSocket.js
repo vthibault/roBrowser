@@ -47,7 +47,7 @@ define(function()
 	 */
 	Socket.prototype.send = function Send( buffer )
 	{
-		if ( this.connected ) {
+		if (this.connected) {
 			chrome.socket.write( this.socketID, buffer, this.__onWrite.bind(this));
 		}
 	};
@@ -58,7 +58,7 @@ define(function()
 	 */
 	Socket.prototype.close = function Close()
 	{
-		if( this.connected ) {
+		if (this.connected) {
 			chrome.socket.disconnect( this.socketID );
 			chrome.socket.destroy( this.socketID );
 			this.connected = false;
@@ -88,13 +88,13 @@ define(function()
 	{
 		this.connected = success >= 0;
 
-		if( this.onComplete ) {
+		if (this.onComplete) {
 			this.onComplete(this.connected);
 		}
 
 		// Start receiving data
-		if( this.connected ) {
-			this.__onReceive();	
+		if (this.connected) {
+			this.__onReceive();
 		}
 	};
 
@@ -106,7 +106,7 @@ define(function()
 	{
 		this.close();
 
-		if( this.onClose ) {
+		if (this.onClose) {
 			this.onClose();
 		}
 	};
@@ -117,7 +117,7 @@ define(function()
 	 *
 	 * @param {object} writeInfo
 	 */
-	Socket.prototype.__onWrite = function onWrite( writeInfo )
+	Socket.prototype.__onWrite = function onWrite()
 	{
 	};
 
@@ -129,18 +129,18 @@ define(function()
 	 */
 	Socket.prototype.__onReceive = function onReceive( readInfo )
 	{
-		if( readInfo ) {
-			if( readInfo.resultCode < 0 ) {
+		if (readInfo) {
+			if (readInfo.resultCode < 0) {
 				this.close();
 				return;
 			}
 
-			if( this.onMessage ) {
+			if (this.onMessage) {
 				this.onMessage( readInfo.data );
 			}
 		}
 
-		chrome.socket.read( this.socketID, null, this.__onReceive.bind(this)); 
+		chrome.socket.read( this.socketID, null, this.__onReceive.bind(this));
 	};
 
 

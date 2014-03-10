@@ -12,7 +12,7 @@
 
 define(function( require )
 {
-	"use strict";
+	'use strict';
 
 
 	// Always in development mode when running test (easier to debug)
@@ -45,7 +45,7 @@ define(function( require )
 	/**
 	 * @var {string} file extention
 	 */
-	FileTester.prototype.ext = "";
+	FileTester.prototype.ext = '';
 
 
 	/**
@@ -62,10 +62,10 @@ define(function( require )
 		var _self = this;
 
 		// Wait for initialisation
-		Thread.hook("THREAD_READY", function(){
+		Thread.hook('THREAD_READY', function(){
 			Intro.onFilesSubmit = function( files ) {
 				Client.onFilesLoaded = function(){
-					Client.search( new RegExp("data\\\\[^\\0]+\\."+ _self.ext, "gi"), Test.bind(_self) );
+					Client.search( new RegExp('data\\\\[^\\0]+\\.'+ _self.ext, 'gi'), Test.bind(_self) );
 				};
 				Client.init( files );
 			};
@@ -89,17 +89,17 @@ define(function( require )
 		Intro.remove();
 
 		document.body.innerHTML =
-			'<h1>'+ ext.toUpperCase() +' tester</h1>'
-		+	'<p>Load each '+ ext +' files to detect errors</p>'
-		+	'<div><strong>Progress:</strong> <span id="log"></span></div>'
-		+	'<br/>'
-		+	'<div id="error">'
-		+		'<h1>Errors :</h1>'
-		+	'</div>';
+			'<h1>'+ ext.toUpperCase() +' tester</h1>' +
+			'<p>Load each '+ ext +' files to detect errors</p>' +
+			'<div><strong>Progress:</strong> <span id="log"></span></div>' +
+			'<br/>' +
+			'<div id="error">' +
+				'<h1>Errors :</h1>' +
+			'</div>';
 
-		document.body.style.backgroundColor = "white";
-		document.body.style.overflow = "auto";
-		document.body.style.userSelect = "text";
+		document.body.style.backgroundColor = 'white';
+		document.body.style.overflow        = 'auto';
+		document.body.style.userSelect      = 'text';
 
 		var log   = document.getElementById('log');
 		var error = document.getElementById('error');
@@ -107,11 +107,11 @@ define(function( require )
 		var i, index = 0, count = list.length;
 		var start = Date.now();
 
-		for( i = 0; i < 5 && i < count; ++i ) {
-			LoadNext(index++);
+		for (i = 0; i < 5 && i < count; ++i) {
+			loadNext(index++);
 		}
 
-		function LoadNext(i){
+		function loadNext(i){
 			Client.getFile( list[i], function(data){
 				try {
 					var tick = (Date.now()-start);
@@ -128,7 +128,7 @@ define(function( require )
 				index++;
 
 				if (index < count) {
-					LoadNext(index);
+					loadNext(index);
 				}
 	
 				if (index === count+4) {
@@ -136,7 +136,7 @@ define(function( require )
 				}
 			});
 		}
-	};
+	}
 
 
 	/**

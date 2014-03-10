@@ -10,61 +10,55 @@
 define( ['Utils/gl-matrix', 'Utils/PathFinding', 'Controls/MouseEventHandler'],
 function(       glMatrix,          PathFinding,            Mouse )
 {
-	"use strict";
-
-
-	var mat4 = glMatrix.mat4;
-	var vec3 = glMatrix.vec3;
-	var vec4 = glMatrix.vec4;
+	'use strict';
 
 
 	/**
-	 * @var {array} Cells where stored altitude
+	 * Altitude Namespace
 	 */
-	var _cells       = null;
-
-
-	/**
-	 * @var {array} Altitudes cells type
-	 */
-	var _types       = null;
+	var Altitude = {};
 
 
 	/**
 	 * @var {number} map width
 	 */
-	var _width       = 0;
+	Altitude.width = 0;
 
 
 	/**
 	 * @var {number} map height
-	 *
 	 */
-	var _height      = 0;
+	Altitude.height = 0;
 
 
 	/**
-	 * @var {vec3} Ray start
+	 * @var {object} enum cell type
+	 * (Copy from Loaders/Altitude.js)
 	 */
-	var _from     = vec3.create();
+	Altitude.TYPE = {
+		NONE:     1 << 0,
+		WALKABLE: 1 << 1,
+		WATER:    1 << 2,
+		SNIPABLE: 1 << 3
+	};
 
 
 	/**
-	 * @var {vec4} Ray end
+	 * @var {number} ray intersection count
 	 */
-	var _to       = vec4.create();
+	Altitude.MAX_INTERSECT_COUNT = 100;
 
 
 	/**
-	 * @var {vec3} Ray direction
+	 * @var {array} Cells where stored altitude
 	 */
-	var _unit     = vec3.create();
+	var _cells = null;
 
 
 	/**
-	 * @var {mat4} temporary matrix
+	 * @var {array} Altitudes cells type
 	 */
-	var _matrix   = mat4.create();
+	var _types = null;
 
 
 	/**
@@ -73,28 +67,31 @@ function(       glMatrix,          PathFinding,            Mouse )
 	 * @param {object} gl context
 	 * @param {object} data Altitude { mesh, vertCount, cells, width, height, colors }
 	 */
-	function Init( data )
+	Altitude.init = function init( data )
 	{
 		// Extract 'type' from cells
 		var cells = data.cells;
 		var i, count = cells.length/5;
-
 		var types = new Uint8Array(count);
-		for( i = 0; i < count; ++i ) {
+
+		for (i = 0; i < count; ++i) {
 			types[i] = cells[i*5+4];
 		}
 
 		// Save information
-		_cells     = data.cells;
-		_types     = types;
-		_width     = data.width;
-		_height    = data.height;
+		_cells          = data.cells;
+		_types          = types;
+		Altitude.width  = data.width;
+		Altitude.height = data.height;
 
 		// Initialize PathFinding
-		PathFinding.setGat({ width:_width, height:_height, cells:types, types:this.TYPE });
-		this.width  = _width;
-		this.height = _height;
-	}
+		PathFinding.setGat({
+			width:  Altitude.width,
+			height: Altitude.height,
+			cells:  types,
+			types:  Altitude.TYPE
+		});
+	};
 
 
 	/**
@@ -104,25 +101,26 @@ function(       glMatrix,          PathFinding,            Mouse )
 	 * @param {number} y
 	 * @return {Array} cell
 	 */
-	function GetCell( x, y )
+	Altitude.getCell = function getCellClosure()
 	{
-		var index = ( Math.floor(x) + Math.floor(y) * _width ) * 5;
-		var vec4  = GetCell.__tmp;
+		var tmp = new Float32Array(5);
 
-		vec4[0] = _cells[index+0];
-		vec4[1] = _cells[index+1];
-		vec4[2] = _cells[index+2];
-		vec4[3] = _cells[index+3];
-		vec4[4] = _cells[index+4];
+		return function getCell(x, y)
+		{
+			var index = (Math.floor(x) + Math.floor(y) * Altitude.width) * 5;
 
-		return vec4;
-	}
+			tmp[0] = _cells[index+0];
+			tmp[1] = _cells[index+1];
+			tmp[2] = _cells[index+2];
+			tmp[3] = _cells[index+3];
+			tmp[4] = _cells[index+4];
+
+			return tmp;
+		};
+	}();
 
 
-	/**
-	 * @var {vec4} tmp to avoid memory allocation
-	 */
-	GetCell.__tmp = new Float32Array(5);
+	
 
 
 	/**
@@ -132,10 +130,10 @@ function(       glMatrix,          PathFinding,            Mouse )
 	 * @param {number} y
 	 * @return {number} cell type
 	 */
-	function GetCellType(x, y)
+	Altitude.getCellType = function getCellType(x, y)
 	{
-		return _types[ x + y * _width ];
-	}
+		return _types[ x + y * Altitude.width ];
+	};
 
 
 	/**
@@ -145,24 +143,24 @@ function(       glMatrix,          PathFinding,            Mouse )
 	 * @param {number} y
 	 * @return {number} height
 	 */
-	function GetCellHeight( x, y )
+	Altitude.getCellHeight = function getCellHeight( x, y )
 	{
 		// Map not loaded yet ?
-		if( !_cells ) {
+		if (!_cells) {
 			return 0.0;
 		}
 
 		var index, x1, x2;
 
-		index  = ( Math.floor(x) + Math.floor(y) * _width ) * 5;
+		index  = (Math.floor(x) + Math.floor(y) * Altitude.width) * 5;
 
 		x      = x % 1;
 		y      = y % 1;
 		x1     = _cells[index+0] + (_cells[index+1]-_cells[index+0]) * x;
 		x2     = _cells[index+2] + (_cells[index+3]-_cells[index+2]) * x;
 
-		return - ( x1 + ( x2 - x1 ) * y );
-	}
+		return - (x1 + ( x2 - x1 ) * y);
+	};
 
 
 	/**
@@ -173,73 +171,66 @@ function(       glMatrix,          PathFinding,            Mouse )
 	 * @param {vec2} output vector
 	 * @return {bool} success
 	 */
-	function Intersect( modelView, projection, out )
+	Altitude.intersect = function intersectClosure()
 	{
-		var i, count = this.MAX_INTERSECT_COUNT;
+		var mat4    = glMatrix.mat4;
+		var vec3    = glMatrix.vec3;
+		var vec4    = glMatrix.vec4;
 
-		// Extract camera position
-		mat4.invert( _matrix, modelView );
-		_from[0] = _matrix[12];
-		_from[1] = _matrix[13];
-		_from[2] = _matrix[14];
+		var _from   = vec3.create();
+		var _to     = vec4.create();
+		var _unit   = vec3.create();
+		var _matrix = mat4.create();
 
-		// set two vectors with opposing z values
-		_to[0] = (Mouse.screen.x / Mouse.screen.width)  * 2 - 1;
-		_to[1] =-(Mouse.screen.y / Mouse.screen.height) * 2 + 1;
-		_to[2] =  1.0; 
-		_to[3] =  1.0;
+		return function intersect( modelView, projection, out )
+		{
+			var i, count = Altitude.MAX_INTERSECT_COUNT;
 
-		// Unproject
-		mat4.multiply( _matrix, projection, modelView);
-		mat4.invert( _matrix, _matrix );
-		vec4.transformMat4( _to, _to, _matrix );
+			// Extract camera position
+			mat4.invert( _matrix, modelView );
+			_from[0] = _matrix[12];
+			_from[1] = _matrix[13];
+			_from[2] = _matrix[14];
 
-		_to[0] /= _to[3];
-		_to[1] /= _to[3];
-		_to[2] /= _to[3];
+			// set two vectors with opposing z values
+			_to[0] = (Mouse.screen.x / Mouse.screen.width)  * 2 - 1;
+			_to[1] =-(Mouse.screen.y / Mouse.screen.height) * 2 + 1;
+			_to[2] =  1.0;
+			_to[3] =  1.0;
 
-		// Extract direction
-		vec3.sub( _unit, _to, _from );
-		vec3.normalize(_unit, _unit);
+			// Unproject
+			mat4.multiply( _matrix, projection, modelView);
+			mat4.invert( _matrix, _matrix );
+			vec4.transformMat4( _to, _to, _matrix );
 
-		// Search
-		for( i=0; i < count; ++i ) {
-			_from[0] += _unit[0];
-			_from[1] += _unit[1];
-			_from[2] += _unit[2];
+			_to[0] /= _to[3];
+			_to[1] /= _to[3];
+			_to[2] /= _to[3];
 
-			if( Math.abs( GetCellHeight( _from[0], _from[2]) + _from[1] ) < 0.5 ) {
-				out[0] = _from[0];
-				out[1] = _from[2];
-				return true;
+			// Extract direction
+			vec3.sub( _unit, _to, _from );
+			vec3.normalize(_unit, _unit);
+
+			// Search
+			for (i = 0; i < count; ++i) {
+				_from[0] += _unit[0];
+				_from[1] += _unit[1];
+				_from[2] += _unit[2];
+
+				if (Math.abs(Altitude.getCellHeight( _from[0], _from[2]) + _from[1]) < 0.5) {
+					out[0] = _from[0];
+					out[1] = _from[2];
+					return true;
+				}
 			}
-		}
 
-		return false;
-	}
+			return false;
+		};
+	}();
 
 
 	/**
 	 * Export
 	 */
-	return new function Altitude()
-	{
-		// Copy from Loaders/Altitude.js
-		this.TYPE = {
-			NONE:     1 << 0,
-			WALKABLE: 1 << 1,
-			WATER:    1 << 2,
-			SNIPABLE: 1 << 3
-		};
-
-		this.init                = Init;
-		this.width               = 0;
-		this.height              = 0;
-		this.MAX_INTERSECT_COUNT = 100;
-
-		this.getCellType         = GetCellType;
-		this.getCellHeight       = GetCellHeight;
-		this.getCell             = GetCell;
-		this.intersect           = Intersect;
-	};
+	return Altitude;
 });

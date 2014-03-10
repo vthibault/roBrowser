@@ -9,14 +9,13 @@
  */
 define(function(require)
 {
-	"use strict";
+	'use strict';
 
 
 	/**
 	 * Dependencies
 	 */
 	var jQuery             = require('Utils/jquery');
-	var Client             = require('Core/Client');
 	var KEYS               = require('Controls/KeyEventHandler');
 	var Renderer           = require('Renderer/Renderer');
 	var UIManager          = require('UI/UIManager');
@@ -34,25 +33,34 @@ define(function(require)
 	/**
 	 * @var {number} index selected in menu
 	 */
-	NpcMenu.index = 0;
+	var _index = 0;
+
+
+	/**
+	 * @var {number} NPC ID
+	 */
+	var _ownerID = 0;
 
 
 	/**
 	 * Initialize component
 	 */
-	NpcMenu.init = function OnInit()
+	NpcMenu.init = function init()
 	{
-		this.ui.find('.ok').click( this.validate.bind(this) );
-		this.ui.find('.cancel').click( this.cancel.bind(this) );
+		this.ui.find('.ok').click(validate);
+		this.ui.find('.cancel').click(cancel);
 
-		this.ui.css({ top: Math.max(376, Renderer.height/2 + 76 ), left: Math.max( Renderer.width/3, 20) });
+		this.ui.css({
+			top: Math.max(376, Renderer.height/2 + 76 ),
+			left: Math.max( Renderer.width/3, 20)
+		});
 
 		this.draggable();
 
 		// Scroll feature should block at each line
 		var lastScrollPos = 0;
 		this.ui.find('.content').on('scroll', function(){
-			if( this.scrollTop > lastScrollPos ) {
+			if (this.scrollTop > lastScrollPos) {
 				this.scrollTop = Math.ceil(this.scrollTop/20) * 20;
 			}
 			else {
@@ -64,46 +72,59 @@ define(function(require)
 
 
 	/**
+	 * Clean up events
+	 */
+	NpcMenu.onRemove = function onRemove()
+	{
+		this.ui.find('.content div').unbind();
+		this.ui.find('.content').empty();
+	};
+
+
+	/**
 	 * Bind KeyDown event
 	 */
-	NpcMenu.onKeyDown = function(event)
+	NpcMenu.onKeyDown = function onKeyDown(event)
 	{
-		switch( event.which ) {
+		var count, top;
+		var content;
+
+		switch (event.which) {
 
 			case KEYS.ENTER:
-				this.validate();
+				validate();
 				break;
 
 			case KEYS.ESCAPE:
-				this.cancel();
+				cancel();
 				break;
 
 			case KEYS.UP:
-				var count  = this.ui.find('.content div').length;
-				this.index = Math.max( this.index - 1, 0 );
+				count  = this.ui.find('.content div').length;
+				_index = Math.max( _index - 1, 0 );
 
 				this.ui.find('.content div').removeClass('selected');
-				this.ui.find('.content div:eq('+ this.index +')').addClass('selected');
+				this.ui.find('.content div:eq('+ _index +')').addClass('selected');
 
-				var content = this.ui.find('.content')[0];
-				var top     = this.index * 20;
+				content = this.ui.find('.content')[0];
+				top     = _index * 20;
 
-				if( top < content.scrollTop ) {
+				if (top < content.scrollTop) {
 					content.scrollTop = top;
 				}
 				break;
 
 			case KEYS.DOWN:
-				var count  = this.ui.find('.content div').length;
-				this.index = Math.min( this.index + 1, count -1 );
+				count  = this.ui.find('.content div').length;
+				_index = Math.min( _index + 1, count -1 );
 
 				this.ui.find('.content div').removeClass('selected');
-				this.ui.find('.content div:eq('+ this.index +')').addClass('selected');
+				this.ui.find('.content div:eq('+ _index +')').addClass('selected');
 
-				var content = this.ui.find('.content')[0];
-				var top     = this.index * 20;
+				content = this.ui.find('.content')[0];
+				top     = _index * 20;
 
-				if( top >= content.scrollTop + 80 ) {
+				if (top >= content.scrollTop + 80) {
 					content.scrollTop = top - 60;
 				}
 				break;
@@ -125,28 +146,29 @@ define(function(require)
 	 */
 	NpcMenu.setMenu = function SetMenu( menu, gid )
 	{
-		this.ownerID = gid;
-		this.list    = menu.split(':');
-		this.index   = 0;
-
-		var content = this.ui.find('.content');
+		var content, list;
 		var i, count;
+
+		content  = this.ui.find('.content');
+		list     = menu.split(':');
+		_ownerID = gid;
+		_index   = 0;
 
 		content.empty();
 
-		for( i = 0, count = this.list.length; i < count; ++i ) {
+		for (i = 0, count = list.length; i < count; ++i) {
 			// Don't display empty menu
-			if( this.list[i].length ) {
+			if (list[i].length) {
 				jQuery('<div/>')
-					.text( this.list[i] )
+					.text(list[i])
 					.data('index', i)
 					.appendTo(content);
 			}
 		}
 
 		content.find('div')
-			.mousedown( this.selectIndex )
-			.dblclick( this.validate.bind(this) );
+			.mousedown(selectIndex)
+			.dblclick(validate);
 
 		content.find('div:first')
 			.addClass('selected');
@@ -156,36 +178,36 @@ define(function(require)
 	/**
 	 * Submit an index
 	 */
-	NpcMenu.validate = function Validate()
+	function validate()
 	{
-		this.onSelectMenu( this.ownerID, this.index + 1 );
-	};
+		NpcMenu.onSelectMenu( _ownerID, _index + 1 );
+	}
 
 
 	/**
 	 * Pressed cancel, client send "255" as value
 	 */
-	NpcMenu.cancel = function Cancel()
+	function cancel()
 	{
-		this.onSelectMenu( this.ownerID, 255 );
-	};
+		NpcMenu.onSelectMenu( _ownerID, 255 );
+	}
 
 
 	/**
 	 * Select an index, change background color
 	 */
-	NpcMenu.selectIndex = function SelectIndex()
+	function selectIndex()
 	{
 		NpcMenu.ui.find('.content div').removeClass('selected');
-		NpcMenu.index = +jQuery(this).data('index');
-		NpcMenu.ui.find('.content div:eq('+ NpcMenu.index +')').addClass('selected');
-	};
+		_index = parseInt(jQuery(this).data('index'), 10);
+		NpcMenu.ui.find('.content div:eq('+ _index +')').addClass('selected');
+	}
 
 
 	/**
 	 * Abstract callback to define
 	 */
-	NpcMenu.onSelectMenu = function OnSelectMenu( gid, index ){};
+	NpcMenu.onSelectMenu = function OnSelectMenu(/*gid, index*/){};
 
 
 	/**

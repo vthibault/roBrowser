@@ -9,7 +9,7 @@
  */
 define(function(require)
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -45,9 +45,9 @@ define(function(require)
 	Intro.onKeyDown = function OnKeyDown( event )
 	{
 		// Exit fullScreen mode
-		if( event.which === KEYS.ESCAPE ) {
+		if (event.which === KEYS.ESCAPE) {
 
-			if( Context.isFullScreen() ) {
+			if (Context.isFullScreen()) {
 				Context.cancelFullScreen();
 			}
 
@@ -62,17 +62,17 @@ define(function(require)
 	/**
 	 * Initialize Metaling
 	 */
-	Intro.init = function Init()
+	Intro.init = function init()
 	{
 		window.ROConfig = window.ROConfig || {};
 
-		if( !ROConfig.servers || typeof(ROConfig.servers) === 'string' ) {
+		if (!ROConfig.servers || typeof(ROConfig.servers) === 'string') {
 			ROConfig.serverEditMode = true;
 		}
 
 		var ui = this.ui;
 
-		PreloadImages();
+		preloadImages();
 
 		// About page
 		ui.find('.btn_about')
@@ -84,7 +84,7 @@ define(function(require)
 					.click(function(){
 						$about.animate({opacity:0}, 200, function(){
 							$about.hide();
-						})
+						});
 					});
 			});
 
@@ -107,7 +107,7 @@ define(function(require)
 			.click(function(){
 				ui.find('input[type="file"]').click();
 			})
-			.on('drop', Process )
+			.on('drop', process )
 			.on('dragover', function(){
 				jQuery(this).addClass('over');
 				return false;
@@ -115,11 +115,11 @@ define(function(require)
 			.on('dragleave', function(){
 				jQuery(this).removeClass('over');
 				return false;
-			})
+			});
 
 		// Set file by clicking the box
 		ui.find('input[type="file"]')
-			.on('change', Process );
+			.on('change', process );
 
 		// Modify quality
 		ui.find('.quality')
@@ -144,14 +144,14 @@ define(function(require)
 		// Stop propagation in overlay to avoid hiding the page
 		ui.find('.overlay')
 			.on('click', 'input[type="text"], a, button', function( event ){
-				if( this.nodeName === 'INPUT' ) {
+				if (this.nodeName === 'INPUT') {
 					this.select();
 				}
 				event.stopImmediatePropagation();
 			});
 
 		// Not allow to edit server list
-		if( !ROConfig.serverEditMode ) {
+		if (!ROConfig.serverEditMode) {
 			ui.find('.serveredit').hide();
 		}
 		
@@ -190,7 +190,7 @@ define(function(require)
 				ui.find('.overlay')
 					.animate({opacity:0}, 200, function(){
 						ui.find('.overlay').hide();
-					})
+					});
 			});
 
 		ui.find('.serverlist tbody')
@@ -213,7 +213,7 @@ define(function(require)
 	/**
 	 * Once append to body
 	 */
-	Intro.onAppend = function OnAppend()
+	Intro.onAppend = function onAppend()
 	{
 		// Can't resize the window if it's not a popup/App
 		if (!Context.Is.POPUP) {
@@ -265,7 +265,7 @@ define(function(require)
 	/**
 	 * Once removed
 	 */
-	Intro.onRemove = function OnRemove()
+	Intro.onRemove = function onRemove()
 	{
 		jQuery(window).off('resize.intro');
 		Particle.stop();
@@ -276,7 +276,7 @@ define(function(require)
 	/**
 	 * Start loading images
 	 */
-	function PreloadImages()
+	function preloadImages()
 	{
 		// Background images
 		jQuery('style:first').append([
@@ -296,7 +296,7 @@ define(function(require)
 		Intro.ui.find('.btn_settings img').attr('src', require.toUrl('./images/settings.png') );
 
 		// Preload image
-		(new Image).src = require.toUrl('./images/play-down.png');
+		(new Image()).src = require.toUrl('./images/play-down.png');
 	}
 
 
@@ -305,7 +305,7 @@ define(function(require)
 	 * @param {object} event
 	 * @return {boolean} false
 	 */
-	function Process( event )
+	function process( event )
 	{
 		var i, count;
 
@@ -318,22 +318,22 @@ define(function(require)
 		event.stopImmediatePropagation();
 		jQuery(this).removeClass('over');
 
-		function Process(files) {
-			if( files.length ) {
+		function processing(files) {
+			if (files.length) {
 				Intro.files.push.apply( Intro.files, files );
 				Intro.ui.find('.msg').text( Intro.files.length + ' files selected' );
 			}
 		}
 
 		// Extract files from directory
-		function RecursiveReader(entry, skip){
+		function recursiveReader(entry, skip){
 			if (entry.isFile) {
 				++_file_count;
 				entry.file(function(file){
 					file.fullPath = entry.fullPath.substr(skip); // get rid of the "/"
 					_files.push(file);
 					if ((++_file_loaded) === _file_count && _dir_loaded === _dir_count) {
-						Process(_files);
+						processing(_files);
 					}
 				});
 			}
@@ -341,10 +341,10 @@ define(function(require)
 				++_dir_count;
 				entry.createReader().readEntries(function(entries){
 					for (var i = 0, count = entries.length; i < count; ++i) {
-						RecursiveReader(entries[i], skip);
+						recursiveReader(entries[i], skip);
 					}
 					if ((++_dir_loaded) === _dir_count && _file_loaded === _file_count) {
-						Process(_files);
+						processing(_files);
 					}
 				});
 			}
@@ -352,7 +352,7 @@ define(function(require)
 
 		// input[type="file"]
 		if ('files' in this) {
-			Process(this.files);
+			processing(this.files);
 			return false;
 		}
 
@@ -372,27 +372,27 @@ define(function(require)
 				}
 
 				for (i = 0, count = data.items.length; i < count; ++i) {
-					RecursiveReader( data.items[i].webkitGetAsEntry(), skip);
+					recursiveReader( data.items[i].webkitGetAsEntry(), skip);
 				}
 
 				return false;
 			}
 			// Read files directly
 			else if (data.files) {
-				Process(data.files);
+				processing(data.files);
 				return false;
 			}
 		}
 
-		Process(_files);
+		processing(_files);
 		return false;
-	};
+	}
 
 
 	/**
 	 * Callback to used.
 	 */
-	Intro.onFilesSubmit = function OnFilesSubmit( files ){};
+	Intro.onFilesSubmit = function OnFilesSubmit(){};
 
 
 	/**

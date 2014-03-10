@@ -11,7 +11,7 @@
 
 define(function()
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -26,11 +26,11 @@ define(function()
 
 		// Store callback
 		// One cache item can have multple callback.
-		if( onload ) {
+		if (onload) {
 			this.addEventListener('load', onload);
 		}
 
-		if( onerror ) {
+		if (onerror) {
 			this.addEventListener('error', onerror);
 		}
 	}
@@ -47,7 +47,7 @@ define(function()
 	 * Error informatio,
 	 * @var {string}
 	 */
-	MemoryItem.prototype._error = "";
+	MemoryItem.prototype._error = '';
 
 
 	/**
@@ -71,7 +71,7 @@ define(function()
 	 * @return mixed
 	 */
 	Object.defineProperty( MemoryItem.prototype, 'data', {
-		get : function(){ 
+		get : function(){
 			this.lastTimeUsed = Date.now();
 			return this._data;
 		}
@@ -85,11 +85,11 @@ define(function()
 	 */
 	MemoryItem.prototype.addEventListener = function addEventListener( event, callback )
 	{
-		if( ! callback instanceof Function ) {
+		if (!(callback instanceof Function)) {
 			throw new Error('MemoryItem::addEventListener() - callback must be a function !');
 		}
 
-		switch( event.toLowerCase() ) {
+		switch (event.toLowerCase()) {
 			case 'load':
 				if (this.complete) {
 					if (this._data) {
@@ -114,7 +114,7 @@ define(function()
 
 			default:
 				throw new Error('MemoryItem::addEventListener() - Invalid event "'+ event +'" used.');
-		}	
+		}
 	};
 
 
@@ -123,7 +123,7 @@ define(function()
 	 *
 	 * @param {mixed} data
 	 */
-	MemoryItem.prototype.onload = function OnLoad( data )
+	MemoryItem.prototype.onload = function onLoad( data )
 	{
 		var i, size;
 
@@ -131,7 +131,7 @@ define(function()
 		this.complete     = true;
 		this.lastTimeUsed = Date.now();
 
-		for( i = 0, size = this._onload.length; i < size; ++i ) {
+		for (i = 0, size = this._onload.length; i < size; ++i) {
 			this._onload[i]( data );
 		}
 
@@ -153,7 +153,7 @@ define(function()
 		this.complete     = true;
 		this.lastTimeUsed = Date.now();
 
-		for( i = 0, size = this._onerror.length; i < size; ++i ) {
+		for (i = 0, size = this._onerror.length; i < size; ++i) {
 			this._onerror[i]( error );
 		}
 

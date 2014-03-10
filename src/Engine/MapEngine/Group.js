@@ -10,7 +10,7 @@
 
 define(function( require )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -30,10 +30,11 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET.ZC.NOTIFY_HP_TO_GROUPM
 	 */
-	function OnLifeUpdated( pkt )
+	function onMemberLifeUpdate( pkt )
 	{
 		var entity = EntityManager.get(pkt.AID);
-		if( entity ) {
+
+		if (entity) {
 			entity.life.hp = pkt.hp;
 			entity.life.hp_max = pkt.maxhp;
 			entity.life.update();
@@ -46,10 +47,11 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET.ZC.NOTIFY_CHAT_PARTY
 	 */
-	function OnMessage( pkt )
+	function onMemberTalk( pkt )
 	{
 		var entity = EntityManager.get(pkt.AID);
-		if( entity ) {
+
+		if (entity) {
 			entity.dialog.set( pkt.msg );
 		}
 
@@ -62,7 +64,7 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET.ZC.NOTIFY_POSITION_TO_GROUPM
 	 */
-	function OnPositionUpdated( pkt )
+	function onMemberMove( pkt )
 	{
 		// Server remove mark with "-1" as position
 		if (pkt.xPos < 0 || pkt.yPos < 0) {
@@ -79,7 +81,7 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET.ZC.GROUPINFO_CHANGE
 	 */
-	function OnOption( pkt )
+	function onPartyOption( pkt )
 	{
 		ChatBox.addText( DB.msgstringtable[291] + '  - ' + DB.msgstringtable[292] + '  : ' + DB.msgstringtable[287 + pkt.expOption ], ChatBox.TYPE.INFO );
 		ChatBox.addText( DB.msgstringtable[291] + '  - ' + DB.msgstringtable[293] + '  : ' + DB.msgstringtable[289 + pkt.ItemPickupRule], ChatBox.TYPE.INFO );
@@ -92,7 +94,7 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET.ZC.PARTY_CONFIG
 	 */
-	function OnConfig( pkt )
+	function onPartyConfig( pkt )
 	{
 		ChatBox.addText( DB.msgstringtable[pkt.bRefuseJoinMsg ? 1325 : 1326], ChatBox.TYPE.INFO );
 	}
@@ -103,20 +105,20 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET.ZC.PARTY_JOIN_REQ
 	 */
-	function OnInvitationRequest( pkt )
+	function onPartyInvitationRequest( pkt )
 	{
 		var GRID = pkt.GRID;
 
-		function OnAnswer(accept){
+		function onAnswer(accept){
 			return function(){
-				var pkt  = new PACKET.CZ.PARTY_JOIN_REQ_ACK();
-				pkt.GRID = GRID;
+				var pkt     = new PACKET.CZ.PARTY_JOIN_REQ_ACK();
+				pkt.GRID    = GRID;
 				pkt.bAccept = accept;
 				Network.sendPacket(pkt);
 			};
 		}
 
-		UIManager.showPromptBox( pkt.groupName + DB.msgstringtable[94], 'ok', 'cancel', OnAnswer(1), OnAnswer(0) );
+		UIManager.showPromptBox( pkt.groupName + DB.msgstringtable[94], 'ok', 'cancel', onAnswer(1), onAnswer(0) );
 	}
 
 
@@ -125,19 +127,21 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET.ZC.PARTY_JOIN_REQ_ACK
 	 */
-	function OnInvitationAnswer( pkt )
+	function onPartyInvitationAnswer( pkt )
 	{
 		var id = 1, color = ChatBox.TYPE.ERROR;
 
 		switch (pkt.answer) {
 			case 0: id = 80;  break;
 			case 1: id = 81;  break;
+
 			case 2:
-				id = 82; 
+				id = 82;
 				color = ChatBox.TYPE.BLUE;
 				break;
-			case 3: id = 83;  break;
-			case 4: id = 608; break;
+
+			case 3: id = 83;   break;
+			case 4: id = 608;  break;
 			case 5: id = 1324; break;
 			// no 6 ?
 			case 7: id = 71;   break;
@@ -154,15 +158,15 @@ define(function( require )
 	 */
 	return function EntityEngine()
 	{
-		Network.hookPacket( PACKET.ZC.NOTIFY_HP_TO_GROUPM,       OnLifeUpdated );
-		Network.hookPacket( PACKET.ZC.NOTIFY_HP_TO_GROUPM_R2,    OnLifeUpdated );
-		Network.hookPacket( PACKET.ZC.NOTIFY_CHAT_PARTY,         OnMessage );
-		Network.hookPacket( PACKET.ZC.GROUPINFO_CHANGE,          OnOption );
-		Network.hookPacket( PACKET.ZC.REQ_GROUPINFO_CHANGE_V2,   OnOption );
-		Network.hookPacket( PACKET.ZC.PARTY_CONFIG,              OnConfig );
-		Network.hookPacket( PACKET.ZC.NOTIFY_POSITION_TO_GROUPM, OnPositionUpdated );
-		Network.hookPacket( PACKET.ZC.PARTY_JOIN_REQ,            OnInvitationRequest );
-		Network.hookPacket( PACKET.ZC.PARTY_JOIN_REQ_ACK,        OnInvitationAnswer );
-		Network.hookPacket( PACKET.ZC.ACK_REQ_JOIN_GROUP,        OnInvitationAnswer );
+		Network.hookPacket( PACKET.ZC.NOTIFY_HP_TO_GROUPM,       onMemberLifeUpdate );
+		Network.hookPacket( PACKET.ZC.NOTIFY_HP_TO_GROUPM_R2,    onMemberLifeUpdate );
+		Network.hookPacket( PACKET.ZC.NOTIFY_CHAT_PARTY,         onMemberTalk );
+		Network.hookPacket( PACKET.ZC.GROUPINFO_CHANGE,          onPartyOption );
+		Network.hookPacket( PACKET.ZC.REQ_GROUPINFO_CHANGE_V2,   onPartyOption );
+		Network.hookPacket( PACKET.ZC.PARTY_CONFIG,              onPartyConfig );
+		Network.hookPacket( PACKET.ZC.NOTIFY_POSITION_TO_GROUPM, onMemberMove );
+		Network.hookPacket( PACKET.ZC.PARTY_JOIN_REQ,            onPartyInvitationRequest );
+		Network.hookPacket( PACKET.ZC.PARTY_JOIN_REQ_ACK,        onPartyInvitationAnswer );
+		Network.hookPacket( PACKET.ZC.ACK_REQ_JOIN_GROUP,        onPartyInvitationAnswer );
 	};
 });

@@ -9,14 +9,13 @@
  */
 define(function(require)
 {
-	"use strict";
+	'use strict';
 
 
 	/**
 	 * Dependencies
 	 */
 	var Renderer           = require('Renderer/Renderer');
-	var DB                 = require('DB/DBManager');
 	var KEYS               = require('Controls/KeyEventHandler');
 	var Entity             = require('Renderer/Entity/Entity');
 	var SpriteRenderer     = require('Renderer/SpriteRenderer');
@@ -34,42 +33,58 @@ define(function(require)
 
 
 	/**
-	 * Initialize UI
+	 * @var {boolean} account sex
 	 */
-	CharCreate.init = function Init()
-	{
-		this.graph   = this.ui.find('.graph canvas')[0].getContext('2d');
-		this.chargen = {
-			entity: new Entity(),
-			ctx:    this.ui.find('.chargen canvas')[0].getContext('2d'),
-			render: false,
-			tick:   0
-		};
+	var _accountSex = 0;
 
-		// Setup GUI
-		this.ui.css({ top: (Renderer.height-342)/2, left: (Renderer.width-576)/2 });
-		this.draggable();
 
-		// Bind Events
-		this.ui.find('.chargen .left' ).mousedown( this.updateCharacterGeneric('head', -1) );
-		this.ui.find('.chargen .right').mousedown( this.updateCharacterGeneric('head', +1) );
-		this.ui.find('.chargen .up'   ).mousedown( this.updateCharacterGeneric('headpalette', +1) );
-		this.ui.find('.graph button'  ).mousedown( this.updateGraphic );
+	/**
+	 * @var {canvas} graphics object
+	 */
+	var _graph;
 
-		this.ui.find('input').mousedown(function(event){
-			this.select();
-			event.stopImmediatePropagation();
-		});
 
-		this.ui.find('.cancel').click( this.cancel.bind(this) );
-		this.ui.find('.make').click( this.create.bind(this) );
+	/**
+	 * @var {object} chargen info
+	 */
+	var _chargen = {
+		entity: new Entity(),
+		ctx:    null,
+		render: false,
+		tick:   0
 	};
 
 
 	/**
-	 * @var {boolean} account sex
+	 * Initialize UI
 	 */
-	CharCreate.AccountSex = 0;
+	CharCreate.init = function init()
+	{
+		_graph       = this.ui.find('.graph canvas')[0].getContext('2d');
+		_chargen.ctx = this.ui.find('.chargen canvas')[0].getContext('2d');
+
+		// Setup GUI
+		this.ui.css({
+			top: (Renderer.height-342)/2,
+			left: (Renderer.width-576)/2
+		});
+
+		this.draggable();
+
+		// Bind Events
+		this.ui.find('.chargen .left' ).mousedown(updateCharacterGeneric('head', -1));
+		this.ui.find('.chargen .right').mousedown(updateCharacterGeneric('head', +1));
+		this.ui.find('.chargen .up'   ).mousedown(updateCharacterGeneric('headpalette', +1));
+		this.ui.find('.graph button'  ).mousedown(updateStats);
+
+		this.ui.find('input').mousedown(function(event){
+			this.focus();
+			event.stopImmediatePropagation();
+		});
+
+		this.ui.find('.cancel').click(cancel);
+		this.ui.find('.make').click(create);
+	};
 
 
 	/**
@@ -77,40 +92,29 @@ define(function(require)
 	 *
 	 * @param {number} sex
 	 */
-	CharCreate.setAccountSex = function SetAccountSex( sex )
+	CharCreate.setAccountSex = function setAccountSex( sex )
 	{
-		this.AccountSex = sex;
-	};
-
-
-	/**
-	 * Generic function to get a direct proxy to updateCharacter
-	 *
-	 * @param {string} type
-	 * @param {number} value
-	 */
-	CharCreate.updateCharacterGeneric = function UpdateCharacterGeneric( type, value )
-	{
-		return function( event) {
-			CharCreate.updateCharacter( type, value );
-			event.stopImmediatePropagation();
-			return false;
-		}
+		_accountSex = sex;
 	};
 
 
 	/**
 	 * Once add to HTML, start rendering
 	 */
-	CharCreate.onAppend = function OnAppend()
+	CharCreate.onAppend = function onAppend()
 	{
-		this.chargen.render = true;
-		this.chargen.entity.set({ sex:this.AccountSex, job:0, head:2, action:0 });
+		_chargen.render = true;
+		_chargen.entity.set({
+			sex:_accountSex,
+			job:    0,
+			head:   2,
+			action: 0
+		});
 
 		this.ui.find('input').val('').focus();
 
-		Renderer.render(this.render);
-		this.updateGraphic();
+		Renderer.render(render);
+		updateGraphic();
 	};
 
 
@@ -118,9 +122,9 @@ define(function(require)
 	 * Remove component from HTML
 	 * Stop rendering
 	 */
-	CharCreate.onRemove = function OnRemove()
+	CharCreate.onRemove = function onRemove()
 	{
-		Renderer.stop();
+		Renderer.stop(render);
 	};
 
 
@@ -130,13 +134,12 @@ define(function(require)
 	 * @param {object} event
 	 * @return {boolean}
 	 */
-	CharCreate.onKeyDown = function OnKeyDown( event )
+	CharCreate.onKeyDown = function onKeyDown( event )
 	{
-		switch(event.which) {
-			case KEYS.ESCAPE:
-				event.stopImmediatePropagation();
-				this.cancel();
-				return false;
+		if (event.which === KEYS.ESCAPE) {
+			event.stopImmediatePropagation();
+			this.cancel();
+			return false;
 		}
 
 		return true;
@@ -144,31 +147,52 @@ define(function(require)
 
 
 	/**
+	 * Generic function to get a direct proxy to updateCharacter
+	 *
+	 * @param {string} type
+	 * @param {number} value
+	 */
+	function updateCharacterGeneric( type, value )
+	{
+		return function( event) {
+			updateCharacter( type, value );
+			event.stopImmediatePropagation();
+			return false;
+		};
+	}
+
+
+
+
+
+	/**
 	 * Send back informations to send the packet
 	 */
-	CharCreate.create = function Create()
+	function create()
 	{
+		var ui = CharCreate.ui;
+
 		CharCreate.onCharCreationRequest(
-			this.ui.find('input').val(),
-			this.ui.find('.info .str').text(),
-			this.ui.find('.info .agi').text(),
-			this.ui.find('.info .vit').text(),
-			this.ui.find('.info .int').text(),
-			this.ui.find('.info .dex').text(),
-			this.ui.find('.info .luk').text(),
-			this.chargen.entity.head,
-			this.chargen.entity.headpalette
+			ui.find('input').val(),
+			ui.find('.info .str').text(),
+			ui.find('.info .agi').text(),
+			ui.find('.info .vit').text(),
+			ui.find('.info .int').text(),
+			ui.find('.info .dex').text(),
+			ui.find('.info .luk').text(),
+			_chargen.entity.head,
+			_chargen.entity.headpalette
 		);
-	};
+	}
 
 
 	/**
 	 * Exit the window
 	 */
-	CharCreate.cancel = function Cancel()
+	function cancel()
 	{
-		this.onExitRequest();
-	};
+		CharCreate.onExitRequest();
+	}
 
 
 	/**
@@ -177,57 +201,68 @@ define(function(require)
 	 * @param {string} type (head or headpalette)
 	 * @param {number} increment (-1 or +1)
 	 */
-	CharCreate.updateCharacter = function UpdateCharacter( type, increment )
+	function updateCharacter( type, increment )
 	{
-		switch( type ) {
-			case "head":
-				var head = this.chargen.entity.head + increment;
-				if( head < 2 )  head = 26;
-				if( head > 26 ) head =  2;
-				this.chargen.entity.head = head;
+		switch (type) {
+			case 'head':
+				var head = _chargen.entity.head + increment;
+
+				if (head < 2) {
+					head = 26;
+				}
+
+				if (head > 26) {
+					head =  2;
+				}
+
+				_chargen.entity.head = head;
 				break;
 
-			case "headpalette":
-				this.chargen.entity.headpalette += increment;
-				this.chargen.entity.headpalette %= 10;
+			case 'headpalette':
+				_chargen.entity.headpalette += increment;
+				_chargen.entity.headpalette %= 10;
 				break;
 		}
 
-		this.render();
-	};
+		render();
+	}
+
+
+	/**
+	 * Update the stats and polygon
+	 */
+	function updateStats()
+	{
+		// Can't be upper than 9
+		if (CharCreate.ui.find('.info .' + this.className).text() === '9') {
+			return;
+		}
+
+		// Relation table
+		var group = {
+			'str': 'int',
+			'int': 'str',
+			'vit': 'dex',
+			'dex': 'vit',
+			'luk': 'agi',
+			'agi': 'luk'
+		};
+
+		// Update infos
+		CharCreate.ui.find('.info .' +       this.className )[0].textContent++;
+		CharCreate.ui.find('.info .' + group[this.className])[0].textContent--;
+
+		updateGraphic();
+	}
 
 
 	/**
 	 * Update the polygon
 	 */
-	CharCreate.updateGraphic = function UpdateGraphic()
+	function updateGraphic()
 	{
-		if( this !== CharCreate ) {
-			// Can't be upper than 9
-			if( CharCreate.ui.find('.info .' + this.className).text() == "9" ) {
-				return;
-			}
-
-			// Relation table
-			var group = {
-				'str': 'int',
-				'int': 'str',
-				'vit': 'dex',
-				'dex': 'vit',
-				'luk': 'agi',
-				'agi': 'luk'
-			};
-
-			// Update infos
-			CharCreate.ui.find('.info .' +       this.className )[0].textContent++;
-			CharCreate.ui.find('.info .' + group[this.className])[0].textContent--;
-
-			CharCreate.updateGraphic();
-			return;
-		}
-
 		// Update graphique.
-		var ctx    = CharCreate.graph;
+		var ctx    = _graph;
 		var width  = ctx.canvas.width;
 		var height = ctx.canvas.height;
 		var i, x = width/2, y = height/2;
@@ -235,39 +270,39 @@ define(function(require)
 
 		ctx.clearRect(0, 0, width, height);
 		ctx.save();
-		ctx.fillStyle = "#7b94ce";
+		ctx.fillStyle = '#7b94ce';
 		ctx.translate(x, y);
-		ctx.beginPath();  
+		ctx.beginPath();
 		ctx.moveTo( 0, Math.floor( y/10 * ( parseInt(CharCreate.ui.find('.info .'+list[5]).text())+1 ) ) );
 
-		for( i=0; i<6; i++ ) {
+		for (i = 0; i < 6; i++) {
 			ctx.rotate( 60 * Math.PI / 180 );
 			ctx.lineTo( 0, Math.floor( y/10 * ( parseInt(CharCreate.ui.find('.info .'+list[i]).text())+1 )) );
 		}
 
-		ctx.closePath();  
+		ctx.closePath();
 		ctx.fill();
 		ctx.restore();
-	};
+	}
 
 
 	/**
 	 * Rendering the Character
 	 */
-	CharCreate.render = function Render( tick )
+	function render( tick )
 	{
 		// Update direction each 500ms
-		if( CharCreate.chargen.tick + 500 < tick ) {
+		if (_chargen.tick + 500 < tick) {
 			Camera.direction++;
 			Camera.direction %= 8;
-			CharCreate.chargen.tick = tick;
+			_chargen.tick = tick;
 		}
 
 		// Rendering
-		SpriteRenderer.bind2DContext( CharCreate.chargen.ctx, 32, 115 );
-		CharCreate.chargen.ctx.clearRect(0, 0, CharCreate.chargen.ctx.canvas.width, CharCreate.chargen.ctx.canvas.height );
-		CharCreate.chargen.entity.renderEntity();
-	};
+		SpriteRenderer.bind2DContext(_chargen.ctx, 32, 115);
+		_chargen.ctx.clearRect(0, 0, _chargen.ctx.canvas.width, _chargen.ctx.canvas.height );
+		_chargen.entity.renderEntity();
+	}
 
 
 	/**
@@ -279,7 +314,7 @@ define(function(require)
 	/**
 	 * Abstract callback to define
 	 */
-	CharCreate.onCharCreationRequest = function OnCharCreationRequest( name, Str, Agi, Vit, Int, Dex, Luk, hair, color ){};
+	CharCreate.onCharCreationRequest = function OnCharCreationRequest(){};
 
 
 	/**

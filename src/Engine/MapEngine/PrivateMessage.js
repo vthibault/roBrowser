@@ -1,5 +1,5 @@
 /**
- * Engine/MapEngine/Main.js
+ * Engine/MapEngine/PrivateMessage.js
  *
  * Manage Entity based on received packets from server 
  *
@@ -10,7 +10,7 @@
 
 define(function( require )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -27,9 +27,9 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET.ZC.WHISPER
 	 */
-	function OnPrivateMessage( pkt )
+	function onPrivateMessage( pkt )
 	{
-		ChatBox.addText("(From "+ pkt.sender +") : " + pkt.msg.replace(/\|\d{2}/, ''), ChatBox.TYPE.PRIVATE );
+		ChatBox.addText('(From '+ pkt.sender +') : ' + pkt.msg.replace(/\|\d{2}/, ''), ChatBox.TYPE.PRIVATE );
 	}
 
 
@@ -38,20 +38,21 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET.ZC.ACK_WHISPER
 	 */
-	function OnPrivateMessageSent( pkt )
+	function onPrivateMessageSent( pkt )
 	{
+		// Official buggy feature
 		var user = ChatBox.PrivateMessageStorage.nick;
 		var msg  = ChatBox.PrivateMessageStorage.msg;
 		
-		if ( pkt.result === 0 ) {
-			ChatBox.addText( "(To "+ user +") : " + msg, ChatBox.TYPE.PRIVATE );
+		if (pkt.result === 0) {
+			ChatBox.addText( '(To '+ user +') : ' + msg, ChatBox.TYPE.PRIVATE );
 		}
 		else {
-			ChatBox.addText( "("+ user +") : " + DB.msgstringtable[147 + pkt.result],  ChatBox.TYPE.PRIVATE );
+			ChatBox.addText( '('+ user +') : ' + DB.msgstringtable[147 + pkt.result],  ChatBox.TYPE.PRIVATE );
 		}
 	
-		ChatBox.PrivateMessageStorage.nick = "";
-		ChatBox.PrivateMessageStorage.msg  = "";
+		ChatBox.PrivateMessageStorage.nick = '';
+		ChatBox.PrivateMessageStorage.msg  = '';
 	}
 
 
@@ -60,7 +61,7 @@ define(function( require )
 	 */
 	return function PrivateMessageEngine()
 	{
-		Network.hookPacket( PACKET.ZC.WHISPER, OnPrivateMessage );
-		Network.hookPacket( PACKET.ZC.ACK_WHISPER, OnPrivateMessageSent );
+		Network.hookPacket( PACKET.ZC.WHISPER,     onPrivateMessage );
+		Network.hookPacket( PACKET.ZC.ACK_WHISPER, onPrivateMessageSent );
 	};
 });

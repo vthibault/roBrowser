@@ -10,7 +10,7 @@
 
 define( ['Core/FileManager'], function( FileManager )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -37,9 +37,9 @@ define( ['Core/FileManager'], function( FileManager )
 	/**
 	 * Start to load the list
 	 */
-	Loader.prototype.start = function Start()
+	Loader.prototype.start = function start()
 	{
-		var i, count;
+		var i;
 		this.offset = 0;
 
 		// No files...
@@ -59,7 +59,7 @@ define( ['Core/FileManager'], function( FileManager )
 	 *
 	 * @param {number} index in list
 	 */
-	Loader.prototype._next = function Next(i)
+	Loader.prototype._next = function next()
 	{
 		var filename = this.list.shift();
 		FileManager.load( filename, function(data) {
@@ -95,7 +95,7 @@ define( ['Core/FileManager'], function( FileManager )
 	 */
 	function MapLoader( mapname )
 	{
-		if( mapname ) {
+		if (mapname) {
 			this.load( mapname );
 		}
 	}
@@ -154,7 +154,7 @@ define( ['Core/FileManager'], function( FileManager )
 		// Loading 3 main files
 		FileManager.load('data\\' + mapname, function(world){
 			if (!world) {
-				this.onload(false, "Can't find file " + mapname + " ! ");
+				this.onload(false, 'Can\'t find file "' + mapname + '" ! ');
 				return;
 			}
 
@@ -163,7 +163,7 @@ define( ['Core/FileManager'], function( FileManager )
 			// Load Altitude
 			FileManager.load('data\\' + world.files.gat, function(altitude) {
 				if (!altitude) {
-					this.onload(false, "Can't find file " + world.files.gat + " !");
+					this.onload(false, 'Can\'t find file "' + world.files.gat + '" !');
 					return;
 				}
 
@@ -175,7 +175,7 @@ define( ['Core/FileManager'], function( FileManager )
 			// Load ground
 			FileManager.load('data\\' + world.files.gnd, function(ground) {
 				if (!ground) {
-					this.onload(false, "Can't find file " + world.files.gnd + " !");
+					this.onload(false, 'Can\'t find file "' + world.files.gnd + '" !');
 					return;
 				}
 
@@ -223,15 +223,15 @@ define( ['Core/FileManager'], function( FileManager )
 
 		// Get water textures
 		if (ground.waterVertCount) {
-			var path = "data\\texture\\\xbf\xf6\xc5\xcd/water" + world.water.type;
+			var path = 'data\\texture\\\xbf\xf6\xc5\xcd/water' + world.water.type;
 			for (i = 0; i < 32; ++i) {
-				textures.push(path + ( i<10 ? "0"+i : i) + ".jpg");
+				textures.push(path + ( i<10 ? '0'+i : i) + '.jpg');
 			}
 		}
 
 		// Load ground textures
 		for (i = 0, count = ground.textures.length; i < count; ++i ) {
-			textures.push("data\\texture\\" + ground.textures[i]);
+			textures.push('data\\texture\\' + ground.textures[i]);
 		}
 
 		// Start loading
@@ -334,7 +334,7 @@ define( ['Core/FileManager'], function( FileManager )
 
 				meshes = nodes[j];
 
-				for (index in meshes) { 
+				for (index in meshes) {
 					models.push({
 						texture: 'data\\texture\\' + object.textures[index],
 						alpha:   objects[i].alpha,
@@ -366,23 +366,23 @@ define( ['Core/FileManager'], function( FileManager )
 	{
 		var reg_tga = /\.tga$/i;
 
-		if( a.texture.match(reg_tga) ) {
+		if (a.texture.match(reg_tga)) {
 			return  1;
 		}
 
-		if( b.texture.match(reg_tga) ) {
+		if (b.texture.match(reg_tga)) {
 			return -1;
 		}
 
-		if( a.alpha !== b.alpha ) {
+		if (a.alpha !== b.alpha) {
 			return a.alpha < b.alpha ? 1 : 0;
 		}
 
-		if( a.texture < b.texture ) {
+		if (a.texture < b.texture) {
 			return -1;
 		}
 
-		if( a.texture > b.texture ) {
+		if (a.texture > b.texture) {
 			return 1;
 		}
 

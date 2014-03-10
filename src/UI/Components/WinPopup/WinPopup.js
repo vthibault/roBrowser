@@ -9,7 +9,7 @@
  */
 define(function(require)
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -31,7 +31,7 @@ define(function(require)
 	/**
 	 * Initialize popup
 	 */
-	WinPopup.init = function Init()
+	WinPopup.init = function init()
 	{
 		this.ui.css({
 			top:  (Renderer.height-120) / 1.5 - 120,

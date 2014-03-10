@@ -10,7 +10,7 @@
 define(['DB/DBManager', './EntityManager', './Entity/Entity', 'Core/Client'],
 function(   DB,            EntityManager,            Entity,        Client )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -24,7 +24,7 @@ function(   DB,            EntityManager,            Entity,        Client )
 	 * @param {number} y
 	 * @param {number} z
 	 */
-	function Add( gid, itemid, identify, count, x, y, z )
+	function add( gid, itemid, identify, count, x, y, z )
 	{
 		var it     = DB.getItemInfo(itemid);
 		var path   = DB.getItemPath(itemid);
@@ -40,10 +40,10 @@ function(   DB,            EntityManager,            Entity,        Client )
 		entity.display.load = entity.display.TYPE.COMPLETE;
 		entity.display.name = DB.msgstringtable[183].replace('%s', name).replace('%d', count);
 
-		Client.loadFile(path + ".act");
-		Client.loadFile(path + ".spr", function(){
-			entity.files.body.spr = path + ".spr";
-			entity.files.body.act = path + ".act";
+		Client.loadFile(path + '.act');
+		Client.loadFile(path + '.spr', function(){
+			entity.files.body.spr = path + '.spr';
+			entity.files.body.act = path + '.act';
 
 			entity.display.update('#FFEF94');
 			EntityManager.add(entity);
@@ -56,7 +56,7 @@ function(   DB,            EntityManager,            Entity,        Client )
 	 *
 	 * @param {number} gid
 	 */
-	function Remove( gid )
+	function remove( gid )
 	{
 		EntityManager.remove(gid);
 	}
@@ -66,7 +66,7 @@ function(   DB,            EntityManager,            Entity,        Client )
 	 * Export
 	 */
 	return {
-		add:    Add,
-		remove: Remove
+		add:    add,
+		remove: remove
 	};
 });

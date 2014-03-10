@@ -8,7 +8,7 @@
  * @author Vincent Thibault
  */
 
-define( ['Utils/jquery'], function( jQuery )
+define(function()
 {
 	"use strict";
 

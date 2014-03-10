@@ -9,7 +9,7 @@
  */
 define(function( require )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -48,7 +48,7 @@ define(function( require )
 	/**
 	 * @var {string} current map's name
 	 */
-	MapRenderer.currentMap = "";
+	MapRenderer.currentMap = '';
 
 
 	/**
@@ -93,7 +93,7 @@ define(function( require )
 	 *
 	 * @param {string} mapname to load
 	 */
-	MapRenderer.setMap = function LoadMap( mapname )
+	MapRenderer.setMap = function loadMap( mapname )
 	{
 		// TODO: stop the map loading, and start to load the new map.
 		if (this.loading) {
@@ -106,29 +106,29 @@ define(function( require )
 		UIManager.removeComponents();
 
 		// Don't reload a map when it's just a local teleportation
-		if( this.currentMap !== mapname ) {
+		if (this.currentMap !== mapname) {
 			this.loading = true;
 			BGM.stop();
 			this.currentMap = mapname;
 
 			// Parse the filename (ugly RO)
 			var filename = mapname.replace(/\.gat$/i, '.rsw');
-			if( filename in DB.mapalias ) {
+			if (filename in DB.mapalias) {
 				filename = DB.mapalias[filename];
 			}
 
 			Background.setLoading(function() {
 				// Hooking Thread
-				Thread.hook('MAP_PROGRESS', OnProgressUpdate.bind(MapRenderer) );
-				Thread.hook('MAP_WORLD',    OnWorldComplete.bind(MapRenderer) );
-				Thread.hook('MAP_GROUND',   OnGroundComplete.bind(MapRenderer) );
-				Thread.hook('MAP_ALTITUDE', OnAltitudeComplete.bind(MapRenderer) );
-				Thread.hook('MAP_MODELS',   OnModelsComplete.bind(MapRenderer) );
+				Thread.hook('MAP_PROGRESS', onProgressUpdate.bind(MapRenderer) );
+				Thread.hook('MAP_WORLD',    onWorldComplete.bind(MapRenderer) );
+				Thread.hook('MAP_GROUND',   onGroundComplete.bind(MapRenderer) );
+				Thread.hook('MAP_ALTITUDE', onAltitudeComplete.bind(MapRenderer) );
+				Thread.hook('MAP_MODELS',   onModelsComplete.bind(MapRenderer) );
 
 				// Start Loading
 				MapRenderer.free();
 				Renderer.remove();
-				Thread.send('LOAD_MAP', filename, OnMapComplete.bind(MapRenderer) );
+				Thread.send('LOAD_MAP', filename, onMapComplete.bind(MapRenderer) );
 			});
 
 			return;
@@ -174,16 +174,16 @@ define(function( require )
 	 *
 	 * @param {number} percent (progress)
 	 */
-	function OnProgressUpdate( percent )
+	function onProgressUpdate( percent )
 	{
 		Background.setPercent( percent );
-	};
+	}
 
 
 	/**
 	 * Received parsed world
 	 */
-	function OnWorldComplete( data )
+	function onWorldComplete( data )
 	{
 		this.light  = data.light;
 		this.water  = data.water;
@@ -197,13 +197,13 @@ define(function( require )
 		this.light.direction[0] = -Math.cos(longitude) * Math.sin(latitude);
 		this.light.direction[1] = -Math.cos(latitude);
 		this.light.direction[2] = -Math.sin(longitude) * Math.sin(latitude);
-	};
+	}
 
 
 	/**
 	 * Received ground data from Thread
 	 */
-	function OnGroundComplete( data )
+	function onGroundComplete( data )
 	{
 		var gl = Renderer.getContext();
 
@@ -216,7 +216,7 @@ define(function( require )
 		// Initialize sounds
 		var i, count = this.sounds.length;
 		var tmp;
-		for( i = 0; i < count; ++i ) {
+		for (i = 0; i < count; ++i) {
 			tmp = -this.sounds[i].pos[1];
 			this.sounds[i].pos[0] += data.width;
 			this.sounds[i].pos[1]  = this.sounds[i].pos[2] + data.height;
@@ -226,38 +226,38 @@ define(function( require )
 
 			Sounds.add(this.sounds[i]);
 		}
-	};
+	}
 
 
 	/**
 	 * Receiving parsed GAT from Thread
 	 */
-	function OnAltitudeComplete( data )
+	function onAltitudeComplete( data )
 	{
 		var gl = Renderer.getContext();
 		Altitude.init( data );
 		GridSelector.init( gl );
-	};
+	}
 
 
 	/**
 	 * Receiving parsed RSMs from Thread
 	 */
-	function OnModelsComplete( data )
+	function onModelsComplete( data )
 	{
 		Models.init( Renderer.getContext(), data );
-	};
+	}
 
 
 	/**
 	 * Once the map finished to load
 	 */
-	function OnMapComplete( success, error )
+	function onMapComplete( success, error )
 	{
 		var worldResource = this.currentMap.replace(/\.gat$/i, '.rsw');
 
 		// Problem during loading ?
-		if( !success ) {
+		if (!success) {
 			UIManager.showErrorBox( error );
 			return;
 		}
@@ -267,7 +267,7 @@ define(function( require )
 
 		// Apply fog to map
 		this.fog.exist = !!DB.fog[worldResource];
-		if( this.fog.exist ) {
+		if (this.fog.exist) {
 			this.fog.near   = DB.fog[worldResource].near * 100;
 			this.fog.far    = DB.fog[worldResource].far  * 150;
 			this.fog.factor = DB.fog[worldResource].factor;
@@ -292,7 +292,7 @@ define(function( require )
 			Renderer.show();
 			Renderer.render( MapRenderer.onRender );
 		});
-	};
+	}
 
 
 	/**
@@ -356,7 +356,7 @@ define(function( require )
 
 		// Find entity over the cursor
 		if (Mouse.intersect) {
-			var entity = EntityManager.intersect( modelView, projection );
+			var entity = EntityManager.intersect();
 			EntityManager.setOverEntity( entity );
 		}
 
@@ -368,7 +368,7 @@ define(function( require )
 	/**
 	 * Callback to execute once the map is loaded
 	 */
-	MapRenderer.onLoad = function OnLoad()
+	MapRenderer.onLoad = function onLoad()
 	{
 	};
 

@@ -12,7 +12,7 @@
 
 define( ['Core/MemoryItem'], function( MemoryItem )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -49,22 +49,22 @@ define( ['Core/MemoryItem'], function( MemoryItem )
 	 * @param {function} onerror - optional
 	 * @return mixed data
 	 */
-	function Get( filename, onload, onerror )
+	function get( filename, onload, onerror )
 	{
 		var item;
 
 		// Not in memory yet, create slot
-		if( !Exist(filename) ) {
+		if (!exist(filename)) {
 			_memory[filename] = new MemoryItem();
 		}
 
 		item = _memory[filename];
 
-		if( onload ) {
+		if (onload) {
 			item.addEventListener('load', onload );
 		}
 
-		if( onerror ) {
+		if (onerror) {
 			item.addEventListener('error', onerror );
 		}
 
@@ -78,7 +78,7 @@ define( ['Core/MemoryItem'], function( MemoryItem )
 	 * @param {string} filename
 	 * @return boolean isInMemory
 	 */
-	function Exist( filename )
+	function exist( filename )
 	{
 		return filename in _memory;
 	}
@@ -91,14 +91,14 @@ define( ['Core/MemoryItem'], function( MemoryItem )
 	 * @param {string|object} data
 	 * @param {string} error - optional
 	 */
-	function Set( filename, data, error )
+	function set( filename, data, error )
 	{
 		// Not in memory yet, create slot
-		if( !Exist(filename) ) {
+		if (!exist(filename)) {
 			_memory[filename] = new MemoryItem();
 		}
 
-		if( error || !data) {
+		if (error || !data) {
 			_memory[filename].onerror( error );
 		}
 		else {
@@ -113,9 +113,9 @@ define( ['Core/MemoryItem'], function( MemoryItem )
 	 * @param {object} gl - WebGL Context
 	 * @param {number} now - game tick
 	 */
-	function Clean( gl, now )
+	function clean( gl, now )
 	{
-		if( _lastCheckTick + _cleanUpInterval > now ) {
+		if (_lastCheckTick + _cleanUpInterval > now) {
 			return;
 		}
 
@@ -127,15 +127,15 @@ define( ['Core/MemoryItem'], function( MemoryItem )
 		count = keys.length;
 		tick  = now - _remember_time;
 
-		for( i=0; i<count; ++i ) {
+		for (i = 0; i < count; ++i) {
 			item = _memory[ keys[i] ];
-			if( item.complete && item.lastTimeUsed < tick  ) {
-				Remove( gl, keys[i] );
+			if (item.complete && item.lastTimeUsed < tick) {
+				remove( gl, keys[i] );
 				list.push( keys[i] );
-			}	
+			}
 		}
 
-		if( list.length ) {
+		if (list.length) {
 			console.log( '%c[MemoryManager] - Removing ' +  list.length + ' unused elements from memory.', 'color:#d35111', list);
 		}
 
@@ -149,48 +149,51 @@ define( ['Core/MemoryItem'], function( MemoryItem )
 	 * @param {object} gl - WebGL Context
 	 * @param {string} filename
 	 */
-	function Remove( gl, filename )
+	function remove( gl, filename )
 	{
 		// Not found ?
-		if( !Exist(filename) ) {
+		if (!exist(filename)) {
 			return;
 		}
 
-		var file = Get( filename );
-		var ext  = "";
+		var file = get( filename );
+		var ext  = '';
 		var i, count;
 
 		var matches = filename.match(/\.[^\.]+$/);
 
-		if ( matches ) {
+		if (matches) {
 			ext = matches.toString().toLowerCase();
 		}
 
 		// Free file
-		if( file ) {
-			switch( ext ) {
+		if (file) {
+			switch (ext) {
 
 				// Delete GPU textures from sprites
 				case '.spr':
-					if( file.frames ) {
-						for( i = 0, count = file.frames.length; i < count; ++i ) {
-							if( file.frames[i].texture && gl.isTexture(file.frames[i].texture) ) {
+					if (file.frames) {
+						for (i = 0, count = file.frames.length; i < count; ++i) {
+							if (file.frames[i].texture && gl.isTexture(file.frames[i].texture)) {
 								gl.deleteTexture( file.frames[i].texture );
 							}
 						}
 					}
-					//break;
+					if (file.texture && gl.isTexture(file.texture)) {
+						gl.deleteTexture( file.texture );
+					}
+					break;
 
 				// Delete palette
 				case '.pal':
-					if( file.texture && gl.isTexture(file.texture) ) {
+					if (file.texture && gl.isTexture(file.texture)) {
 						gl.deleteTexture( file.texture );
 					}
 					break;
 	
 				// If file is a blob, remove it (wav, mp3, lua, lub, txt, ...)
 				default:
-					if( file.match && file.match(/^blob\:/) ) {
+					if (file.match && file.match(/^blob\:/)) {
 						URL.revokeObjectURL(file);
 					}
 					break;
@@ -208,7 +211,7 @@ define( ['Core/MemoryItem'], function( MemoryItem )
 	 * @param regex
 	 * @return string[] filename
 	 */
-	function Search(regex)
+	function search(regex)
 	{
 		var keys;
 		var i, count, out = [];
@@ -216,8 +219,8 @@ define( ['Core/MemoryItem'], function( MemoryItem )
 		keys  = Object.keys(_memory);
 		count = keys.length;
 
-		for( i=0; i<count; ++i ) {
-			if( keys[i].match(regex) ) {
+		for (i = 0; i < count; ++i) {
+			if (keys[i].match(regex)) {
 				out.push( keys[i] );
 			}
 		}
@@ -230,11 +233,11 @@ define( ['Core/MemoryItem'], function( MemoryItem )
 	 * Export methods
 	 */
 	return {
-		get:    Get,
-		set:    Set,
-		clean:  Clean,
-		remove: Remove,
-		exist:  Exist,
-		search: Search
+		get:    get,
+		set:    set,
+		clean:  clean,
+		remove: remove,
+		exist:  exist,
+		search: search
 	};
 });

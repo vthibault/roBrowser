@@ -10,7 +10,7 @@
 
 define(function()
 {
-	"use strict";
+	'use strict';
 
 	var Weather = {};
 

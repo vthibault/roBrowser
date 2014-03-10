@@ -12,7 +12,7 @@
 
 define(function()
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -41,7 +41,7 @@ define(function()
 	 */
 	Queue.prototype._next = function _Next()
 	{
-		if( this.list.length ) {
+		if (this.list.length) {
 			this.list.shift().call(this);
 		}
 	};

@@ -61,7 +61,7 @@
 			out: function (text) {
 				// Web Worker bug
 				var matches = text.match(/importScripts\([^\)]+\)/g);
-				if( matches ) {
+				if (matches) {
 					text = text.replace(/importScripts\([^\)]+\)(\,|\;|\n)?/g, '');
 					text = "importScripts('../src/Vendors/require.js');\n\n" + text;
 				}

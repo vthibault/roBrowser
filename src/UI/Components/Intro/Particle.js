@@ -10,7 +10,7 @@
 
 define(function( require )
 {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @Constructor
@@ -34,7 +34,7 @@ define(function( require )
 		this.life  = 100 * ( this.r/ this.rmax );
 		this.ratio = Math.random() * this.life;
 
-		this.stop = Math.random() * .2 +.4;
+		this.stop = Math.random() * 0.2 + 0.4;
 		this.t    = Math.random() + 1;
 	}
 
@@ -42,12 +42,12 @@ define(function( require )
 	/**
 	 * Cross Browser animation Frame
 	 */
-	Particle.requestRender = window.requestAnimationFrame
-		|| window.webkitRequestAnimationFrame
-		|| window.mozRequestAnimationFrame
-		|| window.oRequestAnimationFrame
-		|| window.msRequestAnimationFrame
-		|| function(callback, element){
+	Particle.requestRender = window.requestAnimationFrame ||
+		window.webkitRequestAnimationFrame                ||
+		window.mozRequestAnimationFrame                   ||
+		window.oRequestAnimationFrame                     ||
+		window.msRequestAnimationFrame                    ||
+		function(callback){
 			window.setTimeout( callback, 1000/60 );
 		};
 
@@ -65,13 +65,13 @@ define(function( require )
 		this.height = canvas.height;
 		this.canvas = canvas;
 		this.ctx    = canvas.getContext('2d');
-		this.ctx.globalCompositeOperation = "lighter";
+		this.ctx.globalCompositeOperation = 'lighter';
 
 		this.bg     = new Image();
 		this.bg.src = require.toUrl('./images/background.jpg');
 		this.bg.onload = function(){ this.ready = true; };
 
-		for( var i = 0; i < count; ++i ) {
+		for (var i = 0; i < count; ++i) {
 			this.list[i] = new Particle( this.width, this.height );
 		}
 
@@ -95,16 +95,16 @@ define(function( require )
 	 */
 	Particle.render = function Render()
 	{
-		var now = (new Date).getTime();
+		var now = Date.now();
 		var i, count;
 
-		if( now - this.tick > 50 ) {
+		if (now - this.tick > 50) {
 			this.ctx.clearRect( 0, 0, this.width, this.height );
-			if( this.bg.ready ) {
+			if (this.bg.ready) {
 				this.ctx.drawImage(this.bg, 0, 0);
 			}
 
-			for( i = 0, count = this.list.length; i < count; ++i ) {
+			for (i = 0, count = this.list.length; i < count; ++i) {
 				this.list[i].move( 0, 0, this.width, this.height );
 				this.list[i].render( this.ctx );
 			}
@@ -112,7 +112,7 @@ define(function( require )
 			this.tick = now;
 		}
 
-		if( this.process ) {
+		if (this.process) {
 			this.requestRender.call(
 				window,
 				this.render.bind(this),
@@ -130,7 +130,7 @@ define(function( require )
 	Particle.prototype.render = function Render( ctx )
 	{
 		this.ratio += this.t;
-		if( this.ratio <= 0 || this.ratio >= this.life ) {
+		if (this.ratio <= 0 || this.ratio >= this.life) {
 			this.t *= -1;
 		}
 
@@ -146,7 +146,7 @@ define(function( require )
 		ctx.closePath();
 
 		gradient.addColorStop(0.0, 'rgba(255,255,255,' + opacity + ')');
-		gradient.addColorStop(this.stop, 'rgba('+ this.c +',100,255,' + (opacity*.6) + ')');
+		gradient.addColorStop(this.stop, 'rgba('+ this.c +',100,255,' + (opacity*0.6) + ')');
 		gradient.addColorStop(1.0, 'rgba('+ this.c +',100,255,0)');
 
 		ctx.fillStyle = gradient;
@@ -169,14 +169,14 @@ define(function( require )
 		this.c += this.dc;
 
 		// Bound
-		if( this.x >= width )  this.dx = -1;
-		else if( this.x <= x ) this.dx =  1;
+		if (this.x >= width)  this.dx = -1;
+		else if (this.x <= x) this.dx =  1;
 
-		if( this.y >= height ) this.dy = -1;
-		else if( this.y <= y ) this.dy =  1;
+		if (this.y >= height) this.dy = -1;
+		else if (this.y <= y) this.dy =  1;
 
-		if( this.c >= 255 )    this.dc = -1;
-		else if( this.c <= 0 ) this.dc =  1;
+		if (this.c >= 255)    this.dc = -1;
+		else if (this.c <= 0) this.dc =  1;
 	};
 
 

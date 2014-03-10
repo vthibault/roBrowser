@@ -10,7 +10,7 @@
 
 define( ['jquery', 'DB/DBManager'], function( jQuery, DB )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -18,10 +18,10 @@ define( ['jquery', 'DB/DBManager'], function( jQuery, DB )
 	 *
 	 * @param {string} value
 	 */
-	jQuery.fn.text = function( value ) {
+	jQuery.fn.text = function( text ) {
 		return jQuery.access( this, function( value ) {
 
-			if ( value === undefined ) {
+			if (value === undefined) {
 				return jQuery.text( this );
 			}
 
@@ -29,18 +29,18 @@ define( ['jquery', 'DB/DBManager'], function( jQuery, DB )
 
 			// Escape, secure entry
 			value = String(value);
-			txt   = value.replace( /\</g, "&#60;").replace(/\>/g,"&#62;");
+			txt   = value.replace( /</g, '&#60;').replace(/>/g,'&#62;');
 
 			// Msg color ^000000
 			reg = /\^([a-fA-F0-9]{6})/ ;
-			while( result = reg.exec(txt) ) {
-				txt = txt.replace( result[0], '<span style="color:#' + result[1] + '">') + "</span>";
+			while ((result = reg.exec(txt))) {
+				txt = txt.replace( result[0], '<span style="color:#' + result[1] + '">') + '</span>';
 			}
 
 			// Hiding hack ^nItemID^502
 			reg = /\^nItemID\^(\d+)/g;
-			while( result = reg.exec(txt) ) {
-				txt = txt.replace( result[0], DB.itemList[ result[1] ] ? DB.itemList[ result[1] ].identifiedDisplayName : "Unknown Item" );
+			while ((result = reg.exec(txt))) {
+				txt = txt.replace( result[0], DB.itemList[ result[1] ] ? DB.itemList[ result[1] ].identifiedDisplayName : 'Unknown Item' );
 			}
 
 			// Line feed feature
@@ -48,7 +48,7 @@ define( ['jquery', 'DB/DBManager'], function( jQuery, DB )
 
 			return jQuery(this).html( txt );
 
-		}, null, value, arguments.length );
+		}, null, text, arguments.length );
 	};
 
 

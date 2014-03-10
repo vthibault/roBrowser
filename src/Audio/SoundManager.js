@@ -14,7 +14,7 @@
 define( ['Core/Client', 'Preferences/Audio', 'Core/MemoryManager'],
 function(      Client,          Preferences,              Memory )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -24,17 +24,30 @@ function(      Client,          Preferences,              Memory )
 
 
 	/**
+	 * @Constructor
+	 */
+	var Sound = {};
+
+
+	/**
+	 * @var {float} sound volume
+	 *
+	 */
+	Sound.volume = Preferences.Sound.volume;
+
+
+	/**
 	 * Play a wav sound
 	 *
 	 * @param {string} filename
 	 * @param {optional|number} vol (volume)
 	 * @param {optional|boolean} auto-repeat
 	 */
-	function Play( filename, vol, repeat ) {
+	Sound.play = function play( filename, vol, repeat ) {
 		var volume;
 
 		// Sound volume * Global volume
-		if ( vol ) {
+		if (vol) {
 			volume = vol * this.volume;
 		}
 		else {
@@ -42,12 +55,12 @@ function(      Client,          Preferences,              Memory )
 		}
 
 		// Don't play sound if you can't hear it or sound is stopped
-		if ( volume <= 0 || !Preferences.Sound.play ) {
+		if (volume <= 0 || !Preferences.Sound.play) {
 			return;
 		}
 
 		// Get the sound from client.
-		Client.loadFile( "data/wav/" + filename, function( url ) {
+		Client.loadFile( 'data/wav/' + filename, function( url ) {
 			var sound = document.createElement('audio');
 
 			// Initialiaze the sound and play it
@@ -60,8 +73,8 @@ function(      Client,          Preferences,              Memory )
 			// Once the sound finish, remove it from memory
 			sound.addEventListener('ended', function Remove(){
 				var pos = _sounds.indexOf(this);
-				if( pos !== -1 ) {
-					if( repeat ) {
+				if (pos !== -1) {
+					if (repeat) {
 						sound.currentTime = 0;
 						sound.play();
 					}
@@ -74,7 +87,7 @@ function(      Client,          Preferences,              Memory )
 			// Add it to the list
 			_sounds.push(sound);
 		});
-	}
+	};
 
 
 	/**
@@ -82,13 +95,13 @@ function(      Client,          Preferences,              Memory )
 	 *
 	 * @param {optional|string} filename to stop
 	 */
-	function Stop( filename )
+	Sound.stop = function stop( filename )
 	{
 		var i, count, list;
 
-		if( filename ) {
-			for( i=0, count=_sounds.length; i<count; ++i ) {
-				if( _sounds[i].filename === filename ) {
+		if (filename) {
+			for (i = 0, count = _sounds.length; i < count; ++i) {
+				if (_sounds[i].filename === filename) {
 					_sounds[i].pause();
 					_sounds.splice(i, 1);
 					i--;
@@ -99,17 +112,17 @@ function(      Client,          Preferences,              Memory )
 		}
 
 		// Remove from memory
-		for( count=_sounds.length; count > 0; --count ) {
+		for (count = _sounds.length; count > 0; --count) {
 			_sounds[0].pause();
 			_sounds.splice(0, 1);
 		}
 
 		// Remove from cache
 		list = Memory.search(/\.wav$/);
-		for( i=0, count=list.length; i<count; ++i ) {
+		for (i = 0, count = list.length; i < count; ++i) {
 			Memory.remove( list[i] );
 		}
-	}
+	};
 
 
 	/**
@@ -117,7 +130,7 @@ function(      Client,          Preferences,              Memory )
 	 *
 	 * @param {number} volume
 	 */
-	function setVolume( volume )
+	Sound.setVolume = function setVolume( volume )
 	{
 		var i, count = _sounds.length;
 		this.volume  = Math.min( volume, 1.0);
@@ -125,20 +138,15 @@ function(      Client,          Preferences,              Memory )
 		Preferences.Sound.volume = this.volume;
 		Preferences.save();
 
-		for( i=0; i<count; i++ ) {
+		for (i = 0; i < count; i++) {
 			_sounds[i].volume = Math.min( _sounds[i]._volume * this.volume, 1.0);
 		}
-	}
+	};
 
 
 	/**
 	 * Export
 	 */
-	return {
-		volume:    Preferences.Sound.volume,
-		play:      Play,
-		stop:      Stop,
-		setVolume: setVolume
-	};
+	return Sound;
 
 });

@@ -10,16 +10,37 @@
 define( ['Renderer/Map/Altitude', 'Core/Client', 'Utils/WebGL', 'Utils/Texture'],
 function(              Altitude,        Client,         WebGL,         Texture )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
-	 * Private variables
+	 * @var {WebGLProgram}
 	 */
-	var _program     = null;
-	var _buffer      = null;
-	var _texture     = null;
-	var _xy          = null;
+	var _program = null;
+
+
+	/**
+	 * param {WebGLBuffer}
+	 */
+	var _buffer = null;
+
+
+	/**
+	 * @var {WebGLTexture} texture of the grid
+	 */
+	var _texture = null;
+
+
+	/**
+	 * @var {string} last position rendered
+	 */
+	var _xy = null;
+
+
+	/**
+	 * WebGL buffer array
+	 * x, y, z, u, v
+	 */
 	var _buffer_data = new Float32Array([
 		0.0, 0.0, 0.0, 0.0, 0.0,
 		0.0, 0.0, 0.0, 1.0, 0.0,
@@ -31,43 +52,45 @@ function(              Altitude,        Client,         WebGL,         Texture )
 	/**
 	 * @var {string} vertex shader
 	 */
-	var _vertexShader   = '\
-		attribute vec3 aPosition;\
-		attribute vec2 aTextCoord;\
-		\
-		varying vec2 vTextureCoord;\
-		\
-		uniform mat4 uModelViewMat;\
-		uniform mat4 uProjectionMat;\
-		\
-		void main(void) {\
-			gl_Position    = uProjectionMat * uModelViewMat * vec4( aPosition.xyz, 1.0) ;\
-			gl_Position.z -= 0.01;\
-			vTextureCoord  = aTextCoord;\
-		}';
+	var _vertexShader   = [
+		'attribute vec3 aPosition;',
+		'attribute vec2 aTextCoord;',
+
+		'varying vec2 vTextureCoord;',
+
+		'uniform mat4 uModelViewMat;',
+		'uniform mat4 uProjectionMat;',
+
+		'void main(void) {',
+		'	gl_Position    = uProjectionMat * uModelViewMat * vec4( aPosition.xyz, 1.0) ;',
+		'	gl_Position.z -= 0.01;',
+		'	vTextureCoord  = aTextCoord;',
+		'}'
+	].join('\n');
 
 
 	/**
 	 * @var {string} fragment shader
 	 */
-	var _fragmentShader = '\
-		varying vec2 vTextureCoord;\
-		uniform sampler2D uDiffuse;\
-		\
-		uniform bool  uFogUse;\
-		uniform float uFogNear;\
-		uniform float uFogFar;\
-		uniform vec3  uFogColor;\
-		\
-		void main(void) {\
-			gl_FragColor = texture2D( uDiffuse, vTextureCoord.st);\
-			\
-			if ( uFogUse ) {\
-				float depth     = gl_FragCoord.z / gl_FragCoord.w;\
-				float fogFactor = smoothstep( uFogNear, uFogFar, depth );\
-				gl_FragColor    = mix( gl_FragColor, vec4( uFogColor, gl_FragColor.w ), fogFactor );\
-			}\
-		}';
+	var _fragmentShader = [
+		'varying vec2 vTextureCoord;',
+		'uniform sampler2D uDiffuse;',
+
+		'uniform bool  uFogUse;',
+		'uniform float uFogNear;',
+		'uniform float uFogFar;',
+		'uniform vec3  uFogColor;',
+
+		'void main(void) {',
+		'	gl_FragColor = texture2D( uDiffuse, vTextureCoord.st);',
+
+		'	if (uFogUse) {',
+		'		float depth     = gl_FragCoord.z / gl_FragCoord.w;',
+		'		float fogFactor = smoothstep( uFogNear, uFogFar, depth );',
+		'		gl_FragColor    = mix( gl_FragColor, vec4( uFogColor, gl_FragColor.w ), fogFactor );',
+		'	}',
+		'}'
+	].join('\n');
 
 
 	/**
@@ -75,11 +98,11 @@ function(              Altitude,        Client,         WebGL,         Texture )
 	 *
 	 * @param {object} gl context
 	 */
-	function Init( gl )
+	function init( gl )
 	{
-		Client.loadFile("data/texture/grid.tga", function(buffer){
-			Texture( buffer, function( success ){
-				if( !success ) {
+		Client.loadFile('data/texture/grid.tga', function(buffer){
+			Texture.load( buffer, function(success){
+				if (!success) {
 					return;
 				}
 
@@ -90,7 +113,7 @@ function(              Altitude,        Client,         WebGL,         Texture )
 				canvas.height = WebGL.toPowerOfTwo(this.height);
 
 				ctx.drawImage( this, 0, 0, canvas.width, canvas.height );
-				ctx.fillStyle = "rgba( 40, 220, 130, 0.5 )"; // TODO: can't find the value in the client
+				ctx.fillStyle = 'rgba( 40, 220, 130, 0.5 )'; // TODO: can't find the value in the client
 				ctx.globalCompositeOperation = 'source-atop';
 				ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -120,10 +143,10 @@ function(              Altitude,        Client,         WebGL,         Texture )
 	 * @param {number} x
 	 * @param {number} y
 	 */
-	function Render( gl, modelView, projection, fog, x, y )
+	function render( gl, modelView, projection, fog, x, y )
 	{
 		// Texture not loaded yet
-		if( !_texture ) {
+		if (!_texture) {
 			return;
 		}
 
@@ -134,8 +157,8 @@ function(              Altitude,        Client,         WebGL,         Texture )
 		gl.useProgram( _program );
 
 		// Bind matrix
-		gl.uniformMatrix4fv( uniform.uModelViewMat,  false,  modelView );
-		gl.uniformMatrix4fv( uniform.uProjectionMat, false,  projection );
+		gl.uniformMatrix4fv( uniform.uModelViewMat,  false, modelView );
+		gl.uniformMatrix4fv( uniform.uProjectionMat, false, projection );
 
 		// Fog settings
 		gl.uniform1i(  uniform.uFogUse,   fog.use && fog.exist );
@@ -156,7 +179,7 @@ function(              Altitude,        Client,         WebGL,         Texture )
 		gl.uniform1i( uniform.uDiffuse, 0 );
 
 		// Update buffer only if there is a change
-		if ( _xy !== x+''+y ) {
+		if (_xy !== x+''+y) {
 			_xy = x+''+y;
 			z   = Altitude.getCell(x, y);
 
@@ -188,19 +211,19 @@ function(              Altitude,        Client,         WebGL,         Texture )
 	 *
 	 * @param {object} gl context
 	 */
-	function Free( gl )
+	function free( gl )
 	{
-		if ( _buffer ) {
+		if (_buffer) {
 			gl.deleteBuffer( _buffer );
 			_buffer = null;
 		}
 
-		if( _texture ) {
+		if (_texture) {
 			gl.deleteTexture( _texture );
 			_texture = null;
 		}
 
-		if( _program ) {
+		if (_program) {
 			gl.deleteProgram( _program );
 			_program = null;
 		}
@@ -211,8 +234,8 @@ function(              Altitude,        Client,         WebGL,         Texture )
 	 * Export
 	 */
 	return {
-		init:   Init,
-		free:   Free,
-		render: Render
+		init:   init,
+		free:   free,
+		render: render
 	};
 });

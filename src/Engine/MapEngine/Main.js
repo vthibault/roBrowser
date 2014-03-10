@@ -10,20 +10,17 @@
 
 define(function( require )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
 	 * Load dependencies
 	 */
 	var DB            = require('DB/DBManager');
-	var SkillId       = require('DB/SkillId');
 	var PathFinding   = require('Utils/PathFinding');
 	var Session       = require('Engine/SessionStorage');
 	var Network       = require('Network/NetworkManager');
 	var PACKET        = require('Network/PacketStructure');
-	var EntityManager = require('Renderer/EntityManager');
-	var Altitude      = require('Renderer/Map/Altitude');
 	var ChatBox       = require('UI/Components/ChatBox/ChatBox');
 	var ChatRoom      = require('UI/Components/ChatRoom/ChatRoom');
 	var BasicInfo     = require('UI/Components/BasicInfo/BasicInfo');
@@ -38,11 +35,8 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET.ZC.NOTIFY_PLAYERMOVE
 	 */
-	function WalkTo( pkt )
+	function onPlayerMove( pkt )
 	{
-		//entity.position[0] = pkt.MoveData[0];
-		//entity.position[1] = pkt.MoveData[1];
-		//entity.position[2] = Altitude.getCellHeight(  pkt.MoveData[0],  pkt.MoveData[1] );
 		Session.Entity.walkTo(
 			pkt.MoveData[0],
 			pkt.MoveData[1],
@@ -53,11 +47,54 @@ define(function( require )
 
 
 	/**
+	 * Our player just talk
+	 *
+	 * @param {object} pkt - PACKET_ZC_NOTIFY_PLAYERCHAT
+	 */
+	function onPlayerMessage( pkt )
+	{
+		if (ChatRoom.isOpen) {
+			ChatRoom.message(pkt.msg);
+			return;
+		}
+
+		ChatBox.addText( pkt.msg, ChatBox.TYPE.PUBLIC | ChatBox.TYPE.SELF );
+		if (Session.Entity) {
+			Session.Entity.dialog.set( pkt.msg );
+		}
+	}
+
+
+	/**
+	 * Target too far to attack it
+	 *
+	 * @param {object} pkt - PACKET.ZC.ATTACK_FAILURE_FOR_DISTANCE
+	 */
+	function onPlayerTooFarToAttack( pkt )
+	{
+		var out   = [];
+		var count = PathFinding.search(
+			pkt.xPos,	pkt.yPos,
+			pkt.targetXPos, pkt.targetYPos,
+			pkt.currentAttRange,
+			out
+		);
+
+		if (count) {
+			var _pkt     = new PACKET.CZ.REQUEST_MOVE();
+			_pkt.dest[0] = out[ count - 1 ][0];
+			_pkt.dest[1] = out[ count - 1 ][1];
+			Network.sendPacket(_pkt);
+		}
+	}
+
+
+	/**
 	 * Get player attack range
 	 *
 	 * @param {object} pkt - PACKET.ZC.ATTACK_RANGE
 	 */
-	function UpdateAttackRange( pkt )
+	function onAttackRangeUpdate( pkt )
 	{
 		Session.Entity.attack_range = pkt.currentAttRange;
 	}
@@ -68,7 +105,7 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET.ZC.STATUS
 	 */
-	function UpdateStatusParameter( pkt )
+	function onStatusParameterChange( pkt )
 	{
 		WinStats.update('str',         pkt.str);
 		WinStats.update('agi',         pkt.agi);
@@ -104,14 +141,14 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET.ZC.STATUS_CHANGE_ACK
 	 */
-	function UpdateStatusParameterAck( pkt )
+	function onStatusParameterUpdateAnswer( pkt )
 	{
 		// Fail
-		if( !pkt.result ) {
+		if (!pkt.result) {
 			return;
 		}
 
-		switch( pkt.statusID ) {
+		switch (pkt.statusID) {
 			case 13: WinStats.update('str', pkt.value); break;
 			case 14: WinStats.update('agi', pkt.value); break;
 			case 15: WinStats.update('vit', pkt.value); break;
@@ -126,13 +163,13 @@ define(function( require )
 	 * Modify main players parameters
 	 * Generic function
 	 */
-	function UpdateParameter( pkt )
+	function onParameterChange( pkt )
 	{
 		var amount = 0, type;
 
 		if (pkt.hasOwnProperty('varID')) {
 			type = pkt.varID;
-		}  
+		}
 		else if (pkt.hasOwnProperty('statusType')) {
 			type = pkt.statusType;
 		}
@@ -153,7 +190,7 @@ define(function( require )
 			amount = pkt.value;
 		}
 
-		switch( type ) {
+		switch (type) {
 
 			// Walk Speed
 			case  0:
@@ -163,7 +200,7 @@ define(function( require )
 			// Base exp
 			case  1:
 				BasicInfo.base_exp  = amount;
-				if( BasicInfo.base_exp_next ) {
+				if (BasicInfo.base_exp_next) {
 					BasicInfo.update('bexp', BasicInfo.base_exp, BasicInfo.base_exp_next );
 				}
 				break;
@@ -171,7 +208,7 @@ define(function( require )
 			// Job exp
 			case  2:
 				BasicInfo.job_exp  = amount;
-				if( BasicInfo.job_exp_next ) {
+				if (BasicInfo.job_exp_next) {
 					BasicInfo.update('jexp', BasicInfo.job_exp, BasicInfo.job_exp_next );
 				}
 				break;
@@ -187,7 +224,7 @@ define(function( require )
 				Session.Entity.life.update();
 
 				// Urg we are dead !
-				if( amount < 1 ) {
+				if (amount < 1) {
 					Escape.ui.show();
 					Escape.ui.find('.savepoint').show();
 					Escape.ui.find('.settings, .sound, .hotkey').hide();
@@ -195,7 +232,7 @@ define(function( require )
 					// TODO: check for resurection button
 				}
 
-				if( Session.Entity.life.hp_max > -1 ) {
+				if (Session.Entity.life.hp_max > -1) {
 					BasicInfo.update('hp', Session.Entity.life.hp, Session.Entity.life.hp_max);
 				}
 				break;
@@ -205,7 +242,7 @@ define(function( require )
 				Session.Entity.life.hp_max = amount;
 				Session.Entity.life.update();
 
-				if( Session.Entity.life.hp > -1 ) {
+				if (Session.Entity.life.hp > -1) {
 					BasicInfo.update('hp',  Session.Entity.life.hp, Session.Entity.life.hp_max);
 				}
 				break;
@@ -215,7 +252,7 @@ define(function( require )
 				Session.Entity.life.sp = amount;
 				Session.Entity.life.update();
 
-				if( Session.Entity.life.sp_max > -1 ) {
+				if (Session.Entity.life.sp_max > -1) {
 					BasicInfo.update('sp', Session.Entity.life.sp, Session.Entity.life.sp_max);
 				}
 				break;
@@ -225,7 +262,7 @@ define(function( require )
 				Session.Entity.life.sp_max = amount;
 				Session.Entity.life.update();
 
-				if( Session.Entity.life.sp > -1 ) {
+				if (Session.Entity.life.sp > -1) {
 					BasicInfo.update('sp',  Session.Entity.life.sp, Session.Entity.life.sp_max);
 				}
 				break;
@@ -288,7 +325,7 @@ define(function( require )
 			// Base exp next
 			case 22:
 				BasicInfo.base_exp_next  = amount;
-				if( BasicInfo.base_exp > -1 ) {
+				if (BasicInfo.base_exp > -1) {
 					BasicInfo.update('bexp', BasicInfo.base_exp, BasicInfo.base_exp_next );
 				}
 				break;
@@ -296,7 +333,7 @@ define(function( require )
 			// Job exp next
 			case 23:
 				BasicInfo.job_exp_next  = amount;
-				if( BasicInfo.job_exp > -1 ) {
+				if (BasicInfo.job_exp > -1) {
 					BasicInfo.update('jexp', BasicInfo.job_exp, BasicInfo.job_exp_next );
 				}
 				break;
@@ -304,7 +341,7 @@ define(function( require )
 			//Weight
 			case 24:
 				BasicInfo.weight = amount;
-				if( BasicInfo.weight_max > -1 ) {
+				if (BasicInfo.weight_max > -1) {
 					BasicInfo.update('weight', BasicInfo.weight, BasicInfo.weight_max );
 				}
 				break;
@@ -312,7 +349,7 @@ define(function( require )
 			// Weight Max
 			case 25:
 				BasicInfo.weight_max = amount;
-				if( BasicInfo.weight > -1 ) {
+				if (BasicInfo.weight > -1) {
 					BasicInfo.update('weight', BasicInfo.weight, BasicInfo.weight_max );
 				}
 				break;
@@ -346,7 +383,7 @@ define(function( require )
 				break;
 
 			default:
-				console.log( "Main::UpdateParameter() - Unsupported type", pkt);
+				console.log( 'Main::onParameterChange() - Unsupported type', pkt);
 		}
 	}
 
@@ -356,32 +393,30 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET.ZC.BROADCAST
 	 */
-	function OnBroadcast( pkt )
+	function onGlobalAnnounce( pkt )
 	{
 		var color;
 
-		if ( pkt.fontColor ) {
+		if (pkt.fontColor) {
 			color = 'rgb(' + ([
 				( pkt.fontColor & 0x00ff0000 ) >> 16,
 				( pkt.fontColor & 0x0000ff00 ) >> 8,
 				( pkt.fontColor & 0x000000ff )
 			]).join(',') + ')';
 		}
-		else if ( pkt.msg.match(/^blue/) ) {
-			color = "#00FFFF";
+		else if (pkt.msg.match(/^blue/)) {
+			color = '#00FFFF';
 			pkt.msg = pkt.msg.substr(4);
 		}
-		else if ( pkt.msg.match(/^ssss/) ) {
-			color = "#FFFF00";
+		else if (pkt.msg.match(/^ssss/)) {
+			color = '#FFFF00';
 			pkt.msg = pkt.msg.substr(4);
 		}
 		else {
-			color = "#FFFF00";
+			color = '#FFFF00';
 		}
-		//TODO: Find colors in broadcast
 		
 		ChatBox.addText( pkt.msg, ChatBox.TYPE.ANNOUNCE, color );
-
 		Announce.append();
 		Announce.set( pkt.msg, color );
 	}
@@ -391,130 +426,10 @@ define(function( require )
 	 * Receive player count in server
 	 * @param {object} pkt - PACKET.ZC.USER_COUNT
 	 */
-	function OnPlayerCount( pkt )
+	function onPlayerCountAnswer( pkt )
 	{
 		ChatBox.addText( DB.msgstringtable[178].replace('%d', pkt.count), ChatBox.TYPE.INFO );
 	}
-
-
-	/**
-	 * Our player just talk
-	 *
-	 * @param {object} pkt - PACKET_ZC_NOTIFY_PLAYERCHAT
-	 */
-	function OnPlayerMessage( pkt )
-	{
-		if(ChatRoom.isOpen) {
-			ChatRoom.message(pkt.msg);
-			return;
-		}
-		
-		ChatBox.addText( pkt.msg, ChatBox.TYPE.PUBLIC | ChatBox.TYPE.SELF );
-		if( Session.Entity ) {
-			Session.Entity.dialog.set( pkt.msg );
-		}
-	}
-
-
-	/**
-	 * Target too far to attack it
-	 *
-	 * @param {object} pkt - PACKET.ZC.ATTACK_FAILURE_FOR_DISTANCE
-	 */
-	function OnPlayerTooFarToAttack( pkt )
-	{
-		var out   = [];
-		var count = PathFinding.search(
-			pkt.xPos,	pkt.yPos,
-			pkt.targetXPos, pkt.targetYPos,
-			pkt.currentAttRange,
-			out
-		);
-
-		if( count ) {
-			var _pkt = new PACKET.CZ.REQUEST_MOVE();
-			_pkt.dest[0] = out[ count - 1 ][0];
-			_pkt.dest[1] = out[ count - 1 ][1];
-			Network.sendPacket(_pkt);
-		}
-	}
-
-
-	/**
-	 * Failed to cast a skill
-	 *
-	 * @param {object} pkt - PACKET.ZC.ACK_TOUSESKILL
-	 */
-	function SkillResult( pkt )
-	{
-		// Yeah success !
-		if( pkt.success ) {
-			return;
-		}
-
-		var error = 0;
-
-		if ( pkt.NUM ) {
-
-			switch( pkt.SKID ) {
-
-				default:
-					error = 204;
-					break;
-
-				case SkillId.NV_BASIC:
-					error = pkt.NUM < 7 ? 159 + pkt.NUM : pkt.NUM == 7 ? 383 : 0;
-					break;
-
-				case SkillId.AL_WARP:
-					error = 214;
-					break;
-
-				case SkillId.TF_STEAL:
-					error = 205;
-					break;
-
-				case SkillId.TF_POISON:
-					error = 207;
-					break;
-			}
-		}
-
-		else {
-			switch( pkt.cause ) {
-				case 1:  error = 202; break;
-				case 2:  error = 203; break;
-				case 3:  error = 808; break;
-				case 4:  error = 219; break;
-				case 5:  error = 233; break;
-				case 6:  error = 239; break;
-				case 7:  error = 246; break;
-				case 8:  error = 247; break;
-				case 9:  error = 580; break;
-				case 10: error = 285; break;
-				case 83: error = 661; break;
-			}
-		}
-
-		if ( error ) {
-			ChatBox.addText( DB.msgstringtable[error], ChatBox.TYPE.ERROR );
-		}
-	}
-
-
-	/**
-	 * Do we show equipment to others ?
-	 *
-	 * @param {object} pkt - PACKET_ZC_CONFIG_NOTIFY
-	 */
-	function ConfigEquip( pkt )
-	{
-		Equipment.setEquipConfig( pkt.bOpenEquipmentWin );
-		ChatBox.addText(
-			DB.msgstringtable[1358 + (pkt.bOpenEquipmentWin ? 1 : 0) ],
-			ChatBox.TYPE.INFO
-		);
-	};
 
 
 	/**
@@ -522,9 +437,9 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET.ZC.CONFIG
 	 */
-	function OnConfigChange( pkt )
+	function onConfigUpdate( pkt )
 	{
-		switch( pkt.Config ) {
+		switch (pkt.Config) {
 
 			// equipment
 			case 0:
@@ -534,6 +449,8 @@ define(function( require )
 					ChatBox.TYPE.INFO
 				);
 				break;
+
+			// TODO: other config type to support (PACKET.ZC.CONFIG)
 		}
 	}
 
@@ -543,22 +460,20 @@ define(function( require )
 	 */
 	return function MainEngine()
 	{
-		Network.hookPacket( PACKET.ZC.NOTIFY_PLAYERMOVE,           WalkTo );
-		Network.hookPacket( PACKET.ZC.PAR_CHANGE,                  UpdateParameter );
-		Network.hookPacket( PACKET.ZC.LONGPAR_CHANGE,              UpdateParameter );
-		Network.hookPacket( PACKET.ZC.STATUS_CHANGE,               UpdateParameter );
-		Network.hookPacket( PACKET.ZC.NOTIFY_CARTITEM_COUNTINFO,   UpdateParameter );
-		Network.hookPacket( PACKET.ZC.COUPLESTATUS,                UpdateParameter );
-		Network.hookPacket( PACKET.ZC.STATUS,                      UpdateStatusParameter );
-		Network.hookPacket( PACKET.ZC.STATUS_CHANGE_ACK,           UpdateStatusParameterAck );
-		Network.hookPacket( PACKET.ZC.ATTACK_RANGE,                UpdateAttackRange );
-		Network.hookPacket( PACKET.ZC.BROADCAST,                   OnBroadcast );
-		Network.hookPacket( PACKET.ZC.BROADCAST2,                  OnBroadcast );
-		Network.hookPacket( PACKET.ZC.USER_COUNT,                  OnPlayerCount );
-		Network.hookPacket( PACKET.ZC.NOTIFY_PLAYERCHAT,           OnPlayerMessage );
-		Network.hookPacket( PACKET.ZC.ATTACK_FAILURE_FOR_DISTANCE, OnPlayerTooFarToAttack );
-		Network.hookPacket( PACKET.ZC.ACK_TOUSESKILL,              SkillResult );
-		Network.hookPacket( PACKET.ZC.CONFIG_NOTIFY,               ConfigEquip );
-		Network.hookPacket( PACKET.ZC.CONFIG,                      OnConfigChange );
+		Network.hookPacket( PACKET.ZC.NOTIFY_PLAYERMOVE,           onPlayerMove );
+		Network.hookPacket( PACKET.ZC.PAR_CHANGE,                  onParameterChange );
+		Network.hookPacket( PACKET.ZC.LONGPAR_CHANGE,              onParameterChange );
+		Network.hookPacket( PACKET.ZC.STATUS_CHANGE,               onParameterChange );
+		Network.hookPacket( PACKET.ZC.NOTIFY_CARTITEM_COUNTINFO,   onParameterChange );
+		Network.hookPacket( PACKET.ZC.COUPLESTATUS,                onParameterChange );
+		Network.hookPacket( PACKET.ZC.STATUS,                      onStatusParameterChange );
+		Network.hookPacket( PACKET.ZC.STATUS_CHANGE_ACK,           onStatusParameterUpdateAnswer );
+		Network.hookPacket( PACKET.ZC.ATTACK_RANGE,                onAttackRangeUpdate );
+		Network.hookPacket( PACKET.ZC.BROADCAST,                   onGlobalAnnounce );
+		Network.hookPacket( PACKET.ZC.BROADCAST2,                  onGlobalAnnounce );
+		Network.hookPacket( PACKET.ZC.USER_COUNT,                  onPlayerCountAnswer );
+		Network.hookPacket( PACKET.ZC.NOTIFY_PLAYERCHAT,           onPlayerMessage );
+		Network.hookPacket( PACKET.ZC.ATTACK_FAILURE_FOR_DISTANCE, onPlayerTooFarToAttack );
+		Network.hookPacket( PACKET.ZC.CONFIG,                      onConfigUpdate );
 	};
 });

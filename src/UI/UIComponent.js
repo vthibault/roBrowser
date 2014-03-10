@@ -10,7 +10,7 @@
 define( ['Utils/jquery', 'DB/DBManager', 'Core/Client', 'Controls/MouseEventHandler'],
 function(       jQuery,      DB,               Client,            Mouse )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -37,22 +37,22 @@ function(       jQuery,      DB,               Client,            Mouse )
 	/**
 	 * Prepare the component to be used
 	 */
-	UIComponent.prototype.prepare = function Prepare()
+	UIComponent.prototype.prepare = function prepare()
 	{
-		if( this._htmlText ) {
+		if (this._htmlText) {
 			this.ui = jQuery(this._htmlText);
 			this.ui.css('zIndex', 50);
 		}
 
 		// Add style to view
-		if( this._cssText ) {
+		if (this._cssText) {
 			var style = jQuery('style:first');
-			if( !style.length ) {
+			if (!style.length) {
 				style = jQuery('<style type="text/css"></style>').appendTo('head');
 			}
 
 			// Avoid adding css each time the same component is created
-			if( style.text().indexOf("\n\n/** " + this.name + " **/\n") === -1 ) {
+			if (style.text().indexOf("\n\n/** " + this.name + " **/\n") === -1) {
 				style.append("\n\n/** " + this.name + " **/\n" + this._cssText);
 			}
 			jQuery('body').append(this.ui);
@@ -60,16 +60,16 @@ function(       jQuery,      DB,               Client,            Mouse )
 
 
 		// Prepare html
-		if( this._htmlText ) {
+		if (this._htmlText) {
 			this.ui.each( this.parseHTML ).find('*').each( this.parseHTML );
 		}
 
 		// Initialize
-		if( this.init ) {
+		if (this.init) {
 			this.init();
 		}
 
-		if( this._htmlText ) {
+		if (this._htmlText) {
 			this.ui.detach();
 		}
 	};
@@ -78,14 +78,14 @@ function(       jQuery,      DB,               Client,            Mouse )
 	/**
 	 * Remove a component from HTML
 	 */
-	UIComponent.prototype.remove = function Remove()
+	UIComponent.prototype.remove = function remove()
 	{
-		if( this.__loaded && this.ui.parent().length ) {
-			if( this.onRemove ) {
+		if (this.__loaded && this.ui.parent().length) {
+			if (this.onRemove) {
 				this.onRemove();
 			}
 
-			if( this.onKeyDown ) {
+			if (this.onKeyDown) {
 				jQuery(window).off('keydown.' + this.name);
 			}
 
@@ -97,9 +97,9 @@ function(       jQuery,      DB,               Client,            Mouse )
 	/**
 	 * Add the component to HTML
 	 */
-	UIComponent.prototype.append = function Append()
+	UIComponent.prototype.append = function append()
 	{
-		if( !this.__loaded) {
+		if (!this.__loaded) {
 			this.prepare();
 			this.__loaded = true;
 
@@ -110,11 +110,11 @@ function(       jQuery,      DB,               Client,            Mouse )
 
 		this.ui.appendTo('body');
 
-		if( this.onKeyDown ) {
+		if (this.onKeyDown) {
 			jQuery(window).on('keydown.' + this.name, this.onKeyDown.bind(this));
 		}
 
-		if( this.onAppend ) {
+		if (this.onAppend) {
 			this.onAppend();
 		}
 	};
@@ -125,15 +125,15 @@ function(       jQuery,      DB,               Client,            Mouse )
 	 *
 	 * @param {string} name - new component name
 	 */
-	UIComponent.prototype.clone = function Clone( name, full )
+	UIComponent.prototype.clone = function clone( name, full )
 	{
 		var ui = new UIComponent( name, this._htmlText, this._cssText );
 
-		if( full ) {
+		if (full) {
 			var keys = Object.keys(this);
 			var i, count = keys.length;
 
-			for( i = 0; i < count; ++i ) {
+			for (i = 0; i < count; ++i) {
 				ui[ keys[i] ] = this[ keys[i] ];
 			}
 		}
@@ -147,11 +147,11 @@ function(       jQuery,      DB,               Client,            Mouse )
 	 *
 	 * @param {string} type to enable
 	 */
-	UIComponent.prototype.on = function On( type )
+	UIComponent.prototype.on = function on( type )
 	{
-		switch( type.toLowerCase() ) {
+		switch (type.toLowerCase()) {
 			case 'keydown':
-				if( this.onKeyDown ) {
+				if (this.onKeyDown) {
 					jQuery(window)
 						.off('keydown.' + this.name)
 						.on( 'keydown.' + this.name, this.onKeyDown.bind(this) );
@@ -166,9 +166,9 @@ function(       jQuery,      DB,               Client,            Mouse )
 	 *
 	 * @param {string} type to disable
 	 */
-	UIComponent.prototype.off = function Off( type )
+	UIComponent.prototype.off = function off( type )
 	{
-		switch( type.toLowerCase() ) {
+		switch (type.toLowerCase()) {
 			case 'keydown':
 				jQuery(window).off('keydown.' + this.name);
 				break;
@@ -179,12 +179,12 @@ function(       jQuery,      DB,               Client,            Mouse )
 	/**
 	 * Drag an element
 	 */
-	UIComponent.prototype.draggable = function Draggable( element )
+	UIComponent.prototype.draggable = function draggable( element )
 	{
 		var container = this.ui;
 
 		// Global variable
-		if( !element ) {
+		if (!element) {
 			element = this.ui;
 		}
 
@@ -249,7 +249,7 @@ function(       jQuery,      DB,               Client,            Mouse )
 				if (updateDepth) {
 					setTimeout(function(){
 						element.css('zIndex', 50);
-						if( element[0].parentNode ) {
+						if (element[0].parentNode) {
 							element[0].parentNode.appendChild(element[0]);
 						}
 					}, 1);
@@ -269,7 +269,7 @@ function(       jQuery,      DB,               Client,            Mouse )
 	/**
 	 * Parse a component html view (data-* attributes)
 	 */
-	UIComponent.prototype.parseHTML = function ParseHTML()
+	UIComponent.prototype.parseHTML = function parseHTML()
 	{
 		var $node      = jQuery(this);
 		var background = $node.data('background');
@@ -282,7 +282,7 @@ function(       jQuery,      DB,               Client,            Mouse )
 		var hover_uri = null;
 
 		// Default background
-		if ( background ) {
+		if (background) {
 			Client.loadFile( DB.INTERFACE_PATH + background, function(dataURI) {
 				bg_uri = dataURI;
 				$node.css('backgroundImage', 'url(' + bg_uri + ')');
@@ -290,7 +290,7 @@ function(       jQuery,      DB,               Client,            Mouse )
 		}
 
 		// On mouse over
-		if ( hover ) {
+		if (hover) {
 			Client.loadFile( DB.INTERFACE_PATH + hover, function(dataURI){
 				hover_uri = dataURI;
 				$node.mouseover(function(){ this.style.backgroundImage = 'url(' + hover_uri + ')'; });
@@ -299,7 +299,7 @@ function(       jQuery,      DB,               Client,            Mouse )
 		}
 	
 		// On mouse down
-		if ( down ) {
+		if (down) {
 			Client.loadFile( DB.INTERFACE_PATH + down, function(dataURI){
 				$node.mousedown(function(event){ this.style.backgroundImage = 'url(' + dataURI + ')'; event.stopImmediatePropagation(); });
 				$node.mouseup(  function()     { this.style.backgroundImage = 'url(' + (hover_uri||bg_uri) + ')'; });
@@ -311,9 +311,9 @@ function(       jQuery,      DB,               Client,            Mouse )
 		}
 	
 		// Preload images ?
-		if ( preload ) {
+		if (preload) {
 			preloads = preload.split(';');
-			for ( i=0, count=preloads.length; i<count; ++i ) {
+			for (i = 0, count = preloads.length; i < count; ++i) {
 				preloads[i] = DB.INTERFACE_PATH + jQuery.trim(preloads[i]);
 			}
 			Client.loadFiles( preloads );

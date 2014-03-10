@@ -9,7 +9,7 @@
  */
 define(function( require )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -29,7 +29,7 @@ define(function( require )
 	 * Request a chat room
 	 * PACKET.CZ.CREATE_CHATROOM
 	 */
-	ChatRoomCreate.RequestRoom = function RequestRoom()
+	ChatRoomCreate.requestRoom = function requestRoom()
 	{
 		var pkt    = new PACKET.CZ.CREATE_CHATROOM();
 		pkt.size   = this.limit;
@@ -44,7 +44,7 @@ define(function( require )
 	 * Request a change in the chat room
 	 * PACKET.CZ.CHANGE_CHATROOM
 	 */
-	ChatRoom.ChangeChatRoom = function ChangeChatRoom()
+	ChatRoom.changeChatRoom = function changeChatRoom()
 	{
 		var pkt = new PACKET.CZ.CHANGE_CHATROOM();
 		/*
@@ -61,7 +61,7 @@ define(function( require )
 	 * Request to change the role from a member in your chatroom
 	 * PACKET.CZ.REQ_ROLE_CHANGE
 	 */
-	ChatRoom.RequestRoleChange = function RequestRoleChange()
+	ChatRoom.requestRoleChange = function requestRoleChange()
 	{
 		var pkt   = new PACKET.CZ.REQ_ROLE_CHANGE();
 		/*
@@ -76,7 +76,7 @@ define(function( require )
 	 * Request to expel a member from current chatroom
 	 * PACKET.CZ.REQ_EXPEL_MEMBER
 	 */
-	ChatRoom.RequestExpelMember = function RequestExpelMember()
+	ChatRoom.requestExpelMember = function requestExpelMember()
 	{
 		var pkt   = new PACKET.CZ.REQ_EXPEL_MEMBER();
 		/*
@@ -90,7 +90,7 @@ define(function( require )
 	 * Request exit from current chatroom
 	 * PACKET.CZ.EXIT_ROOM
 	 */
-	ChatRoom.ExitRoom = function ExitRoom()
+	ChatRoom.exitRoom = function exitRoom()
 	{
 		var pkt   = new PACKET.CZ.EXIT_ROOM();
 		Network.sendPacket( pkt );
@@ -101,7 +101,7 @@ define(function( require )
 	 * Response from the server if the chat creating was succesful or not.
 	 * @param {object} pkt - PACKET.ZC.ACK_CREATE_CHATROOM
 	 */
-	function CreateACK( pkt )
+	function onCreateRoomResult( pkt )
 	{
 		switch (pkt.result) {
 			// Success
@@ -142,7 +142,7 @@ define(function( require )
 	 *  6 = too high level
 	 *  7 = unsuitable job class
 	 */
-	function EnterACK( pkt )
+	function onEnterRoomResult( pkt )
 	{
 		switch (pkt.result) {
 			// full
@@ -167,13 +167,13 @@ define(function( require )
 	 * Notify a entry of a new member
 	 * @param {object} pkt - PACKET_ZC_MEMBER_NEWENTRY
 	 */
-	function EnterMember( pkt )
+	function onMemberJoin( pkt )
 	{
 		ChatRoom.count = pkt.curcount;
 		ChatRoom.members.push( pkt.name );
 
-		ChatRoom.UpdateChat();
-		ChatRoom.message(DB.msgstringtable[179].replace('%s', pkt.name), 'join');	
+		ChatRoom.updateChat();
+		ChatRoom.message(DB.msgstringtable[179].replace('%s', pkt.name), 'join');
 	}
 
 
@@ -181,14 +181,14 @@ define(function( require )
 	 * Change room owner
 	 * @param {object} pkt - PACKET.ZC.ROLE_CHANGE
 	 */
-	function RoleChange( pkt )
+	function onRoleChange( pkt )
 	{
 		// The server will send two of this packets!
 		// One to remove the ownership and one to add ownership, we dont need the first packet !
 
 		if (pkt.role === 1) {
 			ChatRoom.owner = pkt.name;
-			ChatRoom.UpdateChat();
+			ChatRoom.updateChat();
 		}
 	}
 
@@ -197,7 +197,7 @@ define(function( require )
 	 * Member exit
 	 * @param {object} pkt - PACKET.ZC.MEMBER_EXIT
 	 */
-	function MemberExit( pkt )
+	function onMemberLeave( pkt )
 	{
 		// Seems like the server send us we are disconnect,
 		// we do not care.
@@ -207,16 +207,16 @@ define(function( require )
 
 		ChatRoom.count = pkt.curcount;
 		ChatRoom.removeMember( pkt.name );
-		ChatRoom.UpdateChat();
+		ChatRoom.updateChat();
 
 		// Leave the room
 		if (pkt.type === 0) {
-			ChatRoom.message(DB.msgstringtable[180].replace('%s', pkt.name), 'leave');	
+			ChatRoom.message(DB.msgstringtable[180].replace('%s', pkt.name), 'leave');
 		}
 
 		// Kick out of the room
 		else {
-			ChatRoom.message(DB.msgstringtable[181].replace('%s', pkt.name), 'leave');	
+			ChatRoom.message(DB.msgstringtable[181].replace('%s', pkt.name), 'leave');
 		}
 	}
 
@@ -225,14 +225,14 @@ define(function( require )
 	 * Change chat room properties
 	 * @param {object} pkt - PACKET.ZC.CHANGE_CHATROOM
 	 */
-	function Change( pkt )
+	function onRoomUpdate( pkt )
 	{
 		// TODO: switch chat owner (AID-roomID).
 		ChatRoom.limit = pkt.maxcount;
 		ChatRoom.count = pkt.curcount;
 		ChatRoom.type  = pkt.type;
 		ChatRoom.title = pkt.title;
-		ChatRoom.UpdateChat();
+		ChatRoom.updateChat();
 	}
 
 
@@ -240,17 +240,17 @@ define(function( require )
 	 * Enter a room
 	 * @param {object} pkt - PACKET.ZC.ENTER_ROOM
 	 */
-	function Enter( pkt )
+	function onRoomEnter( pkt )
 	{
 		//this.roomID       = fp.readULong();
 		var i, count = pkt.memberList.length;
-		ChatRoom.members = new Array();
+		ChatRoom.members = new Array(count);
 
 		for (i = 0; i < count; ++i) {
 			if (pkt.memberList[i].role === 0) {
 				ChatRoom.owner = pkt.memberList[i].name;
 			}
-			ChatRoom.members.push( pkt.memberList[i].name );
+			ChatRoom.members[i] = pkt.memberList[i].name;
 		}
 
 		// Remove room
@@ -272,14 +272,14 @@ define(function( require )
 	 */
 	return function MainEngine()
 	{
-		Network.hookPacket(PACKET.ZC.ACK_CREATE_CHATROOM, CreateACK);
+		Network.hookPacket(PACKET.ZC.ACK_CREATE_CHATROOM, onCreateRoomResult);
 		//Network.hookPacket(PACKET.ZC.ROOM_NEWENTRY,     Display); //This is holded up at Entity.js
-		Network.hookPacket(PACKET.ZC.CHANGE_CHATROOM,     Change);
+		Network.hookPacket(PACKET.ZC.CHANGE_CHATROOM,     onRoomUpdate);
 		//Network.hookPacket(PACKET.ZC.DESTROY_ROOM,      Destroy); //This is holded up at Entity.js
-		Network.hookPacket(PACKET.ZC.ENTER_ROOM,          Enter);
-		Network.hookPacket(PACKET.ZC.MEMBER_NEWENTRY,     EnterMember);
-		Network.hookPacket(PACKET.ZC.ROLE_CHANGE,         RoleChange);
-		Network.hookPacket(PACKET.ZC.MEMBER_EXIT,         MemberExit);
-		Network.hookPacket(PACKET.ZC.REFUSE_ENTER_ROOM,   EnterACK)
+		Network.hookPacket(PACKET.ZC.ENTER_ROOM,          onRoomEnter);
+		Network.hookPacket(PACKET.ZC.MEMBER_NEWENTRY,     onMemberJoin);
+		Network.hookPacket(PACKET.ZC.ROLE_CHANGE,         onRoleChange);
+		Network.hookPacket(PACKET.ZC.MEMBER_EXIT,         onMemberLeave);
+		Network.hookPacket(PACKET.ZC.REFUSE_ENTER_ROOM,   onEnterRoomResult);
 	};
 });

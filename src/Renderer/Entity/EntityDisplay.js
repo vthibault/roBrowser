@@ -10,7 +10,7 @@
  */
 define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -22,25 +22,25 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 
 
 	// Some helper for Firefox to render text-border
-	if (CanvasRenderingContext2D != 'undefined') {
-		CanvasRenderingContext2D.prototype.outlineText = 
+	if (typeof CanvasRenderingContext2D !== 'undefined') {
+		CanvasRenderingContext2D.prototype.outlineText =
 			function outlineText(txt, x, y) {
 				this.fillText( txt, x-1, y );
 				this.fillText( txt, x,   y-1 );
 				this.fillText( txt, x+1, y );
 				this.fillText( txt, x,   y+1 );
-			}
+			};
 	}
 
 	// Some helper for Chrome to render text-border
 	function multiShadow( ctx, text, x, y, offsetX, offsetY, blur) {
-		ctx.textBaseline = "top";
+		ctx.textBaseline = 'top';
 		ctx.lineWidth = 1;
 		ctx.shadowColor = '#000';
 		ctx.shadowBlur = blur;
 		ctx.shadowOffsetX = offsetX;
 		ctx.shadowOffsetY = offsetY;
-		ctx.fillStyle = "black";
+		ctx.fillStyle = 'black';
 		ctx.fillText(text, x, y);
 	}
 
@@ -57,15 +57,15 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 		};
 
 		this.load       =  this.TYPE.NONE;
-		this.name       =  "";
-		this.party_name =  "";
-		this.guild_name =  "";
-		this.guild_rank =  "";
+		this.name       =  '';
+		this.party_name =  '';
+		this.guild_name =  '';
+		this.guild_rank =  '';
 		this.emblem     =  null;
 		this.display    =  false;
 		this.canvas     =  document.createElement('canvas');
 		this.ctx        =  this.canvas.getContext('2d');
-		this.canvas.style.position = "absolute";
+		this.canvas.style.position = 'absolute';
 		this.canvas.style.zIndex   = 1;
 	}
 
@@ -73,9 +73,9 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 	/**
 	 * Add GUI to html
 	 */
-	Display.prototype.add = function Add()
+	Display.prototype.add = function add()
 	{
-		if( this.canvas && !this.canvas.parentNode ) {
+		if (this.canvas && !this.canvas.parentNode) {
 			document.body.appendChild(this.canvas);
 		}
 		this.display = true;
@@ -85,9 +85,9 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 	/**
 	 * Remove GUI from html
 	 */
-	Display.prototype.remove = function Remove()
+	Display.prototype.remove = function remove()
 	{
-		if ( this.canvas && this.canvas.parentNode ) {
+		if (this.canvas && this.canvas.parentNode) {
 			document.body.removeChild(this.canvas);
 		}
 		this.display = false;
@@ -97,11 +97,9 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 	/**
 	 * Clean it (remove informations)
 	 */
-	Display.prototype.clean = function Clean()
+	Display.prototype.clean = function clean()
 	{
 		this.remove();
-		//this.canvas = null;
-		//this.ctx    = null;
 	};
 
 
@@ -109,7 +107,7 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 	 * Update the display
 	 * @param {string} color
 	 */
-	Display.prototype.update = function Update( color )
+	Display.prototype.update = function update( color )
 	{
 		// Setup variables
 		var lines    = new Array(2);
@@ -119,26 +117,26 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 		var width, height;
 
 		// Skip the "#" in the pseudo
-		lines[0] = this.name.split("#")[0];
-		lines[1] = "";
+		lines[0] = this.name.split('#')[0];
+		lines[1] = '';
 
 		// Add the party name
-		if ( this.party_name.length ) {
-			lines[0] += " (" + this.party_name + ")";
+		if (this.party_name.length) {
+			lines[0] += ' (' + this.party_name + ')';
 		}
 
 		// Add guild name
-		if ( this.guild_name.length ) {
+		if (this.guild_name.length) {
 			lines[1]  = this.guild_name;
 
 			// Add guild rank
-			if ( this.guild_rank.length ) {
-				lines[1] +=  " [" + this.guild_rank + "]";
+			if (this.guild_rank.length) {
+				lines[1] +=  ' [' + this.guild_rank + ']';
 			}
 		}
 
 		// Setup the canvas
-		ctx.font          = fontSize + "px Arial";
+		ctx.font          = fontSize + 'px Arial';
 		width             = Math.max( ctx.measureText(lines[0]).width, ctx.measureText(lines[1]).width ) + start_x + 5;
 		height            = fontSize * 3 * (lines[1].length ? 2 : 1);
 		ctx.canvas.width  = width;
@@ -146,18 +144,18 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 
 
 		// Draw emblem
-		if ( this.emblem ) {
+		if (this.emblem) {
 			ctx.drawImage( this.emblem, 0, 0 );
 		}
 
 
 		// TODO: complete the color list in the Entity display
-		color = color || "white";
-		ctx.font         = fontSize + "px Arial";
-		ctx.textBaseline = "top"; 
+		color = color || 'white';
+		ctx.font         = fontSize + 'px Arial';
+		ctx.textBaseline = 'top';
 
 		// Chrome hack
-		if( window.chrome ) {
+		if (window.chrome) {
 			multiShadow(ctx, lines[0], start_x, 0,  0, -1, 0);
 			multiShadow(ctx, lines[0], start_x, 0,  0,  1, 0);
 			multiShadow(ctx, lines[0], start_x, 0, -1,  0, 0);
@@ -167,7 +165,7 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 			multiShadow(ctx, lines[1], start_x, fontSize * 1.5, -1,  0, 0);
 			multiShadow(ctx, lines[1], start_x, fontSize * 1.5,  1,  0, 0);
 			ctx.fillStyle   = color;
-			ctx.strokeStyle = "black";
+			ctx.strokeStyle = 'black';
 			ctx.strokeText(lines[0], start_x, 0);
 			ctx.fillText(  lines[0], start_x, 0);
 			ctx.strokeText(lines[1], start_x, fontSize * 1.5);
@@ -177,11 +175,11 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 		// Firefox hack
 		else {
 			ctx.translate(0.5, 0.5);
-			ctx.fillStyle    = "black";
-			ctx.outlineText( lines[0], start_x, 0 );  
-			ctx.outlineText( lines[1], start_x, fontSize * 1.5 );  
+			ctx.fillStyle    = 'black';
+			ctx.outlineText( lines[0], start_x, 0 );
+			ctx.outlineText( lines[1], start_x, fontSize * 1.5 );
 			ctx.fillStyle    = color;
-			ctx.fillText( lines[0], start_x, 0 );  
+			ctx.fillText( lines[0], start_x, 0 );
 			ctx.fillText( lines[1], start_x, fontSize * 1.5 );
 		}
 	};
@@ -214,8 +212,8 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 		_pos[1] = _size[1] - Math.round(_size[1] * (_pos[1] * z));
 
 
-		canvas.style.top  = ((_pos[1] + 15 ) | 0) + "px";
-		canvas.style.left = ((_pos[0] - canvas.width / 2) | 0) + "px";
+		canvas.style.top  = ((_pos[1] + 15 ) | 0) + 'px';
+		canvas.style.left = ((_pos[0] - canvas.width / 2) | 0) + 'px';
 	};
 
 

@@ -9,7 +9,7 @@
  */
 define(function(require)
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -34,7 +34,7 @@ define(function(require)
 	/**
 	 * @var {Preferences} Graphics
 	 */
-	GraphicsOption.preferences=  Preferences.get('GraphicsOption', {
+	var _preferences=  Preferences.get('GraphicsOption', {
 		x:    300,
 		y:    300,
 	}, 1.0);
@@ -45,7 +45,7 @@ define(function(require)
 	 */
 	GraphicsOption.init = function Init()
 	{
-		this.ui.find('.close').click(function( event ){
+		this.ui.find('.close').click(function(){
 			this.remove();
 		}.bind(this));
 
@@ -68,7 +68,7 @@ define(function(require)
 			GraphicsSettings.screensize = this.value;
 			GraphicsSettings.save();
 
-			if (this.value === "full") {
+			if (this.value === 'full') {
 				if (!isFullScreen) {
 					Context.requestFullScreen();
 				}
@@ -80,7 +80,7 @@ define(function(require)
 
 				// Resizing
 				if (Context.Is.POPUP) {
-					var size = GraphicsSettings.screensize.split("x");
+					var size = GraphicsSettings.screensize.split('x');
 
 					// Only resize/move if needed
 					if (size[0] != window.innerWidth && size[1] != window.innerHeight) {
@@ -102,8 +102,8 @@ define(function(require)
 	GraphicsOption.onAppend = function OnAppend()
 	{
 		this.ui.css({
-			top:     this.preferences.y,
-			left:    this.preferences.x,
+			top:     _preferences.y,
+			left:    _preferences.x,
 		});
 
 		this.ui.find('.details').val(GraphicsSettings.quality);
@@ -116,9 +116,9 @@ define(function(require)
 	 */
 	GraphicsOption.onRemove = function OnRemove()
 	{
-		this.preferences.x    = parseInt(this.ui.css('left'), 10);
-		this.preferences.y    = parseInt(this.ui.css('top'), 10);
-		this.preferences.save();
+		_preferences.x    = parseInt(this.ui.css('left'), 10);
+		_preferences.y    = parseInt(this.ui.css('top'), 10);
+		_preferences.save();
 	};
 
 

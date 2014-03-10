@@ -9,7 +9,7 @@
  */
 define(function(require)
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -75,13 +75,13 @@ define(function(require)
 	/**
 	 * @var {number} tab
 	 */
-	Inventory.tab = Inventory.TAB.USABLE;
+	var _tab = Inventory.TAB.USABLE;
 
 
 	/**
 	 * @var {number} used to remember the window height
 	 */
-	Inventory.realSize = 0;
+	var _realSize = 0;
 
 
 	/**
@@ -131,7 +131,7 @@ define(function(require)
 
 			// Scroll feature should block at each line
 			.on('scroll', function(){
-				if( this.scrollTop > lastScrollPos ) {
+				if (this.scrollTop > lastScrollPos) {
 					this.scrollTop = Math.floor(this.scrollTop/32) * 32;
 				}
 				else {
@@ -143,7 +143,7 @@ define(function(require)
 			// Title feature
 			.on('mouseover', '.item', function(){
 				var idx  = parseInt( this.className.match(/ (\d+)$/)[1], 10);
-				var item = GetItemByIndex(idx);
+				var item = getItemByIndex(idx);
 
 				if (!item) {
 					return;
@@ -159,11 +159,11 @@ define(function(require)
 				overlay.html(
 					( item.RefiningLevel ? '+' + item.RefiningLevel + ' ' : '') +
 					( item.IsIdentified ? it.identifiedDisplayName : it.unidentifiedDisplayName ) +
-					( it.slotCount ? ' [' + it.slotCount + ']' : '') + 
+					( it.slotCount ? ' [' + it.slotCount + ']' : '') +
 					' ' + ( item.count || 1 ) + ' ea'
 				);
 
-				if( item.IsIdentified ) {
+				if (item.IsIdentified) {
 					overlay.removeClass('grey');
 				}
 				else {
@@ -193,16 +193,16 @@ define(function(require)
 
 				var matches = this.className.match(/(\w+) (\d+)/);
 				var index   = parseInt(matches[2], 10);
-				var item    = GetItemByIndex(index);
+				var item    = getItemByIndex(index);
 
 				if (!item) {
 					return;
 				}
 
-				event.originalEvent.dataTransfer.setData("Text",
+				event.originalEvent.dataTransfer.setData('Text',
 					JSON.stringify( window._OBJ_DRAG_ = {
-						type: "item",
-						from: "inventory",
+						type: 'item',
+						from: 'inventory',
 						data:  item
 					})
 				);
@@ -221,7 +221,7 @@ define(function(require)
 			.on('contextmenu', '.item', function(event) {
 				var matches = this.className.match(/(\w+) (\d+)/);
 				var index   = parseInt(matches[2], 10);
-				var item    = GetItemByIndex(index);
+				var item    = getItemByIndex(index);
 
 				event.stopImmediatePropagation();
 
@@ -246,12 +246,12 @@ define(function(require)
 			.on('dblclick', '.item', function(event) {
 				var matches = this.className.match(/(\w+) (\d+)/);
 				var index   = parseInt(matches[2], 10);
-				var item    = GetItemByIndex(index);
+				var item    = getItemByIndex(index);
 
 				if (item) {
 					Inventory.useItem(item);
 					overlay.hide();
-				}			
+				}
 
 				event.stopImmediatePropagation();
 				return false;
@@ -267,12 +267,12 @@ define(function(require)
 	Inventory.onAppend = function OnAppend()
 	{
 		// Apply preferences
-		if( !this.preferences.show ) {
+		if (!this.preferences.show) {
 			this.ui.hide();
 		}
 
-		this.tab = this.preferences.tab;
-		Client.loadFile( DB.INTERFACE_PATH + "basic_interface/tab_itm_0"+ (this.tab+1) +".bmp", function(data){
+		_tab = this.preferences.tab;
+		Client.loadFile( DB.INTERFACE_PATH + 'basic_interface/tab_itm_0'+ (_tab+1) +'.bmp', function(data){
 			Inventory.ui.find('.tabs').css('backgroundImage', 'url("' + data + '")');
 		});
 
@@ -283,7 +283,7 @@ define(function(require)
 			left: Math.min( Math.max( 0, this.preferences.x), Renderer.width  - this.ui.width())
 		});
 
-		Inventory.realSize = this.preferences.reduce ? 0 : this.ui.height();
+		_realSize = this.preferences.reduce ? 0 : this.ui.height();
 		this.ui.find('.titlebar .mini').trigger('mousedown');
 	};
 
@@ -299,8 +299,8 @@ define(function(require)
 
 		// Save preferences
 		this.preferences.show   =  this.ui.is(':visible');
-		this.preferences.reduce = !!this.realSize;
-		this.preferences.tab    =  this.tab;
+		this.preferences.reduce = !!_realSize;
+		this.preferences.tab    =  _tab;
 		this.preferences.y      =  parseInt(this.ui.css('top'), 10);
 		this.preferences.x      =  parseInt(this.ui.css('left'), 10);
 		this.preferences.width  =  Math.floor( (this.ui.width()  - (23 + 16 + 16 - 30)) / 32 );
@@ -317,9 +317,9 @@ define(function(require)
 	 */
 	Inventory.onKeyDown = function OnKeyDown( event )
 	{
-		if( KEYS.ALT && event.which === KEYS.E ) {
+		if (KEYS.ALT && event.which === KEYS.E) {
 			this.ui.toggle();
-			if( this.ui.is(':visible') ) {
+			if (this.ui.is(':visible')) {
 				this.ui[0].parentNode.appendChild(this.ui[0]);
 			}
 			event.stopImmediatePropagation();
@@ -356,7 +356,7 @@ define(function(require)
 			w = Math.min( Math.max(w, 6), 9);
 			h = Math.min( Math.max(h, 2), 6);
 
-			if( w === lastWidth && h === lastHeight ) {
+			if (w === lastWidth && h === lastHeight) {
 				return;
 			}
 
@@ -365,7 +365,7 @@ define(function(require)
 			lastHeight = h;
 
 			//Show or hide scrollbar
-			if( content.height() === content[0].scrollHeight ) {
+			if (content.height() === content[0].scrollHeight) {
 				hide.show();
 			}
 			else {
@@ -379,7 +379,7 @@ define(function(require)
 		// Stop resizing
 		jQuery(window).one('mouseup', function(event){
 			// Only on left click
-			if ( event.which === 1 ) {
+			if (event.which === 1) {
 				clearInterval(_Interval);
 			}
 		});
@@ -418,10 +418,10 @@ define(function(require)
 	function SwitchTab( event )
 	{
 		var idx = jQuery(this).index();
-		Inventory.tab = idx;
+		_tab = idx;
 
-		Client.loadFile(DB.INTERFACE_PATH + "basic_interface/tab_itm_0"+ (idx+1) +".bmp", function(data){
-			Inventory.ui.find('.tabs').css('backgroundImage', 'url("' + data + '")');
+		Client.loadFile(DB.INTERFACE_PATH + 'basic_interface/tab_itm_0'+ (idx+1) +'.bmp', function(data){
+			Inventory.ui.find('.tabs').css('backgroundImage', 'url(' + data + ')');
 			Filter.call(Inventory, idx);
 		});
 
@@ -436,13 +436,13 @@ define(function(require)
 	function ToggleReduction( event )
 	{
 		// TODO: fix this part
-		if( this.realSize ) {
+		if (_realSize) {
 			this.ui.find('.panel').show();
-			this.ui.height(this.realSize);
-			this.realSize = 0;
+			this.ui.height(_realSize);
+			_realSize = 0;
 		}
 		else {
-			this.realSize = this.ui.height();
+			_realSize = this.ui.height();
 			this.ui.height(17);
 			this.ui.find('.panel').hide();
 		}
@@ -460,7 +460,7 @@ define(function(require)
 		this.ui.find('.container .content').empty();
 		var i, count;
 
-		for( i = 0, count = this.list.length; i < count; ++i ) {
+		for (i = 0, count = this.list.length; i < count; ++i) {
 			this.addItemSub( this.list[i] );
 		}
 	}
@@ -471,7 +471,7 @@ define(function(require)
 	 * @param {number} index
 	 * @returns {Item}
 	 */
-	function GetItemByIndex( index )
+	function getItemByIndex( index )
 	{
 		var i, count;
 		var list = Inventory.list;
@@ -497,7 +497,7 @@ define(function(require)
 		event.stopImmediatePropagation();
 
 		try {
-			data = JSON.parse(event.originalEvent.dataTransfer.getData("Text"));
+			data = JSON.parse(event.originalEvent.dataTransfer.getData('Text'));
 			item = data.data;
 		}
 		catch(e) {
@@ -505,14 +505,14 @@ define(function(require)
 		}
 
 		// Just allow item from storage
-		if (data.type !== "item" || data.from !== "storage") {
+		if (data.type !== 'item' || data.from !== 'storage') {
 			return false;
 		}
 
 		// Have to specify how much
 		if (item.count > 1) {
 			InputBox.append();
-			InputBox.setType("number", false, item.count);
+			InputBox.setType('number', false, item.count);
 			InputBox.onSubmitRequest = function OnSubmitRequest( count ) {
 				InputBox.remove();
 				require('UI/Components/Storage/Storage').reqRemoveItem(
@@ -538,8 +538,8 @@ define(function(require)
 	{
 		var i, count;
 
-		for( i = 0, count = items.length; i < count ; ++i ) {
-			if( this.addItemSub( items[i] ) ) {
+		for (i = 0, count = items.length; i < count ; ++i) {
+			if (this.addItemSub( items[i] )) {
 				this.list.push( items[i] );
 			}
 		}
@@ -553,8 +553,7 @@ define(function(require)
 	 */
 	Inventory.addItem = function AddItem( item )
 	{
-		var i, size;
-		var object = GetItemByIndex(item.index);
+		var object = getItemByIndex(item.index);
 
 		if (object) {
 			object.count += item.count;
@@ -563,7 +562,7 @@ define(function(require)
 			return;
 		}
 
-		if( this.addItemSub(item) ) {
+		if (this.addItemSub(item)) {
 			this.list.push(item);
 			this.onUpdateItem(item.ITID, item.count);
 		}
@@ -580,7 +579,7 @@ define(function(require)
 		var tab;
 		var ui = this.ui;
 
-		switch( item.type ) {
+		switch (item.type) {
 			case Inventory.ITEM.HEALING:
 			case Inventory.ITEM.USABLE:
 			case Inventory.ITEM.USABLE_SKILL:
@@ -604,12 +603,12 @@ define(function(require)
 		}
 
 		// Equip item (if not arrow)
-		if( item.WearState && item.WearState !== 32768 ) {
+		if (item.WearState && item.WearState !== 32768) {
 			Equipment.equip(item);
 			return false;
 		}
 
-		if( tab === this.tab ) {
+		if (tab === _tab) {
 			var it = DB.getItemInfo( item.ITID );
 
 			Client.loadFile( DB.INTERFACE_PATH + 'item/' + ( item.IsIdentified ? it.identifiedResourceName : it.unidentifiedResourceName ) + '.bmp', function(data){
@@ -622,7 +621,7 @@ define(function(require)
 					'</div>'
 				);
 
-				if( content.height() < content[0].scrollHeight ) {
+				if (content.height() < content[0].scrollHeight) {
 					ui.find('.hide').hide();
 				}
 			});
@@ -640,7 +639,7 @@ define(function(require)
 	 */
 	Inventory.removeItem = function RemoveItem( index, count )
 	{
-		var item = GetItemByIndex(index);
+		var item = getItemByIndex(index);
 
 		// Emulator failed to complete the operation
 		// do not remove item from inventory
@@ -679,7 +678,7 @@ define(function(require)
 	 */
 	Inventory.updateItem = function UpdateItem( index, count )
 	{
-		var item = GetItemByIndex(index);
+		var item = getItemByIndex(index);
 
 		if (!item) {
 			return;
@@ -765,32 +764,11 @@ define(function(require)
 
 
 	/**
-	 * Get item object by it's index
-	 *
-	 * @param {number} id
-	 * @returns {Item}
+	 * functions to define
 	 */
-	function GetItemByIndex( index )
-	{
-		var i, count;
-		var list = Inventory.list;
-
-		for (i = 0, count = list.length; i < count; ++i) {
-			if (list[i].index === index) {
-				return list[i];
-			}
-		}
-
-		return null;
-	}
-
-
-	/**
-	 * Abstract function to define
-	 */
-	Inventory.onUseItem    = function OnUseItem( index ){};
-	Inventory.onEquipItem  = function OnEquipItem( index, location ){};
-	Inventory.onUpdateItem = function OnUpdateItem( index, amount ){}
+	Inventory.onUseItem    = function OnUseItem(/* index */){};
+	Inventory.onEquipItem  = function OnEquipItem(/* index, location */){};
+	Inventory.onUpdateItem = function OnUpdateItem(/* index, amount */){};
 
 
 	/**

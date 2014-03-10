@@ -32,7 +32,7 @@ function(
 	Preferences
 )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -71,7 +71,7 @@ function(
 	 */
 	function OnMouseDown( event )
 	{
-		switch( event.which ) {
+		switch (event.which) {
 
 			// Left click
 			case 1:
@@ -79,19 +79,19 @@ function(
 				var entityOver  = EntityManager.getOverEntity();
 				var stop        = false;
 
-				if( entityFocus && entityFocus != entityOver ) {
+				if (entityFocus && entityFocus != entityOver) {
 					entityFocus.onFocusEnd();
 					EntityManager.setFocusEntity(null);
 				}
 
 				// Entity picking ?
-				if( entityOver ) {
+				if (entityOver) {
 					stop = stop || entityOver.onMouseDown();
 					stop = stop || entityOver.onFocus();
 					EntityManager.setFocusEntity(entityOver);
 
 					// Know if propagate to map mousedown
-					if( stop ) {
+					if (stop) {
 						return;
 					}
 				}
@@ -114,18 +114,18 @@ function(
 	 */
 	function OnMouseUp( event )
 	{
-		switch( event.which ) {
+		switch (event.which) {
 
 			// Left click
 			case 1:
 				// Remove entity picking ?
 				var entity = EntityManager.getFocusEntity();
 
-				if( entity ) {
+				if (entity) {
 					entity.onMouseUp();
 
 					// Entity lock is only on MOB type
-					if( Preferences.noctrl === false || entity.objecttype !== entity.constructor.TYPE_MOB ) {
+					if (Preferences.noctrl === false || entity.objecttype !== entity.constructor.TYPE_MOB) {
 						EntityManager.setFocusEntity(null);
 						entity.onFocusEnd();
 					}
@@ -152,13 +152,13 @@ function(
 		// Zooming on the scene
 		// Cross browser delta
 		var delta;
-		if ( event.originalEvent.wheelDelta ) {
+		if (event.originalEvent.wheelDelta) {
 			delta = event.originalEvent.wheelDelta / 120 ;
-			if ( window.opera ) {
+			if (window.opera) {
 				delta = -delta;
 			}
 		}
-		else if ( event.originalEvent.detail ) {
+		else if (event.originalEvent.detail) {
 			delta = -event.originalEvent.detail / 3;
 		}
 
@@ -188,16 +188,16 @@ function(
 
 		try {
 			data = JSON.parse(
-				event.originalEvent.dataTransfer.getData("Text")
+				event.originalEvent.dataTransfer.getData('Text')
 			);
 		}
 		catch(e) {}
 
 		// Just support items for now ?
-		if( data && data.type === "item" && data.from === "inventory") {
+		if (data && data.type === 'item' && data.from === 'inventory') {
 
 			// Can't drop an item on map if Equipment window is open
-			if( Equipment.ui.is(':visible') ) {
+			if (Equipment.ui.is(':visible')) {
 				ChatBox.addText(
 					DB.msgstringtable[189],
 					ChatBox.TYPE.ERROR
@@ -208,9 +208,9 @@ function(
 			item = data.data;
 
 			// Have to specify how much
-			if( item.count > 1 ) {
+			if (item.count > 1) {
 				InputBox.append();
-				InputBox.setType("number", false, item.count);
+				InputBox.setType('number', false, item.count);
 				InputBox.onSubmitRequest = function OnSubmitRequest( count ) {
 					InputBox.remove();
 					MapEngine.onDropItem(

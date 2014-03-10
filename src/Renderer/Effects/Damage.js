@@ -20,7 +20,7 @@ function(
 	MapPreferences
 )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -28,6 +28,14 @@ function(
 	 */
 	function Damage()
 	{
+		this.position = new Float32Array(3);
+		this.start    = 0;
+		this.type     = 0;
+		this.color    = new Float32Array(4);
+		this.delay    = 1500;
+		this.texture  = null;
+		this.width    = 0;
+		this.height   = 0;
 	}
 
 
@@ -47,42 +55,44 @@ function(
 	/**
 	 * @var {string} Sprite of the damage sprite
 	 */
-	Damage.sprite = new Array(10);
+	var _sprite = new Array(10);
 
 
 	/**
 	 * @var {Damage[]} List of damages
 	 */
-	Damage.list = [];
+	var _list = [];
 
 
 	/**
 	 * Convert sprite to image Data
 	 * @param {object} gl - WebGL context
 	 */
-	Damage.init = function Init( gl )
+	Damage.init = function init( gl )
 	{
 		// Already loaded
-		if( Damage.sprite[0] ) {
+		if (_sprite[0]) {
 			return;
 		}
 
-		Client.getFiles(
-			['data/sprite/\xc0\xcc\xc6\xd1\xc6\xae/\xbc\xfd\xc0\xda.spr',
-			'data/sprite/\xc0\xcc\xc6\xd1\xc6\xae/msg.spr'],
-		function( damage, miss ) {
+		Client.getFiles([
+			'data/sprite/\xc0\xcc\xc6\xd1\xc6\xae/\xbc\xfd\xc0\xda.spr',
+			'data/sprite/\xc0\xcc\xc6\xd1\xc6\xae/msg.spr'
+		], function( damage, miss ) {
+			var sprDamage, sprMiss;
+
 			try {
-				var sprDamage = new Sprite(damage);
-				var sprMiss   = new Sprite(miss);
+				sprDamage = new Sprite(damage);
+				sprMiss   = new Sprite(miss);
 			}
 			catch(e) {
-				console.error("Damage::init() - " + e.message );
+				console.error('Damage::init() - ' + e.message );
 				return;
 			}
 
 			// Create SpriteSheet
-			for( var i = 0; i < 10; ++i ) {
-				Damage.sprite[i]  = sprDamage.getCanvasFromFrame(i);
+			for (var i = 0; i < 10; ++i) {
+				_sprite[i]  = sprDamage.getCanvasFromFrame(i);
 			}
 
 			var source = sprMiss.getCanvasFromFrame(0);
@@ -93,12 +103,12 @@ function(
 			canvas.height = WebGL.toPowerOfTwo( source.height );
 			ctx.drawImage( source, 0, 0, canvas.width, canvas.height );
 
-			Damage.sprite[10] = {
+			_sprite[10] = {
 				texture: gl.createTexture(),
 				canvas:  canvas
 			};
 
-			gl.bindTexture( gl.TEXTURE_2D, Damage.sprite[10].texture );
+			gl.bindTexture( gl.TEXTURE_2D, _sprite[10].texture );
 			gl.texImage2D( gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, canvas );
 			gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
 			gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
@@ -115,11 +125,11 @@ function(
 	 * @param {number} tick
 	 * @param {number} type - Damage|Heal
 	 */
-	Damage.add = function Add( damage, entity, tick, type )
+	Damage.add = function add( damage, entity, tick, type )
 	{
 		// Can not display negative damages.
 		// Need to wait the client to load damage sprite
-		if( damage < 0 || !Damage.sprite[0] ) {
+		if (damage < 0 || !_sprite[0]) {
 			return;
 		}
 
@@ -137,29 +147,28 @@ function(
 		var texture;
 
 
-		var obj = new Damage();
-		obj.position = entity.position.subarray(0,3);
-		obj.start    = tick;
+		var obj      = new Damage();
 
-		obj.type     = type || ( damage ? Damage.TYPE.DAMAGE : Damage.TYPE.MISS );
-		if( entity.objecttype === entity.constructor.TYPE_PC ) {
+		obj.type     = type || (damage ? Damage.TYPE.DAMAGE : Damage.TYPE.MISS);
+		if (entity.objecttype === entity.constructor.TYPE_PC) {
 			obj.type |= Damage.TYPE.ENEMY;
 		}
 
-		obj.color = new Float32Array(4);
 		obj.color[3] = 1.0;
 		obj.delay    = 1500;
+		obj.start    = tick;
+		obj.position.set(entity.position);
 
 		// Heal
-		if( obj.type & Damage.TYPE.HEAL ) {
+		if (obj.type & Damage.TYPE.HEAL) {
 			// green
 			obj.color[1] = 1.0;
 		}
-		else if( obj.type & Damage.TYPE.ENEMY ) {
+		else if (obj.type & Damage.TYPE.ENEMY) {
 			// red
 			obj.color[0] = 1.0;
 		}
-		else if( obj.type & Damage.TYPE.COMBO ) {
+		else if (obj.type & Damage.TYPE.COMBO) {
 			// yellow
 			obj.color[0] = 0.9;
 			obj.color[1] = 0.9;
@@ -174,19 +183,19 @@ function(
 		}
 
 		// Miss
-		if( !damage ) {
-			if( MapPreferences.miss ) {
-				obj.texture  = this.sprite[10].texture;
-				obj.width    = this.sprite[10].canvas.width;
-				obj.height   = this.sprite[10].canvas.height;
-				this.list.push( obj );
+		if (!damage) {
+			if (MapPreferences.miss) {
+				obj.texture  = _sprite[10].texture;
+				obj.width    = _sprite[10].canvas.width;
+				obj.height   = _sprite[10].canvas.height;
+				_list.push(obj);
 			}
 			return;
 		}
 
 		// Calculate canvas width and height
-		for( i = 0, count = numbers.length; i < count; ++i ){
-			frame  = this.sprite[ numbers[i] ];
+		for (i = 0, count = numbers.length; i < count; ++i) {
+			frame  = _sprite[ numbers[i] ];
 			width += frame.width + PADDING;
 			height = Math.max( height, frame.height );
 		}
@@ -196,13 +205,13 @@ function(
 		ctx.canvas.height = WebGL.toPowerOfTwo( height );
 
 		// find where to start to get the image at the center
-		start_x = ( ctx.canvas.width  - width  ) >> 1;
-		start_y = ( ctx.canvas.height - height ) >> 1;
+		start_x = (ctx.canvas.width  - width ) >> 1;
+		start_y = (ctx.canvas.height - height) >> 1;
 
 		// build texture
 		width = 0;
-		for( i = 0, count = numbers.length; i < count; ++i ){
-			frame  = this.sprite[ numbers[i] ];
+		for (i = 0, count = numbers.length; i < count; ++i) {
+			frame  = _sprite[ numbers[i] ];
 			ctx.drawImage(
 				frame,
 				start_x + width,
@@ -223,7 +232,7 @@ function(
 		obj.width    = canvas.width;
 		obj.height   = canvas.height;
 
-		this.list.push( obj );
+		_list.push( obj );
 	};
 
 
@@ -232,16 +241,17 @@ function(
 	 *
 	 * @param {object} gl context
 	 */
-	Damage.free = function Free( gl )
+	Damage.free = function free( gl )
 	{
 		var i, count;
-		for( i = 0, count = this.list.length ; i < count ; ++i ){
-			if( this.list[i].texture !== this.sprite[10].texture ) {
-				gl.deleteTexture( this.list[i].texture );
+
+		for (i = 0, count = _list.length ; i < count ; ++i) {
+			if (_list[i].texture !== _sprite[10].texture) {
+				gl.deleteTexture(_list[i].texture);
 			}
 		}
 
-		this.list.length = 0;
+		_list.length = 0;
 	};
 
 
@@ -255,10 +265,10 @@ function(
 	 * @param {number} tick - game tick
 	 */
 	// Render all damages.
-	Damage.render = function Render( gl, modelView, projection, fog, tick )
+	Damage.render = function render( gl, modelView, projection, fog, tick )
 	{
 		// Nothing to render exiting
-		if( !this.list.length ) {
+		if (!_list.length) {
 			return;
 		}
 
@@ -278,35 +288,35 @@ function(
 		var size;
 
 		// Render all list
-		for( i = 0, count = this.list.length; i < count; ++i ) {
+		for (i = 0, count = _list.length; i < count; ++i) {
 
-			damage = this.list[i];
+			damage = _list[i];
 
 			// Not now.
-			if( damage.start > tick ) {
+			if (damage.start > tick) {
 				continue;
 			}
 
 			// Remove it from list, time passed.
-			if ( damage.start + damage.delay < tick ) {
-				if( damage.texture !== this.sprite[10].texture ) {
+			if (damage.start + damage.delay < tick) {
+				if (damage.texture !== _sprite[10].texture) {
 					gl.deleteTexture( damage.texture );
 				}
-				this.list.splice( i, 1 );
+				_list.splice( i, 1 );
 				count--;
 				i--;
 				continue;
 			}
 
-			perc = ( tick - damage.start ) / damage.delay;
+			perc = (tick - damage.start) / damage.delay;
 
 			// Combo title
-			if( damage.type & Damage.TYPE.COMBO ) {
+			if (damage.type & Damage.TYPE.COMBO) {
 				// TODO: fix it
 				size = Math.min( perc, 0.05 ) * 75;
 
 				// Remove it
-				if( !(damage.type & Damage.TYPE.COMBO_FINAL) && perc > 0.15 ) {
+				if (!(damage.type & Damage.TYPE.COMBO_FINAL) && perc > 0.15) {
 					damage.start = 0;
 				}
 
@@ -316,7 +326,7 @@ function(
 			}
 
 			// Damage
-			else if( damage.type & Damage.TYPE.DAMAGE ) {
+			else if (damage.type & Damage.TYPE.DAMAGE) {
 				size = ( 1 - perc ) * 4;
 				SpriteRenderer.position[0] = damage.position[0] + perc * 4;
 				SpriteRenderer.position[1] = damage.position[1] - perc * 4;
@@ -324,24 +334,24 @@ function(
 			}
 
 			// Heal
-			else if( damage.type & Damage.TYPE.HEAL ) {
+			else if (damage.type & Damage.TYPE.HEAL) {
 				size = Math.max( (1 - perc * 2) * 3, 0.8);
 				SpriteRenderer.position[0] = damage.position[0];
 				SpriteRenderer.position[1] = damage.position[1];
-				SpriteRenderer.position[2] = damage.position[2] + 2 + ( perc < 0.4 ? 0 : (perc - .4) *5 );
+				SpriteRenderer.position[2] = damage.position[2] + 2 + ( perc < 0.4 ? 0 : (perc - 0.4) *5 );
 			}
 
 			// Miss
-			else if( damage.type & Damage.TYPE.MISS ) {
+			else if (damage.type & Damage.TYPE.MISS) {
 				perc = (( tick - damage.start ) / 800);
-				size = 0.5;
+				size = 0.7;
 				SpriteRenderer.position[0] = damage.position[0];
 				SpriteRenderer.position[1] = damage.position[1];
 				SpriteRenderer.position[2] = damage.position[2] + 3.5 + perc * 7;
 			}
 
-			SpriteRenderer.size[0] = ( damage.width  * size ) / 35;
-			SpriteRenderer.size[1] = ( damage.height * size ) / 35;
+			SpriteRenderer.size[0] = (damage.width  * size) / 35;
+			SpriteRenderer.size[1] = (damage.height * size) / 35;
 			damage.color[3]        = 1.0 - perc;
 
 			SpriteRenderer.color.set( damage.color );

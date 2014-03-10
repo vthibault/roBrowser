@@ -10,7 +10,7 @@
 
 define(function( require )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -33,21 +33,13 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET.ZC.ITEM_ENTRY
 	 */
-	function Exist( pkt )
+	function onItemExistInGround( pkt )
 	{
 		var x = pkt.xPos - 0.5 + pkt.subX / 12;
 		var y = pkt.yPos - 0.5 + pkt.subY / 12;
 		var z = Altitude.getCellHeight( x, y );
 
-		ItemObject.add(
-			pkt.ITAID,
-			pkt.ITID,
-			pkt.IsIdentified,
-			pkt.count,
-			x,
-			y,
-			z
-		);
+		ItemObject.add( pkt.ITAID, pkt.ITID, pkt.IsIdentified, pkt.count, x, y, z );
 	}
 
 
@@ -56,7 +48,7 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET.ZC.ITEM_FALL_ENTRY
 	 */
-	function Create( pkt )
+	function onItemSpamInGround( pkt )
 	{
 		var x = pkt.xPos - 0.5 + pkt.subX / 12;
 		var y = pkt.yPos - 0.5 + pkt.subY / 12;
@@ -79,7 +71,7 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET.ZC.ITEM_DISAPPEAR
 	 */
-	function Remove( pkt )
+	function onItemInGroundVanish( pkt )
 	{
 		ItemObject.remove( pkt.ITAID );
 	}
@@ -90,10 +82,10 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET.ZC.ITEM_PICKUP_ACK3
 	 */
-	function PickAnswer( pkt )
+	function onItemPickAnswer( pkt )
 	{
 		// Fail
-		if( pkt.result === 6 ) {
+		if (pkt.result === 6) {
 			ChatBox.addText( DB.msgstringtable[53], ChatBox.TYPE.ERROR );
 			return;
 		}
@@ -116,7 +108,7 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET.ZC.EQUIPMENT_ITEMLIST
 	 */
-	function InventoryList( pkt )
+	function onInventorySetList( pkt )
 	{
 		Inventory.setItems( pkt.itemInfo || pkt.ItemInfo );
 	}
@@ -127,9 +119,9 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET.ZC.ITEM_THROW_ACK
 	 */
-	function InventoryRemoveItem( pkt )
+	function onIventoryRemoveItem( pkt )
 	{
-		Inventory.removeItem( pkt.Index, pkt.count );
+		Inventory.removeItem( pkt.Index, pkt.count || pkt.Count || 0);
 	}
 
 
@@ -138,19 +130,20 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET.ZC.REQ_TAKEOFF_EQUIP_ACK
 	 */
-	function ItemTakeOff( pkt )
+	function onEquipementTakeOff( pkt )
 	{
-		if( pkt.result ) {
-			var item = Equipment.unEquip( pkt.index, pkt.wearLocation );
+		if (pkt.result) {
+			var item = Equipment.unEquip( pkt.index, pkt.wearLocation);
+
 			if (item) {
 				item.WearState = 0;
 	
 				var it = DB.getItemInfo( item.ITID );
 				ChatBox.addText(
-					it.identifiedDisplayName + " " + DB.msgstringtable[171],
+					it.identifiedDisplayName + ' ' + DB.msgstringtable[171],
 					ChatBox.TYPE.ERROR
 				);
-	
+
 				Inventory.addItem(item);
 			}
 
@@ -168,14 +161,14 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET.ZC.REQ_WEAR_EQUIP_ACK
 	 */
-	function ItemEquip( pkt )
+	function onItemEquip( pkt )
 	{
 		if (pkt.result == 1) {
 			var item = Inventory.removeItem( pkt.index, 1 );
 			var it   = DB.getItemInfo( item.ITID );
 			Equipment.equip( item, pkt.wearLocation );
 			ChatBox.addText(
-				it.identifiedDisplayName + " " + DB.msgstringtable[170],
+				it.identifiedDisplayName + ' ' + DB.msgstringtable[170],
 				ChatBox.TYPE.BLUE
 			);
 
@@ -198,22 +191,12 @@ define(function( require )
 
 
 	/**
-	 * Remove item from inventory
-	 * @param {object} pkt - PACKET.ZC.DELETE_ITEM_FROM_BODY
-	 */
-	function ItemRemove( pkt )
-	{
-		Inventory.removeItem( pkt.Index, pkt.Count );
-	}
-
-
-	/**
 	 * Answer from the server to use an item
 	 * @param {object} pkt - PACKET.ZC.USE_ITEM_ACK
 	 */
-	function OnUseItem( pkt )
+	function onItemUseAnswer( pkt )
 	{
-		if (!pkt.hasOwnProperty("AID") || Session.Entity.GID === pkt.AID) {
+		if (!pkt.hasOwnProperty('AID') || Session.Entity.GID === pkt.AID) {
 			if (pkt.result) {
 				Inventory.updateItem( pkt.index, pkt.count );
 			}
@@ -225,35 +208,51 @@ define(function( require )
 
 
 	/**
+	 * Do we show equipment to others ?
+	 *
+	 * @param {object} pkt - PACKET_ZC_CONFIG_NOTIFY
+	 */
+	function onConfigEquip( pkt )
+	{
+		Equipment.setEquipConfig( pkt.bOpenEquipmentWin );
+		ChatBox.addText(
+			DB.msgstringtable[1358 + (pkt.bOpenEquipmentWin ? 1 : 0) ],
+			ChatBox.TYPE.INFO
+		);
+	}
+
+
+	/**
 	 * Initialize
 	 */
 	return function ItemEngine()
 	{
-		Network.hookPacket( PACKET.ZC.ITEM_ENTRY,            Exist );
-		Network.hookPacket( PACKET.ZC.ITEM_FALL_ENTRY,       Create );
-		Network.hookPacket( PACKET.ZC.ITEM_FALL_ENTRY2,      Create );
-		Network.hookPacket( PACKET.ZC.ITEM_DISAPPEAR,        Remove );
-		Network.hookPacket( PACKET.ZC.ITEM_PICKUP_ACK,       PickAnswer );
-		Network.hookPacket( PACKET.ZC.ITEM_PICKUP_ACK2,      PickAnswer );
-		Network.hookPacket( PACKET.ZC.ITEM_PICKUP_ACK3,      PickAnswer );
-		Network.hookPacket( PACKET.ZC.ITEM_PICKUP_ACK5,      PickAnswer );
-		Network.hookPacket( PACKET.ZC.ITEM_THROW_ACK,        InventoryRemoveItem );
-		Network.hookPacket( PACKET.ZC.NORMAL_ITEMLIST,       InventoryList );
-		Network.hookPacket( PACKET.ZC.NORMAL_ITEMLIST2,      InventoryList );
-		Network.hookPacket( PACKET.ZC.NORMAL_ITEMLIST3,      InventoryList );
-		Network.hookPacket( PACKET.ZC.NORMAL_ITEMLIST4,      InventoryList );
-		Network.hookPacket( PACKET.ZC.EQUIPMENT_ITEMLIST,    InventoryList );
-		Network.hookPacket( PACKET.ZC.EQUIPMENT_ITEMLIST2,   InventoryList );
-		Network.hookPacket( PACKET.ZC.EQUIPMENT_ITEMLIST3,   InventoryList );
-		Network.hookPacket( PACKET.ZC.EQUIPMENT_ITEMLIST4,   InventoryList );
-		Network.hookPacket( PACKET.ZC.REQ_TAKEOFF_EQUIP_ACK, ItemTakeOff );
-		Network.hookPacket( PACKET.ZC.REQ_TAKEOFF_EQUIP_ACK2,ItemTakeOff );
-		Network.hookPacket( PACKET.ZC.ACK_TAKEOFF_EQUIP_V5,  ItemTakeOff );
-		Network.hookPacket( PACKET.ZC.REQ_WEAR_EQUIP_ACK,    ItemEquip );
-		Network.hookPacket( PACKET.ZC.REQ_WEAR_EQUIP_ACK2,   ItemEquip );
-		Network.hookPacket( PACKET.ZC.ACK_WEAR_EQUIP_V5,     ItemEquip );
-		Network.hookPacket( PACKET.ZC.DELETE_ITEM_FROM_BODY, ItemRemove );
-		Network.hookPacket( PACKET.ZC.USE_ITEM_ACK,          OnUseItem );
-		Network.hookPacket( PACKET.ZC.USE_ITEM_ACK2,         OnUseItem );
+		Network.hookPacket( PACKET.ZC.ITEM_ENTRY,             onItemExistInGround );
+		Network.hookPacket( PACKET.ZC.ITEM_FALL_ENTRY,        onItemSpamInGround );
+		Network.hookPacket( PACKET.ZC.ITEM_FALL_ENTRY2,       onItemSpamInGround );
+		Network.hookPacket( PACKET.ZC.ITEM_DISAPPEAR,         onItemInGroundVanish);
+		Network.hookPacket( PACKET.ZC.ITEM_PICKUP_ACK,        onItemPickAnswer );
+		Network.hookPacket( PACKET.ZC.ITEM_PICKUP_ACK2,       onItemPickAnswer );
+		Network.hookPacket( PACKET.ZC.ITEM_PICKUP_ACK3,       onItemPickAnswer );
+		Network.hookPacket( PACKET.ZC.ITEM_PICKUP_ACK5,       onItemPickAnswer );
+		Network.hookPacket( PACKET.ZC.ITEM_THROW_ACK,         onIventoryRemoveItem );
+		Network.hookPacket( PACKET.ZC.NORMAL_ITEMLIST,        onInventorySetList );
+		Network.hookPacket( PACKET.ZC.NORMAL_ITEMLIST2,       onInventorySetList );
+		Network.hookPacket( PACKET.ZC.NORMAL_ITEMLIST3,       onInventorySetList );
+		Network.hookPacket( PACKET.ZC.NORMAL_ITEMLIST4,       onInventorySetList );
+		Network.hookPacket( PACKET.ZC.EQUIPMENT_ITEMLIST,     onInventorySetList );
+		Network.hookPacket( PACKET.ZC.EQUIPMENT_ITEMLIST2,    onInventorySetList );
+		Network.hookPacket( PACKET.ZC.EQUIPMENT_ITEMLIST3,    onInventorySetList );
+		Network.hookPacket( PACKET.ZC.EQUIPMENT_ITEMLIST4,    onInventorySetList );
+		Network.hookPacket( PACKET.ZC.REQ_TAKEOFF_EQUIP_ACK,  onEquipementTakeOff );
+		Network.hookPacket( PACKET.ZC.REQ_TAKEOFF_EQUIP_ACK2, onEquipementTakeOff );
+		Network.hookPacket( PACKET.ZC.ACK_TAKEOFF_EQUIP_V5,   onEquipementTakeOff );
+		Network.hookPacket( PACKET.ZC.REQ_WEAR_EQUIP_ACK,     onItemEquip );
+		Network.hookPacket( PACKET.ZC.REQ_WEAR_EQUIP_ACK2,    onItemEquip );
+		Network.hookPacket( PACKET.ZC.ACK_WEAR_EQUIP_V5,      onItemEquip );
+		Network.hookPacket( PACKET.ZC.DELETE_ITEM_FROM_BODY,  onIventoryRemoveItem );
+		Network.hookPacket( PACKET.ZC.USE_ITEM_ACK,           onItemUseAnswer );
+		Network.hookPacket( PACKET.ZC.USE_ITEM_ACK2,          onItemUseAnswer );
+		Network.hookPacket( PACKET.ZC.CONFIG_NOTIFY,          onConfigEquip );
 	};
 });

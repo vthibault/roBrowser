@@ -9,7 +9,7 @@
  */
 define(function(require)
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -34,47 +34,47 @@ define(function(require)
 	/**
 	 * @var {boolean} does the box need to be clean up?
 	 */
-	NpcBox.needCleanUp = false;
+	var _needCleanUp = false;
 
 
 	/**
 	 * @var {integer} NPC GID
 	 */
-	NpcBox.ownerID = 0;
+	var _ownerID = 0;
 
 
 	/**
 	 * Initialize Component
 	 */
-	NpcBox.init = function Init()
+	NpcBox.init = function init()
 	{
-		this.buttonNext    = this.ui.find('.next');
-		this.buttonClose   = this.ui.find('.close');
-		this.Content       = this.ui.find('.content');
-
-		this.ui.css({ top: Math.max(100, Renderer.height/2 - 200), left: Math.max( Renderer.width/3, 20) });
+		this.ui.css({
+			top: Math.max(100, Renderer.height/2 - 200),
+			left: Math.max( Renderer.width/3, 20)
+		});
 		this.draggable();
 
 		// Bind mouse
-		this.buttonNext.click( NpcBox.next.bind(this) );
-		this.buttonClose.click( NpcBox.close.bind(this) );
+		this.ui.find('.next').click( NpcBox.next.bind(this) );
+		this.ui.find('.close').click( NpcBox.close.bind(this) );
 	};
 
 
 	/**
 	 * Once NPC Box is removed from HTML, clean up data
 	 */
-	NpcBox.onRemove = function OnRemove()
+	NpcBox.onRemove = function onRemove()
 	{
-		this.buttonNext.hide();
-		this.buttonClose.hide();
-		this.Content.text('');
-		this.needCleanUp = false;
-		this.ownerID     = 0;
+		this.ui.find('.next').hide();
+		this.ui.find('.close').hide();
+		this.ui.find('.content').text('');
+
+		_needCleanUp = false;
+		_ownerID     = 0;
 
 		// Cutin system
 		var cutin = document.getElementById('cutin');
-		if( cutin ) {
+		if (cutin) {
 			document.body.removeChild( cutin );
 		}
 	};
@@ -83,23 +83,23 @@ define(function(require)
 	/**
 	 * Add support for Enter key
 	 */
-	NpcBox.onKeyDown = function OnKeyDown( event )
+	NpcBox.onKeyDown = function onKeyDown( event )
 	{
-		switch( event.which ) {
+		switch (event.which) {
 			case KEYS.ENTER:
-				if( this.buttonNext.is(":visible") ) {
+				if (this.ui.find('.next').is(':visible')) {
 					this.next();
 					break;
 				}
-				else if( this.buttonClose.is(":visible") ) {
+				else if (this.ui.find('.close').is(':visible')) {
 					this.close();
 					break;
 				}
 				return true;
 
 			case KEYS.ESCAPE:
-				if( this.buttonClose.is(":visible") ) {
-					this.close;	
+				if (this.ui.find('.close').is(':visible')) {
+					this.close();
 					break;
 				}
 				return true;
@@ -121,14 +121,15 @@ define(function(require)
 	 */
 	NpcBox.setText = function SetText( text, gid )
 	{
-		this.ownerID = gid;
+		var content = this.ui.find('.content');
+		_ownerID    = gid;
 
-		if( this.needCleanUp ) {
-			this.needCleanUp = false;
-			this.Content.text('');
+		if (_needCleanUp) {
+			_needCleanUp = false;
+			content.text('');
 		}
 
-		this.Content.append( jQuery('<div/>').text(text) );
+		content.append( jQuery('<div/>').text(text) );
 	};
 
 
@@ -139,8 +140,8 @@ define(function(require)
 	 */
 	NpcBox.addNext = function addNext( gid )
 	{
-		this.ownerID = gid;
-		this.buttonNext.show();
+		_ownerID = gid;
+		this.ui.find('.next').show();
 	};
 
 
@@ -151,8 +152,8 @@ define(function(require)
 	 */
 	NpcBox.addClose = function addClose( gid )
 	{
-		this.ownerID = gid;
-		this.buttonClose.show();
+		_ownerID = gid;
+		this.ui.find('.close').show();
 	};
 
 
@@ -161,9 +162,9 @@ define(function(require)
 	 */
 	NpcBox.next = function Next()
 	{
-		this.needCleanUp = true;
-		this.buttonNext.hide();
-		this.onNextPressed( this.ownerID );
+		_needCleanUp = true;
+		this.ui.find('.next').hide();
+		this.onNextPressed( _ownerID );
 	};
 
 
@@ -172,9 +173,9 @@ define(function(require)
 	 */
 	NpcBox.close = function Close()
 	{
-		this.needCleanUp = true;
-		this.buttonClose.hide();
-		this.onClosePressed( this.ownerID );
+		_needCleanUp = true;
+		this.ui.find('.close').hide();
+		this.onClosePressed( _ownerID );
 	};
 
 

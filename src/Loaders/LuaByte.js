@@ -10,7 +10,7 @@
 
 define( ['Utils/BinaryReader'], function( BinaryReader )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -39,7 +39,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 	function GETARG_A(i)   { return (i>>POS_A)  & MASK1(SIZE_A,0); }
 	function GETARG_B(i)   { return (i>>POS_B)  & MASK1(SIZE_B,0) - 256; }
 	function GETARG_C(i)   { return (i>>POS_C)  & MASK1(SIZE_C,0) - 256; }
-	function GETARG_Bx(i)  { return (i>>POS_Bx) & MASK1(SIZE_Bx,0); }
+	function GETARG_BX(i)  { return (i>>POS_Bx) & MASK1(SIZE_Bx,0); }
 	//function GETARG_sBx(i) { return GETARG_Bx(i)-MAXARG_sBx; }
 
 
@@ -53,44 +53,44 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 		}
 		return out;
 	})([
-		"MOVE",         //R(A) := R(B)
-		"LOADK",        //R(A) := Kst(Bx)
-		"LOADBOOL",     //R(A) := (Bool)B; if (C) pc++
-		"LOADNIL",      //R(A) := ... := R(B) := nil
-		"GETUPVAL",     //R(A) := UpValue[B]
-		"GETGLOBAL",    //R(A) := Gbl[Kst(Bx)]
-		"GETTABLE",     //R(A) := R(B)[RK(C)]
-		"SETGLOBAL",    //Gbl[Kst(Bx)] := R(A)
-		"SETUPVAL",     //UpValue[B] := R(A)
-		"SETTABLE",     //R(A)[RK(B)] := RK(C)
-		"NEWTABLE",     //R(A) := {} (size = B,C)
-		"SELF",         //R(A+1) := R(B); R(A) := R(B)[RK(C)]
-		"ADD",          //R(A) := RK(B) + RK(C)
-		"SUB",          //R(A) := RK(B) - RK(C)
-		"MUL",          //R(A) := RK(B) * RK(C)
-		"DIV",          //R(A) := RK(B) / RK(C)
-		"MOD",          //R(A) := RK(B) % RK(C)
-		"POW",          //R(A) := RK(B) ^ RK(C)
-		"UNM",          //R(A) := -R(B)
-		"NOT",          //R(A) := not R(B)
-		"LEN",          //R(A) := length of R(B)
-		"CONCAT",       //R(A) := R(B).. ... ..R(C)
-		"JMP",          //pc+=sBx
-		"EQ",           //if ((RK(B) == RK(C)) ~= A) then pc++
-		"LT",           //if ((RK(B) <  RK(C)) ~= A) then pc++
-		"LE",           //if ((RK(B) <= RK(C)) ~= A) then pc++
-		"TEST",         //if not (R(A) <=> C) then pc++
-		"TESTSET",      //if (R(B) <=> C) then R(A) := R(B) else pc++
-		"CALL",         //R(A), ... ,R(A+C-2) := R(A)(R(A+1), ... ,R(A+B-1))
-		"TAILCALL",     //return R(A)(R(A+1), ... ,R(A+B-1))
-		"RETURN",       //return R(A), ... ,R(A+B-2)(see note)
-		"FORLOOP",      //R(A)+=R(A+2);
-		"FORPREP",      //R(A)-=R(A+2); pc+=sBx
-		"TFORLOOP",     //R(A+3), ... ,R(A+2+C) := R(A)(R(A+1), R(A+2));
-		"SETLIST",      //R(A)[(C-1)*FPF+i] := R(A+i), 1 <= i <= B
-		"CLOSE",        //close all variables in the stack up to (>=) R(A)
-		"CLOSURE",      //R(A) := closure(KPROTO[Bx], R(A), ... ,R(A+n))
-		"VARARG"        //R(A), R(A+1), ..., R(A+B-1) = vararg
+		'MOVE',         //R(A) := R(B)
+		'LOADK',        //R(A) := Kst(Bx)
+		'LOADBOOL',     //R(A) := (Bool)B; if (C) pc++
+		'LOADNIL',      //R(A) := ... := R(B) := nil
+		'GETUPVAL',     //R(A) := UpValue[B]
+		'GETGLOBAL',    //R(A) := Gbl[Kst(Bx)]
+		'GETTABLE',     //R(A) := R(B)[RK(C)]
+		'SETGLOBAL',    //Gbl[Kst(Bx)] := R(A)
+		'SETUPVAL',     //UpValue[B] := R(A)
+		'SETTABLE',     //R(A)[RK(B)] := RK(C)
+		'NEWTABLE',     //R(A) := {} (size = B,C)
+		'SELF',         //R(A+1) := R(B); R(A) := R(B)[RK(C)]
+		'ADD',          //R(A) := RK(B) + RK(C)
+		'SUB',          //R(A) := RK(B) - RK(C)
+		'MUL',          //R(A) := RK(B) * RK(C)
+		'DIV',          //R(A) := RK(B) / RK(C)
+		'MOD',          //R(A) := RK(B) % RK(C)
+		'POW',          //R(A) := RK(B) ^ RK(C)
+		'UNM',          //R(A) := -R(B)
+		'NOT',          //R(A) := not R(B)
+		'LEN',          //R(A) := length of R(B)
+		'CONCAT',       //R(A) := R(B).. ... ..R(C)
+		'JMP',          //pc+=sBx
+		'EQ',           //if ((RK(B) == RK(C)) ~= A) then pc++
+		'LT',           //if ((RK(B) <  RK(C)) ~= A) then pc++
+		'LE',           //if ((RK(B) <= RK(C)) ~= A) then pc++
+		'TEST',         //if not (R(A) <=> C) then pc++
+		'TESTSET',      //if (R(B) <=> C) then R(A) := R(B) else pc++
+		'CALL',         //R(A), ... ,R(A+C-2) := R(A)(R(A+1), ... ,R(A+B-1))
+		'TAILCALL',     //return R(A)(R(A+1), ... ,R(A+B-1))
+		'RETURN',       //return R(A), ... ,R(A+B-2)(see note)
+		'FORLOOP',      //R(A)+=R(A+2);
+		'FORPREP',      //R(A)-=R(A+2); pc+=sBx
+		'TFORLOOP',     //R(A+3), ... ,R(A+2+C) := R(A)(R(A+1), R(A+2));
+		'SETLIST',      //R(A)[(C-1)*FPF+i] := R(A+i), 1 <= i <= B
+		'CLOSE',        //close all variables in the stack up to (>=) R(A)
+		'CLOSURE',      //R(A) := closure(KPROTO[Bx], R(A), ... ,R(A+n))
+		'VARARG'        //R(A), R(A+1), ..., R(A+B-1) = vararg
 	]);
 
 
@@ -112,14 +112,14 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 	 *
 	 * @param {ArrayBuffer} data - buffer to load
 	 */
-	LuaByte.prototype.load = function Load( data )
+	LuaByte.prototype.load = function load( data )
 	{
 		this.fp        = new BinaryReader(data);
 		this.signature = this.fp.readString(4);
 		this.version   = this.fp.readByte();
 
 		// Check file header
-		if( this.signature !== "\x1bLua" ) {
+		if( this.signature !== '\x1bLua' ) {
 			throw new Error('LuaByte::load() - Invalid header "' + this.signature + '" detected, must be "\x1bLua"');
 		}
 
@@ -186,7 +186,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 	 *
 	 * @return {object} function structure
 	 */
-	LuaByte.prototype.loadFunc = function LoadFunc()
+	LuaByte.prototype.loadFunc = function loadFunc()
 	{
 		var fp  = this.fp;
 		var out = {};
@@ -226,7 +226,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 	 * @param {function} callback
 	 * @return {Array} result
 	 */
-	LuaByte.prototype.loadGeneric = function LoadGeneric( callback )
+	LuaByte.prototype.loadGeneric = function loadGeneric( callback )
 	{
 		var i, count = this.fp.readLong();
 		var out = new Array(count);
@@ -242,14 +242,14 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 	/**
 	 * @return {mixed} constant
 	 */
-	LuaByte.prototype.loadConstant = function LoadConstant()
+	LuaByte.prototype.loadConstant = function loadConstant()
 	{
 		switch( this.fp.readByte() ) {
-			case 0:  return "undefined";
+			case 0:  return 'undefined';
 			case 1:  return !this.fp.readByte();
 			case 3:  return  this.fp.readDouble();
 			case 4:  return  this.fp.readString(this.fp.readULong());
-			default: return "...";
+			default: return '...';
 		}
 	};
 
@@ -257,7 +257,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 	/**
 	 * @return {object} local structure
 	 */
-	LuaByte.prototype.loadLocal = function LoadLocal()
+	LuaByte.prototype.loadLocal = function loadLocal()
 	{
 		var fp = this.fp;
 		return {
@@ -271,7 +271,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 	/**
 	 * @return {number} instruction id
 	 */
-	LuaByte.prototype.loadInstruction = function LoadInstruction()
+	LuaByte.prototype.loadInstruction = function loadInstruction()
 	{
 		return this.fp.readLong();
 	};
@@ -280,7 +280,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 	/**
 	 * @return {object} function structure
 	 */
-	LuaByte.prototype.loadProto = function LoadProto()
+	LuaByte.prototype.loadProto = function loadProto()
 	{
 		return this.loadFunc();
 	};
@@ -289,7 +289,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 	/**
 	 * @return {string}
 	 */
-	LuaByte.prototype.loadUpValue = function LoadUpValue()
+	LuaByte.prototype.loadUpValue = function loadUpValue()
 	{
 		return this.fp.readString(this.fp.readULong());
 	};
@@ -298,7 +298,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 	/**
 	 * Execute reversed script
 	 */
-	LuaByte.prototype.execute = function Execute()
+	LuaByte.prototype.execute = function execute()
 	{
 		eval(this.reverse());
 	};
@@ -308,7 +308,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 	 * Reverse the script
 	 * @return {string} javascript code
 	 */
-	LuaByte.prototype.reverse = function Reverse()
+	LuaByte.prototype.reverse = function reverse()
 	{
 		return this.reverseFunc(this.func);
 	};
@@ -325,7 +325,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 		var constants = func.constants;
 		var storage   = [];
 		var memory    = [];
-		var global = '', table = '', str = '', global = '';
+		var table = '', str = '', global = '';
 		var i, count;
 		var instr, type, index;
 		var op, a, b, c, bc;
@@ -339,20 +339,20 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 			a  = GETARG_A(instr);
 			b  = GETARG_B(instr);
 			c  = GETARG_C(instr);
-			bc = GETARG_Bx(instr);
+			bc = GETARG_BX(instr);
 
 			switch( op) {
 
 				case OP.NEWTABLE:
-					memory.push("{}");
-					str += "(function(exports){\r\n";
+					memory.push('{}');
+					str += '(function(exports){\r\n';
 					break;
 
 				case OP.GETGLOBAL:
 					if( !storage[a] ) {
 						storage[a] = bc;
 					}
-					global = "DB." + constants[storage[a]];
+					global = 'DB.' + constants[storage[a]];
 					break;
 
 				case OP.GETTABLE:
@@ -362,24 +362,24 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 					if( storage[c] ) {
 						c = storage[c];
 					}
-					table = "['" + constants[c] + "']";
+					table = '["' + constants[c] + '"]';
 					break;
-				
+
 				case OP.RETURN:
-					str += "\r\n\r\n";
+					str += '\r\n\r\n';
 					return str;
 
 				case OP.CLOSURE:
-					str += "\r\n\r\n";
+					str += '\r\n\r\n';
 					return str;
 
 				case OP.SETGLOBAL:
 					if( memory.length ) {
 						type = memory.pop();
-						str +=  "})(DB." + constants[bc] + "=" + type + ");\r\n\r\n\r\n";
+						str +=  '})(DB.' + constants[bc] + '=' + type + ');\r\n\r\n\r\n';
 					}
 					else {
-						str += "DB." + constants[bc] +" = ";
+						str += 'DB.' + constants[bc] +' = ';
 					}
 					break;
 
@@ -392,7 +392,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 						c = storage[c];
 					}
 
-					index  = "";
+					index  = '';
 					if( global.length ) {
 						index += global;
 						if( table.length ) {
@@ -400,10 +400,10 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 						}
 					}
 
-					str   +=  "\texports[" + ( index.length ? index : ('"' + constants[b] + '"')) + "] = ";
-					str   +=  ( isNum.test(constants[c]) ? constants[c] : '"' + constants[c] + '"' ) + ";\r\n";
-					global = "";
-					table  = "";
+					str   +=  '\texports[' + ( index.length ? index : ('"' + constants[b] + '"')) + '] = ';
+					str   +=  ( isNum.test(constants[c]) ? constants[c] : '"' + constants[c] + '"' ) + ';\r\n';
+					global = '';
+					table  = '';
 					break;
 
 				case OP.LOADK:
@@ -413,7 +413,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 		}
 
 		for( i = 0, count = func.funcs.length; i < count; ++i ) {
-			str += "\r\n" + this.reverseFunc( func.funcs[i] );
+			str += '\r\n' + this.reverseFunc( func.funcs[i] );
 		}
 	
 		return str;

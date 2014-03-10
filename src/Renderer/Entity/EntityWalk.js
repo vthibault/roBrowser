@@ -9,7 +9,7 @@
  */
 define( function( require )
 {
-	"use strict";
+	'use strict';
 
 	/**
 	 *  Load dependencies
@@ -37,7 +37,7 @@ define( function( require )
 		this.speed =  150;
 		this.tick  =  0;
 		this.path  =  [];
-		this.pos   =  new Float32Array(3)
+		this.pos   =  new Float32Array(3);
 	}
 
 
@@ -55,11 +55,11 @@ define( function( require )
 		var path  = [];
 		var count = PathFinding.search( from_x | 0, from_y | 0, to_x | 0, to_y | 0, range || 0, path );
 
-		if( count ) {
+		if (count) {
 			path.length = count;
 			path.shift();
 
-			if( count === 2 && path[0][0] === from_x && path[0][1] === from_y ){
+			if (count === 2 && path[0][0] === from_x && path[0][1] === from_y){
 				return;
 			}
 
@@ -69,7 +69,7 @@ define( function( require )
 
 			this.headDir   = 0;
 
-			if( this.action !== this.ACTION.WALK ) {
+			if (this.action !== this.ACTION.WALK) {
 				this.setAction({
 					action: this.ACTION.WALK,
 					frame:  0,
@@ -94,10 +94,10 @@ define( function( require )
 		var TICK = Renderer.tick;
 		var delay = 0;
 
-		if( path.length ) {
+		if (path.length) {
 
 			// Calculate new position, base on time and walk speed.
-			while( path.length ) {
+			while (path.length) {
 				x = path[0][0] - (walk.pos[0]);
 				y = path[0][1] - (walk.pos[1]);
 
@@ -105,7 +105,7 @@ define( function( require )
 				speed = ( x && y ) ? walk.speed / 0.6 : walk.speed;
 
 				// New position :)
-				if( TICK - walk.tick <= speed ) {
+				if (TICK - walk.tick <= speed) {
 					break;
 				}
 
@@ -128,7 +128,7 @@ define( function( require )
 			pos[2] = Altitude.getCellHeight( pos[0], pos[1] );
 
 			// Update player direction while walking
-			if( path.length ) {
+			if (path.length) {
 				this.direction = DIRECTION[(x>0?1:x<0?-1:0)+1][(y>0?1:y<0?-1:0)+1];
 				return;
 			}

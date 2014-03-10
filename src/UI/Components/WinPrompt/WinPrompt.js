@@ -9,7 +9,7 @@
  */
 define(function(require)
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -30,7 +30,7 @@ define(function(require)
 	/**
 	 * Initialize popup
 	 */
-	WinPrompt.init = function Init()
+	WinPrompt.init = function init()
 	{
 		this.ui.draggable();
 	};
@@ -46,7 +46,7 @@ define(function(require)
 	 * @param {function} callback to execute once the second button is pressed
 	 *
 	 */
-	WinPrompt.ask = function Ask( text, btn_yes, btn_no, onYes, onNo )
+	WinPrompt.ask = function ask( text, btn_yes, btn_no, onYes, onNo )
 	{
 		this.ui.find('.text').text(text);
 		this.ui.find('.btns').empty().append(
@@ -59,7 +59,7 @@ define(function(require)
 				each( this.parseHTML ).
 				one('click',function(){
 					WinPrompt.remove();
-					if( onYes ) {
+					if (onYes) {
 						onYes();
 					}
 				}),
@@ -72,7 +72,7 @@ define(function(require)
 				each( this.parseHTML ).
 				one('click',function(){
 					WinPrompt.remove();
-					if( onNo ) {
+					if (onNo) {
 						onNo();
 					}
 				})
@@ -82,7 +82,6 @@ define(function(require)
 		this.append();
 		this.ui.each( this.parseHTML ).find('*').each( this.parseHTML );
 	};
-
 
 
 	/**

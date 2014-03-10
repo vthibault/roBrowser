@@ -9,7 +9,7 @@
  */
 define(function(require)
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -20,7 +20,6 @@ define(function(require)
 	var Preferences        = require('Core/Preferences');
 	var Session            = require('Engine/SessionStorage');
 	var Renderer           = require('Renderer/Renderer');
-	var Camera             = require('Renderer/Camera');
 	var Altitude           = require('Renderer/Map/Altitude');
 	var KEYS               = require('Controls/KeyEventHandler');
 	var UIManager          = require('UI/UIManager');
@@ -36,60 +35,85 @@ define(function(require)
 
 
 	/**
-	 * Initialize minimap
+	 * @var {Preferences}
 	 */
-	MiniMap.init = function Init()
-	{
-		this.party       = [];
-		this.guild       = [];
-		this.mark        = [];
-		this.preferences = Preferences.get('MiniMap', { zoom:1.0, opacity:2 });
-
-		this.arrow = new Image();
-		this.map   = new Image();
-
-		this.arrow.onload = this.map.onload = this.render.bind(this);
-
-		this.zoom      = 0.0;
-		this.opacity   = 2;
-
-		// Bind DOM elements
-		this.zoomPlus  = this.ui.find('.plus');
-		this.zoomMinus = this.ui.find('.minus');
-		this.ctx       = this.ui.find('canvas')[0].getContext('2d');
-
-		this.zoomPlus.mousedown(this.genericUpdateZoom(+1));
-		this.zoomMinus.mousedown(this.genericUpdateZoom(-1));
-	};
+	var _preferences = Preferences.get('MiniMap', {
+		zoom:    1.0,
+		opacity: 2
+	});
 
 
 	/**
-	 * Generic zoom feature
-	 *
-	 * @param {number} value (zoom)
+	 * @var {Array} party members marker
 	 */
-	MiniMap.genericUpdateZoom = function GenericUpdateZoom( value )
+	var _party = [];
+
+
+	/**
+	 * @var {Array} guild members marker
+	 */
+	var _guild = [];
+
+
+	/**
+	 * @var {Array} others markers
+	 */
+	var _markers = [];
+
+
+	/**
+	 * @var {Image} arrow image
+	 */
+	var _arrow = new Image();
+
+
+	/**
+	 * @var {Image} minimap image
+	 */
+	var _map = new Image();
+
+
+	/**
+	 * @var {CanvasRenderingContext2D} canvas context
+	 */
+	 var _ctx;
+
+
+	/**
+	 * Initialize minimap
+	 */
+	MiniMap.init = function init()
 	{
-		return function() {
-			MiniMap.updateZoom( value );
-		};
+		function genericUpdateZoom( value ) {
+			return function() {
+				MiniMap.updateZoom( value );
+			};
+		}
+
+		_ctx          = this.ui.find('canvas')[0].getContext('2d');
+		this.zoom     = 0.0;
+		this.opacity  = 2;
+
+		Client.loadFile( DB.INTERFACE_PATH + 'map/map_arrow.bmp', function(dataURI){
+			_arrow.src = dataURI;
+		});
+
+		// Bind DOM elements
+		this.ui.find('.plus').mousedown(genericUpdateZoom(+1));
+		this.ui.find('.minus').mousedown(genericUpdateZoom(-1));
 	};
 
 
 	/**
 	 * Once append to HTML
 	 */
-	MiniMap.onAppend = function OnAppend()
+	MiniMap.onAppend = function onAppend()
 	{
 		// Set preferences
-		this.updateZoom( this.preferences.zoom );
-		this.toggleOpacity( this.preferences.opacity + 1 );
+		this.updateZoom( _preferences.zoom );
+		this.toggleOpacity( _preferences.opacity + 1 );
 
-		Client.loadFile( DB.INTERFACE_PATH + 'map/map_arrow.bmp', function(dataURI){
-			MiniMap.arrow.src = dataURI;
-		});
-
-		Renderer.render(this.render.bind(this));
+		Renderer.render(render);
 	};
 
 
@@ -98,13 +122,13 @@ define(function(require)
 	 *
 	 * @param {string} mapname
 	 */
-	MiniMap.setMap = function SetMap( mapname )
+	MiniMap.setMap = function setMap( mapname )
 	{
-		this.map.src = "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
+		_map.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';
 
 		Client.loadFile( DB.INTERFACE_PATH + 'map/' + mapname.replace(/\..*/,'.bmp'), function(dataURI){
-			MiniMap.map.src = dataURI;
-		});	
+			_map.src = dataURI;
+		});
 	};
 
 
@@ -114,10 +138,10 @@ define(function(require)
 	 * @param {object} event
 	 * @return {boolean}
 	 */
-	MiniMap.onKeyDown = function OnKeyDown( event )
+	MiniMap.onKeyDown = function onKeyDown( event )
 	{
 		// Will not work on Chrome :(
-		if( event.which === KEYS.TAB && KEYS.CTRL ) {
+		if (event.which === KEYS.TAB && KEYS.CTRL) {
 			this.toggleOpacity();
 			event.stopImmediatePropagation();
 			return false;
@@ -130,12 +154,12 @@ define(function(require)
 	/**
 	 * Once removed from HTML
 	 */
-	MiniMap.onRemove = function OnRemove()
+	MiniMap.onRemove = function onRemove()
 	{
 		// Clean up memory
-		this.party.length = 0;
-		this.guild.length = 0;
-		this.mark.length  = 0;
+		_party.length   = 0;
+		_guild.length   = 0;
+		_markers.length = 0;
 	};
 
 
@@ -146,24 +170,24 @@ define(function(require)
 	 * @param {number} x position
 	 * @param {number} y position
 	 */
-	MiniMap.addPartyMemberMark = function AddPartyMember( key, x, y)
+	MiniMap.addPartyMemberMark = function addPartyMember( key, x, y)
 	{
-		var i, count = this.party.length;
+		var i, count = _party.length;
 		var r = Math.random;
 
-		for( i=0; i<count; ++i ) {
-			if( this.party[i].key === key ) {
-				this.party[i].x = x;
-				this.party[i].y = y;
+		for (i = 0; i < count; ++i) {
+			if (_party[i].key === key) {
+				_party[i].x = x;
+				_party[i].y = y;
 				return;
 			}
 		}
 
-		this.party.push({
+		_party.push({
 			key: key,
 			x:   x,
 			y:   y,
-			color: "rgb("+  [ r()*255 | 0, r()*255 | 0, r()*255 | 0] +")"
+			color: 'rgb('+  [ r()*255 | 0, r()*255 | 0, r()*255 | 0] +')'
 		});
 	};
 
@@ -173,13 +197,13 @@ define(function(require)
 	 *
 	 * @param {number} key account id
 	 */
-	MiniMap.removePartyMemberMark = function RemovePartyMemberMark( key )
+	MiniMap.removePartyMemberMark = function removePartyMemberMark( key )
 	{
-		var i, count = this.party.length;
+		var i, count = _party.length;
 
-		for( i=0; i<count; ++i ) {
-			if( this.party[i].key === key ) {
-				this.party.splice(i, 1);
+		for (i = 0; i < count; ++i) {
+			if (_party[i].key === key) {
+				_party.splice(i, 1);
 				break;
 			}
 		}
@@ -193,23 +217,23 @@ define(function(require)
 	 * @param {number} x position
 	 * @param {number} y position
 	 */
-	MiniMap.addGuildMemberMark = function AddGuildMemberMark( key, x, y )
+	MiniMap.addGuildMemberMark = function addGuildMemberMark( key, x, y )
 	{
-		var i, count = this.guild.length;
+		var i, count = _guild.length;
 
-		for( i=0; i<count; ++i ) {
-			if( this.guild[i].key === key ) {
-				this.guild[i].x = x;
-				this.guild[i].y = y;
+		for (i = 0; i < count; ++i) {
+			if (_guild[i].key === key) {
+				_guild[i].x = x;
+				_guild[i].y = y;
 				return;
 			}
 		}
 
-		this.guild.push({
+		_guild.push({
 			key: key,
 			x:   x,
 			y:   y
-		})
+		});
 	};
 
 
@@ -218,13 +242,13 @@ define(function(require)
 	 *
 	 * @param {number} key account id
 	 */
-	MiniMap.removeGuildMemberMark = function RemoveGuildMemberMark( key )
+	MiniMap.removeGuildMemberMark = function removeGuildMemberMark( key )
 	{
-		var i, count = this.guild.length;
+		var i, count = _guild.length;
 
-		for( i=0; i<count; ++i ) {
-			if( this.guild[i].key === key ) {
-				this.guild.splice(i, 1);
+		for (i = 0; i < count; ++i) {
+			if (_guild[i].key === key) {
+				_guild.splice(i, 1);
 				break;
 			}
 		}
@@ -239,32 +263,32 @@ define(function(require)
 	 * @param {number} y position
 	 * @param {Array} color
 	 */
-	MiniMap.addNpcMark = function AddNPCMark( key, x, y, lcolor, time )
+	MiniMap.addNpcMark = function addNPCMark( key, x, y, lcolor, time )
 	{
-		var i, count = this.mark.length;
+		var i, count = _markers.length;
 		var color = [
 			( lcolor & 0x00ff0000 ) >> 16,
 			( lcolor & 0x0000ff00 ) >> 8,
 			( lcolor & 0x000000ff )
 		];
 
-		for( i=0; i<count; ++i ) {
-			if( this.mark[i].key === key ) {
-				this.mark[i].x     = x;
-				this.mark[i].y     = y;
-				this.mark[i].color = 'rgb(' + color[0] + ',' + color[1] + ',' + color[2] + ')';
-				this.mark[i].tick  = Renderer.tick + time
+		for (i = 0; i < count; ++i) {
+			if (_markers[i].key === key) {
+				_markers[i].x     = x;
+				_markers[i].y     = y;
+				_markers[i].color = 'rgb(' + color[0] + ',' + color[1] + ',' + color[2] + ')';
+				_markers[i].tick  = Renderer.tick + time;
 				return;
 			}
 		}
 
-		this.mark.push({
+		_markers.push({
 			key:    key,
 			x:      x,
 			y:      y,
 			color: 'rgb(' + color[0] + ',' + color[1] + ',' + color[2] + ')',
 			tick:  Renderer.tick + time
-		})
+		});
 	};
 
 
@@ -273,13 +297,13 @@ define(function(require)
 	 *
 	 * @param {number} key id
 	 */
-	MiniMap.removeNpcMark = function RemoveNPCMark( key )
+	MiniMap.removeNpcMark = function removeNPCMark( key )
 	{
-		var i, count = this.mark.length;
+		var i, count = _markers.length;
 
-		for( i=0; i<count; ++i ) {
-			if( this.mark[i].key === key ) {
-				this.mark.splice(i, 1);
+		for (i = 0; i < count; ++i) {
+			if (_markers[i].key === key) {
+				_markers.splice(i, 1);
 				break;
 			}
 		}
@@ -290,34 +314,34 @@ define(function(require)
 	 * Change zoom
 	 * TODO: implement zoom feature in minimap.
 	 */
-	MiniMap.updateZoom = function UpdateZoom( value )
+	MiniMap.updateZoom = function updateZoom( value )
 	{
-		// this.preferences.zoom = ...;
-		// this.preferences.save();
+		// _preferences.zoom = ...;
+		// _preferences.save();
 	};
 
 
 	/**
 	 * Change window opacity
 	 */
-	MiniMap.toggleOpacity = function ToggleOpacity( opacity )
+	MiniMap.toggleOpacity = function toggleOpacity( opacity )
 	{
 		this.opacity = ( ( arguments.length ? opacity : this.opacity ) + 2 ) % 3;
-		this.preferences.opacity = this.opacity;
-		this.preferences.save();
+		_preferences.opacity = this.opacity;
+		_preferences.save();
 
-		switch( this.opacity ) {
+		switch (this.opacity) {
 			case 0:
 				this.ui.hide();
 				break;
 
 			case 1:
-				this.ctx.globalAlpha = 0.5;
+				_ctx.globalAlpha = 0.5;
 				this.ui.show();
 				break;
 
 			case 2:
-				this.ctx.globalAlpha = 1.0;
+				_ctx.globalAlpha = 1.0;
 				this.ui.show();
 				break;
 		}
@@ -327,7 +351,7 @@ define(function(require)
 	/**
 	 * Render GUI
 	 */
-	MiniMap.render = function Render( tick )
+	function render( tick )
 	{
 		var width   = Altitude.width;
 		var height  = Altitude.height;
@@ -338,70 +362,72 @@ define(function(require)
 		var start_y = (height-max) / 2 * f;
 
 		var i, count, dot;
-		var ctx = this.ctx;
 
 		// Rendering map
-		ctx.clearRect( 0, 0, 128, 128 );
+		_ctx.clearRect( 0, 0, 128, 128 );
 
-		if( this.map.complete && this.map.width ) {
-			ctx.drawImage( this.map, 0, 0, 128, 128 );
+		if (_map.complete && _map.width) {
+			_ctx.drawImage( _map, 0, 0, 128, 128 );
 		}
 
 		// Render attached player arrow
-		if( this.arrow.complete && this.arrow.width ) {
-			ctx.save();
-			ctx.translate( start_x + pos[0] * f, start_y + 128 - pos[1] * f );
-			ctx.rotate( ( Session.Entity.direction + 4 ) * 45 * Math.PI / 180 );
-			ctx.drawImage( this.arrow, -this.arrow.width * 0.5, -this.arrow.height * 0.5 );
-			ctx.restore();
+		if (_arrow.complete && _arrow.width) {
+			_ctx.save();
+			_ctx.translate( start_x + pos[0] * f, start_y + 128 - pos[1] * f );
+			_ctx.rotate( ( Session.Entity.direction + 4 ) * 45 * Math.PI / 180 );
+			_ctx.drawImage( _arrow, -_arrow.width * 0.5, -_arrow.height * 0.5 );
+			_ctx.restore();
 		}
 
 		// Render NPC mark
-		if( tick % 1000 > 500 ) { // blink effect
+		if (tick % 1000 > 500) { // blink effect
 
-			count = this.mark.length;
+			count = _markers.length;
 
-			for( i=0; i<count; ++i ) {
-				dot = this.mark[i];
+			for (i = 0; i < count; ++i) {
+				dot = _markers[i];
 
 				// Auto remove feature
-				if( dot.tick < Renderer.tick ) {
-					this.mark.splice( i, 1 );
+				if (dot.tick < Renderer.tick) {
+					_markers.splice( i, 1 );
 					i--;
 					count--;
 					continue;
 				}
 
 				// Render mark
-				ctx.fillStyle = dot.color;
-				ctx.fillRect( start_x + dot.x * f - 1, start_y + 128 - dot.y * f - 4, 2, 8 );
-				ctx.fillRect( start_x + dot.x * f - 4, start_y + 128 - dot.y * f - 1, 8, 2 );
+				_ctx.fillStyle = dot.color;
+				_ctx.fillRect( start_x + dot.x * f - 1, start_y + 128 - dot.y * f - 4, 2, 8 );
+				_ctx.fillRect( start_x + dot.x * f - 4, start_y + 128 - dot.y * f - 1, 8, 2 );
 			}
 		}
 
 		// Render party members
-		count = this.party.length;
-		for( i=0; i<count; ++i ) {
-			dot           = this.party[i];
-			ctx.fillStyle = "white";
-			ctx.fillRect( start_x + dot.x * f - 3, start_y + 128 - dot.y * f - 3, 6, 6 );
-			ctx.fillStyle = dot.color;
-			ctx.fillRect( start_x + dot.x * f - 2, start_y + 128 - dot.y * f - 2, 4, 4 );
+		count = _party.length;
+		for (i = 0; i < count; ++i) {
+			dot           = _party[i];
+			_ctx.fillStyle = 'white';
+			_ctx.fillRect( start_x + dot.x * f - 3, start_y + 128 - dot.y * f - 3, 6, 6 );
+			_ctx.fillStyle = dot.color;
+			_ctx.fillRect( start_x + dot.x * f - 2, start_y + 128 - dot.y * f - 2, 4, 4 );
 		}
 
 		// Render guild members
-		count           = this.guild.length;
-		ctx.fillStyle   = 'rgb(0.9,0.7,0.8)';
-		ctx.strokeStyle = 'white';
-		for( i=0; i<count; ++i ) {
-			dot = this.guild[i];
-			ctx.moveTo( start_x + dot.x * f + 0, start_y + 128 - dot.y * f - 3 );
-			ctx.lineTo( start_x + dot.x * f + 3, start_y + 128 - dot.y * f + 3 );
-			ctx.lineTo( start_x + dot.x * f - 3, start_y + 128 - dot.y * f + 3 );
+		count           = _guild.length;
+
+		if (count) {
+			_ctx.fillStyle   = 'rgb(0.9,0.7,0.8)';
+			_ctx.strokeStyle = 'white';
+			for (i = 0; i < count; ++i) {
+				dot = _guild[i];
+				_ctx.moveTo( start_x + dot.x * f + 0, start_y + 128 - dot.y * f - 3 );
+				_ctx.lineTo( start_x + dot.x * f + 3, start_y + 128 - dot.y * f + 3 );
+				_ctx.lineTo( start_x + dot.x * f - 3, start_y + 128 - dot.y * f + 3 );
+			}
+			_ctx.stroke();
+			_ctx.fill();
 		}
-		ctx.stroke();
-		ctx.fill();
-	};
+	}
 
 
 	/**

@@ -13,7 +13,7 @@
 
 define(function()
 {
-	"use strict";
+	'use strict';
 
 
 	// World object
@@ -70,7 +70,7 @@ define(function()
 	{
 		var i, h = heap[0]++;
 
-		for ( i = (h-1)>>1; h > 0 && _cost[index] < _cost[heap[i+1]]; i = (h-1)>>1 ) {
+		for (i = (h-1)>>1; h > 0 && _cost[index] < _cost[heap[i+1]]; i = (h-1)>>1) {
 			heap[h+1] = heap[i+1];
 			h = i;
 		}
@@ -91,16 +91,16 @@ define(function()
 		var i, h, cost;
 
 		h=0;
-		for( h = 0; h < heap[0] && heap[h+1] !== index; ++h );
+		for (h = 0; h < heap[0] && heap[h+1] !== index; ++h);
 
 
-		if( h === heap[0] ) {
+		if (h === heap[0]) {
 			throw new Error('PathFinding::update_heap_path() - Error updating head path');
 		}
 
 		cost = _cost[index];
 
-		for( i = (h-1)>>1; h > 0 && cost < _cost[heap[i+1]]; i = (h-1)>>1 ) {
+		for (i = (h-1)>>1; h > 0 && cost < _cost[heap[i+1]]; i = (h-1)>>1) {
 			heap[h+1] = heap[i+1];
 			h = i;
 		}
@@ -119,27 +119,27 @@ define(function()
 	{
 		var i, h, k, ret, last, cost;
 
-		if( heap[0] <= 0 )
+		if (heap[0] <= 0)
 			return -1;
 
 		ret  = +heap[1];
 		last = +heap[heap[0]--];
 		cost = _cost[last];
 
-		for( h = 0, k = 2; k < heap[0]; k = k*2+2 ) {
-			if ( _cost[heap[k+1]] > _cost[heap[k]] ) {
+		for (h = 0, k = 2; k < heap[0]; k = k*2+2) {
+			if (_cost[heap[k+1]] > _cost[heap[k]]) {
 				k--;
 			}
 			heap[h+1] = +heap[k+1];
 			h = k;
 		}
 
-		if( k === heap[0] ) {
+		if (k === heap[0]) {
 			heap[h+1] = +heap[k];
 			h = k-1;
 		}
 
-		for( i = (h-1)>>1; h > 0 && _cost[heap[i+1]] > cost; i = (h-1)>>1 ) {
+		for (i = (h-1)>>1; h > 0 && _cost[heap[i+1]] > cost; i = (h-1)>>1) {
 			heap[h+1] = heap[i+1];
 			h = i;
 		}
@@ -164,14 +164,14 @@ define(function()
 	{
 		var i = calc_index(x,y);
 
-		if( _x[i] === x && _y[i] === y ) {
+		if (_x[i] === x && _y[i] === y) {
 
-			if( _dist[i] > dist ) {
+			if (_dist[i] > dist) {
 				_dist[i]   = dist;
 				_before[i] = before;
 				_cost[i]   = cost;
 	
-				if( _flag[i] ) {
+				if (_flag[i]) {
 					push_heap_path(heap, i);
 				}
 				else {
@@ -184,7 +184,7 @@ define(function()
 			return 0;
 		}
 
-		if( _x[i] || _y[i] ) {
+		if (_x[i] || _y[i]) {
 			return 1;
 		}
 
@@ -239,24 +239,24 @@ define(function()
 
 		out[0] = [ x0, y0 ];
 
-		while( (i++) < MAX_WALKPATH ) {
+		while ((i++) < MAX_WALKPATH) {
 			x     +=  dx;
 			y     +=  dy;
 			out[i] = [ x, y ];
 
-			if ( x === x1 ) dx = 0;
-			if ( y === y1 ) dy = 0;
+			if (x === x1) dx = 0;
+			if (y === y1) dy = 0;
 
-			if ( ( dx === 0 && dy === 0 ) || (types[ x + y * width ] & type) === 0 ) {
+			if (( dx === 0 && dy === 0 ) || (types[ x + y * width ] & type) === 0) {
 				break;
 			}
 		}
 
-		if( x === x1 && y === y1 ) {
+		if (x === x1 && y === y1) {
 			// Range feature
-			if( range > 0 ) {
-				for( x = 0; x < i; ++x ) {
-					if( Math.abs(out[x][0]-x1) <= range && Math.abs(out[x][1]-y1) <= range ) {
+			if (range > 0) {
+				for (x = 0; x < i; ++x) {
+					if (Math.abs(out[x][0]-x1) <= range && Math.abs(out[x][1]-y1) <= range) {
 						return x + 1;
 					}
 				}
@@ -266,10 +266,10 @@ define(function()
 		}
 
 		// Range feature
-		if( range > 0 ) {
+		if (range > 0) {
 			x = x1 - x0;
 			y = y1 - y0;
-			if( Math.sqrt(x*x + y*y) <= range ) {
+			if (Math.sqrt(x*x + y*y) <= range) {
 				return searchLong( x0, y0, x1, y1, 0, out, GAT.type.SNIPABLE );
 			}
 		}
@@ -299,8 +299,8 @@ define(function()
 		var TYPE   = GAT.type;
 
 		// Direct search
-		i = searchLong( x0, y0, x1, y1, range, out, TYPE.WALKABLE )
-		if( i ) {
+		i = searchLong( x0, y0, x1, y1, range, out, TYPE.WALKABLE );
+		if (i) {
 			out.length = i;
 			return i;
 		}
@@ -332,7 +332,7 @@ define(function()
 		xs = width  - 1;
 		ys = height - 1;
 
-		while( true ) {
+		while (true) {
 
 			// Clean up variables
 			e     = 0;
@@ -346,7 +346,7 @@ define(function()
 			rp    = pop_heap_path(heap);
 
 			// No path found.
-			if( rp < 0 ) {
+			if (rp < 0) {
 				return 0;
 			}
 
@@ -357,65 +357,65 @@ define(function()
 
 
 			// Finished
-			if( x === x1 && y === y1 ) {
+			if (x === x1 && y === y1) {
 				break;
 			}
 
-			if( y < ys && types[ (x+0) + (y+1) * width ] & TYPE.WALKABLE ) {
+			if (y < ys && types[ (x+0) + (y+1) * width ] & TYPE.WALKABLE) {
 				dc[0] = (y >= y1) * 20;
 				f    |= 1;
 				e    += add_path( heap, x+0, y+1, dist, rp, cost + dc[0] );
 			}
 
-			if( x > 0 && types[ (x-1) + (y+0) * width ] & TYPE.WALKABLE ) {
+			if (x > 0 && types[ (x-1) + (y+0) * width ] & TYPE.WALKABLE) {
 				dc[1] = (x <= x1) * 20;
 				f    |= 2;
 				e    += add_path( heap, x-1, y+0, dist, rp, cost + dc[1] );
 			}
 
-			if( y > 0 && types[ (x+0) + (y-1) * width ] & TYPE.WALKABLE ) {
+			if (y > 0 && types[ (x+0) + (y-1) * width ] & TYPE.WALKABLE) {
 				dc[2] = (y <= y1) * 20;
 				f    |= 4;
 				e    += add_path( heap, x+0, y-1, dist, rp, cost + dc[2] );
 			}
 
-			if( x < xs && types[ (x+1) + (y+0) * width ] & TYPE.WALKABLE ) {
+			if (x < xs && types[ (x+1) + (y+0) * width ] & TYPE.WALKABLE) {
 				dc[3] = (x >= x1) * 20;
 				f    |= 8;
 				e    += add_path( heap, x+1, y+0, dist, rp, cost + dc[3] );
 			}
 
 			// Diagonals
-			if( (f & (2+1)) === 2+1 && types[ (x-1) + (y+1) * width ] & TYPE.WALKABLE ) {
+			if ((f & (2+1)) === 2+1 && types[ (x-1) + (y+1) * width ] & TYPE.WALKABLE) {
 				e += add_path( heap, x-1, y+1, dist+4, rp, cost + dc[1] + dc[0] - 6 );
 			}
 
-			if( (f & (2+4)) === 2+4 && types[ (x-1) + (y-1) * width ] & TYPE.WALKABLE ) {
+			if ((f & (2+4)) === 2+4 && types[ (x-1) + (y-1) * width ] & TYPE.WALKABLE) {
 				e += add_path( heap, x-1, y-1, dist+4, rp ,cost + dc[1] + dc[2] - 6 );
 			}
 
-			if( (f & (8+4)) === 8+4 && types[ (x+1) + (y-1) * width ] & TYPE.WALKABLE ) {
+			if ((f & (8+4)) === 8+4 && types[ (x+1) + (y-1) * width ] & TYPE.WALKABLE) {
 				e += add_path( heap, x+1, y-1, dist+4, rp, cost + dc[3] + dc[2] - 6 );
 			}
 
-			if( (f & (8+1)) === 8+1 && types[ (x+1) + (y+1) * width ] & TYPE.WALKABLE ) {
+			if ((f & (8+1)) === 8+1 && types[ (x+1) + (y+1) * width ] & TYPE.WALKABLE) {
 				e += add_path( heap, x+1, y+1, dist+4, rp, cost + dc[3] + dc[0] - 6 );
 			}
 
 			_flag[rp] = 1;
 
 			// Too much... ending.
-			if ( e || heap[0] >= MAX_HEAP - 5 ) {
+			if (e || heap[0] >= MAX_HEAP - 5) {
 				return 0;
 			}
 		}
 
 
 		// Reorganize Path
-		for ( len = 0, i = rp; len < 100 && i !== calc_index(x0, y0); i=_before[i], len++ );
+		for (len = 0, i = rp; len < 100 && i !== calc_index(x0, y0); i=_before[i], len++);
 
 
-		for ( i = rp, j = len-1; j >=0; i = _before[i], j-- ) {
+		for (i = rp, j = len-1; j >=0; i = _before[i], j--) {
 			out[j+1] = [ _x[i], _y[i] ];
 		}
 
@@ -429,5 +429,4 @@ define(function()
 		searchLong: searchLong,
 		setGat:     setGat
 	};
-
 });

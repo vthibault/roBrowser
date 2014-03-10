@@ -10,7 +10,7 @@
 
 define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMatrix )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -28,7 +28,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 	 */
 	function RSM( data )
 	{
-		if( data ) {
+		if (data) {
 			this.load(data);
 		}
 	}
@@ -72,8 +72,8 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 		fp      = new BinaryReader(data);
 		header  = fp.readString(4);
 	
-		if ( header !== 'GRSM' ) {
-			throw new Error("RSM::load() - Incorrect header '" + header + "', must be 'GRSM'");
+		if (header !== 'GRSM') {
+			throw new Error('RSM::load() - Incorrect header "' + header + '", must be "GRSM"');
 		}
 
 
@@ -90,7 +90,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 		// Read textures.
 		count     = fp.readLong();
 		textures  =  new Array(count);
-		for ( i=0; i<count; ++i ) {
+		for (i = 0; i < count; ++i) {
 			textures[i] = fp.readString(40);
 		}
 
@@ -99,25 +99,25 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 		count  =  fp.readLong();
 		nodes  =  new Array(count);
 
-		for ( i=0; i<count; ++i ) {
+		for (i = 0; i < count; ++i) {
 			nodes[i] =  new RSM.Node( this, fp, count === 1 );
-			if ( nodes[i].name === name ) {
+			if (nodes[i].name === name) {
 				this.main_node = nodes[i];
 			}
 		}
 
 		// In some custom models, the default name don't match nodes name.
 		// So by default, assume the main node is the first one.
-		if( this.main_node === null ) {
+		if (this.main_node === null) {
 			this.main_node = nodes[0];
 		}
 
 		// Read poskeyframes
-		if ( this.version >= 1.5 ) {
+		if (this.version >= 1.5) {
 			count         = fp.readLong();
 			posKeyframes  = new Array(count);
 
-			for ( i = 0; i < count; ++i ) {
+			for (i = 0; i < count; ++i) {
 				posKeyframes[i] = {
 					frame: fp.readLong(),
 					px:    fp.readFloat(),
@@ -137,7 +137,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 		count       = fp.readLong();
 		volumebox   = new Array(count);
 
-		for ( i = 0; i < count; ++i ) {
+		for (i = 0; i < count; ++i) {
 			volumebox[i] = {
 				size: [ fp.readFloat(), fp.readFloat(), fp.readFloat() ],
 				pos:  [ fp.readFloat(), fp.readFloat(), fp.readFloat() ],
@@ -195,8 +195,8 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 		mat4.identity(matrix);
 		this.main_node.calcBoundingBox(matrix);
 
-		for ( i = 0; i < 3; ++i ) {
-			for ( j=0; j<count; ++j ) {
+		for (i = 0; i < 3; ++i) {
+			for (j = 0; j < count; ++j) {
 				box.max[i] = max( box.max[i], nodes[j].box.max[i] );
 				box.min[i] = min( box.min[i], nodes[j].box.min[i] );
 			}
@@ -222,8 +222,8 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 		var meshes = new Array(node_count * instance_count);
 
 		// Generate Mesh
-		for ( i=0, k=0; i<node_count; ++i ) {
-			for ( j=0; j<instance_count; ++j, k++ ) {
+		for (i = 0, k = 0; i < node_count; ++i) {
+			for ( j = 0; j < instance_count; ++j, k++) {
 				meshes[k] = nodes[i].compile( instances[j] );
 			}
 		}
@@ -258,7 +258,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 		count    = fp.readLong();
 		textures = new Array(count);
 
-		for ( i=0; i<count; ++i ) {
+		for (i = 0; i < count; ++i) {
 			textures[i] = fp.readLong();
 		}
 
@@ -278,7 +278,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 		// Read vertices
 		count    = fp.readLong();
 		vertices = new Array(count);
-		for ( i=0; i<count; ++i ) {
+		for (i = 0; i < count; ++i) {
 			vertices[i] =  [ fp.readFloat(), fp.readFloat(), fp.readFloat() ];
 		}
 
@@ -286,8 +286,8 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 		// Read textures vertices
 		count     = fp.readLong();
 		tvertices = new Float32Array(count*6);
-		for ( i=0, j=0; i<count; ++i, j+=6 ) {
-			if( version >= 1.2 ) {
+		for (i = 0, j = 0; i < count; ++i, j+=6) {
+			if (version >= 1.2) {
 				tvertices[j+0] = fp.readUByte() / 255;
 				tvertices[j+1] = fp.readUByte() / 255;
 				tvertices[j+2] = fp.readUByte() / 255;
@@ -301,7 +301,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 		// Read faces
 		count = fp.readLong();
 		faces = new Array(count);
-		for ( i=0; i<count; ++i ) {
+		for (i = 0; i < count; ++i) {
 			faces[i] = {
 				vertidx:   [ fp.readUShort(), fp.readUShort(), fp.readUShort() ],
 				tvertidx:  [ fp.readUShort(), fp.readUShort(), fp.readUShort() ],
@@ -313,11 +313,11 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 		}
 
 		// Read poskeyframes
-		if ( version >= 1.5 ) {
+		if (version >= 1.5) {
 			count         = fp.readLong();
 			posKeyframes  = new Array(count);
 
-			for ( i=0; i<count; ++i ) {
+			for (i = 0; i < count; ++i) {
 				posKeyframes[i] = {
 					frame: fp.readLong(),
 					px:    fp.readFloat(),
@@ -332,7 +332,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 		count        = fp.readLong();
 		rotKeyframes = new Array(count);
 
-		for ( i=0; i<count; ++i ) {
+		for (i = 0; i < count; ++i) {
 			rotKeyframes[i] = {
 				frame: fp.readLong(),
 				q:     [ fp.readFloat(), fp.readFloat(), fp.readFloat(), fp.readFloat() ]
@@ -374,7 +374,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 		mat4.translate( this.matrix, this.matrix, this.pos );
 
 		// Dynamic or static model
-		if ( !this.rotKeyframes.length ) {
+		if (!this.rotKeyframes.length) {
 			mat4.rotate( this.matrix, this.matrix, this.rotangle, this.rotaxis );
 		}
 		else {
@@ -386,13 +386,13 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 		// Strat from here just modify a local matrix
 		mat4.copy( matrix, this.matrix );
 
-		if ( !this.is_only ) {
+		if (!this.is_only) {
 			mat4.translate( matrix, matrix, this.offset );
 		}
 
 		mat4.multiply( matrix, matrix, mat3.toMat4(this.mat3) );
 
-		for ( i=0, count = vertices.length; i < count; ++i ) {
+		for (i = 0, count = vertices.length; i < count; ++i) {
 			//mat4.multiplyVec3( matrix, matrix, vertices[i], v );
 			x = vertices[i][0];
 			y = vertices[i][1];
@@ -402,7 +402,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 			v[1] = matrix[1] * x + matrix[5] * y + matrix[9]  * z + matrix[13];
 			v[2] = matrix[2] * x + matrix[6] * y + matrix[10] * z + matrix[14];
 
-			for ( j=0; j<3; j++) {
+			for (j = 0; j < 3; j++) {
 				box.min[j] = min(v[j], box.min[j]);
 				box.max[j] = max(v[j], box.max[j]);
 			}
@@ -414,8 +414,8 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 			box.center[i] =  box.min[i] + box.range[i]     ;
 		}
 
-		for ( i=0, count=nodes.length; i<count; ++i ) {
-			if ( nodes[i].parentname === this.name && this.name !== this.parentname ) {
+		for (i = 0, count = nodes.length; i < count; ++i) {
+			if (nodes[i].parentname === this.name && this.name !== this.parentname) {
 				nodes[i].calcBoundingBox( this.matrix );
 			}
 		}
@@ -451,7 +451,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 		mat4.translate( matrix, matrix, [ -this.main.box.center[0], -this.main.box.max[1], -this.main.box.center[2] ] );
 		mat4.multiply( matrix, matrix, this.matrix );
 
-		if ( !this.is_only ) {
+		if (!this.is_only) {
 			mat4.translate( matrix, matrix, this.offset );
 		}
 
@@ -466,7 +466,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 		// Generate new vertices
 		count = vertices.length;
 		vert  = new Float32Array(count*3);
-		for  ( i=0; i<count; ++i ) {
+		for (i = 0; i < count; ++i) {
 			x = vertices[i][0];
 			y = vertices[i][1];
 			z = vertices[i][2];
@@ -479,25 +479,25 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 
 
 		// Generate face normals
-		face_normal    = new Float32Array(faces.length*3);
+		face_normal = new Float32Array(faces.length*3);
 
 		// Setup mesh slot array
-		for( i=0, count=textures.length; i<count; ++i ) {
+		for (i = 0, count = textures.length; i < count; ++i) {
 			mesh_size[ textures[i] ] = 0;
 		}
 
 		// Find mesh max face
-		for ( i=0, count=faces.length; i<count; ++i ) {
+		for (i = 0, count = faces.length; i < count; ++i) {
 			mesh_size[ textures[ faces[i].texid ] ]++;
 		}
 
 		// Initialize buffer
-		for( i=0, count=textures.length; i<count; ++i ) {
+		for (i = 0, count = textures.length; i < count; ++i) {
 			mesh[textures[i]] = new Float32Array(mesh_size[textures[i]]*9*3);
 		}
 
 
-		switch( this.main.shadeType ) {
+		switch (this.main.shadeType) {
 			default:
 
 			case RSM.SHADING.NONE:
@@ -532,7 +532,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 	RSM.Node.prototype.calcNormal_NONE = function calcNormalNone( out )
 	{
 		var i, count;
-		for ( i=1, count=out.length; i<count; i+= 3 ) {
+		for (i = 1, count = out.length; i < count; i+= 3) {
 			out[i] = -1;
 		}
 	};
@@ -553,7 +553,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 		var faces    = this.faces;
 		var vertices = this.vertices;
 
-		for ( i=0, j=0, count=faces.length; i<count; ++i, j+=3 ) {
+		for (i = 0, j = 0, count = faces.length; i < count; ++i, j+=3) {
 			face = faces[i];
 
 			vec3.calcNormal(
@@ -588,24 +588,24 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 		var face, norm;
 		var count = faces.length;
 
-		for ( j=0; j<32; ++j ) {
+		for (j = 0; j < 32; ++j) {
 
 			// Group not used, skip it
-			if ( !groupUsed[j] ) {
+			if (!groupUsed[j]) {
 				continue;
 			}
 
 			group[j] = new Float32Array(size*3);
 			norm     = group[j];
 
-			for ( v=0, l=0; v<size; ++v, l+=3 ) {
+			for (v = 0, l = 0; v < size; ++v, l+=3) {
 				x = 0;
 				y = 0;
 				z = 0;
 
-				for ( i=0, k=0; i<count; ++i, k+=3 ) {
+				for (i = 0, k = 0; i < count; ++i, k+=3) {
 					face = faces[i];
-					if ( face.smoothGroup === j && (face.vertidx[0] === v || face.vertidx[1] === v || face.vertidx[2] === v) ) {
+					if (face.smoothGroup === j && (face.vertidx[0] === v || face.vertidx[1] === v || face.vertidx[2] === v)) {
 						x += normal[k  ];
 						y += normal[k+1];
 						z += normal[k+2];
@@ -629,7 +629,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 	 * @param {Float32Array[]} norm
 	 * @param {Array} mesh
 	 */
-	RSM.Node.prototype.generate_mesh_FLAT = function GenerateMeshFlat( vert, norm, mesh )
+	RSM.Node.prototype.generate_mesh_FLAT = function generateMeshFlat( vert, norm, mesh )
 	{
 		var a, b, o, i, j, k, t, count;
 		var faces    = this.faces;
@@ -640,11 +640,11 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 		var face, idx, tidx, out;
 
 		// Setup mesh slot array
-		for( i=0, count=textures.length; i<count; ++i ){
+		for (i = 0, count = textures.length; i < count; ++i) {
 			offset[ textures[i] ] = 0;
 		}
 
-		for ( i=0, o=0, k=0, count=faces.length; i<count; ++i, k+=3 ) {
+		for (i = 0, o = 0, k = 0, count = faces.length; i < count; ++i, k+=3) {
 			face = faces[i];
 			idx  = face.vertidx;
 			tidx = face.tvertidx;
@@ -652,7 +652,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 			out  = mesh[t];
 			o    = offset[t];
 
-			for( j=0; j<3; j++, o+=9 ) {
+			for (j = 0; j < 3; j++, o+=9) {
 				a =  idx[j] * 3;
 				b = tidx[j] * 6;
 				/* vec3 positions  */  out[o+0]  = vert[a+0];   out[o+1]  = vert[a+1];   out[o+2] = vert[a+2];
@@ -673,7 +673,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 	 * @param {Array} shadeGroup
 	 * @param {Array} mesh
 	 */
-	RSM.Node.prototype.generate_mesh_SMOOTH = function GenerateMeshSmooth( vert, shadeGroup, mesh )
+	RSM.Node.prototype.generate_mesh_SMOOTH = function generateMeshSmooth( vert, shadeGroup, mesh )
 	{
 		var a, b, o, i, j, t, count;
 		var faces    = this.faces;
@@ -684,11 +684,11 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 		var norm, face, idx, tidx, out;
 
 		// Setup mesh slot array
-		for( i=0, count=textures.length; i<count; ++i ){
+		for (i = 0, count = textures.length; i < count; ++i) {
 			offset[ textures[i] ] = 0;
 		}
 
-		for ( i=0, o=0, count=faces.length; i<count; ++i ) {
+		for (i = 0, o = 0, count = faces.length; i < count; ++i) {
 			face = faces[i];
 			norm = shadeGroup[ face.smoothGroup ];
 			idx  = face.vertidx;
@@ -698,7 +698,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 			out  = mesh[t];
 			o    = offset[t];
 
-			for( j=0; j<3; j++, o+=9 ) {
+			for (j = 0; j < 3; j++, o+=9) {
 				a =  idx[j] * 3;
 				b = tidx[j] * 6;
 				/* vec3 positions  */  out[o+0]  = vert[a+0];   out[o+1]  = vert[a+1];   out[o+2] = vert[a+2];

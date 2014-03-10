@@ -9,7 +9,7 @@
  */
 define(['Controls/KeyEventHandler', 'Controls/MouseEventHandler', 'Preferences/Camera', 'Utils/gl-matrix'], function( KEYS, Mouse, Preferences, glMatrix )
 {
-	"use strict";
+	'use strict';
 
 	/**
 	 * Load dependencies
@@ -165,17 +165,17 @@ define(['Controls/KeyEventHandler', 'Controls/MouseEventHandler', 'Preferences/C
 		var action = this.action;
 		var tick   = Date.now();
 
-		if( !active ) {
+		if (!active) {
 			action.active = false;
 			return;
 		}
 
 		// Check for double click (reset angle and zoom)
-		if( action.tick + 500 > tick ) {
-			if( KEYS.SHIFT ) {
+		if (action.tick + 500 > tick) {
+			if (KEYS.SHIFT) {
 				this.angleFinal[0] = +this.range;
 			}
-			if( KEYS.CTRL ) {
+			if (KEYS.CTRL) {
 				this.zoomFinal = 0.0;
 			}
 			else {
@@ -197,14 +197,14 @@ define(['Controls/KeyEventHandler', 'Controls/MouseEventHandler', 'Preferences/C
 	Camera.processMouseAction = function ProcessMouseAction()
 	{
 		// Rotate Z
-		if( KEYS.SHIFT ) {
+		if (KEYS.SHIFT) {
 			this.angleFinal[0] += ( Mouse.screen.y - this.action.y ) / Mouse.screen.height * 300;
 			this.angleFinal[0]  = Math.max( this.angleFinal[0], 190 );
 			this.angleFinal[0]  = Math.min( this.angleFinal[0], 270 );
 		}
 
 		// Zoom
-		else if( KEYS.CTRL ) {
+		else if (KEYS.CTRL) {
 			this.zoomFinal -= ( Mouse.screen.y - this.action.y  ) / Mouse.screen.height * 50;
 			this.zoomFinal  = Math.min( this.zoomFinal, Math.abs(this.altitudeTo-this.altitudeFrom) * 4.0 );
 			this.zoomFinal  = Math.max( this.zoomFinal,  2.0 );
@@ -214,12 +214,12 @@ define(['Controls/KeyEventHandler', 'Controls/MouseEventHandler', 'Preferences/C
 		else {
 			this.angleFinal[1] -= ( Mouse.screen.x - this.action.x ) / Mouse.screen.width  * 720;
 
-			if( this.angle[1] > 180 && this.angleFinal[1] > 180 ) {
+			if (this.angle[1] > 180 && this.angleFinal[1] > 180) {
 				this.angle[1]      -= 360;
 				this.angleFinal[1] -= 360;
 			}
 
-			else if( this.angle[1] < -180 && this.angleFinal[1] ) {
+			else if (this.angle[1] < -180 && this.angleFinal[1]) {
 				this.angle[1]      += 360;
 				this.angleFinal[1] += 360;
 			}
@@ -258,12 +258,12 @@ define(['Controls/KeyEventHandler', 'Controls/MouseEventHandler', 'Preferences/C
 		this.lastTick = tick;
 
 		// Update camera from mouse movement
-		if ( this.action.x !== -1 && this.action.y !== -1 && this.action.active ) {
+		if (this.action.x !== -1 && this.action.y !== -1 && this.action.active) {
 			this.processMouseAction();
 		}
 
 		// Move Camera
-		if( Preferences.smooth ) {
+		if (Preferences.smooth) {
 			this.position[0] += ( -this.target.position[0] - this.position[0] ) * lerp ;
 			this.position[1] += ( -this.target.position[1] - this.position[1] ) * lerp ;
 			this.position[2] += (  this.target.position[2] - this.position[2] ) * lerp ;

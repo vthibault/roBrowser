@@ -26,13 +26,13 @@ define(function()
 	 * @param {Uint8Array} src
 	 * @param {number} index
 	 */
-	function IP( src, index )
+	function initialPermutation( src, index )
 	{
 		var i, j;
 
-		for( i = 0; i < 64; ++i ) {
-			j = IP.table[i] - 1;
-			if( src[ index + ((j >> 3) & 7) ] &  mask[j & 7] ) {
+		for (i = 0; i < 64; ++i) {
+			j = initialPermutation.table[i] - 1;
+			if (src[ index + ((j >> 3) & 7) ] &  mask[j & 7]) {
 				tmp[(i >> 3) & 7] |= mask[i & 7];
 			}
 		}
@@ -41,7 +41,7 @@ define(function()
 		tmp.set(clean);
 	}
 
-	IP.table = new Uint8Array([
+	initialPermutation.table = new Uint8Array([
 		58, 50, 42, 34, 26, 18, 10,  2,
 		60, 52, 44, 36, 28, 20, 12,  4,
 		62, 54, 46, 38, 30, 22, 14,  6,
@@ -59,13 +59,13 @@ define(function()
 	 * @param {Uint8Array} src
 	 * @param {number} index
 	 */
-	function FP( src, index )
+	function finalPermutation( src, index )
 	{
 		var i, j;
 
-		for ( i = 0; i<64; ++i ) {
-			j = FP.table[i] - 1;
-			if( src[ index + ((j >> 3) & 7) ] &  mask[j & 7] ) {
+		for (i = 0; i<64; ++i) {
+			j = finalPermutation.table[i] - 1;
+			if (src[ index + ((j >> 3) & 7) ] &  mask[j & 7]) {
 				tmp[ (i >> 3) & 7 ] |= mask[i & 7];
 			}
 		}
@@ -74,7 +74,7 @@ define(function()
 		tmp.set(clean);
 	}
 
-	FP.table = new Uint8Array([
+	finalPermutation.table = new Uint8Array([
 		40,  8, 48, 16, 56, 24, 64, 32,
 		39,  7, 47, 15, 55, 23, 63, 31,
 		38,  6, 46, 14, 54, 22, 62, 30,
@@ -92,13 +92,13 @@ define(function()
 	 * @param {Uint8Array} src
 	 * @param {number} index
 	 */
-	function TP( src, index )
+	function transposition( src, index )
 	{
 		var i, j;
 
-		for ( i = 0; i<32; ++i ) {
-			j = TP.table[i] - 1;
-			if( src[ index + (j >> 3) ] &  mask[j & 7] ) {
+		for (i = 0; i<32; ++i) {
+			j = transposition.table[i] - 1;
+			if (src[ index + (j >> 3) ] &  mask[j & 7]) {
 				tmp[(i >> 3) + 4] |= mask[i & 7];
 			}
 		}
@@ -107,7 +107,7 @@ define(function()
 		tmp.set(clean);
 	}
 
-	TP.table = new Uint8Array([
+	transposition.table = new Uint8Array([
 		16,  7, 20, 21,
 		29, 12, 28, 17,
 		 1, 15, 23, 26,
@@ -126,7 +126,7 @@ define(function()
 	 * @param {Uint8Array} src
 	 * @param {number} index
 	 */
-	function E( src, index )
+	function expansion( src, index )
 	{
 		tmp[0] = ((src[index+7]<<5) | (src[index+4]>>3)) & 0x3f;	// ..0 vutsr
 		tmp[1] = ((src[index+4]<<1) | (src[index+5]>>7)) & 0x3f;	// ..srqpo n
@@ -149,20 +149,20 @@ define(function()
 	 * @param {Uint8Array} src
 	 * @param {number} index
 	 */
-	function SBOX( src, index )
+	function substitutionBox( src, index )
 	{
 		var i;
 
-		for ( i = 0; i < 4; ++i ) {
-			tmp[i] = (SBOX.table[i][src[i*2+0+index]] & 0xf0)
-				   | (SBOX.table[i][src[i*2+1+index]] & 0x0f);
+		for (i = 0; i < 4; ++i) {
+			tmp[i] = (substitutionBox.table[i][src[i*2+0+index]] & 0xf0)
+				   | (substitutionBox.table[i][src[i*2+1+index]] & 0x0f);
 		}
 
 		src.set(tmp, index);
 		tmp.set(clean);
 	}
 
-	SBOX.table = [
+	substitutionBox.table = [
 		new Uint8Array([
 			0xef, 0x03, 0x41, 0xfd, 0xd8, 0x74, 0x1e, 0x47,  0x26, 0xef, 0xfb, 0x22, 0xb3, 0xd8, 0x84, 0x1e,
 			0x39, 0xac, 0xa7, 0x60, 0x62, 0xc1, 0xcd, 0xba,  0x5c, 0x96, 0x90, 0x59, 0x05, 0x3b, 0x7a, 0x85,
@@ -193,15 +193,15 @@ define(function()
 	 * @param {Uint8Array} src
 	 * @param {number} index
 	 */
-	function RoundFunction( src, index )
+	function roundFunction( src, index )
 	{
-		for( var i=0; i<8; i++ ) {
+		for (var i = 0; i < 8; i++) {
 			tmp2[i] = src[index+i];
 		}
 
-		E( tmp2, 0 );
-		SBOX( tmp2, 0 );
-		TP( tmp2, 0 );
+		expansion( tmp2, 0 );
+		substitutionBox( tmp2, 0 );
+		transposition( tmp2, 0 );
 
 		src[index+0] ^= tmp2[4];
 		src[index+1] ^= tmp2[5];
@@ -216,11 +216,11 @@ define(function()
 	 * @param {Uint8Array} src
 	 * @param {number} index
 	 */
-	function DecryptBlock( src, index )
+	function decryptBlock( src, index )
 	{
-		IP( src, index );
-		RoundFunction( src, index );
-		FP( src, index );
+		initialPermutation( src, index )( src, index );
+		roundFunction( src, index );
+		finalPermutation( src, index )( src, index );
 	}
 
 
@@ -231,7 +231,7 @@ define(function()
 	 * @param {number} len
 	 * @param {number} entry_len
 	 */
-	function DecodeFull( buf, len, entry_len)
+	function decodeFull( buf, len, entry_len)
 	{
 		var nblocks = len >> 3;
 		var i, j;
@@ -250,22 +250,22 @@ define(function()
 
 
 		// first 20 blocks are all des-encrypted
-		for( i = 0; i < 20 && i < nblocks; ++i ) {
-			DecryptBlock( buf, i * 8);
+		for (i = 0; i < 20 && i < nblocks; ++i) {
+			decryptBlock( buf, i * 8);
 		}
 
 
-		for( i = 20, j = 0; i < nblocks; ++i ) {
+		for (i = 20, j = 0; i < nblocks; ++i) {
 
 			// decrypt block
-			if( i % cycle === 0 ) {
-				DecryptBlock( buf, i * 8);
+			if (i % cycle === 0) {
+				decryptBlock( buf, i * 8);
 				continue;
 			}
 
 			// de-shuffle block
-			if( j === 7 ) {
-				ShuffleDec( buf, i * 8);
+			if (j === 7) {
+				shuffleDec( buf, i * 8);
 				j = 0;
 			}
 
@@ -280,14 +280,14 @@ define(function()
 	 * @param {Uint8Array} buf
 	 * @param {number} len
 	 */
-	function DecodeHeader( buf, len )
+	function decodeHeader( buf, len )
 	{
 		var nblocks = len >> 3;
 		var i;
 
 		// first 20 blocks are all des-encrypted
-		for( i = 0; i < 20 && i < nblocks; ++i ) {
-			DecryptBlock( buf, i*8 );
+		for (i = 0; i < 20 && i < nblocks; ++i) {
+			decryptBlock( buf, i*8 );
 		}
 
 		// the rest is plaintext, done.
@@ -300,7 +300,7 @@ define(function()
 	 * @param {Uint8Array} src
 	 * @param {number} index
 	 */
-	function ShuffleDec( src, index )
+	function shuffleDec( src, index )
 	{
 		tmp[0] = src[index+3];
 		tmp[1] = src[index+4];
@@ -309,8 +309,7 @@ define(function()
 		tmp[4] = src[index+1];
 		tmp[5] = src[index+2];
 		tmp[6] = src[index+5];
-		tmp[7] = ShuffleDec.table[ src[index+7] ];
-
+		tmp[7] = shuffleDec.table[ src[index+7] ];
 		src.set(tmp, index);
 		tmp.set(clean);
 	}
@@ -321,19 +320,19 @@ define(function()
 	 *
 	 * @var {Uint8Array[]}
 	 */
-	ShuffleDec.table = (function init_substitution()
+	shuffleDec.table = (function init_substitution()
 	{
 		var i, count;
 		var out  = new Uint8Array(256);
 		var list = [ 0x00, 0x2b,   0x6c, 0x80,   0x01, 0x68,   0x48, 0x77,   0x60, 0xff,   0xb9, 0xc0,   0xfe, 0xeb ];
 
-		for( i=0; i<256; ++i ) {
+		for (i = 0; i < 256; ++i) {
 			out[i] = i;
 		}
 
-		for( i=0, count=list.length; i<count; i+=2 ) {
-			out[ list[i+0] ] = 	list[i+1];
-			out[ list[i+1] ] = 	list[i+0];
+		for (i = 0, count = list.length; i < count; i += 2) {
+			out[ list[i+0] ] = list[i+1];
+			out[ list[i+1] ] = list[i+0];
 		}
 
 		return out;
@@ -344,7 +343,7 @@ define(function()
 	 * Exports
 	 */
 	return {
-		decodeFull:   DecodeFull,
-		decodeHeader: DecodeHeader
+		decodeFull:   decodeFull,
+		decodeHeader: decodeHeader
 	};
 });

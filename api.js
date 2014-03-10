@@ -12,18 +12,18 @@
 (function ROAPI(){
 
 
-	"use strict";
+	'use strict';
 
 
 	/**
 	 * @Constructor 
 	 */
 	function ROBrowser( options ){
-		if( typeof options === "object") {
+		if (typeof options === 'object') {
 			var key;
 
-			for( key in options ) {
-				if( ROBrowser.prototype.hasOwnProperty( key ) ) {
+			for (key in options) {
+				if (ROBrowser.prototype.hasOwnProperty( key )) {
 					this[ key ] = options[key];
 				}
 			}
@@ -67,10 +67,10 @@
 	 * @var {mixed} grf listing
 	 *
 	 * a) {Array} of GRFs: 
-	 *    [ "custom.grf", "palette.grf", "data.grf" ]
+	 *    [ 'custom.grf', 'palette.grf', 'data.grf' ]
 	 *
 	 * b) {string} DATA.INI filename to load
-	 *    "DATA.INI"
+	 *    'DATA.INI'
 	 *
 	 * c) {RegExp} to filter grf files:
 	 *     /\.grf$/i
@@ -82,17 +82,17 @@
 	 * @var {servers} server listing
 	 *
 	 * a) {string} clientinfo file to load
-	 *    "data/clientinfo.xml"
+	 *    'data/clientinfo.xml'
 	 *
 	 * b) {Array} server list to display:
 	 */
-	ROBrowser.prototype.servers = "data/clientinfo.xml";
+	ROBrowser.prototype.servers = 'data/clientinfo.xml';
 
 
 	/**
 	 * @var {string} Host where to download files
 	 */
-	ROBrowser.prototype.remoteClient = "http://grf.robrowser.com/";
+	ROBrowser.prototype.remoteClient = 'http://grf.robrowser.com/';
 
 
 	/**
@@ -100,8 +100,8 @@
 	 *
 	 * Supported value:
 	 *    a) YYYYMMDD     (number: date you want)
-	 *    b) "auto"       (detect packetver from client and packets received from server)
-	 *    c) "executable" (detect packetver from executable compilation date)
+	 *    b) 'auto'       (detect packetver from client and packets received from server)
+	 *    c) 'executable' (detect packetver from executable compilation date)
 	 */
 	ROBrowser.prototype.packetver    = 'auto';
 
@@ -125,7 +125,7 @@
 
 	/**
 	 * @var {string} element ID
-	 * If using container type "frame", place the content in the HTMLElement specify
+	 * If using container type 'frame', place the content in the HTMLElement specify
 	 */
 	ROBrowser.prototype.target = null;
 
@@ -149,7 +149,7 @@
 
 
 	/**
-	 * @var {string} proxy server ex: "ws://pserver.com:5200/"
+	 * @var {string} proxy server ex: 'ws://pserver.com:5200/'
 	 */
 	ROBrowser.prototype.socketProxy = null;
 
@@ -176,7 +176,7 @@
 		var script = document.getElementsByTagName('script');
 		return script[ script.length -1 ].src
 			.replace(/\/build\/[^\/]+\.js$/, '/api.js') // redirect compiled script
-			.replace(/\/src\/.*/, '/api.js')            // fix error with cache
+			.replace(/\/src\/.*/, '/api.js');           // fix error with cache
 	})().replace('.js', '.html');
 
 
@@ -185,7 +185,7 @@
 	 */
 	ROBrowser.prototype.start = function Start()
 	{
-		switch( this.type ) {
+		switch (this.type) {
 
 			// Create Popup
 			case ROBrowser.TYPE.POPUP:
@@ -218,17 +218,17 @@
 				this.height = this.height || '100%';
 
 				var frame          = document.createElement('iframe');
-				frame.src          = this.baseUrl + "?" + Math.random(); // fix bug on firefox
+				frame.src          = this.baseUrl + '?' + Math.random(); // fix bug on firefox
 				frame.width        = this.width;
 				frame.height       = this.height;
-				frame.style.border = "none";
+				frame.style.border = 'none';
 
 				frame.setAttribute('allowfullscreen', true);
 				frame.setAttribute('webkitallowfullscreen', true);
 				frame.setAttribute('mozallowfullscreen', true);
 
-				if( this.target ) {
-					while( this.target.firstChild ) {
+				if (this.target) {
+					while (this.target.firstChild) {
 						this.target.removeChild( this.target.firstChild );
 					}
 					this.target.appendChild(frame);
@@ -240,10 +240,10 @@
 
 
 		// Get back application name
-		switch( this.application ) {
+		switch (this.application) {
 			case ROBrowser.APP.ONLINE:
 				this.application = 'Online';
-				break;	
+				break;
 
 			case ROBrowser.APP.MAPVIEWER:
 				this.application = 'MapViewer';
@@ -262,11 +262,11 @@
 		// Wait for robrowser to be ready
 		var _this = this;
 		function OnMessage( event ) {
-			if( _this.baseUrl.indexOf(event.origin) === 0 ) {
+			if (_this.baseUrl.indexOf(event.origin) === 0) {
 				clearInterval( _this._Interval );
 				window.removeEventListener( 'message', OnMessage, false );
 
-				if( _this.onReady ) {
+				if (_this.onReady) {
 					_this.onReady();
 				}
 			}

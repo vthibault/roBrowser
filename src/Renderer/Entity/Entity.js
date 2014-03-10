@@ -9,7 +9,7 @@
  */
 define( function( require )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -48,7 +48,7 @@ define( function( require )
 		this.effectColor  = new Float32Array([1, 1, 1, 1]);
 
 		// Bind data
-		if( data ) {
+		if (data) {
 			this.clean();
 			this.set( data );
 		}
@@ -126,7 +126,7 @@ define( function( require )
 	Entity.prototype.attack_range = 0;
 	Entity.prototype.attack_speed = 300;
 
-	Entity.prototype.weapon_sound = "";
+	Entity.prototype.weapon_sound = '';
 	Entity.prototype.effectColor  = null;
 
 
@@ -156,8 +156,8 @@ define( function( require )
 		keys     = Object.keys( unit );
 		count    = keys.length;
 
-		for( i=0; i<count; ++i ) {
-			switch( keys[i] ) {
+		for (i = 0; i < count; ++i) {
+			switch (keys[i]) {
 
 				// Set it manually
 				case 'objecttype':
@@ -214,8 +214,8 @@ define( function( require )
 				case 'name':
 					this.display.name = unit.name;
 					this.display.update(
-						this.objecttype === Entity.TYPE_MOB ? "#ffc6c6" :
-						this.objecttype === Entity.TYPE_NPC ? "#94bdf7" :
+						this.objecttype === Entity.TYPE_MOB ? '#ffc6c6' :
+						this.objecttype === Entity.TYPE_NPC ? '#94bdf7' :
 						'white'
 					);
 					break;
@@ -228,7 +228,7 @@ define( function( require )
 					break;
 
 				default:
-					if( Entity.prototype.hasOwnProperty(keys[i]) || Entity.prototype.hasOwnProperty('_' + keys[i]) ) {
+					if (Entity.prototype.hasOwnProperty(keys[i]) || Entity.prototype.hasOwnProperty('_' + keys[i])) {
 						this[keys[i]] = unit[keys[i]];
 					}
 					break;
@@ -236,7 +236,7 @@ define( function( require )
 		}
 
 		// Rendering life
-		if( this.life.hp > -1 && this.life.hp_max > -1 ) {
+		if (this.life.hp > -1 && this.life.hp_max > -1) {
 			this.life.update();
 			this.life.display = true;
 		}
@@ -284,7 +284,7 @@ define( function( require )
 	 */
 	Entity.prototype.remove = function Remove( type )
 	{
-		switch( type ) {
+		switch (type) {
 
 			// 0 - moved out of sight
 			case 0:
@@ -304,19 +304,17 @@ define( function( require )
 					next:   false
 				});
 
-				if ( !is_pc ) {
+				if (!is_pc) {
 					this.clean();
 					this.remove_tick  = +Renderer.tick;
 					this.remove_delay = 5000;
 				}
 				break;
-	
-	
-			case 2:  // 2 - logged out
-			case 3:  // 3 - teleported
-			case 4:  // trick dead ?
 
-					 // TODO: add effects.
+			// TODO: add effects.
+			//case 2:  // 2 - logged out
+			//case 3:  // 3 - teleported
+			//case 4:  // trick dead ?
 			default: // No other way ?
 				this.clean();
 				this.remove_tick  = Renderer.tick;
@@ -338,9 +336,9 @@ define( function( require )
 		var y = Math.round(to_y-this.position[1]);
 		var dir;
 	
-		if ( x >= 1 ) dir = y >= 1 ? 5 : y == 0 ? 6 : 7;
-		if ( x == 0 ) dir = y >= 1 ? 4 : 0;
-		if ( x <=-1 ) dir = y >= 1 ? 3 : y == 0 ? 2 : 1;
+		if (x >= 1 ) dir = y >= 1 ? 5 : y === 0 ? 6 : 7;
+		if (x === 0) dir = y >= 1 ? 4 : 0;
+		if (x <=-1 ) dir = y >= 1 ? 3 : y === 0 ? 2 : 1;
 
 		this.direction = dir;
 

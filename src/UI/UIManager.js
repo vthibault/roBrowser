@@ -10,7 +10,7 @@
 define( ['require', 'Utils/jquery', './UIComponent', 'Controls/KeyEventHandler', 'Renderer/Renderer' ],
 function( require,         jQuery,     UIComponent,            KEYS,                       Renderer )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -31,25 +31,26 @@ function( require,         jQuery,     UIComponent,            KEYS,            
 	 *
 	 * @param {UIComponent} component object
 	 */
-	UIManager.addComponent = function AddComponent( component )
+	UIManager.addComponent = function addComponent( component )
 	{
-		if( !component instanceof UIComponent ) {
+		if (!(component instanceof UIComponent)) {
 			throw new Error('UIManager::addComponent() - Invalid type of component');
 		}
-		//component.prepare();
-		return this.components[ component.name ] = component;
+
+		this.components[ component.name ] = component;
+		return component;
 	};
 
 
 	/**
-	 * Store a component in the manager
+	 * Get component stored in manager
 	 *
 	 * @param {string} component name
 	 * @return {UIComponent} object
 	 */
-	UIManager.getComponent = function AddComponent( name )
+	UIManager.getComponent = function getComponent( name )
 	{
-		if ( !name in this.components ) {
+		if (!(name in this.components)) {
 			throw new Error('UIManager.getComponent() - Component "' + name + '" not found');
 		}
 
@@ -60,12 +61,12 @@ function( require,         jQuery,     UIComponent,            KEYS,            
 	/**
 	 * Remove all components in screen
 	 */
-	UIManager.removeComponents = function RemoveComponents()
+	UIManager.removeComponents = function removeComponents()
 	{
 		var keys = Object.keys(this.components);
 		var i, count = keys.length;
 
-		for( i=0; i<count; ++i ) {
+		for (i = 0; i < count; ++i) {
 			this.components[ keys[i] ].remove();
 		}
 	};
@@ -78,7 +79,7 @@ function( require,         jQuery,     UIComponent,            KEYS,            
 	 * @param {number} Game screen width
 	 * @param {number} Game screen height
 	 */
-	UIManager.fixResizeOverflow = function FixResizeOverflow( WIDTH, HEIGHT)
+	UIManager.fixResizeOverflow = function dixResizeOverflow( WIDTH, HEIGHT)
 	{
 		var keys = Object.keys(this.components);
 		var i, count = keys.length;
@@ -112,7 +113,7 @@ function( require,         jQuery,     UIComponent,            KEYS,            
 	 *
 	 * @param {string} error message
 	 */
-	UIManager.showErrorBox = function ShowErrorBox( text )
+	UIManager.showErrorBox = function showErrorBox( text )
 	{
 		var WinError, overlay;
 	
@@ -130,7 +131,7 @@ function( require,         jQuery,     UIComponent,            KEYS,            
 		WinError.onKeyDown = function OnKeyDown( event )
 		{
 			event.stopImmediatePropagation();
-			switch( event.which) {
+			switch (event.which) {
 				case KEYS.ENTER:
 				case KEYS.ESCAPE:
 					overlay.remove();
@@ -162,7 +163,7 @@ function( require,         jQuery,     UIComponent,            KEYS,            
 	 * @param {string} button name
 	 * @param {function} callback once the button is pressed
 	 */
-	UIManager.showMessageBox = function ShowMessageBox( text, btn_name, callback, keydown )
+	UIManager.showMessageBox = function showMessageBox( text, btn_name, callback, keydown )
 	{
 		var WinMSG;
 
@@ -179,18 +180,16 @@ function( require,         jQuery,     UIComponent,            KEYS,            
 			});
 
 			// Just button
-			if ( btn_name ) {
-				var btn = document.createElement('button');
-
+			if (btn_name) {
 				WinMSG.ui.find('.btns').append(
-					jQuery("<button/>").
+					jQuery('<button/>').
 						addClass('btn').
 						data('background', 'btn_' + btn_name + '.bmp').
 						data('hover',      'btn_' + btn_name + '_a.bmp').
 						data('down',       'btn_' + btn_name + '_b.bmp').
 						one('click', function(){
 							WinMSG.remove();
-							if( callback ) {
+							if (callback) {
 								callback();
 							}
 						}).
@@ -201,13 +200,13 @@ function( require,         jQuery,     UIComponent,            KEYS,            
 
 
 		// Just keydown
-		if( !btn_name || keydown ) {
+		if (!btn_name || keydown) {
 			WinMSG.onKeyDown = function(event){
-				switch( event.which ) {
+				switch (event.which) {
 					case KEYS.ENTER:
 					case KEYS.ESCAPE:
 						this.remove();
-						if( callback ) {
+						if (callback) {
 							callback();
 						}
 				}
@@ -236,7 +235,7 @@ function( require,         jQuery,     UIComponent,            KEYS,            
 	 * @param {function} callback when ok is pressed
 	 * @param {function} callback when cancel is pressed
 	 */
-	UIManager.showPromptBox = function ShowPromptBox( text, btn_yes, btn_no, onYes, onNo )
+	UIManager.showPromptBox = function showPromptBox( text, btn_yes, btn_no, onYes, onNo )
 	{
 		var WinPrompt;
 	
@@ -259,7 +258,7 @@ function( require,         jQuery,     UIComponent,            KEYS,            
 					data('down',       'btn_' + btn_yes + '_b.bmp').
 					one('click',function(){
 						WinPrompt.remove();
-						if( onYes ) {
+						if (onYes) {
 							onYes();
 						}
 					}).
@@ -272,7 +271,7 @@ function( require,         jQuery,     UIComponent,            KEYS,            
 					data('down',       'btn_' + btn_no + '_b.bmp').
 					one('click',function(){
 						WinPrompt.remove();
-						if( onNo ) {
+						if (onNo) {
 							onNo();
 						}
 					}).

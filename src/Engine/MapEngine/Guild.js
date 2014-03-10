@@ -10,7 +10,7 @@
 
 define(function( require )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -27,7 +27,7 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET.ZC.NOTIFY_HP_TO_GROUPM
 	 */
-	function OnMessage( pkt )
+	function onMemberTalk( pkt )
 	{
 		ChatBox.addText( pkt.msg, ChatBox.TYPE.GUILD );
 	}
@@ -38,7 +38,7 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET.ZC.NOTIFY_POSITION_TO_GUILDM
 	 */
-	function OnPositionUpdated( pkt )
+	function onMemberMove( pkt )
 	{
 		// Server remove mark with "-1" as position
 		if (pkt.xPos < 0 || pkt.yPos < 0) {
@@ -55,7 +55,7 @@ define(function( require )
 	 */
 	return function EntityEngine()
 	{
-		Network.hookPacket( PACKET.ZC.GUILD_CHAT, OnMessage );
-		Network.hookPacket( PACKET.ZC.NOTIFY_POSITION_TO_GUILDM, OnPositionUpdated );
+		Network.hookPacket( PACKET.ZC.GUILD_CHAT,                onMemberTalk );
+		Network.hookPacket( PACKET.ZC.NOTIFY_POSITION_TO_GUILDM, onMemberMove );
 	};
 });

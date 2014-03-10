@@ -10,7 +10,7 @@
 
 define( ['./PacketStructure' ], function( PACKET )
 {
-	"use strict";
+	'use strict';
 
 	return {
 		0x69: PACKET.AC.ACCEPT_LOGIN, // ok

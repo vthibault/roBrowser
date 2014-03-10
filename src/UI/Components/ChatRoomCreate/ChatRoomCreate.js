@@ -1,7 +1,7 @@
 /**
  * UI/Components/ChatRoomCreate/ChatRoomCreate.js
  *
- * Characte room setup UI
+ * Character room setup UI
  *
  * This file is part of ROBrowser, Ragnarok Online in the Web Browser (http://www.robrowser.com/).
  *
@@ -9,7 +9,7 @@
  */
 define(function(require)
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -62,7 +62,7 @@ define(function(require)
 	/**
 	 * @var {Preference} structure to save
 	 */
-	ChatRoomCreate.preferences = Preferences.get('ChatRoomCreate', {
+	var _preferences = Preferences.get('ChatRoomCreate', {
 		x:        480,
 		y:        200,
 		show:   false
@@ -72,16 +72,16 @@ define(function(require)
 	/**
 	 * Initialize UI
 	 */
-	ChatRoomCreate.init = function Init()
+	ChatRoomCreate.init = function init()
 	{
 		// Bindings
-		this.ui.find('.close, .cancel').on('click', this.Remove.bind(this) );
-		this.ui.find('.ok').on('click', ParseChatSetup.bind(this) );
+		this.ui.find('.close, .cancel').on('click', this.hide.bind(this));
+		this.ui.find('.ok').on('click', parseChatSetup.bind(this) );
 		this.ui.find('.setup').submit(function() {
 			return false;
 		});
 
-		//Dont activate drag
+		// Do not activate drag
 		this.ui.find('input, button, select').mousedown(function(event) {
 			event.stopImmediatePropagation();
 		});
@@ -96,13 +96,13 @@ define(function(require)
 	 */
 	ChatRoomCreate.onAppend = function OnAppend()
 	{
-		if( !this.preferences.show ) {
+		if (!_preferences.show) {
 			this.ui.hide();
 		}
 
 		this.ui.css({
-			top:  Math.min( Math.max( 0, this.preferences.y), Renderer.height - this.ui.height()),
-			left: Math.min( Math.max( 0, this.preferences.x), Renderer.width  - this.ui.width())
+			top:  Math.min( Math.max( 0, _preferences.y), Renderer.height - this.ui.height()),
+			left: Math.min( Math.max( 0, _preferences.x), Renderer.width  - this.ui.width())
 		});
 
 		// Escape key order
@@ -116,32 +116,34 @@ define(function(require)
 	 */
 	ChatRoomCreate.onRemove = function OnRemove()
 	{
-		this.preferences.show   =  this.ui.is(':visible');
-		this.preferences.y      =  parseInt(this.ui.css('top'), 10);
-		this.preferences.x      =  parseInt(this.ui.css('left'), 10);
-		this.preferences.save();
+		_preferences.show   =  this.ui.is(':visible');
+		_preferences.y      =  parseInt(this.ui.css('top'), 10);
+		_preferences.x      =  parseInt(this.ui.css('left'), 10);
+		_preferences.save();
 	};
 
 
-	/*
+	/**
 	 * Show the setup for room creation
 	 */
-	ChatRoomCreate.Show = function ShowSetup()
+	ChatRoomCreate.show = function showSetup()
 	{
 		this.ui.show();
 		this.ui.find('.title').focus();
-		this.preferences.show = true;
+
+		_preferences.show = true;
 	};
 	
 	
-	/*
-	 * Remove the setup ui
+	/**
+	 * Hide the setup ui
 	 */
-	ChatRoomCreate.Remove = function RemoveSetup()
+	ChatRoomCreate.hide = function hideSetup()
 	{
 		this.ui.hide();
 		this.ui.find('.setup')[0].reset();
-		this.preferences.show = false;
+
+		_preferences.show = false;
 	};
 	
 
@@ -151,16 +153,16 @@ define(function(require)
 	 * @param {object} event
 	 * @return {boolean}
 	 */
-	ChatRoomCreate.onKeyDown = function OnKeyDown( event )
+	ChatRoomCreate.onKeyDown = function onKeyDown( event )
 	{
 		var isVisible = this.ui.is(':visible');
 
 		if (KEYS.ALT && event.which === KEYS.C && !ChatRoom.isOpen) {
 			if (isVisible) {
-				this.Remove();
+				this.hide();
 			}
 			else {
-				this.Show();	
+				this.show();
 			}
 			event.stopImmediatePropagation();
 			return false;
@@ -168,12 +170,12 @@ define(function(require)
 
 		if (isVisible) {
 			if (event.which === KEYS.ENTER) {
-				ParseChatSetup.call(this);
+				parseChatSetup.call(this);
 				event.stopImmediatePropagation();
 				return false;
 			}
 			else if (event.which === KEYS.ESCAPE) {
-				this.Remove();
+				this.hide();
 				event.stopImmediatePropagation();
 				return false;
 			}
@@ -184,9 +186,15 @@ define(function(require)
 
 
 	/**
+	 * Pseudo functions :)
+	 */
+	ChatRoomCreate.requestRoom = function requestRoom(){};
+
+
+	/**
 	 * Parse and send chat room request
 	 */
-	function ParseChatSetup()
+	function parseChatSetup()
 	{
 		this.title    = this.ui.find('input[name=title]').val();
 		this.limit    = parseInt( this.ui.find('select[name=limit]').val(), 10);
@@ -209,15 +217,9 @@ define(function(require)
 			return;
 		}
 
-		this.RequestRoom();
-		this.Remove();
+		this.requestRoom();
+		this.hide();
 	}
-
-
-	/**
-	 * Pseudo functions :)
-	 */
-	ChatRoomCreate.RequestRoom = function RequestRoom(){};
 
 
 	/**

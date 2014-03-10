@@ -10,7 +10,7 @@
 
 define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMatrix )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -25,7 +25,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 		this.effects = [];
 		this.models  = [];
 
-		if( data ) {
+		if (data) {
 			this.load(data);
 		}
 	}
@@ -96,8 +96,8 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 		header  = fp.readString(4);
 		version = fp.readByte() + fp.readByte()/10;
 	
-		if ( header != 'GRSW' ) {
-			throw new Error("RSW::load() - Invalid header '" + header + "', must be 'GRSW'");
+		if (header != 'GRSW') {
+			throw new Error('RSW::load() - Invalid header "' + header + '", must be "GRSW"');
 		}
 
 		// Read sub files.
@@ -105,40 +105,40 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 		this.files.gnd = fp.readString(40);
 		this.files.gat = fp.readString(40);
 
-		if ( version >= 1.4 ) {
+		if (version >= 1.4) {
 			this.files.src = fp.readString(40);
 		}
 
 		// Read water info.
-		if ( version >= 1.3 ) {
+		if (version >= 1.3) {
 			this.water.level = fp.readFloat() / 5;
 
-			if ( version >= 1.8 ) {
+			if (version >= 1.8) {
 				this.water.type       = fp.readLong();
 				this.water.waveHeight = fp.readFloat()/5;
 				this.water.waveSpeed  = fp.readFloat();
 				this.water.wavePitch  = fp.readFloat();
 
-				if ( version >= 1.9 ) {
+				if (version >= 1.9) {
 					this.water.animSpeed = fp.readLong();
 				}
 			}
 		}
 
 		// Read lightmap.
-		if ( version >= 1.5 ) {
+		if (version >= 1.5) {
 			this.light.longitude = fp.readLong();
 			this.light.latitude  = fp.readLong();
 			this.light.diffuse   = [ fp.readFloat(), fp.readFloat(), fp.readFloat() ];
 			this.light.ambient   = [ fp.readFloat(), fp.readFloat(), fp.readFloat() ];
 	
-			if ( version >= 1.7 ) {
+			if (version >= 1.7) {
 				this.light.opacity = fp.readFloat();
 			}
 		}
 
 		// Read ground
-		if ( version >= 1.6 ) {
+		if (version >= 1.6) {
 			this.ground.top    =  fp.readLong();
 			this.ground.bottom =  fp.readLong();
 			this.ground.left   =  fp.readLong();
@@ -156,9 +156,9 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 		count = fp.readLong();
 		models.length = lights.length = sounds.length = effects.length = count;
 
-		for( i=0; i<count; ++i ) {
+		for (i = 0; i < count; ++i) {
 
-			switch( fp.readLong() ) {
+			switch (fp.readLong()) {
 
 				case 1:
 					models[m++] = {
@@ -179,7 +179,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 						name:    fp.readString(80),
 						pos:   [ fp.readFloat()/5, fp.readFloat()/5, fp.readFloat()/5 ],
 						color: [ fp.readLong(),    fp.readLong(),    fp.readLong()  ],
-						range:   fp.readFloat()	
+						range:   fp.readFloat()
 					};
 					continue;
 	
@@ -205,7 +205,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 						unk1:   fp.readFloat(),
 						unk2:   fp.readFloat(),
 						unk3:   fp.readFloat(),
-						unk4:   fp.readFloat()		
+						unk4:   fp.readFloat()
 					};
 			}
 		}

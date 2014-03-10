@@ -10,7 +10,7 @@
 
 define(function()
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -47,7 +47,7 @@ define(function()
 
 		this.ws.onerror = function OnError()
 		{
-			if( !self.connected ) {
+			if (!self.connected) {
 				self.onComplete( false );
 			}
 		};
@@ -61,7 +61,7 @@ define(function()
 		{
 			this.close();
 
-			if( self.onClose ) {
+			if (self.onClose) {
 				self.onClose();
 			}
 		};
@@ -75,7 +75,7 @@ define(function()
 	 */
 	Socket.prototype.send = function Send( buffer )
 	{
-		if ( this.connected ) {
+		if (this.connected) {
 			this.ws.send( buffer );
 		}
 	};
@@ -86,7 +86,7 @@ define(function()
 	 */
 	Socket.prototype.close = function Close()
 	{
-		if( this.connected ) {
+		if (this.connected) {
 			this.ws.close();
 			this.connected = false;
 		}

@@ -11,7 +11,7 @@
 define( [ './GameFileDecrypt', 'Utils/BinaryReader', 'Utils/Struct', 'Utils/Inflate' ],
 function(    GameFileDecrypt,         BinaryReader,         Struct,         Inflate )
 {
-	"use strict";
+	'use strict';
 
 
 
@@ -22,8 +22,8 @@ function(    GameFileDecrypt,         BinaryReader,         Struct,         Infl
 	 */
 	function GRF( data )
 	{
-		if( data ) {
-			this.load( data );	
+		if (data) {
+			this.load( data );
 		}
 	}
 
@@ -40,25 +40,25 @@ function(    GameFileDecrypt,         BinaryReader,         Struct,         Infl
 	 * GRF Structures
 	 */
 	GRF.struct_header = new Struct(
-		"unsigned char signature[15]",
-		"unsigned char key[15]",
-		"unsigned long file_table_offset",
-		"unsigned long skip",
-		"unsigned long filecount",
-		"unsigned long version"
+		'unsigned char signature[15]',
+		'unsigned char key[15]',
+		'unsigned long file_table_offset',
+		'unsigned long skip',
+		'unsigned long filecount',
+		'unsigned long version'
 	);
 
 	GRF.struct_table = new Struct(
-		"unsigned long pack_size",
-		"unsigned long real_size"
+		'unsigned long pack_size',
+		'unsigned long real_size'
 	);
 	
 	GRF.struct_entry = new Struct(
-		"unsigned long pack_size",
-		"unsigned long length_aligned",
-		"unsigned long real_size",
-		"unsigned char type",
-		"unsigned long offset"
+		'unsigned long pack_size',
+		'unsigned long length_aligned',
+		'unsigned long real_size',
+		'unsigned char type',
+		'unsigned long offset'
 	);
 
 
@@ -102,8 +102,8 @@ function(    GameFileDecrypt,         BinaryReader,         Struct,         Infl
 	
 
 		// Check if file has enought content.
-		if ( file.size < GRF.struct_header.size ) {
-			throw new Error("GRF::load() - Not enough bytes to be a valid GRF");
+		if (file.size < GRF.struct_header.size) {
+			throw new Error('GRF::load() - Not enough bytes to be a valid GRF');
 		}
 
 
@@ -112,21 +112,21 @@ function(    GameFileDecrypt,         BinaryReader,         Struct,         Infl
 		fp     = new BinaryReader(buffer);
 		header = fp.readStruct( GRF.struct_header );
 
-		header.signature  = String.fromCharCode.apply( null, header.signature.toString().split(",") ); // Check a better way for this...
+		header.signature  = String.fromCharCode.apply( null, header.signature.toString().split(',') ); // Check a better way for this...
 		header.filecount -= header.skip + 7;
 
 
 		// Check file header
-		if ( header.signature !== 'Master of Magic' ) {
-			throw new Error("GRF::load() - Incorrect header '" + header.signature + "', must be 'Master of Magic'.");
+		if (header.signature !== 'Master of Magic') {
+			throw new Error('GRF::load() - Incorrect header "' + header.signature + '", must be "Master of Magic".');
 		}
 	
-		if ( header.version !== 0x200 ) {
-			throw new Error("GRF::load() - Incorrect version '0x" + parseInt(header.version, 10).toString(16) + "', just support version '0x200'");
+		if (header.version !== 0x200) {
+			throw new Error('GRF::load() - Incorrect version "0x' + parseInt(header.version, 10).toString(16) + '", just support version "0x200"');
 		}
 	
-		if ( header.file_table_offset + GRF.struct_header.size > file.size || header.file_table_offset < 0 ) {
-			throw new Error("GRF::load() - Can't jump to table list (" + header.file_table_offset + "), file length: " + file.size);
+		if (header.file_table_offset + GRF.struct_header.size > file.size || header.file_table_offset < 0) {
+			throw new Error('GRF::load() - Can\'t jump to table list (' + header.file_table_offset + '), file length: ' + file.size);
 		}
 
 		// Load Table Info
@@ -145,9 +145,9 @@ function(    GameFileDecrypt,         BinaryReader,         Struct,         Infl
 		// Read all entries
 		fp          = new BinaryReader( out.buffer );
 		table.fp    = fp;
-		table.data  = "";
+		table.data  = '';
 
-		for( i = 0, count = out.length; i < count; ++i ){
+		for (i = 0, count = out.length; i < count; ++i) {
 			table.data += String.fromCharCode( out[i] );
 		}
 
@@ -200,7 +200,7 @@ function(    GameFileDecrypt,         BinaryReader,         Struct,         Infl
 		var table = this.table.dataLowerCase;
 
 		var fp    = this.table.fp;
-		var pos  = table.indexOf( path + "\0" );
+		var pos  = table.indexOf( path + '\0' );
 		var entry, blob;
 		var reader;
 

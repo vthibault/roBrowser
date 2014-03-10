@@ -10,7 +10,7 @@
 
 define(function( require )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -37,10 +37,11 @@ define(function( require )
 	 * Spam an entity on the map
 	 * Generic packet handler
 	 */
-	function Create( pkt )
+	function onEntitySpam( pkt )
 	{
 		var entity = new Entity();
 		entity.set(pkt);
+
 		EntityManager.add(entity);
 	}
 
@@ -50,10 +51,10 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET.ZC.NOTIFY_VANISH
 	 */
-	function Remove( pkt )
+	function onEntityVanish( pkt )
 	{
 		var entity = EntityManager.get(pkt.GID);
-		if( entity ) {
+		if (entity) {
 			entity.remove( pkt.type );
 		}
 	}
@@ -64,10 +65,10 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET.ZC.NOTIFY_MOVE
 	 */
-	function Walk( pkt )
+	function onEntityMove( pkt )
 	{
 		var entity = EntityManager.get(pkt.GID);
-		if( entity ) {
+		if (entity) {
 			//entity.position[0] = pkt.MoveData[0];
 			//entity.position[1] = pkt.MoveData[1];
 			//entity.position[2] = Altitude.getCellHeight(  pkt.MoveData[0],  pkt.MoveData[1] );
@@ -81,12 +82,13 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET.ZC.STOPMOVE
 	 */
-	function Stop( pkt )
+	function onEntityStopMove( pkt )
 	{
 		var entity = EntityManager.get(pkt.GID);
-		if( entity ) {
+		if (entity) {
 
-			if( Math.abs(entity.position[0] - pkt.xPos) > 1.0 || Math.abs(entity.position[1] - pkt.yPos) > 1.0 ) {
+			if (Math.abs(entity.position[0] - pkt.xPos) > 1.0 ||
+			    Math.abs(entity.position[1] - pkt.yPos) > 1.0) {
 				entity.position[0] = pkt.xPos;
 				entity.position[1] = pkt.yPos;
 				entity.position[2] = Altitude.getCellHeight( pkt.xPos,  pkt.yPos );
@@ -107,7 +109,7 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET.ZC.NOTIFY_ACT
 	 */
-	function Action( pkt )
+	function onEntityAction( pkt )
 	{
 		var srcEntity = EntityManager.get(pkt.GID);
 		var dstEntity = EntityManager.get(pkt.targetGID);
@@ -149,10 +151,10 @@ define(function( require )
 						if (pkt.action === 0) {
 							Damage.add( pkt.damage, target, Renderer.tick + pkt.attackMT );
 						}
-						else if( pkt.action === 8 ) {
+						else if (pkt.action === 8) {
 
 							// Display combo only if entity is mob and the attack don't miss
-							if( dstEntity.objecttype === Entity.TYPE_MOB && pkt.damage > 0 ) {
+							if (dstEntity.objecttype === Entity.TYPE_MOB && pkt.damage > 0) {
 								Damage.add( pkt.damage / 2, dstEntity, Renderer.tick + pkt.attackMT * 1, Damage.TYPE.COMBO );
 								Damage.add( pkt.damage ,    dstEntity, Renderer.tick + pkt.attackMT * 2, Damage.TYPE.COMBO | Damage.TYPE.COMBO_FINAL );
 							}
@@ -200,7 +202,7 @@ define(function( require )
 						next:   false
 					}
 				});
-				if( dstEntity ) {
+				if (dstEntity) {
 					srcEntity.lookTo( dstEntity.position[0], dstEntity.position[1] );
 				}
 				break;
@@ -241,25 +243,27 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET.ZC.NOTIFY_CHAT
 	 */
-	function Talk( pkt )
+	function onEntityTalk( pkt )
 	{
+		var entity, type;
+
 		// Remove "pseudo : |00Dialogue
 		pkt.msg = pkt.msg.replace(/\: \|\d{2}/, ': ');
 		
-		if( ChatRoom.isOpen ) {
+		if (ChatRoom.isOpen) {
 			ChatRoom.message(pkt.msg);
 			return;
 		}
 
-		var entity = EntityManager.get(pkt.GID);
-		if( entity ) {
+		entity = EntityManager.get(pkt.GID);
+		if (entity) {
 			entity.dialog.set( pkt.msg );
 		}
 
-		var type = ChatBox.TYPE.PUBLIC;
+		type = ChatBox.TYPE.PUBLIC;
 
 		// Should not happened
-		if( entity === Session.Entity ) {
+		if (entity === Session.Entity) {
 			type |= ChatBox.TYPE.SELF;
 		}
 
@@ -272,10 +276,10 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET.ZC.ACK_REQNAME
 	 */
-	function DisplayName( pkt )
+	function onEntityIdentity( pkt )
 	{
 		var entity = EntityManager.get(pkt.AID);
-		if( entity ) {
+		if (entity) {
 			entity.display.name = pkt.CName;
 
 			entity.display.party_name = pkt.PName || '';
@@ -284,12 +288,12 @@ define(function( require )
 
 			entity.display.load = entity.display.TYPE.COMPLETE;
 			entity.display.update(
-				entity.objecttype === Entity.TYPE_MOB ? "#ffc6c6" :
-				entity.objecttype === Entity.TYPE_NPC ? "#94bdf7" :
+				entity.objecttype === Entity.TYPE_MOB ? '#ffc6c6' :
+				entity.objecttype === Entity.TYPE_NPC ? '#94bdf7' :
 				'white'
 			);
 
-			if( EntityManager.getOverEntity() === entity ) {
+			if (EntityManager.getOverEntity() === entity) {
 				entity.display.add();
 			}
 		}
@@ -301,10 +305,10 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET.ZC.NOTIFY_MONSTER_HP
 	 */
-	function UpdateLife( pkt )
+	function onEntityLifeUpdate( pkt )
 	{
 		var entity = EntityManager.get(pkt.AID);
-		if( entity ) {
+		if (entity) {
 			entity.life.hp = pkt.hp;
 			entity.life.hp_max = pkt.maxhp;
 			entity.life.update();
@@ -317,10 +321,10 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET.ZC.CHANGE_DIRECTION
 	 */
-	function UpdateDirection( pkt )
+	function onEntityDirectionChange( pkt )
 	{
 		var entity = EntityManager.get(pkt.AID);
-		if( entity ) {
+		if (entity) {
 			entity.direction = ([ 4, 3, 2, 1, 0, 7, 6, 5 ])[pkt.dir];
 			entity.headDir   = pkt.headDir;
 		}
@@ -332,26 +336,27 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET.ZC.SPRITE_CHANGE2
 	 */
-	function UpdateView( pkt )
+	function onEntityViewChange( pkt )
 	{
 		var entity = EntityManager.get(pkt.GID);
 
-		if( !entity ) {
+		if (!entity) {
 			return;
 		}
 
-		switch( pkt.type ) {
+		switch (pkt.type) {
 			case 0:
 				entity.job = pkt.value;
 				if (entity === Session.Entity) {
 					BasicInfo.update('job', pkt.value);
 				}
 				break;
+
 			case 1: entity.head        = pkt.value; break;
 			case 2: entity.weapon      = pkt.value; break;
-			case 3: entity.accessory3  = pkt.value; break;
-			case 4: entity.accessory   = pkt.value; break;
-			case 5: entity.accessory2  = pkt.value; break;
+			case 3: entity.accessory   = pkt.value; break;
+			case 4: entity.accessory2  = pkt.value; break;
+			case 5: entity.accessory3  = pkt.value; break;
 			case 6: entity.headpalette = pkt.value; break;
 			case 7: entity.bodypalette = pkt.value; break;
 			case 8: entity.shield      = pkt.value; break;
@@ -367,12 +372,12 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET.ZC.USE_SKILL
 	 */
-	function UseSkillNoDamage( pkt )
+	function onEntityUseSkill( pkt )
 	{
 		var srcEntity = EntityManager.get(pkt.srcAID);
 		var dstEntity = EntityManager.get(pkt.targetAID);
 
-		if( !srcEntity ) {
+		if (!srcEntity) {
 			return;
 		}
 
@@ -391,18 +396,18 @@ define(function( require )
 		});
 
 		// Only mob to don't display skill name ?
-		if( srcEntity.objecttype !== Entity.TYPE_MOB ) {
+		if (srcEntity.objecttype !== Entity.TYPE_MOB) {
 			srcEntity.dialog.set(
 				( (SkillInfo[pkt.SKID] && SkillInfo[pkt.SKID].SkillName ) || 'Unknown Skill' ) + ' !!',
 				'white'
 			);
 		}
 
-		if( dstEntity ) {
+		if (dstEntity) {
 			srcEntity.lookTo( dstEntity.position[0], dstEntity.position[1] );
 
 			// Don't know why Gravity did this...
-			if ( pkt.SKID === SkillId.AL_HEAL ) {
+			if (pkt.SKID === SkillId.AL_HEAL) {
 				Damage.add( pkt.level, dstEntity, Renderer.tick, Damage.TYPE.HEAL );
 			}
 			else {
@@ -417,12 +422,12 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET.ZC.NOTIFY_SKILL
 	 */
-	function UseSkillDamage( pkt )
+	function onEntityUseSkillToAttack( pkt )
 	{
 		var srcEntity = EntityManager.get(pkt.AID);
 		var dstEntity = EntityManager.get(pkt.targetID);
 
-		if( srcEntity ) {
+		if (srcEntity) {
 			pkt.attackMT = Math.min( 450, pkt.attackMT ); // FIXME: cap value ?
 			pkt.attackMT = Math.max(   1, pkt.attackMT );
 			srcEntity.attack_speed = pkt.attackMT;
@@ -441,12 +446,12 @@ define(function( require )
 				}
 			});
 
-			if ( srcEntity.objecttype !== Entity.TYPE_MOB ) {
-				srcEntity.dialog.set( ( (SkillInfo[pkt.SKID] && SkillInfo[pkt.SKID].SkillName ) || "Unknown Skill" ) + " !!" );
+			if (srcEntity.objecttype !== Entity.TYPE_MOB) {
+				srcEntity.dialog.set( ( (SkillInfo[pkt.SKID] && SkillInfo[pkt.SKID].SkillName ) || 'Unknown Skill' ) + ' !!' );
 			}
 		}
 
-		if( dstEntity  ) {
+		if (dstEntity) {
 			pkt.attackedMT = Math.min( 450, pkt.attackedMT ); // FIXME: cap value ?
 			pkt.attackedMT = Math.max(   1, pkt.attackedMT );
 			dstEntity.attack_speed = pkt.attackedMT;
@@ -455,7 +460,7 @@ define(function( require )
 			var target = pkt.damage ? dstEntity : srcEntity;
 			var i;
 
-			if( pkt.damage ) {
+			if (pkt.damage) {
 				dstEntity.setAction({
 					action: dstEntity.ACTION.HURT,
 					frame:  0,
@@ -472,7 +477,7 @@ define(function( require )
 
 				// Combo
 				if (target) {
-					for ( i = 0; i<pkt.count; ++i ) {
+					for (i = 0; i<pkt.count; ++i) {
 						Damage.add(
 							Math.floor( pkt.damage / pkt.count * (i+1) ),
 							target,
@@ -485,7 +490,7 @@ define(function( require )
 
 			// Damage
 			if (target) {
-				for ( i = 0; i<pkt.count; ++i ) {
+				for (i = 0; i<pkt.count; ++i) {
 					Damage.add(
 						Math.floor( pkt.damage / pkt.count ),
 						target,
@@ -501,7 +506,7 @@ define(function( require )
 	 * Cast a skill to someone
 	 * @param {object} pkt - pkt PACKET.ZC.USESKILL_ACK
 	 */
-	function CastSkill( pkt )
+	function onEntityCastSkill( pkt )
 	{
 		// property:
 		//     0 = Yellow cast aura
@@ -519,24 +524,24 @@ define(function( require )
 		var srcEntity = EntityManager.get(pkt.AID);
 		var dstEntity = EntityManager.get(pkt.targetID);
 
-		if( !srcEntity ) {
+		if (!srcEntity) {
 			return;
 		}
 
 		srcEntity.cast.set( pkt.delayTime );
 
 		// Only mob to don't display skill name ?
-		if( srcEntity.objecttype !== Entity.TYPE_MOB ) {
+		if (srcEntity.objecttype !== Entity.TYPE_MOB) {
 			srcEntity.dialog.set(
 				( ( SkillInfo[pkt.SKID] && SkillInfo[pkt.SKID].SkillName ) || 'Unknown Skill' ) + ' !!',
 				'white'
 			);
 		}
 
-		if ( dstEntity && dstEntity !== srcEntity ) {
+		if (dstEntity && dstEntity !== srcEntity) {
 			srcEntity.lookTo( dstEntity.position[0], dstEntity.position[1] );
 		}
-		else if ( pkt.xPos && pkt.yPos ) {
+		else if (pkt.xPos && pkt.yPos) {
 			srcEntity.lookTo( pkt.xPos, pkt.yPos );
 		}
 	}
@@ -544,16 +549,19 @@ define(function( require )
 
 	/**
 	 * Update Player status
+	 *
 	 * @param {object} pkt - PACKET.ZC.MSG_STATE_CHANGE
 	 */
-	function UpdateStatus( pkt )
+	function onEntityStatusChange( pkt )
 	{
 		var entity = EntityManager.get( pkt.AID );
 		if (!entity) {
 			return;
 		}
 
-		switch( pkt.index ) {
+		// TODO: add other status
+		switch (pkt.index) {
+
 			case 27: //SI_RIDING (status.h)
 				var job = entity.job;
 				var newjob  = (
@@ -567,14 +575,16 @@ define(function( require )
 				);
 
 				// Update job
-				if( newjob !== job ) {
+				if (newjob !== job) {
 					entity.job = newjob;
 				}
 				break;
+
 			default:
 		}
 
-		if ( entity === Session.Entity ) {
+		// Modify icon
+		if (entity === Session.Entity) {
 			StatusIcons.update( pkt.index, pkt.state, pkt.RemainMS );
 		}
 	}
@@ -585,10 +595,10 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET.ZC.STATE_CHANGE
 	 */
-	function UpdateOption( pkt )
+	function onEntityOptionChange( pkt )
 	{
 		var entity = EntityManager.get( pkt.AID );
-		if ( !entity ) {
+		if (!entity) {
 			return;
 		}
 
@@ -615,13 +625,13 @@ define(function( require )
 		}
 
 		// Curse
-		if (pkt.healthState & Options.HealthState.Curse) {
+		if (pkt.healthState & Options.HealthState.CURSE) {
 			// entity.attachEffect("data/sprite/ÀÌÆÑÆ®/status-curse")
 			entity.effectColor[0] = 0.50;
 			entity.effectColor[1] = 0.15;
 			entity.effectColor[2] = 0.10;
 		}
-		else if (entity.healthState & Options.HealthState.Curse) {
+		else if (entity.healthState & Options.HealthState.CURSE) {
 			// entity.detachEffect("data/sprite/ÀÌÆÑÆ®/status-curse")
 		}
 
@@ -680,7 +690,6 @@ define(function( require )
 				break;
 		}
 
-
 		entity.bodyState   = pkt.bodyState;
 		entity.healthState = pkt.healthState;
 		entity.effectState = pkt.effectState;
@@ -690,16 +699,17 @@ define(function( require )
 
 	/**
 	 * Display a shop above entity's head
+	 *
 	 * @param {object} pkt - PACKET.ZC.STORE_ENTRY / PACKET.ZC.DISAPPEAR_BUYING_STORE_ENTRY
 	 */
-	function RoomCreate( pkt )
+	function onEntityCreateRoom( pkt )
 	{
 		var entity;
 
-		switch( pkt.constructor.name ) {
-			case "PACKET_ZC_STORE_ENTRY":
+		switch (pkt.constructor.name) {
+			case 'PACKET_ZC_STORE_ENTRY':
 				entity = EntityManager.get( pkt.makerAID );
-				if( entity ) {
+				if (entity) {
 					entity.room.create(
 						pkt.storeName,
 						pkt.makerAID,
@@ -709,9 +719,9 @@ define(function( require )
 				}
 				break;
 
-			case "PACKET_ZC_BUYING_STORE_ENTRY":
+			case 'PACKET_ZC_BUYING_STORE_ENTRY':
 				entity = EntityManager.get( pkt.makerAID );
-				if( entity ) {
+				if (entity) {
 					entity.room.create(
 						pkt.storeName,
 						pkt.makerAID,
@@ -721,14 +731,14 @@ define(function( require )
 				}
 				break;
 
-			case "PACKET_ZC_ROOM_NEWENTRY":
+			case 'PACKET_ZC_ROOM_NEWENTRY':
 				entity = EntityManager.get( pkt.AID );
-				if( entity ) {
+				if (entity) {
 
 					var type  = entity.room.constructor.Type.PUBLIC_CHAT;
 					var title = pkt.title + '('+ pkt.curcount +'/'+ pkt.maxcount +')';
 
-					switch( pkt.type ) {
+					switch (pkt.type) {
 						case 0: // password
 							type = entity.room.constructor.Type.PRIVATE_CHAT;
 							break;
@@ -759,9 +769,10 @@ define(function( require )
 
 	/**
 	 * Remove entity room
+	 *
 	 * @param {object} pkt - PACKET.ZC.DISAPPEAR_ENTRY
 	 */
-	function RoomRemove( pkt )
+	function onEntityDestroyRoom( pkt )
 	{
 		if ('roomID' in pkt) {
 			EntityManager.forEach(function(entity){
@@ -770,12 +781,12 @@ define(function( require )
 					return false;
 				}
 				return true;
-			})
+			});
 			return;
 		}
 
 		var entity = EntityManager.get( pkt.makerAID );
-		if( entity ) {
+		if (entity) {
 			entity.room.remove();
 		}
 	}
@@ -786,58 +797,58 @@ define(function( require )
 	 */
 	return function EntityEngine()
 	{
-		Network.hookPacket( PACKET.ZC.NOTIFY_STANDENTRY,     Create );
-		Network.hookPacket( PACKET.ZC.NOTIFY_NEWENTRY,       Create );
-		Network.hookPacket( PACKET.ZC.NOTIFY_ACTENTRY,       Create );
-		Network.hookPacket( PACKET.ZC.NOTIFY_MOVEENTRY,      Create );
-		Network.hookPacket( PACKET.ZC.NOTIFY_STANDENTRY_NPC, Create );
-		Network.hookPacket( PACKET.ZC.NOTIFY_STANDENTRY2,    Create );
-		Network.hookPacket( PACKET.ZC.NOTIFY_NEWENTRY2,      Create );
-		Network.hookPacket( PACKET.ZC.NOTIFY_MOVEENTRY2,     Create );
-		Network.hookPacket( PACKET.ZC.NOTIFY_STANDENTRY3,    Create );
-		Network.hookPacket( PACKET.ZC.NOTIFY_NEWENTRY3,      Create );
-		Network.hookPacket( PACKET.ZC.NOTIFY_MOVEENTRY3,     Create );
-		Network.hookPacket( PACKET.ZC.NOTIFY_STANDENTRY4,    Create );
-		Network.hookPacket( PACKET.ZC.NOTIFY_NEWENTRY4,      Create );
-		Network.hookPacket( PACKET.ZC.NOTIFY_MOVEENTRY4,     Create );
-		Network.hookPacket( PACKET.ZC.NOTIFY_STANDENTRY5,    Create );
-		Network.hookPacket( PACKET.ZC.NOTIFY_NEWENTRY5,      Create );
-		Network.hookPacket( PACKET.ZC.NOTIFY_MOVEENTRY5,     Create );
-		Network.hookPacket( PACKET.ZC.NOTIFY_STANDENTRY6,    Create );
-		Network.hookPacket( PACKET.ZC.NOTIFY_NEWENTRY6,      Create );
-		Network.hookPacket( PACKET.ZC.NOTIFY_MOVEENTRY6,     Create );
-		Network.hookPacket( PACKET.ZC.NOTIFY_STANDENTRY7,    Create );
-		Network.hookPacket( PACKET.ZC.NOTIFY_NEWENTRY7,      Create );
-		Network.hookPacket( PACKET.ZC.NOTIFY_MOVEENTRY7,     Create );
-		Network.hookPacket( PACKET.ZC.NOTIFY_VANISH,         Remove );
-		Network.hookPacket( PACKET.ZC.NOTIFY_MOVE,           Walk );
-		Network.hookPacket( PACKET.ZC.STOPMOVE,              Stop );
-		Network.hookPacket( PACKET.ZC.NOTIFY_ACT,            Action );
-		Network.hookPacket( PACKET.ZC.NOTIFY_ACT2,           Action );
-		Network.hookPacket( PACKET.ZC.NOTIFY_CHAT,           Talk );
-		Network.hookPacket( PACKET.ZC.ACK_REQNAME,           DisplayName );
-		Network.hookPacket( PACKET.ZC.ACK_REQNAMEALL,        DisplayName );
-		Network.hookPacket( PACKET.ZC.CHANGE_DIRECTION,      UpdateDirection );
-		Network.hookPacket( PACKET.ZC.SPRITE_CHANGE,         UpdateView );
-		Network.hookPacket( PACKET.ZC.SPRITE_CHANGE2,        UpdateView );
-		Network.hookPacket( PACKET.ZC.USE_SKILL,             UseSkillNoDamage );
-		Network.hookPacket( PACKET.ZC.NOTIFY_SKILL,          UseSkillDamage );
-		Network.hookPacket( PACKET.ZC.NOTIFY_SKILL2,         UseSkillDamage );
-		Network.hookPacket( PACKET.ZC.NOTIFY_SKILL_POSITION, UseSkillDamage );
-		Network.hookPacket( PACKET.ZC.USESKILL_ACK,          CastSkill );
-		Network.hookPacket( PACKET.ZC.USESKILL_ACK2,         CastSkill );
-		Network.hookPacket( PACKET.ZC.STATE_CHANGE,          UpdateOption );
-		Network.hookPacket( PACKET.ZC.STATE_CHANGE3,         UpdateOption );
-		Network.hookPacket( PACKET.ZC.MSG_STATE_CHANGE,      UpdateStatus );
-		Network.hookPacket( PACKET.ZC.MSG_STATE_CHANGE2,     UpdateStatus );
-		Network.hookPacket( PACKET.ZC.MSG_STATE_CHANGE3,     UpdateStatus );
-		Network.hookPacket( PACKET.ZC.MSG_STATE_CHANGE4,     UpdateStatus );
-		Network.hookPacket( PACKET.ZC.MSG_STATE_CHANGE5,     UpdateStatus );
-		Network.hookPacket( PACKET.ZC.STORE_ENTRY,           RoomCreate );
-		Network.hookPacket( PACKET.ZC.DISAPPEAR_ENTRY,       RoomRemove );
-		Network.hookPacket( PACKET.ZC.BUYING_STORE_ENTRY,    RoomCreate );
-		Network.hookPacket( PACKET.ZC.DISAPPEAR_BUYING_STORE_ENTRY, RoomRemove );
-		Network.hookPacket( PACKET.ZC.ROOM_NEWENTRY,         RoomCreate );
-		Network.hookPacket( PACKET.ZC.DESTROY_ROOM,          RoomRemove );
+		Network.hookPacket( PACKET.ZC.NOTIFY_STANDENTRY,            onEntitySpam );
+		Network.hookPacket( PACKET.ZC.NOTIFY_NEWENTRY,              onEntitySpam );
+		Network.hookPacket( PACKET.ZC.NOTIFY_ACTENTRY,              onEntitySpam );
+		Network.hookPacket( PACKET.ZC.NOTIFY_MOVEENTRY,             onEntitySpam );
+		Network.hookPacket( PACKET.ZC.NOTIFY_STANDENTRY_NPC,        onEntitySpam );
+		Network.hookPacket( PACKET.ZC.NOTIFY_STANDENTRY2,           onEntitySpam );
+		Network.hookPacket( PACKET.ZC.NOTIFY_NEWENTRY2,             onEntitySpam );
+		Network.hookPacket( PACKET.ZC.NOTIFY_MOVEENTRY2,            onEntitySpam );
+		Network.hookPacket( PACKET.ZC.NOTIFY_STANDENTRY3,           onEntitySpam );
+		Network.hookPacket( PACKET.ZC.NOTIFY_NEWENTRY3,             onEntitySpam );
+		Network.hookPacket( PACKET.ZC.NOTIFY_MOVEENTRY3,            onEntitySpam );
+		Network.hookPacket( PACKET.ZC.NOTIFY_STANDENTRY4,           onEntitySpam );
+		Network.hookPacket( PACKET.ZC.NOTIFY_NEWENTRY4,             onEntitySpam );
+		Network.hookPacket( PACKET.ZC.NOTIFY_MOVEENTRY4,            onEntitySpam );
+		Network.hookPacket( PACKET.ZC.NOTIFY_STANDENTRY5,           onEntitySpam );
+		Network.hookPacket( PACKET.ZC.NOTIFY_NEWENTRY5,             onEntitySpam );
+		Network.hookPacket( PACKET.ZC.NOTIFY_MOVEENTRY5,            onEntitySpam );
+		Network.hookPacket( PACKET.ZC.NOTIFY_STANDENTRY6,           onEntitySpam );
+		Network.hookPacket( PACKET.ZC.NOTIFY_NEWENTRY6,             onEntitySpam );
+		Network.hookPacket( PACKET.ZC.NOTIFY_MOVEENTRY6,            onEntitySpam );
+		Network.hookPacket( PACKET.ZC.NOTIFY_STANDENTRY7,           onEntitySpam );
+		Network.hookPacket( PACKET.ZC.NOTIFY_NEWENTRY7,             onEntitySpam );
+		Network.hookPacket( PACKET.ZC.NOTIFY_MOVEENTRY7,            onEntitySpam );
+		Network.hookPacket( PACKET.ZC.NOTIFY_VANISH,                onEntityVanish );
+		Network.hookPacket( PACKET.ZC.NOTIFY_MOVE,                  onEntityMove );
+		Network.hookPacket( PACKET.ZC.STOPMOVE,                     onEntityStopMove );
+		Network.hookPacket( PACKET.ZC.NOTIFY_ACT,                   onEntityAction );
+		Network.hookPacket( PACKET.ZC.NOTIFY_ACT2,                  onEntityAction );
+		Network.hookPacket( PACKET.ZC.NOTIFY_CHAT,                  onEntityTalk );
+		Network.hookPacket( PACKET.ZC.ACK_REQNAME,                  onEntityIdentity );
+		Network.hookPacket( PACKET.ZC.ACK_REQNAMEALL,               onEntityIdentity );
+		Network.hookPacket( PACKET.ZC.CHANGE_DIRECTION,             onEntityDirectionChange );
+		Network.hookPacket( PACKET.ZC.SPRITE_CHANGE,                onEntityViewChange );
+		Network.hookPacket( PACKET.ZC.SPRITE_CHANGE2,               onEntityViewChange );
+		Network.hookPacket( PACKET.ZC.USE_SKILL,                    onEntityUseSkill );
+		Network.hookPacket( PACKET.ZC.NOTIFY_SKILL,                 onEntityUseSkillToAttack );
+		Network.hookPacket( PACKET.ZC.NOTIFY_SKILL2,                onEntityUseSkillToAttack );
+		Network.hookPacket( PACKET.ZC.NOTIFY_SKILL_POSITION,        onEntityUseSkillToAttack );
+		Network.hookPacket( PACKET.ZC.USESKILL_ACK,                 onEntityCastSkill );
+		Network.hookPacket( PACKET.ZC.USESKILL_ACK2,                onEntityCastSkill );
+		Network.hookPacket( PACKET.ZC.STATE_CHANGE,                 onEntityOptionChange );
+		Network.hookPacket( PACKET.ZC.STATE_CHANGE3,                onEntityOptionChange );
+		Network.hookPacket( PACKET.ZC.MSG_STATE_CHANGE,             onEntityStatusChange );
+		Network.hookPacket( PACKET.ZC.MSG_STATE_CHANGE2,            onEntityStatusChange );
+		Network.hookPacket( PACKET.ZC.MSG_STATE_CHANGE3,            onEntityStatusChange );
+		Network.hookPacket( PACKET.ZC.MSG_STATE_CHANGE4,            onEntityStatusChange );
+		Network.hookPacket( PACKET.ZC.MSG_STATE_CHANGE5,            onEntityStatusChange );
+		Network.hookPacket( PACKET.ZC.STORE_ENTRY,                  onEntityCreateRoom );
+		Network.hookPacket( PACKET.ZC.DISAPPEAR_ENTRY,              onEntityDestroyRoom );
+		Network.hookPacket( PACKET.ZC.BUYING_STORE_ENTRY,           onEntityCreateRoom );
+		Network.hookPacket( PACKET.ZC.DISAPPEAR_BUYING_STORE_ENTRY, onEntityDestroyRoom );
+		Network.hookPacket( PACKET.ZC.ROOM_NEWENTRY,                onEntityCreateRoom );
+		Network.hookPacket( PACKET.ZC.DESTROY_ROOM,                 onEntityDestroyRoom );
 	};
 });

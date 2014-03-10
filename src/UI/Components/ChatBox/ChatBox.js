@@ -1,7 +1,7 @@
 /**
  * UI/Components/ChatBox/ChatBox.js
  *
- * Dialog windows
+ * ChatBox windows
  *
  * This file is part of ROBrowser, Ragnarok Online in the Web Browser (http://www.robrowser.com/).
  *
@@ -9,7 +9,7 @@
  */
 define(function(require)
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -20,9 +20,6 @@ define(function(require)
 	var Renderer           = require('Renderer/Renderer');
 	var KEYS               = require('Controls/KeyEventHandler');
 	var Client             = require('Core/Client');
-	var Session            = require('Engine/SessionStorage');
-	var PACKET             = require('Network/PacketStructure');
-	var Network            = require('Network/NetworkManager');
 	var UIManager          = require('UI/UIManager');
 	var UIComponent        = require('UI/UIComponent');
 	var htmlText           = require('text!./ChatBox.html');
@@ -31,11 +28,40 @@ define(function(require)
 
 
 	/**
-	 * Constants
+	 * @var {number} max message in the chatbox
 	 */
-	var MAX_MSG       = 50;
-	var MAX_HISTORY   = 50;
-	
+	var MAX_MSG = 50;
+
+
+	/**
+	 * @var {number} max message sent saved for history features
+	 */
+	var MAX_HISTORY = 50;
+
+
+	/**
+	 * @var {Array} history of message sent
+	 */
+	var _history = [];
+
+
+	/**
+	 * @var {number} current index in history
+	 */
+	var _historyIndex = 0;
+
+
+	/**
+	 * @var {Array} stack - data saved and waiting for the ui to be ready to be processed
+	 */
+	var _stack = [];
+
+
+	/**
+	 * @var {number} Chatbox position's index
+	 */
+	var _heightIndex = 2;
+
 
 	/**
 	 * Create Basic Info component
@@ -60,31 +86,38 @@ define(function(require)
 
 
 	/**
+	 * Storage to cache the private messages
+	 * Ugly system used by official client, can lead to errors
+	 */
+	ChatBox.PrivateMessageStorage = {
+		nick: '',
+		msg:  ''
+	};
+
+
+	/**
 	 * Initialize UI
 	 */
-	ChatBox.init = function Init()
+	ChatBox.init = function init()
 	{
-		this.history = [];
-		this.historyIndex = 0;
-
 		this.ui.css('top', (Renderer.height - ( this.ui.find('.content').height() + 53 )) + 'px');
 		this.draggable( this.ui.find('.input') );
 
 		// Setting chatbox scrollbar
-		Client.loadFiles([DB.INTERFACE_PATH + "basic_interface/dialscr_down.bmp", DB.INTERFACE_PATH + "basic_interface/dialscr_up.bmp"], function( down, up ){
-			jQuery("style:first").append([
-				"#chatbox .content::-webkit-scrollbar { width: 10px; height: 10px;}",
-				"#chatbox .content::-webkit-scrollbar-button:vertical:start:increment,",
-				"#chatbox .content::-webkit-scrollbar-button:vertical:end:decrement { display: none;}",
-				"#chatbox .content::-webkit-scrollbar-corner:vertical { display:none;}",
-				"#chatbox .content::-webkit-scrollbar-resizer:vertical { display:none;}",
-				"#chatbox .content::-webkit-scrollbar-button:start:decrement,",
-				"#chatbox .content::-webkit-scrollbar-button:end:increment { display: block; border:none;}",
-				"#chatbox .content::-webkit-scrollbar-button:vertical:increment { background: url('"+ down +"') no-repeat; height:10px;}",
-				"#chatbox .content::-webkit-scrollbar-button:vertical:decrement { background: url('"+ up +"') no-repeat; height:10px;}",
-				"#chatbox .content::-webkit-scrollbar-track-piece:vertical { background:black; border:none;}",
-				"#chatbox .content::-webkit-scrollbar-thumb:vertical { background:grey; -webkit-border-image:none; border-color:transparent;border-width: 0px 0; }"
-			].join("\n"));
+		Client.loadFiles([DB.INTERFACE_PATH + 'basic_interface/dialscr_down.bmp', DB.INTERFACE_PATH + 'basic_interface/dialscr_up.bmp'], function( down, up ){
+			jQuery('style:first').append([
+				'#chatbox .content::-webkit-scrollbar { width: 10px; height: 10px;}',
+				'#chatbox .content::-webkit-scrollbar-button:vertical:start:increment,',
+				'#chatbox .content::-webkit-scrollbar-button:vertical:end:decrement { display: none;}',
+				'#chatbox .content::-webkit-scrollbar-corner:vertical { display:none;}',
+				'#chatbox .content::-webkit-scrollbar-resizer:vertical { display:none;}',
+				'#chatbox .content::-webkit-scrollbar-button:start:decrement,',
+				'#chatbox .content::-webkit-scrollbar-button:end:increment { display: block; border:none;}',
+				'#chatbox .content::-webkit-scrollbar-button:vertical:increment { background: url('+ down +') no-repeat; height:10px;}',
+				'#chatbox .content::-webkit-scrollbar-button:vertical:decrement { background: url('+ up +') no-repeat; height:10px;}',
+				'#chatbox .content::-webkit-scrollbar-track-piece:vertical { background:black; border:none;}',
+				'#chatbox .content::-webkit-scrollbar-thumb:vertical { background:grey; -webkit-border-image:none; border-color:transparent;border-width: 0px 0; }'
+			].join('\n'));
 		});
 
 		// Input selection
@@ -95,12 +128,11 @@ define(function(require)
 		});
 
 		this.ui.find('.input .message').blur(function(){
-			var _this = this;
 			setTimeout(function(){
-				if( document.activeElement.tagName !== 'INPUT' ) {
-					_this.focus();
+				if (document.activeElement.tagName !== 'INPUT') {
+					this.focus();
 				}
-			}, 1);
+			}.bind(this), 1);
 		});
 
 		// Button change name
@@ -121,7 +153,7 @@ define(function(require)
 		// Scroll feature should block at each line
 		var lastScrollPos = 0;
 		this.ui.find('.content').on('scroll', function(){
-			if( this.scrollTop > lastScrollPos ) {
+			if (this.scrollTop > lastScrollPos) {
 				this.scrollTop = Math.ceil(this.scrollTop/14) * 14;
 			}
 			else {
@@ -148,14 +180,16 @@ define(function(require)
 	 */
 	ChatBox.onAppend = function OnAppend()
 	{
+		var i, count;
+
 		// Focus the input
 		this.ui.find('.input .message').focus();
 
 		// Write memorized texts
-		for( var i = 0, count = this.storage.length; i < count; ++i ) {
-			this.addText.apply(this, this.storage[i]);
+		for (i = 0, count = _stack.length; i < count; ++i) {
+			this.addText.apply(this, _stack[i]);
 		}
-		this.storage.length = 0;
+		_stack.length = 0;
 
 		var content = this.ui.find('.content')[0];
 		content.scrollTop = content.scrollHeight;
@@ -181,51 +215,57 @@ define(function(require)
 	{
 		var is_focus = document.activeElement === this.ui.find('.input .message')[0];
 
-		switch( event.which ) {
+		switch (event.which) {
 			default:
 				return true;
 
+			// Switch from user name, to message input
 			case KEYS.TAB:
-				if( document.activeElement === this.ui.find('.input .message')[0] ) {
+				if (document.activeElement === this.ui.find('.input .message')[0]) {
 					this.ui.find('.input .username').select().focus();
 				}
-				else if( document.activeElement === this.ui.find('.input .username')[0] ) {
+				else if (document.activeElement === this.ui.find('.input .username')[0]) {
 					this.ui.find('.input .message').select().focus();
 				}
 				else {
-					return true;	
+					return true;
 				}
 				break;
 
+			// Get back message from history
 			case KEYS.UP:
-				if( !is_focus || jQuery('#NpcMenu').length ) {
+				if (!is_focus || jQuery('#NpcMenu').length) {
 					return true;
 				}
-				if( this.historyIndex > 0 ) {
-					this.historyIndex--;
+				if (_historyIndex > 0) {
+					_historyIndex--;
 				}
-				this.ui.find('.input .message').val( this.history[ this.historyIndex ] ).select();
+				this.ui.find('.input .message').val(_history[_historyIndex]).select();
 				break;
 
+			// Message from history + 1
 			case KEYS.DOWN:
-				if( !is_focus || jQuery('#NpcMenu').length ) {
+				if (!is_focus || jQuery('#NpcMenu').length) {
 					return true;
 				}
-				if( this.historyIndex < this.history.length ) {
-					this.historyIndex++;
+				if (_historyIndex < _history.length ) {
+					_historyIndex++;
 				}
-				this.ui.find('.input .message').val( this.history[ this.historyIndex ] ).select();
+				this.ui.find('.input .message').val(_history[_historyIndex]).select();
 				break;
 
+			// Update chat height
 			case KEYS.F10:
 				this.updateHeight(false);
 				break;
 
+			// Send message
 			case KEYS.ENTER:
-				if( document.activeElement.tagName === 'INPUT' && !is_focus ) {
+				if (document.activeElement.tagName === 'INPUT' && !is_focus) {
 					return true;
 				}
-				if( jQuery('#NpcMenu').length || jQuery('#NpcBox').length ) {
+
+				if (jQuery('#NpcMenu').length || jQuery('#NpcBox').length) {
 					return true;
 				}
 
@@ -251,48 +291,35 @@ define(function(require)
 		var text = $text.val();
 
 		// block.
-		if( !text.length ) {
+		if (!text.length) {
 			return;
 		}
 
-		if( user.length && text[0] !== '/' ) {
+		if (user.length && text[0] !== '/') {
 			this.PrivateMessageStorage.nick = user;
 			this.PrivateMessageStorage.msg  = text;
 		}
 
 		// Save in history
-		if( this.history[this.historyIndex] !== text ) {
+		if (_history[_historyIndex] !== text) {
 
-			if( this.history.length >= MAX_HISTORY ) {
-				this.history.shift();
+			if (_history.length >= MAX_HISTORY) {
+				_history.shift();
 			}
-			this.history.push(text);
+			_history.push(text);
 		}
-		this.historyIndex = this.history.length;
+
+		_historyIndex = _history.length;
+
 		$text.val('');
 
-		if( text[0] === '/' ) {
-			ProcessCommand.call( ChatBox, text.substr(1) );
+		if (text[0] === '/') {
+			ProcessCommand.call(this, text.substr(1) );
 			return;
 		}
 
 		this.onRequestTalk( user, text );
 	};
-
-
-	/**
-	 * Storage to cache the private messages
-	 */
-	ChatBox.PrivateMessageStorage = {
-		nick: "",
-		msg:  ""
-	};
-
-
-	/**
-	 *  If server want to display text but UI not loaded yet, store message and process later
-	 */
-	ChatBox.storage = [];
 
 
 	/**
@@ -304,34 +331,34 @@ define(function(require)
 	 */
 	ChatBox.addText = function addText( text, type, color )
 	{
-		if( !this.__loaded ) {
-			this.storage.push(arguments);
+		if (!this.__loaded) {
+			_stack.push(arguments);
 			return;
 		}
 
 		var $content = this.ui.find('.content');
 
-		if( !color ) {
-			if( (type & ChatBox.TYPE.PUBLIC) && (type & ChatBox.TYPE.SELF) ) {
+		if (!color) {
+			if ((type & ChatBox.TYPE.PUBLIC) && (type & ChatBox.TYPE.SELF)) {
 				color = '#00FF00';
 			}
-			else if( type & ChatBox.TYPE.PARTY ) {
+			else if (type & ChatBox.TYPE.PARTY) {
 				color = ( type & ChatBox.TYPE.SELF ) ? 'rgb(200, 200, 100)' : 'rgb(230,215,200)';
 			}
-			else if( type & ChatBox.TYPE.GUILD ) {
+			else if (type & ChatBox.TYPE.GUILD) {
 				color = 'rgb(180, 255, 180)';
 			}
-			else if( type & ChatBox.TYPE.PRIVATE ) {
+			else if (type & ChatBox.TYPE.PRIVATE) {
 				color = '#FFFF00';
 			}
-			else if( type & ChatBox.TYPE.ERROR ) {
+			else if (type & ChatBox.TYPE.ERROR) {
 				color = '#FF0000';
 			}
-			else if( type & ChatBox.TYPE.INFO ) {
+			else if (type & ChatBox.TYPE.INFO) {
 				color = '#FFFF63';
 			}
-			else if( type & ChatBox.TYPE.BLUE ) {
-				color = "#00FFFF";	
+			else if (type & ChatBox.TYPE.BLUE) {
+				color = '#00FFFF';
 			}
 			else {
 				color = 'white';
@@ -346,7 +373,7 @@ define(function(require)
 
 		// If there is too many line, remove the older one
 		var list = $content.find('div');
-		if( list.length > MAX_MSG ) {
+		if (list.length > MAX_MSG) {
 			list.find(':first').remove();
 		}
 
@@ -356,32 +383,26 @@ define(function(require)
 
 
 	/**
-	 * @var {number} Chatbox position's index
-	 */
-	ChatBox.heightIndex = 2;
-
-
-	/**
 	 * Change chatbox's height
 	 */
 	ChatBox.updateHeight = function changeHeight( AlwaysVisible )
 	{
-		var HeightList   = [ 0, 0, 3*14, 6*14, 9*14, 12*14, 15*14 ];
-		this.heightIndex = (this.heightIndex + 1) % HeightList.length;
+		var HeightList = [ 0, 0, 3*14, 6*14, 9*14, 12*14, 15*14 ];
+		_heightIndex   = (_heightIndex + 1) % HeightList.length;
 
 		var $content   = this.ui.find('.content');
-		var height     = HeightList[ this.heightIndex ];
+		var height     = HeightList[ _heightIndex ];
 		var top        = parseInt( this.ui.css('top'), 10);
 
 		this.ui.css('top', top - (height - $content.height()) );
 		$content.height(height);
 
 		// Don't remove UI
-		if( this.heightIndex === 0 && AlwaysVisible ) {
-			this.heightIndex++;
+		if (_heightIndex === 0 && AlwaysVisible) {
+			_heightIndex++;
 		}
 
-		switch( this.heightIndex ) {
+		switch (_heightIndex) {
 			case 0:
 				this.ui.hide();
 				break;
@@ -399,37 +420,6 @@ define(function(require)
 		}
 
 		$content[0].scrollTop = $content[0].scrollHeight;
-	};
-
-	/**
-	 * Talk feature
-	 *
-	 * @param {string} user
-	 * @param {string} text
-	 */
-	ChatBox.onRequestTalk = function OnRequestTalk( user, text )
-	{
-		var pkt;
-
-		if( user.length ) {
-			pkt          = new PACKET.CZ.WHISPER();
-			pkt.receiver = user;
-			pkt.msg = text;
-		}
-		else if( text[0] === '%' ) {
-			pkt = new PACKET.CZ.REQUEST_CHAT_PARTY();
-			pkt.msg = Session.Entity.display.name + ' : ' + text.substr(1);
-		}
-		else if( text[0] === '$' ) {
-			pkt = new PACKET.CZ.GUILD_CHAT();
-			pkt.msg = Session.Entity.display.name + ' : ' + text.substr(1);
-		}
-		else {
-			pkt = new PACKET.CZ.REQUEST_CHAT();
-			pkt.msg = Session.Entity.display.name + ' : ' + text;
-		}
-
-		Network.sendPacket(pkt);
 	};
 
 

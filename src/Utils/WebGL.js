@@ -12,8 +12,8 @@
  
 define( ['Utils/Texture'], function( Texture )
 {
-	"use strict";
-	
+	'use strict';
+
 
 	/**
 	 * Get WebGL Context
@@ -23,14 +23,14 @@ define( ['Utils/Texture'], function( Texture )
 	 *
 	 * @return {object} webgl context
 	 */
-	function GetContext( canvas, parameters )
+	function getContext( canvas, parameters )
 	{
 		var gl = null;
 		var args = ['webgl', 'experimental-webgl'];
 		var i, count = args.length;
 
 		// Default options
-		if( !parameters ) {
+		if (!parameters) {
 			parameters = {
 				alpha:              false,
 				depth:              true,
@@ -41,19 +41,19 @@ define( ['Utils/Texture'], function( Texture )
 		}
 
 		// Find the context
-		if ( canvas.getContext && window['WebGLRenderingContext'] ) {
-			for ( i=0; i<count; ++i ) {
+		if (canvas.getContext && window.WebGLRenderingContext) {
+			for (i = 0; i < count; ++i) {
 				try {
 					gl = canvas.getContext( args[i], parameters );
-					if ( gl )
+					if (gl)
 						break;
 				} catch(e) {}
 			}
 		}
 
 		// :(
-		if( !gl ) {
-			throw new Error("WebGL::getContext() - Can't find a valid context, is WebGL supported ?");
+		if (!gl) {
+			throw new Error('WebGL::getContext() - Can\'t find a valid context, is WebGL supported ?');
 		}
 
 		return gl;
@@ -66,18 +66,18 @@ define( ['Utils/Texture'], function( Texture )
 	 * @param {object} gl context
 	 * @param {string} source
 	 * @param {number} type (fragment or shader constant)
-	 */ 
-	function CompileShader( gl, source, type)
+	 */
+	function compileShader( gl, source, type)
 	{
 		var shader, error;
 
 		// Compile shader
 		shader = gl.createShader(type);
-		gl.shaderSource(shader, "precision mediump float;" + source);
+		gl.shaderSource(shader, 'precision mediump float;' + source);
 		gl.compileShader(shader);
 
 		// Is there an error ?
-		if ( !gl.getShaderParameter(shader, gl.COMPILE_STATUS) ) {
+		if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
 			error = gl.getShaderInfoLog(shader);
 			gl.deleteShader(shader);
 
@@ -95,7 +95,7 @@ define( ['Utils/Texture'], function( Texture )
 	 * @param {string} vertexShader
 	 * @param {string} fragmentShader
 	 */
-	function CreateShaderProgram( gl, vertexShader, fragmentShader )
+	function createShaderProgram( gl, vertexShader, fragmentShader )
 	{
 		var shaderProgram,
 		    vs, fs,
@@ -105,8 +105,8 @@ define( ['Utils/Texture'], function( Texture )
 
 		// Compile shader and attach them
 		shaderProgram = gl.createProgram();
-		vs = CompileShader( gl, vertexShader  , gl.VERTEX_SHADER );
-		fs = CompileShader( gl, fragmentShader, gl.FRAGMENT_SHADER );
+		vs = compileShader( gl, vertexShader  , gl.VERTEX_SHADER );
+		fs = compileShader( gl, fragmentShader, gl.FRAGMENT_SHADER );
 
 		gl.attachShader(shaderProgram, vs);
 		gl.attachShader(shaderProgram, fs);
@@ -126,7 +126,7 @@ define( ['Utils/Texture'], function( Texture )
 		count = gl.getProgramParameter(shaderProgram, gl.ACTIVE_ATTRIBUTES);
 		shaderProgram.attribute = {};
 
-		for( i=0; i < count; i++) {
+		for (i = 0; i < count; i++) {
 			attrib = gl.getActiveAttrib(shaderProgram, i);
 			shaderProgram.attribute[attrib.name] = gl.getAttribLocation(shaderProgram, attrib.name);
 		}
@@ -135,7 +135,7 @@ define( ['Utils/Texture'], function( Texture )
 		count = gl.getProgramParameter(shaderProgram, gl.ACTIVE_UNIFORMS);
 		shaderProgram.uniform = {};
 
-		for( i=0; i < count; i++) {
+		for (i = 0; i < count; i++) {
 			uniform = gl.getActiveUniform(shaderProgram, i);
 			shaderProgram.uniform[uniform.name] = gl.getUniformLocation(shaderProgram, uniform.name);
 		}
@@ -150,7 +150,7 @@ define( ['Utils/Texture'], function( Texture )
 	 * @param {number} num
 	 * @return {number}
 	 */
-	function ToPowerOfTwo( num )
+	function toPowerOfTwo( num )
 	{
 		return Math.pow( 2, Math.ceil( Math.log(num)/Math.log(2) ) );
 	}
@@ -163,20 +163,20 @@ define( ['Utils/Texture'], function( Texture )
 	 * @param {string} url
 	 * @param {function} callback once the image is on gpu
 	 */
-	function _Texture( gl, url, callback )
+	function texture( gl, url, callback )
 	{
 		var args = Array.prototype.slice.call(arguments, 3);
 
-		Texture( url, function( success ) {
-			if( !success ) {
+		Texture.load( url, function( success ) {
+			if (!success) {
 				return;
 			}
 
 			var canvas, ctx, texture;
 
 			canvas        = document.createElement('canvas');
-			canvas.width  = ToPowerOfTwo(this.width);
-			canvas.height = ToPowerOfTwo(this.height);
+			canvas.width  = toPowerOfTwo(this.width);
+			canvas.height = toPowerOfTwo(this.height);
 			ctx           = canvas.getContext('2d');
 			ctx.drawImage( this, 0, 0, canvas.width, canvas.height );
 
@@ -197,10 +197,9 @@ define( ['Utils/Texture'], function( Texture )
 	 * Export
 	 */
 	return {
-		getContext:          GetContext,
-		createShaderProgram: CreateShaderProgram,
-		toPowerOfTwo:        ToPowerOfTwo,
-		texture:             _Texture
+		getContext:          getContext,
+		createShaderProgram: createShaderProgram,
+		toPowerOfTwo:        toPowerOfTwo,
+		texture:             texture
 	};
-
 });

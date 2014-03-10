@@ -9,7 +9,7 @@
  */
 define(function(require)
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -56,29 +56,43 @@ define(function(require)
 
 
 	/**
-	 * Storage to store equipment list
+	 * @var {Preference} window preferences
 	 */
-	Equipment.list = {};
+	var _preferences = Preferences.get('Equipment', {
+		x:        480,
+		y:        200,
+		show:     false,
+		reduce:   false,
+		stats:    true
+	}, 1.0);
+
+
+	/**
+	 * @var {Array} equipment list
+	 */
+	var _list = {};
+
+
+	/**
+	 * @var {CanvasRenderingContext2D} canvas context
+	 */
+	var _ctx;
+
+
+	/**
+	 * @var {boolean} show equipment to other people ?
+	 */
+	var _showEquip = false;
 
 
 	/**
 	 * Initialize UI
 	 */
-	Equipment.init = function Init()
+	Equipment.init = function init()
 	{
-		// Preferences structure
-		this.preferences = Preferences.get('Equipment', {
-			x:        480,
-			y:        200,
-			show:     false,
-			reduce:   false,
-			stats:    true
-		}, 1.0);
+		_ctx  = this.ui.find('canvas')[0].getContext('2d');
 
-		this.ctx       = this.ui.find('canvas')[0].getContext('2d');
-		this.showEquip = false;
-
-		// Append WinStats to content
+		// Append WinStats to content (hacked)
 		WinStats.prepare();
 		WinStats.__loaded = true;
 		this.ui.find('.status_component').append(WinStats.ui);
@@ -88,7 +102,7 @@ define(function(require)
 		// Don't activate drag drop when clicking on buttons
 		this.ui.find('.titlebar .base').mousedown(function( event ){
 			event.stopImmediatePropagation();
-		})
+		});
 
 		// Bind events
 		this.ui.find('.titlebar .mini').click(function(){
@@ -101,13 +115,13 @@ define(function(require)
 		});
 
 		// Show Status ?
-		this.ui.find('.view_status').mousedown(this.toggleStatus);
-		this.ui.find('.show_equip').mousedown(this.toggleEquip);
+		this.ui.find('.view_status').mousedown(toggleStatus);
+		this.ui.find('.show_equip').mousedown(toggleEquip);
 
 		// drag, drop items
-		this.ui.on('dragover',  this.onDragOver.bind(this) );
-		this.ui.on('dragleave', this.onDragLeave.bind(this) );
-		this.ui.on('drop',      this.onDrop.bind(this) );
+		this.ui.on('dragover', onDragOver);
+		this.ui.on('dragleave', onDragLeave);
+		this.ui.on('drop', onDrop);
 
 		// Bind items
 		this.ui.find('.content')
@@ -115,13 +129,13 @@ define(function(require)
 			// Right click on item
 			.on('contextmenu', '.item', function(event) {
 				var index   = parseInt(this.getAttribute('data-index'), 10);
-				var item    = Equipment.list[index];
+				var item    = _list[index];
 
 				if (item) {
 
 					// Don't add the same UI twice, remove it
 					if (ItemInfo.uid === item.ITID) {
-						ui.remove();
+						ItemInfo.remove();
 					}
 
 					// Add ui to window
@@ -137,7 +151,7 @@ define(function(require)
 			})
 
 			// Want to unequip
-			.on('dblclick', '.item', function(event) {
+			.on('dblclick', '.item', function() {
 				var index   = parseInt(this.getAttribute('data-index'), 10);
 				Equipment.onUnEquip( index );
 			})
@@ -150,7 +164,7 @@ define(function(require)
 			// Title feature
 			.on('mouseover', 'button', function(){
 				var idx  = parseInt( this.parentNode.getAttribute('data-index'), 10);
-				var item = Equipment.list[idx];
+				var item = _list[idx];
 
 				if (!item) {
 					return;
@@ -181,34 +195,34 @@ define(function(require)
 	/**
 	 * Append to body
 	 */
-	Equipment.onAppend = function OnAppend()
+	Equipment.onAppend = function onAppend()
 	{
 		// Apply preferences
 		this.ui.css({
-			top:  Math.min( Math.max( 0, this.preferences.y), Renderer.height - this.ui.height()),
-			left: Math.min( Math.max( 0, this.preferences.x), Renderer.width  - this.ui.width())
+			top:  Math.min( Math.max( 0, _preferences.y), Renderer.height - this.ui.height()),
+			left: Math.min( Math.max( 0, _preferences.x), Renderer.width  - this.ui.width())
 		});
 
 		// Hide window ?
-		if (!this.preferences.show) {
+		if (!_preferences.show) {
 			this.ui.hide();
 		}
 
 		// Reduce window ?
-		if (this.preferences.reduce) {
+		if (_preferences.reduce) {
 			this.ui.find('.panel').hide();
 		}
 
 		// Show status window ?
-		if (!this.preferences.stats) {
+		if (!_preferences.stats) {
 			this.ui.find('.status_component').hide();
 			Client.loadFile( DB.INTERFACE_PATH + 'basic_interface/viewon.bmp', function(data){
-				Equipment.ui.find('.view_status').css('backgroundImage', 'url(' + data + ')');
-			});
+				this.ui.find('.view_status').css('backgroundImage', 'url(' + data + ')');
+			}.bind(this));
 		}
 
 		if (this.ui.find('canvas').is(':visible')) {
-			Renderer.render(this.renderCharacter);
+			Renderer.render(renderCharacter);
 		}
 	};
 
@@ -216,22 +230,22 @@ define(function(require)
 	/**
 	 * Remove Inventory from window (and so clean up items)
 	 */
-	Equipment.onRemove = function OnRemove()
+	Equipment.onRemove = function onRemove()
 	{
 		// Stop rendering
-		Renderer.stop(this.renderCharacter);
+		Renderer.stop(renderCharacter);
 
 		// Clean equipments
-		this.list = {};
+		_list = {};
 		this.ui.find('.col1, .col3').empty();
 
 		// Save preferences
-		this.preferences.show   =  this.ui.is(':visible');
-		this.preferences.reduce =  this.ui.find('.panel').css('display') === 'none';
-		this.preferences.stats  =  this.ui.find('.status_component').css('display') !== 'none';
-		this.preferences.y      =  parseInt(this.ui.css('top'), 10);
-		this.preferences.x      =  parseInt(this.ui.css('left'), 10);
-		this.preferences.save();
+		_preferences.show   =  this.ui.is(':visible');
+		_preferences.reduce =  this.ui.find('.panel').css('display') === 'none';
+		_preferences.stats  =  this.ui.find('.status_component').css('display') !== 'none';
+		_preferences.y      =  parseInt(this.ui.css('top'), 10);
+		_preferences.x      =  parseInt(this.ui.css('left'), 10);
+		_preferences.save();
 	};
 
 
@@ -241,15 +255,15 @@ define(function(require)
 	 * @param {object} event
 	 * @return {boolean}
 	 */
-	Equipment.onKeyDown = function OnKeyDown( event )
+	Equipment.onKeyDown = function onKeyDown( event )
 	{
 		if (KEYS.ALT && event.which === KEYS.Q) {
 			this.ui.toggle();
 			if (this.ui.is(':visible')) {
-				Renderer.render(this.renderCharacter);
+				Renderer.render(renderCharacter);
 			}
 			else {
-				Renderer.stop(this.renderCharacter);
+				Renderer.stop(renderCharacter);
 			}
 			event.stopImmediatePropagation();
 			return false;
@@ -264,9 +278,9 @@ define(function(require)
 	 *
 	 * @param {boolean} on
 	 */
-	Equipment.setEquipConfig = function SetEquipConfig( on )
+	Equipment.setEquipConfig = function setEquipConfig( on )
 	{
-		Equipment.showEquip = on;
+		_showEquip = on;
 
 		Client.loadFile( DB.INTERFACE_PATH + 'checkbox_' + ( on ? '1' : '0' ) + '.bmp', function(data){
 			Equipment.ui.find('.show_equip').css('backgroundImage', 'url(' + data + ')');
@@ -275,38 +289,97 @@ define(function(require)
 
 
 	/**
+	 * Add an equipment to the window
+	 *
+	 * @param {Item} item
+	 */
+	Equipment.equip = function equip( item, location )
+	{
+		var it            = DB.getItemInfo( item.ITID );
+		_list[item.index] = item;
+
+		if (arguments.length === 1) {
+			if ('location' in item) {
+				location = item.location;
+			}
+			else if ('WearState' in item) {
+				location = item.WearState;
+			}
+		}
+
+		var ui = this.ui.find(getSelectorFromLocation(location));
+
+		Client.loadFile( DB.INTERFACE_PATH + 'item/' + it.identifiedResourceName + '.bmp', function(data){
+			var name  = ( item.RefiningLevel ? '+' + item.RefiningLevel + ' ' : '') + it.identifiedDisplayName;
+			var lines = [];
+			while (name.length) {
+				lines.push( name.substr(0,13) );
+				name = name.substr(13);
+			}
+
+			ui.html(
+				'<div class="item" data-index="'+ item.index +'">' +
+					'<button style="background-image:url(' + data + ')"></button>' +
+					'<span>' +
+						 lines.join('\n') +
+					'</span>' +
+				'</div>'
+			);
+		});
+	};
+
+
+	/**
+	 * Remove equipment from window
+	 *
+	 * @param {number} item index
+	 * @param {number} item location
+	 */
+	Equipment.unEquip = function unEquip( index, location )
+	{
+		var selector = getSelectorFromLocation( location );
+		var item     = _list[ index ];
+
+		this.ui.find( selector ).empty();
+		delete _list[ index ];
+
+		return item;
+	};
+
+
+	/**
 	 * Display or not status window
 	 */
-	Equipment.toggleStatus = function ToggleStatus()
+	function toggleStatus()
 	{
-		var ui     = this;
 		var status = Equipment.ui.find('.status_component');
+		var self   = Equipment.ui.find('.view_status');
 		var state  = status.is(':visible') ? 'on' : 'off';
 
 		status.toggle();
 
 		Client.loadFile( DB.INTERFACE_PATH + 'basic_interface/view' + state + '.bmp', function(data){
-			ui.style.backgroundImage = 'url(' + data + ')';
+			self.style.backgroundImage = 'url(' + data + ')';
 		});
 
 		return false;
-	};
+	}
 
 
 	/**
 	 * Does player can see your equipment ?
 	 */
-	Equipment.toggleEquip = function ToggleEquip()
+	function toggleEquip()
 	{
-		Equipment.onConfigUpdate( 0, !Equipment.showEquip ? 1 : 0 );
+		Equipment.onConfigUpdate( 0, !_showEquip ? 1 : 0 );
 		return false;
-	};
+	}
 
 
 	/**
 	 * Rendering character
 	 */
-	Equipment.renderCharacter = function RenderCharacterClosure()
+	var renderCharacter = function renderCharacterClosure()
 	{
 		var _animation = {
 			tick:  0,
@@ -318,9 +391,8 @@ define(function(require)
 			save:  false
 		};
 
-		return function RencerCharacter()
+		return function rencerCharacter()
 		{
-			var ctx       = Equipment.ctx;
 			var character = Session.Entity;
 			var direction = character.direction;
 			var headDir   = character.headDir;
@@ -335,8 +407,8 @@ define(function(require)
 			character.animation = _animation;
 
 			// Rendering
-			SpriteRenderer.bind2DContext( ctx, 30, 130 );
-			ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height );
+			SpriteRenderer.bind2DContext( _ctx, 30, 130 );
+			_ctx.clearRect(0, 0, _ctx.canvas.width, _ctx.canvas.height );
 			character.renderEntity();
 
 			// Revert changes
@@ -354,102 +426,44 @@ define(function(require)
 	 * @param {number} location
 	 * @returns {string} selector
 	 */
-	function GetSelectorFromLocation( location )
+	function getSelectorFromLocation( location )
 	{
 		var selector = [];
 
-		if (location & Equipment.LOCATION.HEAD_TOP)    selector.push(".head_top");
-		if (location & Equipment.LOCATION.HEAD_MID)    selector.push(".head_mid");
-		if (location & Equipment.LOCATION.HEAD_BOTTOM) selector.push(".head_bottom");
-		if (location & Equipment.LOCATION.ARMOR)       selector.push(".armor");
-		if (location & Equipment.LOCATION.WEAPON)      selector.push(".weapon");
-		if (location & Equipment.LOCATION.SHIELD)      selector.push(".shield");
-		if (location & Equipment.LOCATION.GARMENT)     selector.push(".garment");
-		if (location & Equipment.LOCATION.SHOES)       selector.push(".shoes");
-		if (location & Equipment.LOCATION.ACCESSORY1)  selector.push(".accessory1");
-		if (location & Equipment.LOCATION.ACCESSORY2)  selector.push(".accessory2");
+		if (location & Equipment.LOCATION.HEAD_TOP)    selector.push('.head_top');
+		if (location & Equipment.LOCATION.HEAD_MID)    selector.push('.head_mid');
+		if (location & Equipment.LOCATION.HEAD_BOTTOM) selector.push('.head_bottom');
+		if (location & Equipment.LOCATION.ARMOR)       selector.push('.armor');
+		if (location & Equipment.LOCATION.WEAPON)      selector.push('.weapon');
+		if (location & Equipment.LOCATION.SHIELD)      selector.push('.shield');
+		if (location & Equipment.LOCATION.GARMENT)     selector.push('.garment');
+		if (location & Equipment.LOCATION.SHOES)       selector.push('.shoes');
+		if (location & Equipment.LOCATION.ACCESSORY1)  selector.push('.accessory1');
+		if (location & Equipment.LOCATION.ACCESSORY2)  selector.push('.accessory2');
 
 		return selector.join(', ');
 	}
 
 
 	/**
-	 * Add an equipment to the window
-	 *
-	 * @param {Item} item
-	 */
-	Equipment.equip = function Equip( item, location )
-	{
-		this.list[ item.index] = item;
-		var it = DB.getItemInfo( item.ITID );
-
-		if (arguments.length === 1) {
-			if ('location' in item) {
-				location = item.location;
-			}
-			else if ('WearState' in item) {
-				location = item.WearState;
-			}
-		}
-
-		var ui = this.ui.find( GetSelectorFromLocation( location ) );
-
-		Client.loadFile( DB.INTERFACE_PATH + 'item/' + it.identifiedResourceName + '.bmp', function(data){
-			var name  = ( item.RefiningLevel ? '+' + item.RefiningLevel + ' ' : '') + it.identifiedDisplayName;
-			var lines = []
-			while (name.length) {
-				lines.push( name.substr(0,13) );
-				name = name.substr(13);
-			}
-
-			ui.html(
-				'<div class="item" data-index="'+ item.index +'">' +
-					'<button style="background-image:url(' + data + ')"></button>' +
-					'<span>' +
-						 lines.join("\n") +
-					'</span>' +
-				'</div>'
-			);
-		});
-	};
-
-
-	/**
-	 * Remove equipment from window
-	 *
-	 * @param {number} item index
-	 * @param {number} item location
-	 */
-	Equipment.unEquip = function( index, location )
-	{
-		var selector = GetSelectorFromLocation( location );
-		this.ui.find( selector ).empty();
-		var item = this.list[ index ];
-		delete this.list[ index ];
-
-		return item;
-	};
-
-
-	/**
 	 * Drag an item over the equipment, show where to place the item
 	 */
-	Equipment.onDragOver = function OnDragOver( event )
+	function onDragOver( event )
 	{
 		if (window._OBJ_DRAG_) {
 			var data = window._OBJ_DRAG_;
 			var item, selector, ui;
 
 			// Just support items for now ?
-			if (data.type === "item") {
+			if (data.type === 'item') {
 				item = data.data;
 
 				// Only for TYPE.WEAPON and TYPE.EQUIP
 				if ((item.type ===  4 || item.type === 5 || item.type === 10) && item.IsIdentified && !item.IsDamaged) {
-					selector = GetSelectorFromLocation( 'location' in item ? item.location : item.WearLocation );
-					ui       = this.ui.find(selector);
+					selector = getSelectorFromLocation( 'location' in item ? item.location : item.WearLocation );
+					ui       = Equipment.ui.find(selector);
 
-					Client.loadFile( DB.INTERFACE_PATH + "basic_interface/item_invert.bmp", function(data){
+					Client.loadFile( DB.INTERFACE_PATH + 'basic_interface/item_invert.bmp', function(data){
 						ui.css('backgroundImage', 'url('+ data + ')');
 					});
 				}
@@ -458,57 +472,57 @@ define(function(require)
 
 		event.stopImmediatePropagation();
 		return false;
-	};
+	}
 
 
 	/**
 	 * Drag out the window
 	 */
-	Equipment.onDragLeave = function OnDragLeave( event )
+	function onDragLeave( event )
 	{
-		this.ui.find('td').css('backgroundImage','none');
+		Equipment.ui.find('td').css('backgroundImage','none');
 		event.stopImmediatePropagation();
 		return false;
-	};
+	}
 
 
 
 	/**
 	 * Drop an item in the equipment, equip it if possible
 	 */
-	Equipment.onDrop = function OnDrop( event )
+	function onDrop( event )
 	{
 		var item, data;
 
 		try {
 			data = JSON.parse(
-				event.originalEvent.dataTransfer.getData("Text")
+				event.originalEvent.dataTransfer.getData('Text')
 			);
 		}
 		catch(e) {}
 
 		// Just support items for now ?
-		if (data && data.type === "item") {
+		if (data && data.type === 'item') {
 			item = data.data;
 
 			// Only for TYPE.WEAPON and TYPE.EQUIP
 			if ((item.type ===  4 || item.type === 5 || item.type === 10 ) && item.IsIdentified && !item.IsDamaged) {
-				this.ui.find('td').css('backgroundImage','none');
-				this.onEquipItem( item.index, 'location' in item ? item.location : item.WearState );
+				Equipment.ui.find('td').css('backgroundImage','none');
+				Equipment.onEquipItem( item.index, 'location' in item ? item.location : item.WearState );
 			}
 		}
 
 		event.stopImmediatePropagation();
 		return false;
-	};
+	}
 
 
 	/**
 	 * Method to define
 	 */
-	Equipment.onUnEquip      = function OnUnEquip( index ){};
-	Equipment.onConfigUpdate = function OnConfigUpdate( type, value ){};
-	Equipment.onEquipItem    = function OnEquipItem( index, location ){};
+	Equipment.onUnEquip      = function OnUnEquip(/* index */){};
+	Equipment.onConfigUpdate = function OnConfigUpdate(/* type, value*/){};
+	Equipment.onEquipItem    = function OnEquipItem(/* index, location */){};
 
 
 	/**

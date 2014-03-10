@@ -9,7 +9,7 @@
  */
 define(function(require)
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -32,49 +32,78 @@ define(function(require)
 	var WinLogin = new UIComponent( 'WinLogin', htmlText, cssText );
 
 
+	/**
+	 * @var {Preferences}
+	 */
+	var _preferences = Preferences.get('WinLogin', {
+		saveID: true,
+		ID:     ''
+	}, 1.0);
+
+
+	/**
+	 * @var {jQuery} username input
+	 */
+	var _inputUsername;
+
+
+	/**
+	 * @var {jQuery} userpass input
+	 */
+	var _inputPassword;
+
+
+	/**
+	 * @var {jQuery} save login ?
+	 */
+	var _buttonSave;
+
 
 	/**
 	 * Initialize win_login UI - Inherit from UIComponent
 	 */
-	WinLogin.init = function Init()
+	WinLogin.init = function init()
 	{
-		this.preferences = Preferences.get('WinLogin', { saveID:true, ID:'' }, 1.0);
 
 		var ui = this.ui;
 
-		ui.css({ top: (Renderer.height - 120) / 1.5, left: (Renderer.width - 280) / 2.0 });
+		ui.css({
+			top:  (Renderer.height - 120) / 1.5,
+			left: (Renderer.width  - 280) / 2.0
+		});
+
 		this.draggable();
 
 		// Save Elements
-		this.inputUsername = ui.find('.user').mousedown(function(event){ this.focus(); this.value = ""; event.stopImmediatePropagation(); return false; });
-		this.inputPassword = ui.find('.pass').mousedown(function(event){ this.focus(); this.value = ""; event.stopImmediatePropagation(); return false; });
-		this.buttonSave    = ui.find('.save').mousedown(this.toggleSaveButton.bind(this));
+		_inputUsername = ui.find('.user').mousedown(function(event){ this.focus(); this.value = ''; event.stopImmediatePropagation(); return false; });
+		_inputPassword = ui.find('.pass').mousedown(function(event){ this.focus(); this.value = ''; event.stopImmediatePropagation(); return false; });
+		_buttonSave    = ui.find('.save').mousedown(toggleSaveButton);
 
 		// Connect / Exit
-		ui.find('.connect').click( this.connect.bind(this) );
-		ui.find('.exit').click( this.exit.bind(this) );
+		ui.find('.connect').click(connect);
+		ui.find('.exit').click(exit);
 	};
 
 
 	/**
 	 * Once the component is on html - InHerit from UIComponent
 	 */
-	WinLogin.onAppend = function OnAppend()
+	WinLogin.onAppend = function onAppend()
 	{
 		// Complete element
-		this.inputUsername.val( this.preferences.saveID ? this.preferences.ID : '');
-		this.inputPassword.val( '' );
+		_inputUsername.val(_preferences.saveID ? _preferences.ID : '');
+		_inputPassword.val('');
 
 		// Display save button
-		Client.loadFile( DB.INTERFACE_PATH + 'login_interface/chk_save' + ( this.preferences.saveID ? 'on' : 'off' ) + '.bmp', function( url ) {
-			WinLogin.buttonSave.css('backgroundImage', 'url(' + url + ')');
+		Client.loadFile( DB.INTERFACE_PATH + 'login_interface/chk_save' + ( _preferences.saveID ? 'on' : 'off' ) + '.bmp', function(url) {
+			_buttonSave.css('backgroundImage', 'url(' + url + ')');
 		});
 
-		if( this.preferences.ID.length ) {
-			this.inputPassword.focus();
+		if (_preferences.ID.length) {
+			_inputPassword.focus();
 		}
 		else {
-			this.inputUsername.focus();
+			_inputUsername.focus();
 		}
 	};
 
@@ -85,22 +114,22 @@ define(function(require)
 	 * @param {object} event
 	 * @return {boolean}
 	 */
-	WinLogin.onKeyDown = function OnKeyDown( event )
+	WinLogin.onKeyDown = function onKeyDown( event )
 	{
-		switch( event.which )
+		switch (event.which)
 		{
 			case KEYS.ENTER:
-				this.connect();
+				connect();
 				event.stopImmediatePropagation();
 				return false;
 
 			case KEYS.ESCAPE:
-				this.exit();
+				exit();
 				event.stopImmediatePropagation();
 				return false;
 
 			case KEYS.TAB:
-				var button = document.activeElement === this.inputUsername[0] ? this.inputPassword : this.inputUsername;
+				var button = document.activeElement === _inputUsername[0] ? _inputPassword : _inputUsername;
 				button.focus().select();
 				event.stopImmediatePropagation();
 				return false;
@@ -116,27 +145,27 @@ define(function(require)
 	 * @param {object} event
 	 * @return {boolean}
 	 */
-	WinLogin.toggleSaveButton = function ToggleSaveButton( event )
+	function toggleSaveButton( event )
 	{
-		this.preferences.saveID = !this.preferences.saveID;
+		_preferences.saveID = !_preferences.saveID;
 
-		Client.loadFile( DB.INTERFACE_PATH + 'login_interface/chk_save' + ( this.preferences.saveID ? 'on' : 'off' ) + '.bmp', function( url ) {
-			WinLogin.buttonSave.css('backgroundImage', 'url(' + url + ')');
+		Client.loadFile( DB.INTERFACE_PATH + 'login_interface/chk_save' + ( _preferences.saveID ? 'on' : 'off' ) + '.bmp', function(url) {
+			_buttonSave.css('backgroundImage', 'url(' + url + ')');
 		});
 
 		event.stopImmediatePropagation();
 		return false;
-	};
+	}
 
 
 	/**
 	 * When the user click on Exit, or pressed "Escape"
 	 */
-	WinLogin.exit = function Exit()
+	function exit()
 	{
-		this.onExitRequest();
+		WinLogin.onExitRequest();
 		return false;
-	};
+	}
 
 
 	/**
@@ -144,39 +173,39 @@ define(function(require)
 	 *
 	 * @return {boolean} false
 	 */
-	WinLogin.connect = function Connect()
+	function connect()
 	{
-		var user = this.inputUsername.val();
-		var pass = this.inputPassword.val();
+		var user = _inputUsername.val();
+		var pass = _inputPassword.val();
 
 		// Store variable in localStorage
-		if ( this.preferences.saveID ) {
-			this.preferences.saveID = true;
-			this.preferences.ID     = user;
+		if (_preferences.saveID) {
+			_preferences.saveID = true;
+			_preferences.ID     = user;
 		}
 		else {
-			this.preferences.saveID = false;
-			this.preferences.ID     = "";
+			_preferences.saveID = false;
+			_preferences.ID     = '';
 		}
 
-		this.preferences.save();
+		_preferences.save();
 
 		// Connect
-		this.onConnectionRequest( user, pass );
+		WinLogin.onConnectionRequest( user, pass );
 		return false;
-	};
+	}
 
 
 	/**
 	 * Abstract function once user want to connect
 	 */
-	WinLogin.onConnectionRequest = function OnConnectionRequest(){};
+	WinLogin.onConnectionRequest = function onConnectionRequest(/* user, pass */){};
 
 
 	/**
 	 * Abstract function when user want to exit
 	 */
-	WinLogin.onExitRequest = function OnExitRequest(){};
+	WinLogin.onExitRequest = function onExitRequest(){};
 
 
 	/**

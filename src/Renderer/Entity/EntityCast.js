@@ -9,7 +9,7 @@
  */
 define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -29,12 +29,12 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 		this.delay      =  0;
 		this.percent    = -1;
 		this.display    = false;
-		this.color      = "#00FF00";
+		this.color      = '#00FF00';
 		this.onComplete = null;
 
 		this.canvas     = document.createElement('canvas');
 		this.ctx        = this.canvas.getContext('2d');
-		this.canvas.style.position = "absolute";
+		this.canvas.style.position = 'absolute';
 		this.canvas.style.zIndex   = 1;
 		this.canvas.width  = 60;
 		this.canvas.height = 6;
@@ -49,7 +49,7 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 	Cast.prototype.set = function Set( delay, color )
 	{
 		// Append to body
-		if( !this.canvas.parentNode ) {
+		if (!this.canvas.parentNode) {
 			document.body.appendChild(this.canvas);
 		}
 
@@ -68,7 +68,7 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 	{
 		this.percent = -1;
 		this.display = false;
-		if ( this.canvas && this.canvas.parentNode ) {
+		if (this.canvas && this.canvas.parentNode) {
 			document.body.removeChild(this.canvas);
 		}
 	};
@@ -122,10 +122,10 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 		var z;
 
 		// Cast complete remove it
-		if ( percent >= 1.0 ) {
+		if (percent >= 1.0) {
 			this.remove();
 
-			if( this.onComplete ) {
+			if (this.onComplete) {
 				this.onComplete();
 				this.onComplete = null;
 			}
@@ -133,7 +133,7 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 		}
 
 		// Update
-		if( percent !== this.percent ) {
+		if (percent !== this.percent) {
 			this.update(percent);
 			this.percent = percent;
 		}
@@ -156,8 +156,8 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 		_pos[0] = _size[0] + Math.round(_size[0] * (_pos[0] * z));
 		_pos[1] = _size[1] - Math.round(_size[1] * (_pos[1] * z));
 
-		canvas.style.top  = (_pos[1] | 0) + "px";
-		canvas.style.left = ((_pos[0] - canvas.width/2) | 0) + "px";
+		canvas.style.top  = (_pos[1] | 0) + 'px';
+		canvas.style.left = ((_pos[0] - canvas.width/2) | 0) + 'px';
 	};
 
 

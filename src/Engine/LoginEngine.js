@@ -42,7 +42,7 @@ function(
 	WinPopup
 )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -71,13 +71,13 @@ function(
 	/**
 	 * @var {string} Stored username to send as ping
 	 */
-	var _loginID = "";
+	var _loginID = '';
 
 
 	/**
 	 * Init Game
 	 */
-	function Init( server )
+	function init( server )
 	{
 		UIManager.removeComponents();
 
@@ -85,7 +85,7 @@ function(
 		_server = server;
 
 		// Add support for "packetver" definition in Server listing
-		if ("packetver" in server) {
+		if ('packetver' in server) {
 			ROConfig.packetver = String(server.packetver);
 
 			if (ROConfig.packetver.match(/^\d+$/)) {
@@ -98,42 +98,42 @@ function(
 		}
 
 		// Add support for "packetkeys" definition in server definition
-		if ("packetKeys" in server) {
+		if ('packetKeys' in server) {
 			ROConfig.packetKeys = server.packetKeys;
 		}
 
 		// Add support for remote client in server definition
-		if ("remoteClient" in server) {
+		if ('remoteClient' in server) {
 			ROConfig.remoteClient = server.remoteClient;
-			Thread.send( "SET_HOST", ROConfig.remoteClient );
+			Thread.send( 'SET_HOST', ROConfig.remoteClient );
 		}
 
 		// Add support for "socketProxy" in server definition
-		if ("socketProxy" in server) {
+		if ('socketProxy' in server) {
 			ROConfig.socketProxy = server.socketProxy;
 		}
 
 		// Hooking win_login
-		WinLogin.onConnectionRequest = OnConnectionRequest;
-		WinLogin.onExitRequest       = OnExitRequest;
+		WinLogin.onConnectionRequest = onConnectionRequest;
+		WinLogin.onExitRequest       = onExitRequest;
 		WinLogin.append();
 
 		// Hook packets
-		Network.hookPacket( PACKET.AC.ACCEPT_LOGIN,    OnConnectionAccepted );
-		Network.hookPacket( PACKET.AC.REFUSE_LOGIN,    OnConnectionRefused );
-		Network.hookPacket( PACKET.AC.REFUSE_LOGIN_R2, OnConnectionRefused );
-		Network.hookPacket( PACKET.SC.NOTIFY_BAN,      OnServerClosed );
+		Network.hookPacket( PACKET.AC.ACCEPT_LOGIN,    onConnectionAccepted );
+		Network.hookPacket( PACKET.AC.REFUSE_LOGIN,    onConnectionRefused );
+		Network.hookPacket( PACKET.AC.REFUSE_LOGIN_R2, onConnectionRefused );
+		Network.hookPacket( PACKET.SC.NOTIFY_BAN,      onServerClosed );
 	}
 
 
 	/**
 	 * Reload WinLogin
 	 */
-	function Reload()
+	function reload()
 	{
 		UIManager.removeComponents();
-		WinLogin.onConnectionRequest = OnConnectionRequest;
-		WinLogin.onExitRequest       = OnExitRequest;
+		WinLogin.onConnectionRequest = onConnectionRequest;
+		WinLogin.onExitRequest       = onExitRequest;
 		WinLogin.append();
 
 		Network.close();
@@ -146,10 +146,10 @@ function(
 	 * @param {string} username
 	 * @param {string} password
 	 */
-	function OnConnectionRequest( username, password )
+	function onConnectionRequest( username, password )
 	{
 		// Play "¹öÆ°¼Ò¸®.wav" (possible problem with charset)
-		Sound.play("\xB9\xF6\xC6\xB0\xBC\xD2\xB8\xAE.wav");
+		Sound.play('\xB9\xF6\xC6\xB0\xBC\xD2\xB8\xAE.wav');
 
 		// Add the loading screen
 		// Store the ID to use for the ping
@@ -179,7 +179,7 @@ function(
 	/**
 	 * Go back to intro window
 	 */
-	function OnExitRequest()
+	function onExitRequest()
 	{
 		require('Engine/GameEngine').reload();
 	}
@@ -190,15 +190,15 @@ function(
 	 *
 	 * @param {number} index in server list
 	 */
-	function OnCharServerSelected( index )
+	function onCharServerSelected( index )
 	{
 		// Play "¹öÆ°¼Ò¸®.wav" (encode to avoid problem with charset)
-		Sound.play("\xB9\xF6\xC6\xB0\xBC\xD2\xB8\xAE.wav");
+		Sound.play('\xB9\xF6\xC6\xB0\xBC\xD2\xB8\xAE.wav');
 
 		WinList.remove();
 		WinLoading.append();
 
-		CharEngine.onExitRequest = Reload;
+		CharEngine.onExitRequest = reload;
 		CharEngine.init( _charServers[index] );
 	}
 
@@ -208,7 +208,7 @@ function(
 	 *
 	 * @param {object} pkt - PACKET.AC.ACCEPT_LOGIN
 	 */
-	function OnConnectionAccepted( pkt )
+	function onConnectionAccepted( pkt )
 	{
 		UIManager.removeComponents();
 
@@ -221,14 +221,14 @@ function(
 		// Build list of servers
 		var i, count = _charServers.length;
 		var list     = new Array(count);
-		for( i = 0; i < count; ++i ) {
-			list[i]  =  _charServers[i].property ? DB.msgstringtable[481] + " " : "";
+		for (i = 0; i < count; ++i) {
+			list[i]  =  _charServers[i].property ? DB.msgstringtable[481] + ' ' : '';
 			list[i] +=  _charServers[i].name;
-			list[i] +=  _charServers[i].state    ? DB.msgstringtable[484] : " " + DB.msgstringtable[483].replace("%d", _charServers[i].usercount);
+			list[i] +=  _charServers[i].state    ? DB.msgstringtable[484] : ' ' + DB.msgstringtable[483].replace('%d', _charServers[i].usercount);
 		}
 
 		// Show window
-		WinList.onIndexSelected = OnCharServerSelected;
+		WinList.onIndexSelected = onCharServerSelected;
 		WinList.onExitRequest   = function(){
 			Network.close();
 			WinList.remove();
@@ -236,7 +236,6 @@ function(
 		};
 		WinList.setList(list);
 		WinList.append();
-
 
 		// Set ping
 		var ping = new PACKET.CA.CONNECT_INFO_CHANGED();
@@ -252,10 +251,10 @@ function(
 	 *
 	 * @param {object} pkt - PACKET.AC.REFUSE_LOGIN
 	 */
-	function OnConnectionRefused( pkt )
+	function onConnectionRefused( pkt )
 	{
 		var error = 9;
-		switch ( pkt.ErrorCode ) {
+		switch (pkt.ErrorCode) {
 			case   0: error =    6; break; // Unregistered ID
 			case   1: error =    7; break; // Incorrect Password
 			case   2: error =    8; break; // This ID is expired
@@ -298,11 +297,11 @@ function(
 	 *
 	 * @param {object} pkt - PACKET.SC.NOTIFY_BAN
 	 */
-	function OnServerClosed( pkt )
+	function onServerClosed( pkt )
 	{
 		var msg_id;
 
-		switch( pkt.ErrorCode ) {
+		switch (pkt.ErrorCode) {
 			default:
 			case 0:   msg_id =    3; break; // Server closed
 			case 1:   msg_id =    4; break; // Server closed
@@ -328,7 +327,7 @@ function(
 	 * Export
 	 */
 	return {
-		init:   Init,
-		reload: Reload
+		init:   init,
+		reload: reload
 	};
 });

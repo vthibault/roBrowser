@@ -9,7 +9,7 @@
  */
 define( ['Audio/SoundManager', 'Renderer/Renderer'], function( SoundManager, Renderer )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -28,17 +28,17 @@ define( ['Audio/SoundManager', 'Renderer/Renderer'], function( SoundManager, Ren
 		var i = 0, count = this.sounds.length;
 		var now  = Renderer.tick;
 		var play = true;
-		var wavFileName = "";
+		var wavFileName = '';
 
-		while( i < count ) {
-			if( this.sounds[i].timeEnd < now ) {
+		while (i < count) {
+			if (this.sounds[i].timeEnd < now) {
 				this.sounds.splice( i, 1 );
 				count--;
 				continue;
 			}
 
 			// Don't play the sound, have a delay to wait
-			if( this.sounds[i].name === name ) {
+			if (this.sounds[i].name === name) {
 				play = false;
 			}
 
@@ -46,26 +46,26 @@ define( ['Audio/SoundManager', 'Renderer/Renderer'], function( SoundManager, Ren
 		}
 
 		// Don't play sound
-		if( play === false ) {
+		if (play === false) {
 			return;
 		}
 
 		// Find Audio filename
-		if( name === "atk" ) {
-			if( this.weapon_sound ) {
+		if (name === 'atk') {
+			if (this.weapon_sound) {
 				Sound.play( this.weapon_sound );
 			}
 		}
 		else {
-			wavFileName = name;	
+			wavFileName = name;
 		}
 
 		// Play the sound
-		if( wavFileName !== "" ) {
+		if (wavFileName !== '') {
 			this.sounds.push(new Sound( wavFileName, now + delay ));
 			SoundManager.play( wavFileName );
 		}
-	};
+	}
 
 
 	/**
@@ -75,5 +75,5 @@ define( ['Audio/SoundManager', 'Renderer/Renderer'], function( SoundManager, Ren
 	{
 		this.sounds = [];
 		this.soundPlay = SoundPlay;
-	}
+	};
 });

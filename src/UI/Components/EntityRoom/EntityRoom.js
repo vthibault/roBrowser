@@ -9,7 +9,7 @@
  */
 define(function(require)
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -25,7 +25,6 @@ define(function(require)
 	 * Createcomponent
 	 */
 	var EntityRoom = new UIComponent( 'EntityRoom', htmlText, cssText );
-
 
 
 	/**

@@ -6,9 +6,9 @@
  * @author Vincent Thibault
  */
 
-define(['Core/Context', 'Core/Preferences'], function( Context, Preferences )
+define(function()
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -34,12 +34,12 @@ define(['Core/Context', 'Core/Preferences'], function( Context, Preferences )
 	 *
 	 * @param {function} callback
 	 */
-	function CleanUp( callback )
+	function cleanUp( callback )
 	{
 		_fs.root.createReader().readEntries(function(entries){
 			var i, count =entries.length, j = 0;
 
-			function Removed(){
+			function removed(){
 				if ((++j) >= count) {
 					callback();
 				}
@@ -47,17 +47,17 @@ define(['Core/Context', 'Core/Preferences'], function( Context, Preferences )
 
 			for (i = 0; i < count; ++i) {
 				if (entries[i].isDirectory) {
-					entries[i].removeRecursively(Removed);
+					entries[i].removeRecursively(removed);
 				}
 				else {
-					entries[i].remove(Removed);
+					entries[i].remove(removed);
 				}
 			}
 
 			if (!count) {
 				callback();
 			}
-		})
+		});
 	}
 
 
@@ -66,14 +66,14 @@ define(['Core/Context', 'Core/Preferences'], function( Context, Preferences )
 	 *
 	 * @param {function} callback
 	 */
-	function GetSize(callback)
+	function getSize(callback)
 	{
 		if (!temporaryStorage || !requestFileSystem) {
 			callback(0);
 			return;
 		}
 
-		temporaryStorage.queryUsageAndQuota(function(used, remaining){
+		temporaryStorage.queryUsageAndQuota(function(used){
 			if (!used) {
 				callback(0);
 				return;
@@ -85,10 +85,10 @@ define(['Core/Context', 'Core/Preferences'], function( Context, Preferences )
 				// Remove upload folder
 				fs.root.getDirectory('/__tmp_upload/', {create:false}, function(dirEntry){
 					dirEntry.removeRecursively(function(){
-						GetSize(callback);
+						getSize(callback);
 					});
 				// no upload directory, end.
-				}, function NoDirectory(){
+				}, function noDirectory(){
 					callback(used);
 				});
 			});
@@ -100,7 +100,7 @@ define(['Core/Context', 'Core/Preferences'], function( Context, Preferences )
 	 * Export
 	 */
 	return {
-		cleanup: CleanUp,
-		getSize: GetSize
+		cleanup: cleanUp,
+		getSize: getSize
 	};
 });

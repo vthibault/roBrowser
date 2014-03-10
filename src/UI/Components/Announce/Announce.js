@@ -9,7 +9,7 @@
  */
 define(function(require)
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -30,36 +30,40 @@ define(function(require)
 	/**
 	 * @var {TimeOut} timer
 	 */
-	Announce.timer = 0;
+	var _timer = 0;
 
 
 	/**
 	 * @var {number} how many time the announce is display (20secs)
 	 */
-	Announce.life = 20 * 1000;
+	var _life = 20 * 1000;
 
 
 	/**
 	 * Initialize component
 	 */
-	Announce.init = function Init()
+	Announce.init = function init()
 	{
 		this.canvas = document.createElement('canvas');
 		this.ctx    = this.canvas.getContext('2d');
 		this.ui     = jQuery(this.canvas);
 
-		this.ui.attr('id', 'Announce').css({ position:'absolute', top:50, zIndex:40 });
+		this.ui.attr('id', 'Announce').css({
+			position: 'absolute',
+			top:       50,
+			zIndex:    40
+		});
 	};
 
 
 	/**
 	 * Once removed from HTML, clean timer
 	 */
-	Announce.onRemove = function OnRemove()
+	Announce.onRemove = function onRemove()
 	{
-		if( this.timer ) {
-			clearTimeout( this.timer );
-			this.timer = 0;	
+		if (_timer) {
+			clearTimeout( _timer );
+			this.timer = 0;
 		}
 	};
 
@@ -67,7 +71,7 @@ define(function(require)
 	/**
 	 * Timer end, cleaning announce
 	 */
-	Announce.timeEnd = function TimeEnd()
+	Announce.timeEnd = function timeEnd()
 	{
 		this.remove();
 	};
@@ -79,31 +83,31 @@ define(function(require)
 	 * @param {string} text to display
 	 * @param {string} color
 	 */
-	Announce.set = function Set( text, color )
+	Announce.set = function set( text, color )
 	{
-		var FontSize = 12;
-		var MaxWidth = 450;
+		var fontSize = 12;
+		var maxWidth = 450;
 		var lines    = [];
 
 		var width    = 0;
-		var str, result;
+		var result;
 		var i, j, count;
 
-		this.ctx.font = FontSize + "px Arial";
+		this.ctx.font = fontSize + 'px Arial';
 
 		// Create lines
-		while ( text.length ) {
+		while (text.length) {
 			i = text.length;
-			while( this.ctx.measureText(text.substr(0,i)).width > MaxWidth ) {
+			while (this.ctx.measureText(text.substr(0,i)).width > maxWidth) {
 				i--;
 			}
 
 			result = text.substr(0,i);
 
-			if ( i !== text.length ) {
+			if (i !== text.length) {
 				j = 0;
-				while( result.indexOf(" ",j) !== -1 ) {
-					j = result.indexOf(" ",j) + 1;
+				while (result.indexOf(' ',j) !== -1) {
+					j = result.indexOf(' ',j) + 1;
 				}
 			}
 
@@ -115,28 +119,28 @@ define(function(require)
 
 		// Get new canvas size
 		this.canvas.width      = 20 + width;
-		this.canvas.height     = 10 + ( FontSize + 5 ) * lines.length;
-		this.canvas.style.left = ( (Renderer.width - this.canvas.width) >> 1 ) + "px";
+		this.canvas.height     = 10 + ( fontSize + 5 ) * lines.length;
+		this.canvas.style.left = ((Renderer.width - this.canvas.width) >> 1) + 'px';
 
 		// Updating canvas size reset font value
-		this.ctx.font          = FontSize + "px Arial";
+		this.ctx.font          = fontSize + 'px Arial';
 
 		// Display background
-		this.ctx.fillStyle     = "rgba(0,0,0,0.5)";
+		this.ctx.fillStyle     = 'rgba(0,0,0,0.5)';
 		this.ctx.fillRect( 0, 0, this.canvas.width, this.canvas.height );
 
 		// Display text
-		this.ctx.fillStyle = color || '#FFFF00';
-		for ( i = 0, count = lines.length; i < count; ++i ) {
-			this.ctx.fillText( lines[i], 10, 5 + FontSize + (FontSize+5) * i );
+		this.ctx.fillStyle     = color || '#FFFF00';
+		for (i = 0, count = lines.length; i < count; ++i) {
+			this.ctx.fillText( lines[i], 10, 5 + fontSize + (fontSize+5) * i );
 		}
 
 		// Start tomer
-		if( this.timer ) {
-			clearTimeout( this.timer );	
+		if (_timer) {
+			clearTimeout(_timer);
 		}
 
-		this.timer = setTimeout( this.timeEnd.bind(this), this.life );
+		this.timer = setTimeout( this.timeEnd.bind(this), _life );
 	};
 
 

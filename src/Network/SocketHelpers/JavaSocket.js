@@ -10,7 +10,7 @@
 
 define([ 'require', 'Utils/jquery'], function( require, jQuery )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -26,10 +26,10 @@ define([ 'require', 'Utils/jquery'], function( require, jQuery )
 		this.port      = port;
 
 		// Generate new ID
-		this.id     = this.constructor.list.push(this) - 1;
+		this.id        = this.constructor.list.push(this) - 1;
 
 		// Create applet
-		this.applet = jQuery('<applet/>')
+		this.applet    = jQuery('<applet/>')
 			.attr({ archive: require.toUrl('./Java/JavaSocketBridge.jar'), code:'JavaSocketBridge.class', width:0, height:0 })
 			.html('<param name="id" value="'+ this.id +'"/>')
 			.appendTo('body')[0];
@@ -59,18 +59,18 @@ define([ 'require', 'Utils/jquery'], function( require, jQuery )
 	 */
 	Socket.prototype.send = function Send( buffer )
 	{
-		if ( this.connected ) {
+		if (this.connected) {
 
 			// Applet don't fully support binary string
 			// So encoding to hex before sending
 			var data = new Uint8Array(buffer);
 			var i, count = data.length;
-			var hex  = "";
+			var hex  = '';
 
-			for ( i=0; i<count; i++ ) {
-				hex += data[i].toString(16).replace(/^([\da-f])$/, "0$1");
+			for (i = 0; i < count; i++) {
+				hex += data[i].toString(16).replace(/^([\da-f])$/, '0$1');
 			}
-	
+
 			this.applet.send(hex);
 		}
 	};
@@ -81,11 +81,11 @@ define([ 'require', 'Utils/jquery'], function( require, jQuery )
 	 */
 	Socket.prototype.close = function Close()
 	{
-		if( this.connected ) {
+		if (this.connected) {
 			// Don't need to disconnect, removing it from html will execute all we need in the JAVA class
 			//this.applet.disconnect();
 
-			if( this.applet.parentNode ) {
+			if (this.applet.parentNode) {
 				document.body.removeChild(this.applet);
 			}
 
@@ -100,7 +100,7 @@ define([ 'require', 'Utils/jquery'], function( require, jQuery )
 	 */
 	Socket.prototype.__onReady = function onReady()
 	{
-		this.connect();	
+		this.connect();
 	};
 
 
@@ -113,7 +113,7 @@ define([ 'require', 'Utils/jquery'], function( require, jQuery )
 	{
 		this.connected = success;
 
-		if( this.onComplete ) {
+		if (this.onComplete) {
 			this.onComplete(success);
 		}
 	};
@@ -124,14 +124,14 @@ define([ 'require', 'Utils/jquery'], function( require, jQuery )
 	 */
 	Socket.prototype.__onClose = function onClose()
 	{
-		if( this.applet.parentNode ) {
+		if (this.applet.parentNode) {
 			document.body.removeChild(this.applet);
 		}
 
 		this.connected = false;
 		this.constructor.list[this.id] = null;
 
-		if( this.onClose ) {
+		if (this.onClose) {
 			this.onClose();
 		}
 	};
@@ -147,11 +147,11 @@ define([ 'require', 'Utils/jquery'], function( require, jQuery )
 		var i, count = hex.length >> 1;
 		var data = new Uint8Array( count );
 	
-		for ( i = 0; i<count; i++ ) {
+		for (i = 0; i < count; i++) {
 			data[i] = parseInt( hex.substr(i*2,2).replace(/[^a-f0-9]/gi, ''), 16 );
 		}
 
-		if( this.onMessage ) {
+		if (this.onMessage) {
 			this.onMessage( data.buffer );
 		}
 	};
@@ -164,7 +164,7 @@ define([ 'require', 'Utils/jquery'], function( require, jQuery )
 	 */
 	window.javasocketbridge_onready = function SocketOnReady( id )
 	{
-		if( Socket.list[id] ) {
+		if (Socket.list[id]) {
 			Socket.list[id].__onReady();
 		}
 	};
@@ -178,7 +178,7 @@ define([ 'require', 'Utils/jquery'], function( require, jQuery )
 	 */
 	window.javasocketbridge_oncomplete = function SocketOnComplete( id, result)
 	{
-		if( Socket.list[id] ) {
+		if (Socket.list[id]) {
 			Socket.list[id].__onComplete(!!result);
 		}
 	};
@@ -191,7 +191,7 @@ define([ 'require', 'Utils/jquery'], function( require, jQuery )
 	 */
 	window.javasocketbridge_onclose = function( id )
 	{
-		if( Socket.list[id] ) {
+		if (Socket.list[id]) {
 			Socket.list[id].__onClose();
 		}
 	};
@@ -205,7 +205,7 @@ define([ 'require', 'Utils/jquery'], function( require, jQuery )
 	 */
 	window.javasocketbridge_onmessage = function( id, data )
 	{
-		if( Socket.list[id] ) {
+		if (Socket.list[id]) {
 			Socket.list[id].__onReceive( String(data) );
 		}
 	};

@@ -10,7 +10,7 @@
 
 define( ['Utils/BinaryReader'], function( BinaryReader )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -25,7 +25,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 		this.actions  = [];
 		this.sounds   = [];
 
-		if( data ) {
+		if (data) {
 			this.load(data);
 		}
 	}
@@ -36,32 +36,32 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 	 *
 	 * @param {ArrayBuffer} data
 	 */
-	ACT.prototype.load = function Load( data )
+	ACT.prototype.load = function load( data )
 	{
 		var i, count;
 
 		this.fp     = new BinaryReader(data);
 		this.header = this.fp.readString(2);
 
-		if ( this.header !== 'AC' ) {
-			throw new Error("ACT::load() - Incorrect header '" + this.header + "', must be 'AC'");
+		if (this.header !== 'AC') {
+			throw new Error('ACT::load() - Incorrect header "' + this.header + '", must be "AC"');
 		}
 
 		this.version = this.fp.readUByte()/10 + this.fp.readUByte();
 		this.readActions();
 
-		if ( this.version >= 2.1 ) {
+		if (this.version >= 2.1) {
 			// Sound
 			count             = this.fp.readLong();
 			this.sounds.length = count;
 
-			for ( i=0; i<count; ++i ) {
+			for (i = 0; i < count; ++i) {
 				this.sounds[i] = this.fp.readString(40);
 			}
 	
 			// Delay
-			if ( this.version >= 2.2 ) {
-				for ( i=0, count=this.actions.length; i<count; ++i ) {
+			if (this.version >= 2.2) {
+				for (i = 0, count = this.actions.length; i < count; ++i) {
 					this.actions[i].delay = this.fp.readFloat()*25;
 				}
 			}
@@ -81,7 +81,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 		this.fp.seek( 10, SEEK_CUR );
 		actions.length = count;
 	
-		for ( i=0; i<count; ++i ) {
+		for (i = 0; i < count; ++i) {
 			actions[i] = {
 				animations: this.readAnimations(),
 				delay:      150
@@ -99,7 +99,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 		var i, count  = fp.readULong();
 		var anim      = new Array(count);
 
-		for ( i=0; i<count; ++i ) {
+		for (i = 0; i < count; ++i) {
 			// Unknown bytes
 			fp.seek( 32, SEEK_CUR );
 			anim[i] = this.readLayers();
@@ -121,7 +121,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 		var version = this.version;
 		var i, pos;
 
-		for ( i=0; i<count; ++i ) {
+		for (i = 0; i < count; ++i) {
 			layer = layers[i] = {
 				pos:       [ fp.readLong(), fp.readLong() ],
 				index:       fp.readLong(),
@@ -134,7 +134,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 				height:      0
 			};
 	
-			if ( version >= 2.0 ) {
+			if (version >= 2.0) {
 				layer.color[0] = fp.readUByte()/255;
 				layer.color[1] = fp.readUByte()/255;
 				layer.color[2] = fp.readUByte()/255;
@@ -144,7 +144,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 				layer.angle    = fp.readLong();
 				layer.spr_type = fp.readLong();
 	
-				if ( version >= 2.5 ) {
+				if (version >= 2.5) {
 					layer.width  = fp.readLong();
 					layer.height = fp.readLong();
 				}
@@ -154,11 +154,11 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 		sound = version >= 2.0 ? fp.readLong() : -1;
 		pos   = [];
 
-		if ( version >= 2.3 ) {
+		if (version >= 2.3) {
 			count      = fp.readLong();
 			pos.length = count;
 	
-			for ( i=0; i<count; ++i ) {
+			for (i = 0; i < count; ++i) {
 				fp.seek(4, SEEK_CUR); // Unknown
 				pos[i] = { x : fp.readLong(), y: fp.readLong() };
 				fp.seek(4, SEEK_CUR); // Unknown
@@ -176,7 +176,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 	/**
 	 * Make it transferable in worker context
 	 */
-	ACT.prototype.compile = function Compile()
+	ACT.prototype.compile = function compile()
 	{
 		return {
 			actions: this.actions,

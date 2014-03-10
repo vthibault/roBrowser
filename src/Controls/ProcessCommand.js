@@ -23,24 +23,24 @@ function(
 	PACKET,              Network,
 	ControlPreferences,  AudioPreferences,  MapPreferences,  CameraPreferences
 ) {
-	"use strict";
+	'use strict';
 
 
 	/**
 	 * Process command
 	 */
-	return function( text ){
+	return function processCommand( text ){
 		var pkt;
 		var cmd = text.split(' ')[0];
 
-		switch( cmd ) {
+		switch (cmd) {
 
 			case 'sound':
 				this.addText( DB.msgstringtable[27 + AudioPreferences.Sound.play], this.TYPE.INFO );
 				AudioPreferences.Sound.play = !AudioPreferences.Sound.play;
 				AudioPreferences.save();
 
-				if( AudioPreferences.Sound.play ) {
+				if (AudioPreferences.Sound.play) {
 					Sound.stop();
 				}
 				return;
@@ -50,7 +50,7 @@ function(
 				AudioPreferences.BGM.play = !AudioPreferences.BGM.play;
 				AudioPreferences.save();
 
-				if( AudioPreferences.BGM.play ) {
+				if (AudioPreferences.BGM.play) {
 					BGM.play( BGM.filename );
 				}
 				else {
@@ -98,8 +98,9 @@ function(
 			case 'sit':
 			case 'stand':
 				pkt = new PACKET.CZ.REQUEST_ACT();
-				if( Session.Entity.action === Session.Entity.ACTION.SIT )
+				if (Session.Entity.action === Session.Entity.ACTION.SIT) {
 					pkt.action = 3; // stand up
+				}
 				else {
 					pkt.action = 2; // sit down	
 				}
@@ -134,7 +135,7 @@ function(
 				var currentMap = require('Renderer/MapRenderer').currentMap;
 				this.addText(
 					( DB.mapname[ currentMap.replace('.gat','.rsw') ] || DB.msgstringtable[187] ) +
-					"(" + currentMap + ") : " + Math.floor(Session.Entity.position[0]) + ", " + Math.floor(Session.Entity.position[1]),
+					'(' + currentMap + ') : ' + Math.floor(Session.Entity.position[0]) + ', ' + Math.floor(Session.Entity.position[1]),
 					this.TYPE.INFO
 				);
 				return;
@@ -146,7 +147,7 @@ function(
 				return;
 
 			case 'chat':
-				require('UI/Components/ChatRoomCreate/ChatRoomCreate').Show();
+				require('UI/Components/ChatRoomCreate/ChatRoomCreate').show();
 				return;
 
 			case 'q':
@@ -158,9 +159,9 @@ function(
 		// /str+
 		// TODO: do we have to spam the server with "1" unit or do we have to fix the servers code ?
 		var matches = text.match(/^(\w{3})\+ (\d+)$/);
-		if( matches ) {
+		if (matches) {
 			var pos = ['str', 'agi', 'vit', 'int', 'dex', 'luk'].indexOf(matches[1]);
-			if( pos > -1 && matches[2] !== 0 ) {
+			if (pos > -1 && matches[2] !== 0) {
 				pkt = new PACKET.CZ.STATUS_CHANGE();
 				pkt.statusID     = pos + 13;
 				pkt.changeAmount = parseInt( matches[2], 10 );

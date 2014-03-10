@@ -9,13 +9,12 @@
  */
 define(function(require)
 {
-	"use strict";
+	'use strict';
 
 
 	/**
 	 * Dependencies
 	 */
-	var UIManager          = require('UI/UIManager');
 	var UIComponent        = require('UI/UIComponent');
 	var htmlText           = require('text!./WinStats.html');
 	var cssText            = require('text!./WinStats.css');
@@ -30,18 +29,18 @@ define(function(require)
 	/**
 	 * Initialize UI
 	 */
-	WinStats.init = function Init()
+	WinStats.init = function init()
 	{
 		this.statuspoint = 0;
 
 		this.ui.find('.up button').mousedown(function(){
-			switch( this.className ) {
-				case 'str': WinStats.OnRequestUpdate( 13, 1 ); break;
-				case 'agi': WinStats.OnRequestUpdate( 14, 1 ); break;
-				case 'vit': WinStats.OnRequestUpdate( 15, 1 ); break;
-				case 'int': WinStats.OnRequestUpdate( 16, 1 ); break;
-				case 'dex': WinStats.OnRequestUpdate( 17, 1 ); break;
-				case 'luk': WinStats.OnRequestUpdate( 18, 1 ); break;
+			switch (this.className) {
+				case 'str': WinStats.onRequestUpdate( 13, 1 ); break;
+				case 'agi': WinStats.onRequestUpdate( 14, 1 ); break;
+				case 'vit': WinStats.onRequestUpdate( 15, 1 ); break;
+				case 'int': WinStats.onRequestUpdate( 16, 1 ); break;
+				case 'dex': WinStats.onRequestUpdate( 17, 1 ); break;
+				case 'luk': WinStats.onRequestUpdate( 18, 1 ); break;
 			}
 		});
 	};
@@ -56,11 +55,11 @@ define(function(require)
 	/**
 	 * Execute elements in memory
 	 */
-	WinStats.onAppend = function OnAppend()
+	WinStats.onAppend = function onAppend()
 	{
 		var i, count;
 
-		for( i = 0, count = this.stack.length; i < count; ++i ) {
+		for (i = 0, count = this.stack.length; i < count; ++i) {
 			this.update.apply( this, this.stack[i]);
 		}
 
@@ -75,20 +74,24 @@ define(function(require)
 	 * @param {number} val1
 	 * @param {number} val2 (optional)
 	 */
-	WinStats.update = function Update( type, val )
+	WinStats.update = function update( type, val )
 	{
-		if( !this.__loaded ){
+		var str;
+
+		if (!this.__loaded) {
 			this.stack.push(arguments);
 			return;
 		}
 
-		switch( type ) {
+		switch (type) {
 			case 'statuspoint':
 				this.statuspoint = val;
 				this.ui.find('.requirements div').each(function(){
 					WinStats.ui.find('.up .'+ this.className)
 						.css('opacity', parseInt(this.textContent, 10) <= val ? 1 : 0 );
 				});
+				this.ui.find('.' + type).text(val);
+				break;
 
 			case 'guildname':
 			case 'atak':
@@ -110,7 +113,7 @@ define(function(require)
 			case 'def2':
 			case 'mdef2':
 			case 'flee2':
-				var str = val < 0 ? '- ' + (-val) : '+ ' + val;
+				str = val < 0 ? '- ' + (-val) : '+ ' + val;
 				this.ui.find('.' + type).text(str);
 				break;
 
@@ -129,7 +132,7 @@ define(function(require)
 			case 'int2':
 			case 'dex2':
 			case 'luk2':
-				var str = val < 0 ? '- ' + (-val) : val > 0 ? '+ ' + val : '';
+				str = val < 0 ? '- ' + (-val) : val > 0 ? '+ ' + val : '';
 				this.ui.find('.bonus .'+ type.replace('2','')).text( str );
 				break;
 
@@ -149,7 +152,7 @@ define(function(require)
 	/**
 	 * Abstract method to define
 	 */
-	WinStats.OnRequestUpdate = function OnRequestUpdate(id, amount){};
+	WinStats.onRequestUpdate = function onRequestUpdate(/*id, amount*/){};
 
 
 	/**

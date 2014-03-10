@@ -9,7 +9,7 @@
  */
 define(function(require)
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -62,19 +62,19 @@ define(function(require)
 	 */
 	Viewer.init = function Init()
 	{
-		Thread.hook("THREAD_READY", function(){
-			if( window.ROConfig && ROConfig.remoteClient ) {
-				Thread.send( "SET_HOST", ROConfig.remoteClient );
+		Thread.hook('THREAD_READY', function(){
+			if (window.ROConfig && ROConfig.remoteClient) {
+				Thread.send( 'SET_HOST', ROConfig.remoteClient );
 			}
 		});
 		Thread.init();
 
 		jQuery('head:first').append(
-			'<style type="text/css">\
-				#previous { background-image:url(' + require.toUrl('./Icons/arw-left.png') + '); }\
-				#next     { background-image:url(' + require.toUrl('./Icons/arw-right.png') + '); }\
-				#progress { background-image:url(' + require.toUrl('./Icons/load.gif') + '); }\
-			</style>'
+			'<style type="text/css">' +
+			'	#previous { background-image:url(' + require.toUrl('./Icons/arw-left.png') + '); }' +
+			'	#next     { background-image:url(' + require.toUrl('./Icons/arw-right.png') + '); }' +
+			'	#progress { background-image:url(' + require.toUrl('./Icons/load.gif') + '); }' +
+			'</style>'
 		);
 
 		// Drag drop the GRF.
@@ -114,10 +114,10 @@ define(function(require)
 	{
 		// Path submit
 		this.ui.find('#path').keydown(function(event){
-			if ( event.which === KEYS.ENTER ) {
+			if (event.which === KEYS.ENTER) {
 				var value = this.value.replace(/^\s+|\s+$/g, '');
-				if ( value.substr(-1) !== "/" ) {
-					value += "/";
+				if ( value.substr(-1) !== '/' ) {
+					value += '/';
 				}
 				Viewer.moveToDirectory( value, true );
 			}
@@ -126,7 +126,7 @@ define(function(require)
 		// History before
 		this.ui.find('#previous').click(function(){
 			var path = History.previous();
-			if( path ) {
+			if (path) {
 				Viewer.moveToDirectory( path, false );
 			}
 		});
@@ -134,19 +134,19 @@ define(function(require)
 		// History after
 		this.ui.find('#next').click(function(){
 			var path = History.next();
-			if( path ) {
+			if (path) {
 				Viewer.moveToDirectory( path, false );
 			}
 		});
 
 		// Search toolbar
 		this.ui.find('#search')
-			.focus(function(){ this.value = '' })
-			.blur(function(){ this.value = this.value || 'Search...' })
+			.focus(function(){ this.value = ''; })
+			.blur(function(){ this.value = this.value || 'Search...'; })
 			.keydown( function(event) {
-				if ( event.which === KEYS.ENTER ) {
+				if (event.which === KEYS.ENTER) {
 					var value = this.value.replace(/^\s+|\s+$/g, '');
-					if ( value.length > 2 ) {
+					if (value.length > 2) {
 						Viewer.moveToDirectory( 'search/' + value, true );
 					}
 				}
@@ -185,18 +185,18 @@ define(function(require)
 		_info.removeClass('disable').off('mousedown');
 
 		// Open
-		if( _icon.hasClass('file') ) {
+		if (_icon.hasClass('file')) {
 			_open.addClass('disable');
 		}
 		else {
 			_open.one('mousedown', function(){
 				_icon.click();
 				_overlay.mousedown();
-			})
+			});
 		}
 
 		// Save
-		if( _icon.hasClass('directory') ) {
+		if (_icon.hasClass('directory')) {
 			_save.addClass('disable');
 			_save.attr('href', 'javascript:void(0)');
 			_save.get(0).removeAttribute('download');
@@ -209,7 +209,7 @@ define(function(require)
 
 			Client.getFile( _icon.data('path'), function( buffer) {
 				// Create temporary url, move to it and release it
-				var url       = URL.createObjectURL(new Blob([buffer],{type: "application/octet-stream"}));
+				var url       = URL.createObjectURL(new Blob([buffer],{type: 'application/octet-stream'}));
 				_save.attr({ href:url, download:_icon.text().trim()});
 			});
 		}
@@ -231,11 +231,11 @@ define(function(require)
 		path = decodeURIComponent(path) || '/';
 		path = path.replace(/\\/g, '/');
 
-		if ( path.substr(0,1) === '/' ) {
+		if (path.substr(0,1) === '/') {
 			path = path.substr(1);
 		}
 
-		if ( path.match(/^search\//) ) {
+		if (path.match(/^search\//)) {
 			Viewer.search( path.substr(7) );
 		}
 		else {
@@ -243,7 +243,7 @@ define(function(require)
 		}
 
 		// Update history
-		if( save ) {
+		if (save) {
 			History.push( path );
 		}
 	};
@@ -259,7 +259,7 @@ define(function(require)
 	{
 		Client.onFilesLoaded = function(){
 			Viewer.moveToDirectory('data/', true);
- 		};
+		};
 		Client.init( (event.dataTransfer || event.target).files );
 
 		event.preventDefault();
@@ -281,13 +281,13 @@ define(function(require)
 		// Clean up Input
 		path = decodeURIComponent(path) || '/';
 		path = path.replace(/\\/g, '/');
-		if ( path.substr(0,1) === '/' ) {
+		if (path.substr(0,1) === '/') {
 			path = path.substr(1);
 		}
 
 		// Build regex
 		var directory = path.replace( /\//g, '\\\\');
-		var reg       = directory + "([^(\\0|\\\\)]+)";
+		var reg       = directory + '([^(\\0|\\\\)]+)';
 
 		// Clean windows
 		this.ui.find('#path').val(path);
@@ -296,7 +296,7 @@ define(function(require)
 		this.ui.find('#msg').hide();
 
 		// Go back to the home
-		if ( !path.length ) {
+		if (!path.length) {
 			this.ui.find('#info').show();
 			this.renderFiles(['data']);
 			return;
@@ -309,9 +309,9 @@ define(function(require)
 
 
 		// Send request
-		Client.search( new RegExp(reg, "gi"), function( list ) {
+		Client.search( new RegExp(reg, 'gi'), function( list ) {
 			// Request something else, stop.
-			if ( actionID !== Viewer.actionID ) {
+			if (actionID !== Viewer.actionID) {
 				return;
 			}
 
@@ -330,8 +330,8 @@ define(function(require)
 	Viewer.search = function Search( keyword )
 	{
 		// Escape regex, and complete it
-		var search    = keyword.replace(/(\.|\\|\+|\*|\?|\[|\^|\]|\$|\(|\)|\{|\}|\=|\!|\<|\>|\||\:|\-)/g, '\\$1'); 
-		var reg       = "data\\\\([^(\\0\\)]+)?" + search + "([^(\\0|\\\\)]+)?";
+		var search    = keyword.replace(/(\.|\\|\+|\*|\?|\[|\^|\]|\$|\(|\)|\{|\}|\=|\!|<|>|\||\:|\-)/g, '\\$1');
+		var reg       = 'data\\\\([^(\\0\\)]+)?' + search + '([^(\\0|\\\\)]+)?';
 
 		// Clean path
 		this.ui.find('.icon').unbind().remove();
@@ -343,9 +343,9 @@ define(function(require)
 		var actionID = ++this.actionID;
 
 		// Send request
-		Client.search( new RegExp(reg, "gi"), function( list ) {
+		Client.search( new RegExp(reg, 'gi'), function( list ) {
 			// Request something else, stop.
-			if ( actionID !== Viewer.actionID ) {
+			if (actionID !== Viewer.actionID) {
 				return;
 			}
 
@@ -372,8 +372,8 @@ define(function(require)
 		_a = a.indexOf('.') !== -1;
 		_b = b.indexOf('.') !== -1;
 
-		if ( _a === _b ) return a > b ? 1 : -1;
-		if ( _a ) return  1;
+		if (_a === _b) return a > b ? 1 : -1;
+		if (_a) return  1;
 		return -1;
 	};
 
@@ -389,12 +389,12 @@ define(function(require)
 		this.ui.find('#progress').hide();
 
 		// No file in directory ? (or error : the file isn't a directory)
-		if ( !list.length ) {
+		if (!list.length) {
 			this.ui.find('#msg').text('No file found.').show();
 			return;
 		}
 
-		var i, count, img;
+		var i, count;
 		var reg = /(.*\\)/;
 		var type, attr;
 
@@ -402,10 +402,10 @@ define(function(require)
 		count = list.length;
 
 		// Avoid freeze, stream to display files
-		function StreamExecute()
+		function streamExecute()
 		{
 			var j;
-			var html = "";
+			var html = '';
 
 			for ( j=0; j<200 && i+j < count; ++j ) {
 				type  = Viewer.getFileIcon(list[j+i]);
@@ -420,10 +420,10 @@ define(function(require)
 				else if ( type === 'map' )   attr = ' onclick="Viewer.onWorldClick.call(this)"';
 
 				html +=
-					'<div class="icon '+ type +'" data-path="'+ list[j+i] +'"'+ attr +' oncontextmenu="Viewer.showContextMenu(this,event); return false;">\
-						<img src="'+ require.toUrl('./Icons/' + type +'.png') + '" width="48" height="48"/><br/>\
-						'+ list[j+i].replace(reg,'') +'\
-					</div>';
+					'<div class="icon '+ type +'" data-path="'+ list[j+i] +'"'+ attr +' oncontextmenu="Viewer.showContextMenu(this,event); return false;">' +
+					'	<img src="'+ require.toUrl('./Icons/' + type +'.png') + '" width="48" height="48"/><br/>' +
+							list[j+i].replace(reg,'') +
+					'</div>';
 			}
 
 			jQuery(html).appendTo('#grfviewer');
@@ -431,11 +431,11 @@ define(function(require)
 			i += j;
 
 			if ( i < count ) {
-				Viewer.thread = setTimeout( StreamExecute, 4 );
+				Viewer.thread = setTimeout( streamExecute, 4 );
 			}
 		}
 
-		StreamExecute();
+		streamExecute();
 		Viewer.displayImagesThumbnail( count );
 	};
 
@@ -451,7 +451,7 @@ define(function(require)
 		var ext = filename.split(/\.([^\.]+)$/)[1] || 'dir';
 		var img = '';
 
-		switch( ext.toLowerCase() ) {
+		switch (ext.toLowerCase()) {
 			default:
 				img = 'file';
 				break;
@@ -499,12 +499,12 @@ define(function(require)
 	Viewer.displayImagesThumbnail = function DisplayImagesTumbnail()
 	{
 		// Stored action to know if user act during the process
-		var actionID = this.actionID + 0; 
+		var actionID = this.actionID + 0;
 
-		function Process()
+		function process()
 		{
 			// Stop here if we change page.
-			if ( actionID !== Viewer.actionID ) {
+			if (actionID !== Viewer.actionID) {
 				return;
 			}
 
@@ -513,7 +513,7 @@ define(function(require)
 			var total = nodes.length;
 
 			// All thumbnails are already rendered
-			if( !total ) {
+			if (!total) {
 				return;
 			}
 
@@ -532,24 +532,24 @@ define(function(require)
 					var url = Viewer.getImageThumbnail( self.data('path'), data );
 
 					// Display image
-					if( url ) {
+					if (url) {
 						self.find('img:first').attr('src', url );
 
 						// There is a limit of blob url the browser can support
-						if( url.match(/^blob\:/) ){
+						if (url.match(/^blob\:/)){
 							URL.revokeObjectURL(url);
 						}
 					}
 
 					// Fetch next range.
-					if ( (++load) >= total ) {
-						setTimeout( Process, 4 );
+					if ((++load) >= total) {
+						setTimeout( process, 4 );
 					}
 				});
 			});
 		}
 
-		Process();
+		process();
 	};
 
 
@@ -565,12 +565,12 @@ define(function(require)
 		var canvas;
 		var ext = filename.substr(-3).toLowerCase();
 
-		switch( ext ) {
+		switch (ext) {
 
 			// Sprite support
 			case 'spr':
 				var spr = new Sprite( data );
-				canvas = spr.getCanvasFromFrame(0);
+				canvas  = spr.getCanvasFromFrame(0);
 				return canvas.toDataURL();
 
 			// Palette support
@@ -585,7 +585,7 @@ define(function(require)
 				canvas.height = 16;
 				imageData     = ctx.createImageData( canvas.width, canvas.height );
 
-				for ( i = 0, count = imageData.data.length; i < count; i += 4 ) {
+				for (i = 0, count = imageData.data.length; i < count; i += 4) {
 					imageData.data[i+0] = palette[i+0];
 					imageData.data[i+1] = palette[i+1];
 					imageData.data[i+2] = palette[i+2];
@@ -604,7 +604,7 @@ define(function(require)
 			// Image Support
 			default:
 				return URL.createObjectURL(
-					new Blob( [data], { type: "image/" + ext })
+					new Blob( [data], { type: 'image/' + ext })
 				);
 		}
 	};
@@ -665,7 +665,7 @@ define(function(require)
 		{
 			var i, count, canvas;
 
-			switch( path.substr(-3) ) {
+			switch (path.substr(-3)) {
 
 				// Sprite support
 				case 'spr':
@@ -674,9 +674,9 @@ define(function(require)
 						.css('top', 200)
 						.html('');
 
-					for ( i = 0, count = spr.frames.length; i < count; ++i ) {
+					for (i = 0, count = spr.frames.length; i < count; ++i) {
 						canvas = spr.getCanvasFromFrame( i );
-						if( canvas ) {
+						if (canvas) {
 							box.append(canvas);
 						}
 					}
@@ -691,8 +691,8 @@ define(function(require)
 					canvas.width = 128;
 					canvas.height = 128;
 
-					for ( i = 0, count = palette.length; i < count; i += 4 ) {
-						ctx.fillStyle = "rgb(" + palette[i+0] + "," + palette[i+1] + "," + palette[i+2] + ")";
+					for (i = 0, count = palette.length; i < count; i += 4) {
+						ctx.fillStyle = 'rgb(' + palette[i+0] + ',' + palette[i+1] + ',' + palette[i+2] + ')';
 						ctx.fillRect( ( (i/4|0) % 16 )  * 8, ( (i/4|0) / 16 | 0 )  * 8, 8, 8 );
 					}
 
@@ -713,7 +713,7 @@ define(function(require)
 				// Image Support
 				default:
 					var url = URL.createObjectURL(
-						new Blob( [data], { type: "image/" + path.substr(-3) })
+						new Blob( [data], { type: 'image/' + path.substr(-3) })
 					);
 					var img = new Image();
 					img.src = url;
@@ -767,7 +767,7 @@ define(function(require)
 		function OnMessage(event) {
 			ready = true;
 
-			switch( event.data.type ) {
+			switch (event.data.type) {
 				case 'SYNC':
 				case 'SET_HOST':
 				case 'CLEAN_GRF':
@@ -784,20 +784,20 @@ define(function(require)
 		}
 
 		// Wait for synchronisation with frame
-		function Synchronise(){
-			if( !ready ) {
+		function synchronise(){
+			if (!ready) {
 				App._APP.postMessage('SYNC', location.origin);
-				setTimeout(Synchronise, 4);
+				setTimeout(synchronise, 4);
 			}
 		}
 
 		// Once app is ready
 		App.onReady = function(){
 			App._APP.location.hash = path.replace(/\\/g,'/');
-			App._APP.frameElement.style.border = "1px solid grey";
-			App._APP.frameElement.style.backgroundColor = "#45484d";
-			window.addEventListener("message", OnMessage, false);
-			Synchronise();
+			App._APP.frameElement.style.border = '1px solid grey';
+			App._APP.frameElement.style.backgroundColor = '#45484d';
+			window.addEventListener('message', OnMessage, false);
+			synchronise();
 		};
 
 		// Unload app
@@ -821,7 +821,7 @@ define(function(require)
 		jQuery('#preview .box').css('top', (jQuery(window).height()-600)* 0.5 );
 		jQuery('#preview').show();
 		jQuery('#progress').hide();
-		document.body.style.overflow = "hidden";
+		document.body.style.overflow = 'hidden';
 
 		// Include App
 		var App = new ROBrowser({
@@ -836,10 +836,10 @@ define(function(require)
 		App.start();
 
 		// Wait for synchronisation with frame
-		function Synchronise(){
-			if( !ready ) {
+		function synchronise(){
+			if (!ready) {
 				App._APP.postMessage('SYNC', location.origin);
-				setTimeout(Synchronise, 4);
+				setTimeout(synchronise, 4);
 			}
 		}
 
@@ -847,7 +847,7 @@ define(function(require)
 		function OnMessage(event) {
 			ready = true;
 
-			switch( event.data.type ) {
+			switch (event.data.type) {
 				case 'SYNC':
 				case 'SET_HOST':
 				case 'CLEAN_GRF':
@@ -864,7 +864,7 @@ define(function(require)
 		}
 
 		// Redirect Thread result to frame
-		function ThreadRedirect( type ) {
+		function threadRedirect( type ) {
 			Thread.hook( type, function(data){
 				App._APP.postMessage({
 					type: type,
@@ -876,24 +876,24 @@ define(function(require)
 		// Once app is ready
 		App.onReady = function(){
 			App._APP.location.hash = path.replace(/\\/g,'/');
-			App._APP.frameElement.style.border = "1px solid grey";
-			App._APP.frameElement.style.backgroundColor = "#45484d";
+			App._APP.frameElement.style.border = '1px solid grey';
+			App._APP.frameElement.style.backgroundColor = '#45484d';
 
 			// Hook Tread Map loading
-			ThreadRedirect('MAP_PROGRESS');
-			ThreadRedirect('MAP_WORLD');
-			ThreadRedirect('MAP_GROUND');
-			ThreadRedirect('MAP_ALTITUDE');
-			ThreadRedirect('MAP_MODELS');
+			threadRedirect('MAP_PROGRESS');
+			threadRedirect('MAP_WORLD');
+			threadRedirect('MAP_GROUND');
+			threadRedirect('MAP_ALTITUDE');
+			threadRedirect('MAP_MODELS');
 
-			window.addEventListener("message", OnMessage, false);
-			Synchronise();
+			window.addEventListener('message', OnMessage, false);
+			synchronise();
 		};
 
 		// Unload app
 		jQuery('#preview').one('click',function(){
 			jQuery(this).hide();
-			document.body.style.overflow = "auto";
+			document.body.style.overflow = 'auto';
 			window.removeEventListener('message', OnMessage, false);
 		});
 	};
@@ -917,7 +917,7 @@ define(function(require)
 					jQuery('<pre/>')
 					.text(text)
 					.click(function(event){
-						event.stopPropagation()
+						event.stopPropagation();
 					})
 					.css({
 						 background:'white',

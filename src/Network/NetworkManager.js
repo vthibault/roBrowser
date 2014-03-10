@@ -12,7 +12,7 @@
 define([ 'require', 'Core/Context', 'Utils/BinaryReader',   './PacketVerManager', './PacketVersions', './PacketRegister', './PacketGuess', './PacketCrypt', './SocketHelpers/ChromeSocket', './SocketHelpers/JavaSocket', './SocketHelpers/WebSocket'],
 function( require,        Context,         BinaryReader,       PACKETVER,            PacketVersions,     PacketRegister,     PacketGuess,     PacketCrypt,                   ChromeSocket,                   JavaSocket,                   WebSocket)
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -27,13 +27,6 @@ function( require,        Context,         BinaryReader,       PACKETVER,       
 	 * @var Socket
 	 */
 	var _socket  = null;
-
-
-	/**
-	 * Max Packet Size (storage ? emblem ? skill ?)
-	 * @var integer
-	 */
-	var MAX_PACKET_SIZE = 1024 * 2;
 
 
 	/**
@@ -76,7 +69,7 @@ function( require,        Context,         BinaryReader,       PACKETVER,       
 	 * @param {function} callback once connected or not
 	 * @param {boolean} is zone server ?
 	 */
-	function Connect( host, port, callback, isZone)
+	function connect( host, port, callback, isZone)
 	{
 		var socket, Socket;
 		var proxy = ROConfig.socketProxy || null;
@@ -98,20 +91,20 @@ function( require,        Context,         BinaryReader,       PACKETVER,       
 
 		socket            = new Socket(host, port, proxy);
 		socket.isZone     = !!isZone;
-		socket.onClose    = OnClose;
-		socket.onComplete = function OnComplete(success)
+		socket.onClose    = onClose;
+		socket.onComplete = function onComplete(success)
 		{
-			var msg = "Fail";
+			var msg = 'Fail';
 
 			if (success) {
-				msg = "Success";
+				msg = 'Success';
 
 				// If current socket has ping, remove it
 				if (_socket && _socket.ping) {
 					clearInterval(_socket.ping);
 				}
 
-				socket.onMessage = Receive;
+				socket.onMessage = receive;
 				_sockets.push(_socket = socket);
 
 				// Map server encryption
@@ -120,7 +113,7 @@ function( require,        Context,         BinaryReader,       PACKETVER,       
 				}
 			}
 
-			console.warn( "Network::Connect() - " + msg + " to connect to " + host + ":" + port);
+			console.warn( 'Network::Connect() - ' + msg + ' to connect to ' + host + ':' + port);
 			callback.call( this, success);
 		};
 	}
@@ -131,9 +124,9 @@ function( require,        Context,         BinaryReader,       PACKETVER,       
 	 *
 	 * @param Packet
 	 */
-	function SendPacket( Packet )
+	function sendPacket( Packet )
 	{
-		console.log( "%c[Network] Send: ", "color:#007070", Packet );
+		console.log( '%c[Network] Send: ', 'color:#007070', Packet );
 		var pkt = Packet.build();
 
 		// Encrypt packet
@@ -141,7 +134,7 @@ function( require,        Context,         BinaryReader,       PACKETVER,       
 			PacketCrypt.process(pkt.view);
 		}
 
-		Send( pkt.buffer );
+		send( pkt.buffer );
 	}
 
 
@@ -150,7 +143,7 @@ function( require,        Context,         BinaryReader,       PACKETVER,       
 	 *
 	 * @param {ArrayBuffer} buffer
 	 */
-	function Send( buffer ) {
+	function send( buffer ) {
 		if (_socket) {
 			_socket.send( buffer );
 		}
@@ -163,7 +156,7 @@ function( require,        Context,         BinaryReader,       PACKETVER,       
 	 * @param {number} id - packet UID
 	 * @param {function} struct - packet structure callback
 	 */
-	function RegisterPacket( id, struct ) {
+	function registerPacket( id, struct ) {
 		struct.id = id;
 		Packets.list[id] = new Packets(
 			struct.name,
@@ -179,10 +172,10 @@ function( require,        Context,         BinaryReader,       PACKETVER,       
 	 * @param {object} packet
 	 * @param {function} callback to use packet
 	 */
-	function HookPacket( packet, callback )
+	function hookPacket( packet, callback )
 	{
 		if (!packet.id) {
-			throw new Error('NetworkManager::HookPacket() - Packet not yet register "'+ packet.name +'"');	
+			throw new Error('NetworkManager::HookPacket() - Packet not yet register "'+ packet.name +'"');
 		}
 
 		Packets.list[ packet.id ].callback = callback;
@@ -195,10 +188,10 @@ function( require,        Context,         BinaryReader,       PACKETVER,       
 	 * @param {object} packet
 	 * @param {function} callback to guess PACKETVER
 	 */
-	function GuessPacketVer( packet, callback)
+	function guessPacketVer( packet, callback)
 	{
 		if (!packet.id) {
-			throw new Error('NetworkManager::GuessPacketVer() - Packet not yet register "'+ packet.name +'"');	
+			throw new Error('NetworkManager::GuessPacketVer() - Packet not yet register "'+ packet.name +'"');
 		}
 		Packets.list[ packet.id ].guess = callback;
 	}
@@ -209,9 +202,9 @@ function( require,        Context,         BinaryReader,       PACKETVER,       
 	 *
 	 * @param callback
 	 */
-	function Read(callback)
+	function read(callback)
 	{
-		Read.callback = callback;
+		read.callback = callback;
 	}
 
 
@@ -219,7 +212,7 @@ function( require,        Context,         BinaryReader,       PACKETVER,       
 	 * Callback used for reading the data for the next buffer received from server
 	 * @var callback
 	 */
-	Read.callback = null;
+	read.callback = null;
 
 
 
@@ -228,7 +221,7 @@ function( require,        Context,         BinaryReader,       PACKETVER,       
 	 *
 	 * @param {Uint8Array} buffer
 	 */
-	function Receive( buf )
+	function receive( buf )
 	{
 		var id, packet, fp;
 		var length = 0;
@@ -251,9 +244,9 @@ function( require,        Context,         BinaryReader,       PACKETVER,       
 
 
 		// Read hook
-		if (Read.callback) {
-			Read.callback( fp );
-			Read.callback = null;
+		if (read.callback) {
+			read.callback( fp );
+			read.callback = null;
 		}
 
 
@@ -273,8 +266,8 @@ function( require,        Context,         BinaryReader,       PACKETVER,       
 			// Packet not defined ?
 			if (!Packets.list[id]) {
 				console.error(
-					"[Network] Packet '%c0x%s%c' not register, skipping %d bytes.",
-					"font-weight:bold", id.toString(16), "font-weight:normal", (fp.length-fp.tell())
+					'[Network] Packet "%c0x%s%c" not register, skipping %d bytes.',
+					'font-weight:bold', id.toString(16), 'font-weight:normal', (fp.length-fp.tell())
 				);
 				break;
 			}
@@ -314,7 +307,7 @@ function( require,        Context,         BinaryReader,       PACKETVER,       
 
 			// Parse packet
 			var data = new packet.struct(fp, offset);
-			console.log( "%c[Network] Recv:", "color:#900090", data, packet.callback ? "" : "(no callback)"  );
+			console.log( '%c[Network] Recv:', 'color:#900090', data, packet.callback ? '' : '(no callback)'  );
 
 			// Support for "0" type
 			if (length) {
@@ -335,12 +328,12 @@ function( require,        Context,         BinaryReader,       PACKETVER,       
 	 * Communication end
 	 * Server ask to close the socket
 	 */
-	function OnClose()
+	function onClose()
 	{
 		var idx = _sockets.indexOf(this);
 
 		if (this === _socket) {
-			console.warn("[Network] Disconnect from server");
+			console.warn('[Network] Disconnect from server');
 
 			if (_socket.ping) {
 				clearInterval(_socket.ping);
@@ -359,7 +352,7 @@ function( require,        Context,         BinaryReader,       PACKETVER,       
 	 * Close connection with server
 	 * Is this needed ?
 	 */
-	function Close()
+	function close()
 	{
 		var idx;
 
@@ -389,7 +382,7 @@ function( require,        Context,         BinaryReader,       PACKETVER,       
 	 *
 	 * @param callback
 	 */
-	function SetPing( callback )
+	function setPing( callback )
 	{
 		if (_socket) {
 			if (_socket.ping) {
@@ -413,14 +406,14 @@ function( require,        Context,         BinaryReader,       PACKETVER,       
 	 * @param {number} long ip
 	 * @return {string} ip
 	 */
-	function UtilsLongToIP( long )
+	function utilsLongToIP( long )
 	{
 		var buf    = new ArrayBuffer(4);
 		var uint8  = new Uint8Array(buf);
 		var uint32 = new Uint32Array(buf);
 		uint32[0]  = long;
 
-		return Array.prototype.join.call( uint8, "." );
+		return Array.prototype.join.call( uint8, '.' );
 	}
 
 
@@ -429,14 +422,14 @@ function( require,        Context,         BinaryReader,       PACKETVER,       
 	 */
 	return new function Network()
 	{
-		this.sendPacket     = SendPacket;
-		this.send           = Send;
-		this.setPing        = SetPing;
-		this.connect        = Connect;
-		this.guessPacketVer = GuessPacketVer;
-		this.hookPacket     = HookPacket;
-		this.close          = Close;
-		this.read           = Read;
+		this.sendPacket     = sendPacket;
+		this.send           = send;
+		this.setPing        = setPing;
+		this.connect        = connect;
+		this.guessPacketVer = guessPacketVer;
+		this.hookPacket     = hookPacket;
+		this.close          = close;
+		this.read           = read;
 
 		var keys;
 		var i, count;
@@ -454,14 +447,14 @@ function( require,        Context,         BinaryReader,       PACKETVER,       
 		count = keys.length;
 
 		for (i = 0; i < count; ++i) {
-			RegisterPacket( keys[i], PacketRegister[ keys[i] ] );
+			registerPacket( keys[i], PacketRegister[ keys[i] ] );
 		}
 
 		// Guess packetver
 		PacketGuess.call(this);
 
 		this.utils = {
-			longToIP: UtilsLongToIP
+			longToIP: utilsLongToIP
 		};
-	};
+	}();
 });

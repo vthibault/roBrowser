@@ -9,7 +9,7 @@
  */
 define(function( require )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -77,26 +77,26 @@ define(function( require )
 	 * Shime for requestAnimationFrame
 	 */
 	var _requestAnimationFrame =
-			   window.requestAnimationFrame
-			|| window.webkitRequestAnimationFrame
-			|| window.mozRequestAnimationFrame
-			|| window.oRequestAnimationFrame
-			|| window.msRequestAnimationFrame
-			|| function(callback, element){
-				window.setTimeout( callback, 1000/60 );
-			}
-		;
+		window.requestAnimationFrame        ||
+		window.webkitRequestAnimationFrame  ||
+		window.mozRequestAnimationFrame     ||
+		window.oRequestAnimationFrame       ||
+		window.msRequestAnimationFrame      ||
+		function(callback){
+			window.setTimeout( callback, 1000/60 );
+		}
+	;
 
 
 	/**
 	 * Initialize renderer
 	 */
-	Renderer.init = function Init( param )
+	Renderer.init = function init( param )
 	{
-		if( !this.gl ) {
-			this.canvas.style.position = "absolute";
-			this.canvas.style.top      = "0px";
-			this.canvas.style.left     = "0px";
+		if (!this.gl) {
+			this.canvas.style.position = 'absolute';
+			this.canvas.style.top      = '0px';
+			this.canvas.style.left     = '0px';
 			this.canvas.style.zIndex   =  0;
 
 			this.gl = WebGL.getContext( this.canvas, param );
@@ -120,8 +120,8 @@ define(function( require )
 	/**
 	 * Show renderer
 	 */
-	Renderer.show = function Show(){
-		if( !this.canvas.parentNode ) {
+	Renderer.show = function show(){
+		if (!this.canvas.parentNode) {
 			document.body.appendChild(this.canvas);
 		}
 	};
@@ -130,8 +130,8 @@ define(function( require )
 	/**
 	 * Remove renderer
 	 */
-	Renderer.remove = function Remove(){
-		if( this.canvas.parentNode ) {
+	Renderer.remove = function remove(){
+		if (this.canvas.parentNode) {
 			document.body.removeChild(this.canvas);
 		}
 	};
@@ -140,7 +140,7 @@ define(function( require )
 	/**
 	 * Get back WebGL Context
 	 */
-	Renderer.getContext = function GetContext()
+	Renderer.getContext = function getContext()
 	{
 		return this.gl;
 	};
@@ -149,7 +149,7 @@ define(function( require )
 	/**
 	 * Ask for resizing the window, avoid flooding the function (can flood the context), wait for 500ms each time
 	 */
-	Renderer.onResize = function OnResize()
+	Renderer.onResize = function onResize()
 	{
 		clearTimeout( this.resizeTimeOut );
 		this.resizeTimeOut = setTimeout( this.resize.bind(this), 500 );
@@ -159,7 +159,7 @@ define(function( require )
 	/**
 	 * Resizing window
 	 */
-	Renderer.resize = function Resize()
+	Renderer.resize = function resize()
 	{
 		this.width  = window.innerWidth  || document.body.offsetWidth;
 		this.height = window.innerHeight || document.body.offsetHeight;
@@ -207,14 +207,14 @@ define(function( require )
 	/**
 	 * Rendering scene
 	 */
-	Renderer._render = function Render()
+	Renderer._render = function render()
 	{
 		_requestAnimationFrame( this._render.bind(this), this.canvas );
 
 		this.tick = Date.now();
 		var i, count;
 
-		for( i = 0, count = this.renderCallbacks.length; i < count; ++i ) {
+		for (i = 0, count = this.renderCallbacks.length; i < count; ++i) {
 			this.renderCallbacks[i]( this.tick, this.gl );
 		}
 
@@ -225,13 +225,13 @@ define(function( require )
 	/**
 	 * Start rendering
 	 */
-	Renderer.render = function RenderCallback( fn )
+	Renderer.render = function renderCallback( fn )
 	{
-		if( fn ) {
+		if (fn) {
 			this.renderCallbacks.push(fn);
 		}
 
-		if( !this.rendering ) {
+		if (!this.rendering) {
 			this.rendering = true;
 			this._render();
 		}
@@ -241,16 +241,16 @@ define(function( require )
 	/**
 	 * Stop rendering
 	 */
-	Renderer.stop = function Stop( fn )
+	Renderer.stop = function stop( fn )
 	{
 		// No callback specified, remove all
-		if( !arguments.length ) {
+		if (!arguments.length) {
 			this.renderCallbacks.length = 0;
 			return;
 		}
 
 		var pos = this.renderCallbacks.indexOf(fn);
-		if( pos > -1 ) {
+		if (pos > -1) {
 			this.renderCallbacks.splice( pos, 1 );
 		}
 	};

@@ -12,7 +12,7 @@
 define( [ 'Utils/Executable',  'Network/PacketVerManager',  './Thread',  './MemoryManager', 'Utils/Texture'],
 function(        Executable,                  PACKETVER,       Thread,      Memory,                Texture)
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -21,39 +21,41 @@ function(        Executable,                  PACKETVER,       Thread,      Memo
 	 *
 	 * @param {Array} FileList to load
 	 */
-	function Init( files )
+	function init( files )
 	{
 		var i, count;
 
 		window.ROConfig = window.ROConfig || {};
 
+		function OnDate(date){
+			// Avoid errors
+			if (date > 20000000) {
+				PACKETVER.min = date;
+				PACKETVER.max = date;
+			}
+		}
+
 		// Find executable and set the packetver
 		if (!ROConfig.packetver || String(ROConfig.packetver).match(/^(executable|auto)$/i)) {
 			for (i = 0, count = files.length; i < count; ++i) {
-				if( Executable.isROExec(files[i]) ) {
-					Executable.getDate(files[i], function(date){
-						// Avoid errors
-						if( date > 20000000 ) {
-							PACKETVER.min = date;
-							PACKETVER.max = date;
-						}
-					});
+				if (Executable.isROExec(files[i])) {
+					Executable.getDate(files[i], OnDate);
 					break;
 				}
 			}
 		}
-		else if (typeof ROConfig.packetver === "number") {
+		else if (typeof ROConfig.packetver === 'number') {
 			PACKETVER.min = ROConfig.packetver;
 			PACKETVER.max = ROConfig.packetver;
 		}
 
 		// GRF Host config
 		if (ROConfig.remoteClient) {
-			Thread.send( "SET_HOST", ROConfig.remoteClient );
+			Thread.send( 'SET_HOST', ROConfig.remoteClient );
 		}
 
 		// Save full client
-		SavingFiles( files );
+		savingFiles( files );
 	}
 
 
@@ -62,7 +64,7 @@ function(        Executable,                  PACKETVER,       Thread,      Memo
 	 *
 	 * @param {Array} FileList
 	 */
-	function SavingFiles( files )
+	function savingFiles( files )
 	{
 		var progressbar = document.createElement('div');
 		var info        = document.createElement('div');
@@ -72,49 +74,49 @@ function(        Executable,                  PACKETVER,       Thread,      Memo
 
 		if (files.length) {
 			// Progressbar
-			progressbar.style.position        = "fixed";
-			progressbar.style.zIndex          = "2147483647";
-			progressbar.style.top             = "0px";
-			progressbar.style.left            = "0px";
-			progressbar.style.backgroundColor = "rgb(180,0,0)";
-			progressbar.style.transition      = "width 500ms linear";
-			progressbar.style.width           = "0px";
-			progressbar.style.height          = "3px";
+			progressbar.style.position        = 'fixed';
+			progressbar.style.zIndex          = '2147483647';
+			progressbar.style.top             = '0px';
+			progressbar.style.left            = '0px';
+			progressbar.style.backgroundColor = 'rgb(180,0,0)';
+			progressbar.style.transition      = 'width 500ms linear';
+			progressbar.style.width           = '0px';
+			progressbar.style.height          = '3px';
 			progressbar.onmouseover = function(){ info.style.display = 'block'; };
 			progressbar.onmouseout  = function(){ info.style.display = 'none' ; };
 
-			// Progress text on hover "Saving fullclient... (x%)"
-			info.textContent                   = "Saving fullclient... (0.00 %)"
-			info.style.position                = "absolute";
-			info.style.left                    = "20px";
-			info.style.top                     = "0px";
-			info.style.whiteSpace              = "nowrap";
-			info.style.zIndex                  = "2147483646";
-			info.style.height                  = "12px";
-			info.style.padding                 = "5px";
-			info.style.background              = "linear-gradient( rgb(180,0,0), rgb(136,0,0) 30%)";
-			info.style.color                   = "white";
-			info.style.textShadow              = "1px 1px black";
-			info.style.borderBottomLeftRadius  = "5px";
-			info.style.borderBottomRightRadius = "5px";
-			info.style.textAlign               = "center";
-			info.style.width                   = "160px";
-			info.style.display                 = "none";
+			// Progress text on hover 'Saving fullclient... (x%)'
+			info.textContent                   = 'Saving fullclient... (0.00 %)';
+			info.style.position                = 'absolute';
+			info.style.left                    = '20px';
+			info.style.top                     = '0px';
+			info.style.whiteSpace              = 'nowrap';
+			info.style.zIndex                  = '2147483646';
+			info.style.height                  = '12px';
+			info.style.padding                 = '5px';
+			info.style.background              = 'linear-gradient( rgb(180,0,0), rgb(136,0,0) 30%)';
+			info.style.color                   = 'white';
+			info.style.textShadow              = '1px 1px black';
+			info.style.borderBottomLeftRadius  = '5px';
+			info.style.borderBottomRightRadius = '5px';
+			info.style.textAlign               = 'center';
+			info.style.width                   = '160px';
+			info.style.display                 = 'none';
 
 			document.body.appendChild(progressbar);
 			document.body.appendChild(info);
 
 			// Get progress on saving the client
-			Thread.hook( "CLIENT_SAVE_PROGRESS", function(data){
+			Thread.hook( 'CLIENT_SAVE_PROGRESS', function(data){
 				var now = Date.now();
-				if( last_tick + 400 < now ) {
+				if (last_tick + 400 < now) {
 					progressbar.style.width = data.total.perc + '%';
-					info.textContent = "Saving fullclient... ("+ data.total.perc +" %)"
+					info.textContent = 'Saving fullclient... ('+ data.total.perc +' %)';
 					last_tick = now;
 				}
 			});
 
-			Thread.hook( "CLIENT_SAVE_COMPLETE", function(data){
+			Thread.hook( 'CLIENT_SAVE_COMPLETE', function(){
 				if (progressbar.parentNode) {
 					document.body.removeChild(progressbar);
 				}
@@ -124,7 +126,7 @@ function(        Executable,                  PACKETVER,       Thread,      Memo
 			});
 
 			// Seems like files property are reset when sent to another thread
-			for (i=0, count = files.length; i < count; ++i) {
+			for (i = 0, count = files.length; i < count; ++i) {
 				list.push({
 					file: files[i],
 					path: files[i].fullPath || files[i].relativePath || files[i].webkitRelativePath || files[i].name
@@ -133,7 +135,7 @@ function(        Executable,                  PACKETVER,       Thread,      Memo
 		}
 
 		// Initialize client files (load GRF, etc).
-		Thread.send( "CLIENT_INIT", {
+		Thread.send( 'CLIENT_INIT', {
 			files:   list,
 			grfList: ROConfig.grfList || 'DATA.INI',
 			save:    !!ROConfig.saveFiles
@@ -151,7 +153,7 @@ function(        Executable,                  PACKETVER,       Thread,      Memo
 	 */
 	var getFile = function getFilClosure()
 	{
-		var _input = { filename:"", args:null };
+		var _input = { filename:'', args:null };
 
 		function callback(data, error, input)
 		{
@@ -160,11 +162,11 @@ function(        Executable,                  PACKETVER,       Thread,      Memo
 
 		return function getFile( filename, onload, onerror, args )
 		{
-			if( !Memory.exist(filename) ) {
+			if (!Memory.exist(filename)) {
 				_input.filename = filename;
 				_input.args     = args || null;
 
-				Thread.send( "GET_FILE", _input, callback );
+				Thread.send( 'GET_FILE', _input, callback );
 			}
 
 			return Memory.get( filename, onload, onerror );
@@ -178,7 +180,8 @@ function(        Executable,                  PACKETVER,       Thread,      Memo
 	 * @param {string[]} filenames
 	 * @param {function} callback once loaded
 	 */
-	function getFiles( filenames, callback ) {
+	function getFiles( filenames, callback )
+	{
 		var count, index;
 		var out;
 	
@@ -213,7 +216,7 @@ function(        Executable,                  PACKETVER,       Thread,      Memo
 	 */
 	var loadFile = function loadFileClosure()
 	{
-		var _input = { filename:"", args:null };
+		var _input = { filename:'', args:null };
 
 		function callback(data, error, input)
 		{
@@ -221,11 +224,11 @@ function(        Executable,                  PACKETVER,       Thread,      Memo
 			var gl, frames, texture, palette;
 			var precision, size;
 
-			if( data && !error) {
-				switch( input.filename.substr(-3) ){
+			if (data && !error) {
+				switch (input.filename.substr(-3)){
 					// Remove magenta on textures
 					case 'bmp':
-						Texture( data, function(){
+						Texture.load( data, function(){
 							Memory.set( input.filename, this.toDataURL(), error);
 						});
 					return;
@@ -236,7 +239,7 @@ function(        Executable,                  PACKETVER,       Thread,      Memo
 					count  = frames.length;
 
 					// Send sprites to GPU
-					for( i = 0; i < count; i++ ) {
+					for (i = 0; i < count; i++) {
 						frames[i].texture = gl.createTexture();
 						precision  = frames[i].type ? gl.LINEAR : gl.NEAREST;
 						size       = frames[i].type ? gl.RGBA   : gl.LUMINANCE;
@@ -247,7 +250,7 @@ function(        Executable,                  PACKETVER,       Thread,      Memo
 					}
 
 					// Send palette to GPU
-					if( data.rgba_index !== 0 ) {
+					if (data.rgba_index !== 0) {
 						data.texture = gl.createTexture();
 						gl.bindTexture( gl.TEXTURE_2D, data.texture );
 						gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 256, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, data.palette );
@@ -280,11 +283,11 @@ function(        Executable,                  PACKETVER,       Thread,      Memo
 
 		return function loadFile( filename, onload, onerror, args )
 		{
-			if( !Memory.exist(filename) ) {
+			if (!Memory.exist(filename)) {
 				_input.filename = filename;
 				_input.args     = args || null;
 
-				Thread.send("LOAD_FILE", _input, callback);
+				Thread.send('LOAD_FILE', _input, callback);
 			}
 	
 			return Memory.get( filename, onload, onerror );
@@ -298,7 +301,8 @@ function(        Executable,                  PACKETVER,       Thread,      Memo
 	 * @param {string[]} filenames
 	 * @param {function} callback once loaded
 	 */
-	function loadFiles( filenames, callback ) {
+	function loadFiles( filenames, callback )
+	{
 		var count, index;
 		var out;
 
@@ -329,9 +333,10 @@ function(        Executable,                  PACKETVER,       Thread,      Memo
 	 * @param regex
 	 * @param callback
 	 */
-	function search(regex, callback) {
+	function search(regex, callback)
+	{
 		Thread.send(
-			"SEARCH_FILE",
+			'SEARCH_FILE',
 			regex,
 			callback
 		);
@@ -342,7 +347,7 @@ function(        Executable,                  PACKETVER,       Thread,      Memo
 	 * Export
 	 */
 	var Client = {
-		init:          Init,
+		init:          init,
 		getFile:       getFile,
 		getFiles:      getFiles,
 		loadFile:      loadFile,

@@ -11,7 +11,7 @@
 
 define( ['./PacketStructure'], function( PACKET )
 {
-	"use strict";
+	'use strict';
 
 
 	return {

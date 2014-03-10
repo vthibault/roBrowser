@@ -10,7 +10,7 @@
 
 define( ['Utils/BinaryReader'], function( BinaryReader )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -20,7 +20,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 	 */
 	function GAT( data )
 	{
-		if( data ) {
+		if (data) {
 			this.load( data );
 		}
 	}
@@ -57,7 +57,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 	 *
 	 * @param {ArrayBuffer} data
 	 */
-	GAT.prototype.load = function Load( data )
+	GAT.prototype.load = function load( data )
 	{
 		var fp, header, cells;
 		var version, width, height, i, count;
@@ -66,8 +66,8 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 		header    = fp.readString(4);
 
 		// Well, the file should be a gat file, noh ?
-		if ( header !== "GRAT" ) {
-			throw new Error("GAT::load() - Invalid header '"+ header + "', must be 'GRAT'");
+		if ( header !== 'GRAT' ) {
+			throw new Error('GAT::load() - Invalid header "'+ header + '", must be "GRAT"');
 		}
 
 		// Load parameters
@@ -98,7 +98,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 	/**
 	 * Compile GAT file
 	 */
-	GAT.prototype.compile = function Compile()
+	GAT.prototype.compile = function compile()
 	{
 		// Return some usefulls things.
 		return {

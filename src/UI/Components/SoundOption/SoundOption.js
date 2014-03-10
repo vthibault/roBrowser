@@ -9,7 +9,7 @@
  */
 define(function(require)
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -34,7 +34,7 @@ define(function(require)
 	/**
 	 * @var {Preferences} window option
 	 */
-	SoundOption.preferences=  Preferences.get('SoundOption', {
+	var _preferences=  Preferences.get('SoundOption', {
 		x:    300,
 		y:    300,
 	}, 1.0);
@@ -45,7 +45,7 @@ define(function(require)
 	 */
 	SoundOption.init = function Init()
 	{
-		this.ui.find('.close').click(function( event ){
+		this.ui.find('.close').click(function(){
 			this.remove();
 		}.bind(this));
 
@@ -108,14 +108,14 @@ define(function(require)
 	SoundOption.onAppend = function OnAppend()
 	{
 		this.ui.css({
-			top:     this.preferences.y,
-			left:    this.preferences.x,
+			top:     _preferences.y,
+			left:    _preferences.x
 		});
 
 		this.ui.find('.sound').val(AudioSettings.Sound.volume * 100);
 		this.ui.find('.bgm').val( AudioSettings.BGM.volume * 100);
 		this.ui.find('.sound_state')[0].checked = AudioSettings.Sound.play;
-		this.ui.find('.bgm_state')[0].checked   = AudioSettings.BGM.play
+		this.ui.find('.bgm_state')[0].checked   = AudioSettings.BGM.play;
 	};
 
 
@@ -124,9 +124,9 @@ define(function(require)
 	 */
 	SoundOption.onRemove = function OnRemove()
 	{
-		this.preferences.x    = parseInt(this.ui.css('left'), 10);
-		this.preferences.y    = parseInt(this.ui.css('top'), 10);
-		this.preferences.save();
+		_preferences.x    = parseInt(this.ui.css('left'), 10);
+		_preferences.y    = parseInt(this.ui.css('top'), 10);
+		_preferences.save();
 	};
 
 

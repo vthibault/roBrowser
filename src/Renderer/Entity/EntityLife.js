@@ -9,7 +9,7 @@
  */
 define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -32,7 +32,7 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 		this.display = false;
 		this.canvas  = document.createElement('canvas');
 		this.ctx     = this.canvas.getContext('2d');
-		this.canvas.style.position = "absolute";
+		this.canvas.style.position = 'absolute';
 		this.canvas.style.zIndex   = 1;
 	}
 
@@ -40,10 +40,10 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 	/**
 	 * Remove Life GUI
 	 */
-	Life.prototype.remove = function Remove()
+	Life.prototype.remove = function remove()
 	{
 		this.display = false;
-		if ( this.canvas && this.canvas.parentNode ) {
+		if (this.canvas && this.canvas.parentNode) {
 			document.body.removeChild(this.canvas);
 		}
 	};
@@ -52,7 +52,7 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 	/**
 	 * Clean Up Life
 	 */
-	Life.prototype.clean = function Clean()
+	Life.prototype.clean = function clean()
 	{
 		this.remove();
 		//this.ctx    = null;
@@ -63,12 +63,12 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 	/**
 	 * Update life
 	 */
-	Life.prototype.update = function Update()
+	Life.prototype.update = function update()
 	{
 		var width  = 60, height =  5;
 
 		// Don't display it, if negatives values.
-		if ( this.hp < 0 || this.hp_max < 0 ) {
+		if (this.hp < 0 || this.hp_max < 0) {
 			this.remove();
 			return;
 		}
@@ -81,11 +81,11 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 		var sp_per   = this.sp / this.sp_max;
 
 		// Add to DOM
-		if( !this.canvas.parentNode ) {
+		if (!this.canvas.parentNode) {
 			document.body.appendChild(this.canvas);
 		}
 
-		if( sp ) {
+		if (sp) {
 			height += 4;
 		}
 
@@ -106,7 +106,7 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 		ctx.fillRect( 1, 1, Math.round( (width-2) * hp_per ), 3 );
 
 		// Display SP
-		if ( sp ) {
+		if (sp) {
 			ctx.fillStyle = '#10189c';
 			ctx.fillRect( 0, 4, width, 1);
 			ctx.fillStyle = '#1863de';
@@ -144,8 +144,8 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 		_pos[1] = _size[1] - Math.round(_size[1] * (_pos[1] * z));
 
 
-		canvas.style.top  = (_pos[1] | 0 ) + "px";
-		canvas.style.left = ((_pos[0] - canvas.width / 2) | 0) + "px";
+		canvas.style.top  = (_pos[1] | 0 ) + 'px';
+		canvas.style.left = ((_pos[0] - canvas.width / 2) | 0) + 'px';
 	};
 
 

@@ -9,7 +9,7 @@
  */
 define(['Renderer/Renderer', 'DB/DBManager'], function( Renderer, DB )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -60,7 +60,7 @@ define(['Renderer/Renderer', 'DB/DBManager'], function( Renderer, DB )
 	{
 		var anim = this.animation;
 
-		if ( option.delay ) {
+		if (option.delay) {
 			anim.delay   = option.delay + 0;
 			option.delay = 0;
 			anim.save    = option;
@@ -68,7 +68,7 @@ define(['Renderer/Renderer', 'DB/DBManager'], function( Renderer, DB )
 		else {
 
 			// Know attack frame based on weapon type
-			if( option.action === this.ACTION.ATTACK && this.objecttype === this.constructor.TYPE_PC ) {
+			if (option.action === this.ACTION.ATTACK && this.objecttype === this.constructor.TYPE_PC) {
 				var attack    = DB.getWeaponAction( this.weapon, this._job );
 				option.action = [ this.ACTION.ATTACK1, this.ACTION.ATTACK2, this.ACTION.ATTACK3 ][attack];
 			}
@@ -78,7 +78,7 @@ define(['Renderer/Renderer', 'DB/DBManager'], function( Renderer, DB )
 			anim.delay  = 0;
 			anim.frame  = option.frame  || 0;
 			anim.repeat = option.repeat || false;
-			anim.play   = typeof option.play !== "undefined" ? option.play : true;
+			anim.play   = typeof option.play !== 'undefined' ? option.play : true;
 			anim.next   = option.next   || false;
 			anim.save   = false;
 		}
@@ -95,7 +95,7 @@ define(['Renderer/Renderer', 'DB/DBManager'], function( Renderer, DB )
 		this.setAction = setAction;
 		var Entity     = this.constructor;
 
-		switch( this.objecttype ) {
+		switch (this.objecttype) {
 
 			// Define action, base on type
 			case Entity.TYPE_PC:

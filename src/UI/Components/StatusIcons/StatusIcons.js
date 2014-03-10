@@ -9,7 +9,7 @@
  */
 define(function( require )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -19,7 +19,6 @@ define(function( require )
 	var jQuery             = require('Utils/jquery');
 	var Texture            = require('Utils/Texture');
 	var Client             = require('Core/Client');
-	var Renderer           = require('Renderer/Renderer');
 	var UIManager          = require('UI/UIManager');
 	var UIComponent        = require('UI/UIComponent');
 
@@ -69,20 +68,20 @@ define(function( require )
 		var ui = this.ui;
 		var target;
 
-		if( !(index in StatusTable) ) {
+		if (!(index in StatusTable)) {
 			return;
 		}
 
 		target = ui.find('.effect' + index);
 
-		if( !state ) {
+		if (!state) {
 			target.remove();
 			return;
 		}
 
-		if( !target.length ) {
+		if (!target.length) {
 			Client.loadFile( 'data/texture/effect/' + StatusTable[index], function(data){
-				Texture( data, function(){
+				Texture.load( data, function(){
 					this.className = 'effect'+ index;
 					ui.append(this);
 				});

@@ -8,7 +8,7 @@
  * @author Vincent Thibault
  */
 
-define(['./SkillId'], function( SKID )
+define(["./SkillId"], function( SKID )
 {
 	"use strict";
 
@@ -26,7 +26,7 @@ define(['./SkillId'], function( SKID )
 		"^777777Allows the trading of items with other characters. ^990000Right click on a character to initiate a trade.^000000",
 		"[Lv 2]: Enables Emotions",
 		"^777777Use Alt+(0~9) and",
-		"Ctrl+(1,-,=.\) keys to express emotions. Alt+L will open a window with additional Emotion icons.^000000",
+		"Ctrl+(1,-,=.\\) keys to express emotions. Alt+L will open a window with additional Emotion icons.^000000",
 		"[Lv 3]: Enables Sitting",
 		"^777777Enables the character to sit, which doubles HP/SP Recovery Speed. ^990000To sit, press the Insert key or enter the /sit command in the Chat Window.^000000",
 		"[Lv 4]: Enables Chat Room Creation",
@@ -2847,7 +2847,7 @@ define(['./SkillId'], function( SKID )
 		"Effect:^777777 Gives character the Cloaked effect, it makes the user invisible to players and monsters but you don't lose the ability to move. Cloaked characters do not regenerate HP or SP, they can attack but this uncloaks them.",
 		"Attacking while being cloaked doubles the critical rate for that hit. Insects, Demons and Boss monsters see through this invisibility.",
 		"The Cloaked effect may be cancelled at any time by using the skill again (no SP Cost), by getting hit, reaching SP 0 or by coming into the area of effect of Attention Concentrate, Ruwach or Sight.",
-		"Lower Skill Levels don�t let you attack or use skills and require a wall next to you to allow movement. The movement speed increase does not stack with the one from Improve Dodge.",
+		"Lower Skill Levels don't let you attack or use skills and require a wall next to you to allow movement. The movement speed increase does not stack with the one from Improve Dodge.",
 		"Movement speed:",
 		"with wall / without wall ^000000",
 		"[LV 1]^777777 100% / can't move ^000000",
@@ -3769,11 +3769,11 @@ define(['./SkillId'], function( SKID )
 		"Effect:^777777 Summon various plants to attack monsters or players. The level you have determines the HP of the plant, while the level you use determines the type of plant summoned, the duration, and the amount of ^66cc33Plant Bottles^777777 consumed.",
 		"The HP formula is 2230+200*Possessed SkillLV per plant (yes, these have significantly more HP than normal ones), all other stats remain the same. If you have less than the total amount of bottles required for the Skill Level you used, it will take the rest of the bottles, and summon that many plants.",
 
-		"So if you have three plant bottles, and use level one, you�ll end up with three Mandragora instead of the typical five. When used during the War of Emperium, the defense value of the castle the plants are in raises the defense of the plants themselves.",
+		"So if you have three plant bottles, and use level one, you'll end up with three Mandragora instead of the typical five. When used during the War of Emperium, the defense value of the castle the plants are in raises the defense of the plants themselves.",
 		"Their attacks are considered extensions of your own when it comes to a single thing: auto-cast spells granted by weapons or cards. Status effects and damage increasing cards do not carry over to the plants.",
 		"You can only summon more plants once your first plants have died, or gone through their duration time. So long as you remain on screen with them, you will get the experience for their kills.",
 		"An effective strategy for all the plants is to summon them, hit/target a monster, and then use a Hiding accessory once the monster is in range of your plants.",
-		"Monsters will not attack your plants, thus rendering them sitting ducks until your plants have had their way with them, provided they�re not insect or demon type monsters.",
+		"Monsters will not attack your plants, thus rendering them sitting ducks until your plants have had their way with them, provided they're not insect or demon type monsters.",
 		"The attacks are of neutral element with the occasional elemental attack corresponding to the plants element. The HIT/Flee stats below are what's required of players to hit/dodge them, not the HIT or Flee of the plant itself.",
 		"[LV 1]^777777 5 Mandragoras, 5 ^66cc33Plant Bottle^777777",
 		"ATK: 26-35",
@@ -3814,7 +3814,7 @@ define(['./SkillId'], function( SKID )
 		"Flee: 199",
 		"ASPD: Average.",
 		"Range: 3",
-		"Tip: randomly casts a 1024 HP Heal on allies. On specific servers (Aegis) in PvP only heals you if you�re in a party, it�s required for the Geographer to recognize you as a valid target for healing even if you are the only member. ^000000",
+		"Tip: randomly casts a 1024 HP Heal on allies. On specific servers (Aegis) in PvP only heals you if you're in a party, it's required for the Geographer to recognize you as a valid target for healing even if you are the only member. ^000000",
 
 	].join("\n");
 
@@ -9541,20 +9541,20 @@ define(['./SkillId'], function( SKID )
 	exports[SKID.GM_SANDMAN] = [
 
 		"Lullaby",
-		"Type : ^777777 Active ^bb00bb(����)^000000",
-		"Effect : ^777777������ ���� �� ���� ���尡�� �ҷ� ������ �����ð� ��� �� ���� �������·� ������.^000000",
+		"Type : ^777777 Active ^bb00bb('''')^000000",
+		"Effect : ^777777'''''' '''' '' '''' '''尡'' 'ҷ' '''''' '''''ð' ''' '' '''' '''''''·' ''''''.^000000",
 	].join("\n");
 
 	exports[SKID.ALL_CATCRY] = [
 
 		"Cat Cry",
-		"Effect : ���� : ^777777�㸦 �ѾƳ��� ���� �������� �����Ҹ��� ����.^000000",
+		"Effect : '''' : ^777777'㸦 'ѾƳ''' '''' '''''''' '''''Ҹ''' ''''.^000000",
 	].join("\n");
 
 	exports[SKID.ALL_PARTYFLEE] = [
 
 		"Party Flee",
-		"Effect : ^777777��^000000\"",
+		"Effect : ^777777''^000000\"",
 	].join("\n");
 
 	exports[SKID.ALL_ANGEL_PROTECT] = [
@@ -9565,7 +9565,7 @@ define(['./SkillId'], function( SKID )
 	exports[SKID.ALL_DREAM_SUMMERNIGHT] = [
 
 		"Dream Summernight",
-		"Effect : ^777777�����ϸ� �� ���� ���� ���� �ٴ� �� �� ������ ����.^000000\"",
+		"Effect : ^777777'''''ϸ' '' '''' '''' '''' 'ٴ' '' '' '''''' ''''.^000000\"",
 	].join("\n");
 
 	exports[SKID.ALL_REVERSEORCISH] = [
@@ -10164,14 +10164,14 @@ define(['./SkillId'], function( SKID )
 		"Target:^777777 Enemy ^000000",
 		"Cast Time:^777777 Instant ^000000",
 		"Effect:^777777 Allows creation of new poisons. Higher levels of the skills unlocks new types of poisons and increases the probability of success. It is necessary to have medicine bottle and a poison creation kit. ^000000",
-		"[LV 1]^777777 35% Success Rate, Poison Name 'Paralize'		 20 Poison Toad Skin, 1 Amoena ^000000",
-		"[LV 2]^777777 40% Success Rate, Poison Name 'Pyrexia'   	 20 Anolian Skin, 1 Lantana ^000000",
-		"[LV 3]^777777 45% Success Rate, Poison Name 'Dishearth' 	 10 Decayed Nail, 1 Celatom ^000000",
-		"[LV 4]^777777 50% Success Rate, Poison Name 'Leech End' 	 1 Scoforia, 1 Nerium ^000000",
-		"[LV 5]^777777 55% Success Rate, Poison Name 'Antidote' 		 2 Green Herbs, 1 Blue Herb, 1 White Herb ^000000",
-		"[LV 6]^777777 60% Success Rate, Poison Name 'Venom Bleed'	 10 Sticky Poison, 1 Isildor ^000000",
-		"[LV 7]^777777 65% Success Rate, Poison Name 'Magic Mushroom' 	 10 Poison Spore, 1 Makulrata ^000000",
-		"[LV 8]^777777 70% Success Rate, Poison Name 'Toxin' 		 10 Sticky Poison, 1 Nerium ^000000",
+		"[LV 1]^777777 35% Success Rate, Poison Name 'Paralize' 20 Poison Toad Skin, 1 Amoena ^000000",
+		"[LV 2]^777777 40% Success Rate, Poison Name 'Pyrexia' 20 Anolian Skin, 1 Lantana ^000000",
+		"[LV 3]^777777 45% Success Rate, Poison Name 'Dishearth' 10 Decayed Nail, 1 Celatom ^000000",
+		"[LV 4]^777777 50% Success Rate, Poison Name 'Leech End' 1 Scoforia, 1 Nerium ^000000",
+		"[LV 5]^777777 55% Success Rate, Poison Name 'Antidote' 2 Green Herbs, 1 Blue Herb, 1 White Herb ^000000",
+		"[LV 6]^777777 60% Success Rate, Poison Name 'Venom Bleed' 10 Sticky Poison, 1 Isildor ^000000",
+		"[LV 7]^777777 65% Success Rate, Poison Name 'Magic Mushroom' 10 Poison Spore, 1 Makulrata ^000000",
+		"[LV 8]^777777 70% Success Rate, Poison Name 'Toxin' 10 Sticky Poison, 1 Nerium ^000000",
 		"[LV 9]^777777 75% Success Rate, Poison Name 'Oblivion Curse'	 10 Mermaid Heart, 1 Isildor ^000000",
 		"[LV 10]^777777 80% Success Rate ^000000",
 	].join("\n");
@@ -11296,7 +11296,7 @@ define(['./SkillId'], function( SKID )
 		"Your character will appear transparant. While in camouflage status your critical chance and attack power is increased, but decreases your defense.",
 		"When camouflage status ends your attack power, critical, and defense returns to normal. Until you re-use the skill to cancel its effect, it will continaully drain SP.",
 		"With high enough level you can use the skill without being near an obstacle. ^000000",
-		//[New Untranslated Desc] Effect: ������  ���̳� ���ֹ� ��ó�� ���� ����, �Ǹ�/�������� ������ �����Ϳ��� �߰����� �ʵ��� �Ѵ�. �����ִ� ������ ���� �������ϰ� ��������. ���� ������ �����ϰ� �ִ� ���� ũ��Ƽ�� Ȯ���� ���ݷ��� ����������, �ݴ��� �������� �����Ѵ�. ���� ���� ���¿��� �����Ǹ� ���ݷ°� ũ��Ƽ�� Ȯ��, �������� �������� ���ư���. ī���ö��� ���¿��� �����̳� ��ų�� �����ϸ� ���� ���� ���°� �����ȴ�. ���� ���� ���� ���ȿ��� ���������� SP �� �Ҹ��Ѵ�. ������ ������ ���ֹ� ��ó�� �ƴ϶��� ���� ������ ������ �� �ִ�. 
+		//[New Untranslated Desc] Effect: ''''''  '''̳' '''ֹ' ''ó'' '''' '''', 'Ǹ'/'''''''' '''''' '''''Ϳ''' '߰''''' 'ʵ''' 'Ѵ'. '''''ִ' '''''' '''' '''''''ϰ' ''''''''. '''' '''''' '''''ϰ' 'ִ' '''' ũ''Ƽ'' Ȯ'''' '''ݷ''' '''''''''', 'ݴ''' '''''''' '''''Ѵ'. '''' '''' '''¿''' '''''Ǹ' '''ݷ°' ũ''Ƽ'' Ȯ'', '''''''' '''''''' '''ư'''. ī'''ö''' '''¿''' '''''̳' ''ų'' '''''ϸ' '''' '''' '''°' '''''ȴ'. '''' '''' '''' '''ȿ''' '''''''''' SP '' 'Ҹ''Ѵ'. '''''' '''''' '''ֹ' ''ó'' 'ƴ϶''' '''' '''''' '''''' '' 'ִ'. 
 		"[LV 1]^777777 6 SP per Sec / Can't Move ^000000",
 		"[LV 2]^777777 5 SP per Sec / Can't Move ^000000",
 		"[LV 3]^777777 4 SP per Sec / 50% Move Speed ^000000",
@@ -15052,8 +15052,8 @@ define(['./SkillId'], function( SKID )
 		"Emblem Creation Process:",
 		"1. Select a design for the Emblem.",
 		"2. Emblems must be 24x24 pixels in BMP format using 256 colors",
-		"3. Create a folder named Emblem inside the Ragnarok Online folder (i.e. C:\Program Files\Gravity\RO) and copy the emblem file there.",
-		"If you are the guild master, you must place the emblem inside the Emblem folder in the game directory (i.e. C:\Program Files\Gravity\RO\Emblem). ^000000",
+		"3. Create a folder named Emblem inside the Ragnarok Online folder (i.e. C:\\Program Files\\Gravity\\RO) and copy the emblem file there.",
+		"If you are the guild master, you must place the emblem inside the Emblem folder in the game directory (i.e. C:\\Program Files\\Gravity\\RO\\Emblem). ^000000",
 	].join("\n");
 
 	exports[SKID.GD_LEADERSHIP] = [
@@ -15164,7 +15164,7 @@ define(['./SkillId'], function( SKID )
 		"Summon Legion",
 		"Max Level:^777777 5 ^000000",
 		"Duration:^777777 10 + 10*SkillLV ^000000",
-		"SP Cost:^777777 40 + 20*SkillLV ^000000", 
+		"SP Cost:^777777 40 + 20*SkillLV ^000000",
 		"Effect : ^777777 Summons an insect type monster to attack a single target.",
 		"The higher the skill level, the stronger the insect monster that is summoned.",
 		"[LV 1] ^777777 Summons Hornet / Duration 20 seconds^000000",
@@ -15207,11 +15207,11 @@ define(['./SkillId'], function( SKID )
 		"Max Level:^777777 5 ^000000",
 		"Effect : ^777777 Injects a target with a mild paralytic toxin, which delays the effects of damage taken.",
 		"The delayed damage is also reduced. However it causes a side effect of lowering attack speed. ^000000",
-		"[LV 1] ^777777 Duration 20 seconds^000000",		
-		"[LV 2] ^777777 Duration 30 seconds^000000",		
-		"[LV 3] ^777777 Duration 40 seconds^000000",		
-		"[LV 4] ^777777 Duration 50 seconds^000000",		
-		"[LV 5] ^777777 Duration 60 seconds^000000",		
+		"[LV 1] ^777777 Duration 20 seconds^000000",
+		"[LV 2] ^777777 Duration 30 seconds^000000",
+		"[LV 3] ^777777 Duration 40 seconds^000000",
+		"[LV 4] ^777777 Duration 50 seconds^000000",
+		"[LV 5] ^777777 Duration 60 seconds^000000",
 	].join("\n");
 
 	exports[SKID.MH_LIGHT_OF_REGENE] = [
@@ -15247,7 +15247,7 @@ define(['./SkillId'], function( SKID )
 
 		"Eraser Cutter",
 		"Max Level:^777777 5 ^000000",
-		"SP Cost:^777777 20 + 5*SkillLV ^000000", 
+		"SP Cost:^777777 20 + 5*SkillLV ^000000",
 		"Effect : ^777777 Cutting at the speed of sound, deals multiple blows to a single target at long range. ",
 		"Depending on the skill level, deals either Wind Element damage or Neutral Element damage. ^000000",
 		"[LV 1] ^777777 600% ATK / Wind Element Magic Damage ^000000",
@@ -15261,7 +15261,7 @@ define(['./SkillId'], function( SKID )
 
 		"Xeno Slasher",
 		"Max Level:^777777 5 ^000000",
-		"SP Cost:^777777 80 + 10*SkillLV ^000000", 
+		"SP Cost:^777777 80 + 10*SkillLV ^000000",
 		"Effect : ^777777 Fires an illusion cutter across a wide area. ",
 		"Like illusion cutter, the skill level affects the attribute of the attack. ",
 		"All targets that take damage have a small chance to receive the bleeding status. ^000000",
@@ -15376,7 +15376,7 @@ define(['./SkillId'], function( SKID )
 		"Silver Bain Rush",
 		"Max Level:^777777 5 ^000000",
 		"Effect : ^777777 Usable only in Fighter style. The skill must be used directly after Sonic Claw.",
-		"When used, consumes 1 spirit sphere.��",
+		"When used, consumes 1 spirit sphere.",
 		"Deals damage to the target as has a chance to cause stun. ^000000",
 		"[LV 1] ^777777 150% ATK / 25% Stun Chance ^000000",
 		"[LV 2] ^777777 300% ATK / 30% Stun Chance ^000000",
@@ -15514,7 +15514,7 @@ define(['./SkillId'], function( SKID )
 
 	exports[SKID.KO_YAMIKUMO] = [
 
-		"�Ͽ� (����)",
+		"'Ͽ' ('''')",
 		"Max Level:^777777 1 ^000000",
 		"Effect : ^777777 Hide one's presence. Similar to Thief hide skill.",
 		"Using this skill again and when SP becomes 0.",
@@ -15552,9 +15552,9 @@ define(['./SkillId'], function( SKID )
 
 		"Cross Strike",
 		"Max Level:^777777 5 ^000000",
-		"Effect : ^777777 ī�Էο� & �������� �հ�(��̪) ��ų. ���� ������ �������� ���� ���� �� 3 �ʰ� <���� ��ó> ���°� �ȴ�.",
-		"�� ���� ��ó ������ ���� �ٽ� ���ں����� �����ϸ�, ���� ���� �������� ���� �� �ִ�. ",
-		"�������� BaseLV �� ���� ���� �߰� �������� ���� �����Ѵ�. ^000000",
+		"Effect : ^777777 ī'Էο' & '''''''' 'հ'(''̪) ''ų. '''' '''''' '''''''' '''' '''' '' 3 'ʰ' <'''' ''ó> '''°' 'ȴ'.",
+		"'' '''' ''ó '''''' '''' 'ٽ' '''ں''''' '''''ϸ', '''' '''' '''''''' '''' '' 'ִ'. ",
+		"'''''''' BaseLV '' '''' '''' '߰' '''''''' '''' '''''Ѵ'. ^000000",
 		"[LV 1] ^777777 ATK 150% / Range 3 cells ^000000",
 		"[LV 2] ^777777 ATK 300% / Range 4 cells ^000000",
 		"[LV 3] ^777777 ATK 450% / Range 5 cells ^000000",
@@ -15564,10 +15564,10 @@ define(['./SkillId'], function( SKID )
 
 	exports[SKID.KO_SETSUDAN] = [
 
-		"��ȥ ���� (���� ��Ө)",
+		"''ȥ '''' ('''' ''Ө)",
 		"Max Level:^777777 5 ^000000",
-		"Effect : ^777777 ���� ��ǥ�� �ҿ︵Ŀ ��ų [��ȥ] �迭�� ������ �ް� ���� ����, �߰� �������� �߻��ϸ�",
-		"�ش� ��ȥ ��ų�� ������ ������Ų��. ��ȥ ��ų�� ������ ���� ���� �߰� �������� �����Ѵ�. ^000000",
+		"Effect : ^777777 '''' ''ǥ'' 'ҿ︵Ŀ ''ų [''ȥ] '迭'' '''''' 'ް' '''' '''', '߰' '''''''' '߻''ϸ'",
+		"'ش' ''ȥ ''ų'' '''''' ''''''Ų''. ''ȥ ''ų'' '''''' '''' '''' '߰' '''''''' '''''Ѵ'. ^000000",
 		"[LV 1] ^777777 ATK 100% ^000000",
 		"[LV 2] ^777777 ATK 200% ^000000",
 		"[LV 3] ^777777 ATK 300% ^000000",
@@ -15577,10 +15577,10 @@ define(['./SkillId'], function( SKID )
 
 	exports[SKID.KO_BAKURETSU] = [
 
-		"���� ������ (��ۡ����)",
+		"'''' '''''' (''ۡ'''')",
 		"Max Level:^777777 5 ^000000",
-		"Effect : ^777777 ���߷��� ���� �����̸� ����, ȿ�� ���� ���� ���� ������ ���ظ� �ش�.",
-		"��ų ���� ��, ���� ������ 1 ���� �Ҹ��Ѵ�. ���� �����̴� ������ ����â�� ������ �ִ� �͸����� �Ҹ��ȴ�. (���� ������ ���� �Ұ�)^000000",
+		"Effect : ^777777 '''߷''' '''' '''''̸' '''', ȿ'' '''' '''' '''' '''''' '''ظ' 'ش'.",
+		"''ų '''' '', '''' '''''' 1 '''' 'Ҹ''Ѵ'. '''' '''''̴' '''''' ''''â'' '''''' 'ִ' '͸''''' 'Ҹ''ȴ'. ('''' '''''' '''' 'Ұ')^000000",
 		"[LV 1] ^777777 Range 7 cells / Range of Effect 3 x 3^000000",
 		"[LV 2] ^777777 Range 8 cells / Range of Effect 3 x 3^000000",
 		"[LV 3] ^777777 Range 9 cells  / Range of Effect 3 x 3^000000",
@@ -15590,22 +15590,22 @@ define(['./SkillId'], function( SKID )
 
 	exports[SKID.KO_HAPPOKUNAI] = [
 
-		"�ȹ� ������ (��۰����)",
+		"'ȹ' '''''' (''۰'''')",
 		"Max Level:^777777 5 ^000000",
-		"Effect : ^777777 �ڽ��� �߽����� ���� ���� ���� ���� ������ �����̷� �������� ������.",
-		"��ų ���� ��, ������ ������ 8 ���� �Ҹ��Ѵ�. ^000000",
-		"[LV 1] ^777777 ���� 9 x 9 �� ^000000",
-		"[LV 2] ^777777 ���� 9 x 9 �� ^000000",
-		"[LV 3] ^777777 ���� 9 x 9 �� ^000000",
-		"[LV 4] ^777777 ���� 9 x 9 �� ^000000",
-		"[LV 5] ^777777 ���� 11 x 11 �� ^000000",
+		"Effect : ^777777 'ڽ''' '߽''''' '''' '''' '''' '''' '''''' '''''̷' '''''''' ''''''.",
+		"''ų '''' '', '''''' '''''' 8 '''' 'Ҹ''Ѵ'. ^000000",
+		"[LV 1] ^777777 '''' 9 x 9 '' ^000000",
+		"[LV 2] ^777777 '''' 9 x 9 '' ^000000",
+		"[LV 3] ^777777 '''' 9 x 9 '' ^000000",
+		"[LV 4] ^777777 '''' 9 x 9 '' ^000000",
+		"[LV 5] ^777777 '''' 11 x 11 '' ^000000",
 	].join("\n");
 
 	exports[SKID.KO_MUCHANAGE] = [
 
-		"���� ������ (����)",
+		"'''' '''''' ('''')",
 		"Max Level:^777777 10 ^000000",
-		"Effect : ^777777  ���� ��ų [���� ������] �� �Ŀ��� ��. �ִ� 100,000 Zeny �� ����, ���� ������ ���� ������ ������ ������ ���� ���÷��� �������� ���� �� �ִ�. ���� �����Ϳ��Դ� ������ ���ظ��� ������. ^000000",
+		"Effect : ^777777  '''' ''ų ['''' ''''''] '' 'Ŀ''' ''. 'ִ' 100,000 Zeny '' '''', '''' '''''' '''' '''''' '''''' '''''' '''' '''÷''' '''''''' '''' '' 'ִ'. '''' '''''Ϳ''Դ' '''''' '''ظ''' ''''''. ^000000",
 		"[LV 1] ^777777 Consumes 10,000 zeny / Damage 5,000 ~ 10,000 ^000000",
 		"[LV 2] ^777777 Consumes 20,000 zeny / Damage 10,000 ~ 20,000^000000",
 		"[LV 3] ^777777 Consumes 30,000 zeny / Damage 15,000 ~ 30,000^000000",
@@ -15620,10 +15620,10 @@ define(['./SkillId'], function( SKID )
 
 	exports[SKID.KO_HUUMARANKA] = [
 
-		"ǳ�������� ��ȭ (��ت������ - ����)",
+		"ǳ'''''''' ''ȭ (''ت'''''' - '''')",
 		"Max Level:^777777 5 ^000000",
-		"Effect : ^777777 ǳ���������� ���� 7 x 7 �� ���� ���� ���� ������ �������� ������.",
-		"�����ڰ� ������ [���� ��ų : ǳ�������� ������] ���� �� DEX / AGI �� ���� ���� ���ݷ��� �����Ѵ�.^000000",
+		"Effect : ^777777 ǳ'''''''''' '''' 7 x 7 '' '''' '''' '''' '''''' '''''''' ''''''.",
+		"'''''ڰ' '''''' ['''' ''ų : ǳ'''''''' ''''''] '''' '' DEX / AGI '' '''' '''' '''ݷ''' '''''Ѵ'.^000000",
 		"[LV 1] ^777777 ATK 150 % / Range 9 cells ^000000",
 		"[LV 2] ^777777 ATK 300 % / Range 10 cells ^000000",
 		"[LV 3] ^777777 ATK 450 % / Range 11 cells ^000000",
@@ -15633,23 +15633,23 @@ define(['./SkillId'], function( SKID )
 
 	exports[SKID.KO_MAKIBISHI] = [
 
-		"��Ű���� (������ �Ѹ���)",
+		"''Ű'''' ('''''' 'Ѹ''')",
 		"Max Level:^777777 5 ^000000",
-		"Effect : ^777777 ���������� ħ�� �޸� ������ ���� �����̸� �ڽ� �ֺ��� �ٴڿ� �ѷ�, �̰��� ���� ���� �Ͻ������� �̵��Ҵ��̳� ���� ���·� ������. ",
-		"��ų ������ ���� ���� �ٴڿ� �Ѹ��� ������ �����ϸ�, �̵� �߿��� ��ų ������ �����ϴ�.^000000",
-		"[LV 1] ^777777 ������ �Ҹ� ���� 3 ��  ^000000",
-		"[LV 2] ^777777 ������ �Ҹ� ���� 4 ��  ^000000",
-		"[LV 3] ^777777 ������ �Ҹ� ���� 5 ��  ^000000",
-		"[LV 4] ^777777 ������ �Ҹ� ���� 6 ��  ^000000",
-		"[LV 5] ^777777 ������ �Ҹ� ���� 7 ��  ^000000",
+		"Effect : ^777777 '''''''''' ħ'' '޸' '''''' '''' '''''̸' 'ڽ' 'ֺ''' 'ٴڿ' 'ѷ', '̰''' '''' '''' 'Ͻ''''''' '̵''Ҵ''̳' '''' '''·' ''''''. ",
+		"''ų '''''' '''' '''' 'ٴڿ' 'Ѹ''' '''''' '''''ϸ', '̵' '߿''' ''ų '''''' '''''ϴ'.^000000",
+		"[LV 1] ^777777 '''''' 'Ҹ' '''' 3 ''  ^000000",
+		"[LV 2] ^777777 '''''' 'Ҹ' '''' 4 ''  ^000000",
+		"[LV 3] ^777777 '''''' 'Ҹ' '''' 5 ''  ^000000",
+		"[LV 4] ^777777 '''''' 'Ҹ' '''' 6 ''  ^000000",
+		"[LV 5] ^777777 '''''' 'Ҹ' '''' 7 ''  ^000000",
 	].join("\n");
 
 	exports[SKID.KO_MEIKYOUSISUI] = [
 
-		"�������� ((٥������)",
+		"'''''''' ((٥'''''')",
 		"Max Level:^777777 5 ^000000",
-		"Effect : ^777777 10 �ʰ� ������ �����Ͽ� HP, SP �� ���� �ӵ��� ȸ���Ѵ�. ��ų ���� �߿��� ������ �̵��Ұ� ���°� �ȴ�. ",
-		"�������� ���¿��� ������ �޾��� ��, ���� Ȯ���� �������� ���� ���� ���� �ִ�.^000000",
+		"Effect : ^777777 10 'ʰ' '''''' '''''Ͽ' HP, SP '' '''' 'ӵ''' ȸ'''Ѵ'. ''ų '''' '߿''' '''''' '̵''Ұ' '''°' 'ȴ'. ",
+		"'''''''' '''¿''' '''''' '޾''' '', '''' Ȯ'''' '''''''' '''' '''' '''' 'ִ'.^000000",
 		"[LV 1] ^777777 Recovers HP by 2% / SP by 1% per second ^000000",
 		"[LV 2] ^777777 Recovers HP by 4% / SP by 2% per second ^000000",
 		"[LV 3] ^777777 Recovers HP by 6% / SP by 3% per second ^000000",
@@ -15659,10 +15659,10 @@ define(['./SkillId'], function( SKID )
 
 	exports[SKID.KO_ZANZOU] = [
 
-		"ȯ�� - �ܻ� (���� - ����)",
+		"ȯ'' - 'ܻ' ('''' - '''')",
 		"Max Level:^777777 5 ^000000",
-		"Effect : ^777777 ȯ���� �ڽŰ� �Ȱ��� �н��� ������ ����. ������ �� �н��� ������ HP�� ������, HP�� 0 �� �Ǹ� �Ҹ��Ѵ�.",
-		"�������� MSP ���� ���� ����, �ܻ��� �߰����� HP �� ���Եȴ�.^000000",
+		"Effect : ^777777 ȯ'''' 'ڽŰ' 'Ȱ''' 'н''' '''''' ''''. '''''' '' 'н''' '''''' HP'' '''''', HP'' 0 '' 'Ǹ' 'Ҹ''Ѵ'.",
+		"'''''''' MSP '''' '''' '''', 'ܻ''' '߰''''' HP '' '''Եȴ'.^000000",
 		"[LV 1] ^777777 Clone HP 6000 ^000000",
 		"[LV 2] ^777777 Clone HP 9000 ^000000",
 		"[LV 3] ^777777 Clone HP 12000 ^000000",
@@ -15672,11 +15672,11 @@ define(['./SkillId'], function( SKID )
 
 	exports[SKID.KO_KYOUGAKU] = [
 
-		"ȯ�� - ���� (����- ����)",
+		"ȯ'' - '''' (''''- '''')",
 		"Max Level:^777777 5 ^000000",
-		"Effect : ^777777 ���� 1 ü���� ȯ���� �ɾ�, ������ ���� ������ ���Ͻ�Ű�� ������ �����ͷ� �ٲ��� �Ѵ�.",
-		"�� ȿ���� �ɸ� ������ ���ӽð� ���� ������ �ٲٰų� ������ �� ���� �ȴ�. �� ȿ���� �Ʊ� �� �����Ϳ��Դ� �������� �ʴ´�.",
-		"�� ��ų�� ������������ ���� �����ϴ�.^000000",
+		"Effect : ^777777 '''' 1 ü'''' ȯ'''' 'ɾ', '''''' '''' '''''' '''Ͻ'Ű'' '''''' '''''ͷ' 'ٲ''' 'Ѵ'.",
+		"'' ȿ'''' 'ɸ' '''''' '''ӽð' '''' '''''' 'ٲٰų' '''''' '' '''' 'ȴ'. '' ȿ'''' 'Ʊ' '' '''''Ϳ''Դ' '''''''' 'ʴ´'.",
+		"'' ''ų'' '''''''''''' '''' '''''ϴ'.^000000",
 		"[LV 1] ^777777 Reduce all stats by 2 ~ 3 ^000000",
 		"[LV 2] ^777777 Reduce all stats by 4 ~ 6 ^000000",
 		"[LV 3] ^777777 Reduce all stats by 6 ~ 9 ^000000",
@@ -15686,86 +15686,86 @@ define(['./SkillId'], function( SKID )
 
 	exports[SKID.KO_JYUSATSU] = [
 
-		"ȯ�� - �ֻ� (����- ��߯)",
+		"ȯ'' - 'ֻ' (''''- ''߯)",
 		"Max Level:^777777 5 ^000000",
-		"Effect : ^777777 ���� 1 ü���� ȯ���� �ɾ�, ������ HP�� ���ҽ�Ű�� ���ָ� �Ǵ�.",
-		"���� ���� Ȯ���� �����̻� [�ڸ�] �� �Ǵ�. �� [�ڸ�] �����̻��� �ڽŰ� ���ų� �ڽź��� ���� ������",
-		"���뿡�Ը� �����Ǹ�. �����Ϳ��Դ� �������� �ʴ´�.^000000",
+		"Effect : ^777777 '''' 1 ü'''' ȯ'''' 'ɾ', '''''' HP'' '''ҽ'Ű'' '''ָ' 'Ǵ'.",
+		"'''' '''' Ȯ'''' '''''̻' ['ڸ'] '' 'Ǵ'. '' ['ڸ'] '''''̻''' 'ڽŰ' '''ų' 'ڽź''' '''' ''''''",
+		"'''뿡'Ը' '''''Ǹ'. '''''Ϳ''Դ' '''''''' 'ʴ´'.^000000",
 	].join("\n");
 
 	exports[SKID.KO_GENWAKU] = [
 
-		"ȯ�� - ȯȤ (���� - ����)",
+		"ȯ'' - ȯȤ ('''' - '''')",
 		"Max Level:^777777 5 ^000000",
-		"Effect : ^777777 ��ǥ ������ �ڽ��� ��ġ�� ���� �ٲ۴�. ������ �� ������ ���� Ȯ���� �����̻� [ȥ��]�� ���� ���� �ִ�.^000000",
+		"Effect : ^777777 ''ǥ '''''' 'ڽ''' ''ġ'' '''' 'ٲ۴'. '''''' '' '''''' '''' Ȯ'''' '''''̻' [ȥ'']'' '''' '''' 'ִ'.^000000",
 	].join("\n");
 
 	exports[SKID.KO_IZAYOI] = [
 
-		"�� ������°�� �� (������)",
+		"'' ''''''°'' '' ('''''')",
 		"Max Level:^777777 5 ^000000",
-		"Effect : ^777777 ��ų ���� �� ���ڰ� �����ϴ� ���� ��ų�� ���� ĳ������ ��������, ���� ĳ���� �ð��� �������� �پ�����,  MATK �� ����ġ �����Ѵ�.^000000",
+		"Effect : ^777777 ''ų '''' '' '''ڰ' '''''ϴ' '''' ''ų'' '''' ĳ'''''' '''''''', '''' ĳ'''' 'ð''' '''''''' 'پ''''',  MATK '' ''''ġ '''''Ѵ'.^000000",
 	].join("\n");
 
 	exports[SKID.KO_KAHU_ENTEN] = [
 
-		"ȭ�� : ��õ (��ݬ : ����)",
+		"ȭ'' : ''õ (''ݬ : '''')",
 		"Max Level:^777777 1^000000",
-		"Effect : ^777777  ���� ������ �̿��� ���� ���⸦ ��ȯ�Ͽ� ȭ�Ӽ� �ι��� ���ݷ��� ������Ų��.",
-		"�ִ� 10 �� ������ ������ ��ȯ�� �� ������, 10 ���� ���⸦ ��ȯ�� ����, ���⸦ ȭ�Ӽ����� ��ȭ��Ų��. ",
-		"��ų ���� �� ���� ���� 1 ���� �Ҹ��Ѵ�.^000000",
+		"Effect : ^777777  '''' '''''' '̿''' '''' '''⸦ ''ȯ'Ͽ' ȭ'Ӽ' 'ι''' '''ݷ''' ''''''Ų''.",
+		"'ִ' 10 '' '''''' '''''' ''ȯ'' '' '''''', 10 '''' '''⸦ ''ȯ'' '''', '''⸦ ȭ'Ӽ''''' ''ȭ''Ų''. ",
+		"''ų '''' '' '''' '''' 1 '''' 'Ҹ''Ѵ'.^000000",
 	].join("\n");
 
 	exports[SKID.KO_HYOUHU_HUBUKI] = [
 
-		"���� : �뼳 (޼ݬ : ����)",
+		"'''' : '뼳 (޼ݬ : '''')",
 		"Max Level:^777777 1^000000",
-		"Effect : ^777777 ������ ������ �̿��� ���� ���⸦ ��ȯ�Ͽ� ���Ӽ� �ι��� ���ݷ��� ������Ų��.",
-		"�ִ� 10 �� ������ ������ ��ȯ�� �� ������, 10 ���� ���⸦ ��ȯ�� ����, ���⸦ ���Ӽ����� ��ȭ��Ų��.",
-		"��ų ���� �� ������ ���� 1 ���� �Ҹ��Ѵ�.^000000",
+		"Effect : ^777777 '''''' '''''' '̿''' '''' '''⸦ ''ȯ'Ͽ' '''Ӽ' 'ι''' '''ݷ''' ''''''Ų''.",
+		"'ִ' 10 '' '''''' '''''' ''ȯ'' '' '''''', 10 '''' '''⸦ ''ȯ'' '''', '''⸦ '''Ӽ''''' ''ȭ''Ų''.",
+		"''ų '''' '' '''''' '''' 1 '''' 'Ҹ''Ѵ'.^000000",
 	].join("\n");
 
 	exports[SKID.KO_KAZEHU_SEIRAN] = [
 
-		"ǳ�� : û�� (��ݬ : ��չ)",
+		"ǳ'' : û'' (''ݬ : ''չ)",
 		"Max Level:^777777 1^000000",
-		"Effect : ^777777 �ٶ��� ������ �̿��� �ٶ��� ���⸦ ��ȯ�Ͽ� ǳ�Ӽ� �ι��� ���ݷ��� ������Ų��.",
-		"�ִ� 10 �� ������ ������ ��ȯ�� �� ������, 10 ���� ���⸦ ��ȯ�� ����, ���⸦ ǳ�Ӽ����� ��ȭ��Ų��.",
-		"��ų ���� �� �ٶ��� ���� 1 ���� �Ҹ��Ѵ�.^000000",
+		"Effect : ^777777 'ٶ''' '''''' '̿''' 'ٶ''' '''⸦ ''ȯ'Ͽ' ǳ'Ӽ' 'ι''' '''ݷ''' ''''''Ų''.",
+		"'ִ' 10 '' '''''' '''''' ''ȯ'' '' '''''', 10 '''' '''⸦ ''ȯ'' '''', '''⸦ ǳ'Ӽ''''' ''ȭ''Ų''.",
+		"''ų '''' '' 'ٶ''' '''' 1 '''' 'Ҹ''Ѵ'.^000000",
 	].join("\n");
 
 	exports[SKID.KO_DOHU_KOUKAI] = [
 
-		"���� : ���� (��ݬ : ˧��)",
+		"'''' : '''' (''ݬ : ˧'')",
 		"Max Level:^777777 1^000000",
-		"Effect : ^777777 ���� �������� ���� ���⸦ ��ȯ�Ͽ� �������� ���ݷ°� �������� ������Ų��.",
-		"�ִ� 10 �� ������ ������ ��ȯ�� �� ������, 10 ���� ���⸦ ��ȯ�� ����, ���⸦ ���Ӽ����� ��ȭ��Ų��.",
-		"��ų ���� �� ���� ���� 1 ���� �Ҹ��Ѵ�.^000000",
+		"Effect : ^777777 '''' '''''''' '''' '''⸦ ''ȯ'Ͽ' '''''''' '''ݷ°' '''''''' ''''''Ų''.",
+		"'ִ' 10 '' '''''' '''''' ''ȯ'' '' '''''', 10 '''' '''⸦ ''ȯ'' '''', '''⸦ '''Ӽ''''' ''ȭ''Ų''.",
+		"''ų '''' '' '''' '''' 1 '''' 'Ҹ''Ѵ'.^000000",
 	].join("\n");
 
 	exports[SKID.KO_KAIHOU] = [
 
 		"Technique Kaihou",
 		"Max Level:^777777 1^000000",
-		"Effect : ^777777 ���� 1 ü���� ������ �ִ� ������ ���� �ع��Ͽ� �������� ������. ������ �Ӽ��� ��ȯ�� ������ �Ӽ��� ������.^000000",
+		"Effect : ^777777 '''' 1 ü'''' '''''' 'ִ' '''''' '''' 'ع''Ͽ' '''''''' ''''''. '''''' 'Ӽ''' ''ȯ'' '''''' 'Ӽ''' ''''''.^000000",
 	].join("\n");
 
 	exports[SKID.KO_ZENKAI] = [
 
-		"���� ����",
+		"'''' ''''",
 		"Max Level:^777777 1^000000",
-		"Effect : ^777777 ������ �ִ� ������ ���� ���鿡 �����Ͽ� �پ��� ȿ���� �߻���Ű�� ����(����) �� �������.",
-		"^FF0000 ȭ�Ӽ� ���� - ���� ���� ���� ������ ��ȭ �����̻��� �Ǵ�. ����, ������ ���Ⱑ ȭ�Ӽ��� ���� ���ݷ��� �����Ѵ�.^000000",
-		"^0000FF ���Ӽ� ���� - ���� ���� ���� ������ ����/�õ�/���� �� �ϳ��� �����̻��� �Ǵ�. ���� ������ ���Ⱑ ���Ӽ��� ���� ���ݷ��� �����Ѵ�. ^000000",
-		"^00FF00 ǳ�Ӽ� ���� - ���� ���� ���� ������ ħ��/����/������ �� �ϳ��� �����̻��� �Ǵ�. ���� ������ ���Ⱑ ǳ�Ӽ��� ���� ���ݷ��� �����Ѵ�. ^000000",
-		"^FD6202 ���Ӽ� ���� - ���� ���� ���� ������ ��ȭ / �� �� �ϳ��� �����̻��� �Ǵ�. ���� ������ ���Ⱑ ���Ӽ��� ����, ���ݷ� �� �����Ѵ�. ^000000",
+		"Effect : ^777777 '''''' 'ִ' '''''' '''' '''鿡 '''''Ͽ' 'پ''' ȿ'''' '߻'''Ű'' ''''('''') '' '''''''.",
+		"^FF0000 ȭ'Ӽ' '''' - '''' '''' '''' '''''' ''ȭ '''''̻''' 'Ǵ'. '''', '''''' '''Ⱑ ȭ'Ӽ''' '''' '''ݷ''' '''''Ѵ'.^000000",
+		"^0000FF '''Ӽ' '''' - '''' '''' '''' '''''' ''''/'õ'/'''' '' 'ϳ''' '''''̻''' 'Ǵ'. '''' '''''' '''Ⱑ '''Ӽ''' '''' '''ݷ''' '''''Ѵ'. ^000000",
+		"^00FF00 ǳ'Ӽ' '''' - '''' '''' '''' '''''' ħ''/''''/'''''' '' 'ϳ''' '''''̻''' 'Ǵ'. '''' '''''' '''Ⱑ ǳ'Ӽ''' '''' '''ݷ''' '''''Ѵ'. ^000000",
+		"^FD6202 '''Ӽ' '''' - '''' '''' '''' '''''' ''ȭ / '' '' 'ϳ''' '''''̻''' 'Ǵ'. '''' '''''' '''Ⱑ '''Ӽ''' '''', '''ݷ' '' '''''Ѵ'. ^000000",
 	].join("\n");
 
 	exports[SKID.KG_KAGEHUMI] = [
 
-		"�׸��� ����",
+		"'׸''' ''''",
 		"Max Level:^777777 5^000000",
-		"Effect : ^777777  Ư�� ���� ��ų�� �����ϰ� �ִ� ������ �������� �Ͻ������� ���߰� �ϸ�, �ش� ��ų�� ������ ������Ų��.^000000",
+		"Effect : ^777777  Ư'' '''' ''ų'' '''''ϰ' 'ִ' '''''' '''''''' 'Ͻ''''''' '''߰' 'ϸ', 'ش' ''ų'' '''''' ''''''Ų''.^000000",
 		"[LV 1] ^777777 Range 5 x 5 cells ^000000",
 		"[LV 2] ^777777 Range 7 x 7 cells ^000000",
 		"[LV 3] ^777777 Range 9 x 9 cells ^000000",
@@ -15775,10 +15775,10 @@ define(['./SkillId'], function( SKID )
 
 	exports[SKID.KG_KYOMU] = [
 
-		"�㹫�� �׸���",
+		"'㹫'' '׸'''",
 		"Max Level:^777777 5^000000",
-		"Effect : ^777777 �����ð� ���� ������ ������ �ִ� �ݻ��ɷ��� ��ȿȭ�Ѵ�.",
-		"�㹫�� �׸��ڿ� Ȧ���ִ� ������ ���� Ȯ���� �����Ϸ��� ��ų�� ������ ���� �ִ�. ��ų ������, ȯ�� 1 ���� �Ҹ��Ѵ�. ^000000",
+		"Effect : ^777777 '''''ð' '''' '''''' '''''' 'ִ' 'ݻ''ɷ''' ''ȿȭ'Ѵ'.",
+		"'㹫'' '׸''ڿ' Ȧ'''ִ' '''''' '''' Ȯ'''' '''''Ϸ''' ''ų'' '''''' '''' 'ִ'. ''ų '''''', ȯ'' 1 '''' 'Ҹ''Ѵ'. ^000000",
 		"[LV 1] ^777777 Duration 10 seconds ^000000",
 		"[LV 2] ^777777 Duration 15 seconds ^000000",
 		"[LV 3] ^777777 Duration 20 seconds ^000000",
@@ -15788,10 +15788,10 @@ define(['./SkillId'], function( SKID )
 
 	exports[SKID.KG_KAGEMUSYA] = [
 
-		"�׸��� ����",
+		"'׸''' ''''",
 		"Max Level:^777777 5^000000",
-		"Effect : ^777777 ���� 1 ü���� �����ð� ���� [��ų : ���� ����] �ɷ��� �ο��Ѵ�.",
-		"���ӽð� ���� �� �� 1 SP �� �Ҹ��ϰ� �ȴ�. ��ų ���� ��, ȯ�� 1 ���� �Ҹ��Ѵ�.^000000",
+		"Effect : ^777777 '''' 1 ü'''' '''''ð' '''' [''ų : '''' ''''] 'ɷ''' 'ο''Ѵ'.",
+		"'''ӽð' '''' '' '' 1 SP '' 'Ҹ''ϰ' 'ȴ'. ''ų '''' '', ȯ'' 1 '''' 'Ҹ''Ѵ'.^000000",
 		"[LV 1] ^777777 Duration 60 seconds ^000000",
 		"[LV 2] ^777777 Duration 90 seconds ^000000",
 		"[LV 3] ^777777 Duration 120 seconds ^000000",
@@ -15801,9 +15801,9 @@ define(['./SkillId'], function( SKID )
 
 	exports[SKID.OB_ZANGETSU] = [
 
-		"�ϱ׷��� �ʽ´�",
+		"'ϱ׷''' 'ʽ´'",
 		"Max Level:^777777 5^000000",
-		"Effect : ^777777  ������ ���� HP, SP ��ġ�� ���� ������ MATK �� ATK �� ��ȭ ��Ų��. ^000000",
+		"Effect : ^777777  '''''' '''' HP, SP ''ġ'' '''' '''''' MATK '' ATK '' ''ȭ ''Ų''. ^000000",
 		"[LV 1] ^777777 Duration 60 seconds ^000000",
 		"[LV 2] ^777777 Duration 75 seconds ^000000",
 		"[LV 3] ^777777 Duration 90 seconds ^000000",
@@ -15813,10 +15813,10 @@ define(['./SkillId'], function( SKID )
 
 	exports[SKID.OB_AKAITSUKI] = [
 
-		"�ұ��� ���� �޺�",
+		"'ұ''' '''' '޺'",
 		"Max Level:^777777 5^000000",
-		"Effect : ^777777   �� ȿ���� �ɸ� ������ Ư�� HP ȸ�� ��ų�� �޾��� ��, ������ HP ȸ�� ���� �������� �Ե��� �Ѵ�.",
-		"�� ��ų�� PVP �̿��� ���������� �÷��̾�� ������ �� ������, �Ʊ� �� ���� �����Ϳ��Դ� ȿ���� �������� �ʴ´�. ^000000",
+		"Effect : ^777777   '' ȿ'''' 'ɸ' '''''' Ư'' HP ȸ'' ''ų'' '޾''' '', '''''' HP ȸ'' '''' '''''''' 'Ե''' 'Ѵ'.",
+		"'' ''ų'' PVP '̿''' '''''''''' '÷''̾'' '''''' '' '''''', 'Ʊ' '' '''' '''''Ϳ''Դ' ȿ'''' '''''''' 'ʴ´'. ^000000",
 		"[LV 1] ^777777 Duration 10 seconds ^000000",
 		"[LV 2] ^777777 Duration 15 seconds ^000000",
 		"[LV 3] ^777777 Duration 20 seconds ^000000",
@@ -15826,10 +15826,10 @@ define(['./SkillId'], function( SKID )
 
 	exports[SKID.OB_OBOROGENSOU] = [
 
-		"�帰 �޺��� ȯ��",
+		"'帰 '޺''' ȯ''",
 		"Max Level:^777777 5^000000",
-		"Effect : ^777777 ���� 1 ü�� ���� HP, SP ��ġ�� ����,  HP�� SP �� �������� ���� Ȥ�� ���ҽ�Ų��.",
-		"���� �帰 �޺��� ȯ�� ȿ���� ���� ������ ��������  �Ծ��� ��, �� �������� �ֺ��� �ٸ� ���󿡰Ե� �л���Ų��. �� ��ų�� �����Ϳ��Դ� ������ �ʴ´�. ^000000",
+		"Effect : ^777777 '''' 1 ü'' '''' HP, SP ''ġ'' '''',  HP'' SP '' '''''''' '''' Ȥ'' '''ҽ'Ų''.",
+		"'''' '帰 '޺''' ȯ'' ȿ'''' '''' '''''' ''''''''  'Ծ''' '', '' '''''''' 'ֺ''' 'ٸ' '''󿡰Ե' 'л'''Ų''. '' ''ų'' '''''Ϳ''Դ' '''''' 'ʴ´'. ^000000",
 		"[LV 1] ^777777 Duration 10 seconds ^000000",
 		"[LV 2] ^777777 Duration 15 seconds ^000000",
 		"[LV 3] ^777777 Duration 20 seconds ^000000",
@@ -15846,29 +15846,29 @@ define(['./SkillId'], function( SKID )
 	exports[SKID.ECL_SNOWFLIP] = [
 
 		"Snow Flip",
-		"^777777 ������ó�� �Ͼ��� ������ ���� �ø� ���� ����. ������ �ɸ����� �𸣴� ����. ^000000",
+		"^777777 ''''''ó'' 'Ͼ''' '''''' '''' 'ø' '''' ''''. '''''' 'ɸ''''' '𸣴' ''''. ^000000",
 		"^777777 When used burning, bleeding, deep sleep and sleep are treated. ^000000",
 	].join("\n");
 
 	exports[SKID.ECL_PEONYMAMY] = [
 
-		"�����ϸ���",
-		"^777777 ���� ǰó�� ������ �µ��� ���� ��ȫ���� ������ ����. ^000000",
-		"^777777 ���� �� ����, �õ�, ������ ġ���Ѵ�. ^000000",
+		"'''''ϸ'''",
+		"^777777 '''' ǰó'' '''''' 'µ''' '''' ''ȫ'''' '''''' ''''. ^000000",
+		"^777777 '''' '' '''', 'õ', '''''' ġ'''Ѵ'. ^000000",
 	].join("\n");
 
 	exports[SKID.ECL_SADAGUI] = [
 
-		"���ٱ�",
-		"^777777 ������ �ڷ� ���̸��ø� �Ӹ��� ������ ���� ������ ���� ���� ������. ������ ���ۿ뵵 �ִ� ��. ^000000",
-		"^777777 ���� �� ����, ����, ȥ��, ȯ���� ġ���Ѵ�. ^000000",
+		"'''ٱ'",
+		"^777777 '''''' 'ڷ' '''̸''ø' 'Ӹ''' '''''' '''' '''''' '''' '''' ''''''. '''''' '''ۿ뵵 'ִ' ''. ^000000",
+		"^777777 '''' '' '''', '''', ȥ'', ȯ'''' ġ'''Ѵ'. ^000000",
 	].join("\n");
 
 	exports[SKID.ECL_SEQUOIADUST] = [
 
 		"Sequoia Dust",
-		"^777777 ������ ������ �ٿ� �پ��ִ� ���� �ν��������� ���Ƽ� �������� ���� ��ȭ �ɷ��� �����Ѵ�. ^000000",
-		"^777777 ���� �� ��ȭ, ����, ����, ��, ��ø�� ����, ������ ��Ű���� ġ���Ѵ�. ^000000",
+		"^777777 '''''' '''''' 'ٿ' 'پ''ִ' '''' 'ν''''''''' '''Ƽ' '''''''' '''' ''ȭ 'ɷ''' '''''Ѵ'. ^000000",
+		"^777777 '''' '' ''ȭ, '''', '''', '', ''ø'' '''', '''''' ''Ű'''' ġ'''Ѵ'. ^000000",
 	].join("\n");
 
 

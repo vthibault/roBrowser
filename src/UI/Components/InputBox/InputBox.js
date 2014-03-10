@@ -9,7 +9,7 @@
  */
 define(function(require)
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -36,18 +36,16 @@ define(function(require)
 	 */
 	InputBox.init = function Init()
 	{
-		var self = this;
-
 		this.draggable();
 		this.ui.css({ top: (Renderer.height-120)/1.5-49, left: (Renderer.width -280)/2+1 });
-		this.ui.find('button').click( this.validate.bind(this) );
+		this.ui.find('button').click(validate.bind(this));
 
 		this.overlay = jQuery('<div/>')
 			.addClass('win_popup_overlay')
 			.css('zIndex', 30)
 			.click(function(){
-				self.remove();
-			});
+				this.remove();
+			}.bind(this));
 	};
 
 
@@ -80,7 +78,7 @@ define(function(require)
 	InputBox.onKeyDown = function OnKeyDown( event )
 	{
 		if (!this.isPersistent && event.which === KEYS.ENTER) {
-			this.validate();
+			validate.call(this);
 			event.stopImmediatePropagation();
 			return false;
 		}
@@ -94,7 +92,7 @@ define(function(require)
 	 *
 	 * @param {ClickEvent}
 	 */
-	InputBox.validate = function Validate()
+	function validate()
 	{
 		var text = this.ui.find('input').val();
 
@@ -106,7 +104,7 @@ define(function(require)
 
 			this.onSubmitRequest( text );
 		}
-	};
+	}
 
 
 	/**
@@ -116,7 +114,7 @@ define(function(require)
 	 * @param {boolean} is the popup persistent ? false : clicking in any part of the game will remove the input
 	 * @param {string|number} default value to show in the input
 	 */
-	InputBox.setType = function( type, isPersistent, defaultVal )
+	InputBox.setType = function setType( type, isPersistent, defaultVal )
 	{
 		this.isPersistent = !!isPersistent;
 
@@ -151,7 +149,7 @@ define(function(require)
 				break;
 		}
 
-		if (typeof defaultVal !== "undefined") {
+		if (typeof defaultVal !== 'undefined') {
 			this.ui.find('input')
 				.val( defaultVal )
 				.select();
@@ -162,7 +160,7 @@ define(function(require)
 	/**
 	 * Callback to define
 	 */
-	InputBox.onSubmitRequest = function OnSubmitRequest(text){};
+	InputBox.onSubmitRequest = function OnSubmitRequest(){};
 
 
 	/**

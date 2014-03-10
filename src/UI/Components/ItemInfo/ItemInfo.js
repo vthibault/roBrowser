@@ -9,7 +9,7 @@
  */
 define(function(require)
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -42,7 +42,7 @@ define(function(require)
 	 */
 	ItemInfo.onKeyDown = function OnKeyDown( event )
 	{
-		if( event.which === KEYS.ESCAPE ) {
+		if (event.which === KEYS.ESCAPE) {
 			ItemInfo.remove();
 			event.stopImmediatePropagation();
 			return false;
@@ -77,8 +77,6 @@ define(function(require)
 	 */
 	ItemInfo.init = function Init()
 	{
-		var ui = this.ui;
-
 		this.ui.css({ top: 200, left:200 });
 
 		this.ui.find('.close').click(function(){

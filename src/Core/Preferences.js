@@ -9,7 +9,7 @@
  */
 define([ './Context' ], function( Context )
 {
-	"use strict";
+	'use strict';
 
 
 	var Storage = Context.Is.APP ?
@@ -22,8 +22,14 @@ define([ './Context' ], function( Context )
 			},
 			set: function Set( obj, fn ) {
 				var keys = Object.keys( obj );
-				for( var i=0, count = keys.length; i<count; ++i ) {
+				var i, count;
+
+				for (i = 0, count = keys.length; i < count; ++i) {
 					localStorage.setItem( keys[i], obj[ keys[i] ] );
+				}
+
+				if (fn) {
+					fn();
 				}
 			}
 		};
@@ -36,32 +42,36 @@ define([ './Context' ], function( Context )
 	 * @param {mixed} default value
 	 * @param {number} optional version
 	 */
-	function Get( key, def, version )
+	function get( key, def, version )
 	{
 		Storage.get( key, function( value ){
+			var data, keys;
+			var i, count;
 
-			version   = version || 0.0
+			version   = version || 0.0;
 
 			// Not existing, storing it
-			if( !value[key] || JSON.parse(value[key])._version !== version ) {
-				Save( def );
+			if (!value[key] || JSON.parse(value[key])._version !== version) {
+				save( def );
 				return;
 			}
 
-			var data      = JSON.parse( value[key] );
+			data          = JSON.parse( value[key] );
 			data._key     = key;
 			data._version = version;
-			data.save     = SelfSave;
+			data.save     = selfSave;
 
-			var keys = Object.keys(data);
-			for( var i=0, count=keys.length; i<count; ++i ) {
+			keys          = Object.keys(data);
+			count         = keys.length;
+
+			for (i = 0; i < count; ++i) {
 				def[ keys[i] ] = data[ keys[i] ];
 			}
 		});
 
 		def._key     = key;
 		def._version = version;
-		def.save     = SelfSave;
+		def.save     = selfSave;
 
 		return def;
 	}
@@ -73,7 +83,7 @@ define([ './Context' ], function( Context )
 	 * @param {string} key
 	 * @param {object} value to store
 	 */
-	function Save( data )
+	function save( data )
 	{
 		var key = data._key;
 		delete data._key;
@@ -85,16 +95,16 @@ define([ './Context' ], function( Context )
 		Storage.set( store );
 
 		data._key  = key;
-		data.save  = SelfSave;
+		data.save  = selfSave;
 	}
 
 
 	/**
 	 * Save from object
 	 */
-	function SelfSave()
+	function selfSave()
 	{
-		Save( this );
+		save( this );
 	}
 
 
@@ -102,7 +112,7 @@ define([ './Context' ], function( Context )
 	 *
 	 */
 	return {
-		get:  Get,
-		save: Save
+		get:  get,
+		save: save
 	};
 });

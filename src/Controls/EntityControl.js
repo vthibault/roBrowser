@@ -23,7 +23,7 @@ define( [
 	ChatRoom
 )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -40,9 +40,9 @@ define( [
 	{
 		var Entity = this.constructor;
 
-		switch( this.objecttype ) {
+		switch (this.objecttype) {
 			case Entity.TYPE_PET:
-				if( !Camera.action.active ) {
+				if (!Camera.action.active) {
 					Cursor.setType( Cursor.ACTION.DEFAULT );
 				}
 				break;
@@ -51,13 +51,15 @@ define( [
 			case Entity.TYPE_ELEM:
 			case Entity.TYPE_HOM:
 				// TODO: Check for pvp flag ?
-				if( !KEYS.shift || Preferences.noshift === false ) {
-					if( !Camera.action.active ) {
+				if (!KEYS.shift || Preferences.noshift === false) {
+					if (!Camera.action.active ) {
 						Cursor.setType( Cursor.ACTION.DEFAULT );
 					}
 					break;
 				}
-				// continue to TYPE_MOB
+
+				Cursor.setType( Cursor.ACTION.ATTACK );
+				break;
 
 			case Entity.TYPE_MOB:
 				Cursor.setType( Cursor.ACTION.ATTACK );
@@ -77,7 +79,7 @@ define( [
 		}
 
 
-		switch( this.display.load ) {
+		switch (this.display.load) {
 
 			// Ask for the name
 			case this.display.TYPE.NONE:
@@ -107,14 +109,14 @@ define( [
 	 */
 	function OnMouseOut()
 	{
-		if( !Camera.action.active ) {
+		if (!Camera.action.active) {
 			Cursor.setType( Cursor.ACTION.DEFAULT );
 		}
 		else {
 			Cursor.setType( Cursor.ACTION.ROTATE );
 		}
 
-		if( this !== this.constructor.Manager.getFocusEntity() ) {
+		if (this !== this.constructor.Manager.getFocusEntity()) {
 			this.display.display = false;
 			this.display.remove();
 		}
@@ -130,7 +132,7 @@ define( [
 		var Entity = this.constructor;
 		var pkt;
 
-		switch( this.objecttype ) {
+		switch (this.objecttype) {
 			case Entity.TYPE_PET:
 				break;
 
@@ -181,19 +183,19 @@ define( [
 		var Entity = this.constructor;
 		var pkt;
 
-		switch( this.objecttype ) {
+		switch (this.objecttype) {
 
 			case Entity.TYPE_PC:
 			case Entity.TYPE_ELEM:
 			case Entity.TYPE_HOM:
 				// TODO: add check for PVP/WOE mapflag
-				if( !KEYS.shift || Preferences.noshift === false ) {
-					if( !Camera.action.active ) {
+				if (!KEYS.shift || Preferences.noshift === false) {
+					if (!Camera.action.active) {
 						Cursor.setType( Cursor.ACTION.DEFAULT );
 					}
 					break;
 				}
-				// no break intended.
+			// no break intended.
 
 			case Entity.TYPE_MOB:
 				pkt = new PACKET.CZ.REQUEST_ACT();
@@ -214,12 +216,12 @@ define( [
 	{
 		var Entity = this.constructor;
 
-		switch( this.objecttype ) {
+		switch (this.objecttype) {
 			case Entity.TYPE_PC:
 			case Entity.TYPE_ELEM:
 			case Entity.TYPE_HOM:
 			case Entity.TYPE_MOB:
-				if( Entity.Manager.getFocusEntity() ) {
+				if (Entity.Manager.getFocusEntity()) {
 					Network.sendPacket(new PACKET.CZ.CANCEL_LOCKON());
 				}
 		}
@@ -238,7 +240,7 @@ define( [
 		var pkt;
 		var Room = this.room.constructor;
 
-		switch( this.room.type ) {
+		switch (this.room.type) {
 
 			case Room.Type.SELL_SHOP:
 				pkt = new PACKET.CZ.REQ_CLICK_TO_BUYING_STORE();

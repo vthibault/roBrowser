@@ -9,7 +9,7 @@
  */
 define(function(require)
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -19,11 +19,9 @@ define(function(require)
 	var Client             = require('Core/Client');
 	var Preferences        = require('Core/Preferences');
 	var Renderer           = require('Renderer/Renderer');
-	var jQuery             = require('Utils/jquery');
 	var KEYS               = require('Controls/KeyEventHandler');
 	var UIManager          = require('UI/UIManager');
 	var UIComponent        = require('UI/UIComponent');
-	var MiniMap            = require('UI/Components/MiniMap/MiniMap');
 	var Inventory          = require('UI/Components/Inventory/Inventory');
 	var Equipment          = require('UI/Components/Equipment/Equipment');
 	var htmlText           = require('text!./BasicInfo.html');
@@ -48,27 +46,38 @@ define(function(require)
 
 
 	/**
+	 * @var {Preferences} structure
+	 */
+	var _preferences = Preferences.get('BasicInfo', {
+		x:        0,
+		y:        0,
+		reduce:   true,
+		buttons:  true
+	}, 1.0);
+
+
+	/**
+	 * @var {stack} Stack to store data if the UI is not in html yet and received parameters
+	 */
+	var _stack = [];
+
+
+	/**
 	 * Initialize UI
 	 */
-	BasicInfo.init = function Init()
+	BasicInfo.init = function init()
 	{
-		// Preferences structure
-		this.preferences = Preferences.get('BasicInfo', {
-			x:        0,
-			y:        0,
-			reduce:   true,
-			buttons:  true
-		}, 1.0);
 
 		// Don't activate drag drop when clicking on buttons
 		this.ui.find('.topbar button').mousedown(function( event ){
 			event.stopImmediatePropagation();
-		})
+		});
 
 		this.ui.find('.topbar .right').click(BasicInfo.toggleMode.bind(this));
 		this.ui.find('.toggle_btns').mousedown(BasicInfo.toggleButtons.bind(this));
+
 		this.ui.find('.buttons button').mousedown(function(){
-			switch( this.className ) {
+			switch (this.className) {
 				case 'item':
 					Inventory.ui.toggle();
 					break;
@@ -91,36 +100,32 @@ define(function(require)
 
 
 	/**
-	 * Stack to store things if the UI is not in html
-	 */
-	BasicInfo.stack = [];
-
-
-	/**
 	 * When append the element to html
 	 * Execute elements in memory
 	 */
-	BasicInfo.onAppend = function OnAppend()
+	BasicInfo.onAppend = function onAppend()
 	{
+		// Bind UI with stack data
 		var i, count;
 
-		for( i = 0, count = this.stack.length; i < count; ++i ) {
-			this.update.apply( this, this.stack[i]);
+		for (i = 0, count = _stack.length; i < count; ++i) {
+			this.update.apply( this, _stack[i]);
 		}
 
-		this.stack.length = 0;
+		_stack.length = 0;
 
 		// Apply preferences
 		this.ui.css({
-			top:  Math.min( Math.max( 0, this.preferences.y), Renderer.height - this.ui.height()),
-			left: Math.min( Math.max( 0, this.preferences.x), Renderer.width  - this.ui.width())
+			top:  Math.min( Math.max( 0, _preferences.y), Renderer.height - this.ui.height()),
+			left: Math.min( Math.max( 0, _preferences.x), Renderer.width  - this.ui.width())
 		});
 
+		// large/small window
 		this.ui.removeClass('small large');
-		if( this.preferences.reduce ) {
+		if (_preferences.reduce) {
 			this.ui.addClass('small');
 
-			if( this.preferences.buttons ) {
+			if (_preferences.buttons) {
 				this.ui.find('.buttons').show();
 			}
 			else {
@@ -136,13 +141,13 @@ define(function(require)
 	/**
 	 * Once remove, save preferences
 	 */
-	BasicInfo.onRemove = function OnRemove()
+	BasicInfo.onRemove = function onRemove()
 	{
-		this.preferences.x = parseInt(this.ui.css('left'), 10);
-		this.preferences.y = parseInt(this.ui.css('top'), 10);
-		this.preferences.reduce  = this.ui.hasClass('small');
-		this.preferences.buttons = this.ui.find('.buttons').is(':visible');
-		this.preferences.save();
+		_preferences.x       = parseInt(this.ui.css('left'), 10);
+		_preferences.y       = parseInt(this.ui.css('top'), 10);
+		_preferences.reduce  = this.ui.hasClass('small');
+		_preferences.buttons = this.ui.find('.buttons').is(':visible');
+		_preferences.save();
 	};
 
 
@@ -152,9 +157,9 @@ define(function(require)
 	 * @param {object} event
 	 * @return {boolean}
 	 */
-	BasicInfo.onKeyDown = function OnKeyDown( event )
+	BasicInfo.onKeyDown = function onKeyDown( event )
 	{
-		if( KEYS.ALT && event.which === KEYS.V ) {
+		if (KEYS.ALT && event.which === KEYS.V) {
 			this.toggleMode();
 			event.stopImmediatePropagation();
 			return false;
@@ -167,17 +172,18 @@ define(function(require)
 	/**
 	 * Switch window size
 	 */
-	BasicInfo.toggleMode = function ToggleMode()
+	BasicInfo.toggleMode = function toggleMode()
 	{
 		var type;
+
 		this.ui.toggleClass('small large');
 
-		if( this.ui.hasClass('large') ) {
+		if (this.ui.hasClass('large')) {
 			this.ui.find('.buttons').show();
 			return;
 		}
 
-		if( this.preferences.buttons ) {
+		if (_preferences.buttons) {
 			this.ui.find('.buttons').show();
 			type = 'off';
 		}
@@ -187,23 +193,24 @@ define(function(require)
 		}
 
 		Client.loadFile( DB.INTERFACE_PATH + 'basic_interface/view' + type + '.bmp', function(url) {
-			BasicInfo.ui.find('.toggle_btns').css('backgroundImage', 'url(' + url + ')');
-		});
+			this.ui.find('.toggle_btns').css('backgroundImage', 'url(' + url + ')');
+		}.bind(this));
 	};
 
 
 	/**
 	 * Toggle the list of buttons
 	 */
-	BasicInfo.toggleButtons = function ToggleButtons( event )
+	BasicInfo.toggleButtons = function toggleButtons( event )
 	{
 		var type;
 		var $buttons = this.ui.find('.buttons');
-		this.preferences.buttons = !$buttons.is(':visible');
 
-		if( this.preferences.buttons ) {
+		_preferences.buttons = !$buttons.is(':visible');
+
+		if (_preferences.buttons) {
 			$buttons.show();
-			type = 'off'; 
+			type = 'off';
 		}
 		else {
 			$buttons.hide();
@@ -211,8 +218,8 @@ define(function(require)
 		}
 
 		Client.loadFile( DB.INTERFACE_PATH + 'basic_interface/view' + type + '.bmp', function(url){
-			BasicInfo.ui.find('.toggle_btns').css('backgroundImage', 'url(' + url + ')');
-		});
+			this.ui.find('.toggle_btns').css('backgroundImage', 'url(' + url + ')');
+		}.bind(this));
 
 		event.stopImmediatePropagation();
 	};
@@ -225,14 +232,16 @@ define(function(require)
 	 * @param {number} val1
 	 * @param {number} val2 (optional)
 	 */
-	BasicInfo.update = function Update( type, val1, val2 )
+	BasicInfo.update = function ipdate( type, val1, val2 )
 	{
-		if( !this.__loaded ){
-			BasicInfo.stack.push(arguments);
+		// Not loaded yet, add data to stack to bind the UI when
+		// it will be append to the body
+		if (!this.__loaded) {
+			_stack.push(arguments);
 			return;
 		}
 
-		switch( type ) {
+		switch (type) {
 			case 'name':
 			case 'blvl':
 			case 'jlvl':
@@ -240,12 +249,12 @@ define(function(require)
 				break;
 
 			case 'zeny':
-				var list = val1.toString().split("");
+				var list = val1.toString().split('');
 				var i, count = list.length;
-				var str = "";
+				var str = '';
 
-				for( i=0; i<count; i++ ) {
-					str = list[count-i-1] + (i && i%3 ===0 ? ',' : '') + str
+				for (i = 0; i < count; i++) {
+					str = list[count-i-1] + (i && i%3 ===0 ? ',' : '') + str;
 				}
 
 				this.ui.find('.'+ type +'_value').text(str);
@@ -257,7 +266,7 @@ define(function(require)
 
 			case 'bexp':
 			case 'jexp':
-				if( !val2 ) {
+				if (!val2) {
 					this.ui.find('.' + type).hide();
 					break;
 				}
@@ -276,33 +285,33 @@ define(function(require)
 			case 'hp':
 			case 'sp':
 				var perc  = Math.floor(val1 * 100 / val2);
-				var color = perc < 25 ? "red" : "blue";
+				var color = perc < 25 ? 'red' : 'blue';
 				this.ui.find('.'+ type +'_value').text(val1);
 				this.ui.find('.'+ type +'_max_value').text(val2);
 				this.ui.find('.'+ type +'_perc').text( perc + '%');
 
-				if( perc <= 0 ) {
-					this.ui.find('.'+ type +'_bar div').css('backgroundImage', 'none');	
+				if (perc <= 0) {
+					this.ui.find('.'+ type +'_bar div').css('backgroundImage', 'none');
+					break;
 				}
-				else {
-					Client.loadFile(DB.INTERFACE_PATH + 'basic_interface/gze'+ color +'_left.bmp', function(url){
-						BasicInfo.ui.find('.'+ type +'_bar_left').css('backgroundImage', 'url('+ url +')');
-					});
 
-					Client.loadFile(DB.INTERFACE_PATH + 'basic_interface/gze'+ color +'_mid.bmp', function(url){
-						BasicInfo.ui.find('.'+ type +'_bar_middle').css({
-							backgroundImage: 'url('+ url +')',
-							width: Math.floor( Math.min( perc, 100 ) * 1.27 ) + 'px'
-						});
-					});
+				Client.loadFile(DB.INTERFACE_PATH + 'basic_interface/gze'+ color +'_left.bmp', function(url){
+					this.ui.find('.'+ type +'_bar_left').css('backgroundImage', 'url('+ url +')');
+				}.bind(this));
 
-					Client.loadFile(DB.INTERFACE_PATH + 'basic_interface/gze'+ color +'_right.bmp', function(url){
-						BasicInfo.ui.find('.'+ type +'_bar_right').css({
-							backgroundImage: 'url('+ url +')',
-							left: Math.floor( Math.min( perc, 100) * 1.27 ) + 'px'
-						});
+				Client.loadFile(DB.INTERFACE_PATH + 'basic_interface/gze'+ color +'_mid.bmp', function(url){
+					this.ui.find('.'+ type +'_bar_middle').css({
+						backgroundImage: 'url('+ url +')',
+						width: Math.floor( Math.min( perc, 100 ) * 1.27 ) + 'px'
 					});
-				}
+				}.bind(this));
+
+				Client.loadFile(DB.INTERFACE_PATH + 'basic_interface/gze'+ color +'_right.bmp', function(url){
+					this.ui.find('.'+ type +'_bar_right').css({
+						backgroundImage: 'url('+ url +')',
+						left: Math.floor( Math.min( perc, 100) * 1.27 ) + 'px'
+					});
+				}.bind(this));
 				break;
 		}
 	};

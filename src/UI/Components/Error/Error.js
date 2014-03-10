@@ -10,7 +10,7 @@
  */
 define(function( require )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -30,16 +30,16 @@ define(function( require )
 	/**
 	 * Initialize Metaling
 	 */
-	Error.init = function Init()
+	Error.init = function init()
 	{
 		this.ui = jQuery(_htmlText);
 
 		// Add view to html
 		var style = jQuery('style:first');
-		if( !style.length ) {
+		if (!style.length) {
 			style = jQuery('<style type="text/css"></style>').appendTo('head');
 		}
-		style.append("\n" + _cssText);
+		style.append('\n' + _cssText);
 		jQuery('body').html(this.ui);
 
 		this.ui.css('backgroundImage', 'url('+ require.toUrl('./angeling.png') +')');
@@ -51,17 +51,17 @@ define(function( require )
 	 *
 	 * @param {Error} error
 	 */
-	Error.addTrace = function AddTrace( error )
+	Error.addTrace = function addTrace( error )
 	{
 		var url = requirejs.toUrl(''); // global
-		var error = error.stack || error;
+		error   = error.stack || error;
 
 		url   = url.replace(/\/([^\/]+)$/g,'/');
 		error = error.replace( /\n/g, "<br/>");
 		error = error.replace( new RegExp(url,"g"), '');
 		error = error.replace( /\?[^\:]+/g,'');
 
-		if( !this.ui ) {
+		if (!this.ui) {
 			this.init();
 		}
 

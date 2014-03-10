@@ -10,7 +10,7 @@
 
 define( ['Vendors/gl-matrix'], function( glMatrix )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -98,7 +98,7 @@ define( ['Vendors/gl-matrix'], function( glMatrix )
 			len = 1 / Math.sqrt(x3*x3 + y3*y3 + z3*z3);
 	
 		//vec3.add( out, tmp); (apply the normalize at the same time)
-		x  += x3 * len; 
+		x  += x3 * len;
 		y  += y3 * len;
 		z  += z3 * len;
 	
@@ -159,7 +159,7 @@ define( ['Vendors/gl-matrix'], function( glMatrix )
 	 * @returns {mat4} dest if specified, mat otherwise
 	 */
 	glMatrix.mat4.rotateQuat = function(out, mat, w) {
-		var a,b,c,d;         
+		var a,b,c,d;
 		a = w[0];
 		b = w[1];
 		c = w[2];
@@ -172,11 +172,11 @@ define( ['Vendors/gl-matrix'], function( glMatrix )
 		d /= norm;
 	
 		return glMatrix.mat4.multiply( out, mat,[
-			1.0 - 2.0 * ( b * b + c * c ),     2.0 * (a * b + c * d),   2.0 * (a * c - b * d), 0.0,
-			2.0 * ( a * b - c * d ),    1.0 - 2.0 * ( a * a + c * c ),    2.0 * (c * b + a * d ),    0.0,
-			2.0 * ( a * c + b * d ),    2.0 * ( b * c - a * d ),    1.0 - 2.0 * ( a * a + b * b ),   0.0,
-			0, 0, 0, 1	
-		] );
+			1.0 - 2.0 * ( b * b + c * c ),     2.0 * (a * b + c * d),            2.0 * (a * c - b * d),           0.0,
+			2.0 * ( a * b - c * d ),           1.0 - 2.0 * ( a * a + c * c ),    2.0 * (c * b + a * d ),          0.0,
+			2.0 * ( a * c + b * d ),           2.0 * ( b * c - a * d ),          1.0 - 2.0 * ( a * a + b * b ),   0.0,
+			0.0,                               0.0,                              0.0,                             1.0
+		]);
 	};
 
 

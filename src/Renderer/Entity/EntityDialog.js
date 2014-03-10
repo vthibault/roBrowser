@@ -9,7 +9,7 @@
  */
 define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -42,14 +42,14 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 	 */
 	function Dialog()
 	{
-		this.text    = "";
+		this.text    = '';
 		this.tick    = 0;
 		this.timeout = null;
 		this.display = false;
 
 		this.canvas  = document.createElement('canvas');
 		this.ctx     = this.canvas.getContext('2d');
-		this.canvas.style.position = "absolute";
+		this.canvas.style.position = 'absolute';
 		this.canvas.style.zIndex   = 1;
 	}
 
@@ -63,7 +63,7 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 	Dialog.prototype.set = function Set( text, fontColor )
 	{
 		// Append to body
-		if ( !this.canvas.parentNode ) {
+		if (!this.canvas.parentNode) {
 			document.body.appendChild(this.canvas);
 		}
 
@@ -79,23 +79,23 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 		var lines      =  [];
 		var width = 0, i, j;
 		var result;
-		var color = fontColor || "white";
+		var color = fontColor || 'white';
 
-		ctx.font   = fontSize + "px Arial";
+		ctx.font   = fontSize + 'px Arial';
 
 		// Parse lines, depend on text size.
-		while ( text.length ) {
+		while (text.length) {
 			i = text.length;
-			while( ctx.measureText(text.substr(0,i)).width > max_width ) {
+			while (ctx.measureText(text.substr(0,i)).width > max_width) {
 				i--;
 			}
 
 			result = text.substr(0,i);
 
-			if ( i !== text.length ) {
+			if (i !== text.length) {
 				j = 0;
-				while( result.indexOf(" ",j) !== -1 ) {
-					j = result.indexOf(" ",j) + 1;
+				while (result.indexOf(' ',j) !== -1) {
+					j = result.indexOf(' ',j) + 1;
 				}
 			}
 	
@@ -107,31 +107,33 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 		// Margin of 10
 		ctx.canvas.width  = 14 + width;
 		ctx.canvas.height =  8 + ( fontSize + 5 ) * lines.length;
-		ctx.font = fontSize + "px Arial";
+		ctx.font = fontSize + 'px Arial';
 
 		// Build dialog
-		ctx.fillStyle = "rgba(0,0,0,0.4)";
+		ctx.fillStyle = 'rgba(0,0,0,0.4)';
 		ctx.fillRect( 0, 0, ctx.canvas.width, ctx.canvas.height);
-		ctx.strokeStyle = "#525252";
+		ctx.strokeStyle = '#525252';
 		roundRect(ctx, 0.5, 0.5, ctx.canvas.width-1, ctx.canvas.height-1, 2);
 		ctx.stroke();
 
-		for ( i=0, j=lines.length; i<j; ++i ) {
+		for (i = 0, j = lines.length; i < j; ++i) {
 			// Render twice to get it a little brighter
-			ctx.fillStyle = "black";
+			ctx.fillStyle = 'black';
 			ctx.fillText( lines[i], 8, 5 + fontSize + (fontSize+5) * i );
 			ctx.fillStyle = color;
 			ctx.fillText( lines[i], 7, 4 + fontSize + (fontSize+5) * i );
 		}
 
 		// Remove or rewrite canvas
-		if ( this.timeout ) {
+		if (this.timeout) {
 			clearTimeout(this.timeout);
 		}
 
 		// Remove next 5 secs.
-		var self = this;
-		this.timeout = setTimeout( function(){ self.timeout = null; self.remove() }, 5000 );
+		this.timeout = setTimeout(function(){
+			this.timeout = null;
+			this.remove();
+		}.bind(this), 5000 );
 	};
 
 
@@ -141,18 +143,18 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 	Dialog.prototype.remove = function Remove()
 	{
 		// Clean timeout
-		if ( this.timeout ) {
+		if (this.timeout) {
 			clearTimeout(this.timeout);
 			this.timeout = null;
 		}
 
 		// Remove element
-		if ( this.canvas.parentNode ) {
+		if (this.canvas.parentNode) {
 			document.body.removeChild(this.canvas);
 		}
 
 		this.display =  false;
-		this.text    =  "";
+		this.text    =  '';
 	};
 
 
@@ -193,8 +195,8 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 		_pos[0] = _size[0] + Math.round(_size[0] * (_pos[0] * z));
 		_pos[1] = _size[1] - Math.round(_size[1] * (_pos[1] * z));
 
-		canvas.style.top  = ((_pos[1] - canvas.height - 2) | 0) + "px";
-		canvas.style.left = ((_pos[0] - canvas.width/2) | 0) + "px";
+		canvas.style.top  = ((_pos[1] - canvas.height - 2) | 0) + 'px';
+		canvas.style.left = ((_pos[0] - canvas.width/2) | 0) + 'px';
 	};
 
 

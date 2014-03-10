@@ -7,7 +7,7 @@
  */
 define(function(require)
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -22,8 +22,7 @@ define(function(require)
 	var UIManager          = require('UI/UIManager');
 	var UIComponent        = require('UI/UIComponent');
 	var InputBox           = require('UI/Components/InputBox/InputBox');
-	var ItemInfo           = require('UI/Components/ItemInfo/ItemInfo')
-	var Equipment          = require('UI/Components/Equipment/Equipment');
+	var ItemInfo           = require('UI/Components/ItemInfo/ItemInfo');
 	var htmlText           = require('text!./Storage.html');
 	var cssText            = require('text!./Storage.css');
 
@@ -67,15 +66,15 @@ define(function(require)
 
 
 	/**
-	 * Store inventory items
+	 * @var {Array} inventory items
 	 */
-	Storage.list = [];
+	var _list = [];
 
 
 	/**
 	 * @var {Preference} structure to save
 	 */
-	Storage.preferences = Preferences.get('Storage', {
+	var _preferences = Preferences.get('Storage', {
 		x:      200,
 		y:      500,
 		height:   8,
@@ -89,14 +88,12 @@ define(function(require)
 	Storage.init = function Init()
 	{
 		// Bind buttons
-		this.ui.find('.tabs button').mousedown(this.switchTab);
-		this.ui.find('.footer .extend').mousedown( this.extend.bind(this) );
-		this.ui.find('.footer .close').click( function() {
-			Storage.onClosePressed();
-		} );
+		this.ui.find('.tabs button').mousedown(switchTab);
+		this.ui.find('.footer .extend').mousedown(onResize);
+		this.ui.find('.footer .close').click(this.onClosePressed.bind(this));
 
 		// drag, drop items
-		this.ui.on('drop', this.onDragDrop.bind(this));
+		this.ui.on('drop', onDrop);
 		this.ui.on('dragover', function(event){
 			event.stopImmediatePropagation();
 			return false;
@@ -109,7 +106,7 @@ define(function(require)
 
 			// Scroll feature should block at each line
 			.on('scroll', function(){
-				if( this.scrollTop > lastScrollPos ) {
+				if (this.scrollTop > lastScrollPos) {
 					this.scrollTop = Math.floor(this.scrollTop/32) * 32;
 				}
 				else {
@@ -120,36 +117,34 @@ define(function(require)
 
 			// Title feature
 			.on('mouseover', '.item', function(){
-				var i, count;
-				var items = Storage.list;
-				var idx  = parseInt( this.className.match(/ (\d+)$/)[1], 10);
+				var idx = parseInt( this.className.match(/ (\d+)$/)[1], 10);
+				var i   = getItemIndexById(idx);
 
-				for( i = 0, count = items.length; i < count ; ++i ) {
-					if( items[i].index === idx ) {
+				// Not found
+				if (i < 0) {
+					return;
+				}
 
-						// Get back data
-						var item = items[i];
-						var it   = DB.getItemInfo( item.ITID );
-						var pos  = jQuery(this).position();
+				// Get back data
+				var item = _list[i];
+				var it   = DB.getItemInfo( item.ITID );
+				var pos  = jQuery(this).position();
 
-						// Display box
-						overlay.show();
-						overlay.css({top: pos.top-10, left:pos.left+35});
-						overlay.html(
-							( item.RefiningLevel ? '+' + item.RefiningLevel + ' ' : '') +
-							( item.IsIdentified ? it.identifiedDisplayName : it.unidentifiedDisplayName ) +
-							( it.slotCount ? ' [' + it.slotCount + ']' : '') + 
-							' ' + ( item.count || 1 ) + ' ea'
-						);
+				// Display box
+				overlay.show();
+				overlay.css({top: pos.top-10, left:pos.left+35});
+				overlay.html(
+					( item.RefiningLevel ? '+' + item.RefiningLevel + ' ' : '') +
+					( item.IsIdentified ? it.identifiedDisplayName : it.unidentifiedDisplayName ) +
+					( it.slotCount ? ' [' + it.slotCount + ']' : '') +
+					' ' + ( item.count || 1 ) + ' ea'
+				);
 
-						if( item.IsIdentified ) {
-							overlay.removeClass('grey');
-						}
-						else {
-							overlay.addClass('grey');
-						}
-						break;
-					}
+				if (item.IsIdentified) {
+					overlay.removeClass('grey');
+				}
+				else {
+					overlay.addClass('grey');
 				}
 			})
 
@@ -173,19 +168,16 @@ define(function(require)
 
 				var matches = this.className.match(/(\w+) (\d+)/);
 				var index   = parseInt(matches[2], 10);
-				var list, i, count;
+				var i       = getItemIndexById(index);
 
-				for( i = 0, list = Storage.list, count = list.length; i < count; ++i ) {
-					if( list[i].index === index ) {
-						event.originalEvent.dataTransfer.setData("Text",
-							JSON.stringify( window._OBJ_DRAG_ = {
-								type: "item",
-								from: "storage",
-								data:  list[i]
-							})
-						);
-						break;
-					}
+				if (i > -1) {
+					event.originalEvent.dataTransfer.setData('Text',
+						JSON.stringify( window._OBJ_DRAG_ = {
+							type: 'item',
+							from: 'storage',
+							data: _list[i]
+						})
+					);
 				}
 
 				// Stop component to be draggable
@@ -194,7 +186,7 @@ define(function(require)
 			})
 
 			// Clean up
-			.on('dragend', '.item', function(event){
+			.on('dragend', '.item', function(){
 				delete window._OBJ_DRAG_;
 			})
 
@@ -202,29 +194,24 @@ define(function(require)
 			.on('contextmenu', '.item', function(event) {
 				var matches = this.className.match(/(\w+) (\d+)/);
 				var index   = parseInt(matches[2], 10);
-				var list;
-				var i, count;
+				var i       = getItemIndexById(index);
 
-				for( i = 0, list = Storage.list, count = list.length; i < count; ++i ) {
-					if( list[i].index === index ) {
+				if (i > -1) {
 
-						// Don't add the same UI twice, remove it
-						if( ItemInfo.uid === list[i].ITID ) {
-							ItemInfo.remove();
-							break;
-						}
-
-						// Add ui to window
-						ItemInfo.append();
-						ItemInfo.uid = list[i].ITID;
-						ItemInfo.setItem( list[i] );
-						break;
+					// Don't add the same UI twice, remove it
+					if (ItemInfo.uid === _list[i].ITID) {
+						ItemInfo.remove();
 					}
+
+					// Add ui to window
+					ItemInfo.append();
+					ItemInfo.uid = _list[i].ITID;
+					ItemInfo.setItem( _list[i] );
 				}
 
 				event.stopImmediatePropagation();
 				return false;
-			})
+			});
 
 		this.draggable();
 	};
@@ -233,17 +220,17 @@ define(function(require)
 	/**
 	 * Apply preferences once append to body
 	 */
-	Storage.onAppend = function OnAppend()
+	Storage.onAppend = function onAppend()
 	{
-		Client.loadFile( DB.INTERFACE_PATH + "basic_interface/tab_itm_ex_0"+ (this.preferences.tab+1) +".bmp", function(data){
+		Client.loadFile( DB.INTERFACE_PATH + 'basic_interface/tab_itm_ex_0'+ (_preferences.tab+1) +'.bmp', function(data){
 			Storage.ui.find('.tabs').css('backgroundImage', 'url("' + data + '")');
 		});
 
-		this.resizeHeight(this.preferences.height);
+		resizeHeight(_preferences.height);
 
 		this.ui.css({
-			top:  Math.min( Math.max( 0, this.preferences.y), Renderer.height - this.ui.height()),
-			left: Math.min( Math.max( 0, this.preferences.x), Renderer.width  - this.ui.width())
+			top:  Math.min( Math.max( 0, _preferences.y), Renderer.height - this.ui.height()),
+			left: Math.min( Math.max( 0, _preferences.x), Renderer.width  - this.ui.width())
 		});
 	};
 
@@ -251,108 +238,31 @@ define(function(require)
 	/**
 	 * Remove Storage from window (and so clean up items)
 	 */
-	Storage.onRemove = function OnRemove()
+	Storage.onRemove = function onRemove()
 	{
 		this.ui.find('.container .content').empty();
-		this.list.length = 0;
+		_list.length = 0;
 
 		// Save preferences
-		this.preferences.y      =  parseInt(this.ui.css('top'), 10);
-		this.preferences.x      =  parseInt(this.ui.css('left'), 10);
-		this.preferences.height =  Math.floor( (this.ui.height() - (31 + 19 - 30)) / 32 );
-		this.preferences.save();
-	};
-
-
-	/**
-	 * Extend Storage window size
-	 */
-	Storage.extend = function Extend( event )
-	{
-		var ui      = this.ui;
-		var content = ui.find('.container .content');
-		var top     = ui.position().top;
-		var lastHeight = 0;
-		var _Interval;
-
-		function Resizing()
-		{
-			var extraY = 31 + 19 - 30;
-			var h = Math.floor( (Mouse.screen.y - top  - extraY) / 32 );
-
-			// Maximum and minimum window size
-			h = Math.min( Math.max(h, 8), 17);
-
-			if( h === lastHeight ) {
-				return;
-			}
-
-			Storage.resizeHeight( h );
-			lastHeight = h;
-		}
-
-		// Start resizing
-		_Interval = setInterval( Resizing, 30);
-
-		// Stop resizing
-		jQuery(window).one('mouseup', function(event){
-			// Only on left click
-			if ( event.which === 1 ) {
-				clearInterval(_Interval);
-			}
-		});
-
-		event.stopImmediatePropagation();
-		return false;
-	};
-
-
-	/**
-	 * Extend Storage window size
-	 */
-	Storage.resizeHeight = function ResizeHeight(height)
-	{
-		height = Math.min( Math.max(height, 8), 17);
-
-		this.ui.find('.container .content').css({
-			height: height * 32
-		});
-
-		this.ui.css({
-			height: 31 + 19 + height * 32
-		});
-	};
-
-
-
-	/**
-	 * Modify tab, filter display entries
-	 */
-	Storage.switchTab = function SwitchTab( event )
-	{
-		var idx = jQuery(this).index();
-		Storage.preferences.tab = idx;
-
-		Client.loadFile(DB.INTERFACE_PATH + "basic_interface/tab_itm_ex_0"+ (idx+1) +".bmp", function(data){
-			Storage.ui.find('.tabs').css('backgroundImage', 'url("' + data + '")');
-			Storage.filter(idx);
-		});
-
-		event.stopImmediatePropagation();
-		return false;
+		_preferences.y      =  parseInt(this.ui.css('top'), 10);
+		_preferences.x      =  parseInt(this.ui.css('left'), 10);
+		_preferences.height =  Math.floor( (this.ui.height() - (31 + 19 - 30)) / 32 );
+		_preferences.save();
 	};
 
 
 	/**
 	 * Add items to the list
+	 *
+	 * @param {Array} item list
 	 */
-	Storage.setItems = function SetItems(items)
+	Storage.setItems = function setItems(items)
 	{
 		var i, count;
 
-		for( i = 0, count = items.length; i < count ; ++i ) {
-			if( this.addItemSub( items[i] ) ) {
-				this.list.push( items[i] );
+		for (i = 0, count = items.length; i < count ; ++i) {
+			if (this.addItemSub( items[i])) {
+				_list.push(items[i]);
 			}
 		}
 	};
@@ -363,20 +273,19 @@ define(function(require)
 	 *
 	 * @param {object} Item
 	 */
-	Storage.addItem = function AddItem( item )
+	Storage.addItem = function addItem( item )
 	{
-		var i, size;
+		var i = getItemIndexById(item.index);
 
-		for( i = 0, size = this.list.length; i < size; ++i ) {
-			if( this.list[i].index === item.index ) {
-				this.list[i].count += item.count;
-				this.ui.find('.item.'+ item.index + ' .count').text( this.list[i].count )
-				return;
-			}
+		// Found, update quantity
+		if (i > -1) {
+			_list[i].count += item.count;
+			this.ui.find('.item.'+ item.index + ' .count').text(_list[i].count);
+			return;
 		}
 
-		if( this.addItemSub(item) ) {
-			this.list.push(item);
+		if (this.addItemSub(item)) {
+			_list.push(item);
 		}
 	};
 
@@ -386,12 +295,12 @@ define(function(require)
 	 *
 	 * @param {object} Item
 	 */
-	Storage.addItemSub = function AddItemSub( item )
+	Storage.addItemSub = function addItemSub( item )
 	{
 		var tab;
 		var ui = this.ui;
 		
-		switch( item.type ) {
+		switch (item.type) {
 			case Storage.ITEM.HEALING:
 			case Storage.ITEM.USABLE:
 			case Storage.ITEM.USABLE_SKILL:
@@ -427,13 +336,11 @@ define(function(require)
 				break;
 		}
 
-		if( tab === this.preferences.tab ) {
-			var it      = DB.getItemInfo( item.ITID );
+		if (tab === _preferences.tab) {
+			var it = DB.getItemInfo( item.ITID );
 
 			Client.loadFile( DB.INTERFACE_PATH + 'item/' + ( item.IsIdentified ? it.identifiedResourceName : it.unidentifiedResourceName ) + '.bmp', function(data){
-				var content = ui.find('.container .content');
-
-				content.append(
+				ui.find('.container .content').append(
 					'<div class="item '+ item.index +'" draggable="true">' +
 						'<div class="icon" style="background-image:url(' + data + ')"></div>' +
 						'<div class="amount">'+ (item.count ? '<span class="count">' + item.count + '</span>' + ' ' : '') + '</div>' +
@@ -452,110 +359,199 @@ define(function(require)
 	 *
 	 * @param {number} index in Storage
 	 */
-	Storage.removeItem = function RemoveItem( index, count )
+	Storage.removeItem = function removeItem( index, count )
 	{
-		var i, size;
+		var i = getItemIndexById(index);
+		var item;
 
-		for( i = 0, size = this.list.length; i < size; ++i ) {
+		// Not found
+		if (i < 0) {
+			return null;
+		}
 
-			if( this.list[i].index === index ) {
-				if( this.list[i].count ) {
-					this.list[i].count -= count;
+		if (_list[i].count) {
+			_list[i].count -= count;
 
-					if( this.list[i].count > 0 ) {
-						this.ui.find('.item.'+index + ' .count').text( this.list[i].count )
-						return this.list[i];
-					}
-				}
-
-				var item = this.list[i];
-				this.list.splice( i, 1 );
-				this.ui.find('.item.'+index).remove();
-
-				var content = this.ui.find('.container .content');
-				if( content.height() === content[0].scrollHeight ) {
-					this.ui.find('.hide').show();
-				}
-
-				return item;
+			if (_list[i].count > 0) {
+				this.ui.find('.item.'+ index + ' .count').text(_list[i].count);
+				return _list[i];
 			}
 		}
 
-		return null;
-	};
+		// Remove item
+		item = _list[i];
+		_list.splice( i, 1 );
+		this.ui.find('.item.' + index).remove();
 
-
-	/**
-	 * Update tabulation
-	 */
-	Storage.filter = function Filter( tab )
-	{
-		this.ui.find('.container .content').empty();
-		var i, count;
-
-		for( i = 0, count = this.list.length; i < count; ++i ) {
-			this.addItemSub( this.list[i] );
-		}
+		return item;
 	};
 
 
 	/**
 	 * Update or set the current amount of items in storage in ui
 	 */
-	Storage.setItemInfo = function SetItemInfo( current, limit ) {
+	Storage.setItemInfo = function setItemInfo( current, limit ) {
 		this.ui.find('.footer .current').text(current);
 		this.ui.find('.footer .limit').text(limit);
 	};
 
 
 	/**
-	 * Drag & drop over item to storage
+	 * Extend Storage window size
 	 */
-	Storage.onDragDrop = function onDragDrop( event )
+	function onResize( event )
+	{
+		var ui         = Storage.ui;
+		var top        = ui.position().top;
+		var lastHeight = 0;
+		var _Interval;
+
+		function resizing()
+		{
+			var extraY = 31 + 19 - 30;
+			var h = Math.floor( (Mouse.screen.y - top  - extraY) / 32 );
+
+			// Maximum and minimum window size
+			h = Math.min( Math.max(h, 8), 17);
+
+			if (h === lastHeight) {
+				return;
+			}
+
+			resizeHeight(h);
+			lastHeight = h;
+		}
+
+		// Start resizing
+		_Interval = setInterval( resizing, 30);
+
+		// Stop resizing
+		jQuery(window).one('mouseup', function(event){
+			// Only on left click
+			if (event.which === 1) {
+				clearInterval(_Interval);
+			}
+		});
+
+		event.stopImmediatePropagation();
+		return false;
+	}
+
+
+	/**
+	 * Extend Storage window size
+	 */
+	function resizeHeight(height)
+	{
+		height = Math.min( Math.max(height, 8), 17);
+
+		Storage.ui.find('.container .content').css('height', height * 32);
+		Storage.ui.css('height', 31 + 19 + height * 32);
+	}
+
+
+
+	/**
+	 * Modify tab, filter display entries
+	 */
+	function switchTab( event )
+	{
+		var idx          = jQuery(this).index();
+		_preferences.tab = idx;
+
+		Client.loadFile(DB.INTERFACE_PATH + 'basic_interface/tab_itm_ex_0'+ (idx+1) +'.bmp', function(data){
+			Storage.ui.find('.tabs').css('backgroundImage', 'url("' + data + '")');
+			filter(idx);
+		});
+
+		event.stopImmediatePropagation();
+		return false;
+	}
+
+
+	/**
+	 * Drop from inventory to storage
+	 */
+	function onDrop( event )
 	{
 		var item, data;
 
 		try {
 			data = JSON.parse(
-				event.originalEvent.dataTransfer.getData("Text")
+				event.originalEvent.dataTransfer.getData('Text')
 			);
 		}
 		catch(e) {}
 
+		event.stopImmediatePropagation();
+
 		// Just support items for now ?
-		if (data && data.type === "item" && data.from === "inventory") {
-			item = data.data;
+		if (!data || data.type !== 'item' || data.from !== 'inventory') {
+			return false;
+		}
 
-			// Have to specify how much
-			if( item.count > 1 ) {
-				InputBox.append();
-				InputBox.setType("number", false, item.count);
-				InputBox.onSubmitRequest = function OnSubmitRequest( count ) {
-					InputBox.remove();
-					Storage.reqAddItem(
-						item.index,
-						parseInt(count, 10 )
-					);
-				};
-			}
+		item = data.data;
 
-			// Only one, don't have to specify
-			else {
-				Storage.reqAddItem( item.index, 1 );
+		// Have to specify how much
+		if (item.count > 1) {
+			InputBox.append();
+			InputBox.setType('number', false, item.count);
+			InputBox.onSubmitRequest = function OnSubmitRequest( count ) {
+				InputBox.remove();
+				Storage.reqAddItem(
+					item.index,
+					parseInt(count, 10 )
+				);
+			};
+
+			return false;
+		}
+
+		Storage.reqAddItem( item.index, 1 );
+		return false;
+	}
+
+
+	/**
+	 * Change tab,
+	 * Update its content
+	 */
+	function filter()
+	{
+		Storage.ui.find('.container .content').empty();
+		var i, count;
+
+		for (i = 0, count = _list.length; i < count; ++i) {
+			Storage.addItemSub(_list[i]);
+		}
+	}
+
+
+	/**
+	 * Get item index in list base on it's ID
+	 *
+	 * @param {number} item id
+	 */
+	function getItemIndexById( index )
+	{
+		var i, count;
+
+		for (i = 0, count = _list.length; i < count; ++i) {
+			if (_list[i].index === index) {
+				return i;
 			}
 		}
 
-		event.stopImmediatePropagation();
-		return false;
-	};
+		return -1;
+	}
 
 
 	/**
 	 * Callbacks
 	 */
-	Storage.onClosePressed  = function(){};
-	Storage.reqAddItem      = function(){};
-	Storage.reqRemoveItem   = function(){};
+	Storage.onClosePressed  = function onClosedPressed(){};
+	Storage.reqAddItem      = function reqAddItem(){};
+	Storage.reqRemoveItem   = function reqRemoveItem(){};
 
 
 	/**

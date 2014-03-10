@@ -10,29 +10,59 @@
 define(['Utils/WebGL', 'Utils/Texture', 'Preferences/Map'],
 function(      WebGL,         Texture,   Preferences )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
-	 * Private variables
+	 * @var {WebGLProgram}
 	 */
 	var _program       = null;
-	var _buffer        = null;
-	var _lightmap      = null;
-	var _tileColor     = null;
-	var _textureAtlas  = null;
-	var _shadowMap     = null;
-	var _vertCount     = 0;
 
 
 	/**
-	 * @var {integer} Ground width
+	 * @var {WebGBLuffer}
+	 */
+	var _buffer = null;
+
+
+	/**
+	 * @var {WebGLTexture}
+	 */
+	var _lightmap = null;
+
+
+	/**
+	 * @var {WebGLTexture}
+	 */
+	var _tileColor = null;
+
+
+	/**
+	 * @var {WebGLTexture}
+	 */
+	var _textureAtlas = null;
+
+
+	/**
+	 * @var {WebGLTexture}
+	 */
+	var _shadowMap = null;
+
+
+	/**
+	 * @var {number} total vertices count
+	 */
+	var _vertCount = 0;
+
+
+	/**
+	 * @var {number} Ground width
 	 */
 	var _width = 0;
 
 
 	/**
-	 * @var {integer} Ground height
+	 * @var {number} Ground height
 	 */
 	var _height = 0;
 
@@ -40,96 +70,98 @@ function(      WebGL,         Texture,   Preferences )
 	/**
 	 * @var {string} Vertex Shader
 	 */
-	var _vertexShader   = '\
-		attribute vec3 aPosition;\
-		attribute vec3 aVertexNormal;\
-		attribute vec2 aTextureCoord;\
-		attribute vec2 aLightmapCoord;\
-		attribute vec2 aTileColorCoord;\
-		\
-		varying vec2 vTextureCoord;\
-		varying vec2 vLightmapCoord;\
-		varying vec2 vTileColorCoord;\
-		varying float vLightWeighting;\
-		\
-		uniform mat4 uModelViewMat;\
-		uniform mat4 uProjectionMat;\
-		\
-		uniform vec3 uLightDirection;\
-		uniform mat3 uNormalMat;\
-		\
-		void main(void) {\
-			gl_Position     = uProjectionMat * uModelViewMat * vec4( aPosition, 1.0);\
-			\
-			vTextureCoord   = aTextureCoord;\
-			vLightmapCoord  = aLightmapCoord;\
-			vTileColorCoord = aTileColorCoord;\
-			\
-			vec4 lDirection  = uModelViewMat * vec4( uLightDirection, 0.0);\
-			vec3 dirVector   = normalize(lDirection.xyz);\
-			float dotProduct = dot( uNormalMat * aVertexNormal, dirVector );\
-			vLightWeighting  = max( dotProduct, 0.1 );\
-		}';
+	var _vertexShader   = [
+		'attribute vec3 aPosition;',
+		'attribute vec3 aVertexNormal;',
+		'attribute vec2 aTextureCoord;',
+		'attribute vec2 aLightmapCoord;',
+		'attribute vec2 aTileColorCoord;',
+
+		'varying vec2 vTextureCoord;',
+		'varying vec2 vLightmapCoord;',
+		'varying vec2 vTileColorCoord;',
+		'varying float vLightWeighting;',
+
+		'uniform mat4 uModelViewMat;',
+		'uniform mat4 uProjectionMat;',
+
+		'uniform vec3 uLightDirection;',
+		'uniform mat3 uNormalMat;',
+
+		'void main(void) {',
+			'gl_Position     = uProjectionMat * uModelViewMat * vec4( aPosition, 1.0);',
+
+			'vTextureCoord   = aTextureCoord;',
+			'vLightmapCoord  = aLightmapCoord;',
+			'vTileColorCoord = aTileColorCoord;',
+
+			'vec4 lDirection  = uModelViewMat * vec4( uLightDirection, 0.0);',
+			'vec3 dirVector   = normalize(lDirection.xyz);',
+			'float dotProduct = dot( uNormalMat * aVertexNormal, dirVector );',
+			'vLightWeighting  = max( dotProduct, 0.1 );',
+		'}'
+	].join('\n');
 
 
 	/**
 	 * @var {string} Fragment Shader
 	 */
-	var _fragmentShader = '\
-		varying vec2 vTextureCoord;\
-		varying vec2 vLightmapCoord;\
-		varying vec2 vTileColorCoord;\
-		varying float vLightWeighting;\
-		\
-		uniform sampler2D uDiffuse;\
-		uniform sampler2D uLightmap;\
-		uniform sampler2D uTileColor;\
-		uniform bool uLightMapUse;\
-		\
-		uniform bool  uFogUse;\
-		uniform float uFogNear;\
-		uniform float uFogFar;\
-		uniform vec3  uFogColor;\
-		\
-		uniform vec3  uLightAmbient;\
-		uniform vec3  uLightDiffuse;\
-		uniform float uLightOpacity;\
-		\
-		void main(void) {\
-			\
-			vec4 texture = texture2D( uDiffuse,  vTextureCoord.st );\
-			float lightWeight = 1.0;\
-			\
-			if ( texture.a == 0.0 ) {\
-				discard;\
-			}\
-			\
-			if ( vTileColorCoord.st != vec2(0.0,0.0) ) {\
-				texture    *= texture2D( uTileColor, vTileColorCoord.st);\
-				lightWeight = vLightWeighting;\
-			}\
-			\
-			vec3 Ambient    = uLightAmbient * uLightOpacity;\
-			vec3 Diffuse    = uLightDiffuse * lightWeight;\
-			\
-			if( uLightMapUse ) {\
-				vec4 lightmap   = texture2D( uLightmap, vLightmapCoord.st);\
-				vec4 LightColor = vec4( (Ambient + Diffuse) * lightmap.a, 1.0);\
-				vec4 ColorMap   = vec4( lightmap.rgb, 0.0 );\
-				\
-				gl_FragColor    = texture * clamp(LightColor, 0.0, 1.0) + ColorMap;\
-			}\
-			else {\
-				vec4 LightColor = vec4( Ambient + Diffuse, 1.0);\
-				gl_FragColor    = texture * clamp(LightColor, 0.0, 1.0);\
-			}\
-			\
-			if ( uFogUse ) {\
-				float depth     = gl_FragCoord.z / gl_FragCoord.w;\
-				float fogFactor = smoothstep( uFogNear, uFogFar, depth );\
-				gl_FragColor    = mix( gl_FragColor, vec4( uFogColor, gl_FragColor.w ), fogFactor );\
-			}\
-		}';
+	var _fragmentShader = [
+		'varying vec2 vTextureCoord;',
+		'varying vec2 vLightmapCoord;',
+		'varying vec2 vTileColorCoord;',
+		'varying float vLightWeighting;',
+
+		'uniform sampler2D uDiffuse;',
+		'uniform sampler2D uLightmap;',
+		'uniform sampler2D uTileColor;',
+		'uniform bool uLightMapUse;',
+
+		'uniform bool  uFogUse;',
+		'uniform float uFogNear;',
+		'uniform float uFogFar;',
+		'uniform vec3  uFogColor;',
+
+		'uniform vec3  uLightAmbient;',
+		'uniform vec3  uLightDiffuse;',
+		'uniform float uLightOpacity;',
+
+		'void main(void) {',
+
+			'vec4 texture = texture2D( uDiffuse,  vTextureCoord.st );',
+			'float lightWeight = 1.0;',
+
+			'if (texture.a == 0.0) {',
+			'	discard;',
+			'}',
+
+			'if (vTileColorCoord.st != vec2(0.0,0.0)) {',
+			'	texture    *= texture2D( uTileColor, vTileColorCoord.st);',
+			'	lightWeight = vLightWeighting;',
+			'}',
+
+			'vec3 Ambient    = uLightAmbient * uLightOpacity;',
+			'vec3 Diffuse    = uLightDiffuse * lightWeight;',
+
+			'if (uLightMapUse) {',
+				'vec4 lightmap   = texture2D( uLightmap, vLightmapCoord.st);',
+				'vec4 LightColor = vec4( (Ambient + Diffuse) * lightmap.a, 1.0);',
+				'vec4 ColorMap   = vec4( lightmap.rgb, 0.0 );',
+
+				'gl_FragColor    = texture * clamp(LightColor, 0.0, 1.0) + ColorMap;',
+			'}',
+			'else {',
+				'vec4 LightColor = vec4( Ambient + Diffuse, 1.0);',
+				'gl_FragColor    = texture * clamp(LightColor, 0.0, 1.0);',
+			'}',
+
+			'if (uFogUse) {',
+				'float depth     = gl_FragCoord.z / gl_FragCoord.w;',
+				'float fogFactor = smoothstep( uFogNear, uFogFar, depth );',
+				'gl_FragColor    = mix( gl_FragColor, vec4( uFogColor, gl_FragColor.w ), fogFactor );',
+			'}',
+		'}'
+	].join('\n');
 
 
 	/**
@@ -142,7 +174,7 @@ function(      WebGL,         Texture,   Preferences )
 	 * @param {object} fog structure
 	 * @param {object} light structure
 	 */
-	function Render( gl, modelView, projection, normalMat, fog, light )
+	function render( gl, modelView, projection, normalMat, fog, light )
 	{
 		var uniform = _program.uniform;
 		var attribute = _program.attribute;
@@ -150,9 +182,9 @@ function(      WebGL,         Texture,   Preferences )
 		gl.useProgram( _program );
 
 		// Bind matrix
-		gl.uniformMatrix4fv( uniform.uModelViewMat,  false,  modelView );
-		gl.uniformMatrix4fv( uniform.uProjectionMat, false,  projection );
-		gl.uniformMatrix3fv( uniform.uNormalMat,     false,  normalMat );
+		gl.uniformMatrix4fv( uniform.uModelViewMat,  false, modelView );
+		gl.uniformMatrix4fv( uniform.uProjectionMat, false, projection );
+		gl.uniformMatrix3fv( uniform.uNormalMat,     false, normalMat );
 
 		// Bind light
 		gl.uniform3fv( uniform.uLightDirection, light.direction );
@@ -201,7 +233,7 @@ function(      WebGL,         Texture,   Preferences )
 		gl.uniform1i( uniform.uTileColor, 2 );
 
 		// Send mesh
-		gl.drawArrays(  gl.TRIANGLES,  0, _vertCount );
+		gl.drawArrays(  gl.TRIANGLES, 0, _vertCount );
 
 		// Is it needed ?
 		gl.disableVertexAttribArray( attribute.aPosition );
@@ -220,14 +252,14 @@ function(      WebGL,         Texture,   Preferences )
 	 * @param {object} lightmap
 	 * @param {number} size
 	 */
-	function InitLightmap( gl, lightmap, size )
+	function initLightmap( gl, lightmap, size )
 	{
 		var width, height;
 
 		width  = WebGL.toPowerOfTwo( Math.round( Math.sqrt(size) ) * 8 );
 		height = WebGL.toPowerOfTwo( Math.ceil(  Math.sqrt(size) ) * 8 );
 
-		if( !_lightmap ) {
+		if (!_lightmap) {
 			_lightmap = gl.createTexture();
 		}
 
@@ -249,7 +281,7 @@ function(      WebGL,         Texture,   Preferences )
 	 * @param {number} width
 	 * @param {number} height
 	 */
-	function InitTileColor( gl, tilescolor, width, height )
+	function initTileColor( gl, tilescolor, width, height )
 	{
 
 		var _width, _height, i, count;
@@ -265,7 +297,7 @@ function(      WebGL,         Texture,   Preferences )
 		count         = data.length;
 
 		// Set Image pixel
-		for ( i=0; i<count; ++i ){
+		for (i = 0; i < count; ++i) {
 			data[i] = tilescolor[i];
 		}
 		ctx.putImageData( imageData, 0, 0 );
@@ -278,12 +310,12 @@ function(      WebGL,         Texture,   Preferences )
 		smooth.height = _height;
 		ctx           = smooth.getContext('2d');
 
-		ctx.fillStyle="black";
+		ctx.fillStyle = 'black';
 		ctx.fillRect( 0, 0, _width, _height);
 		ctx.drawImage( canvas, 0, 0, _width, _height );
 
 		// Send texture to GPU
-		if( !_tileColor ) {
+		if (!_tileColor) {
 			_tileColor = gl.createTexture();
 		}
 
@@ -302,7 +334,7 @@ function(      WebGL,         Texture,   Preferences )
 	 * @param {Object} gl context
 	 * @param {Array} textures 's filename
 	 */
-	function InitTextures( gl, textures )
+	function initTextures( gl, textures )
 	{
 		var i, count, width, height, _width, loaded;
 		var canvas, ctx;
@@ -320,22 +352,26 @@ function(      WebGL,         Texture,   Preferences )
 		ctx           = canvas.getContext('2d');
 		loaded        = 0;
 
+
+		function onTextureCompleteBuildAtlas( success, i )
+		{
+			if (success) {
+				var x = (i % _width) * 258;
+				var y = Math.floor(i / _width) * 258;
+				ctx.drawImage( this, x + 0, y + 0, 258, 258 ); // generate border
+				ctx.drawImage( this, x + 1, y + 1, 256, 256 );
+			}
+
+			if ((++loaded) === count) {
+				onTextureAtlasComplete(gl, canvas);
+			}
+		}
+
 		// Fetch all images, and draw them in a mega-texture
-		for ( i=0; i<count; ++i ) {
-			Texture(textures[i], function( success, i ){
-				if( success ) {
-					var x = (i % _width) * 258;
-					var y = Math.floor(i / _width) * 258;
-					ctx.drawImage( this, x + 0, y + 0, 258, 258 ); // generate border
-					ctx.drawImage( this, x + 1, y + 1, 256, 256 );
-				}
-				if ( (++loaded) === count ) {
-					OnTextureAtlasComplete(gl, canvas);
-				}
-			}, i);
+		for (i = 0; i < count; ++i) {
+			Texture.load(textures[i], onTextureCompleteBuildAtlas, ctx, i);
 		}
 	}
-
 
 
 	/**
@@ -344,10 +380,10 @@ function(      WebGL,         Texture,   Preferences )
 	 * @param {object} gl
 	 * @param {object} atlas - canvas texture
 	 */
-	function OnTextureAtlasComplete( gl, atlas )
+	function onTextureAtlasComplete( gl, atlas )
 	{
 		// Bind to GPU
-		if( !_textureAtlas ) {
+		if (!_textureAtlas) {
 			_textureAtlas = gl.createTexture();
 		}
 
@@ -366,7 +402,7 @@ function(      WebGL,         Texture,   Preferences )
 	 * @param {object} gl context
 	 * @param {object} data - ground
 	 */
-	function Init( gl, data )
+	function init( gl, data )
 	{
 		_vertCount = data.meshVertCount;
 		_width     = data.width;
@@ -374,26 +410,26 @@ function(      WebGL,         Texture,   Preferences )
 		_shadowMap = data.shadowMap;
 
 		// Bind buffer, sending mesh to GPU
-		if( !_buffer ) {
+		if (!_buffer) {
 			_buffer = gl.createBuffer();
 		}
 
 		// Link program	if not loaded
-		if ( ! _program ) {
+		if (!_program) {
 			_program = WebGL.createShaderProgram( gl, _vertexShader, _fragmentShader );
-		} 
+		}
 
 		gl.bindBuffer( gl.ARRAY_BUFFER, _buffer );
 		gl.bufferData( gl.ARRAY_BUFFER, data.mesh, gl.STATIC_DRAW );
 
 		// Send lightmap to GPU
-		InitLightmap( gl, data.lightmap, data.lightmapSize );
+		initLightmap( gl, data.lightmap, data.lightmapSize );
 
 		// Send Tile color to GPU
-		InitTileColor( gl, data.tileColor, data.width, data.height );
+		initTileColor( gl, data.tileColor, data.width, data.height );
 
 		// Send textures to GPU
-		InitTextures( gl, data.textures );
+		initTextures( gl, data.textures );
 	}
 
 
@@ -403,30 +439,30 @@ function(      WebGL,         Texture,   Preferences )
 	 *
 	 * @param {object} gl context
 	 */
-	function Free( gl )
+	function free( gl )
 	{
-		if( _lightmap ) {
+		if (_lightmap) {
 			gl.deleteTexture( _lightmap );
 			_lightmap = null;
 		}
 
-		if( _tileColor ) {
+		if (_tileColor) {
 			gl.deleteTexture( _tileColor );
 			_tileColor = null;
 		}
 
-		if( _textureAtlas ) {
+		if (_textureAtlas) {
 			gl.deleteTexture( _textureAtlas );
 			_textureAtlas = null;
 		}
 
-		if( _buffer ) {
+		if (_buffer) {
 			gl.deleteBuffer( _buffer );
 			_buffer = null;
 		}
 
-		_shadowMap     = null;
-		_vertCount     = 0;
+		_shadowMap = null;
+		_vertCount = 0;
 	}
 
 
@@ -437,10 +473,10 @@ function(      WebGL,         Texture,   Preferences )
 	 * @param {number} y
 	 * @return {number} shadow factor
 	 */
-	function GetShadowFactor( x, y )
+	function getShadowFactor( x, y )
 	{
 		// Map not loadead yet
-		if( !_shadowMap ) {
+		if (!_shadowMap) {
 			return 1.0;
 		}
 
@@ -451,8 +487,8 @@ function(      WebGL,         Texture,   Preferences )
 		y += 0.5;
 
 		// Get index
-		_x   = Math.floor( x / 2 ) * 8;
-		_y   = Math.floor( y / 2 ) * 8;
+		_x = Math.floor( x / 2 ) * 8;
+		_y = Math.floor( y / 2 ) * 8;
 
 		// Add floor percent
 		_x += Math.min( ( x & 1 ? 4 : 0) + Math.floor( (x % 1) * 4 ), 6);
@@ -468,9 +504,9 @@ function(      WebGL,         Texture,   Preferences )
 	 * Export
 	 */
 	return {
-		init:   Init,
-		free:   Free,
-		render: Render,
-		getShadowFactor: GetShadowFactor
+		init:            init,
+		free:            free,
+		render:          render,
+		getShadowFactor: getShadowFactor
 	};
 });

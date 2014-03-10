@@ -10,13 +10,15 @@
 
 // Errors Handler (hack)
 require.onError = function (err) {
-	if( require.defined('UI/Components/Error/Error') ) {
-		require('UI/Components/Error/Error').addTrace(err.message);
+	'use strict';
+
+	if (require.defined('UI/Components/Error/Error')) {
+		require('UI/Components/Error/Error').addTrace(err);
 		return;
 	}
 
 	require(['UI/Components/Error/Error'], function( Errors ){
-		Errors.addTrace(err.message)
+		Errors.addTrace(err);
 	});
 };
 
@@ -24,8 +26,8 @@ require.onError = function (err) {
 require({
 	baseUrl: './src/',
 	paths: {
-		text:   "Vendors/text.require",
-		jquery: "Vendors/jquery-1.9.1"
+		text:   'Vendors/text.require',
+		jquery: 'Vendors/jquery-1.9.1'
 	}
 },
 	['Utils/Queue', 'Audio/BGM',
@@ -44,7 +46,7 @@ function(
 	Intro
 ) {
 
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -76,7 +78,7 @@ function(
 		var q = new Queue();
 
 		// Resources sharing
-		if( ROConfig.API ) {
+		if (ROConfig.API) {
 			q.add(function(){
 				function Synchronise( event ) {
 					Thread.delegate( event.source, event.origin );
@@ -95,7 +97,7 @@ function(
 		else {
 			// Waiting for the Thread to be ready
 			q.add(function(){
-				Thread.hook("THREAD_READY", q.next );
+				Thread.hook('THREAD_READY', q.next );
 				Thread.init();
 			});
 	
@@ -125,7 +127,7 @@ function(
 			MapControl.call(MapViewer);
 
 			// Direct access from API
-			if( ROConfig.API ) {
+			if (ROConfig.API) {
 				MapRenderer.setMap( location.hash.substr(1).replace('data/','') );
 				return;
 			}
@@ -138,9 +140,9 @@ function(
 
 				MapViewer.dropDown = document.createElement('select');
 				MapViewer.dropDown.style.zIndex   = 50;
-				MapViewer.dropDown.style.position = "relative";
+				MapViewer.dropDown.style.position = 'relative';
 
-				for( i = 0, count = mapList.length; i<count; ++i ) {
+				for (i = 0, count = mapList.length; i < count; ++i) {
 					mapList[i] = mapList[i].substr(5); // Remove 'data\\' part
 					MapViewer.dropDown.add( new Option( mapList[i], mapList[i]), null );
 				}
@@ -164,7 +166,7 @@ function(
 	{
 		BGM.stop();
 
-		if( !ROConfig.API ) {
+		if (!ROConfig.API) {
 			document.body.appendChild( MapViewer.dropDown );
 		}
 
@@ -185,7 +187,7 @@ function(
 	 */
 	MapViewer.onMouseDown = function OnMouseDown()
 	{
-		if( Mouse.world.x > -1 && Mouse.world.y > -1 ) {
+		if (Mouse.world.x > -1 && Mouse.world.y > -1) {
 			MapViewer.spot.position[0] = Mouse.world.x;
 			MapViewer.spot.position[1] = Mouse.world.y;
 			MapViewer.spot.position[2] = Mouse.world.z;

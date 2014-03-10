@@ -10,7 +10,7 @@
  */
 define(function( require )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -21,17 +21,36 @@ define(function( require )
 	var Client         = require('Core/Client');
 	var Session        = require('Engine/SessionStorage');
 	var SpriteRenderer = require('Renderer/SpriteRenderer');
-	var GLMatrix       = require('Utils/gl-matrix');
-	var vec3           = GLMatrix.vec3;
+	var vec3           = require('Utils/gl-matrix').vec3;
 
 
 	/**
-	 * Renderer Namespace
+	 * @var {number} number of clouds to render
 	 */
-	var MAX_CLOUDS   = 150;
-	var _clouds      = new Array(MAX_CLOUDS);
-	var _textures    = [];
-	var _color       = null;
+	var MAX_CLOUDS = 150;
+
+
+	/**
+	 * @var {Array} clouds particles
+	 */
+	var _clouds = new Array(MAX_CLOUDS);
+
+
+	/**
+	 * @var {Array} textures list
+	 */
+	var _textures = [];
+
+
+	/**
+	 * @var {vec4} RGBA color
+	 */
+	var _color = null;
+
+
+	/**
+	 * @var {boolean} display clouds ?
+	 */
 	var _display     = true;
 
 
@@ -41,13 +60,13 @@ define(function( require )
 	 * @param {object} gl context
 	 * @param {string} mapname
 	 */
-	function Init( gl, mapname )
+	function init( gl, mapname )
 	{
 		var color;
 		var i;
 
 		// Not found on weather, black sky, no cloud.
-		if( !DB.weather.sky[mapname] ) {
+		if (!DB.weather.sky[mapname]) {
 			gl.clearColor( 0.0, 0.0, 0.0, 1.0);
 			_display = false;
 			return;
@@ -57,35 +76,46 @@ define(function( require )
 		_color   = DB.weather.sky[mapname].cloudColor;
 		color    = DB.weather.sky[mapname].skyColor;
 		_display = true;
+
 		gl.clearColor( color[0], color[1], color[2], color[3]);
 
 		// Add images to GPU
-		if( !_textures.length ) {
+		if (!_textures.length) {
 			_textures.length = 8;
 
-			for( i=0; i<7; i++ ) {
-				(function(i){
-					Client.loadFile("data/texture/effect/cloud"+ (i+1) +".tga", function(buffer){
-						WebGL.texture( gl, buffer, function( texture ) {
-							_textures[i] = texture;
-						});
-					})
-				})(i);
+			for (i = 0; i < 7; i++) {
+				loadCloudTexture(gl, i);
 			}
 		}
 	}
 
 
 	/**
+	 * Loading cloud texture index
+	 *
+	 * @param {object} gl context
+	 * @param {number} cloud texture index
+	 */
+	function loadCloudTexture( gl, i )
+	{
+		Client.loadFile('data/texture/effect/cloud' + (i+1) + '.tga', function(buffer) {
+			WebGL.texture( gl, buffer, function(texture) {
+				_textures[i] = texture;
+			});
+		});
+	}
+
+
+	/**
 	 * Set up cloud data
 	 */
-	function SetUpCloudData()
+	function setUpCloudData()
 	{
 		var i;
 
 		// Add sprites to scene
-		for( i=0; i<MAX_CLOUDS; i++ ) {
-			if( !_clouds[i] ) {
+		for (i = 0; i < MAX_CLOUDS; i++) {
+			if (!_clouds[i]) {
 				_clouds[i] = {
 					position:   vec3.create(),
 					direction:  vec3.create(),
@@ -93,7 +123,7 @@ define(function( require )
 					death_tick: 0
 				};
 			}
-			CloudInit(_clouds[i]);
+			cloudInit(_clouds[i]);
 			_clouds[i].sprite     = (Math.random()*(_textures.length-1)) | 0;
 			_clouds[i].death_tick = _clouds[i].born_tick + Math.random()*8000;
 			_clouds[i].born_tick  -= 2000;
@@ -109,25 +139,20 @@ define(function( require )
 	/**
 	 * Initialize cloud element
 	 */
-	function CloudInit( cloud )
+	function cloudInit( cloud )
 	{
 		var pos = Session.Entity.position;
 
-		cloud.position[0]  =  pos[0] + (Math.random()*35 | 0) * (Math.random() > 0.5 ? 1 : -1);
-		cloud.position[1]  =  pos[1] + (Math.random()*35 | 0) * (Math.random() > 0.5 ? 1 : -1);
+		cloud.position[0]  = pos[0] + (Math.random()*35 | 0) * (Math.random() > 0.5 ? 1 : -1);
+		cloud.position[1]  = pos[1] + (Math.random()*35 | 0) * (Math.random() > 0.5 ? 1 : -1);
 		cloud.position[2]  = -10.0;
 
-		cloud.direction[0] = Math.random()*0.02 - 0.01;
-		cloud.direction[1] = Math.random()*0.02 - 0.01;
+		cloud.direction[0] = Math.random()*0.02  - 0.01;
+		cloud.direction[1] = Math.random()*0.02  - 0.01;
 		cloud.direction[2] = Math.random()*0.002 - 0.001;
 
-		if( cloud.death_tick ) {
-			cloud.born_tick  = cloud.death_tick + 2000;
-		}
-		else {
-			cloud.born_tick = Date.now();
-		}
-		cloud.death_tick   = cloud.born_tick + 6*1000;
+		cloud.born_tick    = cloud.death_tick ? cloud.death_tick + 2000 : Date.now();
+		cloud.death_tick   = cloud.born_tick + 6000;
 	}
 
 
@@ -141,9 +166,9 @@ define(function( require )
 	 * @param {object} fog structure
 	 * @param {number} tick - game tick
 	 */
-	function Render( gl, modelView, projection, fog, tick )
+	function render( gl, modelView, projection, fog, tick )
 	{
-		if( !_display ) {
+		if (!_display) {
 			return;
 		}
 
@@ -154,31 +179,31 @@ define(function( require )
 
 		// Base parameters
 		SpriteRenderer.color.set(_color);
-		SpriteRenderer.shadow    = 1.0;
-		SpriteRenderer.pickindex = 0;
-		SpriteRenderer.angle     = 0;
-		SpriteRenderer.size[0]   = 15;
-		SpriteRenderer.size[1]   = 15;
-		SpriteRenderer.offset[0] = 0;
-		SpriteRenderer.offset[1] = 0;
+		SpriteRenderer.shadow        = 1.0;
+		SpriteRenderer.pickindex     = 0;
+		SpriteRenderer.angle         = 0;
+		SpriteRenderer.size[0]       = 15;
+		SpriteRenderer.size[1]       = 15;
+		SpriteRenderer.offset[0]     = 0;
+		SpriteRenderer.offset[1]     = 0;
 		SpriteRenderer.image.palette = null;
 
-		for( i=0; i < MAX_CLOUDS; i++ ) {
-			cloud   = _clouds[i];
+		for (i = 0; i < MAX_CLOUDS; i++) {
+			cloud = _clouds[i];
 
 			// Appear
-			if( cloud.born_tick + 1000 > tick ) {
+			if (cloud.born_tick + 1000 > tick) {
 				opacity = (tick - cloud.born_tick) / 1000;
 			}
 
 			// Remove
-			else if( cloud.death_tick + 2000 < tick ) {
-				CloudInit(cloud);
+			else if (cloud.death_tick + 2000 < tick) {
+				cloudInit(cloud);
 				opacity = 0.0;
 			}
 
 			// Disapear
-			else if( cloud.death_tick < tick ) {
+			else if (cloud.death_tick < tick) {
 				opacity = 1.0 - (tick - cloud.death_tick) / 2000;
 			}
 
@@ -187,12 +212,12 @@ define(function( require )
 				opacity = 1.0;
 			}
 
-			// Calculate position
-			vec3.add( cloud.position, cloud.position, cloud.direction );
-			SpriteRenderer.position.set(cloud.position);
 			SpriteRenderer.color[3]      = opacity;
 			SpriteRenderer.image.texture = _textures[cloud.sprite];
 
+			// Calculate position
+			vec3.add( cloud.position, cloud.position, cloud.direction );
+			SpriteRenderer.position.set(cloud.position);
 			SpriteRenderer.render();
 		}
 
@@ -205,8 +230,8 @@ define(function( require )
 	 * Export
 	 */
 	return {
-		init: Init,
-		setUpCloudData: SetUpCloudData,
-		render: Render
+		init:           init,
+		setUpCloudData: setUpCloudData,
+		render:         render
 	};
 });

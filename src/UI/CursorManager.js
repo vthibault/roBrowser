@@ -11,7 +11,7 @@
 define([ 'require', 'Utils/jquery', 'Core/Client', 'Loaders/Sprite', 'Loaders/Action'],
 function( require,         jQuery,        Client,           Sprite,           Action )
 {
-	"use strict";
+	'use strict';
 
 
 
@@ -91,21 +91,21 @@ function( require,         jQuery,        Client,           Sprite,           Ac
 	/**
 	 * Load cursor data (action, sprite)
 	 */
-	Cursor.init = function Init(fn)
+	Cursor.init = function init(fn)
 	{
 		// Already loaded
-		if( this.images.length ) {
+		if (this.images.length) {
 			fn();
 			return;
 		}
 
-		Client.getFiles( ["data/sprite/cursors.spr", "data/sprite/cursors.act"], function( spr, act ) {
+		Client.getFiles( ['data/sprite/cursors.spr', 'data/sprite/cursors.act'], function( spr, act ) {
 			try {
 				Cursor.sprite = new Sprite( spr );
 				Cursor.action = new Action( act );
 			}
 			catch(e) {
-				console.error("Cursor::init() - " + e.message );
+				console.error('Cursor::init() - ' + e.message );
 				return;
 			}
 
@@ -128,7 +128,7 @@ function( require,         jQuery,        Client,           Sprite,           Ac
 	/**
 	 * Build Image data
 	 */
-	Cursor.generateImages = function GenerateImages()
+	Cursor.generateImages = function generateImages()
 	{
 
 		var i, j, size, count;
@@ -138,11 +138,11 @@ function( require,         jQuery,        Client,           Sprite,           Ac
 		this.images.length = 0;
 
 		// Build frames
-		for ( i = 0, count = this.sprite.frames.length; i < count; ++i ) {
+		for (i = 0, count = this.sprite.frames.length; i < count; ++i) {
 
 			canvas = this.sprite.getCanvasFromFrame(i);
 
-			if( !canvas ) {
+			if (!canvas) {
 				this.images[i] = '';
 				continue;
 			}
@@ -154,11 +154,11 @@ function( require,         jQuery,        Client,           Sprite,           Ac
 
 			var data = new Uint8Array(size);
 
-			for( j = 0; j < size; ++j) {
+			for (j = 0; j < size; ++j) {
 				data[j] = str.charCodeAt(j);
 			}
 
-			this.images[i] = URL.createObjectURL(new Blob([data],{type: "image/png"}));
+			this.images[i] = URL.createObjectURL(new Blob([data],{type: 'image/png'}));
 		}
 	};
 
@@ -166,7 +166,7 @@ function( require,         jQuery,        Client,           Sprite,           Ac
 	/**
 	 * Change the cursor for the button click event
 	 */
-	Cursor.bindMouseEvent = function BindMouseEvent()
+	Cursor.bindMouseEvent = function bindMouseEvent()
 	{
 		// Add CSS rule for button
 		var action    = Cursor.action.actions[Cursor.ACTION.CLICK];
@@ -179,7 +179,7 @@ function( require,         jQuery,        Client,           Sprite,           Ac
 				'button { cursor: url(' + hover + '), auto; }',
 				'button:active { cursor: url(' + down + '), auto; }',
 			'</style>'
-		].join("\n"));
+		].join('\n'));
 	};
 
 
@@ -197,7 +197,7 @@ function( require,         jQuery,        Client,           Sprite,           Ac
 		this.norepeat = !!norepeat;
 		this.lastAnim = -1; // reset
 
-		if( typeof animation !== "undefined" ) {
+		if (typeof animation !== 'undefined') {
 			this.animation = animation;
 			this.play      = false;
 		}
@@ -211,13 +211,12 @@ function( require,         jQuery,        Client,           Sprite,           Ac
 	/**
 	 * Render the cursor (update)
 	 */
-	Cursor.render = function Render( tick )
+	Cursor.render = function render( tick )
 	{
 		// Not loaded yet.
-		if( !this.images.length ) {
+		if (!this.images.length) {
 			return;
 		}
-
 
 		// New way
 		var i, count;
@@ -225,9 +224,9 @@ function( require,         jQuery,        Client,           Sprite,           Ac
 		var delay     = action.delay * ( this.type === Cursor.ACTION.DEFAULT ? 2 : 1 );
 		var anim, frame;
 
-		if( this.play ) {
+		if (this.play) {
 			frame = (tick - this.tick) / delay | 0;
-			if( this.norepeat ) {
+			if (this.norepeat) {
 				anim = Math.min( frame, action.animations.length - 1 );
 			}
 			else {
@@ -240,7 +239,7 @@ function( require,         jQuery,        Client,           Sprite,           Ac
 
 		// Don't render the same animation twice
 		// Save CPU...
-		if( anim === this.lastAnim ) {
+		if (anim === this.lastAnim) {
 			return;
 		}
 
@@ -251,7 +250,7 @@ function( require,         jQuery,        Client,           Sprite,           Ac
 		var x = 1, y = 19;
 
 		// Hardcoded ?
-		switch( this.type ) {
+		switch (this.type) {
 			case Cursor.ACTION.TALK:
 				x = 20;
 				y = 40;
@@ -265,7 +264,7 @@ function( require,         jQuery,        Client,           Sprite,           Ac
 			case Cursor.ACTION.ROTATE:
 				x = 18;
 				y = 26;
-				break
+				break;
 
 			case Cursor.ACTION.PICK:
 				x = 20;
@@ -278,13 +277,13 @@ function( require,         jQuery,        Client,           Sprite,           Ac
 		this.ctx.clearRect(0, 0, 50, 50);
 
 		// Render layers
-		for ( i=0, count=layers.length; i<count; ++i ) {
+		for (i = 0, count = layers.length; i < count; ++i) {
 			this.entity.renderLayer( layers[i], this.sprite, this.sprite, pos, false );
 		}
 
 		// Display icons
 		var url = this.canvas.toDataURL();
-		if( url !== this.lastURL ) {
+		if (url !== this.lastURL) {
 			document.body.style.cursor = 'url('+ url +'), auto';
 			this.lastURL = url;
 		}

@@ -10,7 +10,7 @@
 
 define( function()
 {
-	"use strict";
+	'use strict';
 
 	/**
 	 * TGA class loader
@@ -83,7 +83,7 @@ define( function()
 			colormap_length: data[this.offset++] | data[this.offset++] << 8,
 			colormap_size:   data[this.offset++],
 			origin: [
-				data[this.offset++] | data[this.offset++] << 8, 
+				data[this.offset++] | data[this.offset++] << 8,
 				data[this.offset++] | data[this.offset++] << 8
 			],
 			width:      data[this.offset++] | data[this.offset++] << 8,
@@ -144,7 +144,7 @@ define( function()
 			case Targa.TYPE_INDEXED:
 			case Targa.TYPE_RLE_INDEXED:
 				if (this.header.colormap_length > 256 || this.header.colormap_size !== 24 || this.header.colormap_type !== 1) {
-					throw new Error("Targa::checkHeader() - Invalid type colormap data for indexed type");
+					throw new Error('Targa::checkHeader() - Invalid type colormap data for indexed type');
 				}
 				break;
 
@@ -154,17 +154,17 @@ define( function()
 			case Targa.TYPE_RLE_RGB:
 			case Targa.TYPE_RLE_GREY:
 				if (this.header.colormap_type) {
-					throw new Error("Targa::checkHeader() - Invalid type colormap data for colormap type");
+					throw new Error('Targa::checkHeader() - Invalid type colormap data for colormap type');
 				}
 				break;
 
 			// What the need of a file without data ?
 			case Targa.TYPE_NO_DATA:
-				throw new Error("Targa::checkHeader() - No data");
+				throw new Error('Targa::checkHeader() - No data');
 
 			// Invalid type ?
 			default:
-				throw new Error("Targa::checkHeader() - Invalid type '" + this.header.image_type + "'");
+				throw new Error('Targa::checkHeader() - Invalid type "' + this.header.image_type + '"');
 		}
 
 		// Check image size
@@ -173,11 +173,11 @@ define( function()
 		}
 
 		// Check pixel size
-		if (this.header.pixel_size !== 8 
-		 && this.header.pixel_size !== 16 
-		 && this.header.pixel_size !== 24 
-		 && this.header.pixel_size !== 32) {
-			throw new Error("Targa::checkHeader() - Invalid pixel size '" + this.header.pixel_size + "'");
+		if (this.header.pixel_size !== 8  &&
+		    this.header.pixel_size !== 16 &&
+		    this.header.pixel_size !== 24 &&
+		    this.header.pixel_size !== 32) {
+			throw new Error('Targa::checkHeader() - Invalid pixel size "' + this.header.pixel_size + '"');
 		}
 	};
 
@@ -189,8 +189,8 @@ define( function()
 	 */
 	Targa.prototype.parse = function Targa_parse(data) {
 		var _header,
-		    pixel_data, 
-		    pixel_size, 
+		    pixel_data,
+		    pixel_size,
 		    pixel_total;
 
 		_header      = this.header;
@@ -200,7 +200,7 @@ define( function()
 		// Read palettes
 		if (this.use_pal) {
 			this.palettes = data.subarray(
-				this.offset, 
+				this.offset,
 				this.offset += _header.colormap_length * pixel_size
 			);
 		}
@@ -218,7 +218,7 @@ define( function()
 				count = (c & 0x7f) + 1;
 
 				// RLE pixels.
-				if( c & 0x80 ) {
+				if (c & 0x80) {
 					// Bind pixel tmp array
 					for (i = 0; i < pixel_size; ++i) {
 						pixels[i] = data[this.offset++];
@@ -230,7 +230,7 @@ define( function()
 					}
 
 					offset += pixel_size * count;
-				} 
+				}
 
 				// Raw pixels.
 				else {
@@ -241,17 +241,13 @@ define( function()
 					offset += count;
 				}
 			}
-		} 
+		}
 
 		// RAW Pixels
 		else {
 			pixel_data = data.subarray(
-				this.offset, 
-				this.offset += (
-					this.use_pal 
-						? _header.width * _header.height 
-						: pixel_total
-				)
+				this.offset,
+				this.offset += (this.use_pal ? _header.width * _header.height : pixel_total)
 			);
 		}
 
@@ -266,23 +262,23 @@ define( function()
 	 * @returns {object} imageData
 	 */
 	Targa.prototype.getImageData = function Targa_getImageData( imageData ) {
-		var width  = this.header.width, 
-		    height = this.header.height, 
-		    x_start, 
-		    y_start, 
-		    x_step, 
-		    y_step, 
-		    y_end, 
-		    x_end, 
-		    func, 
+		var width  = this.header.width,
+		    height = this.header.height,
+		    x_start,
+		    y_start,
+		    x_step,
+		    y_step,
+		    y_end,
+		    x_end,
+		    func,
 		    data;
 
-		data = 
+		data =
 			// sent as argument
-			imageData || 
+			imageData ||
 
 			// In main frame ?
-			(document && document.createElement('canvas').getContext('2d').createImageData(width, height)) || 
+			(document && document.createElement('canvas').getContext('2d').createImageData(width, height)) ||
 			// Not have access to document.
 			{
 				width: width,
@@ -364,7 +360,7 @@ define( function()
 	 * @returns {string} url
 	 */
 	Targa.prototype.getDataURL = function Targa_getDatURL( type ) {
-		return this.getCanvas().toDataURL(type || "image/png");
+		return this.getCanvas().toDataURL(type || 'image/png');
 	};
 
 
@@ -385,8 +381,8 @@ define( function()
 		var width = this.header.width;
 		var color, i = 0, x, y;
 
-		for( y = y_start; y !== y_end; y += y_step) {
-			for( x = x_start; x !== x_end; x += x_step, i++) {
+		for (y = y_start; y !== y_end; y += y_step) {
+			for (x = x_start; x !== x_end; x += x_step, i++) {
 				color = image[i];
 				imageData[(x + width * y) * 4 + 3] = 255;
 				imageData[(x + width * y) * 4 + 2] = colormap[(color * 3) + 0];

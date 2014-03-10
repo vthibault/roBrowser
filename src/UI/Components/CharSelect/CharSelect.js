@@ -9,7 +9,7 @@
  */
 define(function(require)
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -17,7 +17,7 @@ define(function(require)
 	 */
 	var DB                 = require('DB/DBManager');
 	var Preferences        = require('Core/Preferences');
- 	var KEYS               = require('Controls/KeyEventHandler');
+	var KEYS               = require('Controls/KeyEventHandler');
 	var Renderer           = require('Renderer/Renderer');
 	var Entity             = require('Renderer/Entity/Entity');
 	var SpriteRenderer     = require('Renderer/SpriteRenderer');
@@ -35,79 +35,95 @@ define(function(require)
 
 
 	/**
+	 * @var {Preferences} save where the cursor position is
+	 */
+	var _preferences = Preferences.get('CharSelect', {
+		index: 0
+	}, 1.0 );
+
+
+	/**
+	 * @var {number} max slots
+	 */
+	var _maxSlots = 3 * 9;
+
+
+	/**
+	 * var {Array} list of characters
+	 */
+	var _list = [];
+
+
+	/**
+	 * @var {Array} list of characters (index by slot)
+	 */
+	var _slots = [];
+
+
+	/**
+	 * @var {Array} list of entities (index by slot)
+	 */
+	var _entitySlots = [];
+
+
+	/**
+	 * @var {number} selector index
+	 */
+	var _index = 0;
+
+
+	/**
+	 * @var {Array} canvas context
+	 */
+	var _ctx = [];
+
+
+	/**
+	 * var {number} sex
+	 */
+	var _sex = 0;
+
+
+	/**
 	 * Initialize UI
 	 */
 	CharSelect.init = function Init()
 	{
-		this.preferences   = Preferences.get('CharSelect', {
-			index: 0
-		}, 1.0 );
-
-		this.maxSlots    = 3 * 9;
-		this.ctx         = [];
-		this.list        = [];
-		this.slots       = [];
-		this.entitySlots = [];
-		this.index       = 0;
-
 		var ui = this.ui;
-		ui.css({ top: (Renderer.height-342)/2, left: (Renderer.width-576)/2 });
-		this.draggable();
+
+		ui.css({
+			top:  (Renderer.height-342)/2,
+			left: (Renderer.width-576)/2
+		});
 
 		// Bind buttons
-		ui.find('.ok'    ).click( this.connect.bind(this) );
-		ui.find('.cancel').click( this.cancel.bind(this) );
-		ui.find('.make'  ).click( this.create.bind(this) );
-		ui.find('.delete').click( this.suppress.bind(this) );
+		ui.find('.ok'    ).click(connect);
+		ui.find('.cancel').click(cancel);
+		ui.find('.make'  ).click(create);
+		ui.find('.delete').click(suppress);
 
-		ui.find('.arrow.left' ).mousedown(this.genericArrowDown(-1));
-		ui.find('.arrow.right').mousedown(this.genericArrowDown(+1));
+		ui.find('.arrow.left' ).mousedown(genericArrowDown(-1));
+		ui.find('.arrow.right').mousedown(genericArrowDown(+1));
 
 		// Bind canvas
-		ui.find('.slot1').mousedown(this.genericCanvasDown(0));
-		ui.find('.slot2').mousedown(this.genericCanvasDown(1));
-		ui.find('.slot3').mousedown(this.genericCanvasDown(2));
+		ui.find('.slot1').mousedown(genericCanvasDown(0));
+		ui.find('.slot2').mousedown(genericCanvasDown(1));
+		ui.find('.slot3').mousedown(genericCanvasDown(2));
 
 		ui.find('canvas').
 			dblclick(function(){
-				if( CharSelect.slots[ CharSelect.index ] )
-					CharSelect.connect();
-				else
-					CharSelect.create();
+				if (_slots[_index]) {
+					connect();
+				}
+				else {
+					create();
+				}
 			}).
 			each(function(){
-				CharSelect.ctx.push( this.getContext('2d') );
+				_ctx.push( this.getContext('2d') );
 			});
-	};
 
-
-	/**
-	 * Generic method to handle mousedown on arrow
-	 *
-	 * @param {number} value to move
-	 */
-	CharSelect.genericArrowDown = function GenericArrowDown( value )
-	{
-		return function( event ) {
-			this.moveTo( (this.index + this.maxSlots + value) % this.maxSlots );
-			event.stopImmediatePropagation();
-			return false;
-		}.bind( CharSelect );
-	};
-
-
-	/**
-	 * Generic method to handle mousedown on arrow
-	 *
-	 * @param {number} value to move
-	 */
-	CharSelect.genericCanvasDown = function GenericCanvasDown( value )
-	{
-		return function( event ) {
-			this.moveTo( Math.floor(this.index / 3) * 3 + value );
-			event.stopImmediatePropagation();
-			return false;
-		}.bind( CharSelect );
+		this.draggable();
 	};
 
 
@@ -116,17 +132,17 @@ define(function(require)
 	 */
 	CharSelect.onAppend = function onAppend()
 	{
-		this.index = this.preferences.index;
+		_index = _preferences.index;
 
 		this.ui.find('.slotinfo .content').text( DB.msgstringtable[2004] );
-		this.ui.find('.slotinfo .number').text( this.list.length + ' / ' + this.maxSlots );
-		this.ui.find('.pageinfo .count').text( this.maxSlots / 3 );
+		this.ui.find('.slotinfo .number').text( _list.length + ' / ' + _maxSlots );
+		this.ui.find('.pageinfo .count').text( _maxSlots / 3 );
 
 		// Update values
-		this.moveTo( this.index );
+		moveCursorTo(_index);
 
 		// Start rendering
-		Renderer.render(this.render)
+		Renderer.render(render);
 	};
 
 
@@ -135,8 +151,8 @@ define(function(require)
 	 */
 	CharSelect.onRemove = function onRemove()
 	{
-		this.preferences.index = this.index;
-		this.preferences.save();
+		_preferences.index = _index;
+		_preferences.save();
 		Renderer.stop();
 	};
 
@@ -146,33 +162,33 @@ define(function(require)
 	 *
 	 * @param {object} event
 	 */
-	CharSelect.onKeyDown = function BindKeyEvent( event )
+	CharSelect.onKeyDown = function onKeyDown( event )
 	{
-		switch( event.which ) {
+		switch (event.which) {
 			case KEYS.ESCAPE:
-				this.cancel();
+				cancel();
 				break;
 	
 			case KEYS.LEFT:
-				this.moveTo(this.index-1);
+				moveCursorTo(_index-1);
 				break;
 
 			case KEYS.RIGHT:
-				this.moveTo(this.index+1);
+				moveCursorTo(_index+1);
 				break;
 
 			case KEYS.SUPR:
-				if( this.slots[ this.index ] ) {
-					this.suppress();
+				if (_slots[_index]) {
+					suppress();
 				}
 				break;
 
 			case KEYS.ENTER:
-				if( this.slots[ this.index ] ) {
-					this.connect();
+				if (_slots[_index]) {
+					connect();
 				}
 				else {
-					this.create();
+					create();
 				}
 				break;
 
@@ -192,80 +208,23 @@ define(function(require)
 	 */
 	CharSelect.setInfo = function setInfo( pkt )
 	{
-		this.maxSlots     = pkt.TotalSlotNum;
-		this.sex          = pkt.sex;
-		this.slots        = [];
-		this.entitySlots  = [];
-		this.list         = [];
+		_maxSlots           = pkt.TotalSlotNum;
+		_sex                = pkt.sex;
+		_slots.length       = 0;
+		_entitySlots.length = 0;
+		_list.length        =  0;
 
-		if( pkt.charInfo ) {
+		if (pkt.charInfo) {
 			var i, count = pkt.charInfo.length;
-			for( i=0; i<count; ++i ) {
-				this.addCharacter( pkt.charInfo[i] );
+			for (i = 0; i < count; ++i) {
+				CharSelect.addCharacter( pkt.charInfo[i] );
 			}
 		}
 
-		this.ui.find('.slotinfo .number').text( this.list.length + ' / ' + this.maxSlots );
-		this.ui.find('.pageinfo .count').text( this.maxSlots / 3 );
-		this.moveTo( this.index );
-	};
+		this.ui.find('.slotinfo .number').text( _list.length + ' / ' + _maxSlots );
+		this.ui.find('.pageinfo .count').text( _maxSlots / 3 );
 
-
-	/**
-	 * Adding a Character to the list
-	 *
-	 * @param {object} character data
-	 */
-	CharSelect.addCharacter = function addCharacter( character )
-	{
-		character.sex = CharSelect.sex;
-		this.list.push( character );
-	 	this.slots[ character.CharNum ] = character;
-		this.entitySlots[ character.CharNum ] = new Entity();
-		this.entitySlots[ character.CharNum ].set( character );
-	};
-
-
-	/**
-	 * Press "cancel" or ESCAPE key
-	 */
-	CharSelect.cancel = function Cancel()
-	{
-		UIManager.showPromptBox( DB.msgstringtable[17], "ok", "cancel", function(){
-			CharSelect.onExitRequest();
-		}, null);
-	};
-
-
-	/**
-	 * Jumping to Character creation window
-	 */
-	CharSelect.create = function Create()
-	{
-		CharSelect.onCreateRequest( CharSelect.index );
-	};
-
-
-	/**
-	 * Select Player, connect
-	 */
-	CharSelect.connect = function Connect() {
-		if( CharSelect.slots[ CharSelect.index ] ) {
-			CharSelect.preferences.index = CharSelect.index;
-			CharSelect.preferences.save();
-			CharSelect.onConnectRequest( CharSelect.slots[ CharSelect.index ] );
-		}
-	};
-
-
-	/**
-	 * Delete a character
-	 */
-	CharSelect.suppress = function Delete() {
-		if( CharSelect.slots[ CharSelect.index ] ) {
-			CharSelect.off('keydown');
-			CharSelect.onDeleteRequest( CharSelect.slots[ CharSelect.index ].GID );
-		}
+		moveCursorTo( _index );
 	};
 
 
@@ -278,22 +237,22 @@ define(function(require)
 	{
 		this.on('keydown');
 
-		switch( error ) {
+		switch (error) {
 			// Do nothing, just re-set the keydown
 			case -2:
 				return;
 
 			// Success (clean up character)
 			case -1:
-				delete this.slots[ this.index ];
-				delete this.entitySlots[ this.index ];
+				delete _slots[_index];
+				delete _entitySlots[_index];
 
-				var i=0;
-				var count = this.list.length;
+				var i = 0;
+				var count = _list.length;
 
-				while( i < count ) {
-					if( this.list[i].CharNum === this.index ) {
-						this.list.splice( i, 1 );
+				while (i < count) {
+					if (_list[i].CharNum === _index) {
+						_list.splice( i, 1 );
 						--count;
 					}
 					else {
@@ -302,16 +261,114 @@ define(function(require)
 				}
 
 				// Refresh UI
-				this.moveTo( this.index );
-				this.ui.find('.slotinfo .number').text( this.list.length + ' / ' + this.maxSlots );
+				moveCursorTo( _index );
+				this.ui.find('.slotinfo .number').text( _list.length + ' / ' + _maxSlots );
 				return;
 
 			default: // Others error ?
 			case  0: // Incorrect adress email
-				UIManager.showMessageBox( DB.msgstringtable[301], "ok" );
+				UIManager.showMessageBox( DB.msgstringtable[301], 'ok' );
 				break;
 		}
 	};
+
+
+	/**
+	 * Adding a Character to the list
+	 *
+	 * @param {object} character data
+	 */
+	CharSelect.addCharacter = function addCharacter( character )
+	{
+		character.sex = _sex;
+		_list.push( character );
+		_slots[ character.CharNum ] = character;
+
+		_entitySlots[ character.CharNum ] = new Entity();
+		_entitySlots[ character.CharNum ].set( character );
+	};
+
+
+	/**
+	 * Callback to use
+	 */
+	CharSelect.onExitRequest    = function onExitRequest(){};
+	CharSelect.onDeleteRequest  = function onDeleteRequest(){};
+	CharSelect.onCreateRequest  = function onCreateRequest(){};
+	CharSelect.onConnectRequest = function onConnectRequest(){};
+
+
+	/**
+	 * Generic method to handle mousedown on arrow
+	 *
+	 * @param {number} value to move
+	 */
+	function genericArrowDown( value )
+	{
+		return function( event ) {
+			moveCursorTo((_index + _maxSlots + value) % _maxSlots );
+			event.stopImmediatePropagation();
+			return false;
+		};
+	}
+
+
+	/**
+	 * Generic method to handle mousedown on arrow
+	 *
+	 * @param {number} value to move
+	 */
+	function genericCanvasDown( value )
+	{
+		return function( event ) {
+			moveCursorTo( Math.floor(_index / 3) * 3 + value );
+			event.stopImmediatePropagation();
+			return false;
+		};
+	}
+
+
+	/**
+	 * Press "cancel" or ESCAPE key
+	 */
+	function cancel()
+	{
+		UIManager.showPromptBox( DB.msgstringtable[17], 'ok', 'cancel', function(){
+			CharSelect.onExitRequest();
+		}, null);
+	}
+
+
+	/**
+	 * Jumping to Character creation window
+	 */
+	function create()
+	{
+		CharSelect.onCreateRequest( _index );
+	}
+
+
+	/**
+	 * Select Player, connect
+	 */
+	function connect() {
+		if (_slots[_index]) {
+			_preferences.index = _index;
+			_preferences.save();
+			CharSelect.onConnectRequest( _slots[_index] );
+		}
+	}
+
+
+	/**
+	 * Delete a character
+	 */
+	function suppress() {
+		if (_slots[_index]) {
+			CharSelect.off('keydown');
+			CharSelect.onDeleteRequest( _slots[_index].GID );
+		}
+	}
 
 
 	/**
@@ -319,14 +376,14 @@ define(function(require)
 	 *
 	 * @param {number} index
 	 */
-	CharSelect.moveTo = function MoveTo( index )
+	function moveCursorTo( index )
 	{
-		var ui = this.ui;
+		var ui = CharSelect.ui;
 		var $charinfo = ui.find('.charinfo');
 
 		// Set the last entity to idle
-		var entity = this.entitySlots[this.index];
-		if( entity ) {
+		var entity = _entitySlots[_index];
+		if (entity) {
 			entity.setAction({
 				action: entity.ACTION.IDLE,
 				frame:  0,
@@ -336,17 +393,17 @@ define(function(require)
 		}
 
 		// Move
-		this.index = (index + this.maxSlots) % this.maxSlots;
+		_index = (index + _maxSlots) % _maxSlots;
 		ui.find('.box_select').
 			removeClass('slot1 slot2 slot3').
-			addClass('slot' + (this.index % 3 + 1));
+			addClass('slot' + (_index % 3 + 1));
 
 		// Set page
-		ui.find('.pageinfo .current').text( Math.floor( this.index / 3) + 1 );
+		ui.find('.pageinfo .current').text( Math.floor( _index / 3) + 1 );
 
 		// Not found, just clean up.
-		entity = this.entitySlots[this.index];
-		if( !entity ) {
+		entity = _entitySlots[_index];
+		if (!entity) {
 			$charinfo.find('div').empty();
 			ui.find('.make').show();
 			ui.find('.delete').hide();
@@ -367,7 +424,7 @@ define(function(require)
 		ui.find('.delete').show();
 		ui.find('.ok').show();
 
-		var info = this.slots[ this.index ];
+		var info = _slots[_index];
 		$charinfo.find('.name').text( info.name );
 		$charinfo.find('.job').text( DB.mobname[info.job] || '' );
 		$charinfo.find('.lvl').text( info.level );
@@ -383,34 +440,30 @@ define(function(require)
 		$charinfo.find('.int').text( info.Int );
 		$charinfo.find('.dex').text( info.Dex );
 		$charinfo.find('.luk').text( info.Luk );
-	};
+	}
 
 
 	/**
 	 * Render sprites to canvas
 	 */
-	CharSelect.render = function Render()
+	function render()
 	{
-		var i, idx = Math.floor( CharSelect.index / 3) * 3;
-		Camera.direction = 4;
+		var i, count, idx;
 
-		for( i=0; i<3; ++i ) {
-			CharSelect.ctx[i].clearRect(0, 0, CharSelect.ctx[i].canvas.width, CharSelect.ctx[i].canvas.height );
-			if( CharSelect.entitySlots[idx+i] ) {
-				SpriteRenderer.bind2DContext( CharSelect.ctx[i], 63, 130 );
-				CharSelect.entitySlots[idx+i].renderEntity();
+		Camera.direction = 4;
+		idx              = Math.floor(_index / 3) * 3;
+		count            = _ctx.length;
+
+
+		for (i = 0; i < count; ++i) {
+			_ctx[i].clearRect(0, 0, _ctx[i].canvas.width, _ctx[i].canvas.height);
+
+			if (_entitySlots[idx+i]) {
+				SpriteRenderer.bind2DContext(_ctx[i], 63, 130);
+				_entitySlots[idx+i].renderEntity();
 			}
 		}
-	};
-
-
-	/**
-	 * Callback to use
-	 */
-	CharSelect.onExitRequest    = function OnExitRequest(){};
-	CharSelect.onDeleteRequest  = function OnDeleteRequest(){};
-	CharSelect.onCreateRequest  = function OnCreateRequest(){};
-	CharSelect.onConnectRequest = function OnConnectRequest(){};
+	}
 
 
 	/**

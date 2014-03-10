@@ -11,13 +11,13 @@
 
 importScripts('../Vendors/require.js');
 requirejs.config({
-	baseUrl: "../"
+	baseUrl: '../'
 });
 
 require(['Core/FileManager', 'Core/FileSystem', 'Loaders/MapLoader'],
 function(      FileManager,        FileSystem,           MapLoader )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -25,9 +25,9 @@ function(      FileManager,        FileSystem,           MapLoader )
 	 *
 	 * @param {string} error
 	 */
-	function SendError()
+	function sendError()
 	{
-		postMessage({ type:"THREAD_ERROR", data: Array.prototype.slice.call(arguments,0) });
+		postMessage({ type:'THREAD_ERROR', data: Array.prototype.slice.call(arguments,0) });
 	}
 
 
@@ -36,9 +36,9 @@ function(      FileManager,        FileSystem,           MapLoader )
 	 *
 	 * @param {string} error
 	 */
-	function SendLog()
+	function sendLog()
 	{
-		postMessage({ type:"THREAD_LOG", data: Array.prototype.slice.call(arguments,0) });
+		postMessage({ type:'THREAD_LOG', data: Array.prototype.slice.call(arguments,0) });
 	}
 
 
@@ -47,21 +47,20 @@ function(      FileManager,        FileSystem,           MapLoader )
 	 *
 	 * @param {object} event - EventHandler
 	 */
-	onmessage = function Receive( event )
+	onmessage = function receive( event )
 	{
 		var msg  = event.data;
-		var args = [];
 
-		switch( msg.type ) {
+		switch (msg.type) {
 
 			// Modify client host
-			case "SET_HOST":
+			case 'SET_HOST':
 				FileManager.remoteClient = msg.data;
 				break;
 
 
 			// Save full client and use it
-			case "CLIENT_INIT":
+			case 'CLIENT_INIT':
 				FileSystem.bind('onprogress', function(progress){
 					postMessage({ type:'CLIENT_SAVE_PROGRESS', data:progress });
 				});
@@ -72,11 +71,11 @@ function(      FileManager,        FileSystem,           MapLoader )
 				});
 
 				FileManager.onGameFileLoaded = function(filename){
-					SendLog('Success to load GRF file "' + filename + '"');
+					sendLog('Success to load GRF file "' + filename + '"');
 				};
 
 				FileManager.onGameFileError = function(filename, error){
-					SendError('Error loading GRF file "' + filename + '" : ' + error);
+					sendError('Error loading GRF file "' + filename + '" : ' + error);
 				};
 
 				// Start loading GRFs files
@@ -96,10 +95,10 @@ function(      FileManager,        FileSystem,           MapLoader )
 
 
 			// Get a file from client/grf
-			case "GET_FILE":
+			case 'GET_FILE':
 				FileManager.get( msg.data.filename, function( result, error){
 					if (error) {
-						SendError( '[Thread] ' + error + ' ('+ msg.data.filename +')' );
+						sendError( '[Thread] ' + error + ' ('+ msg.data.filename +')' );
 					}
 
 					if (msg.uid) {
@@ -113,10 +112,10 @@ function(      FileManager,        FileSystem,           MapLoader )
 
 
 			// Get and load a file from client/grf
-			case "LOAD_FILE":
+			case 'LOAD_FILE':
 				FileManager.load( msg.data.filename, function( result, error){
 					if (error) {
-						SendError( '[Thread] ' + error + ' ('+ msg.data.filename +')' );
+						sendError( '[Thread] ' + error + ' ('+ msg.data.filename +')' );
 					}
 
 					if (msg.uid) {
@@ -130,7 +129,7 @@ function(      FileManager,        FileSystem,           MapLoader )
 
 
 			// Search a file in Client
-			case "SEARCH_FILE":
+			case 'SEARCH_FILE':
 				if (msg.uid) {
 					postMessage({
 						uid:       msg.uid,
@@ -141,7 +140,7 @@ function(      FileManager,        FileSystem,           MapLoader )
 
 
 			// Start loading a map
-			case "LOAD_MAP":
+			case 'LOAD_MAP':
 				var map = new MapLoader();
 
 				map.onprogress = function(progress){
@@ -170,5 +169,5 @@ function(      FileManager,        FileSystem,           MapLoader )
 	/**
 	 * Once the thread is ready
 	 */
-	postMessage({ type: "THREAD_READY" });
+	postMessage({ type: 'THREAD_READY' });
 });

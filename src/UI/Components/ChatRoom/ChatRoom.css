@@ -21,7 +21,7 @@
 #ChatRoom .content .owner { color:#36716d; }
 
 #ChatRoom .send { height:30px; position:relative; padding-left:5px; }
-#ChatRoom .send input { width:100%; border:none; border-top: 1px solid #ccc;}
+#ChatRoom .send input { width:100%; padding:0px; border:none; border-top: 1px solid #ccc;}
 
 #ChatRoom .overlay { position:absolute; display:none; white-space:nowrap; z-index:900; height:13px; padding:5px; background:rgba(0,0,0,0.7); color:white; text-shadow:1px 1px black;}
 #ChatRoom .overlay.grey { color:#aaa; }

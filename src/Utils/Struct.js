@@ -37,7 +37,7 @@ define(function()
 
 		len = arguments.length;
 
-		for( i = 0; i < len; ++i ) {
+		for (i = 0; i < len; ++i) {
 
 			args     =   arguments[i].match(/(unsigned\s)?(bool|char|short|int|long|float|double)\s([a-zA-Z0-9_-]+)(\[(\d+)\])?;?/);
 			unsigned = !!args[1];
@@ -45,7 +45,7 @@ define(function()
 			name     =   args[3];
 			count    =   args[5] ? parseInt(args[5], 10) : 1;
 
-			switch( type ) {
+			switch (type) {
 				case "bool":   size=1; func = "int8";    break;
 				case "char":   size=1; func = "int8";    break;
 				case "short":  size=2; func = "int16";   break;

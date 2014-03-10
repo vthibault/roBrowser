@@ -9,7 +9,7 @@
  */
 define(['Core/Client', 'DB/DBManager', './EntityAction'], function( Client, DB, EntityAction )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -78,8 +78,22 @@ define(['Core/Client', 'DB/DBManager', './EntityAction'], function( Client, DB, 
 		var Entity = this.constructor;
 		this._job  = -1;
 
+		// Define Object type based on its id
+		// TODO: find a better way ?
+		this.objecttype = (
+			job < 45   ? Entity.TYPE_PC   :
+			job < 46   ? Entity.TYPE_WARP :
+			job < 1000 ? Entity.TYPE_NPC  :
+			job < 4000 ? Entity.TYPE_MOB  :
+			job < 6000 ? Entity.TYPE_PC   :
+			job < 7000 ? Entity.TYPE_HOM  :
+						 Entity.TYPE_MERC
+		);
+
 		// warp ?
 		if (path === null) {
+			// Reload actions frames (the type can change...)
+			EntityAction.call(this);
 			return;
 		}
 
@@ -90,24 +104,13 @@ define(['Core/Client', 'DB/DBManager', './EntityAction'], function( Client, DB, 
 		}
 
 		// Loading
-		Client.loadFile(path + ".act");
-		Client.loadFile(path + ".spr", function(){
-			this.files.body.spr = path + ".spr";
-			this.files.body.act = path + ".act";
+		Client.loadFile(path + '.act');
+		Client.loadFile(path + '.spr', function(){
+			this.files.body.spr = path + '.spr';
+			this.files.body.act = path + '.act';
 
-
-			// Define Object type based on its id
 			// TODO: find a better way ?
 			this._job       = job;
-			this.objecttype = (
-				job < 45   ? Entity.TYPE_PC   :
-				job < 46   ? Entity.TYPE_WARP :
-				job < 1000 ? Entity.TYPE_NPC  :
-				job < 4000 ? Entity.TYPE_MOB  :
-				job < 6000 ? Entity.TYPE_PC   :
-				job < 7000 ? Entity.TYPE_HOM  :
-							 Entity.TYPE_MERC
-			);
 
 			// Reload actions frames (the type can change...)
 			EntityAction.call(this);
@@ -160,11 +163,11 @@ define(['Core/Client', 'DB/DBManager', './EntityAction'], function( Client, DB, 
 		var path   = DB.getHeadPath( head, this._sex );
 		this._head = -1;
 
-		Client.loadFile(path + ".act");
-		Client.loadFile(path + ".spr", function(){
+		Client.loadFile(path + '.act');
+		Client.loadFile(path + '.spr', function(){
 			this._head          = head;
-			this.files.head.spr = path + ".spr";
-			this.files.head.act = path + ".act";
+			this.files.head.spr = path + '.spr';
+			this.files.head.act = path + '.act';
 			this.files.head.pal = null;
 
 			// Update head palette
@@ -217,7 +220,7 @@ define(['Core/Client', 'DB/DBManager', './EntityAction'], function( Client, DB, 
 
 			// Nothing to load
 			if (val <= 0) {
-				this["_"+type] = 0;
+				this['_'+type] = 0;
 				return;
 			}
 
@@ -240,7 +243,7 @@ define(['Core/Client', 'DB/DBManager', './EntityAction'], function( Client, DB, 
 				this.files[type].pal = null;
 
 				// Load weapon sound
-				if( type === 'weapon') {
+				if (type === 'weapon') {
 					this.weapon_sound = DB.getWeaponSound( val );
 				}
 
@@ -248,11 +251,11 @@ define(['Core/Client', 'DB/DBManager', './EntityAction'], function( Client, DB, 
 			}
 
 			function LoadView( path, final ) {
-				Client.loadFile(path + ".act");
-				Client.loadFile(path + ".spr", function(){
+				Client.loadFile(path + '.act');
+				Client.loadFile(path + '.spr', function(){
 					_this['_'+type] = _val;
-					_this.files[type].spr = path + ".spr";
-					_this.files[type].act = path + ".act";
+					_this.files[type].spr = path + '.spr';
+					_this.files[type].act = path + '.act';
 
 					// Load weapon sound
 					if (type === 'weapon') {
@@ -288,54 +291,54 @@ define(['Core/Client', 'DB/DBManager', './EntityAction'], function( Client, DB, 
 	{
 		this.files = new View();
 
-		Object.defineProperty(this, "sex", {
+		Object.defineProperty(this, 'sex', {
 			get: function(){ return this._sex },
 			set: UpdateSex
 		});
 
-		Object.defineProperty(this, "job", {
+		Object.defineProperty(this, 'job', {
 			get: function(){ return this._job },
 			set: UpdateBody
 		});
 
-		Object.defineProperty(this, "bodypalette", {
+		Object.defineProperty(this, 'bodypalette', {
 			get: function(){ return this._bodypalette },
 			set: UpdateBodyPalette
 		});
 
-		Object.defineProperty(this, "head", {
+		Object.defineProperty(this, 'head', {
 			get: function(){ return this._head },
 			set: UpdateHead
 		});
 
-		Object.defineProperty(this, "headpalette", {
+		Object.defineProperty(this, 'headpalette', {
 			get: function(){ return this._headpalette },
 			set: UpdateHeadPalette
 		});
 
-		Object.defineProperty(this, "weapon", {
+		Object.defineProperty(this, 'weapon', {
 			get: function(){ return this._weapon },
-			set: UpdateGeneric("weapon", "getWeaponPath", "getWeaponViewID")
+			set: UpdateGeneric('weapon', 'getWeaponPath', 'getWeaponViewID')
 		});
 
-		Object.defineProperty(this, "shield", {
+		Object.defineProperty(this, 'shield', {
 			get: function(){ return this._shield },
-			set: UpdateGeneric("shield", "getShieldPath")
+			set: UpdateGeneric('shield', 'getShieldPath')
 		});
 
-		Object.defineProperty(this, "accessory", {
+		Object.defineProperty(this, 'accessory', {
 			get: function(){ return this._accessory },
-			set: UpdateGeneric("accessory", "getHatPath")
+			set: UpdateGeneric('accessory', 'getHatPath')
 		});
 
-		Object.defineProperty(this, "accessory2", {
+		Object.defineProperty(this, 'accessory2', {
 			get: function(){ return this._accessory2 },
-			set: UpdateGeneric("accessory2", "getHatPath")
+			set: UpdateGeneric('accessory2', 'getHatPath')
 		});
 
-		Object.defineProperty(this, "accessory3", {
+		Object.defineProperty(this, 'accessory3', {
 			get: function(){ return this._accessory3 },
-			set: UpdateGeneric("accessory3", "getHatPath")
+			set: UpdateGeneric('accessory3', 'getHatPath')
 		});
 	};
 });

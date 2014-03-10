@@ -9,7 +9,7 @@
  */
 define(function(require)
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -64,9 +64,9 @@ define(function(require)
 	/**
 	 * Initialize UI
 	 */
-	ShortCut.init = function Init()
+	ShortCut.init = function init()
 	{
-		this.ui.find('.resize').mousedown(OnResize);
+		this.ui.find('.resize').mousedown(onResize);
 
 		this.ui.find('.close').click(function(event){
 			ShortCut.ui.css('height', 0);
@@ -78,14 +78,14 @@ define(function(require)
 		});
 
 		// Dropping to the shortcut
-		this.ui.on('drop', '.container', OnDrop);
+		this.ui.on('drop', '.container', onDrop);
 		this.ui.on('dragover', '.container', function(){
 			event.stopImmediatePropagation();
 			return false;
 		});
 
 		// Drag from the shortcut from somewhere else
-		this.ui.on('dragstart', '.icon', OnDrag);
+		this.ui.on('dragstart', '.icon', onDrag);
 		this.ui.on('dragend', '.icon', function(){
 			delete window._OBJ_DRAG_;
 		});
@@ -93,12 +93,12 @@ define(function(require)
 		// Click.
 		this.ui.on('dblclick', '.icon', function(event){
 			var index = parseInt(this.parentNode.getAttribute('data-index'), 10);
-			ClickElement(index);
+			clickElement(index);
 			event.stopImmediatePropagation();
 			return false;
 		});
 
-		this.ui.on('contextmenu', '.icon', OnElementInfo);
+		this.ui.on('contextmenu', '.icon', onElementInfo);
 
 		// Stop drag drop feature
 		this.ui.on('mousedown', '.icon', function(event){
@@ -112,7 +112,7 @@ define(function(require)
 	/**
 	 * Append to body
 	 */
-	ShortCut.onAppend = function OnAppend()
+	ShortCut.onAppend = function onAppend()
 	{
 		// Apply preferences
 		this.ui.css({
@@ -126,7 +126,7 @@ define(function(require)
 	/**
 	 * When removed, clean up
 	 */
-	ShortCut.onRemove = function OnRemove()
+	ShortCut.onRemove = function onRemove()
 	{
 		// Save preferences
 		_preferences.y      = parseInt(this.ui.css('top'), 10);
@@ -140,7 +140,7 @@ define(function(require)
 	 * Request to clean the list
 	 * Used only from MapEngine when exiting the game
 	 */
-	ShortCut.clean = function Clean()
+	ShortCut.clean = function clean()
 	{
 		_list.length = 0;
 		this.ui.find('.container').empty();
@@ -153,20 +153,20 @@ define(function(require)
 	 * @param {object} event
 	 * @return {boolean}
 	 */
-	ShortCut.onKeyDown = function OnKeyDown( event )
+	ShortCut.onKeyDown = function onKeyDown( event )
 	{
 		switch (event.which)
 		{
 			// TODO: remove KEYS.Fx and replace with user settings
-			case KEYS.F1:  ClickElement(0); break;
-			case KEYS.F2:  ClickElement(1); break;
-			case KEYS.F3:  ClickElement(2); break;
-			case KEYS.F4:  ClickElement(3); break;
-			case KEYS.F5:  ClickElement(4); break;
-			case KEYS.F6:  ClickElement(5); break;
-			case KEYS.F7:  ClickElement(6); break;
-			case KEYS.F8:  ClickElement(7); break;
-			case KEYS.F9:  ClickElement(8); break;
+			case KEYS.F1:  clickElement(0); break;
+			case KEYS.F2:  clickElement(1); break;
+			case KEYS.F3:  clickElement(2); break;
+			case KEYS.F4:  clickElement(3); break;
+			case KEYS.F5:  clickElement(4); break;
+			case KEYS.F6:  clickElement(5); break;
+			case KEYS.F7:  clickElement(6); break;
+			case KEYS.F8:  clickElement(7); break;
+			case KEYS.F9:  clickElement(8); break;
 
 			case KEYS.F12:
 				_preferences.size = (_preferences.size + 1) % (_rowCount + 1);
@@ -188,7 +188,7 @@ define(function(require)
 	 *
 	 * @param {Array} shortcut list
 	 */
-	ShortCut.setList = function SetList( list )
+	ShortCut.setList = function setList( list )
 	{
 		var i, count;
 
@@ -198,7 +198,7 @@ define(function(require)
 
 		for (i = 0, count = list.length; i < count; ++i) {
 			if (list[i].ID) {
-				AddElement( i, list[i].isSkill, list[i].ID, list[i].count )
+				addElement( i, list[i].isSkill, list[i].ID, list[i].count );
 			}
 		}
 	};
@@ -207,14 +207,14 @@ define(function(require)
 	/**
 	 * Resizing hotkey window
 	 */
-	function OnResize()
+	function onResize()
 	{
 		var ui      = ShortCut.ui;
 		var top     = ui.position().top;
 		var lastHeight = 0;
 		var _Interval;
 
-		function Resizing()
+		function resizing()
 		{
 			var h = Math.floor( (Mouse.screen.y - top ) / 34 + 1 );
 
@@ -232,19 +232,19 @@ define(function(require)
 		}
 
 		// Start resizing
-		_Interval = setInterval( Resizing, 30);
+		_Interval = setInterval( resizing, 30);
 
 		// Stop resizing
 		jQuery(window).one('mouseup', function(event){
 			// Only on left click
-			if ( event.which === 1 ) {
+			if (event.which === 1) {
 				clearInterval(_Interval);
 			}
 		});
 
 		event.stopImmediatePropagation();
 		return false;
-	};
+	}
 
 
 	/**
@@ -255,7 +255,7 @@ define(function(require)
 	 * @param {number} ID
 	 * @param {number} count or level
 	 */
-	function AddElement( index, isSkill, ID, count )
+	function addElement( index, isSkill, ID, count )
 	{
 		var file, name;
 		var ui = ShortCut.ui.find('.container:eq(' + index + ')').empty();
@@ -273,7 +273,7 @@ define(function(require)
 			name = SkillInfo[ID].SkillName;
 		}
 		else {
-			var item = DB.getItemInfo(ID)
+			var item = DB.getItemInfo(ID);
 			file     = item.identifiedResourceName;
 			name     = item.identifiedDisplayName;
 			var it   = Inventory.getItemById(ID);
@@ -318,7 +318,7 @@ define(function(require)
 	 * @param {number} ID of the element to remove
 	 * @param {number} row id
 	 */
-	function RemoveElement( isSkill, ID, row )
+	function removeElement( isSkill, ID, row )
 	{
 		var i, count;
 
@@ -347,13 +347,13 @@ define(function(require)
 	 * @param {number} id
 	 * @param {number} count
 	 */
-	ShortCut.setElement = function SetElement( isSkill, ID, count )
+	ShortCut.setElement = function setElement( isSkill, ID, count )
 	{
-		var i, count;
+		var i, size;
 
-		for (i = 0, count = _list.length; i < count; ++i) {
+		for (i = 0, size = _list.length; i < size; ++i) {
 			if (_list[i] && _list[i].isSkill == isSkill && _list[i].ID === ID) {
-				AddElement( i, isSkill, ID, count);
+				addElement( i, isSkill, ID, count);
 			}
 		}
 	};
@@ -364,7 +364,7 @@ define(function(require)
 	 * Does the client allow other source than shortcut, inventory
 	 * and skill window to save to shortcut ?
 	 */
-	function OnDrop( event )
+	function onDrop( event )
 	{
 		var data, element;
 		var index = parseInt(this.getAttribute('data-index'), 10);
@@ -373,7 +373,7 @@ define(function(require)
 		event.stopImmediatePropagation();
 
 		try {
-			data    = JSON.parse(event.originalEvent.dataTransfer.getData("Text"));
+			data    = JSON.parse(event.originalEvent.dataTransfer.getData('Text'));
 			element = data.data;
 		}
 		catch(e) {
@@ -381,30 +381,30 @@ define(function(require)
 		}
 
 		// Do not process others things than item and skill
-		if (data.type !== "item" && data.type !== "skill") {
+		if (data.type !== 'item' && data.type !== 'skill') {
 			return false;
 		}
 
 		// Do not process things that don't come from inventory, skill window and shortcut itself
-		if (data.from !== "inventory" && data.from !== "skill" && data.from !== "shortcut") {
+		if (data.from !== 'inventory' && data.from !== 'skill' && data.from !== 'shortcut') {
 			return false;
 		}
 
 		// Process
 		if (data.from === 'skill') {
 			ShortCut.onChange( index, true, element.SKID, element.level);
-			RemoveElement( true, element.SKID, row);
-			AddElement( index, true, element.SKID, element.level);
+			removeElement( true, element.SKID, row);
+			addElement( index, true, element.SKID, element.level);
 		}
 		else if (data.from === 'inventory') {
 			ShortCut.onChange( index, false, element.ITID, 0);
-			RemoveElement( false, element.ITID, row);
-			AddElement( index, false, element.ITID, 0);
+			removeElement( false, element.ITID, row);
+			addElement( index, false, element.ITID, 0);
 		}
 		else if (data.from === 'shortcut') {
 			ShortCut.onChange( index, element.isSkill, element.ID, 0);
-			RemoveElement( element.isSkill, element.ID, row);
-			AddElement( index, element.isSkill, element.ID, 0);
+			removeElement( element.isSkill, element.ID, row);
+			addElement( index, element.isSkill, element.ID, 0);
 		}
 
 		return false;
@@ -415,7 +415,7 @@ define(function(require)
 	 * Prepare data to be store in the dragged element
 	 * to change prosition in the shortcut.
 	 */
-	function OnDrag( event )
+	function onDrag( event )
 	{
 		var img, index;
 
@@ -426,10 +426,10 @@ define(function(require)
 		img.src = this.firstChild.style.backgroundImage.match(/\(([^\)]+)/)[1];
 		event.originalEvent.dataTransfer.setDragImage( img, 12, 12 );
 
-		event.originalEvent.dataTransfer.setData("Text",
+		event.originalEvent.dataTransfer.setData('Text',
 			JSON.stringify( window._OBJ_DRAG_ = {
-				type: _list[index].isSkill ? "skill" : "item",
-				from: "shortcut",
+				type: _list[index].isSkill ? 'skill' : 'item',
+				from: 'shortcut',
 				data:  _list[index]
 			})
 		);
@@ -443,7 +443,7 @@ define(function(require)
 	 * Get informations from a skill/item when
 	 * using right click on it.
 	 */
-	function OnElementInfo( event )
+	function onElementInfo( event )
 	{
 		var index   = parseInt(this.parentNode.getAttribute('data-index'), 10);
 		var element = _list[index];
@@ -467,7 +467,8 @@ define(function(require)
 		// Display item informations
 		else {
 
-			if( ItemInfo.uid === _list[index].ID ) {
+			if (ItemInfo.uid === _list[index].ID
+				) {
 				ItemInfo.remove();
 				return false;
 			}
@@ -486,7 +487,7 @@ define(function(require)
 	 *
 	 * @param {number} shortcut index
 	 */
-	function ClickElement( index )
+	function clickElement( index )
 	{
 		var shortcut = _list[index];
 
@@ -531,7 +532,7 @@ define(function(require)
 	 * @param {number} id
 	 * @param {number} count
 	 */
-	ShortCut.onChange   = function OnConfigUpdate(index, isSkill, ID, count){};
+	ShortCut.onChange   = function OnConfigUpdate(/*index, isSkill, ID, count*/){};
 
 
 	/**

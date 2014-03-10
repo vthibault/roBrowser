@@ -48,7 +48,7 @@ function(
 	WinList
 )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -66,16 +66,16 @@ function(
 	/**
 	 * Initialize Game
 	 */
-	function Init()
+	function init()
 	{
 		var q = new Queue();
 
 		// Waiting for the Thread to be ready
 		q.add(function(){
 			if (!_thread_ready) {
-				Thread.hook("THREAD_ERROR", OnThreadError );
-				Thread.hook("THREAD_LOG",   OnThreadLog );
-				Thread.hook("THREAD_READY", function(){
+				Thread.hook('THREAD_ERROR', onThreadError );
+				Thread.hook('THREAD_LOG',   onThreadLog );
+				Thread.hook('THREAD_READY', function(){
 					_thread_ready = true;
 					q._next();
 				});
@@ -96,7 +96,7 @@ function(
 		q.add(function(){
 			Intro.onFilesSubmit = function( files ) {
 				Client.onFilesLoaded = function(count){
-					if( !ROConfig.remoteClient && !count ) {
+					if (!ROConfig.remoteClient && !count) {
 						try {
 							alert( 'No client to initialize roBrowser');
 						}
@@ -108,7 +108,7 @@ function(
 						return;
 					}
 					q._next();
-				}
+				};
 				Client.init( files );
 			};
 			Intro.append();
@@ -116,7 +116,7 @@ function(
 
 		// Loading clientinfo
 		q.add(function(){
-			LoadClientInfo(q.next);
+			loadClientInfo(q.next);
 		});
 
 		// Loading Game file (txt, lua, lub)
@@ -133,7 +133,7 @@ function(
 
 		// Initialize Login
 		q.add(function(){
-			Reload();
+			reload();
 		});
 
 
@@ -147,7 +147,7 @@ function(
 	/**
 	 * Reload the game
 	 */
-	function Reload()
+	function reload()
 	{
 		BGM.play('01.mp3');
 		UIManager.removeComponents();
@@ -156,34 +156,32 @@ function(
 		// Setup background
 		Background.init();
 		Background.resize( Renderer.width, Renderer.height );
-		Background.setImage( "bgi_temp.bmp", function(){
+		Background.setImage( 'bgi_temp.bmp', function(){
 
 			// Display server list
 			var list = new Array( _servers.length );
 			var i, count = list.length;
 	
-			if( count ) {
-				for( i = 0; i < count; ++i ) {
+			if (count) {
+				for (i = 0; i < count; ++i) {
 					list[i] = _servers[i].display;
 				}
-	
+
 				WinList.append();
 				WinList.setList( list );
 			}
 
 			// WTF no servers ?
 			else {
-				UIManager.showMessageBox( 'Sorry, no server found.', 'ok', function(){
-					Init();
-				})
+				UIManager.showMessageBox( 'Sorry, no server found.', 'ok', init);
 			}
 
 			Renderer.stop();
 		});
 
 		// Hooking WinList
-		WinList.onIndexSelected = OnLoginServerSelected;
-		WinList.onExitRequest   = OnExit;
+		WinList.onIndexSelected = onLoginServerSelected;
+		WinList.onExitRequest   = onExit;
 	}
 
 
@@ -192,13 +190,13 @@ function(
 	 *
 	 * @param {number} index in server list
 	 */
-	function OnLoginServerSelected( index )
+	function onLoginServerSelected( index )
 	{
 		// Play "¹öÆ°¼Ò¸®.wav" (possible problem with charset)
-		Sound.play("\xB9\xF6\xC6\xB0\xBC\xD2\xB8\xAE.wav");
+		Sound.play('\xB9\xF6\xC6\xB0\xBC\xD2\xB8\xAE.wav');
 
 		WinList.remove();
-		LoginEngine.onExitRequest = Reload;
+		LoginEngine.onExitRequest = reload;
 		LoginEngine.init( _servers[index] );
 	}
 
@@ -206,15 +204,12 @@ function(
 	/**
 	 * Ask to exit window
 	 */
-	function OnExit()
+	function onExit()
 	{
 		Sound.stop();
 		Renderer.stop();
 		UIManager.removeComponents();
-
-		Background.remove(function(){
-			Init();
-		});
+		Background.remove(init);
 	}
 
 
@@ -223,12 +218,12 @@ function(
 	 *
 	 * @param {function} callback
 	 */
-	function LoadClientInfo( callback )
+	function loadClientInfo( callback )
 	{
 		_servers.length = 0;
 		ROConfig.servers = ROConfig.servers || 'data/clientinfo.xml';
 
-		if( ROConfig.servers instanceof Array ) {
+		if (ROConfig.servers instanceof Array) {
 			_servers = ROConfig.servers;
 			callback();
 			return;
@@ -237,15 +232,15 @@ function(
 		Client.loadFile( ROConfig.servers, function(xml)
 		{
 			// $.parseXML() don't parse buggy xml (and a lot of clientinfo.xml are not properly write)...
-			xml = xml.replace(/^.*\<\?xml/, '<?xml');
+			xml = xml.replace(/^.*<\?xml/, '<?xml');
 			var parser = new DOMParser();
-			var doc = parser.parseFromString(xml, "application/xml");
+			var doc = parser.parseFromString(xml, 'application/xml');
 
 			var connections      = jQuery(doc).find('clientinfo connection');
 			var stop             = connections.length - 1;
 			var list             = [];
 
-			if( !connections.length ) {
+			if (!connections.length) {
 				callback();
 			}
 
@@ -263,7 +258,7 @@ function(
 					packetver:  connection.find('packetver:first').text()
 				});
 
-				if( index === stop ) {
+				if (index === stop) {
 					callback();
 				}
 			});
@@ -276,7 +271,7 @@ function(
 	 *
 	 * @param {Array} data
 	 */
-	function OnThreadError( data )
+	function onThreadError( data )
 	{
 		console.warn.apply( console, data );
 	}
@@ -287,7 +282,7 @@ function(
 	 *
 	 * @param {Array} data
 	 */
-	function OnThreadLog( data )
+	function onThreadLog( data )
 	{
 		console.log.apply( console, data );
 	}
@@ -297,7 +292,7 @@ function(
 	 * Export
 	 */
 	return {
-		init:           Init,
-		reload:         Reload
+		init:           init,
+		reload:         reload
 	};
 });

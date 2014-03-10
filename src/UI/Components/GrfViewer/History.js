@@ -9,7 +9,7 @@
  */
 define(function()
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -42,7 +42,7 @@ define(function()
 	 * @param {object} previous jquery button
 	 * @param {object} next jquery button
 	 */
-	function Init( previous, next )
+	function init( previous, next )
 	{
 		_previous = previous;
 		_next     = next;
@@ -57,15 +57,15 @@ define(function()
 	 *
 	 * @param {string} link
 	 */
-	function Push( link )
+	function push( link )
 	{
-		_history.length = ++_index;
+		_history.length = (++_index);
 		_history.push( link );
 
 		_next.removeClass('on');
 
-		if( _history.length > 1 ) {
-			_previous.addClass('on');	
+		if (_history.length > 1) {
+			_previous.addClass('on');
 		}
 	}
 
@@ -75,14 +75,14 @@ define(function()
 	 *
 	 * @return {string} url
 	 */
-	function Next()
+	function next()
 	{
-		if( _index + 1 >= _history.length ) {
+		if (_index + 1 >= _history.length) {
 			return null;
 		}
 
 		_previous.addClass('on');
-		if( _index + 1 >= _history.length ) {
+		if (_index + 1 >= _history.length) {
 			_next.removeClass('on');
 		}
 
@@ -95,15 +95,15 @@ define(function()
 	 *
 	 * @return {string} url
 	 */
-	function Previous()
+	function previous()
 	{
-		if( _index - 1 < 0 ) {
+		if (_index - 1 < 0) {
 			return null;
 		}
 
 		_next.addClass('on');
-		if( _index - 2 < 0 ) {
-			_previous.removeClass('on');	
+		if (_index - 2 < 0) {
+			_previous.removeClass('on');
 		}
 
 		return _history[ --_index ];
@@ -114,9 +114,9 @@ define(function()
 	 * Export
 	 */
 	return {
-		push: Push,
-		next: Next,
-		previous: Previous,
-		init: Init
+		push:     push,
+		next:     next,
+		previous: previous,
+		init:     init
 	};
 });

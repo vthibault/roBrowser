@@ -11,7 +11,7 @@
 define(  ['Loaders/GameFile', 'Loaders/LuaByte', 'Loaders/World', 'Loaders/Ground', 'Loaders/Altitude', 'Loaders/Model', 'Loaders/Sprite', 'Loaders/Action', 'Core/FileSystem'],
 function(          GameFile,           LuaByte,           World,           Ground,           Altitude,           Model,           Sprite,           Action,        FileSystem )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -24,7 +24,7 @@ function(          GameFile,           LuaByte,           World,           Groun
 	 * Where is the remote client located ? 
 	 * @var {string} http
 	 */
-	FileManager.remoteClient = "";
+	FileManager.remoteClient = '';
 
 
 	/**
@@ -56,13 +56,13 @@ function(          GameFile,           LuaByte,           World,           Groun
 				var regex = /(\d+)=([^\s]+)/g;
 
 				// Get a list of GRF
-				while (result = regex.exec(content)) {
+				while ((result = regex.exec(content))) {
 					list[ parseInt(result[1]) ] = result[2];
 				}
 	
 				// Remove empty slot from list
 				for (i = 0, count = list.length; i < count; ) {
-					if (list[i] == undefined) {
+					if (list[i] === undefined) {
 						list.splice(i, 1);
 						count--;
 						continue;
@@ -145,13 +145,13 @@ function(          GameFile,           LuaByte,           World,           Groun
 	FileManager.search = function Search( regex )
 	{
 		// Use hosted client (only one to be async ?)
-		if( !this.gameFiles.length && this.remoteClient ) {
+		if (!this.gameFiles.length && this.remoteClient) {
 			var req    = new XMLHttpRequest();
 			req.open('POST', this.remoteClient, false);
-			req.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+			req.setRequestHeader('Content-type','application/x-www-form-urlencoded');
 			req.overrideMimeType('text/plain; charset=ISO-8859-1');
 			req.send('filter=' + encodeURIComponent(regex.source));
-			return req.responseText.split("\n");
+			return req.responseText.split('\n');
 		}
 
 		var i, count, j, size;
@@ -161,12 +161,12 @@ function(          GameFile,           LuaByte,           World,           Groun
 		count    = fileList.length;
 		out      = {};
 
-		for( i = 0; i < count; ++i ) {
+		for (i = 0; i < count; ++i) {
 			matches = fileList[i].table.data.match(regex);
 
-			if ( matches !== null ) {
+			if (matches !== null) {
 				// Remove duplicates
-				for( j = 0, size = matches.length; j < size; ++j ) {
+				for (j = 0, size = matches.length; j < size; ++j) {
 					out[ matches[j] ] = 1;
 				}
 			}
@@ -185,7 +185,7 @@ function(          GameFile,           LuaByte,           World,           Groun
 	FileManager.get = function Get( filename, callback )
 	{
 		var i, count;
-		var path, buffer, file;
+		var path, file;
 		var fileList;
 
 		// GRF path is as window : dir\to\location.txt
@@ -239,18 +239,18 @@ function(          GameFile,           LuaByte,           World,           Groun
 
 		var xhr = new XMLHttpRequest();
 		xhr.open('GET', this.remoteClient + filename, true);
-		xhr.responseType = "arraybuffer";
+		xhr.responseType = 'arraybuffer';
 		xhr.onload = function(){
 			if (xhr.status == 200) {
 				callback( xhr.response );
 				FileSystem.saveFile( filename, xhr.response );
 			}
 			else {
-				callback( null, "Can't get file");
+				callback( null, 'Can\'t get file');
 			}
 		};
 		xhr.onerror = function(){
-			callback( null, "Can't get file");
+			callback( null, 'Can\'t get file');
 		};
 
 		// Can throw an error if not connected to internet
@@ -258,7 +258,7 @@ function(          GameFile,           LuaByte,           World,           Groun
 			xhr.send(null);
 		}
 		catch(e) {
-			callback( null, "Can't get file");
+			callback( null, 'Can\'t get file');
 		}
 	};
 
@@ -291,7 +291,7 @@ function(          GameFile,           LuaByte,           World,           Groun
 			error  = null;
 
 			try {
-				switch( ext ) {
+				switch (ext) {
 
 					// Regular images files
 					case 'jpg':
@@ -300,7 +300,7 @@ function(          GameFile,           LuaByte,           World,           Groun
 					case 'gif':
 					case 'png':
 						result = URL.createObjectURL(
-							new Blob( [buffer], { type: "image/" + ext })
+							new Blob( [buffer], { type: 'image/' + ext })
 						);
 						break;
 
@@ -308,13 +308,14 @@ function(          GameFile,           LuaByte,           World,           Groun
 					case 'wav':
 					case 'mp3':
 						// From GRF : change the data to an URI
-						if( buffer instanceof ArrayBuffer ) {
+						if (buffer instanceof ArrayBuffer) {
 							result = URL.createObjectURL(
-								new Blob( [buffer], { type: "audio/" + ext })
+								new Blob( [buffer], { type: 'audio/' + ext })
 							);
 							break;
 						}
-						//no break intended
+						result = buffer;
+						break;
 
 					case 'tga':
 						result = buffer;
@@ -327,10 +328,10 @@ function(          GameFile,           LuaByte,           World,           Groun
 						var i, count, str, uint8;
 						uint8 = new Uint8Array(buffer);
 						count = uint8.length;
-						str   = "";
+						str   = '';
 
-						for ( i=0; i<count; ++i ) {
-							if( uint8[i] === 0 ) {
+						for (i = 0; i < count; ++i) {
+							if (uint8[i] === 0) {
 								break;
 							}
 							str += String.fromCharCode( uint8[i] );
@@ -342,7 +343,7 @@ function(          GameFile,           LuaByte,           World,           Groun
 					// Sprite
 					case 'spr':
 						var spr = new Sprite(buffer);
-						if( args && args.to_rgba ) {
+						if (args && args.to_rgba) {
 							spr.switchToRGBA();
 						}
 
@@ -355,7 +356,7 @@ function(          GameFile,           LuaByte,           World,           Groun
 						break;
 
 					case 'gnd':
-						result = new Ground(buffer)
+						result = new Ground(buffer);
 						break;
 
 					case 'gat':

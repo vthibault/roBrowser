@@ -8,7 +8,7 @@
 
 define(['Core/Context', 'Core/Preferences', 'Preferences/Audio', 'Preferences/Graphics'], function( Context, Preferences, Audio, Graphics )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -36,7 +36,7 @@ define(['Core/Context', 'Core/Preferences', 'Preferences/Audio', 'Preferences/Gr
 		ui.find('.serverdef[value="'+ _preferences.serverdef +'"]').attr('checked', 'true').trigger('click');
 		ui.find('.clientinfo').val( _preferences.serverfile );
 		
-		ui.find('.bgmvol').val( Audio.BGM.volume * 100 ).trigger('change');;
+		ui.find('.bgmvol').val( Audio.BGM.volume * 100 ).trigger('change');
 		ui.find('.soundvol').val( Audio.Sound.volume * 100 ).trigger('change');
 
 		if (!window.requestFileSystem && !window.webkitRequestFileSystem) {
@@ -67,7 +67,7 @@ define(['Core/Context', 'Core/Preferences', 'Preferences/Audio', 'Preferences/Gr
 			);
 		}
 
-		Apply();
+		apply();
 	}
 
 
@@ -113,19 +113,19 @@ define(['Core/Context', 'Core/Preferences', 'Preferences/Audio', 'Preferences/Gr
         Graphics.save();
 		_preferences.save();
 
-		Apply()
+		apply();
 	}
 
 
 	/**
 	 * Apply preferences
 	 */
-	function Apply()
+	function apply()
 	{
 		var isFullScreen = Context.isFullScreen();
 
 		// Full Screen support
-		if (_preferences.screensize === "full") {
+		if (_preferences.screensize === 'full') {
 			if (!isFullScreen) {
 				Context.requestFullScreen();
 			}
@@ -138,7 +138,7 @@ define(['Core/Context', 'Core/Preferences', 'Preferences/Audio', 'Preferences/Gr
 
 			// Resizing
 			if (Context.Is.POPUP) {
-				var size = Graphics.screensize.split("x");
+				var size = Graphics.screensize.split('x');
 
 				// Only resize/move if needed
 				if (size[0] != window.innerWidth && size[1] != window.innerHeight) {

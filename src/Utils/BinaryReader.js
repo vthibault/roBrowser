@@ -14,7 +14,7 @@ var _global = this;
 
 define( ['./Struct'], function( Struct )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -37,7 +37,7 @@ define( ['./Struct'], function( Struct )
 	{
 		var buffer;
 
-		if( typeof mixed === "string" ) {
+		if (typeof mixed === 'string') {
 			var uint8;
 			var i, length;
 
@@ -49,10 +49,10 @@ define( ['./Struct'], function( Struct )
 				uint8[i] = mixed.charCodeAt(i) & 0xff;
 			}
 		}
-		else if( mixed instanceof ArrayBuffer ) {
+		else if (mixed instanceof ArrayBuffer) {
 			buffer = mixed;
 		}
-		else if ( mixed instanceof Uint8Array ) {
+		else if (mixed instanceof Uint8Array) {
 			buffer = mixed.buffer;
 		}
 		else {
@@ -62,7 +62,7 @@ define( ['./Struct'], function( Struct )
 		this.buffer = buffer;
 		this.view   = new DataView( buffer, start || 0 , end || buffer.byteLength);
 		this.offset = 0;
-		this.length = ( end || buffer.byteLength ) - ( start || 0 )
+		this.length = ( end || buffer.byteLength ) - ( start || 0 );
 	}
 
 
@@ -70,8 +70,8 @@ define( ['./Struct'], function( Struct )
 	 * Read Int8 from buffer
 	 * @return int8
 	 */
-	BinaryReader.prototype.getInt8  = 
-	BinaryReader.prototype.readChar = 
+	BinaryReader.prototype.getInt8  =
+	BinaryReader.prototype.readChar =
 	BinaryReader.prototype.readByte = function getInt8()
 	{
 		return this.view.getInt8( this.offset++ );
@@ -83,7 +83,7 @@ define( ['./Struct'], function( Struct )
 	 * @return uint8
 	 */
 	BinaryReader.prototype.getUint8  =
-	BinaryReader.prototype.readUChar = 
+	BinaryReader.prototype.readUChar =
 	BinaryReader.prototype.readUByte = function getUint8()
 	{
 		return this.view.getUint8( this.offset++ );
@@ -123,7 +123,7 @@ define( ['./Struct'], function( Struct )
 	 * @return int32
 	 */
 	BinaryReader.prototype.getInt32 =
-	BinaryReader.prototype.readInt  = 
+	BinaryReader.prototype.readInt  =
 	BinaryReader.prototype.readLong = function getInt32()
 	{
 		var data = this.view.getInt32( this.offset, true );
@@ -138,7 +138,7 @@ define( ['./Struct'], function( Struct )
 	 * @return Uint32
 	 */
 	BinaryReader.prototype.getUint32 =
-	BinaryReader.prototype.readUInt  = 
+	BinaryReader.prototype.readUInt  =
 	BinaryReader.prototype.readULong = function getUint32()
 	{
 		var data = this.view.getUint32( this.offset, true );
@@ -198,9 +198,10 @@ define( ['./Struct'], function( Struct )
 		var offset = this.offset + 0;
 		var i, uint8, out = new Array(len);
 	
-		for ( i=0; i<len; ++i ) {
-			if ( !(uint8 = this.getUint8()) )
+		for (i = 0; i < len; ++i) {
+			if (!(uint8 = this.getUint8())) {
 				break;
+			}
 			out[i] = uint8;
 		}
 
@@ -219,8 +220,9 @@ define( ['./Struct'], function( Struct )
 	BinaryReader.prototype.getStruct  =
 	BinaryReader.prototype.readStruct = function getStruct( struct )
 	{
-		if( ! struct instanceof Struct )
+		if (!(struct instanceof Struct)) {
 			throw new Error('BinaryReader::getStruct() - Invalid data as argument');
+		}
 
 		var list = struct._list;
 		var name;
@@ -230,13 +232,13 @@ define( ['./Struct'], function( Struct )
 		keys = Object.keys(list);
 		count = keys.length;
 
-		for( j = 0; j<count; ++j ) {
+		for (j = 0; j < count; ++j) {
 			name    = keys[j];
 			current = list[name];
 
-			if ( current.count > 1 ) {
+			if (current.count > 1) {
 				out[name] = new Array(current.count);
-				for ( i=0; i<current.count; ++i ) {
+				for (i = 0; i < current.count; ++i) {
 					out[name][i] = this[ current.func ]();
 				}
 			}

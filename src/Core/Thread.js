@@ -12,7 +12,7 @@
 
 define(function( require )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -62,7 +62,7 @@ define(function( require )
 		{
 			var uid = 0;
 	
-			if( callback ) {
+			if (callback) {
 				uid          = ++_uid;
 				_memory[uid] = callback;
 			}
@@ -88,13 +88,13 @@ define(function( require )
 		var type = event.data.type;
 
 		// Direct callback
-		if( uid in _memory ) {
+		if (uid in _memory) {
 			_memory[uid].apply(null, event.data.arguments);
 			delete _memory[uid];
 		}
 
 		// Hook Feature
-		if( type && _hook[type] ) {
+		if (type && _hook[type]) {
 			_hook[type].call(null, event.data.data);
 		}
 	}
@@ -130,13 +130,13 @@ define(function( require )
 	 */
 	function Init()
 	{
-		if( !_source ) {
+		if (!_source) {
 			var url = ROConfig.development ? './ThreadEventHandler.js' : './../../build/ThreadEventHandler.js';
 			_source = new Worker( require.toUrl(url) );
 		}
 
 		// Worker context
-		if( _source instanceof Worker ) {
+		if (_source instanceof Worker) {
 			_source.addEventListener('message', Receive, false);
 		}
 

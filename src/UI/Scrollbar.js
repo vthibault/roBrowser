@@ -10,7 +10,7 @@
 define( ['Utils/jquery', 'Utils/Texture', 'DB/DBManager', 'Core/Client' ],
 function(       jQuery,         Texture,      DB,          Client )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -31,7 +31,7 @@ function(       jQuery,         Texture,      DB,          Client )
 	ScrollBar.init = function Init()
 	{
 		// Already loaded
-		if( ScrollBar.complete ) {
+		if (ScrollBar.complete) {
 			return;
 		}
 
@@ -45,11 +45,11 @@ function(       jQuery,         Texture,      DB,          Client )
 			  DB.INTERFACE_PATH + 'scroll0bar_up.bmp' ],
 			function( down, mid, up, base_down, base_mid, base_up ) {
 
-				Texture( base_down, function(){
+				Texture.load( base_down, function(){
 					var base_down = this;
-					Texture( base_mid, function(){
+					Texture.load( base_mid, function(){
 						var base_mid = this;
-						Texture( base_up, function(){
+						Texture.load( base_up, function(){
 							var base_up = this;
 							var base    = document.createElement('canvas');
 							var ctx     = base.getContext('2d');
@@ -77,7 +77,7 @@ function(       jQuery,         Texture,      DB,          Client )
 								'::-webkit-scrollbar-button:vertical:decrement { background-image: url('+ up + ');}',
 								'::-webkit-scrollbar-track-piece:vertical { background-image: url('+ mid +');}',
 								'::-webkit-scrollbar-thumb:vertical{ -webkit-border-image: url('+ base.toDataURL() +') 4 0 4 0;}'
-							].join("\n"));
+							].join('\n'));
 
 							ScrollBar.complete = true;
 						});
@@ -85,7 +85,7 @@ function(       jQuery,         Texture,      DB,          Client )
 				});
 			}
 		);
-	}
+	};
 
 
 	/**

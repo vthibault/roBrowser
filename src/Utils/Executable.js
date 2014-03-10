@@ -12,7 +12,7 @@
  
 define( ['./BinaryReader'], function( BinaryReader )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -29,12 +29,12 @@ define( ['./BinaryReader'], function( BinaryReader )
 	 * @param {File} executable
 	 * @param {function} callback
 	 */
-	function GetDate(executable, callback)
+	function getDate(executable, callback)
 	{
 		var reader    = new FileReader();
 		reader.onload = function(event){
 			_fp = new BinaryReader(event.target.result);
-			callback( GetDateSub() );
+			callback( getDateSub() );
 		};
 		reader.readAsArrayBuffer(executable);
 	}
@@ -45,7 +45,7 @@ define( ['./BinaryReader'], function( BinaryReader )
 	 *
 	 * @return {number}
 	 */
-	function GetDateSub()
+	function getDateSub()
 	{
 		var offset, date;
 
@@ -106,7 +106,7 @@ define( ['./BinaryReader'], function( BinaryReader )
 	 * Exports
 	 */
 	return {
-		getDate:  GetDate,
+		getDate:  getDate,
 		isROExec: isROExec
 	};
 });

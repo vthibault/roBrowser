@@ -45,7 +45,7 @@ define([
 	InputBox
 )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -63,7 +63,7 @@ define([
 	/*
 	 * Connect to char server
 	 */
-	function Init( server )
+	function init( server )
 	{
 		// Storing variable
 		_server = server;
@@ -72,7 +72,7 @@ define([
 		Network.connect( Network.utils.longToIP( server.ip ), server.port, function( success ){
 
 			// Fail to connect...
-			if ( !success ) {
+			if (!success) {
 				UIManager.showErrorBox( DB.msgstringtable[1] );
 				return;
 			}
@@ -93,27 +93,27 @@ define([
 		});
 
 		// Hook packets
-		Network.hookPacket( PACKET.HC.ACCEPT_ENTER_NEO_UNION,        OnConnectionAccepted );
-		Network.hookPacket( PACKET.HC.REFUSE_ENTER,                  OnConnectionRefused );
-		Network.hookPacket( PACKET.HC.ACCEPT_MAKECHAR_NEO_UNION,     OnCreationSuccess );
-		Network.hookPacket( PACKET.HC.REFUSE_MAKECHAR,               OnCreationFail );
-		Network.hookPacket( PACKET.HC.ACCEPT_DELETECHAR,             OnDeleteAnswer );
-		Network.hookPacket( PACKET.HC.REFUSE_DELETECHAR,             OnDeleteAnswer );
-		Network.hookPacket( PACKET.HC.NOTIFY_ZONESVR,                OnReceiveMapInfo );
-		Network.hookPacket( PACKET.HC.ACCEPT_ENTER_NEO_UNION_HEADER, OnConnectionAccepted );
-		Network.hookPacket( PACKET.HC.ACCEPT_ENTER_NEO_UNION_LIST,   OnConnectionAccepted );
+		Network.hookPacket( PACKET.HC.ACCEPT_ENTER_NEO_UNION,        onConnectionAccepted );
+		Network.hookPacket( PACKET.HC.REFUSE_ENTER,                  onConnectionRefused );
+		Network.hookPacket( PACKET.HC.ACCEPT_MAKECHAR_NEO_UNION,     onCreationSuccess );
+		Network.hookPacket( PACKET.HC.REFUSE_MAKECHAR,               onCreationFail );
+		Network.hookPacket( PACKET.HC.ACCEPT_DELETECHAR,             onDeleteAnswer );
+		Network.hookPacket( PACKET.HC.REFUSE_DELETECHAR,             onDeleteAnswer );
+		Network.hookPacket( PACKET.HC.NOTIFY_ZONESVR,                onReceiveMapInfo );
+		Network.hookPacket( PACKET.HC.ACCEPT_ENTER_NEO_UNION_HEADER, onConnectionAccepted );
+		Network.hookPacket( PACKET.HC.ACCEPT_ENTER_NEO_UNION_LIST,   onConnectionAccepted );
 	}
 
 
 	/**
 	 * Reload Char-Select
 	 */
-	function Reload()
+	function reload()
 	{
 		Network.close();
 		Background.setImage( 'bgi_temp.bmp', function() {
 			UIManager.removeComponents();
-			Init( _server );
+			init( _server );
 		});
 	}
 
@@ -121,7 +121,7 @@ define([
 	/**
 	 * Request to go back to Login Window
 	 */
-	function OnExitRequest()
+	function onExitRequest()
 	{
 		require('Engine/LoginEngine').reload();
 	}
@@ -133,7 +133,7 @@ define([
 	 *
 	 * @param {object} pkt - PACKET.HC.ACCEPT_ENTER_NEO_UNION
 	 */
-	function OnConnectionAccepted( pkt )
+	function onConnectionAccepted( pkt )
 	{
 		pkt.sex = Session.Sex;
 
@@ -147,10 +147,10 @@ define([
 		UIManager.getComponent('WinLoading').remove();
 
 		// Initialize window
-		CharSelect.onExitRequest    = OnExitRequest;
-		CharSelect.onConnectRequest = OnConnectRequest;
-		CharSelect.onCreateRequest  = OnCreateRequest;
-		CharSelect.onDeleteRequest  = OnDeleteRequest;
+		CharSelect.onExitRequest    = onExitRequest;
+		CharSelect.onConnectRequest = onConnectRequest;
+		CharSelect.onCreateRequest  = onCreateRequest;
+		CharSelect.onDeleteRequest  = onDeleteRequest;
 		CharSelect.append();
 		CharSelect.setInfo( pkt );
 	}
@@ -161,11 +161,11 @@ define([
 	 *
 	 * @param {object} pkt - PACKET.HC.REFUSE_ENTER
 	 */
-	function OnConnectionRefused( pkt )
+	function onConnectionRefused( pkt )
 	{
 		var msg_id;
 
-		switch( pkt.ErrorCode ) {
+		switch (pkt.ErrorCode) {
 			default:
 			case 0: msg_id = 3; break;
 			// other types ?
@@ -180,7 +180,7 @@ define([
 	 *
 	 * @param {number} charID - Character ID
 	 */
-	function OnDeleteRequest( charID )
+	function onDeleteRequest( charID )
 	{
 		var _ui_box;
 		var _email;
@@ -191,7 +191,7 @@ define([
 		var _TimeOut;
 
 		// Delete the character
-		function DeleteCharacter() {
+		function deleteCharacter() {
 			var pkt = new PACKET.CH.DELETE_CHAR();
 			pkt.GID = charID;
 			pkt.key = _email;
@@ -204,7 +204,7 @@ define([
 			_ui_box.remove();
 			_overlay.detach();
 			clearTimeout(_TimeOut);
-			OnDeleteAnswer(-2);
+			onDeleteAnswer(-2);
 		}
 
 		// Ask the mail
@@ -217,7 +217,7 @@ define([
 		}
 
 		// Display prompt message
-		_ui_box  = UIManager.showPromptBox( DB.msgstringtable[19], "ok", "cancel", onOk, onCancel);
+		_ui_box  = UIManager.showPromptBox( DB.msgstringtable[19], 'ok', 'cancel', onOk, onCancel);
 		_overlay = jQuery('<div/>').addClass('win_popup_overlay').appendTo('body');
 
 		// Submit the mail
@@ -227,7 +227,7 @@ define([
 			_ui_box.remove();
 
 			// Stop rendering...
-			_ui_box = UIManager.showMessageBox( DB.msgstringtable[296].replace("%d",10), 'cancel', function(){
+			_ui_box = UIManager.showMessageBox( DB.msgstringtable[296].replace('%d',10), 'cancel', function(){
 				_render = false;
 				onCancel();
 			});
@@ -237,47 +237,47 @@ define([
 			_ctx    = _canvas.getContext('2d');
 			_width  = _canvas.width  = 240;
 			_height = _canvas.height = 15;
-			_canvas.style.marginTop = "10px";
-			_canvas.style.marginLeft= "20px";
+			_canvas.style.marginTop  = '10px';
+			_canvas.style.marginLeft = '20px';
 			_ui_box.ui.append(_canvas);
 
 			// Parameter
-			_time_end = (new Date).getTime() + 10000;
+			_time_end = Date.now() + 10000;
 			_render  = true;
 
 			// Start the timing
-			Render();
+			render();
 		}
 
 		// Rendering
-		function Render() {
+		function render() {
 			// Calculate percent
-			var time_left = _time_end - (new Date).getTime();
+			var time_left = _time_end - Date.now();
 			var percent   =  Math.round( 100 - time_left / 100 );
 
 			// Delete character
-			if ( percent >= 100 ) {
+			if (percent >= 100) {
 				_ui_box.remove();
 				_overlay.detach();
-				DeleteCharacter();
+				deleteCharacter();
 				return;
 			}
 
 			// Update text
-			_ui_box.ui.find('.text').text( DB.msgstringtable[296].replace("%d", Math.round(10-percent/10) ) );
+			_ui_box.ui.find('.text').text( DB.msgstringtable[296].replace('%d', Math.round(10-percent/10) ) );
 
 			// Update progressbar
 			_ctx.clearRect(0, 0, _width, _height);
-			_ctx.fillStyle = "rgb(0,255,255)";
+			_ctx.fillStyle = 'rgb(0,255,255)';
 			_ctx.fillRect( 0, 0, _width, _height );
-			_ctx.fillStyle = "rgb(140,140,140)";
+			_ctx.fillStyle = 'rgb(140,140,140)';
 			_ctx.fillRect( 1, 1, _width-2 , _height-2 );
-			_ctx.fillStyle = "rgb(66,99,165)";
+			_ctx.fillStyle = 'rgb(66,99,165)';
 			_ctx.fillRect( 2, 2, Math.round(percent*(_width-4)/100) , _height-4 );
-			_ctx.fillStyle = "rgb(255,255,0)";
+			_ctx.fillStyle = 'rgb(255,255,0)';
 			_ctx.fillText( percent + '%' ,  ( _width - _ctx.measureText( percent+'%').width ) * 0.5 , 12  );
 
-			_TimeOut = setTimeout( Render, 30);
+			_TimeOut = setTimeout( render, 30);
 		}
 	}
 
@@ -287,9 +287,9 @@ define([
 	 *
 	 * @param {object} PACKET.HC.REFUSE_DELETECHAR or PACKET.HC.ACCEPT_DELETECHAR
 	 */
-	function OnDeleteAnswer(pkt)
+	function onDeleteAnswer(pkt)
 	{
-		var result = typeof( pkt.ErrorCode ) === "undefined" ? -1 : pkt.ErrorCode;
+		var result = typeof( pkt.ErrorCode ) === 'undefined' ? -1 : pkt.ErrorCode;
 		CharSelect.deleteAnswer(result);
 	}
 
@@ -299,12 +299,12 @@ define([
 	 *
 	 * @param {number} index - slot where to create character
 	 */
-	function OnCreateRequest( index )
+	function onCreateRequest( index )
 	{
 		_creationSlot = index;
 		CharSelect.remove();
 		CharCreate.setAccountSex( Session.Sex );
-		CharCreate.onCharCreationRequest = OnCharCreationRequest;
+		CharCreate.onCharCreationRequest = onCharCreationRequest;
 		CharCreate.onExitRequest = function(){
 			CharCreate.remove();
 			CharSelect.append();
@@ -326,12 +326,12 @@ define([
 	 * @param {number} hair - hair style
 	 * @param {number} color - hair color
 	 */
-	function OnCharCreationRequest( name, Str, Agi, Vit, Int, Dex, Luk, hair, color )
+	function onCharCreationRequest( name, Str, Agi, Vit, Int, Dex, Luk, hair, color )
 	{
 		var pkt;
 
 		// Old Packet required stats
-		if( PACKETVER.min < 20120307 ) {
+		if (PACKETVER.min < 20120307) {
 			pkt = new PACKET.CH.MAKE_CHAR();
 			pkt.Str  = Str;
 			pkt.Agi  = Agi;
@@ -358,7 +358,7 @@ define([
 	 *
 	 * @param {object} pkt - PACKET.HC.ACCEPT_MAKECHAR_NEO_UNION
 	 */
-	function OnCreationSuccess( pkt )
+	function onCreationSuccess( pkt )
 	{
 		CharCreate.remove();
 		CharSelect.addCharacter( pkt.charinfo );
@@ -371,11 +371,11 @@ define([
 	 *
 	 * @param {object} pkt - PACKET.HC.REFUSE_MAKECHAR
 	 */
-	function OnCreationFail( pkt )
+	function onCreationFail( pkt )
 	{
 		var msg_id;
 
-		switch( pkt.ErrorCode ) {
+		switch (pkt.ErrorCode) {
 			case 0x00: msg_id =   10;  break; // 'Charname already exists'
 			case 0x01: msg_id =  298;  break; // 'You are underaged'
 			case 0x02: msg_id = 1272;  break; // 'Symbols in Character Names are forbidden'
@@ -384,7 +384,7 @@ define([
 			case 0xFF: msg_id =   11;  break; // 'Char creation denied'
 		}
 
-		UIManager.showMessageBox( DB.msgstringtable[msg_id], "ok" );
+		UIManager.showMessageBox( DB.msgstringtable[msg_id], 'ok' );
 	}
 
 
@@ -393,10 +393,10 @@ define([
 	 *
 	 * @param {object} entity to connect with
 	 */
-	function OnConnectRequest( entity )
+	function onConnectRequest( entity )
 	{
 		// Play sound
-		Sound.play("\xB9\xF6\xC6\xB0\xBC\xD2\xB8\xAE.wav");
+		Sound.play('\xB9\xF6\xC6\xB0\xBC\xD2\xB8\xAE.wav');
 
 		CharSelect.remove();
 		UIManager.getComponent('WinLoading').append();
@@ -404,7 +404,7 @@ define([
 
 		var pkt = new PACKET.CH.SELECT_CHAR();
 		pkt.CharNum = entity.CharNum;
-		Network.sendPacket(pkt);	
+		Network.sendPacket(pkt);
 	}
 
 
@@ -413,7 +413,7 @@ define([
 	 *
 	 * @param {object} pkt - PACKET.HC.NOTIFY_ZONESVR
 	 */
-	function OnReceiveMapInfo( pkt )
+	function onReceiveMapInfo( pkt )
 	{
 		MapEngine.init( pkt.addr.ip, pkt.addr.port, pkt.GID, pkt.mapName);
 	}
@@ -470,7 +470,7 @@ define([
 	 * Export
 	 */
 	return {
-		init:   Init,
-		reload: Reload
+		init:   init,
+		reload: reload
 	};
 });

@@ -9,7 +9,7 @@
  */
 define(function(require)
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -33,19 +33,19 @@ define(function(require)
 	/**
 	 * @var {TimeOut} timer
 	 */
-	ItemObtain.timer = 0;
+	var _timer = 0;
 
 
 	/**
 	 * @var {number} time to display
 	 */
-	ItemObtain.life = 5 * 1000;
+	var _life = 5 * 1000;
 
 
 	/**
 	 * Initialize component
 	 */
-	ItemObtain.init = function Init()
+	ItemObtain.init = function init()
 	{
 		this.ui.css('zIndex', 45); // Between Interface and Game Announce
 	};
@@ -54,11 +54,11 @@ define(function(require)
 	/**
 	 * Once removed from HTML, clean timer
 	 */
-	ItemObtain.onRemove = function OnRemove()
+	ItemObtain.onRemove = function onRemove()
 	{
-		if( this.timer ) {
-			clearTimeout( this.timer );
-			this.timer = 0;	
+		if (_timer) {
+			clearTimeout(_timer);
+			_timer = 0;
 		}
 	};
 
@@ -66,7 +66,7 @@ define(function(require)
 	/**
 	 * Timer end, cleaning box
 	 */
-	ItemObtain.timeEnd = function TimeEnd()
+	ItemObtain.timeEnd = function timeEnd()
 	{
 		this.remove();
 	};
@@ -79,15 +79,15 @@ define(function(require)
 	 * @param {boolean} identify
 	 * @param {number} amount
 	 */
-	ItemObtain.set = function Set( itemid, identify, amount )
+	ItemObtain.set = function set( itemid, identify, amount )
 	{
-		var it   = DB.getItemInfo( itemid );
+		var it       = DB.getItemInfo( itemid );
 		var display  = identify ? it.identifiedDisplayName  : it.unidentifiedDisplayName;
 		var resource = identify ? it.identifiedResourceName : it.unidentifiedResourceName;
 
 		this.ui.find('.content').html(
-			'<img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" width="24" height="24" /> '
-			+ display + ' ' + DB.msgstringtable[696].replace('%d', amount)
+			'<img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" width="24" height="24" /> ' +
+			display + ' ' + DB.msgstringtable[696].replace('%d', amount)
 		);
 
 		this.ui.css('left', ( Renderer.width - (this.ui.width()) ) >> 1 );
@@ -97,11 +97,11 @@ define(function(require)
 		}).bind(this));
 
 		// Start tomer
-		if( this.timer ) {
-			clearTimeout( this.timer );	
+		if (_timer) {
+			clearTimeout(_timer);
 		}
 
-		this.timer = setTimeout( this.timeEnd.bind(this), this.life );
+		_timer = setTimeout( this.timeEnd.bind(this), _life );
 	};
 
 

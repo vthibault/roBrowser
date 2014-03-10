@@ -14,7 +14,7 @@
 define( ['require', 'Utils/jquery', 'Core/Client', 'Preferences/Audio'],
 function( require,         jQuery,        Client,         Preferences )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -26,10 +26,10 @@ function( require,         jQuery,        Client,         Preferences )
 	BGM.position    = null;
 	BGM.filename    = null;
 	BGM.volume      = Preferences.BGM.volume;
-	BGM.isPlaying   = "false";
+	BGM.isPlaying   = 'false';
 
 	BGM.audio       = document.createElement('audio');
-	BGM.useHTML5    = BGM.audio.canPlayType && BGM.audio.canPlayType('audio/mpeg') !== "";
+	BGM.useHTML5    = BGM.audio.canPlayType && BGM.audio.canPlayType('audio/mpeg') !== '';
 
 
 	/**
@@ -42,16 +42,17 @@ function( require,         jQuery,        Client,         Preferences )
 		window.BGM = BGM;
 
 		// Add the flash to the document
-		BGM.flash  = jQuery(
-			'<object type="application/x-shockwave-flash" data="' + require.toUrl('./mp3-player/mp3-player.swf') + '" width="0" height="0">\
-				<param name="AllowScriptAccess" value="always"/>\
-				<param name="FlashVars" value="listener=BGM&interval=1000"/>\
-			</object>').appendTo('body')[0];
+		BGM.flash  = jQuery([
+			'<object type="application/x-shockwave-flash" data="' + require.toUrl('./mp3-player/mp3-player.swf') + '" width="0" height="0">',
+				'<param name="AllowScriptAccess" value="always"/>',
+				'<param name="FlashVars" value="listener=BGM&interval=1000"/>',
+			'</object>'
+		]).appendTo('body')[0];
 
 		// Flash onInit()
 		BGM.onInit = function onInit() {
 			BGM.position = 0;
-			if ( BGM.filename && Preferences.BGM.play ) {
+			if (BGM.filename && Preferences.BGM.play) {
 				BGM.play( BGM.filename );
 			}
 		};
@@ -59,7 +60,7 @@ function( require,         jQuery,        Client,         Preferences )
 
 		// Flash onUpdate (every 2ms)
 		BGM.onUpdate = function onUpdate() {
-			if ( BGM.isPlaying === "false" && BGM.filename ) {
+			if (BGM.isPlaying === 'false' && BGM.filename) {
 				BGM.play( BGM.filename );
 			}
 		};
@@ -91,12 +92,12 @@ function( require,         jQuery,        Client,         Preferences )
 	 *
 	 * @param {string} filename
 	 */
-	BGM.play = function Play( filename )
+	BGM.play = function play( filename )
 	{
 		// Just if flash is loaded, load the file.
-		if ( (this.useHTML5 || this.position !== null) && Preferences.BGM.play ) {
+		if ((this.useHTML5 || this.position !== null) && Preferences.BGM.play) {
 
-			if( filename.match(/bgm/i) ) {
+			if (filename.match(/bgm/i)) {
 				filename = filename.match(/\w+\.mp3/).toString();
 			}
 
@@ -114,18 +115,18 @@ function( require,         jQuery,        Client,         Preferences )
 	 *
 	 * @param {string} data (HTTP / DATA URI or BLOB)
 	 */
-	BGM.load = function Load(data)
+	BGM.load = function load(data)
 	{
-		if( !Preferences.BGM.play ) {
+		if (!Preferences.BGM.play) {
 			return;
 		}
 
-		if ( BGM.useHTML5 ) {
+		if (BGM.useHTML5) {
 			BGM.audio.src    = data;
 			BGM.audio.volume = this.volume;
 			BGM.audio.play();
 		}
-		else if( BGM.flash.SetVariable ) {
+		else if (BGM.flash.SetVariable) {
 			BGM.flash.SetVariable('method:setUrl', data );
 			BGM.flash.SetVariable('method:play', null );
 			BGM.flash.SetVariable('enabled', 'true');
@@ -136,12 +137,12 @@ function( require,         jQuery,        Client,         Preferences )
 	/**
 	 * Stop the BGM
 	 */
-	BGM.stop = function Stop()
+	BGM.stop = function stop()
 	{
-		if ( BGM.useHTML5 ) {
+		if (BGM.useHTML5) {
 			BGM.audio.pause();
 		}
-		else if( BGM.flash.SetVariable ) {
+		else if (BGM.flash.SetVariable) {
 			BGM.flash.SetVariable('method:pause', null );
 		}
 	};
@@ -158,17 +159,17 @@ function( require,         jQuery,        Client,         Preferences )
 		Preferences.BGM.volume = volume;
 		Preferences.save();
 
-		if ( BGM.useHTML5 ) {
+		if (BGM.useHTML5) {
 			BGM.audio.volume = volume;
 		}
-		else if( BGM.flash.SetVariable ) {
+		else if (BGM.flash.SetVariable) {
 			BGM.flash.SetVariable('method:setVolume', volume*100 );
 		}
 	};
 
 
 	// Flash or HTML5 ?
-	if( !BGM.useHTML5 ) {
+	if (!BGM.useHTML5) {
 		BGM.initFlash();
 	}
 	else {

@@ -12,7 +12,7 @@
 
 define(function()
 {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @param {Array} FileList
@@ -68,17 +68,17 @@ define(function()
 	 * @param {Array} FileList
 	 * @param {boolean} save files
 	 */
-	function Init( files, save )
+	function init( files, save )
 	{
 		var requestFileSystemSync, requestFileSystem, temporaryStorage;
-		_files = NormalizeFilesPath(files);
+		_files = normalizeFilesPath(files);
 
 		if (!_available) {
-			Trigger('onready');
+			trigger('onready');
 			return;
 		}
 
-		CalculateClientSize();
+		calculateClientSize();
 
 		requestFileSystemSync = self.requestFileSystemSync || self.webkitRequestFileSystemSync;
 		requestFileSystem     = self.requestFileSystem     || self.webkitRequestFileSystem;
@@ -92,14 +92,14 @@ define(function()
 				_fs_sync = requestFileSystemSync( self.TEMPORARY, size );
 
 				if (save && _files.length) {
-					CleanUp();
-					BuildHierarchy();
-					ProcessUpload(0);
+					cleanUp();
+					buildHierarchy();
+					processUpload(0);
 				}
 
 				_save = save;
-				Trigger('onready');
-			}, ErrorHandler);
+				trigger('onready');
+			}, errorHandler);
 
 		});
 	}
@@ -111,7 +111,7 @@ define(function()
 	 * @param {array} FileList
 	 * @returns {array} normalized filelist
 	 */
-	function NormalizeFilesPath( files )
+	function normalizeFilesPath( files )
 	{
 		var i, count;
 		var list = new Array(files.length);
@@ -121,7 +121,7 @@ define(function()
 			list[i]._path = files[i].path.replace(/^[^\/]+\//,'');
 		}
 
-		return list
+		return list;
 	}
 
 
@@ -129,7 +129,7 @@ define(function()
 	/**
 	 * Error Handler give a human error
 	 */
-	function ErrorHandler(e)
+	function errorHandler(e)
 	{
 		var msg = '';
 		switch (e.code) {
@@ -153,7 +153,7 @@ define(function()
 				break;
 		}
 
-		Trigger('onerror', msg);
+		trigger('onerror', msg);
 	}
 
 
@@ -161,7 +161,7 @@ define(function()
 	 * Calculate FullClient total size
 	 * @returns {integer}
 	 */
-	function CalculateClientSize()
+	function calculateClientSize()
 	{
 		var i, count;
 
@@ -178,7 +178,7 @@ define(function()
 	 *
 	 * @param {number} index
 	 */
-	function ProcessUpload( index )
+	function processUpload( index )
 	{
 		var file = _files[index];
 
@@ -198,22 +198,22 @@ define(function()
 			tmpDir.removeRecursively();
 			_files.length = 0;
 
-			Trigger('onuploaded');
+			trigger('onuploaded');
 			return;
 		}
 
 		if (file.name[0] === '.') {
 			_files.splice( index, 1);
-			ProcessUpload( index );
+			processUpload( index );
 			return;
 		}
 
 		_fs.root.getFile( '/__tmp_upload/' + file._path, {create: true}, function(fileEntry){
 			fileEntry.createWriter(function(writer){
-				writer.onerror     = ErrorHandler;
+				writer.onerror     = errorHandler;
 				writer.onwriteend  = function() {
 					_streamOffset += file.size;
-					ProcessUpload( index + 1);
+					processUpload( index + 1);
 				};
 
 				var last_tick = Date.now();
@@ -226,7 +226,7 @@ define(function()
 					}
 
 					last_tick = now;
-					Trigger('onprogress', {
+					trigger('onprogress', {
 						filename: file.name,
 						filePath: file._path,
 						file: {
@@ -244,7 +244,7 @@ define(function()
 
 				writer.write(file);
 			});
-		}, ErrorHandler);
+		}, errorHandler);
 
 	}
 
@@ -252,7 +252,7 @@ define(function()
 	/**
 	 * Build directory hierarchy
 	 */
-	function BuildHierarchy()
+	function buildHierarchy()
 	{
 		var cache = {}, keys;
 		var i = 0, count = _files.length;
@@ -261,7 +261,7 @@ define(function()
 		// Extract directory from each file path
 		for (; i < count; ++i) {
 			path = _files[i]._path.split('/').slice(0,-1).join('/');
-			while( !(path in cache) && path.length ) {
+			while (!(path in cache) && path.length) {
 				cache[path] = true;
 				path        = path.replace(/\/?[^\/]+$/,'');
 			}
@@ -283,7 +283,7 @@ define(function()
 	/**
 	 * Remove all files from FileSystem
 	 */
-	function CleanUp()
+	function cleanUp()
 	{
 		var i, count;
 		var dirReader = _fs_sync.root.createReader();
@@ -306,7 +306,7 @@ define(function()
 	 * @param {string} eventname
 	 * @param {mixed...}
 	 */
-	function Trigger( eventname )
+	function trigger( eventname )
 	{
 		if (_events[ eventname ]) {
 			_events[ eventname ].apply(
@@ -323,7 +323,7 @@ define(function()
 	 * @param {string} eventname
 	 * @param {function} callback
 	 */
-	function Bind( eventname, callback )
+	function bind( eventname, callback )
 	{
 		_events[ eventname ] = callback;
 	}
@@ -335,9 +335,9 @@ define(function()
 	 * @param {string} filename
 	 * @returns {File}
 	 */
-	function GetFile( filename )
+	function getFile( filename )
 	{
-		if( !_available || _files.length ) {
+		if (!_available || _files.length) {
 			var i, count = _files.length;
 
 			for (i = 0; i < count; ++i) {
@@ -349,8 +349,10 @@ define(function()
 			return null;
 		}
 
+		var fileEntry;
+
 		try {
-			var fileEntry = _fs_sync.root.getFile(filename, {create:false});
+			fileEntry = _fs_sync.root.getFile(filename, {create:false});
 		}
 		catch(e) {
 			// not found
@@ -372,18 +374,18 @@ define(function()
 	 * @param {string} filePath
 	 * @param {ArrayBuffer} buffer
 	 */
-	function SaveFile( filePath, buffer )
+	function saveFile( filePath, buffer )
 	{
 		if (!_save || !_available) {
 			return;
 		}
 
 		var directories = filePath.split('/').slice(0,-1);
-		var path        = "";
+		var path        = '';
 
 		// Create hierarchy
 		while (directories.length) {
-			path += directories.shift() + "/";
+			path += directories.shift() + '/';
 			_fs_sync.root.getDirectory( path, {create: true});
 		}
 
@@ -399,7 +401,7 @@ define(function()
 	 *
 	 * @param {RegExp|string} to match the filename
 	 */
-	function Search( regex )
+	function search( regex )
 	{
 		var i, count;
 		var list = [];
@@ -408,7 +410,7 @@ define(function()
 			regex = new RegExp('^'+ regex.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, '\\$1') + '$', 'i');
 		}
 
-		if( !_available || _files.length ) {
+		if (!_available || _files.length) {
 
 			for (i = 0, count = _files.length; i < count; ++i) {
 				if ( _files[i].name.match(regex)) {
@@ -435,11 +437,11 @@ define(function()
 	 * Public methods
 	 */
 	return {
-		bind:      Bind,
-		getFile:   GetFile,
-		init:      Init,
-		cleanup:   CleanUp,
-		search:    Search,
-		saveFile:  SaveFile
+		bind:      bind,
+		getFile:   getFile,
+		init:      init,
+		cleanup:   cleanUp,
+		search:    search,
+		saveFile:  saveFile
 	};
 });

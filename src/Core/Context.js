@@ -10,7 +10,7 @@
 
 define(function()
 {
-	"use strict";
+	'use strict';
 
 
 	var Context = {};
@@ -20,7 +20,7 @@ define(function()
 	 * Get Informations about current Context
 	 */
 	Context.Is = {
-		APP:   !!(window.chrome && chrome.app && chrome.app.window),
+		APP:   !!(window.chrome && window.chrome.app && window.chrome.app.window),
 		POPUP: !!(window.opener),
 		FRAME:    window.top !== window.self
 	};
@@ -36,7 +36,7 @@ define(function()
 			document.fullscreenElement ||
 			document.mozFullScreenElement ||
 			document.webkitFullscreenElement ||
-			( Context.Is.APP && chrome.app.window.current().isFullscreen() )
+			( Context.Is.APP && window.chrome.app.window.current().isFullscreen() )
 		);
 	};
 
@@ -46,21 +46,21 @@ define(function()
 	 */
 	Context.requestFullScreen = function RequestFullScreen()
 	{
-		if( Context.Is.APP ) {
-			chrome.app.window.current().fullscreen();
+		if (Context.Is.APP) {
+			window.chrome.app.window.current().fullscreen();
 			return;
 		}
 
-		if( !Context.isFullScreen() ) {
+		if (!Context.isFullScreen()) {
 			var element = document.documentElement;
 
-			if( element.requestFullscreen) {
+			if (element.requestFullscreen) {
 				element.requestFullscreen();
 			}
-			else if( element.mozRequestFullScreen ) {
+			else if (element.mozRequestFullScreen) {
 				element.mozRequestFullScreen();
 			}
-			else if( element.webkitRequestFullscreen ) {
+			else if (element.webkitRequestFullscreen) {
 				element.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
 			}
 		}
@@ -72,18 +72,18 @@ define(function()
 	 */
 	Context.cancelFullScreen = function CancelFullScreen()
 	{
-		if( Context.Is.APP ) {
-			chrome.app.window.current().restore();
+		if (Context.Is.APP) {
+			window.chrome.app.window.current().restore();
 			return;
 		}
 
-		if( document.cancelFullScreen ) {
+		if (document.cancelFullScreen) {
 			document.cancelFullScreen();
 		}
-		else if( document.mozCancelFullScreen ) {
+		else if (document.mozCancelFullScreen) {
 			document.mozCancelFullScreen();
 		}
-		else if(document.webkitCancelFullScreen) {
+		else if (document.webkitCancelFullScreen) {
 			document.webkitCancelFullScreen();
 		}
 	};
@@ -102,18 +102,18 @@ define(function()
 		// Drag drop
 		div = document.createElement('div');
 		if (!('draggable' in div) && !('ondragstart' in div && 'ondrop' in div)) {
-			throw "Your web browser need to be update, it does not support Drag 'nd Drop features.";
+			throw 'Your web browser need to be update, it does not support Drag \'nd Drop features.';
 		}
 
 		// Canvas
 		canvas = document.createElement('canvas');
 		if (!canvas.getContext || !canvas.getContext('2d')) {
-			throw "Your web browser need to be update, it does not support &lt;canvas&gt; element.";
+			throw 'Your web browser need to be update, it does not support &lt;canvas&gt; element.';
 		}
 
 		// WebGL
 		if (!window.WebGLRenderingContext) {
-			throw "Your web browser need to be update, it does not support 3D graphics.";
+			throw 'Your web browser need to be update, it does not support 3D graphics.';
 		}
 
 		element = document.createElement('canvas');
@@ -121,22 +121,22 @@ define(function()
 		try { gl = gl || element.getContext('experimental-webgl'); } catch(e){}
 
 		if (!gl) {
-			throw "Your web browser OR your Graphics Card OR Drivers need to be update, it does not support 3D graphics.\nFor more informations check <a href='http://get.webgl.org/' target='_blank'>get.webgl.org</a>";
+			throw 'Your web browser OR your Graphics Card OR Drivers need to be update, it does not support 3D graphics.\nFor more informations check <a href="http://get.webgl.org/" target="_blank">get.webgl.org</a>';
 		}
 
 		// Web Worker
 		if (!window.Worker) {
-			throw "Your web browser need to be update, it does not support Threads (Web Worker API).";
+			throw 'Your web browser need to be update, it does not support Threads (Web Worker API).';
 		}
 
 		// FileReader API
 		if (!window.File || !window.FileList || !window.FileReader) {
-			throw "Your web browser need to be update, it does not support File API.";
+			throw 'Your web browser need to be update, it does not support File API.';
 		}
 
 		// DataView
 		if (!window.DataView || !DataView.prototype.getFloat64) {
-			throw "Your web browser need to be update, it does not support File API (DataView).";
+			throw 'Your web browser need to be update, it does not support File API (DataView).';
 		}
 	};
 

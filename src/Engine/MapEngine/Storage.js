@@ -8,18 +8,17 @@
 
 define(function( require )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
 	 * Load dependencies
 	 */
-	var DB            = require('DB/DBManager');
 	var Network       = require('Network/NetworkManager');
 	var PACKET        = require('Network/PacketStructure');
 	var Storage       = require('UI/Components/Storage/Storage');
-	
-	
+
+
 	/*
 	 * This will hold the items to append to storage
 	 * Since STORE_EQUIPMENT_ITEMLIST packets are sent before NOTIFY_STOREITEM_COUNTINFO
@@ -33,12 +32,12 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET.ZC.NOTIFY_STOREITEM_COUNTINFO
 	 */
-	function OnStorageInfo( pkt )
+	function onStorageInfo( pkt )
 	{
 		Storage.append();
 		Storage.setItemInfo( pkt.curCount, pkt.maxCount );
 		Storage.setItems( itemBuffer );
-		
+
 		itemBuffer = [];
 	}
 
@@ -48,7 +47,7 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET.ZC.STORE_EQUIPMENT_ITEMLIST3 
 	 */
-	function StorageAddItemList( pkt )
+	function onStorageList( pkt )
 	{
 		itemBuffer = itemBuffer.concat( pkt.ItemInfo );
 	}
@@ -59,7 +58,7 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET.ZC.ADD_ITEM_TO_STORE
 	 */
-	function OnStorageItemAdded( pkt )
+	function onStorageItemAdded( pkt )
 	{
 		Storage.addItem(pkt);
 	}
@@ -70,7 +69,7 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET.ZC.DELETE_ITEM_FROM_STORE
 	 */
-	function OnStorageItemRemoved( pkt )
+	function onStorageItemRemoved( pkt )
 	{
 		Storage.removeItem( pkt.index, pkt.count );
 	}
@@ -81,7 +80,7 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET.ZC.CLOSE_STORE
 	 */
-	function  OnStorageClose( pkt )
+	function onStorageClose()
 	{
 		Storage.remove();
 	}
@@ -137,20 +136,20 @@ define(function( require )
 	/**
 	 * Initialize
 	 */
-	return function ItemEngine()
+	return function StorageEngine()
 	{
-		Network.hookPacket( PACKET.ZC.STORE_NORMAL_ITEMLIST,      StorageAddItemList );
-		Network.hookPacket( PACKET.ZC.STORE_NORMAL_ITEMLIST2,     StorageAddItemList );
-		Network.hookPacket( PACKET.ZC.STORE_NORMAL_ITEMLIST3,     StorageAddItemList );
-		Network.hookPacket( PACKET.ZC.STORE_NORMAL_ITEMLIST4,     StorageAddItemList );
-		Network.hookPacket( PACKET.ZC.STORE_EQUIPMENT_ITEMLIST,   StorageAddItemList );
-		Network.hookPacket( PACKET.ZC.STORE_EQUIPMENT_ITEMLIST2,  StorageAddItemList ); 
-		Network.hookPacket( PACKET.ZC.STORE_EQUIPMENT_ITEMLIST3,  StorageAddItemList ); 
-		Network.hookPacket( PACKET.ZC.STORE_EQUIPMENT_ITEMLIST4,  StorageAddItemList ); 
-		Network.hookPacket( PACKET.ZC.NOTIFY_STOREITEM_COUNTINFO, OnStorageInfo );
-		Network.hookPacket( PACKET.ZC.ADD_ITEM_TO_STORE,          OnStorageItemAdded );
-		Network.hookPacket( PACKET.ZC.ADD_ITEM_TO_STORE2,         OnStorageItemAdded );
-		Network.hookPacket( PACKET.ZC.CLOSE_STORE,                OnStorageClose );
-		Network.hookPacket( PACKET.ZC.DELETE_ITEM_FROM_STORE,     OnStorageItemRemoved );
+		Network.hookPacket( PACKET.ZC.STORE_NORMAL_ITEMLIST,      onStorageList );
+		Network.hookPacket( PACKET.ZC.STORE_NORMAL_ITEMLIST2,     onStorageList );
+		Network.hookPacket( PACKET.ZC.STORE_NORMAL_ITEMLIST3,     onStorageList );
+		Network.hookPacket( PACKET.ZC.STORE_NORMAL_ITEMLIST4,     onStorageList );
+		Network.hookPacket( PACKET.ZC.STORE_EQUIPMENT_ITEMLIST,   onStorageList );
+		Network.hookPacket( PACKET.ZC.STORE_EQUIPMENT_ITEMLIST2,  onStorageList );
+		Network.hookPacket( PACKET.ZC.STORE_EQUIPMENT_ITEMLIST3,  onStorageList );
+		Network.hookPacket( PACKET.ZC.STORE_EQUIPMENT_ITEMLIST4,  onStorageList );
+		Network.hookPacket( PACKET.ZC.NOTIFY_STOREITEM_COUNTINFO, onStorageInfo );
+		Network.hookPacket( PACKET.ZC.ADD_ITEM_TO_STORE,          onStorageItemAdded );
+		Network.hookPacket( PACKET.ZC.ADD_ITEM_TO_STORE2,         onStorageItemAdded );
+		Network.hookPacket( PACKET.ZC.CLOSE_STORE,                onStorageClose );
+		Network.hookPacket( PACKET.ZC.DELETE_ITEM_FROM_STORE,     onStorageItemRemoved );
 	};
 });
