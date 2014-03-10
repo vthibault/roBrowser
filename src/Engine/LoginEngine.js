@@ -222,7 +222,7 @@ function(
 		var i, count = _charServers.length;
 		var list     = new Array(count);
 		for (i = 0; i < count; ++i) {
-			list[i]  =  _charServers[i].property ? DB.msgstringtable[481] + ' ' : '';
+			list[i]  =  _charServers[i].property ? DB.msgstringtable[482] + ' ' : '';
 			list[i] +=  _charServers[i].name;
 			list[i] +=  _charServers[i].state    ? DB.msgstringtable[484] : ' ' + DB.msgstringtable[483].replace('%d', _charServers[i].usercount);
 		}
@@ -259,11 +259,11 @@ function(
 			case   1: error =    7; break; // Incorrect Password
 			case   2: error =    8; break; // This ID is expired
 			case   3: error =    3; break; // Rejected from Server
-			case   4: error =  704; break; // You have been blocked by the GM Team - TODO: check it
+			case   4: error =  266; break; // Checked: 'Login is currently unavailable. Please try again shortly.'- 2br
 			case   5: error =  310; break; // Your Game's EXE file is not the latest version
 			case   6: error =  449; break; // Your are Prohibited to log in until %s
 			case   7: error =  264; break; // Server is jammed due to over populated
-			case   8: error =  681; break; // 8 = No more accounts may be connected from this company - TODO: check it
+			case   8: error =  681; break; // Checked: 'This account can't connect the Sakray server.'
 			case   9: error =  703; break; // 9 = MSI_REFUSE_BAN_BY_DBA
 			case  10: error =  704; break; // 10 = MSI_REFUSE_EMAIL_NOT_CONFIRMED
 			case  11: error =  705; break; // 11 = MSI_REFUSE_BAN_BY_GM
