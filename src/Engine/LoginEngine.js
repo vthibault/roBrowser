@@ -222,7 +222,7 @@ function(
 		var i, count = _charServers.length;
 		var list     = new Array(count);
 		for (i = 0; i < count; ++i) {
-			list[i]  =  _charServers[i].property ? DB.msgstringtable[481] + ' ' : '';
+			list[i]  =  _charServers[i].property ? DB.msgstringtable[482] + ' ' : '';
 			list[i] +=  _charServers[i].name;
 			list[i] +=  _charServers[i].state    ? DB.msgstringtable[484] : ' ' + DB.msgstringtable[483].replace('%d', _charServers[i].usercount);
 		}
