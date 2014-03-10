@@ -369,7 +369,7 @@ function(      WebGL,         Texture,   Preferences )
 
 		// Fetch all images, and draw them in a mega-texture
 		for (i = 0; i < count; ++i) {
-			Texture.load(textures[i], onTextureCompleteBuildAtlas, ctx, i);
+			Texture.load(textures[i], onTextureCompleteBuildAtlas, i);
 		}
 	}
 
