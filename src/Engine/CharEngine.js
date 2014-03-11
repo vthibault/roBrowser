@@ -204,7 +204,7 @@ define([
 			_ui_box.remove();
 			_overlay.detach();
 			clearTimeout(_TimeOut);
-			onDeleteAnswer(-2);
+			onDeleteAnswer({ ErrorCode: -2});
 		}
 
 		// Ask the mail
