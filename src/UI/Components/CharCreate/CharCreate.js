@@ -174,12 +174,12 @@ define(function(require)
 
 		CharCreate.onCharCreationRequest(
 			ui.find('input').val(),
-			ui.find('.info .str').text(),
-			ui.find('.info .agi').text(),
-			ui.find('.info .vit').text(),
-			ui.find('.info .int').text(),
-			ui.find('.info .dex').text(),
-			ui.find('.info .luk').text(),
+			parseInt( ui.find('.info .str').text(), 10),
+			parseInt( ui.find('.info .agi').text(), 10),
+			parseInt( ui.find('.info .vit').text(), 10),
+			parseInt( ui.find('.info .int').text(), 10),
+			parseInt( ui.find('.info .dex').text(), 10),
+			parseInt( ui.find('.info .luk').text(), 10),
 			_chargen.entity.head,
 			_chargen.entity.headpalette
 		);

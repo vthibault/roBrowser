@@ -98,9 +98,9 @@ define( function( require )
 	Entity.prototype.effectState  = 0;
 	Entity.prototype._sex         = -1;
 	Entity.prototype._job         = -1;
-	Entity.prototype._bodypalette = -1;
+	Entity.prototype._bodypalette = 0;
 	Entity.prototype._head        = -1;
-	Entity.prototype._headpalette = -1;
+	Entity.prototype._headpalette = 0;
 	Entity.prototype._weapon      = -1;
 	Entity.prototype._shield      = -1;
 	Entity.prototype._accessory   = -1;

@@ -11582,6 +11582,13 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 	PACKET.ZC.SKILL_ENTRY4.size = -1;
 
 
+	// 0x9a0
+	PACKET.HC.CHARLIST_NOTIFY = function PACKET_HC_CHARLIST_NOTIFY(fp, end) {
+		this.TotalCnt = fp.readLong();
+	};
+	PACKET.HC.CHARLIST_NOTIFY.size = 6;
+
+
 	// 0x9ca
 	PACKET.ZC.SKILL_ENTRY5 = function PACKET_ZC_SKILL_ENTRY5(fp, end) {
 		this.AID        = fp.readULong();
