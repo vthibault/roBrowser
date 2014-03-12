@@ -27,8 +27,8 @@ define(function(require)
 	var UIComponent        = require('UI/UIComponent');
 	var ItemInfo           = require('UI/Components/ItemInfo/ItemInfo');
 	var Inventory          = require('UI/Components/Inventory/Inventory');
+	var SkillWindow        = require('UI/Components/SkillList/SkillList');
 	//var SkillInfoWindow  = require('UI/Components/SkillInfo/SkillInfo');
-	//var SkillWindow      = require('UI/Components/Skill/Skill')
 	var htmlText           = require('text!./ShortCut.html');
 	var cssText            = require('text!./ShortCut.css');
 
@@ -79,7 +79,7 @@ define(function(require)
 
 		// Dropping to the shortcut
 		this.ui.on('drop', '.container', onDrop);
-		this.ui.on('dragover', '.container', function(){
+		this.ui.on('dragover', '.container', function(event){
 			event.stopImmediatePropagation();
 			return false;
 		});
@@ -191,13 +191,29 @@ define(function(require)
 	ShortCut.setList = function setList( list )
 	{
 		var i, count;
+		var skill;
 
 		this.ui.find('.container').empty();
 		_list.length = list.length;
 		_rowCount    = Math.min( 4, Math.floor(list.length / 9) );
 
 		for (i = 0, count = list.length; i < count; ++i) {
-			if (list[i].ID) {
+			if (list[i].isSkill) {
+				skill = SkillWindow.getSkillById(list[i].ID);
+				if (skill && skill.level) {
+					addElement( i, true, list[i].ID, list[i].count || skill.level );
+				}
+				else {
+					if (!_list[i]) {
+						_list[i] = {};
+					}
+
+					_list[i].isSkill = true;
+					_list[i].ID      = list[i].ID;
+					_list[i].count   = list[i].count;
+				}
+			}
+			else {
 				addElement( i, list[i].isSkill, list[i].ID, list[i].count );
 			}
 		}
@@ -207,7 +223,7 @@ define(function(require)
 	/**
 	 * Resizing hotkey window
 	 */
-	function onResize()
+	function onResize( event )
 	{
 		var ui      = ShortCut.ui;
 		var top     = ui.position().top;
@@ -269,6 +285,11 @@ define(function(require)
 		_list[index].count   = count;
 
 		if (isSkill) {
+			// Do not display if no level.
+			if (!count) {
+				return;
+			}
+
 			file = SkillInfo[ID].Name;
 			name = SkillInfo[ID].SkillName;
 		}
@@ -385,26 +406,24 @@ define(function(require)
 			return false;
 		}
 
-		// Do not process things that don't come from inventory, skill window and shortcut itself
-		if (data.from !== 'inventory' && data.from !== 'skill' && data.from !== 'shortcut') {
-			return false;
-		}
+		switch (data.from) {
+			case 'skilllist':
+				ShortCut.onChange( index, true, element.SKID, element.level);
+				removeElement( true, element.SKID, row);
+				addElement( index, true, element.SKID, element.level);
+				break;
 
-		// Process
-		if (data.from === 'skill') {
-			ShortCut.onChange( index, true, element.SKID, element.level);
-			removeElement( true, element.SKID, row);
-			addElement( index, true, element.SKID, element.level);
-		}
-		else if (data.from === 'inventory') {
-			ShortCut.onChange( index, false, element.ITID, 0);
-			removeElement( false, element.ITID, row);
-			addElement( index, false, element.ITID, 0);
-		}
-		else if (data.from === 'shortcut') {
-			ShortCut.onChange( index, element.isSkill, element.ID, 0);
-			removeElement( element.isSkill, element.ID, row);
-			addElement( index, element.isSkill, element.ID, 0);
+			case 'inventory':
+				ShortCut.onChange( index, false, element.ITID, 0);
+				removeElement( false, element.ITID, row);
+				addElement( index, false, element.ITID, 0);
+				break;
+
+			case 'shortcut':
+				ShortCut.onChange( index, element.isSkill, element.ID, element.count);
+				removeElement( element.isSkill, element.ID, row);
+				addElement( index, element.isSkill, element.ID, element.count);
+				break;
 		}
 
 		return false;
@@ -498,7 +517,7 @@ define(function(require)
 
 		// Execute skill
 		if (shortcut.isSkill) {
-			//SkillWindow.useSkill( _list[index].ID, _list[index].count );
+			SkillWindow.useSkill(shortcut.ID);
 		}
 
 		// Use the item
@@ -525,6 +544,19 @@ define(function(require)
 
 
 	/**
+	 * Hook Skill List, get informations when there is a change
+	 * to update the shortcut
+	 *
+	 * @param {number} skill id
+	 * @param {number} level
+	 */
+	SkillWindow.onUpdateSkill = function( id, level)
+	{
+		ShortCut.setElement( true, id, level);
+	};
+
+
+	/**
 	 * Method to define to notify a change.
 	 *
 	 * @param {number} index
@@ -532,7 +564,7 @@ define(function(require)
 	 * @param {number} id
 	 * @param {number} count
 	 */
-	ShortCut.onChange   = function OnConfigUpdate(/*index, isSkill, ID, count*/){};
+	ShortCut.onChange = function OnConfigUpdate(/*index, isSkill, ID, count*/){};
 
 
 	/**

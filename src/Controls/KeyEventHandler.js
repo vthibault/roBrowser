@@ -50,10 +50,11 @@ define( ['Utils/jquery'], function( jQuery )
 
 
 		// Regular keys:
+		C:        67,
 		E:        69,
 		Q:        81,
 		V:        86,
-		C:        67
+		S:        83
 	};
 
 

@@ -28,6 +28,7 @@ define(function( require )
 	var Escape        = require('UI/Components/Escape/Escape');
 	var Announce      = require('UI/Components/Announce/Announce');
 	var Equipment     = require('UI/Components/Equipment/Equipment');
+	var SkillList     = require('UI/Components/SkillList/SkillList');
 
 
 	/**
@@ -279,6 +280,7 @@ define(function( require )
 
 			// Skill points
 			case 12:
+				SkillList.setPoints(amount);
 				break;
 
 			// Str

@@ -43,6 +43,7 @@ define(function( require )
 	var Equipment        = require('UI/Components/Equipment/Equipment');
 	var StatusIcons      = require('UI/Components/StatusIcons/StatusIcons');
 	var ChatRoomCreate   = require('UI/Components/ChatRoomCreate/ChatRoomCreate');
+	var SkillList        = require('UI/Components/SkillList/SkillList');
 
 
 	/**
@@ -229,6 +230,7 @@ define(function( require )
 			StatusIcons.append();
 			ShortCut.append();
 			ChatRoomCreate.append();
+			SkillList.append();
 
 			// Map loaded
 			Network.sendPacket(

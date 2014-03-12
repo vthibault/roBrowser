@@ -16,12 +16,15 @@ define(function( require )
 	/**
 	 * Load dependencies
 	 */
-	var DB            = require('DB/DBManager');
-	var SkillId       = require('DB/SkillId');
-	var Network       = require('Network/NetworkManager');
-	var PACKET        = require('Network/PacketStructure');
-	var ShortCut      = require('UI/Components/ShortCut/ShortCut');
-	var ChatBox       = require('UI/Components/ChatBox/ChatBox');
+	var DB                   = require('DB/DBManager');
+	var SkillId              = require('DB/SkillId');
+	var Session              = require('Engine/SessionStorage');
+	var Network              = require('Network/NetworkManager');
+	var PACKET               = require('Network/PacketStructure');
+	var ShortCut             = require('UI/Components/ShortCut/ShortCut');
+	var ChatBox              = require('UI/Components/ChatBox/ChatBox');
+	var SkillWindow          = require('UI/Components/SkillList/SkillList');
+	var SkillTargetSelection = require('UI/Components/SkillTargetSelection/SkillTargetSelection');
 
 
 	/**
@@ -92,16 +95,18 @@ define(function( require )
 	 */
 	function onSkillList( pkt )
 	{
-		// skillList
-		/*
-		out[i].SKID        = fp.readShort();
-		out[i].type        = fp.readLong();
-		out[i].level       = fp.readShort();
-		out[i].spcost      = fp.readShort();
-		out[i].attackRange = fp.readShort();
-		out[i].skillName   = fp.readString(24);
-		out[i].upgradable  = fp.readChar();
-		*/
+		SkillWindow.setSkills( pkt.skillList );
+	}
+
+
+	/**
+	 * Update a specified skill
+	 *
+	 * @param {object} pkt - PACKET.ZC.SKILLINFO_UPDATE
+	 */
+	function onSkillUpdate( pkt )
+	{
+		SkillWindow.updateSkill( pkt );
 	}
 
 
@@ -117,6 +122,17 @@ define(function( require )
 
 
 	/**
+	 * Add new skill to the list
+	 *
+	 * @param {object} pkt - PACKET.ZC.ADD_SKILL
+	 */
+	function onSkillAdded( pkt)
+	{
+		SkillWindow.addSkill( pkt );
+	}
+
+
+	/**
 	 * Send back informations from server
 	 * The user want to modify the shortcut
 	 *
@@ -125,7 +141,7 @@ define(function( require )
 	 * @param {number} ID
 	 * @param {number} count / level
 	 */
-	ShortCut.onChange = function( index, isSkill, ID, count )
+	ShortCut.onChange = function onChange( index, isSkill, ID, count )
 	{
 		var pkt                 = new PACKET.CZ.SHORTCUT_KEY_CHANGE();
 		pkt.Index               = index;
@@ -138,11 +154,66 @@ define(function( require )
 
 
 	/**
+	 * User want to level up a skill
+	 *
+	 * @param {number} skill id
+	 */
+	SkillWindow.onIncreaseSkill = function onIncreaseSkill( SKID )
+	{
+		var pkt  = new PACKET.CZ.UPGRADE_SKILLLEVEL();
+		pkt.SKID = SKID;
+
+		Network.sendPacket(pkt);
+	};
+
+
+	/**
+	 * Cast a skill on someone
+	 *
+	 * @param {number} skill id
+	 * @param {number} level
+	 * @param {optional|number} target game id
+	 */
+	SkillWindow.onUseSkill = SkillTargetSelection.onUseSkillToId  = function onUseSkill( id, level, targetID)
+	{
+		var pkt = new PACKET.CZ.USE_SKILL();
+		pkt.SKID          = id;
+		pkt.selectedLevel = level;
+		pkt.targetID      = targetID || Session.Entity.GID;
+
+		Network.sendPacket(pkt);
+	};
+
+
+
+	/**
+	 * Cast a skill on the ground
+	 *
+	 * @param {number} skill id
+	 * @param {number} level
+	 * @param {number} position x
+	 * @param {number} position y
+	 */
+	SkillTargetSelection.onUseSkillToPos = function onUseSkillToPos(id, level, x, y)
+	{
+		var pkt = new PACKET.CZ.USE_SKILL_TOGROUND();
+		pkt.SKID          = id;
+		pkt.selectedLevel = level;
+		pkt.xPos          = x;
+		pkt.yPos          = y;
+
+		Network.sendPacket(pkt);
+	};
+
+
+	/**
 	 * Initialize
 	 */
 	return function SkillEngine()
 	{
 		Network.hookPacket( PACKET.ZC.SKILLINFO_LIST,       onSkillList );
+		Network.hookPacket( PACKET.ZC.SKILLINFO_UPDATE,     onSkillUpdate );
+		Network.hookPacket( PACKET.ZC.ADD_SKILL,            onSkillAdded );
 		Network.hookPacket( PACKET.ZC.SHORTCUT_KEY_LIST,    onShortCutList );
 		Network.hookPacket( PACKET.ZC.SHORTCUT_KEY_LIST_V2, onShortCutList );
 		Network.hookPacket( PACKET.ZC.ACK_TOUSESKILL,       onSkillResult );
