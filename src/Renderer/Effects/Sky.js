@@ -180,7 +180,6 @@ define(function( require )
 		// Base parameters
 		SpriteRenderer.color.set(_color);
 		SpriteRenderer.shadow        = 1.0;
-		SpriteRenderer.pickindex     = 0;
 		SpriteRenderer.angle         = 0;
 		SpriteRenderer.size[0]       = 15;
 		SpriteRenderer.size[1]       = 15;

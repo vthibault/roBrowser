@@ -28,7 +28,7 @@ function(
 	 */
 	function Damage()
 	{
-		this.position = new Float32Array(3);
+		this.entity   = null;
 		this.start    = 0;
 		this.type     = 0;
 		this.color    = new Float32Array(4);
@@ -157,7 +157,7 @@ function(
 		obj.color[3] = 1.0;
 		obj.delay    = 1500;
 		obj.start    = tick;
-		obj.position.set(entity.position);
+		obj.entity   = entity;
 
 		// Heal
 		if (obj.type & Damage.TYPE.HEAL) {
@@ -277,7 +277,6 @@ function(
 
 		// Base parameters
 		SpriteRenderer.shadow    = 1.0;
-		SpriteRenderer.pickindex = 0;
 		SpriteRenderer.angle     = 0;
 		SpriteRenderer.offset[0] = 0;
 		SpriteRenderer.offset[1] = 0;
@@ -320,34 +319,34 @@ function(
 					damage.start = 0;
 				}
 
-				SpriteRenderer.position[0] = damage.position[0];
-				SpriteRenderer.position[1] = damage.position[1];
-				SpriteRenderer.position[2] = damage.position[2] + 5 + perc;
+				SpriteRenderer.position[0] = damage.entity.position[0];
+				SpriteRenderer.position[1] = damage.entity.position[1];
+				SpriteRenderer.position[2] = damage.entity.position[2] + 5 + perc;
 			}
 
 			// Damage
 			else if (damage.type & Damage.TYPE.DAMAGE) {
 				size = ( 1 - perc ) * 4;
-				SpriteRenderer.position[0] = damage.position[0] + perc * 4;
-				SpriteRenderer.position[1] = damage.position[1] - perc * 4;
-				SpriteRenderer.position[2] = damage.position[2] + 2 + Math.sin( -Math.PI/2 + ( Math.PI * (0.5 + perc * 1.5 ) ) ) * 5;
+				SpriteRenderer.position[0] = damage.entity.position[0] + perc * 4;
+				SpriteRenderer.position[1] = damage.entity.position[1] - perc * 4;
+				SpriteRenderer.position[2] = damage.entity.position[2] + 2 + Math.sin( -Math.PI/2 + ( Math.PI * (0.5 + perc * 1.5 ) ) ) * 5;
 			}
 
 			// Heal
 			else if (damage.type & Damage.TYPE.HEAL) {
 				size = Math.max( (1 - perc * 2) * 3, 0.8);
-				SpriteRenderer.position[0] = damage.position[0];
-				SpriteRenderer.position[1] = damage.position[1];
-				SpriteRenderer.position[2] = damage.position[2] + 2 + ( perc < 0.4 ? 0 : (perc - 0.4) *5 );
+				SpriteRenderer.position[0] = damage.entity.position[0];
+				SpriteRenderer.position[1] = damage.entity.position[1];
+				SpriteRenderer.position[2] = damage.entity.position[2] + 2 + ( perc < 0.4 ? 0 : (perc - 0.4) *5 );
 			}
 
 			// Miss
 			else if (damage.type & Damage.TYPE.MISS) {
 				perc = (( tick - damage.start ) / 800);
 				size = 0.7;
-				SpriteRenderer.position[0] = damage.position[0];
-				SpriteRenderer.position[1] = damage.position[1];
-				SpriteRenderer.position[2] = damage.position[2] + 3.5 + perc * 7;
+				SpriteRenderer.position[0] = damage.entity.position[0];
+				SpriteRenderer.position[1] = damage.entity.position[1];
+				SpriteRenderer.position[2] = damage.entity.position[2] + 3.5 + perc * 7;
 			}
 
 			SpriteRenderer.size[0] = (damage.width  * size) / 35;
