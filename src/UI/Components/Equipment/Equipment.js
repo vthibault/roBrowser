@@ -154,6 +154,7 @@ define(function(require)
 			.on('dblclick', '.item', function() {
 				var index   = parseInt(this.getAttribute('data-index'), 10);
 				Equipment.onUnEquip( index );
+				Equipment.ui.find('.overlay').remove();
 			})
 
 			// Stop drag drop feature
