@@ -52,6 +52,15 @@ define(function(require)
 
 
 	/**
+	 * Once append to body
+	 */
+	ItemObtain.onAppend = function onAppend()
+	{
+		this.ui.css('left', ( Renderer.width - (this.ui.width()) ) >> 1 );
+	};
+
+
+	/**
 	 * Once removed from HTML, clean timer
 	 */
 	ItemObtain.onRemove = function onRemove()
