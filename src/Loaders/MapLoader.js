@@ -20,12 +20,18 @@ define( ['Core/FileManager'], function( FileManager )
 	 */
 	function Loader( list )
 	{
-		this.files = list;
-		this.list  = list.slice(0);
+		this.files  = list;
+		this.list   = list.slice(0);
 		this.offset = 0;
-		this.count = list.length;
-		this.out   = new Array(this.count);
+		this.count  = list.length;
+		this.out    = new Array(this.count);
 	}
+
+
+	/**
+	 * @var {number} static file count (avoid "too much recursion from firefox")
+	 */
+	Loader.count = 0;
 
 
 	/**
@@ -81,7 +87,12 @@ define( ['Core/FileManager'], function( FileManager )
 
 			// Continue the queue
 			if (this.list.length) {
-				this._next();
+				if ((++this.constructor.count) % 100 === 0) {
+					setTimeout( this._next.bind(this), 4);
+				}
+				else {
+					this._next();
+				}
 			}
 		}.bind(this));
 	};
