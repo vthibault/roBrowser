@@ -14,7 +14,6 @@ function( require,         jQuery,        Client,           Sprite,           Ac
 	'use strict';
 
 
-
 	/**
 	 * Cursor Constructor
 	 */
@@ -28,65 +27,123 @@ function( require,         jQuery,        Client,           Sprite,           Ac
 		DEFAULT: 0,
 		TALK:    1,
 		CLICK:   2,
-		TARGET:  3,
 		ROTATE:  4,
 		ATTACK:  5,
 		WARP:    7,
-		PICK:    9
+		PICK:    9,
+		TARGET: 10
 	};
+
+	/**
+	 * @var {boolean} block change ?
+	 */
+	Cursor.freeze = false;
+
+
+	/**
+	 * @var {boolean} magnetism while picking entites ?
+	 * Work in progress
+	 */
+	Cursor.magnetism = true;
 
 
 	/**
 	 * @var {integer} Cursor.ACTION.* constant
 	 */
-	Cursor.type = Cursor.ACTION.DEFAULT;
+	var _type = Cursor.ACTION.DEFAULT;
 
 
 	/**
 	 * @var {integer} tick
 	 */
-	Cursor.tick = 0;
+	var _tick = 0;
 
 
 	/**
 	 * @var {boolean} repeat animation ?
 	 */
-	Cursor.norepeat = false;
+	var _norepeat = false;
 
 
 	/**
 	 * @var {integer} animation frame
 	 */
-	Cursor.animation = 0;
+	var _animation = 0;
 
 
 	/**
 	 * @var {boolean} play animation ?
 	 */
-	Cursor.play = true;
+	var _play = true;
 
 
 	/**
 	 * @var {string} last rendered image url
 	 */
-	Cursor.lastURL = null;
+	var _lastURL = null;
+
+
+	/**
+	 * @var {number} last X position
+	 */
+	var _lastX = 0;
+
+
+	/**
+	 * @var {number} last Y position
+	 */
+	var _lastY = 0;
 
 
 	/**
 	 * @var {number} to don't render the same frame twice
 	 */
-	Cursor.lastAnim = -1;
+	var _lastAnim = -1;
 
 
 	/**
 	 * @var {Array} images link list
 	 */
-	Cursor.images = [];
+	var _images = [];
 
 
-	var Entity;
-	var SpriteRenderer;
+	/**
+	 * @var {CanvasElement}
+	 */
+	var _canvas;
 
+
+	/**
+	 * @var {CanvasRenderingContext2D} canvas context
+	 */
+	var _ctx;
+
+
+	/**
+	 * @var {Entity} generic entity to render cursor
+	 */
+	var _entity;
+
+
+	/**
+	 * @var {Sprite} sprite
+	 */
+	var _sprite;
+
+
+	/**
+	 * @var {Action} action
+	 */
+	var _action;
+
+
+	/**
+	 * @var {position} - just used to avoid memory leak
+	 */
+	var _position = new Uint16Array(2);
+
+
+	var EntityManager, Entity, SpriteRenderer, Mouse;
 
 	/**
 	 * Load cursor data (action, sprite)
@@ -94,56 +151,57 @@ function( require,         jQuery,        Client,           Sprite,           Ac
 	Cursor.init = function init(fn)
 	{
 		// Already loaded
-		if (this.images.length) {
+		if (_images.length) {
 			fn();
 			return;
 		}
 
 		Client.getFiles( ['data/sprite/cursors.spr', 'data/sprite/cursors.act'], function( spr, act ) {
 			try {
-				Cursor.sprite = new Sprite( spr );
-				Cursor.action = new Action( act );
+				_sprite = new Sprite( spr );
+				_action = new Action( act );
 			}
 			catch(e) {
 				console.error('Cursor::init() - ' + e.message );
 				return;
 			}
 
-			Cursor.generateImages();
-			Cursor.bindMouseEvent();
+			generateImages();
+			bindMouseEvent();
 			fn();
 		});
 
+		EntityManager  = require('Renderer/EntityManager');
 		Entity         = require('Renderer/Entity/Entity');
 		SpriteRenderer = require('Renderer/SpriteRenderer');
+		Mouse          = require('Controls/MouseEventHandler');
 
-		this.canvas = document.createElement('canvas');
-		this.canvas.width  = 50;
-		this.canvas.height = 60;
-		this.ctx    = this.canvas.getContext('2d');
-		this.entity = new Entity();
+		_canvas        = document.createElement('canvas');
+		_canvas.width  = 50;
+		_canvas.height = 60;
+		_ctx           = _canvas.getContext('2d');
+		_entity        = new Entity();
 	};
 
 
 	/**
 	 * Build Image data
 	 */
-	Cursor.generateImages = function generateImages()
+	function generateImages()
 	{
 
 		var i, j, size, count;
-		var str;
+		var str, data;
 		var canvas;
 
-		this.images.length = 0;
+		_images.length = 0;
 
 		// Build frames
-		for (i = 0, count = this.sprite.frames.length; i < count; ++i) {
-
-			canvas = this.sprite.getCanvasFromFrame(i);
+		for (i = 0, count = _sprite.frames.length; i < count; ++i) {
+			canvas = _sprite.getCanvasFromFrame(i);
 
 			if (!canvas) {
-				this.images[i] = '';
+				_images[i] = '';
 				continue;
 			}
 
@@ -151,27 +209,26 @@ function( require,         jQuery,        Client,           Sprite,           Ac
 			// TODO: wait for canvas.toBlob() API
 			str    = atob( canvas.toDataURL('image/png').substr(22) );
 			size   = str.length;
-
-			var data = new Uint8Array(size);
+			data   = new Uint8Array(size);
 
 			for (j = 0; j < size; ++j) {
 				data[j] = str.charCodeAt(j);
 			}
 
-			this.images[i] = URL.createObjectURL(new Blob([data],{type: 'image/png'}));
+			_images[i] = URL.createObjectURL(new Blob([data], {type: 'image/png'}));
 		}
-	};
+	}
 
 
 	/**
 	 * Change the cursor for the button click event
 	 */
-	Cursor.bindMouseEvent = function bindMouseEvent()
+	function bindMouseEvent()
 	{
 		// Add CSS rule for button
-		var action    = Cursor.action.actions[Cursor.ACTION.CLICK];
-		var hover     = Cursor.images[action.animations[0].layers[0].index];
-		var down      = Cursor.images[action.animations[1].layers[0].index];
+		var action = _action.actions[Cursor.ACTION.CLICK];
+		var hover  = _images[action.animations[0].layers[0].index];
+		var down   = _images[action.animations[1].layers[0].index];
 
 		// Append CSS to head
 		jQuery('head').append([
@@ -180,30 +237,34 @@ function( require,         jQuery,        Client,           Sprite,           Ac
 				'button:active { cursor: url(' + down + '), auto; }',
 			'</style>'
 		].join('\n'));
-	};
+	}
 
 
 	/**
 	 * Change cursor action
 	 *
 	 * @param {number} type - Cursor.ACTION.*
-	 * @param {number} animation numero (optional)
 	 * @param {boolean} norepeat - repeat animation ?
+	 * @param {number} animation numero (optional)
 	 */
 	Cursor.setType = function SetType( type, norepeat, animation )
 	{
-		this.type     = type;
-		this.tick     = Date.now();
-		this.norepeat = !!norepeat;
-		this.lastAnim = -1; // reset
+		if (Cursor.freeze) {
+			return;
+		}
+
+		_type     = type;
+		_tick     = Date.now();
+		_norepeat = !!norepeat;
+		_lastAnim = -1; // reset
 
 		if (typeof animation !== 'undefined') {
-			this.animation = animation;
-			this.play      = false;
+			_animation = animation;
+			_play      = false;
 		}
 		else {
-			this.animation = animation || 0;
-			this.play      = true;
+			_animation = animation || 0;
+			_play      = true;
 		}
 	};
 
@@ -214,19 +275,32 @@ function( require,         jQuery,        Client,           Sprite,           Ac
 	Cursor.render = function render( tick )
 	{
 		// Not loaded yet.
-		if (!this.images.length) {
+		if (!_images.length) {
 			return;
 		}
 
 		// New way
 		var i, count;
-		var action    = this.action.actions[this.type];
-		var delay     = action.delay * ( this.type === Cursor.ACTION.DEFAULT ? 2 : 1 );
+		var action    = _action.actions[_type];
+		var delay     = action.delay;
 		var anim, frame;
 
-		if (this.play) {
-			frame = (tick - this.tick) / delay | 0;
-			if (this.norepeat) {
+
+		// Change animation based on frame
+		switch (_type) {
+			case Cursor.ACTION.DEFAULT:
+				delay *= 2;
+				break;
+
+			case Cursor.ACTION.TARGET:
+				delay /= 2;
+				break;
+		}
+
+
+		if (_play) {
+			frame = (tick - _tick) / delay | 0;
+			if (_norepeat) {
 				anim = Math.min( frame, action.animations.length - 1 );
 			}
 			else {
@@ -234,26 +308,28 @@ function( require,         jQuery,        Client,           Sprite,           Ac
 			}
 		}
 		else {
-			anim = this.animation;
+			anim = _animation;
 		}
 
 		// Don't render the same animation twice
 		// Save CPU...
-		if (anim === this.lastAnim) {
-			return;
-		}
+		//if (anim === _lastAnim) {
+		//	return;
+		//}
 
-		this.lastAnim = anim;
-		var pos       = [ 0, 0 ];
-		var animation = action.animations[anim];
-		var layers    = animation.layers;
-		var x = 1, y = 19;
+		var animation  = action.animations[anim];
+		var layers     = animation.layers;
+		var  x = 1,  y = 19;
+		var _x = 0, _y = 0;
+		var url    = null;
 
 		// Hardcoded ?
-		switch (this.type) {
+		switch (_type) {
 			case Cursor.ACTION.TALK:
-				x = 20;
-				y = 40;
+				x  = 20;
+				y  = 40;
+				_x = 20;
+				_y = 20;
 				break;
 	
 			case Cursor.ACTION.WARP:
@@ -262,30 +338,65 @@ function( require,         jQuery,        Client,           Sprite,           Ac
 				break;
 
 			case Cursor.ACTION.ROTATE:
-				x = 18;
-				y = 26;
+				x  = 18;
+				y  = 26;
+				_x = 10;
 				break;
 
 			case Cursor.ACTION.PICK:
-				x = 20;
-				y = 40;
+				x  = 20;
+				y  = 40;
+				_x = 15;
+				_y = 15;
+				break;
+
+			case Cursor.ACTION.TARGET:
+				x  = 20;
+				y  = 50;
+				_x = 20;
+				_y = 28;
 				break;
 		}
 
-		// Initialize context
-		SpriteRenderer.bind2DContext( this.ctx, x, y );
-		this.ctx.clearRect(0, 0, 50, 50);
+		// Cursor magnetism
+		if (Cursor.magnetism) {
+			var entity = EntityManager.getOverEntity();
 
-		// Render layers
-		for (i = 0, count = layers.length; i < count; ++i) {
-			this.entity.renderLayer( layers[i], this.sprite, this.sprite, pos, false );
+			if (entity) {
+				switch (entity.objecttype) {
+					case Entity.TYPE_MOB:
+					case Entity.TYPE_ITEM:
+					_x += Math.floor( Mouse.screen.x - (entity.boundingRect.x1 + (entity.boundingRect.x2-entity.boundingRect.x1) / 2));
+					_y += Math.floor( Mouse.screen.y - (entity.boundingRect.y1 + (entity.boundingRect.y2-entity.boundingRect.y1) / 2));
+				}
+			}
 		}
 
-		// Display icons
-		var url = this.canvas.toDataURL();
-		if (url !== this.lastURL) {
-			document.body.style.cursor = 'url('+ url +'), auto';
-			this.lastURL = url;
+		if (anim !== _lastAnim) {
+			_lastAnim = anim;
+
+			// Initialize context
+			SpriteRenderer.bind2DContext(_ctx, x, y );
+			_ctx.clearRect(0, 0, 50, 50);
+
+			// Render layers
+			for (i = 0, count = layers.length; i < count; ++i) {
+				_entity.renderLayer( layers[i], _sprite, _sprite, _position, false );
+			}
+
+			// Display icons
+			url = _canvas.toDataURL();
+		}
+
+		// Render only when there are changed
+		if (_lastX !== _x || _lastY !== _y || (url && url !== _lastURL)) {
+			_lastX   = _x;
+			_lastY   = _y;
+			_lastURL = url || _lastURL;
+
+			if (_lastURL) {
+				document.body.style.cursor = 'url('+ _lastURL +') ' + _lastX + ' ' + _lastY + ', auto';
+			}
 		}
 	};
 
