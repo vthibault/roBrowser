@@ -343,7 +343,7 @@ function(
 			// Miss
 			else if (damage.type & Damage.TYPE.MISS) {
 				perc = (( tick - damage.start ) / 800);
-				size = 0.7;
+				size = 0.5;
 				SpriteRenderer.position[0] = damage.entity.position[0];
 				SpriteRenderer.position[1] = damage.entity.position[1];
 				SpriteRenderer.position[2] = damage.entity.position[2] + 3.5 + perc * 7;
