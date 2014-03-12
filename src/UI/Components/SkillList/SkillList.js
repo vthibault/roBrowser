@@ -185,9 +185,6 @@ define(function(require)
 	 */
 	SkillList.onRemove = function onRemove()
 	{
-		this.ui.find('.container .content').empty();
-		_list.length = 0;
-
 		// Save preferences
 		_preferences.show   =  this.ui.is(':visible');
 		_preferences.y      =  parseInt(this.ui.css('top'), 10);
