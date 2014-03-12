@@ -36,3 +36,25 @@ RewriteRule ^(.*)\.bmp$   $1\.png [NC,QSA]
 
 # If no png or jpg file found, run the script in the ErrorDocument
 # to extract files from GRF and convert them
+
+# Have fun with compression
+
+<ifModule mod_gzip.c>
+	mod_gzip_on Yes
+	mod_gzip_dechunk Yes
+	mod_gzip_item_include file \.(act|spr|pal|txt|xml|lua|gnd|gat|rsw|rsm)$
+</ifModule>
+
+<IfModule mod_mime.c>
+	AddType application/ro-action          act
+	AddType application/ro-sprite          spr
+	AddType application/ro-palette         pal
+	AddType application/ro-ground          gnd
+	AddType application/ro-altitude        gat
+	AddType application/ro-world           rsw
+	AddType application/ro-model           rsm
+</Ifmodule>
+
+<IfModule mod_deflate.c>
+	AddOutputFilterByType DEFLATE application/ro-action application/ro-sprite application/ro-palette application/ro-ground application/ro-altitude application/ro-world application/ro-model text/plain application/xml
+</Ifmodule>

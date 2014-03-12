@@ -78,7 +78,7 @@
 	}
 
 	$path = implode($args, '\\');
-	$ext  = pathinfo($path, PATHINFO_EXTENSION);
+	$ext  = strtolower(pathinfo($path, PATHINFO_EXTENSION));
 
 
 	// Search the file
@@ -101,15 +101,19 @@
 	header("Cache-Control: max-age=2592000, public");
 	header("Expires: Sat, 31 Jan 2015 05:00:00 GMT");
 
-	switch( strtolower($ext) ) {
+	switch ($ext) {
 		case 'jpg':
-		case 'jpeg': header('Content-type:image/jpeg'); break;
-		case 'bmp':  header('Content-type:image/bmp');  break;
-		case 'gif':  header('Content-type:image/gif');  break;
-		case 'xml':  header('Content-type:text/xml');   ob_start("ob_gzhandler"); break;
-		case 'txt':  header('Content-type:text/plain'); ob_start("ob_gzhandler"); break;
-		case 'mp3':  header('Content-type:audio/mp3');  break;
-		default:     header('Content-type:application/octet-stream'); break;
+		case 'jpeg': header('Content-type:image/jpeg');                break;
+		case 'bmp':  header('Content-type:image/bmp');                 break;
+		case 'gif':  header('Content-type:image/gif');                 break;
+		case 'xml':  header('Content-type:application/xml');           break;
+		case 'txt':  header('Content-type:text/plain');                break;
+		case 'mp3':  header('Content-type:audio/mp3');                 break;
+		default:     header('Content-type:application/octet-stream');  break;
+	}
+
+	if (in_array($ext, array('txt', 'xml', 'rsw', 'rsm', 'gnd', 'gat', 'spr', 'act', 'pal'))) {
+		ob_start("ob_gzhandler");
 	}
 
 	echo $file;
