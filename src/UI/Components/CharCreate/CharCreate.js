@@ -138,7 +138,7 @@ define(function(require)
 	{
 		if (event.which === KEYS.ESCAPE) {
 			event.stopImmediatePropagation();
-			this.cancel();
+			cancel();
 			return false;
 		}
 
