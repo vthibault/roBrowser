@@ -418,6 +418,44 @@ define(function( require )
 
 
 	/**
+	 * Entity just finish casting a skill to position
+	 *
+	 * @param {object} pkt - PACKET.ZC.SKILL_ENTRY
+	 */
+	function onEntityUseSkillToPosition( pkt )
+	{
+		var srcEntity = EntityManager.get(pkt.creatorAID);
+
+		if (srcEntity) {
+			srcEntity.setAction({
+				action: srcEntity.ACTION.SKILL,
+				frame:  0,
+				repeat: false,
+				play:   true,
+				next: {
+					action: srcEntity.ACTION.READYFIGHT,
+					frame:  0,
+					repeat: true,
+					play:   true,
+					next:  false
+				}
+			});
+		}
+/*
+		this.AID        = fp.readULong(); // skill effect unique id
+		this.creatorAID = fp.readULong();
+		this.xPos       = fp.readShort();
+		this.yPos       = fp.readShort();
+		this.job        = fp.readULong();
+		this.range      = fp.readChar();
+		this.isVisible  = fp.readUChar();
+		this.level      = fp.readUChar();
+		this.msg        = fp.readString(end-fp.tell());
+*/
+	}
+
+
+	/**
 	 * Entity use skill on another entity with damage
 	 *
 	 * @param {object} pkt - PACKET.ZC.NOTIFY_SKILL
@@ -529,6 +567,12 @@ define(function( require )
 		}
 
 		srcEntity.cast.set( pkt.delayTime );
+		srcEntity.setAction({
+			action: srcEntity.ACTION.SKILL,
+			frame:  0,
+			repeat: false,
+			play:   false
+		});
 
 		// Only mob to don't display skill name ?
 		if (srcEntity.objecttype !== Entity.TYPE_MOB) {
@@ -850,5 +894,10 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.DISAPPEAR_BUYING_STORE_ENTRY, onEntityDestroyRoom );
 		Network.hookPacket( PACKET.ZC.ROOM_NEWENTRY,                onEntityCreateRoom );
 		Network.hookPacket( PACKET.ZC.DESTROY_ROOM,                 onEntityDestroyRoom );
+		Network.hookPacket( PACKET.ZC.SKILL_ENTRY,                  onEntityUseSkillToPosition);
+		Network.hookPacket( PACKET.ZC.SKILL_ENTRY2,                 onEntityUseSkillToPosition);
+		Network.hookPacket( PACKET.ZC.SKILL_ENTRY3,                 onEntityUseSkillToPosition);
+		Network.hookPacket( PACKET.ZC.SKILL_ENTRY4,                 onEntityUseSkillToPosition);
+		Network.hookPacket( PACKET.ZC.SKILL_ENTRY5,                 onEntityUseSkillToPosition);
 	};
 });
