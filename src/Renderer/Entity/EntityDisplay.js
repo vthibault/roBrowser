@@ -46,6 +46,70 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 
 
 	/**
+	 * @var {boolean} is the shadow ugly in the GPU ?
+	 * Used to fallback to another renderer.
+	 *
+	 * For more informations, check :
+	 * http://forum.robrowser.com/index.php?topic=32200
+	 */
+	var _isUglyShadow = function isUglyGPUShadow()
+	{
+		var canvas = document.createElement('canvas');
+		var ctx = canvas.getContext('2d');
+		var fontSize = 12;
+		var text = 'Testing';
+		var width, height, percent;
+
+		// Create canvas
+		ctx.font          = fontSize + 'px Arial';
+		width             = ctx.measureText(text).width + 10;
+		height            = fontSize * 3 * (text.length ? 2 : 1);
+		ctx.canvas.width  = width;
+		ctx.canvas.height = height;
+
+		ctx.font          = fontSize + 'px Arial';
+		ctx.textBaseline  = 'top';
+
+		// Render text and shadows
+		function testShadow()
+		{
+			multiShadow(ctx, text, 5, 0,  0, -1, 0);
+			multiShadow(ctx, text, 5, 0,  0,  1, 0);
+			multiShadow(ctx, text, 5, 0, -1,  0, 0);
+			multiShadow(ctx, text, 5, 0,  1,  0, 0);
+
+			ctx.fillStyle   = 'white';
+			ctx.strokeStyle = 'black';
+			ctx.strokeText( text, 5, 0);
+			ctx.fillText( text, 5, 0);
+		}
+
+		// Read canvas pixels and get the average black
+		function getBlackPercent()
+		{
+			var imageData = ctx.getImageData( 0, 0, width, height);
+			var pixels    = imageData.data;
+			var i, count  = pixels.length;
+			var total = 0;
+
+			for (i = 0; i < count; i+=4) {
+				total += ((255-pixels[i]) / 255) * pixels[i + 3];
+			}
+
+			return (total / (count/4)) / 2.55;
+		}
+
+		// Do tests
+		testShadow();
+		percent = getBlackPercent();
+
+		// 6.1% seems for the moment a good value
+		// to check if there is too much black.
+		return percent > 6.15;
+	}();
+
+
+	/**
 	 * Display structure
 	 */
 	function Display()
@@ -154,8 +218,8 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 		ctx.font         = fontSize + 'px Arial';
 		ctx.textBaseline = 'top';
 
-		// Chrome hack
-		if (window.chrome) {
+		// Shadow renderer
+		if (!_isUglyShadow) {
 			multiShadow(ctx, lines[0], start_x, 0,  0, -1, 0);
 			multiShadow(ctx, lines[0], start_x, 0,  0,  1, 0);
 			multiShadow(ctx, lines[0], start_x, 0, -1,  0, 0);
@@ -172,7 +236,7 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 			ctx.fillText(  lines[1], start_x, fontSize * 1.5);
 		}
 
-		// Firefox hack
+		// fillText renderer
 		else {
 			ctx.translate(0.5, 0.5);
 			ctx.fillStyle    = 'black';
