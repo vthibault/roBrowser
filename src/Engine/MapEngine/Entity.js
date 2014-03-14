@@ -108,6 +108,23 @@ define(function( require )
 
 
 	/**
+	 * Move entity to a point
+	 *
+	 * @param {object} pkt - PACKET_ZC_HIGHJUMP
+	 */
+	function onEntityJump( pkt )
+	{
+		var entity = EntityManager.get(pkt.AID);
+		if (entity) {
+			entity.position[0] = pkt.xPos;
+			entity.position[1] = pkt.yPos;
+			entity.position[2] = Altitude.getCellHeight( pkt.xPos,  pkt.yPos );
+		}
+	}
+
+
+
+	/**
 	 * Perform Entity Action
 	 *
 	 * @param {object} pkt - PACKET.ZC.NOTIFY_ACT
@@ -929,5 +946,6 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.SKILL_ENTRY4,                 onEntityUseSkillToPosition);
 		Network.hookPacket( PACKET.ZC.SKILL_ENTRY5,                 onEntityUseSkillToPosition);
 		Network.hookPacket( PACKET.ZC.DISPEL,                       onEntityCastCancel);
+		Network.hookPacket( PACKET.ZC.HIGHJUMP,                     onEntityJump);
 	};
 });
