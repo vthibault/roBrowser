@@ -34,6 +34,7 @@ define(function( require )
 	var Models         = require('Renderer/Map/Models');
 	var Sounds         = require('Renderer/Sounds');
 	var SpriteRenderer = require('Renderer/SpriteRenderer');
+	var Effects        = require('Renderer/Effects');
 	var Sky            = require('Renderer/Effects/Sky');
 	var Damage         = require('Renderer/Effects/Damage');
 	var MapPreferences = require('Preferences/Map');
@@ -137,6 +138,7 @@ define(function( require )
 		var gl = Renderer.getContext();
 		EntityManager.free();
 		Damage.free( gl );
+		Effects.free( gl );
 
 		// Basic TP
 		Background.remove(function(){
@@ -162,6 +164,7 @@ define(function( require )
 		Water.free( gl );
 		Models.free( gl );
 		Damage.free( gl );
+		Effects.free( gl );
 
 		this.light  = null;
 		this.water  = null;
@@ -281,6 +284,7 @@ define(function( require )
 		SpriteRenderer.init(gl);
 		Sky.init( gl, worldResource );
 		Damage.init(gl);
+		Effects.init(gl);
 
 		// Starting to render
 		Background.remove(function(){
@@ -340,6 +344,7 @@ define(function( require )
 			}
 		}
 
+		Effects.render( gl, modelView, projection, fog, tick );
 		EntityManager.render( gl, modelView, projection, fog );
 
 		Water.render( gl, modelView, projection, fog, light, tick );
@@ -349,7 +354,6 @@ define(function( require )
 
 		// Rendering effects
 		Damage.render( gl, modelView, projection, fog, tick );
-		//Effects.render( gl, modelView, projection, fog );
 
 		// Play sounds
 		Sounds.render( Session.Entity.position, tick );

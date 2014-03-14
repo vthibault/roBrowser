@@ -23,6 +23,7 @@ define(function( require )
 	var Network       = require('Network/NetworkManager');
 	var PACKET        = require('Network/PacketStructure');
 	var Renderer      = require('Renderer/Renderer');
+	var Effects       = require('Renderer/Effects');
 	var EntityManager = require('Renderer/EntityManager');
 	var Entity        = require('Renderer/Entity/Entity');
 	var Altitude      = require('Renderer/Map/Altitude');
@@ -31,6 +32,8 @@ define(function( require )
 	var StatusIcons   = require('UI/Components/StatusIcons/StatusIcons');
 	var BasicInfo     = require('UI/Components/BasicInfo/BasicInfo');
 	var Damage        = require('Renderer/Effects/Damage');
+	var MagicTarget   = require('Renderer/Effects/MagicTarget');
+	var LockOnTarget  = require('Renderer/Effects/LockOnTarget');
 
 
 	/**
@@ -584,9 +587,14 @@ define(function( require )
 
 		if (dstEntity && dstEntity !== srcEntity) {
 			srcEntity.lookTo( dstEntity.position[0], dstEntity.position[1] );
+			Effects.add(new LockOnTarget( dstEntity, Renderer.tick, Renderer.tick + pkt.delayTime));
 		}
 		else if (pkt.xPos && pkt.yPos) {
 			srcEntity.lookTo( pkt.xPos, pkt.yPos );
+
+			if (pkt.delayTime) {
+				Effects.add(new MagicTarget( pkt.SKID, pkt.xPos, pkt.yPos, Renderer.tick + pkt.delayTime));
+			}
 		}
 	}
 

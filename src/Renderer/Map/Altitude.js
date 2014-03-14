@@ -230,6 +230,96 @@ function(       glMatrix,          PathFinding,            Mouse )
 
 
 	/**
+	 * Generate a plane stick to the ground
+	 * Used for effects
+	 *
+	 * @param {number} position x
+	 * @param {number} position y
+	 * @param {number} plane size
+	 */
+	Altitude.generatePlane = function generatePlaneClosure()
+	{
+		var buffer1x1   = new Float32Array(1*1*30);
+		var buffer5x5   = new Float32Array(5*5*30);
+		var buffer7x7   = new Float32Array(7*7*30);
+		var buffer13x13 = new Float32Array(13*13*30);
+
+		return function generatePlane(pos_x, pos_y, size)
+		{
+			if (!_cells) {
+				return null;
+			}
+
+			var x, y, index, i;
+			var buffer;
+			var middle = Math.floor(size / 2);
+
+			pos_x  = Math.floor(pos_x);
+			pos_y  = Math.floor(pos_y);
+			i      = 0;
+
+			// Avoid memory allocation
+			switch (size) {
+				case 1:  buffer = buffer1x1;   break;
+				case 5:  buffer = buffer5x5;   break;
+				case 7:  buffer = buffer7x7;   break;
+				case 13: buffer = buffer13x13; break;
+				default:
+					buffer = new Float32Array(size*size*30);
+					break;
+			}
+
+			for (x = -middle; x <= middle; ++x) {
+				for (y = -middle; y <= middle; ++y, i+=30) {
+
+					index = ((pos_x + x) + ( pos_y + y) * Altitude.width) * 5;
+
+					// Triangle 1
+					buffer[i+0 ] = pos_x + x + 0;
+					buffer[i+1 ] = _cells[index+0];
+					buffer[i+2 ] = pos_y + y + 0;
+					buffer[i+3 ] = (x + 0 + middle) / size;
+					buffer[i+4 ] = (y + 0 + middle) / size;
+
+					buffer[i+5 ] = pos_x + x + 1;
+					buffer[i+6 ] = _cells[index+1];
+					buffer[i+7 ] = pos_y + y + 0;
+					buffer[i+8 ] = (x + 1 + middle) / size;
+					buffer[i+9 ] = (y + 0 + middle) / size;
+
+					buffer[i+10] = pos_x + x + 1;
+					buffer[i+11] = _cells[index+3];
+					buffer[i+12] = pos_y + y + 1;
+					buffer[i+13] = (x + 1 + middle) / size;
+					buffer[i+14] = (y + 1 + middle) / size;
+
+					// Triangle 2
+					buffer[i+15] = pos_x + x + 1;
+					buffer[i+16] = _cells[index+3];
+					buffer[i+17] = pos_y + y + 1;
+					buffer[i+18] = (x + 1 + middle) / size;
+					buffer[i+19] = (y + 1 + middle) / size;
+
+					buffer[i+20] = pos_x + x + 0;
+					buffer[i+21] = _cells[index+2];
+					buffer[i+22] = pos_y + y + 1;
+					buffer[i+23] = (x + 0 + middle) / size;
+					buffer[i+24] = (y + 1 + middle) / size;
+
+					buffer[i+25] = pos_x + x + 0;
+					buffer[i+26] = _cells[index+0];
+					buffer[i+27] = pos_y + y + 0;
+					buffer[i+28] = (x + 0 + middle) / size;
+					buffer[i+29] = (y + 0 + middle) / size;
+				}
+			}
+
+			return buffer;
+		};
+	}();
+
+
+	/**
 	 * Export
 	 */
 	return Altitude;
