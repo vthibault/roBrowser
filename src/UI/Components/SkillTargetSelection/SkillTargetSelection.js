@@ -23,6 +23,7 @@ define(function(require)
 	var Renderer      = require('Renderer/Renderer');
 	var Entity        = require('Renderer/Entity/Entity');
 	var EntityManager = require('Renderer/EntityManager');
+	var Controls      = require('Preferences/Controls');
 	var UIManager     = require('UI/UIManager');
 	var UIComponent   = require('UI/UIComponent');
 	var Cursor        = require('UI/CursorManager');
@@ -247,7 +248,7 @@ define(function(require)
 					break;
 			}
 
-			if (target & _target) {
+			if (target & _target || KEYS.SHIFT || Controls.noshift) {
 				SkillTargetSelection.onUseSkillToId(_skill.SKID, _skill.level, entity.GID);
 			}
 		}

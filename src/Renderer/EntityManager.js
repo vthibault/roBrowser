@@ -7,8 +7,8 @@
  *
  * @author Vincent Thibault
  */
-define(['./Entity/Entity', './SpriteRenderer', 'Controls/MouseEventHandler'],
-function(         Entity,     SpriteRenderer,            Mouse )
+define(['./Entity/Entity', './SpriteRenderer', 'Controls/MouseEventHandler', 'Controls/KeyEventHandler'],
+function(         Entity,     SpriteRenderer,            Mouse,                        KEYS )
 {
 	'use strict';
 
@@ -137,13 +137,16 @@ function(         Entity,     SpriteRenderer,            Mouse )
 	/**
 	 * Set over entity
 	 */
+	var _saveShift = false;
 	function setOverEntity( target )
 	{
 		var current = _over;
 
-		if (target === current) {
+		if (target === current && _saveShift === KEYS.SHIFT) {
 			return;
 		}
+
+		_saveShift = KEYS.SHIFT;
 
 		if (current) {
 			current.onMouseOut();

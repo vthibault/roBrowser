@@ -51,7 +51,7 @@ define( [
 			case Entity.TYPE_ELEM:
 			case Entity.TYPE_HOM:
 				// TODO: Check for pvp flag ?
-				if (!KEYS.shift || Preferences.noshift === false) {
+				if (KEYS.SHIFT === false && Preferences.noshift === false)  {
 					if (!Camera.action.active ) {
 						Cursor.setType( Cursor.ACTION.DEFAULT );
 					}
@@ -189,7 +189,7 @@ define( [
 			case Entity.TYPE_ELEM:
 			case Entity.TYPE_HOM:
 				// TODO: add check for PVP/WOE mapflag
-				if (!KEYS.shift || Preferences.noshift === false) {
+				if (KEYS.SHIFT === false && Preferences.noshift === false)  {
 					if (!Camera.action.active) {
 						Cursor.setType( Cursor.ACTION.DEFAULT );
 					}
