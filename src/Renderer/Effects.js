@@ -45,7 +45,7 @@ define(function()
 	 * @param {function} effect
 	 * @param {mixed} effect unique id
 	 */
-	Effects.add = function add(effect)
+	Effects.add = function add(effect, uid)
 	{
 		var name   = effect.constructor.name;
 
@@ -61,6 +61,7 @@ define(function()
 			effect.init(_gl);
 		}
 
+		effect._uid = uid;
 		_list[name].push(effect);
 	};
 
@@ -71,33 +72,31 @@ define(function()
 	 * @param {effect} TODO
 	 * @param {mixed} effect unique id
 	 */
-	Effects.remove = function remove(effect)
+	Effects.remove = function remove(effect, uid)
 	{
-		var name = effect.constructor.name;
-
-		if (!(name in _list)) {
+		if (!(effect.name in _list)) {
 			return;
 		}
 
-		var list = _list[name];
+		var list = _list[effect.name];
 		var i, count = list.length;
 
 		for (i = 0; i < count; ++i) {
-			//if (list[i].uid === uid) {
+			if (list[i]._uid === uid) {
 				if (list[i].free) {
 					list[i].free(_gl);
 				}
 				list.splice(i, 1);
 				i--;
 				count--;
-			//}
+			}
 		}
 
 		if (!count) {
-			if (effect.constructor.free) {
-				effect.constructor.free(_gl);
+			if (effect.free) {
+				effect.free(_gl);
 			}
-			delete _list[name];
+			delete _list[effect.name];
 		}
 	};
 

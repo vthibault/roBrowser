@@ -587,15 +587,33 @@ define(function( require )
 
 		if (dstEntity && dstEntity !== srcEntity) {
 			srcEntity.lookTo( dstEntity.position[0], dstEntity.position[1] );
-			Effects.add(new LockOnTarget( dstEntity, Renderer.tick, Renderer.tick + pkt.delayTime));
+			Effects.add(new LockOnTarget( dstEntity, Renderer.tick, Renderer.tick + pkt.delayTime), srcEntity.GID);
 		}
 		else if (pkt.xPos && pkt.yPos) {
 			srcEntity.lookTo( pkt.xPos, pkt.yPos );
 
 			if (pkt.delayTime) {
-				Effects.add(new MagicTarget( pkt.SKID, pkt.xPos, pkt.yPos, Renderer.tick + pkt.delayTime));
+				Effects.add(new MagicTarget( pkt.SKID, pkt.xPos, pkt.yPos, Renderer.tick + pkt.delayTime), srcEntity.GID);
 			}
 		}
+	}
+
+
+	/**
+	 * A cast from an entity just canceled
+	 *
+	 * @param {object} pkt - PACKET.ZC.DISPEL
+	 */
+	function onEntityCastCancel(pkt)
+	{
+		var entity = EntityManager.get(pkt.AID);
+		if (entity) {
+			entity.cast.clean();
+		}
+
+		// Cancel effects
+		Effects.remove(LockOnTarget, entity.GID);
+		Effects.remove(MagicTarget, entity.GID);
 	}
 
 
@@ -907,5 +925,6 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.SKILL_ENTRY3,                 onEntityUseSkillToPosition);
 		Network.hookPacket( PACKET.ZC.SKILL_ENTRY4,                 onEntityUseSkillToPosition);
 		Network.hookPacket( PACKET.ZC.SKILL_ENTRY5,                 onEntityUseSkillToPosition);
+		Network.hookPacket( PACKET.ZC.DISPEL,                       onEntityCastCancel);
 	};
 });
