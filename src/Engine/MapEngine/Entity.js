@@ -19,6 +19,7 @@ define(function( require )
 	var SkillId       = require('DB/SkillId');
 	var SkillInfo     = require('DB/SkillInfo');
 	var Options       = require('DB/StatusConst');
+	var Sound         = require('Audio/SoundManager');
 	var Session       = require('Engine/SessionStorage');
 	var Network       = require('Network/NetworkManager');
 	var PACKET        = require('Network/PacketStructure');
@@ -569,23 +570,20 @@ define(function( require )
 				if (target) {
 					for (i = 0; i<pkt.count; ++i) {
 						Damage.add(
-							Math.floor( pkt.damage / pkt.count * (i+1) ),
+							Math.floor( pkt.damage / pkt.count ),
 							target,
-							Renderer.tick + aspd + ( 200 * i ), //TOFIX: why 200 ?
-							Damage.TYPE.COMBO | ( (i+1) === pkt.count ? Damage.TYPE.COMBO_FINAL : 0 )
+							Renderer.tick + aspd + ( 200 * i )
 						);
-					}
-				}
-			}
 
-			// Damage
-			if (target) {
-				for (i = 0; i<pkt.count; ++i) {
-					Damage.add(
-						Math.floor( pkt.damage / pkt.count ),
-						target,
-						Renderer.tick + aspd + ( 200 * i )
-					);
+						if (target.objecttype !== Entity.TYPE_PC) {
+							Damage.add(
+								Math.floor( pkt.damage / pkt.count * (i+1) ),
+								target,
+								Renderer.tick + aspd + ( 200 * i ), //TOFIX: why 200 ?
+								Damage.TYPE.COMBO | ( (i+1) === pkt.count ? Damage.TYPE.COMBO_FINAL : 0 )
+							);
+						}
+					}
 				}
 			}
 		}
@@ -618,6 +616,7 @@ define(function( require )
 			return;
 		}
 
+		Sound.play('effect/ef_beginspell.wav');
 		srcEntity.cast.set( pkt.delayTime );
 		srcEntity.setAction({
 			action: srcEntity.ACTION.SKILL,
