@@ -227,15 +227,25 @@ function(
 			list[i] +=  _charServers[i].state    ? DB.msgstringtable[484] : ' ' + DB.msgstringtable[483].replace('%d', _charServers[i].usercount);
 		}
 
-		// Show window
-		WinList.onIndexSelected = onCharServerSelected;
-		WinList.onExitRequest   = function(){
-			Network.close();
-			WinList.remove();
-			WinLogin.append();
-		};
-		WinList.setList(list);
-		WinList.append();
+		// No choice, connect directly to the server
+		if (count === 1 && ROConfig.skipServerList) {
+			WinLoading.append();
+			CharEngine.onExitRequest = reload;
+			CharEngine.init(_charServers[0]);
+		}
+
+		// Have to select server in the list
+		else {
+			// Show window
+			WinList.onIndexSelected = onCharServerSelected;
+			WinList.onExitRequest   = function(){
+				Network.close();
+				WinList.remove();
+				WinLogin.append();
+			};
+			WinList.setList(list);
+			WinList.append();
+		}
 
 		// Set ping
 		var ping = new PACKET.CA.CONNECT_INFO_CHANGED();

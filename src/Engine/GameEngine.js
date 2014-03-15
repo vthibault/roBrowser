@@ -161,19 +161,24 @@ function(
 			// Display server list
 			var list = new Array( _servers.length );
 			var i, count = list.length;
-	
-			if (count) {
+
+			// WTF no servers ?
+			if (count === 0) {
+				UIManager.showMessageBox( 'Sorry, no server found.', 'ok', init);
+			}
+
+			// Just 1 server, skip the WinList
+			else if (count === 1 && ROConfig.skipServerList) {
+				LoginEngine.onExitRequest = reload;
+				LoginEngine.init( _servers[0] );
+			}
+			else {
 				for (i = 0; i < count; ++i) {
 					list[i] = _servers[i].display;
 				}
 
 				WinList.append();
 				WinList.setList( list );
-			}
-
-			// WTF no servers ?
-			else {
-				UIManager.showMessageBox( 'Sorry, no server found.', 'ok', init);
 			}
 
 			Renderer.stop();

@@ -170,6 +170,17 @@
 
 
 	/**
+	 * @var {boolean} skip server list if only one server define ?
+	 *
+	 * If set to true and the server list (clientinfo, char-server list) just have one
+	 * element defined, the window will be skipped and you will auto-connect to the server.
+	 *
+	 * Set to false, will display the server list even if there is just one server set.
+	 */
+	ROBrowser.prototype.skipServerList = true;
+
+
+	/**
 	 * @var {string} roBrowser api window path
 	 */
 	ROBrowser.prototype.baseUrl = (function(){
@@ -285,15 +296,16 @@
 	function WaitForInitialization()
 	{
 		this._APP.postMessage({
-			application:  this.application,
-			servers:      this.servers,
-			grfList:      this.grfList,
-			remoteClient: this.remoteClient,
-			packetver:    this.packetver,
-			development:  this.development,
-			api:          this.api,
-			socketProxy:  this.socketProxy,
-			packetKeys:   this.packetKeys
+			application:    this.application,
+			servers:        this.servers,
+			grfList:        this.grfList,
+			remoteClient:   this.remoteClient,
+			packetver:      this.packetver,
+			development:    this.development,
+			api:            this.api,
+			socketProxy:    this.socketProxy,
+			packetKeys:     this.packetKeys,
+			skipServerList: this.skipServerList,
 		}, '*');
 	}
 
