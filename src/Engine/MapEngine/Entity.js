@@ -616,8 +616,11 @@ define(function( require )
 			return;
 		}
 
-		Sound.play('effect/ef_beginspell.wav');
-		srcEntity.cast.set( pkt.delayTime );
+		if (pkt.delayTime) {
+			Sound.play('effect/ef_beginspell.wav');
+			srcEntity.cast.set( pkt.delayTime );
+		}
+
 		srcEntity.setAction({
 			action: srcEntity.ACTION.SKILL,
 			frame:  0,
