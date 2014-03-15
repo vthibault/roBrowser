@@ -66,7 +66,7 @@ define(function(require)
 	{
 		window.ROConfig = window.ROConfig || {};
 
-		if (!ROConfig.servers || typeof(ROConfig.servers) === 'string') {
+		if (!ROConfig.servers) {
 			ROConfig.serverEditMode = true;
 		}
 

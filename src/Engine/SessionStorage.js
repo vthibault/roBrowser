@@ -23,5 +23,7 @@ define(function()
 
 		Character: null,
 		Entity:    null,
+
+		AdminList: [],
 	};
 });

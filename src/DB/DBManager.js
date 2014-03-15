@@ -308,6 +308,16 @@ function(       Queue,        Client,     ClassTable,     ClassPalTable,     Mon
 
 
 	/**
+	 * @return {string} path of admin clothes
+	 * @param {boolean} sex
+	 */
+	DB.getAdminPath = function getAdminPath(sex)
+	{
+		return 'data/sprite/\xc0\xce\xb0\xa3\xc1\xb7/\xb8\xf6\xc5\xeb/' + DB.SEX[sex] + '/\xbf\xee\xbf\xb5\xc0\xda_' + DB.SEX[sex];
+	};
+
+
+	/**
 	 * @return {string} path to body palette
 	 * @param {number} id entity
 	 * @param {number} pal

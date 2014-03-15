@@ -74,7 +74,7 @@ define(['Core/Client', 'DB/DBManager', './EntityAction'], function( Client, DB, 
 	 */
 	function UpdateBody( job )
 	{
-		var path   = DB.getBodyPath( job, this._sex );
+		var path   = this.isAdmin ? DB.getAdminPath(this._sex) : DB.getBodyPath( job, this._sex );
 		var Entity = this.constructor;
 		this._job  = -1;
 

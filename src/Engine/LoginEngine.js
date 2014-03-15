@@ -85,7 +85,7 @@ function(
 		_server = server;
 
 		// Add support for "packetver" definition in Server listing
-		if ('packetver' in server) {
+		if ('packetver' in server && server.packetver !== '') {
 			ROConfig.packetver = String(server.packetver);
 
 			if (ROConfig.packetver.match(/^\d+$/)) {
@@ -98,20 +98,25 @@ function(
 		}
 
 		// Add support for "packetkeys" definition in server definition
-		if ('packetKeys' in server) {
+		if ('packetKeys' in server && server.packetKeys !== '') {
 			ROConfig.packetKeys = server.packetKeys;
 		}
 
 		// Add support for remote client in server definition
-		if ('remoteClient' in server) {
+		if ('remoteClient' in server && server.remoteClient !== '') {
 			ROConfig.remoteClient = server.remoteClient;
 			Thread.send( 'SET_HOST', ROConfig.remoteClient );
 		}
 
 		// Add support for "socketProxy" in server definition
-		if ('socketProxy' in server) {
+		if ('socketProxy' in server && server.socketProxy !== '') {
 			ROConfig.socketProxy = server.socketProxy;
 		}
+
+
+		// GMs account list from server
+		Session.AdminList = server['adminList'];
+
 
 		// Hooking win_login
 		WinLogin.onConnectionRequest = onConnectionRequest;

@@ -260,7 +260,14 @@ function(
 					port:       connection.find('port:first').text(),
 					version:    connection.find('version:first').text(),
 					langtype:   connection.find('langtype:first').text(),
-					packetver:  connection.find('packetver:first').text()
+					packetver:  connection.find('packetver:first').text(),
+					adminList:  (function(){
+						var list   = [];
+						connection.find('yellow admin, aid admin').each(function(){
+							list.push(parseInt(this.textContent,10));
+						});
+						return list;
+					})()
 				});
 
 				if (index === stop) {

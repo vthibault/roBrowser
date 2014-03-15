@@ -17,6 +17,7 @@ define( function( require )
 	 */
 	var Renderer = require('Renderer/Renderer');
 	var Altitude = require('Renderer/Map/Altitude');
+	var Session  = require('Engine/SessionStorage');
 	var Client   = require('Core/Client');
 	var glMatrix = require('Utils/gl-matrix');
 	var vec3     = glMatrix.vec3;
@@ -128,6 +129,7 @@ define( function( require )
 
 	Entity.prototype.weapon_sound = '';
 	Entity.prototype.effectColor  = null;
+	Entity.prototype.isAdmin      = false;
 
 
 	/**
@@ -151,10 +153,11 @@ define( function( require )
 		Client.loadFile(this.files.shadow.spr, null, null, {to_rgba:true});
 		Client.loadFile(this.files.shadow.act);
 
-		this.sex = unit.hasOwnProperty('sex') ? unit.sex : this._sex;
-		this.job = unit.hasOwnProperty('job') ? unit.job : this._job;
-		keys     = Object.keys( unit );
-		count    = keys.length;
+		this.isAdmin = Session.AdminList.indexOf(unit.GID) > -1;
+		this.sex     = unit.hasOwnProperty('sex') ? unit.sex : this._sex;
+		this.job     = unit.hasOwnProperty('job') ? unit.job : this._job;
+		keys         = Object.keys( unit );
+		count        = keys.length;
 
 		for (i = 0; i < count; ++i) {
 			switch (keys[i]) {
