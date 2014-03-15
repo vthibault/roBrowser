@@ -7,8 +7,8 @@
  *
  * @author Vincent Thibault
  */
-define( ['Utils/jquery', 'DB/DBManager', 'Core/Client', 'Controls/MouseEventHandler'],
-function(       jQuery,      DB,               Client,            Mouse )
+define( ['Utils/jquery', './CursorManager', 'DB/DBManager', 'Core/Client', 'Controls/MouseEventHandler'],
+function(       jQuery,     Cursor,             DB,               Client,            Mouse )
 {
 	'use strict';
 
@@ -89,6 +89,7 @@ function(       jQuery,      DB,               Client,            Mouse )
 				jQuery(window).off('keydown.' + this.name);
 			}
 
+			this.ui.trigger('mouseleave');
 			this.ui.detach();
 		}
 	};
@@ -182,11 +183,28 @@ function(       jQuery,      DB,               Client,            Mouse )
 	UIComponent.prototype.draggable = function draggable( element )
 	{
 		var container = this.ui;
+		var _intersect;
 
 		// Global variable
 		if (!element) {
 			element = this.ui;
 		}
+
+		// Draggable elements stop the mouse to intersect with the scene
+		element.mouseenter(function(){
+			_intersect = Mouse.intersect;
+			if (_intersect) {
+				Mouse.intersect = false;
+				Cursor.setType( Cursor.ACTION.DEFAULT );
+			}
+		});
+
+		element.mouseleave(function(){
+			if(_intersect) {
+				Mouse.intersect = true;
+				require('Renderer/EntityManager').setOverEntity(null);
+			}
+		});
 
 		// Drag drop stuff
 		element.mousedown( function(event) {

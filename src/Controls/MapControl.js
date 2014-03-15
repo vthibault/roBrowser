@@ -46,31 +46,14 @@ function(
 
 
 	/**
-	 * When the mouse is no longer on the canvas
-	 * Just block actions and reset default cursor
-	 */
-	function OnMouseOut()
-	{
-		Mouse.intersect = false;
-		Cursor.setType( Cursor.ACTION.DEFAULT );
-	}
-
-
-	/**
-	 * When the mouse is now on the canvas
-	 * Just allow action
-	 */
-	function OnMouseOver()
-	{
-		Mouse.intersect = true;
-	}
-
-
-	/**
 	 * What to do when clicking on the map ?
 	 */
 	function OnMouseDown( event )
 	{
+		if (!Mouse.intersect) {
+			return;
+		}
+
 		switch (event.which) {
 
 			// Left click
@@ -114,6 +97,11 @@ function(
 	 */
 	function OnMouseUp( event )
 	{
+		// Not rendering yet
+		if (!Mouse.intersect) {
+			return;
+		}
+
 		switch (event.which) {
 
 			// Left click
@@ -234,22 +222,20 @@ function(
 
 
 	/**
-	 *  Ugly but to avoid circular dependencies
+	 *  Exports
 	 */
 	return function Initialize()
 	{
 		// Attach events
 		jQuery( Renderer.canvas )
-			.mouseout( OnMouseOut )
-			.mouseover( OnMouseOver )
-			.mousedown( OnMouseDown.bind(this) )
-			.mouseup( OnMouseUp.bind(this) )
 			.on('mousewheel DOMMouseScroll', OnMouseWheel)
 			.on('dragover', OnDragOver )
 			.on('drop', OnDrop.bind(this));
 
 		jQuery(window)
 			.on('contextmenu', function(){ return false; })
-			.mousemove( OnMouseMove );
+			.mousemove( OnMouseMove )
+			.mousedown( OnMouseDown.bind(this) )
+			.mouseup( OnMouseUp.bind(this) );
 	};
 });

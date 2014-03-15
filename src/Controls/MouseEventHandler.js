@@ -43,7 +43,7 @@ define(function()
 	/**
 	 * @var {boolean} Do we intersect object ?
 	 */
-	Mouse.intersect = true;
+	Mouse.intersect = false;
 
 
 	/**

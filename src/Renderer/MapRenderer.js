@@ -166,6 +166,8 @@ define(function( require )
 		Damage.free( gl );
 		Effects.free( gl );
 
+		Mouse.intersect = false;
+
 		this.light  = null;
 		this.water  = null;
 		this.sounds = null;
@@ -289,6 +291,8 @@ define(function( require )
 		// Starting to render
 		Background.remove(function(){
 			MapRenderer.loading = false;
+			Mouse.intersect     = true;
+
 			MapRenderer.onLoad();
 			Sky.setUpCloudData();
 
