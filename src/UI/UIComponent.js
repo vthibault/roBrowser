@@ -268,6 +268,8 @@ function(       jQuery,     Cursor,             DB,               Client,       
 					setTimeout(function(){
 						element.css('zIndex', 50);
 						if (element[0].parentNode) {
+							// MouseEnter bug with appendChild in Firefox...
+							element.trigger('mouseleave');
 							element[0].parentNode.appendChild(element[0]);
 						}
 					}, 1);
