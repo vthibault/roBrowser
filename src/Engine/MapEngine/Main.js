@@ -228,9 +228,7 @@ define(function( require )
 				if (amount < 1) {
 					Escape.ui.show();
 					Escape.ui.find('.savepoint').show();
-					Escape.ui.find('.settings, .sound, .hotkey').hide();
-
-					// TODO: check for resurection button
+					Escape.ui.find('.graphics, .sound, .hotkey').hide();
 				}
 
 				if (Session.Entity.life.hp_max > -1) {

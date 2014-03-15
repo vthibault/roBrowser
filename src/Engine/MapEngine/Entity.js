@@ -31,6 +31,7 @@ define(function( require )
 	var ChatRoom      = require('UI/Components/ChatRoom/ChatRoom');
 	var StatusIcons   = require('UI/Components/StatusIcons/StatusIcons');
 	var BasicInfo     = require('UI/Components/BasicInfo/BasicInfo');
+	var Escape        = require('UI/Components/Escape/Escape');
 	var Damage        = require('Renderer/Effects/Damage');
 	var MagicTarget   = require('Renderer/Effects/MagicTarget');
 	var LockOnTarget  = require('Renderer/Effects/LockOnTarget');
@@ -122,6 +123,37 @@ define(function( require )
 		}
 	}
 
+
+	/**
+	 * Resurect an entity
+	 *
+	 * @param {object} pkt - PACKET_ZC_RESURRECTION
+	 */
+	function onEntityResurect( pkt )
+	{
+		var entity = EntityManager.get(pkt.AID);
+
+		if (!entity) {
+			return;
+		}
+
+		// There is always a packet to use the skill "Resurection"
+		// on yourself after, but what if this packet isn't here ?
+		// The entity will stay die ? So update the action just in case
+		entity.setAction({
+			action: entity.ACTION.IDLE,
+			frame:  0,
+			repeat: true,
+			play:   true
+		});
+
+		// If it's our main character update Escape ui
+		if (entity === Session.Entity) {
+			Escape.ui.hide();
+			Escape.ui.find('.savepoint').hide();
+			Escape.ui.find('.graphics, .sound, .hotkey').show();
+		}
+	}
 
 
 	/**
@@ -947,5 +979,6 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.SKILL_ENTRY5,                 onEntityUseSkillToPosition);
 		Network.hookPacket( PACKET.ZC.DISPEL,                       onEntityCastCancel);
 		Network.hookPacket( PACKET.ZC.HIGHJUMP,                     onEntityJump);
+		Network.hookPacket( PACKET.ZC.RESURRECTION,                 onEntityResurect);
 	};
 });

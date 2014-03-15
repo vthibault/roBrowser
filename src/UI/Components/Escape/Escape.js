@@ -98,7 +98,6 @@ define(function(require)
 			}
 			else {
 				this.ui.show();
-				this.ui[0].parentNode.appendChild(this.ui[0]);
 			}
 
 			event.stopImmediatePropagation();
