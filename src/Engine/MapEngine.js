@@ -450,7 +450,7 @@ define(function( require )
 		clearTimeout(_walkTimer);
 
 		// If siting, update direction
-		if (Session.Entity.action === Session.Entity.ACTION.SIT) {
+		if (Session.Entity.action === Session.Entity.ACTION.SIT || KEYS.SHIFT) {
 			Session.Entity.lookTo( Mouse.world.x, Mouse.world.y );
 
 			var pkt     = new PACKET.CZ.CHANGE_DIRECTION();
@@ -478,7 +478,9 @@ define(function( require )
 	 */
 	function onWalkRequest()
 	{
-		if (_walkLastTick + 500 > Renderer.tick) {
+		// setTimeout isn't accurate, so reduce the value
+		// to avoid possible errors.
+		if (_walkLastTick + 450 > Renderer.tick) {
 			return;
 		}
 
