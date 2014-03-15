@@ -7,8 +7,8 @@
  *
  * @author Vincent Thibault
  */
-define(['./Entity/Entity', './SpriteRenderer', 'Controls/MouseEventHandler', 'Controls/KeyEventHandler'],
-function(         Entity,     SpriteRenderer,            Mouse,                        KEYS )
+define(['Engine/SessionStorage', './Entity/Entity', './SpriteRenderer', 'Controls/MouseEventHandler', 'Controls/KeyEventHandler'],
+function(       Session,                   Entity,     SpriteRenderer,            Mouse,                        KEYS )
 {
 	'use strict';
 
@@ -60,6 +60,15 @@ function(         Entity,     SpriteRenderer,            Mouse,                 
 	 */
 	function getEntity( gid )
 	{
+		// Reason for this check:
+		// - Most packets your received is for the main character, so
+		//   this check speed up the process.
+		// - When you load a map, the main character is not in the list yet
+		//   so we skip a lot of vital informations
+		if (Session.Entity.GID === gid) {
+			return Session.Entity;
+		}
+
 		var index = getEntityIndex(gid);
 		if (index < 0) {
 			return null;
