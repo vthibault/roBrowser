@@ -47,7 +47,7 @@ function( require,         jQuery,        Client,         Preferences )
 				'<param name="AllowScriptAccess" value="always"/>',
 				'<param name="FlashVars" value="listener=BGM&interval=1000"/>',
 			'</object>'
-		]).appendTo('body')[0];
+		].join('\n')).appendTo('body')[0];
 
 		// Flash onInit()
 		BGM.onInit = function onInit() {
