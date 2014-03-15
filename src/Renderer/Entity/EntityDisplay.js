@@ -105,7 +105,7 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 
 		// 6.1% seems for the moment a good value
 		// to check if there is too much black.
-		return percent > 6.15;
+		return !window.chrome || percent > 6.15;
 	}();
 
 
