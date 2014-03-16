@@ -21,6 +21,7 @@
 					ROConfig.packetKeys     = event.data.packetKeys     || false;
 					ROConfig.skipServerList = event.data.skipServerList || false;
 					ROConfig.skipIntro      = event.data.skipIntro      || false;
+					ROConfig.autoLogin      = event.data.autoLogin      || [];
 
 					var script  = document.createElement('script');
 					script.src  = 'src/Vendors/require.js';

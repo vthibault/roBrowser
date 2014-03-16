@@ -121,7 +121,14 @@ function(
 		// Hooking win_login
 		WinLogin.onConnectionRequest = onConnectionRequest;
 		WinLogin.onExitRequest       = onExitRequest;
-		WinLogin.append();
+
+		// Autologin features
+		if (ROConfig.autoLogin && ROConfig.autoLogin.length === 2) {
+			onConnectionRequest.apply( null, ROConfig.autoLogin);
+		}
+		else {
+			WinLogin.append();
+		}
 
 		// Hook packets
 		Network.hookPacket( PACKET.AC.ACCEPT_LOGIN,    onConnectionAccepted );

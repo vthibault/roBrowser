@@ -188,6 +188,14 @@
 
 
 	/**
+	 * @var {Array} do you want to auto-login to the server ?
+	 * Can be used in a securized session to auto-connect to the server without inserting login-pass (ie: Facebook app ?)
+	 * Using as autoLogin: ["username", "userpass"]
+	 */
+	ROBrowser.prototype.autoLogin = [];
+
+
+	/**
 	 * @var {string} roBrowser api window path
 	 */
 	ROBrowser.prototype.baseUrl = (function(){
@@ -313,7 +321,8 @@
 			socketProxy:    this.socketProxy,
 			packetKeys:     this.packetKeys,
 			skipServerList: this.skipServerList,
-			skipIntro;      this.skipIntro
+			skipIntro:      this.skipIntro,
+			autoLogin:      this.autoLogin,
 		}, '*');
 	}
 
