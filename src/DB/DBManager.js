@@ -8,8 +8,8 @@
  * @author Vincent Thibault
  */
 
-define( ['Utils/Queue', 'Core/Client', './ClassTable', './ClassPalTable', './MonsterTable', './PetInfo', './HatTable', './WeaponTable', './WeaponAction', './ShieldTable', './Weather' ],
-function(       Queue,        Client,     ClassTable,     ClassPalTable,     MonsterTable,     PetInfo,     HatTable,     WeaponTable,     WeaponAction,     ShieldTable,     Weather)
+define( ['Core/Client', './ClassTable', './ClassPalTable', './MonsterTable', './PetInfo', './HatTable', './WeaponTable', './WeaponAction', './ShieldTable', './Weather' ],
+function(      Client,     ClassTable,     ClassPalTable,     MonsterTable,     PetInfo,     HatTable,     WeaponTable,     WeaponAction,     ShieldTable,     Weather)
 {
 	'use strict';
 
@@ -54,148 +54,63 @@ function(       Queue,        Client,     ClassTable,     ClassPalTable,     Mon
 	 */
 	DB.init = function Init()
 	{
+		// Callback
+		var index = 0, count = 0;
+		function onLoad(){
+			count++;
+			return function OnLoadClosure(){
+				index++;
+
+				if (DB.onProgress) {
+					DB.onProgress(index, count);
+				}
+
+				if (index === count && DB.onReady) {
+					DB.onReady();
+				}
+			};
+		}
+
+
 		console.log('Loading DB files...');
 
-		var q = new Queue();
+		// Loading TXT Tables
+		DB.loadTable( 'data/mp3nametable.txt',               2, function(index, key, val){    DB.mp3[key]                                                              = val;                     }, onLoad());
+		DB.loadTable( 'data/mapnametable.txt',               2, function(index, key, val){    DB.mapname[key]                                                          = val;                     }, onLoad());
+		DB.loadTable( 'data/msgstringtable.txt',             1, function(index, val){         DB.msgstringtable[index]                                                 = val;                     }, onLoad());
+		DB.loadTable( 'data/resnametable.txt',               2, function(index, key, val){    DB.mapalias[key]                                                         = val;                     }, onLoad());
+		DB.loadTable( 'data/idnum2itemdesctable.txt',        2, function(index, key, val){   (DB.itemList[key] || (DB.itemList[key] = {})).identifiedDescriptionName   = val;                     }, onLoad());
+		DB.loadTable( 'data/idnum2itemdisplaynametable.txt', 2, function(index, key, val){   (DB.itemList[key] || (DB.itemList[key] = {})).identifiedDisplayName       = val.replace(/\_/g, ' '); }, onLoad());
+		DB.loadTable( 'data/idnum2itemresnametable.txt',     2, function(index, key, val){   (DB.itemList[key] || (DB.itemList[key] = {})).identifiedResourceName      = val;                     }, onLoad());
+		DB.loadTable( 'data/num2itemdesctable.txt',          2, function(index, key, val){   (DB.itemList[key] || (DB.itemList[key] = {})).unidentifiedDescriptionName = val;                     }, onLoad());
+		DB.loadTable( 'data/num2itemdisplaynametable.txt',   2, function(index, key, val){   (DB.itemList[key] || (DB.itemList[key] = {})).unidentifiedDisplayName     = val.replace(/\_/g, ' '); }, onLoad());
+		DB.loadTable( 'data/num2itemresnametable.txt',       2, function(index, key, val){   (DB.itemList[key] || (DB.itemList[key] = {})).unidentifiedResourceName    = val;                     }, onLoad());
+		DB.loadTable( 'data/itemslotcounttable.txt',         2, function(index, key, val){   (DB.itemList[key] || (DB.itemList[key] = {})).slotCount                   = parseInt(val, 10);       }, onLoad());
+		DB.loadTable( 'data/fogparametertable.txt',          5, function(index, mapname, near, far, color, factor) {
+			var int_color = parseInt(color,16);
+			DB.fog[mapname] = {
+				near:   parseFloat(near),
+				far:    parseFloat(far),
+				color:  [
+					(255 & (int_color >> 16)) / 255.0,
+					(255 & (int_color >>  8)) / 255.0,
+					(255 & (int_color >>  0)) / 255.0
+				],
+				factor: parseFloat(factor)
+			};
+		}, onLoad());
 
 
-		/*
-		 * Loading TXT Tables
-		 */
-
-		// MP3 for each maps
-		q.add(function(){
-			DB.loadTable( 'data/mp3nametable.txt', 2, function(index, mapname, mp3){
-				DB.mp3[mapname] = mp3;
-			}, q.next );
-		});
-
-		// Map's name
-		q.add(function(){
-			DB.loadTable( 'data/mapnametable.txt', 2, function(index, filename, mapname){
-				DB.mapname[filename] = mapname;
-			}, q.next );
-		});
-
-		// Texts to display
-		q.add(function(){
-			DB.loadTable( 'data/msgstringtable.txt', 1, function(index, text){
-				DB.msgstringtable[index] = text;
-			}, q.next );
-		});
-
-		// Map inherent system
-		q.add(function(){
-			DB.loadTable( 'data/resnametable.txt', 2, function(index, key, val){
-				DB.mapalias[key] = val;
-			}, q.next );
-		});
-
-
-		// Load items description
-		q.add(function(){
-			DB.loadTable( 'data/idnum2itemdesctable.txt', 2, function(index, key, val){
-				(DB.itemList[key] || (DB.itemList[key] = {})).identifiedDescriptionName = val;
-			}, q.next );
-		});
-
-		// Load items name
-		q.add(function(){
-			DB.loadTable( 'data/idnum2itemdisplaynametable.txt', 2, function(index, key, val){
-				(DB.itemList[key] || (DB.itemList[key] = {})).identifiedDisplayName = val.replace(/\_/g, ' ');
-			}, q.next );
-		});
-
-		// Load items resource name
-		q.add(function(){
-			DB.loadTable( 'data/idnum2itemresnametable.txt', 2, function(index, key, val){
-				(DB.itemList[key] || (DB.itemList[key] = {})).identifiedResourceName = val;
-			}, q.next );
-		});
-
-
-		// Load items description
-		q.add(function(){
-			DB.loadTable( 'data/num2itemdesctable.txt', 2, function(index, key, val){
-				(DB.itemList[key] || (DB.itemList[key] = {})).unidentifiedDescriptionName = val;
-			}, q.next );
-		});
-
-		// Load items name
-		q.add(function(){
-			DB.loadTable( 'data/num2itemdisplaynametable.txt', 2, function(index, key, val){
-				(DB.itemList[key] || (DB.itemList[key] = {})).unidentifiedDisplayName = val.replace(/\_/g, ' ');
-			}, q.next );
-		});
-
-		// Load items resource name
-		q.add(function(){
-			DB.loadTable( 'data/num2itemresnametable.txt', 2, function(index, key, val){
-				(DB.itemList[key] || (DB.itemList[key] = {})).unidentifiedResourceName = val;
-			}, q.next );
-		});
-
-		// Load items slots
-		q.add(function(){
-			DB.loadTable( 'data/itemslotcounttable.txt', 2, function(index, key, val){
-				(DB.itemList[key] || (DB.itemList[key] = {})).slotCount = parseInt(val, 10);
-			}, q.next );
-		});
-
-
-		// Fog system
-		q.add(function(){
-			DB.loadTable('data/fogparametertable.txt', 5, function(index, mapname, near, far, color, factor) {
-				var int_color = parseInt(color,16);
-				DB.fog[mapname] = {
-					near:   parseFloat(near),
-					far:    parseFloat(far),
-					color:  [
-						(255 & (int_color >> 16)) / 255.0,
-						(255 & (int_color >>  8)) / 255.0,
-						(255 & (int_color >>  0)) / 255.0
-					],
-					factor: parseFloat(factor)
-				};
-			}, q.next );
-		});
-
-
-		/*
-		 * Loading LuaByte Tables
-		 */
-
-		// PC data
-		q.add( DB.loadLuaByteTable('data/lua files/admin/pcidentity.lub',      q.next) );
-		q.add( DB.loadLuaByteTable('data/lua files/admin/pcjobname.lub',       q.next) );
-		q.add( DB.loadLuaByteTable('data/lua files/admin/pcjobnamegender.lub', q.next) );
-
-		// hats
-		q.add( DB.loadLuaByteTable('data/lua files/datainfo/accessoryid.lub',  q.next) );
-		q.add( DB.loadLuaByteTable('data/lua files/datainfo/accname.lub',      q.next) );
-
-		// npc/mobs
-		q.add( DB.loadLuaByteTable('data/lua files/datainfo/npcidentity.lub',  q.next) );
-		q.add( DB.loadLuaByteTable('data/lua files/datainfo/jobname.lub',      q.next) );
-		q.add( DB.loadLuaByteTable('data/lua files/datainfo/petinfo.lub',      q.next) );
-
-		// others
-		q.add( DB.loadLuaByteTable('data/lua files/datainfo/weapontable.lub',  q.next) );
-
-
-		// skills
-		//q.add( DB.loadLuaByteTable('data/lua files/skillinfoz/skillid.lub',  q.next) );
-
-
-		// Callback
-		q.add(function(){
-			if (DB.onReady) {
-				DB.onReady();
-			}
-		});
-
-		// Start loading files
-		q.run();
+		// Loading LuaByte Tables
+		DB.loadLuaByteTable('data/lua files/admin/pcidentity.lub',      onLoad());
+		DB.loadLuaByteTable('data/lua files/admin/pcjobname.lub',       onLoad());
+		DB.loadLuaByteTable('data/lua files/admin/pcjobnamegender.lub', onLoad());
+		DB.loadLuaByteTable('data/lua files/datainfo/accessoryid.lub',  onLoad());
+		DB.loadLuaByteTable('data/lua files/datainfo/accname.lub',      onLoad());
+		DB.loadLuaByteTable('data/lua files/datainfo/npcidentity.lub',  onLoad());
+		DB.loadLuaByteTable('data/lua files/datainfo/jobname.lub',      onLoad());
+		DB.loadLuaByteTable('data/lua files/datainfo/petinfo.lub',      onLoad());
+		DB.loadLuaByteTable('data/lua files/datainfo/weapontable.lub',  onLoad());
 	};
 
 
@@ -209,8 +124,9 @@ function(       Queue,        Client,     ClassTable,     ClassPalTable,     Mon
 	 */
 	DB.loadTable = function LoadTable( filename, size, callback, onEnd )
 	{
-		console.log('Loading file "'+ filename +'"...');
 		Client.loadFile( filename, function(data) {
+			console.log('Loading file "'+ filename +'"...');
+
 			// Remove commented lines
 			var content  = ('\n' + data).replace(/\n\s?\/\/[^\n]+\n/g, '');
 			var elements = content.split('#');
@@ -242,17 +158,15 @@ function(       Queue,        Client,     ClassTable,     ClassPalTable,     Mon
 	 */
 	DB.loadLuaByteTable = function loadLuaByteTable( filename, onEnd )
 	{
-		return function() {
+		Client.loadFile( filename, function(js) {
 			console.log('Loading file "'+ filename +'"...');
-			Client.loadFile( filename, function(js) {
-				// TODO: fix Lub decoder
-				try {
-					eval(js);
-				}
-				catch(e){}
-				onEnd();
-			}, onEnd );
-		};
+			// TODO: fix Lub decoder
+			try {
+				eval(js);
+			}
+			catch(e){}
+			onEnd();
+		}, onEnd );
 	};
 
 
