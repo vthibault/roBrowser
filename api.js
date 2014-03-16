@@ -181,6 +181,13 @@
 
 
 	/**
+	 * @var {boolean} do we skip the intro ?
+	 * Note: if you skip it, the user will not be able to load their local fullclient
+	 */
+	ROBrowser.prototype.skipIntro = false;
+
+
+	/**
 	 * @var {string} roBrowser api window path
 	 */
 	ROBrowser.prototype.baseUrl = (function(){
@@ -306,6 +313,7 @@
 			socketProxy:    this.socketProxy,
 			packetKeys:     this.packetKeys,
 			skipServerList: this.skipServerList,
+			skipIntro;      this.skipIntro
 		}, '*');
 	}
 

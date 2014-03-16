@@ -94,35 +94,48 @@ function(
 
 		// Start Intro, wait the user to add files
 		q.add(function(){
-			Intro.onFilesSubmit = function( files ) {
-				Client.onFilesLoaded = function(count){
-					if (!ROConfig.remoteClient && !count) {
-						try {
-							alert( 'No client to initialize roBrowser');
-						}
-						catch(e){
-							// FIXME: no window.alert() in chrome app.
-						}
-						Intro.remove();
-						Intro.append();
-						return;
+			Client.onFilesLoaded = function(count){
+				if (!ROConfig.remoteClient && !count) {
+					try {
+						alert( 'No client to initialize roBrowser');
 					}
-					q._next();
-				};
-				Client.init( files );
+					catch(e){
+						// FIXME: no window.alert() in chrome app.
+					}
+					Intro.remove();
+					Intro.append();
+					return;
+				}
+				q._next();
 			};
-			Intro.append();
-		});
 
-		// Loading clientinfo
-		q.add(function(){
-			loadClientInfo(q.next);
+
+			if (ROConfig.skipIntro) {
+				Client.init([]);
+				return;
+			}
+
+			Intro.onFilesSubmit = Client.init.bind(Client);
+			Intro.append();
 		});
 
 		// Loading Game file (txt, lua, lub)
 		q.add(function(){
 			DB.onReady = q.next;
-			DB.init();
+			DB.onProgress = function(i, count) {
+				Background.setPercent( Math.floor(i/count * 100) );
+			};
+			UIManager.removeComponents();
+			Background.init();
+			Background.resize( Renderer.width, Renderer.height );
+			Background.setImage( 'bgi_temp.bmp', function(){
+				DB.init();
+			});
+		});
+
+		// Loading clientinfo
+		q.add(function(){
+			loadClientInfo(q.next);
 		});
 
 		// Initialize cursor
