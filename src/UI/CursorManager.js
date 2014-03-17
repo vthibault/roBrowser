@@ -84,24 +84,6 @@ function( require,         jQuery,        Client,               Graphics,       
 
 
 	/**
-	 * @var {number} last X position
-	 */
-	var _lastX = 0;
-
-
-	/**
-	 * @var {number} last Y position
-	 */
-	var _lastY = 0;
-
-
-	/**
-	 * @var {number} to don't render the same frame twice
-	 */
-	var _lastAnim = -1;
-
-
-	/**
 	 * @var {Array} images link list
 	 */
 	var _images = [];
@@ -256,7 +238,6 @@ function( require,         jQuery,        Client,               Graphics,       
 		_type     = type;
 		_tick     = Date.now();
 		_norepeat = !!norepeat;
-		_lastAnim = -1; // reset
 
 		if (typeof animation !== 'undefined') {
 			_animation = animation;
@@ -311,17 +292,9 @@ function( require,         jQuery,        Client,               Graphics,       
 			anim = _animation;
 		}
 
-		// Don't render the same animation twice
-		// Save CPU...
-		//if (anim === _lastAnim) {
-		//	return;
-		//}
-
 		var animation  = action.animations[anim];
-		var layers     = animation.layers;
 		var  x = 1,  y = 19;
 		var _x = 0, _y = 0;
-		var url    = null;
 
 		// Hardcoded ?
 		switch (_type) {
@@ -372,31 +345,38 @@ function( require,         jQuery,        Client,               Graphics,       
 			}
 		}
 
-		if (anim !== _lastAnim) {
-			_lastAnim = anim;
-
+		// Render and save result
+		if (!animation.cssStyle) {
 			// Initialize context
 			SpriteRenderer.bind2DContext(_ctx, x, y );
 			_ctx.clearRect(0, 0, 50, 50);
 
 			// Render layers
-			for (i = 0, count = layers.length; i < count; ++i) {
-				_entity.renderLayer( layers[i], _sprite, _sprite, _position, false );
+			for (i = 0, count = animation.layers.length; i < count; ++i) {
+				_entity.renderLayer( animation.layers[i], _sprite, _sprite, _position, false );
 			}
 
-			// Display icons
-			url = _canvas.toDataURL();
+			// get the data uri
+			// parse it to only get the base 64 file content
+			// decode the file content, put it on a blob
+			// and generate an url.
+			var str = atob(_canvas.toDataURL('image/png').replace(/^data[^,]+,/,''));
+			var i, count = str.length;
+			var data = new Uint8Array(count);
+			for (i = 0; i < count; ++i) {
+				data[i] = str.charCodeAt(i);
+			}
+
+			// Save the style url
+			animation.cssStyle = 'url('+ URL.createObjectURL(
+				new Blob( [data.buffer], {type:'image/png'})
+			) + ') ' + _x + ' ' + _y + ', auto';
 		}
 
 		// Render only when there are changed
-		if (_lastX !== _x || _lastY !== _y || (url && url !== _lastURL)) {
-			_lastX   = _x;
-			_lastY   = _y;
-			_lastURL = url || _lastURL;
-
-			if (_lastURL) {
-				document.body.style.cursor = 'url('+ _lastURL +') ' + _lastX + ' ' + _lastY + ', auto';
-			}
+		if (animation.cssStyle !== _lastURL) {
+			_lastURL = animation.cssStyle;
+			document.body.style.cursor = _lastURL;
 		}
 	};
 
