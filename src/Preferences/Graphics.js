@@ -26,8 +26,14 @@ define( ['Core/Preferences'], function( Preferences )
 		 * Game quality detail
 		 * 100: Full
 		 */
-		quality:     100
+		quality:     100,
 
-	}, 1.0 );
+
+		/**
+		 * Do we show official game cursor ?
+		 */
+		cursor:      true
+
+	}, 1.1 );
 
 });

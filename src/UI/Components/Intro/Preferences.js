@@ -33,6 +33,7 @@ define(['Core/Context', 'Core/Preferences', 'Preferences/Audio', 'Preferences/Gr
 		ui.find('.quality').val( Graphics.quality ).trigger('change');
 
 		ui.find('.serverdef').attr('checked', false );
+		ui.find('.cursor').attr('checked', Graphics.cursor);
 		ui.find('.serverdef[value="'+ _preferences.serverdef +'"]').attr('checked', 'true').trigger('click');
 		ui.find('.clientinfo').val( _preferences.serverfile );
 		
@@ -80,7 +81,8 @@ define(['Core/Context', 'Core/Preferences', 'Preferences/Audio', 'Preferences/Gr
 	{
 		Graphics.screensize    = ui.find('.screensize').val();
 		Graphics.quality       = ui.find('.quality').val();
-		_preferences.saveFiles = ui.find('.save:checked').length ? true : false;
+		Graphics.cursor        = ui.find('.cursor:checked').length ? true : false;
+		_preferences.saveFiles = ui.find('.save:checked').length   ? true : false;
 
 		var $servers = ui.find('.servers');
 		var i, count = $servers.find('tr').length;

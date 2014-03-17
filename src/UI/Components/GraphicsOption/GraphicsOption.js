@@ -62,6 +62,16 @@ define(function(require)
 			Renderer.resize();
 		});
 
+		this.ui.find('.cursor').change(function(){
+			GraphicsSettings.cursor = !!this.checked;
+			GraphicsSettings.save();
+
+			// Remove cursor image
+			if (!this.checked) {
+				document.body.style.cursor = 'default';
+			}
+		});
+
 		this.ui.find('.screensize').change(function(){
 			var isFullScreen = Context.isFullScreen();
 
@@ -108,6 +118,7 @@ define(function(require)
 
 		this.ui.find('.details').val(GraphicsSettings.quality);
 		this.ui.find('.screensize').val(GraphicsSettings.screensize);
+		this.ui.find('.cursor').attr('checked', GraphicsSettings.cursor);
 	};
 
 
