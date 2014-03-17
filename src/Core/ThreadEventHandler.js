@@ -55,6 +55,10 @@ function(      FileManager,        FileSystem,           MapLoader )
 
 			// Modify client host
 			case 'SET_HOST':
+				if (msg.data.substr(-1) !== '/') {
+					msg.data += '/';
+				}
+
 				FileManager.remoteClient = msg.data;
 				break;
 
