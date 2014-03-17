@@ -115,7 +115,7 @@ function(
 
 
 		// GMs account list from server
-		Session.AdminList = server['adminList'];
+		Session.AdminList = server['adminList'] || [];
 
 
 		// Hooking win_login
