@@ -100,15 +100,23 @@ define(function()
 	 *
 	 * @returns a * b
 	 */
-	var imul = Math.imul || function imul(a, b) {
-	  var ah = (a >>> 16) & 0xffff;
-	  var al = a & 0xffff;
-	  var bh = (b >>> 16) & 0xffff;
-	  var bl = b & 0xffff;
-	  // the shift by 0 fixes the sign on the high part
-	  // the final |0 converts the unsigned value into a signed value
-	  return ((al * bl) + (((ah * bl + al * bh) << 16) >>> 0)|0);
-	};
+	var imul;
+
+	// Check for support and kick out Safari bug
+	if (Math.imul && Math.imul(0xffffffff, 5) === -5) {
+		imul = Math.imul;
+	} 
+	else {
+		imul = function imul(a, b) {
+			var ah = (a >>> 16) & 0xffff;
+			var al = a & 0xffff;
+			var bh = (b >>> 16) & 0xffff;
+			var bl = b & 0xffff;
+			// the shift by 0 fixes the sign on the high part
+			// the final |0 converts the unsigned value into a signed value
+			return ((al * bl) + (((ah * bl + al * bh) << 16) >>> 0)|0);
+		};
+	}
 
 
 	/**
