@@ -183,7 +183,7 @@ function(       jQuery,     Cursor,             DB,               Client,       
 	UIComponent.prototype.draggable = function draggable( element )
 	{
 		var container = this.ui;
-		var _intersect;
+		var _intersect, _enter = 0;
 
 		// Global variable
 		if (!element) {
@@ -191,15 +191,21 @@ function(       jQuery,     Cursor,             DB,               Client,       
 		}
 
 		// Draggable elements stop the mouse to intersect with the scene
+		// _enter variable is here to fix a recurrent bug in mouseenter and mouseleave
+		// when mouseenter can be triggered multiples time
 		element.mouseenter(function(){
-			_intersect = Mouse.intersect;
-			if (_intersect) {
-				Mouse.intersect = false;
-				Cursor.setType( Cursor.ACTION.DEFAULT );
+			if (_enter === 0) {
+				_intersect = Mouse.intersect;
+				_enter++;
+				if (_intersect) {
+					Mouse.intersect = false;
+					Cursor.setType( Cursor.ACTION.DEFAULT );
+				}
 			}
 		});
 
 		element.mouseleave(function(){
+			_enter--;
 			if(_intersect) {
 				Mouse.intersect = true;
 				require('Renderer/EntityManager').setOverEntity(null);
@@ -268,8 +274,6 @@ function(       jQuery,     Cursor,             DB,               Client,       
 					setTimeout(function(){
 						element.css('zIndex', 50);
 						if (element[0].parentNode) {
-							// MouseEnter bug with appendChild in Firefox...
-							element.trigger('mouseleave');
 							element[0].parentNode.appendChild(element[0]);
 						}
 					}, 1);
