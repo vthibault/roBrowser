@@ -65,6 +65,11 @@ define(function(require)
 		this.ui.find('.cursor').change(function(){
 			GraphicsSettings.cursor = !!this.checked;
 			GraphicsSettings.save();
+
+			// Remove cursor image
+			if (!this.checked) {
+				document.body.style.cursor = 'default';
+			}
 		});
 
 		this.ui.find('.screensize').change(function(){
