@@ -7,8 +7,8 @@
  *
  * @author Vincent Thibault
  */
-define( ['Utils/jquery', './CursorManager', 'DB/DBManager', 'Core/Client', 'Controls/MouseEventHandler'],
-function(       jQuery,     Cursor,             DB,               Client,            Mouse )
+define( ['text!./Common.css', 'Utils/jquery', './CursorManager', 'DB/DBManager', 'Core/Client', 'Controls/MouseEventHandler'],
+function(        CommonCSS,          jQuery,     Cursor,             DB,               Client,            Mouse )
 {
 	'use strict';
 
@@ -29,6 +29,16 @@ function(       jQuery,     Cursor,             DB,               Client,       
 
 
 	/**
+	 * @var {jQueryElement} <style>
+	 */
+	var _style = jQuery('style:first');
+	if (!_style.length) {
+		_style = jQuery('<style type="text/css"></style>').appendTo('head');
+	}
+	_style.append(CommonCSS);
+
+
+	/**
 	 * @var {boolean} is Component ready ?
 	 */
 	UIComponent.prototype.__loaded = false;
@@ -46,18 +56,12 @@ function(       jQuery,     Cursor,             DB,               Client,       
 
 		// Add style to view
 		if (this._cssText) {
-			var style = jQuery('style:first');
-			if (!style.length) {
-				style = jQuery('<style type="text/css"></style>').appendTo('head');
-			}
-
 			// Avoid adding css each time the same component is created
-			if (style.text().indexOf("\n\n/** " + this.name + " **/\n") === -1) {
-				style.append("\n\n/** " + this.name + " **/\n" + this._cssText);
+			if (_style.text().indexOf("\n\n/** " + this.name + " **/\n") === -1) {
+				_style.append("\n\n/** " + this.name + " **/\n" + this._cssText);
 			}
 			jQuery('body').append(this.ui);
 		}
-
 
 		// Prepare html
 		if (this._htmlText) {
@@ -80,7 +84,7 @@ function(       jQuery,     Cursor,             DB,               Client,       
 	 */
 	UIComponent.prototype.remove = function remove()
 	{
-		if (this.__loaded && this._htmlText && this.ui.parent().length) {
+		if (this.__loaded && this.ui.parent().length) {
 			if (this.onRemove) {
 				this.onRemove();
 			}
@@ -109,9 +113,7 @@ function(       jQuery,     Cursor,             DB,               Client,       
 			return;
 		}
 
-		if(this._htmlText) {
-			this.ui.appendTo('body');
-		}
+		this.ui.appendTo('body');
 		
 		if (this.onKeyDown) {
 			jQuery(window).on('keydown.' + this.name, this.onKeyDown.bind(this));

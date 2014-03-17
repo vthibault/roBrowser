@@ -26,8 +26,7 @@ define([
 	'UI/Scrollbar',
 	'UI/Background',
 	'UI/Components/Intro/Intro',
-	'UI/Components/WinList/WinList',
-	'UI/Components/Global/Global'
+	'UI/Components/WinList/WinList'
 ],
 function(
 	jQuery,
@@ -46,8 +45,7 @@ function(
 	Scrollbar,
 	Background,
 	Intro,
-	WinList,
-	Global
+	WinList
 )
 {
 	'use strict';
@@ -110,9 +108,6 @@ function(
 				}
 				q._next();
 			};
-			
-			//Load global .css or other common UI logic.
-			Global.append();
 
 			if (ROConfig.skipIntro) {
 				Client.init([]);
