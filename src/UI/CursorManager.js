@@ -8,8 +8,8 @@
  * @author Vincent Thibault
  */
 
-define([ 'require', 'Utils/jquery', 'Core/Client', 'Loaders/Sprite', 'Loaders/Action'],
-function( require,         jQuery,        Client,           Sprite,           Action )
+define([ 'require', 'Utils/jquery', 'Core/Client', 'Preferences/Graphics', 'Loaders/Sprite', 'Loaders/Action'],
+function( require,         jQuery,        Client,               Graphics,           Sprite,           Action )
 {
 	'use strict';
 
@@ -275,7 +275,7 @@ function( require,         jQuery,        Client,           Sprite,           Ac
 	Cursor.render = function render( tick )
 	{
 		// Not loaded yet.
-		if (!_images.length) {
+		if (!Graphics.cursor || !_images.length) {
 			return;
 		}
 
