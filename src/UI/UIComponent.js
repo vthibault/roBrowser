@@ -80,7 +80,7 @@ function(       jQuery,     Cursor,             DB,               Client,       
 	 */
 	UIComponent.prototype.remove = function remove()
 	{
-		if (this.__loaded && this.ui.parent().length) {
+		if (this.__loaded && this._htmlText && this.ui.parent().length) {
 			if (this.onRemove) {
 				this.onRemove();
 			}
@@ -109,8 +109,10 @@ function(       jQuery,     Cursor,             DB,               Client,       
 			return;
 		}
 
-		this.ui.appendTo('body');
-
+		if(this._htmlText) {
+			this.ui.appendTo('body');
+		}
+		
 		if (this.onKeyDown) {
 			jQuery(window).on('keydown.' + this.name, this.onKeyDown.bind(this));
 		}
