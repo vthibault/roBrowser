@@ -160,6 +160,10 @@ define(['Core/Client', 'DB/DBManager', './EntityAction'], function( Client, DB, 
 	 */
 	function UpdateHead( head )
 	{
+		if (head <= 0) {
+			return;
+		}
+
 		var path   = DB.getHeadPath( head, this._sex );
 		this._head = -1;
 
