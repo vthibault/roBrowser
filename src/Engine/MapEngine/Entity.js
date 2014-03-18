@@ -44,10 +44,17 @@ define(function( require )
 	 */
 	function onEntitySpam( pkt )
 	{
-		var entity = new Entity();
-		entity.set(pkt);
+		var entity = EntityManager.get(pkt.GID);
 
-		EntityManager.add(entity);
+		if (entity) {
+			entity.set(pkt);
+		}
+		else {
+			entity = new Entity();
+			entity.set(pkt);
+
+			EntityManager.add(entity);
+		}
 	}
 
 
@@ -686,7 +693,7 @@ define(function( require )
 		// TODO: add other status
 		switch (pkt.index) {
 
-			case 27: //SI_RIDING (status.h)
+			case 27: //SI_RIDING
 				var job = entity.job;
 				var newjob  = (
 					job === 7    ? 13   : // knight
@@ -702,6 +709,29 @@ define(function( require )
 				if (newjob !== job) {
 					entity.job = newjob;
 				}
+				break;
+
+
+			case 184:// SI_CLAIRVOYANCE
+				if (entity !== Session.Entity) {
+					break;
+				}
+
+				Session.intravision = pkt.state;
+				var visible         = [0,0,0,1];
+				var invisible       = [0,0,0,0];
+				var hideFlag        = (
+					Options.EffectState.HIDE      |
+					Options.EffectState.CLOAK     |
+					//Options.EffectState.INVISIBLE |
+					Options.EffectState.CHASEWALK
+				);
+
+				EntityManager.forEach(function(entity){
+					if (entity.effectState & hideFlag) {
+						entity.effectColor.set( Session.intravision ? visible : invisible );
+					}
+				});
 				break;
 
 			default:
@@ -731,13 +761,19 @@ define(function( require )
 		entity.effectColor[2] = 1.0;
 		entity.effectColor[3] = 1.0;
 
+		entity.bodyState   = pkt.bodyState;
+		entity.healthState = pkt.healthState;
+		entity.effectState = pkt.effectState;
+		entity.isPKModeON  = pkt.isPKModeON;
+
+
 		// Invisible
 		if (pkt.effectState & (
 			Options.EffectState.HIDE      |
 			Options.EffectState.CLOAK     |
 			Options.EffectState.INVISIBLE |
 			Options.EffectState.CHASEWALK)) {
-				if (Session.intravision) {
+				if (Session.intravision && !(pkt.effectState & Options.EffectState.INVISIBLE)) {
 					entity.effectColor[0] = 0;
 					entity.effectColor[1] = 0;
 					entity.effectColor[2] = 0;
@@ -745,7 +781,6 @@ define(function( require )
 				else {
 					entity.effectColor[3] = 0.0;
 				}
-				return;
 		}
 
 		// Curse
@@ -813,11 +848,6 @@ define(function( require )
 				//entity.attachEffect("data\sprite\ÀÌÆÑÆ®\status-stun")
 				break;
 		}
-
-		entity.bodyState   = pkt.bodyState;
-		entity.healthState = pkt.healthState;
-		entity.effectState = pkt.effectState;
-		entity.isPKModeON  = pkt.isPKModeON;
 	}
 
 

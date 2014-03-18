@@ -24,6 +24,8 @@ define(function()
 		Character: null,
 		Entity:    null,
 
-		AdminList: [],
+		AdminList:   [],
+
+		intravision: false
 	};
 });
