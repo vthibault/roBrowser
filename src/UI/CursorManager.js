@@ -78,33 +78,27 @@ function( require,         jQuery,        Client,               Graphics,       
 
 
 	/**
-	 * @var {string} last rendered image url
+	 * @var {number} last style id rendered
 	 */
-	var _lastURL = null;
+	var _lastStyleId = -1;
 
 
 	/**
-	 * @var {Array} images link list
+	 * @var {number} last rendered position x
 	 */
-	var _images = [];
+	var _lastX = 0;
 
 
 	/**
-	 * @var {CanvasElement}
+	 * @var {number} last renderer position y
 	 */
-	var _canvas;
+	var _lastY = 0;
 
 
 	/**
-	 * @var {CanvasRenderingContext2D} canvas context
+	 * @var {Array} css style list
 	 */
-	var _ctx;
-
-
-	/**
-	 * @var {Entity} generic entity to render cursor
-	 */
-	var _entity;
+	var _compiledStyle = [];
 
 
 	/**
@@ -120,12 +114,19 @@ function( require,         jQuery,        Client,               Graphics,       
 
 
 	/**
-	 * @var {position} - just used to avoid memory leak
+	 * Define sprite informations (hardcoded)
 	 */
-	var _position = new Uint16Array(2);
+	var ActionInformations = {};
+	ActionInformations[ Cursor.ACTION.DEFAULT ] = { drawX:  1, drawY: 19, startX:  0, startY:  0, delayMult: 2.0 };
+	ActionInformations[ Cursor.ACTION.TALK    ] = { drawX: 20, drawY: 40, startX: 20, startY: 20, delayMult: 1.0 };
+	ActionInformations[ Cursor.ACTION.WARP    ] = { drawX: 10, drawY: 32, startX:  0, startY:  0, delayMult: 1.0 };
+	ActionInformations[ Cursor.ACTION.ROTATE  ] = { drawX: 18, drawY: 26, startX: 10, startY:  0, delayMult: 1.0 };
+	ActionInformations[ Cursor.ACTION.PICK    ] = { drawX: 20, drawY: 40, startX: 15, startY: 15, delayMult: 1.0 };
+	ActionInformations[ Cursor.ACTION.TARGET  ] = { drawX: 20, drawY: 50, startX: 20, startY: 28, delayMult: 0.5 };
 
 
 	var EntityManager, Entity, SpriteRenderer, Mouse;
+
 
 	/**
 	 * Load cursor data (action, sprite)
@@ -133,7 +134,7 @@ function( require,         jQuery,        Client,               Graphics,       
 	Cursor.init = function init(fn)
 	{
 		// Already loaded
-		if (_images.length) {
+		if (_sprite) {
 			fn();
 			return;
 		}
@@ -148,8 +149,8 @@ function( require,         jQuery,        Client,               Graphics,       
 				return;
 			}
 
-			generateImages();
 			bindMouseEvent();
+			preCompiledAnimations();
 			fn();
 		});
 
@@ -157,49 +158,8 @@ function( require,         jQuery,        Client,               Graphics,       
 		Entity         = require('Renderer/Entity/Entity');
 		SpriteRenderer = require('Renderer/SpriteRenderer');
 		Mouse          = require('Controls/MouseEventHandler');
-
-		_canvas        = document.createElement('canvas');
-		_canvas.width  = 50;
-		_canvas.height = 60;
-		_ctx           = _canvas.getContext('2d');
-		_entity        = new Entity();
 	};
 
-
-	/**
-	 * Build Image data
-	 */
-	function generateImages()
-	{
-
-		var i, j, size, count;
-		var str, data;
-		var canvas;
-
-		_images.length = 0;
-
-		// Build frames
-		for (i = 0, count = _sprite.frames.length; i < count; ++i) {
-			canvas = _sprite.getCanvasFromFrame(i);
-
-			if (!canvas) {
-				_images[i] = '';
-				continue;
-			}
-
-			// Save canvas image to an URI object
-			// TODO: wait for canvas.toBlob() API
-			str    = atob( canvas.toDataURL('image/png').substr(22) );
-			size   = str.length;
-			data   = new Uint8Array(size);
-
-			for (j = 0; j < size; ++j) {
-				data[j] = str.charCodeAt(j);
-			}
-
-			_images[i] = URL.createObjectURL(new Blob([data], {type: 'image/png'}));
-		}
-	}
 
 
 	/**
@@ -207,10 +167,32 @@ function( require,         jQuery,        Client,               Graphics,       
 	 */
 	function bindMouseEvent()
 	{
+		// Convert an image from an action to a blob url
+		function generateImage(index)
+		{
+			var canvas, binary, data;
+			var i, count;
+
+			canvas = _sprite.getCanvasFromFrame(index);
+			if (!canvas) {
+				return '';
+			}
+
+			binary = atob( canvas.toDataURL('image/png').replace(/^data[^,]+,/,'') );
+			count  = binary.length;
+			data   = new Uint8Array(count);
+
+			for (i = 0; i < count; ++i) {
+				data[i] = binary.charCodeAt(i);
+			}
+
+			return URL.createObjectURL(new Blob([data], {type: 'image/png'}));
+		}
+
 		// Add CSS rule for button
 		var action = _action.actions[Cursor.ACTION.CLICK];
-		var hover  = _images[action.animations[0].layers[0].index];
-		var down   = _images[action.animations[1].layers[0].index];
+		var hover  = generateImage(action.animations[0].layers[0].index);
+		var down   = generateImage(action.animations[1].layers[0].index);
 
 		// Append CSS to head
 		jQuery('head').append([
@@ -220,6 +202,76 @@ function( require,         jQuery,        Client,               Graphics,       
 			'</style>'
 		].join('\n'));
 	}
+
+
+	/**
+	 * Start pre-compiling animation to avoid building sprites
+	 * during the rendering loop
+	 */
+	function preCompiledAnimations()
+	{
+		var i, j, k, count, size, total, pos;
+		var action, animation, info;
+		var canvas, ctx, entity;
+		var binary, data, dataURI;
+		var dataURIList, position;
+
+		// Start initializing variables
+		canvas         = document.createElement('canvas');
+		canvas.width   = 50;
+		canvas.height  = 50;
+		ctx            = canvas.getContext('2d');
+		entity         = new Entity();
+		dataURIList    = [];
+		_compiledStyle = [];
+		position       = [0,0];
+
+		// Start compiling animation
+		for (i = 0, count = _action.actions.length; i < count; ++i) {
+
+			action = _action.actions[i];
+			info   = ActionInformations[i] || ActionInformations[ Cursor.ACTION.DEFAULT ];
+
+			for (j = 0, size = action.animations.length; j < size; ++j) {
+
+				animation = action.animations[j];
+
+				// Initialize context
+				SpriteRenderer.bind2DContext(ctx, info.drawX, info.drawY );
+				ctx.clearRect(0, 0, 50, 50);
+
+				// Render layers
+				for (k = 0, total = animation.layers.length; k < total; ++k) {
+					entity.renderLayer( animation.layers[k], _sprite, _sprite, position, false);
+				}
+
+				dataURI = canvas.toDataURL('image/png');
+				pos     = dataURIList.indexOf(dataURI);
+
+				// Already build
+				if (pos > -1) {
+					animation.compiledStyleIndex = pos;
+					continue;
+				}
+
+				// Modify the canvas to a file object
+				binary = atob( dataURI.replace(/^data[^,]+,/,'') );
+				total  = binary.length;
+				data   = new Uint8Array(total);
+
+				for (k = 0; k < total; ++k) {
+					data[k] = binary.charCodeAt(k);
+				}
+
+				// Store it.
+				animation.compiledStyleIndex = _compiledStyle.length;
+
+				dataURIList.push(dataURI);
+				_compiledStyle.push(URL.createObjectURL(new Blob([data.buffer], {type:'image/png'})));
+			}
+		}
+	}
+
 
 
 	/**
@@ -256,31 +308,21 @@ function( require,         jQuery,        Client,               Graphics,       
 	Cursor.render = function render( tick )
 	{
 		// Not loaded yet.
-		if (!Graphics.cursor || !_images.length) {
+		if (!Graphics.cursor || !_compiledStyle.length) {
 			return;
 		}
 
-		// New way
-		var i, count;
-		var action    = _action.actions[_type];
-		var delay     = action.delay;
-		var anim, frame;
+		var info   = ActionInformations[_type] || ActionInformations[Cursor.ACTION.DEFAULT];
+		var action = _action.actions[_type];
+		var anim   = _animation;
+		var delay  = action.delay * info.delayMult;
+		var x      = info.startX;
+		var y      = info.startY;
+		var animation;
 
-
-		// Change animation based on frame
-		switch (_type) {
-			case Cursor.ACTION.DEFAULT:
-				delay *= 2;
-				break;
-
-			case Cursor.ACTION.TARGET:
-				delay /= 2;
-				break;
-		}
-
-
+		// Repeat / No-repeat features
 		if (_play) {
-			frame = (tick - _tick) / delay | 0;
+			var frame = (tick - _tick) / delay | 0;
 			if (_norepeat) {
 				anim = Math.min( frame, action.animations.length - 1 );
 			}
@@ -288,95 +330,28 @@ function( require,         jQuery,        Client,               Graphics,       
 				anim = frame % action.animations.length;
 			}
 		}
-		else {
-			anim = _animation;
-		}
 
-		var animation  = action.animations[anim];
-		var  x = 1,  y = 19;
-		var _x = 0, _y = 0;
-
-		// Hardcoded ?
-		switch (_type) {
-			case Cursor.ACTION.TALK:
-				x  = 20;
-				y  = 40;
-				_x = 20;
-				_y = 20;
-				break;
-	
-			case Cursor.ACTION.WARP:
-				x = 10;
-				y = 32;
-				break;
-
-			case Cursor.ACTION.ROTATE:
-				x  = 18;
-				y  = 26;
-				_x = 10;
-				break;
-
-			case Cursor.ACTION.PICK:
-				x  = 20;
-				y  = 40;
-				_x = 15;
-				_y = 15;
-				break;
-
-			case Cursor.ACTION.TARGET:
-				x  = 20;
-				y  = 50;
-				_x = 20;
-				_y = 28;
-				break;
-		}
+		animation = action.animations[anim];
 
 		// Cursor magnetism
 		if (Cursor.magnetism) {
 			var entity = EntityManager.getOverEntity();
 
-			if (entity) {
-				switch (entity.objecttype) {
-					case Entity.TYPE_MOB:
-					case Entity.TYPE_ITEM:
-					_x += Math.floor( Mouse.screen.x - (entity.boundingRect.x1 + (entity.boundingRect.x2-entity.boundingRect.x1) / 2));
-					_y += Math.floor( Mouse.screen.y - (entity.boundingRect.y1 + (entity.boundingRect.y2-entity.boundingRect.y1) / 2));
-				}
+			if (entity &&
+			    (entity.objecttype === Entity.TYPE_MOB ||
+			     entity.objecttype === Entity.TYPE_ITEM)) {
+				x += Math.floor( Mouse.screen.x - (entity.boundingRect.x1 + (entity.boundingRect.x2-entity.boundingRect.x1) / 2));
+				y += Math.floor( Mouse.screen.y - (entity.boundingRect.y1 + (entity.boundingRect.y2-entity.boundingRect.y1) / 2));
 			}
 		}
 
-		// Render and save result
-		if (!animation.cssStyle) {
-			// Initialize context
-			SpriteRenderer.bind2DContext(_ctx, x, y );
-			_ctx.clearRect(0, 0, 50, 50);
+		// Rendering if cursor changed
+		if (animation.compiledStyleIndex !== _lastStyleId || x !== _lastX || y !== _lastY) {
+			_lastStyleId = animation.compiledStyleIndex;
+			_lastX       = x;
+			_lastY       = y;
 
-			// Render layers
-			for (i = 0, count = animation.layers.length; i < count; ++i) {
-				_entity.renderLayer( animation.layers[i], _sprite, _sprite, _position, false );
-			}
-
-			// get the data uri
-			// parse it to only get the base 64 file content
-			// decode the file content, put it on a blob
-			// and generate an url.
-			var str = atob(_canvas.toDataURL('image/png').replace(/^data[^,]+,/,''));
-			var i, count = str.length;
-			var data = new Uint8Array(count);
-			for (i = 0; i < count; ++i) {
-				data[i] = str.charCodeAt(i);
-			}
-
-			// Save the style url
-			animation.cssStyle = 'url('+ URL.createObjectURL(
-				new Blob( [data.buffer], {type:'image/png'})
-			) + ') ' + _x + ' ' + _y + ', auto';
-		}
-
-		// Render only when there are changed
-		if (animation.cssStyle !== _lastURL) {
-			_lastURL = animation.cssStyle;
-			document.body.style.cursor = _lastURL;
+			document.body.style.cursor = 'url(' + _compiledStyle[_lastStyleId] + ') ' + x + ' ' + y + ', auto';
 		}
 	};
 
