@@ -102,6 +102,7 @@ define([
 		Network.hookPacket( PACKET.HC.NOTIFY_ZONESVR,                onReceiveMapInfo );
 		Network.hookPacket( PACKET.HC.ACCEPT_ENTER_NEO_UNION_HEADER, onConnectionAccepted );
 		Network.hookPacket( PACKET.HC.ACCEPT_ENTER_NEO_UNION_LIST,   onConnectionAccepted );
+		Network.hookPacket( PACKET.HC.NOTIFY_ACCESSIBLE_MAPNAME,     onMapUnavailable);
 	}
 
 
@@ -172,6 +173,21 @@ define([
 		}
 
 		UIManager.showErrorBox( DB.msgstringtable[msg_id] );
+	}
+
+
+	/**
+	 * No map server available
+	 *
+	 * @param {object} pkt - PACKET.HC.NOTIFY_ACCESSIBLE_MAPNAME
+	 */
+	function onMapUnavailable( pkt )
+	{
+		// no map server avaiable
+		UIManager.showMessageBox( DB.msgstringtable[1811], null, function(){
+			UIManager.getComponent('WinLoading').remove();
+			CharSelect.append();
+		});
 	}
 
 

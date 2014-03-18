@@ -10870,6 +10870,13 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 	PACKET.AC.REFUSE_LOGIN_R2.size = 26;
 
 
+	// 0x840
+	PACKET.HC.NOTIFY_ACCESSIBLE_MAPNAME = function PACKET_HC_NOTIFY_ACCESSIBLE_MAPNAME(fp, end) {
+		// fp.readString(end-fp.tell());
+	};
+	PACKET.HC.NOTIFY_ACCESSIBLE_MAPNAME.size = -1;
+
+
 	// 0x84b
 	PACKET.ZC.ITEM_FALL_ENTRY2 = function PACKET_ZC_ITEM_FALL_ENTRY2(fp, end) {
 		this.ITAID        = fp.readULong();
