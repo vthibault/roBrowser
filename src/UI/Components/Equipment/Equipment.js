@@ -382,7 +382,9 @@ define(function(require)
 	 */
 	var renderCharacter = function renderCharacterClosure()
 	{
-		var _animation = {
+		var _cleanColor = new Float32Array([1.0, 1.0, 1.0, 1.0]);
+		var _savedColor = new Float32Array(4);
+		var _animation  = {
 			tick:  0,
 			frame: 0,
 			repeat:true,
@@ -407,6 +409,9 @@ define(function(require)
 			character.action    = character.ACTION.IDLE;
 			character.animation = _animation;
 
+			_savedColor.set(character.effectColor);
+			character.effectColor.set(_cleanColor);
+
 			// Rendering
 			SpriteRenderer.bind2DContext( _ctx, 30, 130 );
 			_ctx.clearRect(0, 0, _ctx.canvas.width, _ctx.canvas.height );
@@ -417,6 +422,7 @@ define(function(require)
 			character.headDir   = headDir;
 			character.action    = action;
 			character.animation = animation;
+			character.effectColor.set(_savedColor);
 		};
 	}();
 
