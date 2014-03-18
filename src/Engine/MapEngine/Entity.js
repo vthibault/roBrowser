@@ -663,11 +663,11 @@ define(function( require )
 		var entity = EntityManager.get(pkt.AID);
 		if (entity) {
 			entity.cast.clean();
-		}
 
-		// Cancel effects
-		Effects.remove(LockOnTarget, entity.GID);
-		Effects.remove(MagicTarget, entity.GID);
+			// Cancel effects
+			Effects.remove(LockOnTarget, entity.GID);
+			Effects.remove(MagicTarget, entity.GID);
+		}
 	}
 
 
