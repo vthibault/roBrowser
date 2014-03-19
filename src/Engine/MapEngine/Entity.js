@@ -464,7 +464,9 @@ define(function( require )
 		}
 
 		if (dstEntity) {
-			srcEntity.lookTo( dstEntity.position[0], dstEntity.position[1] );
+			if (dstEntity !== srcEntity) {
+				srcEntity.lookTo( dstEntity.position[0], dstEntity.position[1] );
+			}
 
 			// Don't know why Gravity did this...
 			if (pkt.SKID === SkillId.AL_HEAL) {
@@ -713,25 +715,12 @@ define(function( require )
 
 
 			case 184:// SI_CLAIRVOYANCE
-				if (entity !== Session.Entity) {
-					break;
+				if (entity === Session.Entity) {
+					Session.intravision = pkt.state;
+					EntityManager.forEach(function(entity){
+						entity.effectState = entity.effectState;
+					});
 				}
-
-				Session.intravision = pkt.state;
-				var visible         = [0,0,0,1];
-				var invisible       = [0,0,0,0];
-				var hideFlag        = (
-					Options.EffectState.HIDE      |
-					Options.EffectState.CLOAK     |
-					//Options.EffectState.INVISIBLE |
-					Options.EffectState.CHASEWALK
-				);
-
-				EntityManager.forEach(function(entity){
-					if (entity.effectState & hideFlag) {
-						entity.effectColor.set( Session.intravision ? visible : invisible );
-					}
-				});
 				break;
 
 			default:
@@ -756,98 +745,10 @@ define(function( require )
 			return;
 		}
 
-		entity.effectColor[0] = 1.0;
-		entity.effectColor[1] = 1.0;
-		entity.effectColor[2] = 1.0;
-		entity.effectColor[3] = 1.0;
-
 		entity.bodyState   = pkt.bodyState;
 		entity.healthState = pkt.healthState;
 		entity.effectState = pkt.effectState;
 		entity.isPKModeON  = pkt.isPKModeON;
-
-
-		// Invisible
-		if (pkt.effectState & (
-			Options.EffectState.HIDE      |
-			Options.EffectState.CLOAK     |
-			Options.EffectState.INVISIBLE |
-			Options.EffectState.CHASEWALK)) {
-				if (Session.intravision && !(pkt.effectState & Options.EffectState.INVISIBLE)) {
-					entity.effectColor[0] = 0;
-					entity.effectColor[1] = 0;
-					entity.effectColor[2] = 0;
-				}
-				else {
-					entity.effectColor[3] = 0.0;
-				}
-		}
-
-		// Curse
-		if (pkt.healthState & Options.HealthState.CURSE) {
-			// entity.attachEffect("data/sprite/ÀÌÆÑÆ®/status-curse")
-			entity.effectColor[0] = 0.50;
-			entity.effectColor[1] = 0.15;
-			entity.effectColor[2] = 0.10;
-		}
-		else if (entity.healthState & Options.HealthState.CURSE) {
-			// entity.detachEffect("data/sprite/ÀÌÆÑÆ®/status-curse")
-		}
-
-		// Poison
-		if (pkt.healthState & Options.HealthState.POISON) {
-			entity.effectColor[0] = 0.9;
-			entity.effectColor[1] = 0.4;
-			entity.effectColor[2] = 0.8;
-		}
-
-
-		// Remove previous effect
-		if (pkt.bodyState !== entity.bodyState) {
-			switch (entity.bodyState) {
-				case Options.BodyState.SLEEP:
-					//entity.detachEffect("data\sprite\ÀÌÆÑÆ®\status-sleep");
-					break;
-
-				case Options.BodyState.FREEZE:
-					//entity.detachEffect("data\sprite\ÀÌÆÑÆ®\¾óÀ½¶¯");
-					break;
-
-				case Options.BodyState.STUN:
-					//entity.detachEffect("data\sprite\ÀÌÆÑÆ®\status-stun")
-					break;
-			}
-		}
-
-		switch (pkt.bodyState) {
-			case Options.BodyState.STONE:
-				entity.effectColor[0] = 0.1;
-				entity.effectColor[1] = 0.1;
-				entity.effectColor[2] = 0.1;
-				break;
-
-			case Options.BodyState.STONEWAIT:
-				entity.effectColor[0] = 0.3;
-				entity.effectColor[1] = 0.3;
-				entity.effectColor[2] = 0.3;
-				break;
-
-			case Options.BodyState.SLEEP:
-				//entity.attachEffect("data\sprite\ÀÌÆÑÆ®\status-sleep");
-				break;
-
-
-			case Options.BodyState.FREEZE:
-				entity.effectColor[0] = 0.0;
-				entity.effectColor[1] = 0.4;
-				entity.effectColor[2] = 0.8;
-				//entity.attachEffect("data\sprite\ÀÌÆÑÆ®\¾óÀ½¶¯");
-				break;
-
-			case Options.BodyState.STUN:
-				//entity.attachEffect("data\sprite\ÀÌÆÑÆ®\status-stun")
-				break;
-		}
 	}
 
 

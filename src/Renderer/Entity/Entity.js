@@ -42,11 +42,11 @@ define( function( require )
 		require('./EntityWalk').call(this);
 		require('./EntityRender').call(this);
 		require('./EntityRoom').call(this);
+		require('./EntityState').call(this);
 
 		this.boundingRect = { x1:0, y1:0, x2:0, y2:0 };
 		this.matrix       = mat4.create();
 		this.position     = vec3.create();
-		this.effectColor  = new Float32Array([1, 1, 1, 1]);
 
 		// Bind data
 		if (data) {
@@ -94,9 +94,9 @@ define( function( require )
 	 */
 	Entity.prototype.objecttype   = Entity.TYPE_UNKNOWN;
 	Entity.prototype.GID          = 0;
-	Entity.prototype.bodyState    = 0;
-	Entity.prototype.healthState  = 0;
-	Entity.prototype.effectState  = 0;
+	Entity.prototype._bodyState   = 0;
+	Entity.prototype._healthState = 0;
+	Entity.prototype._effectState = 0;
 	Entity.prototype._sex         = -1;
 	Entity.prototype._job         = -1;
 	Entity.prototype._bodypalette = 0;
