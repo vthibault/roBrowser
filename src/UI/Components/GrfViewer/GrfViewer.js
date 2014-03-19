@@ -103,6 +103,7 @@ define(function(require)
 	 */
 	Viewer.onAppend = function OnAppend()
 	{
+		document.body.style.backgroundColor = 'white';
 		Viewer.moveToDirectory('/', true );
 	};
 
