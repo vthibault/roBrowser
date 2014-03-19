@@ -18,7 +18,6 @@ define(function( require )
 	 */
 	var SkillId       = require('DB/SkillId');
 	var SkillInfo     = require('DB/SkillInfo');
-	var Options       = require('DB/StatusConst');
 	var Sound         = require('Audio/SoundManager');
 	var Session       = require('Engine/SessionStorage');
 	var Network       = require('Network/NetworkManager');
