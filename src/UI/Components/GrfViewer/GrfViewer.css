@@ -1,3 +1,8 @@
+body {
+	overflow:auto;
+	font-size:14px;
+}
+
 #grfviewer {
 	font-family: Times;
 	margin-top:60px;
