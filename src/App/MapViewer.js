@@ -123,7 +123,6 @@ function(
 			Intro.remove();
 
 			MapRenderer.onLoad = MapViewer.onLoad;
-			MapRenderer.setMap('guild_vs4.rsw');
 			MapControl.call(MapViewer);
 
 			// Direct access from API
@@ -131,6 +130,8 @@ function(
 				MapRenderer.setMap( location.hash.substr(1).replace('data/','') );
 				return;
 			}
+
+			MapRenderer.setMap('guild_vs4.rsw');
 
 			// Initialize dropdown
 			Client.search(/data\\([^\0]+\.rsw)/gi, function( mapList ) {
