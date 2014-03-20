@@ -69,7 +69,7 @@ define(['Renderer/Renderer', 'DB/DBManager'], function( Renderer, DB )
 
 			// Know attack frame based on weapon type
 			if (option.action === this.ACTION.ATTACK && this.objecttype === this.constructor.TYPE_PC) {
-				var attack    = DB.getWeaponAction( this.weapon, this._job );
+				var attack    = DB.getWeaponAction( this.weapon, this._job, this._sex );
 				option.action = [ this.ACTION.ATTACK1, this.ACTION.ATTACK2, this.ACTION.ATTACK3 ][attack];
 			}
 

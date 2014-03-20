@@ -419,18 +419,20 @@ function(      Client,     ClassTable,     ClassPalTable,     MonsterTable,     
 	 * @return {number} weapon action frame
 	 * @param {number} id weapon
 	 * @param {number} job
+	 * @param {number} sex
 	 */
-	DB.getWeaponAction = function GetWeaponAction( id, job )
+	DB.getWeaponAction = function GetWeaponAction( id, job, sex )
 	{
 		var type = DB.getWeaponViewID(id);
 
 		if (job in WeaponAction) {
-			if (type in WeaponAction[job]) {
-				return WeaponAction[job][type];
+			if (WeaponAction[job] instanceof Array) {
+				if (type in WeaponAction[job][sex]) {
+					return WeaponAction[job][sex][type];
+				}
 			}
-
-			if (0 in WeaponAction[job]) {
-				return WeaponAction[job][0];
+			else if (type in WeaponAction[job]) {
+				return WeaponAction[job][type];
 			}
 		}
 
