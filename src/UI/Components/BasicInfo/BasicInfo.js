@@ -24,6 +24,8 @@ define(function(require)
 	var UIComponent        = require('UI/UIComponent');
 	var Inventory          = require('UI/Components/Inventory/Inventory');
 	var Equipment          = require('UI/Components/Equipment/Equipment');
+	var SkillList          = require('UI/Components/SkillList/SkillList');
+	var Graphics           = require('UI/Components/GraphicsOption/GraphicsOption');
 	var htmlText           = require('text!./BasicInfo.html');
 	var cssText            = require('text!./BasicInfo.css');
 
@@ -86,12 +88,23 @@ define(function(require)
 					Equipment.ui.toggle();
 					break;
 
+				case 'skill':
+					SkillList.ui.toggle();
+					break;
+
+				case 'option':
+					if (Graphics.ui && Graphics.ui.is(':visible')) {
+						Graphics.remove();
+					}
+					else {
+						Graphics.append();
+					}
+					break;
+
 				case 'map':
 				case 'party':
 				case 'guild':
 				case 'quest':
-				case 'option':
-				case 'skill':
 			}
 		});
 
