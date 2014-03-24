@@ -38,6 +38,7 @@ define( function( require )
 		this.tick  =  0;
 		this.path  =  [];
 		this.pos   =  new Float32Array(3);
+		this.onEnd = null;
 	}
 
 
@@ -144,6 +145,13 @@ define( function( require )
 
 		this.onWalkEnd();
 
+		// Temporary callback
+		if (walk.onEnd) {
+			walk.onEnd();
+			walk.onEnd = null;
+		}
+
+
 		pos[0] = Math.round(pos[0]);
 		pos[1] = Math.round(pos[1]);
 		pos[2] = Altitude.getCellHeight( pos[0], pos[1] );
@@ -155,10 +163,10 @@ define( function( require )
 	 */
 	return function Init()
 	{
+		this.onWalkEnd   = function onWalkEnd(){};
 		this.walk        = new WalkStructure();
 		this.walkTo      = WalkTo;
 		this.walkProcess = WalkProcess;
-		this.onWalkEnd   = function(){};
 	};
 });
 

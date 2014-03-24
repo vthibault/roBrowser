@@ -11076,6 +11076,15 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 	PACKET.ZC.CLOSE_SCRIPT.size = 6;
 
 
+	// 0x8d2
+	PACKET.ZC.FASTMOVE = function PACKET_ZC_FASTMOVE(fp, end) {
+		this.AID        = fp.readULong();
+		this.targetXpos = fp.readShort();
+		this.targetYpos = fp.readShort();
+	};
+	PACKET.ZC.FASTMOVE.size = 10;
+
+
 	// 0x8ff
 	PACKET.ZC.MSG_STATE_CHANGE3 = function PACKET_ZC_MSG_STATE_CHANGE3(fp, end) {
 		this.AID        = fp.readULong();

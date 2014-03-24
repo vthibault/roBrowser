@@ -132,6 +132,28 @@ define(function( require )
 
 
 	/**
+	 * Body relocation packet support
+	 *
+	 * @param {object} pkt - PACKET.ZC.FASTMOVE
+	 */
+	function onEntityFastMove( pkt )
+	{
+		var entity = EntityManager.get(pkt.AID);
+		if (entity) {
+			entity.walkTo( entity.position[0], entity.position[1], pkt.targetXpos, pkt.targetYpos );
+
+			if (entity.walk.path.length) {
+				var speed = entity.walk.speed;
+				entity.walk.speed = 10;
+				entity.walk.onEnd = function onWalkEnd(){
+					entity.walk.speed = speed;
+				};
+			}
+		}
+	}
+
+
+	/**
 	 * Resurect an entity
 	 *
 	 * @param {object} pkt - PACKET_ZC_RESURRECTION
@@ -911,6 +933,7 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.SKILL_ENTRY5,                 onEntityUseSkillToPosition);
 		Network.hookPacket( PACKET.ZC.DISPEL,                       onEntityCastCancel);
 		Network.hookPacket( PACKET.ZC.HIGHJUMP,                     onEntityJump);
+		Network.hookPacket( PACKET.ZC.FASTMOVE,                     onEntityFastMove);
 		Network.hookPacket( PACKET.ZC.RESURRECTION,                 onEntityResurect);
 	};
 });
