@@ -17,6 +17,7 @@ define([
 	'UI/Components/Equipment/Equipment',
 	'Controls/KeyEventHandler', 'Controls/MouseEventHandler',
 	'Renderer/Renderer', 'Renderer/Camera', 'Renderer/EntityManager',
+	'Engine/SessionStorage',
 	'Preferences/Controls'
 ],
 function(
@@ -29,6 +30,7 @@ function(
 	Equipment,
 	KEYS, Mouse,
 	Renderer, Camera, EntityManager,
+	Session,
 	Preferences
 )
 {
@@ -50,6 +52,8 @@ function(
 	 */
 	function OnMouseDown( event )
 	{
+		Session.moveTarget = null;
+
 		if (!Mouse.intersect) {
 			return;
 		}

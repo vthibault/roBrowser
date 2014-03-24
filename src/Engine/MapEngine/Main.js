@@ -17,10 +17,10 @@ define(function( require )
 	 * Load dependencies
 	 */
 	var DB            = require('DB/DBManager');
-	var PathFinding   = require('Utils/PathFinding');
 	var Session       = require('Engine/SessionStorage');
 	var Network       = require('Network/NetworkManager');
 	var PACKET        = require('Network/PacketStructure');
+	var EntityManager = require('Renderer/EntityManager');
 	var ChatBox       = require('UI/Components/ChatBox/ChatBox');
 	var ChatRoom      = require('UI/Components/ChatRoom/ChatRoom');
 	var BasicInfo     = require('UI/Components/BasicInfo/BasicInfo');
@@ -73,19 +73,9 @@ define(function( require )
 	 */
 	function onPlayerTooFarToAttack( pkt )
 	{
-		var out   = [];
-		var count = PathFinding.search(
-			pkt.xPos,	pkt.yPos,
-			pkt.targetXPos, pkt.targetYPos,
-			pkt.currentAttRange,
-			out
-		);
-
-		if (count) {
-			var _pkt     = new PACKET.CZ.REQUEST_MOVE();
-			_pkt.dest[0] = out[ count - 1 ][0];
-			_pkt.dest[1] = out[ count - 1 ][1];
-			Network.sendPacket(_pkt);
+		var entity = EntityManager.get(pkt.targetAID);
+		if (entity) {
+			entity.onFocus();
 		}
 	}
 

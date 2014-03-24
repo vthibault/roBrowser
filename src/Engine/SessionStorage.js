@@ -26,6 +26,7 @@ define(function()
 
 		AdminList:   [],
 
-		intravision: false
+		intravision: false,
+		moveTarget:  null
 	};
 });

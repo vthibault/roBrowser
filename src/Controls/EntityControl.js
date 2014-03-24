@@ -8,14 +8,16 @@
  * @author Vincent Thibault
  */
 define( [
-	'Utils/gl-matrix', 'Controls/KeyEventHandler',
+	'Utils/gl-matrix', 'Utils/PathFinding',
+	'Controls/KeyEventHandler', 'Controls/MouseEventHandler',
 	'Renderer/Camera', 'Engine/SessionStorage',
 	'Network/PacketStructure', 'Network/NetworkManager',
 	'UI/CursorManager', 'UI/Components/InputBox/InputBox',
 	'Preferences/Controls',
 	'UI/Components/ChatRoom/ChatRoom'
 ], function(
-	glMatrix, KEYS,
+	glMatrix, PathFinding,
+	KEYS, Mouse,
 	Camera, Session,
 	PACKET, Network,
 	Cursor, InputBox,
@@ -30,6 +32,7 @@ define( [
 	 * Import
 	 */
 	var mat4    = glMatrix.mat4;
+	var vec2    = glMatrix.vec2;
 	var _matrix = mat4.create();
 
 
@@ -138,11 +141,24 @@ define( [
 
 			case Entity.TYPE_ITEM:
 				Cursor.setType( Cursor.ACTION.PICK, true, 2 );
+
+				// Too far, walking to it
+				if (vec2.distance(Session.Entity.position, this.position) > 2) {
+					pkt         = new PACKET.CZ.REQUEST_MOVE();
+					pkt.dest[0] = Mouse.world.x;
+					pkt.dest[1] = Mouse.world.y;
+					Network.sendPacket(pkt);
+
+					Session.moveTarget = this;
+					return true;
+				}
+
 				Session.Entity.lookTo( this.position[0], this.position[1] );
 
-				pkt = new PACKET.CZ.ITEM_PICKUP();
+				pkt       = new PACKET.CZ.ITEM_PICKUP();
 				pkt.ITAID = this.GID;
 				Network.sendPacket(pkt);
+
 				return true;
 
 			case Entity.TYPE_NPC:
@@ -181,6 +197,7 @@ define( [
 	function OnFocus()
 	{
 		var Entity = this.constructor;
+		var main   = Session.Entity;
 		var pkt;
 
 		switch (this.objecttype) {
@@ -198,11 +215,40 @@ define( [
 			// no break intended.
 
 			case Entity.TYPE_MOB:
-				pkt = new PACKET.CZ.REQUEST_ACT();
-				pkt.action = 7;
-				pkt.targetGID = this.GID;
-				Network.sendPacket(pkt);
-				return true;
+				var out   = [];
+				var count = PathFinding.search(
+					main.position[0] | 0, main.position[1] | 0,
+					this.position[0] | 0, this.position[1] | 0,
+					main.attack_range,
+					out
+				);
+
+				// Can't attack
+				if (!count) {
+					return true;
+				}
+
+				// in range
+				if (count <= main.attack_range) {
+					pkt           = new PACKET.CZ.REQUEST_ACT();
+					pkt.action    = 7;
+					pkt.targetGID = this.GID;
+					Network.sendPacket(pkt);
+				}
+
+				// Move to entity
+				else {
+					var _pkt     = new PACKET.CZ.REQUEST_MOVE();
+					_pkt.dest[0] = out[ count - 1 ][0];
+					_pkt.dest[1] = out[ count - 1 ][1];
+					Network.sendPacket(_pkt);
+
+					Session.moveTarget = this;
+					return true;
+				}
+
+
+			return true;
 		}
 
 		return false;
