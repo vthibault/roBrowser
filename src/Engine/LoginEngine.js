@@ -255,8 +255,8 @@ function(
 				WinList.remove();
 				WinLogin.append();
 			};
-			WinList.setList(list);
 			WinList.append();
+			WinList.setList(list);
 		}
 
 		// Set ping
