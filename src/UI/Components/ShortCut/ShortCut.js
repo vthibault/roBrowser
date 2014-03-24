@@ -15,22 +15,23 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
-	var DB                 = require('DB/DBManager');
-	var SkillInfo          = require('DB/SkillInfo');
-	var jQuery             = require('Utils/jquery');
-	var Client             = require('Core/Client');
-	var Preferences        = require('Core/Preferences');
-	var Renderer           = require('Renderer/Renderer');
-	var KEYS               = require('Controls/KeyEventHandler');
-	var Mouse              = require('Controls/MouseEventHandler');
-	var UIManager          = require('UI/UIManager');
-	var UIComponent        = require('UI/UIComponent');
-	var ItemInfo           = require('UI/Components/ItemInfo/ItemInfo');
-	var Inventory          = require('UI/Components/Inventory/Inventory');
-	var SkillWindow        = require('UI/Components/SkillList/SkillList');
-	//var SkillInfoWindow  = require('UI/Components/SkillInfo/SkillInfo');
-	var htmlText           = require('text!./ShortCut.html');
-	var cssText            = require('text!./ShortCut.css');
+	var DB                   = require('DB/DBManager');
+	var SkillInfo            = require('DB/SkillInfo');
+	var jQuery               = require('Utils/jquery');
+	var Client               = require('Core/Client');
+	var Preferences          = require('Core/Preferences');
+	var Renderer             = require('Renderer/Renderer');
+	var KEYS                 = require('Controls/KeyEventHandler');
+	var Mouse                = require('Controls/MouseEventHandler');
+	var UIManager            = require('UI/UIManager');
+	var UIComponent          = require('UI/UIComponent');
+	var ItemInfo             = require('UI/Components/ItemInfo/ItemInfo');
+	var Inventory            = require('UI/Components/Inventory/Inventory');
+	var SkillWindow          = require('UI/Components/SkillList/SkillList');
+	//var SkillInfoWindow    = require('UI/Components/SkillInfo/SkillInfo');
+	var SkillTargetSelection = require('UI/Components/SkillTargetSelection/SkillTargetSelection');
+	var htmlText             = require('text!./ShortCut.html');
+	var cssText              = require('text!./ShortCut.css');
 
 
 	/**
@@ -509,6 +510,8 @@ define(function(require)
 	function clickElement( index )
 	{
 		var shortcut = _list[index];
+
+		SkillTargetSelection.remove();
 
 		// Nothing here ?
 		if (!shortcut) {

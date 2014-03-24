@@ -42,9 +42,15 @@ function( require,         jQuery,        Client,               Graphics,       
 
 	/**
 	 * @var {boolean} magnetism while picking entites ?
-	 * Work in progress
 	 */
 	Cursor.magnetism = true;
+
+
+	/**
+	 * @var {boolean} force disabled magnetism
+	 * Used to cast zone skill to ground
+	 */
+	Cursor.blockMagnetism = false;
 
 
 	/**
@@ -334,7 +340,7 @@ function( require,         jQuery,        Client,               Graphics,       
 		animation = action.animations[anim];
 
 		// Cursor magnetism
-		if (Cursor.magnetism) {
+		if (Cursor.magnetism && !Cursor.blockMagnetism) {
 			var entity = EntityManager.getOverEntity();
 
 			if (entity &&

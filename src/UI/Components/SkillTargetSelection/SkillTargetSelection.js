@@ -147,7 +147,8 @@ define(function(require)
 	{
 		jQuery(Renderer.canvas).off('mousedown.targetselection');
 
-		Cursor.freeze = false;
+		Cursor.blockMagnetism = false;
+		Cursor.freeze         = false;
 		Cursor.setType(Cursor.ACTION.DEFAULT);
 
 		if (_skillName.parentNode) {
@@ -173,6 +174,10 @@ define(function(require)
 
 		if (!_target) {
 			return;
+		}
+
+		if (_target & (SkillTargetSelection.TYPE.PLACE|SkillTargetSelection.TYPE.TRAP)) {
+			Cursor.blockMagnetism = true;
 		}
 
 		// Render skillName
