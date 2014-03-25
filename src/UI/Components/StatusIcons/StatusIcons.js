@@ -109,8 +109,10 @@ define(function( require )
 		if (!target.length) {
 			Client.loadFile( 'data/texture/effect/' + StatusTable[index], function(data){
 				Texture.load( data, function(){
-					this.className = 'effect'+ index;
-					ui.append(this);
+					if (!ui.find('.effect' + index).length) {
+						this.className = 'effect'+ index;
+						ui.append(this);
+					}
 				});
 			});
 		}
