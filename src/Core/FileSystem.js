@@ -337,6 +337,8 @@ define(function()
 	 */
 	function getFile( filename )
 	{
+		filename = filename.replace( /\\/g, '/');
+
 		if (!_available || _files.length) {
 			var i, count = _files.length;
 
@@ -380,7 +382,8 @@ define(function()
 			return;
 		}
 
-		var directories = filePath.split('/').slice(0,-1);
+		var filename    = filePath.replace( /\\/g, '/');
+		var directories = filename.split('/').slice(0,-1);
 		var path        = '';
 
 		// Create hierarchy
@@ -389,7 +392,7 @@ define(function()
 			_fs_sync.root.getDirectory( path, {create: true});
 		}
 
-		var fileEntry = _fs_sync.root.getFile(filePath, {create:true});
+		var fileEntry = _fs_sync.root.getFile(filename, {create:true});
 		var writer    = fileEntry.createWriter();
 
 		writer.write(new Blob([buffer]));
