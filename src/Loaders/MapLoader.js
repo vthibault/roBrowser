@@ -298,7 +298,12 @@ define( ['Core/FileManager'], function( FileManager )
 			for (i = 0, count = models.length; i < count; ++i) {
 				pos = filenames.indexOf(models[i].filename);
 
-				// Fail to load model
+				// Duplicate from a model removed from list
+				if (pos === -1) {
+					continue;
+				}
+
+				// Because of a problem the model isn't load, remove it from the list
 				if (!objects[pos] ) {
 					objects.splice(pos, 1);
 					filenames.splice(pos, 1);
