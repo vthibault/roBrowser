@@ -353,6 +353,32 @@ define(function( require )
 
 
 	/**
+	 * Entity say something in color
+	 *
+	 * @param {object} pkt - PACKET.ZC.NPC_CHAT
+	 */
+	function onEntityTalkColor( pkt )
+	{
+		var entity;
+		var color = 'rgb(' + ([
+			( pkt.color & 0x000000ff ),
+			( pkt.color & 0x0000ff00 ) >> 8,
+			( pkt.color & 0x00ff0000 ) >> 16
+		]).join(',') + ')'; // bgr to rgb.
+
+		// Remove "pseudo : |00Dialogue
+		pkt.msg = pkt.msg.replace(/\: \|\d{2}/, ': ');
+
+		entity = EntityManager.get(pkt.accountID);
+		if (entity) {
+			entity.dialog.set( pkt.msg );
+		}
+
+		ChatBox.addText( pkt.msg, ChatBox.TYPE.PUBLIC, color);
+	}
+
+
+	/**
 	 * Display entity's name
 	 *
 	 * @param {object} pkt - PACKET.ZC.ACK_REQNAME
@@ -902,6 +928,7 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.NOTIFY_ACT,                   onEntityAction );
 		Network.hookPacket( PACKET.ZC.NOTIFY_ACT2,                  onEntityAction );
 		Network.hookPacket( PACKET.ZC.NOTIFY_CHAT,                  onEntityTalk );
+		Network.hookPacket( PACKET.ZC.NPC_CHAT,                     onEntityTalkColor );
 		Network.hookPacket( PACKET.ZC.ACK_REQNAME,                  onEntityIdentity );
 		Network.hookPacket( PACKET.ZC.ACK_REQNAMEALL,               onEntityIdentity );
 		Network.hookPacket( PACKET.ZC.CHANGE_DIRECTION,             onEntityDirectionChange );
