@@ -7,7 +7,7 @@
  *
  * @author Vincent Thibault
  */
-define(['Core/Client', 'DB/DBManager', './EntityAction'], function( Client, DB, EntityAction )
+define(['Core/Client', 'DB/DBManager', 'DB/ShadowTable', './EntityAction'], function( Client, DB, ShadowTable, EntityAction )
 {
 	'use strict';
 
@@ -21,9 +21,10 @@ define(['Core/Client', 'DB/DBManager', './EntityAction'], function( Client, DB, 
 	 */
 	function ViewFiles( spr, act, pal )
 	{
-		this.spr = spr || null;
-		this.act = act || null;
-		this.pal = pal || null;
+		this.spr  = spr || null;
+		this.act  = act || null;
+		this.pal  = pal || null;
+		this.size = 1.0;
 	}
 
 
@@ -81,6 +82,15 @@ define(['Core/Client', 'DB/DBManager', './EntityAction'], function( Client, DB, 
 		var path   = this.isAdmin ? DB.getAdminPath(this._sex) : DB.getBodyPath( job, this._sex );
 		var Entity = this.constructor;
 		this._job  = -1;
+
+		this.files.shadow.size = job in ShadowTable ? ShadowTable[job] : 1.0;
+
+		// Do not render 139 sprite
+		if (job === 139) {
+			this.files.body.spr = null;
+			this.files.body.act = null;
+			return;
+		}
 
 		// Define Object type based on its id
 		// TODO: find a better way ?

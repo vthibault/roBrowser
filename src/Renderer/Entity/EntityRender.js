@@ -344,7 +344,7 @@ define( function( require )
 
 			// Render all frames
 			for (var i=0, count=layers.length; i<count; ++i) {
-				entity.renderLayer( layers[i], spr, pal, _position, type === 'body' );
+				entity.renderLayer( layers[i], spr, pal, files.size, _position, type === 'body' );
 			}
 
 			// Save reference
@@ -451,10 +451,11 @@ define( function( require )
 	 * @param {object} layer structure
 	 * @param {object} spr sprite structure
 	 * @param {object} pal palette structure
+	 * @param {float}  sprite size
 	 * @param {Array} pos [x,y] where to render the sprite
 	 * @param {bool} is main body
 	 */
-	function renderLayer( layer, spr, pal, pos, isbody )
+	function renderLayer( layer, spr, pal, size, pos, isbody )
 	{
 		// If there is nothing to render
 		if (layer.index < 0) {
@@ -483,8 +484,8 @@ define( function( require )
 		var height  = spr.frames[ index ].height;
 
 		// Apply the scale
-		width  *= layer.scale[0];
-		height *= layer.scale[1];
+		width  *= layer.scale[0] * size;
+		height *= layer.scale[1] * size;
 
 
 		// Get the entity bounding rect

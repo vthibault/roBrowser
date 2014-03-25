@@ -248,7 +248,7 @@ function( require,         jQuery,        Client,               Graphics,       
 
 				// Render layers
 				for (k = 0, total = animation.layers.length; k < total; ++k) {
-					entity.renderLayer( animation.layers[k], _sprite, _sprite, position, false);
+					entity.renderLayer( animation.layers[k], _sprite, _sprite, 1.0, position, false);
 				}
 
 				dataURI = canvas.toDataURL('image/png');
