@@ -196,12 +196,20 @@
 
 
 	/**
+	 * @var {mixed} set a version to avoid browser cache problem so
+	 * your users wil get the latest version running instead of a
+	 * cached one.
+	 */
+	ROBrowser.prototype.version = '';
+
+
+	/**
 	 * @var {string} roBrowser api window path
 	 */
 	ROBrowser.prototype.baseUrl = (function(){
 		var script = document.getElementsByTagName('script');
 		return script[ script.length -1 ].src
-			.replace(/\/build\/[^\/]+\.js$/, '/api.js') // redirect compiled script
+			.replace(/\/build\/[^\/]+\.js.*/, '/api.js') // redirect compiled script
 			.replace(/\/src\/.*/, '/api.js');           // fix error with cache
 	})().replace('.js', '.html');
 
@@ -219,7 +227,7 @@
 				this.height = this.height || '600';
 
 				this._APP = window.open(
-					this.baseUrl,
+					this.baseUrl + '?' + this.version,
 					'_blank',
 					[
 						'directories=0',
@@ -323,6 +331,7 @@
 			skipServerList: this.skipServerList,
 			skipIntro:      this.skipIntro,
 			autoLogin:      this.autoLogin,
+			version:        this.version,
 		}, '*');
 	}
 

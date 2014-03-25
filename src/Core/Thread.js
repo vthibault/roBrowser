@@ -132,7 +132,7 @@ define(function( require )
 	{
 		if (!_source) {
 			var url = ROConfig.development ? './ThreadEventHandler.js' : './../../build/ThreadEventHandler.js';
-			_source = new Worker( require.toUrl(url) );
+			_source = new Worker( require.toUrl(url) + '?' + (ROConfig.version || '') );
 		}
 
 		// Worker context

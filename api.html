@@ -22,28 +22,23 @@
 					ROConfig.skipServerList = event.data.skipServerList || false;
 					ROConfig.skipIntro      = event.data.skipIntro      || false;
 					ROConfig.autoLogin      = event.data.autoLogin      || [];
+					ROConfig.version        = event.data.version        || '';
 
-					var script  = document.createElement('script');
-					script.src  = 'src/Vendors/require.js';
-					script.type = 'text/javascript';
-	
 					if (ROConfig.development) {
-						script.setAttribute('data-main', 'src/App/' + event.data.application);
+						var script  = document.createElement('script');
+						script.src  = 'src/Vendors/require.js?' + ROConfig.version;
+						script.type = 'text/javascript';
+						script.setAttribute('data-main', 'src/App/' + event.data.application) + '?' + ROConfig.version;
+
 						document.getElementsByTagName('head')[0].appendChild(script);
 						event.source.postMessage('ready', '*' );
 					}
 					else {
-						document.getElementsByTagName('head')[0].appendChild(script);
-
-						// Seems like a bug occured some times in Chrome
-						// By don't loading javascript resources in the good order.
-						setTimeout(function(){
-							var app     = document.createElement('script');
-							app.type    = 'text/javascript';
-							app.src     = 'build/' + event.data.application + '.js';
-							document.getElementsByTagName('head')[0].appendChild(app);
-							event.source.postMessage('ready', '*' );
-						}, 4);
+						var app     = document.createElement('script');
+						app.type    = 'text/javascript';
+						app.src     = 'build/' + event.data.application + '.js?' + ROConfig.version;
+						document.getElementsByTagName('head')[0].appendChild(app);
+						event.source.postMessage('ready', '*' );
 					}
 				};
 			}(), false);

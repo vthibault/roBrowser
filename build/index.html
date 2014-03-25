@@ -21,6 +21,7 @@
 </head>
 <body>
 	<h1>Compiling roBrowser</h1>
+	<h3>(please clean browser cache before)</h3>
 	<p>
 		<select id="appname">
 			<option value="App/Online">Online</option>
@@ -40,6 +41,12 @@
 </body>
 <script src="r.js"></script>
 <script>
+	// Load min.require.js
+	var xhr = new XMLHttpRequest();
+	xhr.open('GET', 'require.js?' + Date.now(), false);
+	xhr.send();
+	var requirejslib = xhr.responseText;
+
 	document.getElementById('build').addEventListener('click', function (evt) {
 
 		var trace   = document.getElementById('buildMessages');
@@ -53,6 +60,7 @@
 
 		requirejs.optimize({
 			baseUrl: '../src/',
+			urlArgs: Date.now(),
 			paths: {
 				text:   "Vendors/text.require",
 				jquery: "Vendors/jquery-1.9.1"
@@ -63,7 +71,6 @@
 				var matches = text.match(/importScripts\([^\)]+\)/g);
 				if (matches) {
 					text = text.replace(/importScripts\([^\)]+\)(\,|\;|\n)?/g, '');
-					text = "importScripts('../src/Vendors/require.js');\n\n" + text;
 				}
 
 				output.value = [
@@ -71,7 +78,7 @@
 					' * This file is part of ROBrowser, Ragnarok Online in the Web Browser (http://www.robrowser.com/).',
 					' * @author Vincent Thibault',
 					' */',
-				].join("\n") + "\n\n" +  text;
+				].join("\n") + "\n\n" +  requirejslib + "\n\n" + text;
 
 				file.textContent = ' Save this content as "build/' + appName.replace(/^[^\/]+\//,'') + '.js"';
 			},
