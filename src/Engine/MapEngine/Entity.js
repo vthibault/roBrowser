@@ -347,6 +347,9 @@ define(function( require )
 		if (entity === Session.Entity) {
 			type |= ChatBox.TYPE.SELF;
 		}
+		else if (entity.isAdmin) {
+			type |= ChatBox.TYPE.ADMIN;
+		}
 
 		ChatBox.addText( pkt.msg, type );
 	}

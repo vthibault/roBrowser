@@ -82,6 +82,7 @@ define(function(require)
 		ERROR:    1 << 6,
 		INFO:     1 << 7,
 		BLUE:     1 << 8, // TODO: find a better name
+		ADMIN:    1 << 9,
 	};
 
 
@@ -359,6 +360,9 @@ define(function(require)
 			}
 			else if (type & ChatBox.TYPE.BLUE) {
 				color = '#00FFFF';
+			}
+			else if (type & ChatBox.TYPE.ADMIN) {
+				color = '#FFFF00';
 			}
 			else {
 				color = 'white';
