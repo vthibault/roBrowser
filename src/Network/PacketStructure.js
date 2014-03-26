@@ -339,8 +339,9 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 	// 0x9b
 	PACKET.CZ.CHANGE_DIRECTION = function PACKET_CZ_CHANGE_DIRECTION() {
-		this.headDir    = 0;
-		this.dir        = 0;
+		this.headDir      = 0;
+		this.dir          = 0;
+		var servDirection = [ 4, 3, 2, 1, 0, 7, 6, 5 ];
 
 		this.build = function() {
 			var ver = this.getPacketVersion();
@@ -348,7 +349,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt.writeShort(ver[1]);
 			pkt.view.setInt16( ver[3], this.headDir, true );
-			pkt.view.setUint8( ver[4], this.dir, true );
+			pkt.view.setUint8( ver[4], servDirection[(this.dir + 8) % 8], true );
 			return pkt;
 		};
 	};
