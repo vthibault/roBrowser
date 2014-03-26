@@ -46,7 +46,7 @@ function(       glMatrix,          PathFinding,            Mouse )
 	/**
 	 * @var {number} ray intersection count
 	 */
-	Altitude.MAX_INTERSECT_COUNT = 100;
+	Altitude.MAX_INTERSECT_COUNT = 150;
 
 
 	/**

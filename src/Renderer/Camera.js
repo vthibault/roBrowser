@@ -90,6 +90,12 @@ define(['Controls/KeyEventHandler', 'Controls/MouseEventHandler', 'Preferences/C
 
 
 	/**
+	 * @var {number} camera zoom
+	 */
+	Camera.MAX_ZOOM = 10;
+
+
+	/**
 	 * @var {number} Camera direction
 	 */
 	Camera.direction    =    0;
@@ -205,14 +211,14 @@ define(['Controls/KeyEventHandler', 'Controls/MouseEventHandler', 'Preferences/C
 
 		// Zoom
 		else if (KEYS.CTRL) {
-			this.zoomFinal -= ( Mouse.screen.y - this.action.y  ) / Mouse.screen.height * 50;
-			this.zoomFinal  = Math.min( this.zoomFinal, Math.abs(this.altitudeTo-this.altitudeFrom) * 4.0 );
+			this.zoomFinal -= ( Mouse.screen.y - this.action.y  ) / Mouse.screen.height * 150;
+			this.zoomFinal  = Math.min( this.zoomFinal, Math.abs(this.altitudeTo-this.altitudeFrom) * this.MAX_ZOOM );
 			this.zoomFinal  = Math.max( this.zoomFinal,  2.0 );
 		}
 
 		// Rotate
 		else {
-			this.angleFinal[1] -= ( Mouse.screen.x - this.action.x ) / Mouse.screen.width  * 720;
+			this.angleFinal[1] -= ( Mouse.screen.x - this.action.x ) / Mouse.screen.width * 720;
 
 			if (this.angle[1] > 180 && this.angleFinal[1] > 180) {
 				this.angle[1]      -= 360;
@@ -242,7 +248,7 @@ define(['Controls/KeyEventHandler', 'Controls/MouseEventHandler', 'Preferences/C
 	Camera.setZoom = function SetZoom( delta )
 	{
 		this.zoomFinal += delta * 15;
-		this.zoomFinal  = Math.min( this.zoomFinal, Math.abs(this.altitudeTo-this.altitudeFrom) * 5.0 );
+		this.zoomFinal  = Math.min( this.zoomFinal, Math.abs(this.altitudeTo-this.altitudeFrom) * this.MAX_ZOOM );
 		this.zoomFinal  = Math.max( this.zoomFinal,  2.0 );
 	};
 

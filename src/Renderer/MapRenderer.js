@@ -275,8 +275,8 @@ define(function( require )
 		// Apply fog to map
 		this.fog.exist = !!DB.fog[worldResource];
 		if (this.fog.exist) {
-			this.fog.near   = DB.fog[worldResource].near * 100;
-			this.fog.far    = DB.fog[worldResource].far  * 150;
+			this.fog.near   = DB.fog[worldResource].near * 240;
+			this.fog.far    = DB.fog[worldResource].far  * 240;
 			this.fog.factor = DB.fog[worldResource].factor;
 			this.fog.color.set( DB.fog[worldResource].color );
 		}

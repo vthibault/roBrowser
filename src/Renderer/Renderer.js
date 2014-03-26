@@ -178,7 +178,7 @@ define(function( require )
 
 		this.gl.viewport( 0, 0, width, height );
 
-		mat4.perspective( 20.0, width/height, 1, 1000, Camera.projection );
+		mat4.perspective( 15.0, width/height, 1, 1000, Camera.projection );
 
 		Background.resize( this.width, this.height );
 
