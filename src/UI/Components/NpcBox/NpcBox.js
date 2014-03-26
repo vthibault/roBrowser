@@ -38,7 +38,7 @@ define(function(require)
 
 
 	/**
-	 * @var {integer} NPC GID
+	 * @var {integer} NPC AID
 	 */
 	var _ownerID = 0;
 
@@ -117,12 +117,12 @@ define(function(require)
 	 * Add text to box
 	 *
 	 * @param {string} text to display
-	 * @param {number} gid - npc id
+	 * @param {number} aid - npc id
 	 */
-	NpcBox.setText = function SetText( text, gid )
+	NpcBox.setText = function SetText( text, aid )
 	{
 		var content = this.ui.find('.content');
-		_ownerID    = gid;
+		_ownerID    = aid;
 
 		if (_needCleanUp) {
 			_needCleanUp = false;
@@ -136,11 +136,11 @@ define(function(require)
 	/**
 	 * Add next button
 	 *
-	 * @param {number} gid - npc id
+	 * @param {number} aid - npc id
 	 */
-	NpcBox.addNext = function addNext( gid )
+	NpcBox.addNext = function addNext( aid )
 	{
-		_ownerID = gid;
+		_ownerID = aid;
 		this.ui.find('.next').show();
 	};
 
@@ -148,11 +148,11 @@ define(function(require)
 	/**
 	 * Add close button
 	 *
-	 * @param {number} gid - npc id
+	 * @param {number} aid - npc id
 	 */
-	NpcBox.addClose = function addClose( gid )
+	NpcBox.addClose = function addClose( aid )
 	{
-		_ownerID = gid;
+		_ownerID = aid;
 		this.ui.find('.close').show();
 	};
 

@@ -93,6 +93,7 @@ define( function( require )
 	 * Public methods
 	 */
 	Entity.prototype.objecttype   = Entity.TYPE_UNKNOWN;
+	Entity.prototype.AID          = 0;
 	Entity.prototype.GID          = 0;
 	Entity.prototype._bodyState   = 0;
 	Entity.prototype._healthState = 0;
@@ -153,7 +154,7 @@ define( function( require )
 		Client.loadFile(this.files.shadow.spr, null, null, {to_rgba:true});
 		Client.loadFile(this.files.shadow.act);
 
-		this.isAdmin = Session.AdminList.indexOf(unit.GID) > -1;
+		this.isAdmin = Session.AdminList.indexOf(unit.AID) > -1;
 		this.sex     = unit.hasOwnProperty('sex') ? unit.sex : this._sex;
 		this.job     = unit.hasOwnProperty('job') ? unit.job : this._job;
 		keys         = Object.keys( unit );

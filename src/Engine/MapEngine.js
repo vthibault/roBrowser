@@ -77,7 +77,13 @@ define(function( require )
 			}
 
 			// Success, try to login.
-			var pkt        = new PACKET.CZ.ENTER();
+			if (ROConfig.usePacketVersion2)
+			{
+				var pkt        = new PACKET.CZ.ENTER2();
+			} else {
+				var pkt        = new PACKET.CZ.ENTER();
+			}
+			
 			pkt.AID        = Session.AID;
 			pkt.GID        = GID;
 			pkt.AuthCode   = Session.AuthCode;
@@ -87,9 +93,9 @@ define(function( require )
 
 			// Server send back AID
 			Network.read(function(fp){
-				// if PACKETVER < 20070521, client send GID...
+				// if PACKETVER < 20070521, client send GID..., not AID!
 				if (fp.length === 4) {
-					Session.Character.GID = fp.readLong();
+					fp.readLong();
 				}
 			});
 
@@ -145,7 +151,7 @@ define(function( require )
 	 */
 	function onReceiveAccountID( pkt )
 	{
-		Session.Character.GID = pkt.AID;
+		Session.Character.AID = pkt.AID;
 	}
 
 
@@ -201,7 +207,13 @@ define(function( require )
 			// TODO: find a better place to put it
 			jQuery(window).on('keydown.map', function( event ){
 				if (event.which === KEYS.INSERT) {
-					var pkt = new PACKET.CZ.REQUEST_ACT();
+					if (ROConfig.usePacketVersion2)
+					{
+							var pkt = new PACKET.CZ.REQUEST_ACT2();
+					} else {
+							var pkt = new PACKET.CZ.REQUEST_ACT();
+					}
+			
 					pkt.action = Session.Entity.action === Session.Entity.ACTION.SIT ? 3 : 2;
 					Network.sendPacket(pkt);
 					event.stopImmediatePropagation();
@@ -211,6 +223,7 @@ define(function( require )
 
 			Session.Entity.set({
 				PosDir: [ pkt.xPos, pkt.yPos, 0 ],
+				AID: Session.Character.AID,
 				GID: Session.Character.GID
 			});
 			EntityManager.add( Session.Entity );
@@ -251,14 +264,45 @@ define(function( require )
 	function onServerChange( pkt )
 	{
 		jQuery(window).off('keydown.map');
-		/*
-			pkt.mapName
-			pkt.xPos
-			pkt.yPos
-			pkt.addr.ip
-			pkt.addr.port
-		*/
-		// Have to resend authcode sex etc ?
+		
+		_mapName = pkt.mapName;
+
+		// Connect to char server
+		Network.connect( Network.utils.longToIP( pkt.addr.ip ), pkt.addr.port, function( success ){
+
+			// Force reloading map
+			MapRenderer.currentMap = '';
+
+			// Fail to connect...
+			if (!success) {
+				UIManager.showErrorBox( DB.msgstringtable[1] );
+				return;
+			}
+
+			// Success, try to login.
+			var pkt        = new PACKET.CZ.ENTER2();
+			pkt.AID        = Session.AID;
+			pkt.GID        = Session.Character.GID;
+			pkt.AuthCode   = Session.AuthCode;
+			pkt.clientTime = Date.now();
+			pkt.Sex        = Session.Sex;
+			Network.sendPacket(pkt);
+
+			// Server send back AID
+			Network.read(function(fp){
+				// if PACKETVER < 20070521, client send GID...
+				if (fp.length === 4) {
+					fp.readLong();
+				}
+			});
+
+			// Ping
+			var ping = new PACKET.CZ.REQUEST_TIME();
+			Network.setPing(function(){
+				ping.time = Date.now();
+				Network.sendPacket(ping);
+			});
+		}, true);
 	}
 
 
@@ -452,8 +496,13 @@ define(function( require )
 		// If siting, update direction
 		if (Session.Entity.action === Session.Entity.ACTION.SIT || KEYS.SHIFT) {
 			Session.Entity.lookTo( Mouse.world.x, Mouse.world.y );
-
-			var pkt     = new PACKET.CZ.CHANGE_DIRECTION();
+			if (ROConfig.usePacketVersion2)
+			{
+				var pkt     = new PACKET.CZ.CHANGE_DIRECTION2();
+			} else {
+				var pkt     = new PACKET.CZ.CHANGE_DIRECTION();
+			}
+			
 			pkt.headDir = Session.Entity.headDir;
 			pkt.dir     = Session.Entity.direction;
 			Network.sendPacket(pkt);
@@ -485,7 +534,13 @@ define(function( require )
 		}
 
 		if (Mouse.world.x > -1 && Mouse.world.y > -1) {
-			var pkt = new PACKET.CZ.REQUEST_MOVE();
+			if (ROConfig.usePacketVersion2)
+			{
+				var pkt = new PACKET.CZ.REQUEST_MOVE2();
+			} else {
+				var pkt = new PACKET.CZ.REQUEST_MOVE();
+			}
+			
 			pkt.dest[0] = Mouse.world.x;
 			pkt.dest[1] = Mouse.world.y;
 			Network.sendPacket(pkt);
@@ -512,7 +567,7 @@ define(function( require )
 		Session.moveTarget = null;
 
 		// Not in scene anymore.
-		if (!EntityManager.get(entity.GID)) {
+		if (!EntityManager.get(entity.AID)) {
 			return;
 		}
 
@@ -523,7 +578,13 @@ define(function( require )
 				break;
 
 			case Entity.TYPE_ITEM:
-				pkt       = new PACKET.CZ.ITEM_PICKUP();
+				if (ROConfig.usePacketVersion2)
+				{
+					pkt       = new PACKET.CZ.ITEM_PICKUP();
+				} else {
+					pkt       = new PACKET.CZ.ITEM_PICKUP();
+				}
+			
 				pkt.ITAID = entity.GID;
 				Network.sendPacket(pkt);
 				break;
@@ -556,7 +617,13 @@ define(function( require )
 	function onDropItem( index, count )
 	{
 		if (count) {
-			var pkt   = new PACKET.CZ.ITEM_THROW();
+			if (ROConfig.usePacketVersion2)
+			{
+				var pkt   = new PACKET.CZ.ITEM_THROW();
+			} else {
+				var pkt   = new PACKET.CZ.ITEM_THROW();
+			}
+			
 			pkt.Index = index;
 			pkt.count = count;
 			Network.sendPacket(pkt);
@@ -573,7 +640,7 @@ define(function( require )
 	{
 		var pkt   = new PACKET.CZ.USE_ITEM();
 		pkt.index = index;
-		pkt.AID   = Session.Entity.GID;
+		pkt.AID   = Session.Entity.AID;
 		Network.sendPacket(pkt);
 	}
 

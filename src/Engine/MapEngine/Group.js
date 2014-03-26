@@ -84,8 +84,15 @@ define(function( require )
 	function onPartyOption( pkt )
 	{
 		ChatBox.addText( DB.msgstringtable[291] + '  - ' + DB.msgstringtable[292] + '  : ' + DB.msgstringtable[287 + pkt.expOption ], ChatBox.TYPE.INFO );
-		ChatBox.addText( DB.msgstringtable[291] + '  - ' + DB.msgstringtable[293] + '  : ' + DB.msgstringtable[289 + pkt.ItemPickupRule], ChatBox.TYPE.INFO );
-		ChatBox.addText( DB.msgstringtable[291] + '  - ' + DB.msgstringtable[738] + '  : ' + DB.msgstringtable[287 + pkt.ItemDivisionRule], ChatBox.TYPE.INFO );
+		if (pkt.ItemPickupRule != null)
+		{
+			ChatBox.addText( DB.msgstringtable[291] + '  - ' + DB.msgstringtable[293] + '  : ' + DB.msgstringtable[289 + pkt.ItemPickupRule], ChatBox.TYPE.INFO );
+		}
+		
+		if (pkt.ItemPickupRule != null)
+		{
+			ChatBox.addText( DB.msgstringtable[291] + '  - ' + DB.msgstringtable[738] + '  : ' + DB.msgstringtable[287 + pkt.ItemDivisionRule], ChatBox.TYPE.INFO );
+		}
 	}
 
 

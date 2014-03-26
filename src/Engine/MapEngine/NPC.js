@@ -252,7 +252,7 @@ define(function( require )
 			return;
 		}
 
-		Client.loadFile( DB.INTERFACE_PATH + 'illust/' + pkt.imageName + '.bmp', function( url ){
+		Client.loadFile( DB.INTERFACE_PATH + 'illust/' + pkt.imageName, function( url ){
 
 			var img            = new Image();
 			img.src            = url;

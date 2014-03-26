@@ -97,7 +97,13 @@ function(
 
 			case 'sit':
 			case 'stand':
-				pkt = new PACKET.CZ.REQUEST_ACT();
+				if (ROConfig.usePacketVersion2)
+				{
+					pkt = new PACKET.CZ.REQUEST_ACT2();
+				} else {
+					pkt = new PACKET.CZ.REQUEST_ACT();
+				}
+				
 				if (Session.Entity.action === Session.Entity.ACTION.SIT) {
 					pkt.action = 3; // stand up
 				}
@@ -109,7 +115,13 @@ function(
 
 			case 'doridori':
 				Session.Entity.headDir = ( Session.Entity.headDir === 1 ? 2 : 1 );
-				pkt         = new PACKET.CZ.CHANGE_DIRECTION();
+				if (ROConfig.usePacketVersion2)
+				{
+					pkt         = new PACKET.CZ.CHANGE_DIRECTION2();
+				} else {
+					pkt         = new PACKET.CZ.CHANGE_DIRECTION();
+				}
+				
 				pkt.headDir = Session.Entity.headDir;
 				pkt.dir     = Session.Entity.direction;
 				Network.sendPacket(pkt);
@@ -117,7 +129,13 @@ function(
 
 			case 'bangbang':
 				Session.Entity.direction = ( Session.Entity.direction + 1 ) % 8;
-				pkt         = new PACKET.CZ.CHANGE_DIRECTION();
+				if (ROConfig.usePacketVersion2)
+				{
+					pkt         = new PACKET.CZ.CHANGE_DIRECTION2();
+				} else {
+					pkt         = new PACKET.CZ.CHANGE_DIRECTION();
+				}
+				
 				pkt.headDir = Session.Entity.headDir;
 				pkt.dir     = Session.Entity.direction;
 				Network.sendPacket(pkt);
@@ -125,7 +143,13 @@ function(
 	
 			case 'bingbing':
 				Session.Entity.direction = ( Session.Entity.direction + 7 ) % 8;
-				pkt         = new PACKET.CZ.CHANGE_DIRECTION();
+				if (ROConfig.usePacketVersion2)
+				{
+					pkt         = new PACKET.CZ.CHANGE_DIRECTION2();
+				} else {
+					pkt         = new PACKET.CZ.CHANGE_DIRECTION();
+				}
+				
 				pkt.headDir = Session.Entity.headDir;
 				pkt.dir     = Session.Entity.direction;
 				Network.sendPacket(pkt);
@@ -138,6 +162,36 @@ function(
 					'(' + currentMap + ') : ' + Math.floor(Session.Entity.position[0]) + ', ' + Math.floor(Session.Entity.position[1]),
 					this.TYPE.INFO
 				);
+				return;
+
+			case 'hide':
+				pkt = new PACKET.CZ.CHANGE_EFFECTSTATE();
+				pkt.EffectState = 0x40;
+				Network.sendPacket(pkt);
+				return;
+
+			case 'summer':
+				pkt = new PACKET.CZ.CHANGE_EFFECTSTATE();
+				pkt.EffectState = 0x40000;
+				Network.sendPacket(pkt);
+				return;
+
+			case 'santa':
+				pkt = new PACKET.CZ.CHANGE_EFFECTSTATE();
+				pkt.EffectState = 0x10000;
+				Network.sendPacket(pkt);
+				return;
+
+			case 'mm':
+			case 'mapmove':
+				//pkt = new PACKET.CZ.MOVETO_MAP();
+				//Network.sendPacket(pkt);
+				return;
+
+			case 'item':
+			case 'monster':
+				//pkt = new PACKET.CZ.ITEM_CREATE();
+				//Network.sendPacket(pkt);
 				return;
 
 			case 'who':

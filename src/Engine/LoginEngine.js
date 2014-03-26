@@ -228,6 +228,11 @@ function(
 		Session.AID       = pkt.AID;
 		Session.UserLevel = pkt.userLevel;
 		Session.Sex       = pkt.Sex;
+		if (Session.Sex > 1)
+		{
+			Session.Sex = 1;
+		}
+		
 		_charServers      = pkt.ServerList;
 
 		// Build list of servers

@@ -142,16 +142,16 @@ define(function(require)
 	 * Initialize menu
 	 *
 	 * @param {string} menu
-	 * @param {number} gid - npc id
+	 * @param {number} aid - npc id
 	 */
-	NpcMenu.setMenu = function SetMenu( menu, gid )
+	NpcMenu.setMenu = function SetMenu( menu, aid )
 	{
 		var content, list;
 		var i, count;
 
 		content  = this.ui.find('.content');
 		list     = menu.split(':');
-		_ownerID = gid;
+		_ownerID = aid;
 		_index   = 0;
 
 		content.empty();
@@ -207,7 +207,7 @@ define(function(require)
 	/**
 	 * Abstract callback to define
 	 */
-	NpcMenu.onSelectMenu = function OnSelectMenu(/*gid, index*/){};
+	NpcMenu.onSelectMenu = function OnSelectMenu(/*aid, index*/){};
 
 
 	/**
