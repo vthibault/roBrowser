@@ -82,7 +82,7 @@ function(          GameFile,           LuaByte,           World,           Groun
 		if (grfList instanceof Array) {
 			list = grfList;
 			for (i = 0, count = list.length; i < count; ++i) {
-				list[i] = FileSystem.getFile( list[i] );
+				list[i] = FileSystem.getFileSync( list[i] );
 			}
 
 			list.sort(function(a,b){
@@ -184,33 +184,43 @@ function(          GameFile,           LuaByte,           World,           Groun
 	 */
 	FileManager.get = function Get( filename, callback )
 	{
-		var i, count;
-		var path, file;
-		var fileList;
-
-		// GRF path is as window : dir\to\location.txt
+		// Trim the path
 		filename = filename.replace(/^\s+|\s+$/g, '');
 
 		// Search in filesystem
-		file = FileSystem.getFile(filename);
-		if (file) {
-			callback( (new FileReaderSync()).readAsArrayBuffer(file));
-			return;
-		}
+		FileSystem.getFile(
+			filename,
 
-		path     = filename.replace( /\//g, '\\');
-		fileList = this.gameFiles;
-		count    = fileList.length;
+			// Found in file system, youhou !
+			function onFound(file) {
+				var reader = new FileReader();
+				reader.onloadend = function onLoad(event){
+					callback( event.target.result );
+				}
+				reader.readAsArrayBuffer(file);
+			},
 
-		for (i = 0; i < count; ++i) {
-			if (fileList[i].getFile( path, callback)) {
-				return;
+			// Not found, fetching files
+			function onNotFound() {
+				var i, count;
+				var path, file;
+				var fileList;
+
+				path     = filename.replace( /\//g, '\\');
+				fileList = FileManager.gameFiles;
+				count    = fileList.length;
+
+				for (i = 0; i < count; ++i) {
+					if (fileList[i].getFile( path, callback)) {
+						return;
+					}
+				}
+
+				// Not in GRFs ? Try to load it from
+				// remote client host
+				FileManager.getHTTP( filename, callback);
 			}
-		}
-
-		// Not in GRFs ? Try to load it from
-		// remote client host
-		this.getHTTP( filename, callback);
+		);
 	};
 
 

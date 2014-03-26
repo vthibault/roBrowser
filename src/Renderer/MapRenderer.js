@@ -21,6 +21,7 @@ define(function( require )
 	var DB             = require('DB/DBManager');
 	var UIManager      = require('UI/UIManager');
 	var Background     = require('UI/Background');
+	var Cursor         = require('UI/CursorManager');
 	var Session        = require('Engine/SessionStorage');
 	var MemoryManager  = require('Core/MemoryManager');
 	var Mouse          = require('Controls/MouseEventHandler');
@@ -105,6 +106,7 @@ define(function( require )
 		SoundManager.stop();
 		Renderer.stop();
 		UIManager.removeComponents();
+		Cursor.setType(Cursor.ACTION.DEFAULT);
 
 		// Don't reload a map when it's just a local teleportation
 		if (this.currentMap !== mapname) {
@@ -263,7 +265,7 @@ define(function( require )
 
 		// Problem during loading ?
 		if (!success) {
-			UIManager.showErrorBox( error );
+			UIManager.showErrorBox( error ).ui.css('zIndex', 1000);
 			return;
 		}
 

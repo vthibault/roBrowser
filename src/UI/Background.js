@@ -73,8 +73,8 @@ define( function( require )
 	Background.init = function init( loading )
 	{
 		this.progress = 0;
-
 		this.resize();
+		Background.canvas.css('zIndex', 0 );
 
 		if (loading) {
 			this.loading = loading;

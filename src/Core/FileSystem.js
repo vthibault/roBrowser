@@ -330,12 +330,12 @@ define(function()
 
 
 	/**
-	 * Get a file in FileSystem
+	 * Get a file in FileSystem (sync)
 	 *
 	 * @param {string} filename
 	 * @returns {File}
 	 */
-	function getFile( filename )
+	function getFileSync( filename )
 	{
 		filename = filename.replace( /\\/g, '/');
 
@@ -366,6 +366,42 @@ define(function()
 		}
 
 		return null;
+	}
+
+
+	/**
+	 * Get a file in FileSystem (async)
+	 *
+	 * @param {string} filename
+	 * @param {function} once loaded
+	 * @param {function} callback if not found
+	 */
+	function getFile( filename, onload, onerror )
+	{
+		filename = filename.replace( /\\/g, '/');
+
+		if (!_available || _files.length) {
+			var i, count = _files.length;
+
+			for (i = 0; i < count; ++i) {
+				if (_files[i]._path === filename) {
+					onload(_files[i]);
+					return;
+				}
+			}
+
+			onerror();
+			return;
+		}
+
+		_fs.root.getFile( filename, {create: false}, function(fileEntry){
+			if (fileEntry.isFile) {
+				fileEntry.file(onload);
+			}
+			else {
+				onerror();
+			}
+		}, onerror);
 	}
 
 
@@ -440,11 +476,12 @@ define(function()
 	 * Public methods
 	 */
 	return {
-		bind:      bind,
-		getFile:   getFile,
-		init:      init,
-		cleanup:   cleanUp,
-		search:    search,
-		saveFile:  saveFile
+		bind:        bind,
+		getFile:     getFile,
+		getFileSync: getFileSync,
+		init:        init,
+		cleanup:     cleanUp,
+		search:      search,
+		saveFile:    saveFile
 	};
 });

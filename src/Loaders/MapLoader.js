@@ -75,7 +75,7 @@ define( ['Core/FileManager'], function( FileManager )
 			this.offset++;
 
 			// Start the progress
-			if (this.onprogress) {
+			if (this.onprogress && this.offset <= this.count ) {
 				this.onprogress( this.offset, this.count );
 			}
 
@@ -140,7 +140,7 @@ define( ['Core/FileManager'], function( FileManager )
 	 */
 	MapLoader.prototype.setProgress = function setProgress( percent )
 	{
-		var progress = Math.floor(percent);
+		var progress = Math.min(100, Math.floor(percent));
 
 		if (progress !== this.progress) {
 			if (this.onprogress) {
@@ -161,70 +161,80 @@ define( ['Core/FileManager'], function( FileManager )
 		// Initialize the loading
 		this.setProgress( 0 );
 
+		var loader = this;
+		var world;
 
-		// Loading 3 main files
-		FileManager.load('data\\' + mapname, function(world){
-			if (!world) {
-				this.onload(false, 'Can\'t find file "' + mapname + '" ! ');
+		// loading world
+		function onWorldReady(resourceWorld) {
+			if (!resourceWorld) {
+				loader.onload(false, 'Can\'t find file "' + mapname + '" ! ');
 				return;
 			}
 
-			this.setProgress( 1 );
+			world = resourceWorld;
+			loader.setProgress( 1 );
 
 			// Load Altitude
-			FileManager.load('data\\' + world.files.gat, function(altitude) {
-				if (!altitude) {
-					this.onload(false, 'Can\'t find file "' + world.files.gat + '" !');
-					return;
-				}
+			FileManager.load('data\\' + world.files.gat, onAltitudeReady);
+		}
 
-				this.setProgress( 2 );
-				this.ondata('MAP_ALTITUDE', altitude.compile());
-			}.bind(this));
+		// Loading altitude
+		function onAltitudeReady(altitude) {
+			if (!altitude) {
+				loader.onload(false, 'Can\'t find file "' + world.files.gat + '" !');
+				return;
+			}
 
+			loader.setProgress( 2 );
+			loader.ondata('MAP_ALTITUDE', altitude.compile());
 
-			// Load ground
-			FileManager.load('data\\' + world.files.gnd, function(ground) {
-				if (!ground) {
-					this.onload(false, 'Can\'t find file "' + world.files.gnd + '" !');
-					return;
-				}
+			FileManager.load('data\\' + world.files.gnd, onGroundReady);
+		}
 
-				this.setProgress( 3 );
+		// Load ground
+		function onGroundReady(ground) {
+			if (!ground) {
+				loader.onload(false, 'Can\'t find file "' + world.files.gnd + '" !');
+				return;
+			}
 
-				// Compiling ground
-				var CompiledGround = ground.compile( world.water.level, world.water.waveHeight );
+			loader.setProgress( 3 );
 
-				// Just to approximate, guess we have 2 textures for each models
-				// To get a more linear loading
-				this.fileCount = ground.textures.length + world.models.length * 3;
+			// Compiling ground
+			var compiledGround = ground.compile( world.water.level, world.water.waveHeight );
 
-				// Add water to the list
-				if (CompiledGround.waterVertCount) {
-					this.fileCount += 32;
-				}
+			// Just to approximate, guess we have 2 textures for each models
+			// To get a more linear loading
+			loader.fileCount = ground.textures.length + world.models.length * 3;
 
-				// Loading Gound and Water textures
-				this.loadGroundTextures( world, CompiledGround, function( waters, textures){
-					world.water.images      = waters;
-					CompiledGround.textures = textures;
+			// Add water to the list
+			if (compiledGround.waterVertCount) {
+				loader.fileCount += 32;
+			}
 
-					this.ondata('MAP_WORLD',  world.compile());
-					this.ondata('MAP_GROUND', CompiledGround );
+			// Loading Gound and Water textures
+			loader.loadGroundTextures( world, compiledGround, function onLoaded(waters, textures) {
+				world.water.images      = waters;
+				compiledGround.textures = textures;
 
-					// Start loading models
-					this.loadModels(world.models, ground);
-				}.bind(this));
+				loader.ondata('MAP_WORLD',  world.compile());
+				loader.ondata('MAP_GROUND', compiledGround );
 
-			}.bind(this));
-		}.bind(this));
+				// Start loading models
+				loader.loadModels(world.models, ground);
+			});
+		}
+
+		// Start loading World Resource file
+		FileManager.load('data\\' + mapname, onWorldReady);
 	};
 
 
 	/**
 	 * Loading Ground and Water textures
 	 *
-	 * @param {object} CompiledGround
+	 * @param {object} world resource file
+	 * @param {object} compiledGround
 	 * @param {function} callback
 	 */
 	MapLoader.prototype.loadGroundTextures = function LoadGroundTextures( world, ground, callback )
