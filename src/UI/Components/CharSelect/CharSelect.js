@@ -208,11 +208,13 @@ define(function(require)
 	 */
 	CharSelect.setInfo = function setInfo( pkt )
 	{
-		_maxSlots           = pkt.TotalSlotNum;
-		_sex                = pkt.sex;
-		_slots.length       = 0;
-		_entitySlots.length = 0;
-		_list.length        =  0;
+		if (pkt.constructor.name === 'PACKET_HC_ACCEPT_ENTER_NEO_UNION_HEADER') {
+			_maxSlots           = pkt.TotalSlotNum;
+			_sex                = pkt.sex;
+			_slots.length       = 0;
+			_entitySlots.length = 0;
+			_list.length        =  0;
+		}
 
 		if (pkt.charInfo) {
 			var i, count = pkt.charInfo.length;

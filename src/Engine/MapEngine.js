@@ -60,7 +60,7 @@ define(function( require )
 	 * @param {number} Character ID
 	 * @param {string} mapName
 	 */
-	function init( ip, port, GID, mapName )
+	function init( ip, port, mapName, initHooksAndExtends )
 	{
 		_mapName = mapName;
 
@@ -79,7 +79,7 @@ define(function( require )
 			// Success, try to login.
 			var pkt        = new PACKET.CZ.ENTER();
 			pkt.AID        = Session.AID;
-			pkt.GID        = GID;
+			pkt.GID        = Session.GID;
 			pkt.AuthCode   = Session.AuthCode;
 			pkt.clientTime = Date.now();
 			pkt.Sex        = Session.Sex;
@@ -96,35 +96,37 @@ define(function( require )
 			// Ping
 			var ping = new PACKET.CZ.REQUEST_TIME();
 			Network.setPing(function(){
-				ping.time = Date.now();
+				ping.clientTime = Date.now();
 				Network.sendPacket(ping);
 			});
 		}, true);
 
+		if (initHooksAndExtends)
+		{
+			// Hook packets
+			Network.hookPacket( PACKET.ZC.AID,                 onReceiveAccountID );
+			Network.hookPacket( PACKET.ZC.ACCEPT_ENTER,        onConnectionAccepted );
+			Network.hookPacket( PACKET.ZC.ACCEPT_ENTER2,       onConnectionAccepted );
+			Network.hookPacket( PACKET.ZC.NPCACK_MAPMOVE,      onMapChange );
+			Network.hookPacket( PACKET.ZC.NPCACK_SERVERMOVE,   onServerChange );
+			Network.hookPacket( PACKET.ZC.ACCEPT_QUIT,         onExitSuccess );
+			Network.hookPacket( PACKET.ZC.REFUSE_QUIT,         onExitFail );
+			Network.hookPacket( PACKET.ZC.RESTART_ACK,         onRestartAnswer );
+			Network.hookPacket( PACKET.ZC.ACK_REQ_DISCONNECT,  onDisconnectAnswer );
+			Network.hookPacket( PACKET.ZC.NOTIFY_TIME,         onPong );
 
-		// Hook packets
-		Network.hookPacket( PACKET.ZC.AID,                 onReceiveAccountID );
-		Network.hookPacket( PACKET.ZC.ACCEPT_ENTER,        onConnectionAccepted );
-		Network.hookPacket( PACKET.ZC.ACCEPT_ENTER2,       onConnectionAccepted );
-		Network.hookPacket( PACKET.ZC.NPCACK_MAPMOVE,      onMapChange );
-		Network.hookPacket( PACKET.ZC.NPCACK_SERVERMOVE,   onServerChange );
-		Network.hookPacket( PACKET.ZC.ACCEPT_QUIT,         onExitSuccess );
-		Network.hookPacket( PACKET.ZC.REFUSE_QUIT,         onExitFail );
-		Network.hookPacket( PACKET.ZC.RESTART_ACK,         onRestartAnswer );
-		Network.hookPacket( PACKET.ZC.ACK_REQ_DISCONNECT,  onDisconnectAnswer );
-		Network.hookPacket( PACKET.ZC.NOTIFY_TIME,         onPong );
-
-		// Extend controller
-		require('./MapEngine/Main').call();
-		require('./MapEngine/NPC').call();
-		require('./MapEngine/Entity').call();
-		require('./MapEngine/Item').call();
-		require('./MapEngine/PrivateMessage').call();
-		require('./MapEngine/Storage').call();
-		require('./MapEngine/Group').call();
-		require('./MapEngine/Guild').call();
-		require('./MapEngine/Skill').call();
-		require('./MapEngine/ChatRoom').call();
+			// Extend controller
+			require('./MapEngine/Main').call();
+			require('./MapEngine/NPC').call();
+			require('./MapEngine/Entity').call();
+			require('./MapEngine/Item').call();
+			require('./MapEngine/PrivateMessage').call();
+			require('./MapEngine/Storage').call();
+			require('./MapEngine/Group').call();
+			require('./MapEngine/Guild').call();
+			require('./MapEngine/Skill').call();
+			require('./MapEngine/ChatRoom').call();
+		}
 	}
 
 
@@ -250,15 +252,8 @@ define(function( require )
 	 */
 	function onServerChange( pkt )
 	{
-		jQuery(window).off('keydown.map');
-		/*
-			pkt.mapName
-			pkt.xPos
-			pkt.yPos
-			pkt.addr.ip
-			pkt.addr.port
-		*/
-		// Have to resend authcode sex etc ?
+		jQuery(window).off('keydown.map');		
+		init( pkt.addr.ip, pkt.addr.port, pkt.mapName, false );
 	}
 
 

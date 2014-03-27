@@ -143,6 +143,14 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 		};
 	};
 
+	PACKET.CH.CHARLIST_REQ = function PACKET_CH_CHARLIST_REQ() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
 
 
 	// 0x72
@@ -161,7 +169,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt.view.setUint32( ver[3], this.AID,        true );
 			pkt.view.setUint32( ver[4], this.GID,        true );
 			pkt.view.setUint32( ver[5], this.AuthCode,   true );
-			pkt.view.setUint32( ver[6], this.ClientTime, true );
+			pkt.view.setUint32( ver[6], this.clientTime, true );
 			pkt.view.setUint8(  ver[7], this.Sex,        true );
 
 			return pkt;
@@ -9714,6 +9722,21 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 		this.leftDamage = fp.readLong();
 	};
 	PACKET.ZC.NOTIFY_ACT2.size = 33;
+	
+	
+	PACKET.ZC.NOTIFY_ACT3 = function PACKET_ZC_NOTIFY_ACT3(fp, end) {
+		this.GID        = fp.readULong();
+		this.targetGID  = fp.readULong();
+		this.startTime  = fp.readULong();
+		this.attackMT   = fp.readLong();
+		this.attackedMT = fp.readLong();
+		this.damage     = fp.readLong();
+		this.isSpDamage = fp.readUChar();
+		this.count      = fp.readShort();
+		this.action     = fp.readUChar();
+		this.leftDamage = fp.readLong();
+	};
+	PACKET.ZC.NOTIFY_ACT2.size = 34;
 
 
 	// 0x2e7

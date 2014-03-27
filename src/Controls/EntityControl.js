@@ -164,7 +164,7 @@ define( [
 			case Entity.TYPE_NPC:
 				pkt      = new PACKET.CZ.CONTACTNPC();
 				pkt.NAID = this.GID;
-				pkt.type = 0; // TODO: what is it for ?
+				pkt.type = 1; // TODO: what is it for ?
 				Network.sendPacket(pkt);
 
 				// Updare look
