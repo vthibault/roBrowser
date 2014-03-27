@@ -88,8 +88,14 @@ define( [
 			case this.display.TYPE.NONE:
 				this.display.load = this.display.TYPE.LOADING;
 
-				var pkt = new PACKET.CZ.REQNAME();
-				pkt.AID = this.GID;
+				if (ROConfig.usePacketVersion2)
+				{
+					var pkt = new PACKET.CZ.REQNAME2();
+				} else {
+					var pkt = new PACKET.CZ.REQNAME();
+				}
+				
+				pkt.AID = this.AID;
 				Network.sendPacket(pkt);
 				break;
 
@@ -155,7 +161,13 @@ define( [
 
 				Session.Entity.lookTo( this.position[0], this.position[1] );
 
-				pkt       = new PACKET.CZ.ITEM_PICKUP();
+				if (ROConfig.usePacketVersion2)
+				{
+					pkt       = new PACKET.CZ.ITEM_PICKUP();
+				} else {
+					pkt       = new PACKET.CZ.ITEM_PICKUP();
+				}
+				
 				pkt.ITAID = this.GID;
 				Network.sendPacket(pkt);
 
@@ -163,13 +175,19 @@ define( [
 
 			case Entity.TYPE_NPC:
 				pkt      = new PACKET.CZ.CONTACTNPC();
-				pkt.NAID = this.GID;
-				pkt.type = 0; // TODO: what is it for ?
+				pkt.NAID = this.AID;
+				pkt.type = 1; // TODO: what is it for ?
 				Network.sendPacket(pkt);
 
 				// Updare look
 				Session.Entity.lookTo( this.position[0], this.position[1] );
-				pkt = new PACKET.CZ.CHANGE_DIRECTION();
+				if (ROConfig.usePacketVersion2)
+				{
+					pkt = new PACKET.CZ.CHANGE_DIRECTION();
+				} else {
+					pkt = new PACKET.CZ.CHANGE_DIRECTION2();
+				}
+				
 				pkt.headDir = Session.Entity.headDir;
 				pkt.dir     = Session.Entity.direction;
 				Network.sendPacket(pkt);
@@ -230,15 +248,27 @@ define( [
 
 				// in range
 				if (count <= main.attack_range) {
-					pkt           = new PACKET.CZ.REQUEST_ACT();
+					if (ROConfig.usePacketVersion2)
+					{
+						pkt           = new PACKET.CZ.REQUEST_ACT2();
+					} else {
+						pkt           = new PACKET.CZ.REQUEST_ACT();
+					}
+					
 					pkt.action    = 7;
-					pkt.targetGID = this.GID;
+					pkt.targetGID = this.AID;
 					Network.sendPacket(pkt);
 				}
 
 				// Move to entity
 				else {
-					var _pkt     = new PACKET.CZ.REQUEST_MOVE();
+					if (ROConfig.usePacketVersion2)
+					{
+						var _pkt     = new PACKET.CZ.REQUEST_MOVE2();
+					} else {
+						var _pkt     = new PACKET.CZ.REQUEST_MOVE();
+					}
+					
 					_pkt.dest[0] = out[ count - 1 ][0];
 					_pkt.dest[1] = out[ count - 1 ][1];
 					Network.sendPacket(_pkt);

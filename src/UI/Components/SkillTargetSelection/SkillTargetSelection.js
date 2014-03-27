@@ -254,7 +254,7 @@ define(function(require)
 			}
 
 			if (target & _target || KEYS.SHIFT || Controls.noshift) {
-				SkillTargetSelection.onUseSkillToId(_skill.SKID, _skill.level, entity.GID);
+				SkillTargetSelection.onUseSkillToId(_skill.SKID, _skill.level, entity.AID);
 			}
 		}
 
@@ -266,7 +266,7 @@ define(function(require)
 	/**
 	 * Functions to define
 	 */
-	SkillTargetSelection.onUseSkillToId = function onUseSkillToId(/*id, level, GID*/){}
+	SkillTargetSelection.onUseSkillToId = function onUseSkillToId(/*id, level, AID*/){}
 	SkillTargetSelection.onUseSkillToPos = function onUseSkillToId(/*id, level, x, y*/){}
 
 

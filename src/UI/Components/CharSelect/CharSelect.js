@@ -226,6 +226,22 @@ define(function(require)
 
 		moveCursorTo( _index );
 	};
+	
+	
+	CharSelect.setCharacterInfo = function setCharacterInfo( pkt )
+	{
+		if (pkt.charInfo) {
+			var i, count = pkt.charInfo.length;
+			for (i = 0; i < count; ++i) {
+				CharSelect.addCharacter( pkt.charInfo[i] );
+			}
+		}
+
+		this.ui.find('.slotinfo .number').text( _list.length + ' / ' + _maxSlots );
+		this.ui.find('.pageinfo .count').text( _maxSlots / 3 );
+
+		moveCursorTo( _index );
+	};
 
 
 	/**

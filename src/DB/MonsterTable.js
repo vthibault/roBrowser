@@ -1451,6 +1451,7 @@ define(function()
 		4050: "Munak",
 		4051: "Death Knight",
 		4052: "Dark Collector",
+		4064: "Mechanic",
 		6001: "LIF",
 		6002: "AMISTR",
 		6003: "FILIR",

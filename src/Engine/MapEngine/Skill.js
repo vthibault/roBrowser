@@ -199,10 +199,16 @@ define(function( require )
 	 */
 	SkillWindow.onUseSkill = SkillTargetSelection.onUseSkillToId  = function onUseSkill( id, level, targetID)
 	{
-		var pkt = new PACKET.CZ.USE_SKILL();
+		if (ROConfig.usePacketVersion2)
+		{
+			var pkt = new PACKET.CZ.USE_SKILL2();
+		} else {
+			var pkt = new PACKET.CZ.USE_SKILL();
+		}
+		
 		pkt.SKID          = id;
 		pkt.selectedLevel = level;
-		pkt.targetID      = targetID || Session.Entity.GID;
+		pkt.targetID      = targetID || Session.Entity.AID;
 
 		Network.sendPacket(pkt);
 	};

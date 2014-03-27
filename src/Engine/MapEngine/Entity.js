@@ -43,7 +43,7 @@ define(function( require )
 	 */
 	function onEntitySpam( pkt )
 	{
-		var entity = EntityManager.get(pkt.GID);
+		var entity = EntityManager.get(pkt.AID);
 
 		if (entity) {
 			entity.set(pkt);
@@ -64,7 +64,7 @@ define(function( require )
 	 */
 	function onEntityVanish( pkt )
 	{
-		var entity = EntityManager.get(pkt.GID);
+		var entity = EntityManager.get(pkt.AID);
 		if (entity) {
 			entity.remove( pkt.type );
 		}
@@ -78,7 +78,7 @@ define(function( require )
 	 */
 	function onEntityMove( pkt )
 	{
-		var entity = EntityManager.get(pkt.GID);
+		var entity = EntityManager.get(pkt.AID);
 		if (entity) {
 			//entity.position[0] = pkt.MoveData[0];
 			//entity.position[1] = pkt.MoveData[1];
@@ -95,7 +95,7 @@ define(function( require )
 	 */
 	function onEntityStopMove( pkt )
 	{
-		var entity = EntityManager.get(pkt.GID);
+		var entity = EntityManager.get(pkt.AID);
 		if (entity) {
 
 			if (Math.abs(entity.position[0] - pkt.xPos) > 1.0 ||
@@ -192,8 +192,8 @@ define(function( require )
 	 */
 	function onEntityAction( pkt )
 	{
-		var srcEntity = EntityManager.get(pkt.GID);
-		var dstEntity = EntityManager.get(pkt.targetGID);
+		var srcEntity = EntityManager.get(pkt.AID);
+		var dstEntity = EntityManager.get(pkt.targetAID);
 		var target;
 
 		// Entity out of the screen ?
@@ -336,7 +336,7 @@ define(function( require )
 			return;
 		}
 
-		entity = EntityManager.get(pkt.GID);
+		entity = EntityManager.get(pkt.AID);
 		if (entity) {
 			entity.dialog.set( pkt.msg );
 		}
@@ -372,7 +372,7 @@ define(function( require )
 		// Remove "pseudo : |00Dialogue
 		pkt.msg = pkt.msg.replace(/\: \|\d{2}/, ': ');
 
-		entity = EntityManager.get(pkt.accountID);
+		entity = EntityManager.get(pkt.AID);
 		if (entity) {
 			entity.dialog.set( pkt.msg );
 		}
@@ -448,7 +448,7 @@ define(function( require )
 	 */
 	function onEntityViewChange( pkt )
 	{
-		var entity = EntityManager.get(pkt.GID);
+		var entity = EntityManager.get(pkt.AID);
 
 		if (!entity) {
 			return;
@@ -699,14 +699,14 @@ define(function( require )
 			srcEntity.lookTo( dstEntity.position[0], dstEntity.position[1] );
 
 			if (pkt.delayTime) {
-				Effects.add(new LockOnTarget( dstEntity, Renderer.tick, Renderer.tick + pkt.delayTime), srcEntity.GID);
+				Effects.add(new LockOnTarget( dstEntity, Renderer.tick, Renderer.tick + pkt.delayTime), srcEntity.AID);
 			}
 		}
 		else if (pkt.xPos && pkt.yPos) {
 			srcEntity.lookTo( pkt.xPos, pkt.yPos );
 
 			if (pkt.delayTime) {
-				Effects.add(new MagicTarget( pkt.SKID, pkt.xPos, pkt.yPos, Renderer.tick + pkt.delayTime), srcEntity.GID);
+				Effects.add(new MagicTarget( pkt.SKID, pkt.xPos, pkt.yPos, Renderer.tick + pkt.delayTime), srcEntity.AID);
 			}
 		}
 	}
@@ -724,8 +724,8 @@ define(function( require )
 			entity.cast.clean();
 
 			// Cancel effects
-			Effects.remove(LockOnTarget, entity.GID);
-			Effects.remove(MagicTarget, entity.GID);
+			Effects.remove(LockOnTarget, entity.AID);
+			Effects.remove(MagicTarget, entity.AID);
 		}
 	}
 
@@ -930,6 +930,7 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.STOPMOVE,                     onEntityStopMove );
 		Network.hookPacket( PACKET.ZC.NOTIFY_ACT,                   onEntityAction );
 		Network.hookPacket( PACKET.ZC.NOTIFY_ACT2,                  onEntityAction );
+		Network.hookPacket( PACKET.ZC.NOTIFY_ACT3,                  onEntityAction );
 		Network.hookPacket( PACKET.ZC.NOTIFY_CHAT,                  onEntityTalk );
 		Network.hookPacket( PACKET.ZC.NPC_CHAT,                     onEntityTalkColor );
 		Network.hookPacket( PACKET.ZC.ACK_REQNAME,                  onEntityIdentity );

@@ -101,8 +101,9 @@ define([
 		Network.hookPacket( PACKET.HC.REFUSE_DELETECHAR,             onDeleteAnswer );
 		Network.hookPacket( PACKET.HC.NOTIFY_ZONESVR,                onReceiveMapInfo );
 		Network.hookPacket( PACKET.HC.ACCEPT_ENTER_NEO_UNION_HEADER, onConnectionAccepted );
-		Network.hookPacket( PACKET.HC.ACCEPT_ENTER_NEO_UNION_LIST,   onConnectionAccepted );
+		Network.hookPacket( PACKET.HC.ACCEPT_ENTER_NEO_UNION_LIST,   onCharacterInfo );
 		Network.hookPacket( PACKET.HC.NOTIFY_ACCESSIBLE_MAPNAME,     onMapUnavailable);
+		Network.hookPacket( PACKET.HC.CHARLIST_NOTIFY,        			 onCharlistNotify);
 	}
 
 
@@ -155,6 +156,11 @@ define([
 		CharSelect.append();
 		CharSelect.setInfo( pkt );
 	}
+	
+	function onCharacterInfo( pkt )
+	{
+		CharSelect.setCharacterInfo( pkt );
+	}
 
 
 	/**
@@ -176,6 +182,15 @@ define([
 	}
 
 
+	function onCharlistNotify( pkt )
+	{
+		var pkt2 = new PACKET.CH.CHARLIST_REQ();
+		var i;
+		for (i = 0; i < pkt.TotalCnt / 3; i += 1) {
+			Network.sendPacket(pkt2);
+		}
+	}
+	
 	/**
 	 * No map server available
 	 *

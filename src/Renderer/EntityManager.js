@@ -21,12 +21,12 @@ function(       Session,                   Entity,     SpriteRenderer,          
 	 * @param {number} gid
 	 * @returns {number} position
 	 */
-	function getEntityIndex( gid )
+	function getEntityIndex( aid )
 	{
 		var i, count = _list.length;
 	
 		for (i = 0; i < count; ++i) {
-			if (_list[i].GID === gid) {
+			if (_list[i].AID === aid) {
 				return i;
 			}
 		}
@@ -58,18 +58,18 @@ function(       Session,                   Entity,     SpriteRenderer,          
 	 * @param {number} gid
 	 * @returns {object} Entity
 	 */
-	function getEntity( gid )
+	function getEntity( aid )
 	{
 		// Reason for this check:
 		// - Most packets your received is for the main character, so
 		//   this check speed up the process.
 		// - When you load a map, the main character is not in the list yet
 		//   so we skip a lot of vital informations
-		if (Session.Entity.GID === gid) {
+		if (Session.Entity.AID === aid) {
 			return Session.Entity;
 		}
 
-		var index = getEntityIndex(gid);
+		var index = getEntityIndex(aid);
 		if (index < 0) {
 			return null;
 		}
@@ -86,7 +86,7 @@ function(       Session,                   Entity,     SpriteRenderer,          
 	 */
 	function addEntity( entity )
 	{
-		var index = getEntityIndex( entity.GID );
+		var index = getEntityIndex( entity.AID );
 		if (index < 0) {
 			index = _list.push( entity ) - 1;
 		}
@@ -115,11 +115,11 @@ function(       Session,                   Entity,     SpriteRenderer,          
 
 	/**
 	 * Remove an entity
-	 * @param {number} gid
+	 * @param {number} aid
 	 */
-	function removeEntity( gid )
+	function removeEntity( aid )
 	{
-		var index = getEntityIndex( gid );
+		var index = getEntityIndex( aid );
 
 		if (index > -1) {
 			_list[index].clean();
@@ -204,8 +204,8 @@ function(       Session,                   Entity,     SpriteRenderer,          
 	 */
 	function sort(  a, b )
 	{
-		var aDepth = a.depth + (a.GID%100) / 1000;
-		var bDepth = b.depth + (b.GID%100) / 1000;
+		var aDepth = a.depth + (a.AID%100) / 1000;
+		var bDepth = b.depth + (b.AID%100) / 1000;
 
 		return bDepth - aDepth;
 	}
@@ -219,8 +219,8 @@ function(       Session,                   Entity,     SpriteRenderer,          
 	 */
 	function sortByPriority( a, b )
 	{
-		var aDepth = a.depth + (a.GID%100) / 1000;
-		var bDepth = b.depth + (b.GID%100) / 1000;
+		var aDepth = a.depth + (a.AID%100) / 1000;
+		var bDepth = b.depth + (b.AID%100) / 1000;
 
 		if (a.objecttype !== b.objecttype) {
 			aDepth -= Entity.PickingPriority[a.objecttype] * 100;

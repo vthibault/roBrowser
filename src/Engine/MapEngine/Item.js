@@ -196,7 +196,7 @@ define(function( require )
 	 */
 	function onItemUseAnswer( pkt )
 	{
-		if (!pkt.hasOwnProperty('AID') || Session.Entity.GID === pkt.AID) {
+		if (!pkt.hasOwnProperty('AID') || Session.Entity.AID === pkt.AID) {
 			if (pkt.result) {
 				Inventory.updateItem( pkt.index, pkt.count );
 			}

@@ -143,6 +143,14 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 		};
 	};
 
+	PACKET.CH.CHARLIST_REQ = function PACKET_CH_CHARLIST_REQ() {
+		this.build = function() {
+			var pkt_len = 2;
+			var pkt_buf = new BinaryWriter(pkt_len);
+			pkt_buf.writeShort(0x9a1);
+			return pkt_buf;
+		};
+	};
 
 
 	// 0x72
@@ -299,6 +307,18 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 		};
 	};
 
+	PACKET.CZ.REQNAME2 = function PACKET_CZ_REQNAME2() {
+		this.AID        = 0;
+
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+
+			pkt.writeShort(ver[1]);
+			pkt.view.setUint32( ver[3], this.AID, true);
+			return pkt;
+		};
+	};
 
 
 	// 0x96
@@ -353,6 +373,21 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			return pkt;
 		};
 	};
+	
+	PACKET.CZ.CHANGE_DIRECTION2 = function PACKET_CZ_CHANGE_DIRECTION2() {
+		this.headDir    = 0;
+		this.dir        = 0;
+
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+
+			pkt.writeShort(ver[1]);
+			pkt.view.setInt16( ver[3], this.headDir, true );
+			pkt.view.setUint8( ver[4], this.dir, true );
+			return pkt;
+		};
+	};
 
 
 
@@ -367,6 +402,18 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt.writeShort(ver[1]);
 			pkt.view.setUint32( ver[3], this.ITAID, true );
 			return pkt;
+		};
+	};
+	
+	PACKET.CZ.ITEM_PICKUP2 = function PACKET_CZ_ITEM_PICKUP2() {
+		this.ITAID      = 0;
+
+		this.build = function() {
+			var pkt_len = 2 + 4;
+			var pkt_buf = new BinaryWriter(pkt_len);
+			pkt_buf.writeShort(0x362);
+			pkt_buf.writeULong(this.ITAID);
+			return pkt_buf;
 		};
 	};
 
@@ -385,6 +432,21 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt.view.setUint16( ver[3], this.Index, true );
 			pkt.view.setInt16(  ver[4], this.count, true );
 			return pkt;
+		};
+	};
+	
+	
+	PACKET.CZ.ITEM_THROW2 = function PACKET_CZ_ITEM_THROW2() {
+		this.Index      = 0;
+		this.count      = 0;
+
+		this.build = function() {
+			var pkt_len = 2 + 2 + 2;
+			var pkt_buf = new BinaryWriter(pkt_len);
+			pkt_buf.writeShort(0x363);
+			pkt_buf.writeUShort(this.Index);
+			pkt_buf.writeShort(this.count);
+			return pkt_buf;
 		};
 	};
 
@@ -5229,7 +5291,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 	// 0x78
 	PACKET.ZC.NOTIFY_STANDENTRY = function PACKET_ZC_NOTIFY_STANDENTRY(fp, end) {
 		this.objecttype  = fp.readUChar();
-		this.GID         = fp.readULong();
+		this.AID         = fp.readULong();
 		this.speed       = fp.readShort();
 		this.bodyState   = fp.readShort();
 		this.healthState = fp.readShort();
@@ -5261,7 +5323,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 	// 0x79
 	PACKET.ZC.NOTIFY_NEWENTRY = function PACKET_ZC_NOTIFY_NEWENTRY(fp, end) {
-		this.GID         = fp.readULong();
+		this.AID         = fp.readULong();
 		this.speed       = fp.readShort();
 		this.bodyState   = fp.readShort();
 		this.healthState = fp.readShort();
@@ -5292,7 +5354,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 	// 0x7a
 	PACKET.ZC.NOTIFY_ACTENTRY = function PACKET_ZC_NOTIFY_ACTENTRY(fp, end) {
-		this.GID          = fp.readULong();
+		this.AID          = fp.readULong();
 		this.speed        = fp.readShort();
 		this.bodyState    = fp.readShort();
 		this.healthState  = fp.readShort();
@@ -5325,7 +5387,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 	// 0x7b
 	PACKET.ZC.NOTIFY_MOVEENTRY = function PACKET_ZC_NOTIFY_MOVEENTRY(fp, end) {
-		this.GID           = fp.readULong();
+		this.AID           = fp.readULong();
 		this.speed         = fp.readShort();
 		this.bodyState     = fp.readShort();
 		this.healthState   = fp.readShort();
@@ -5358,7 +5420,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 	// 0x7c
 	PACKET.ZC.NOTIFY_STANDENTRY_NPC = function PACKET_ZC_NOTIFY_STANDENTRY_NPC(fp, end) {
 		this.objecttype  = fp.readUChar();
-		this.GID         = fp.readULong();
+		this.AID         = fp.readULong();
 		this.speed       = fp.readShort();
 		this.bodyState   = fp.readShort();
 		this.healthState = fp.readShort();
@@ -5391,7 +5453,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 	// 0x80
 	PACKET.ZC.NOTIFY_VANISH = function PACKET_ZC_NOTIFY_VANISH(fp, end) {
-		this.GID        = fp.readULong();
+		this.AID        = fp.readULong();
 		this.type       = fp.readUChar();
 	};
 	PACKET.ZC.NOTIFY_VANISH.size = 7;
@@ -5418,7 +5480,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 	// 0x86
 	PACKET.ZC.NOTIFY_MOVE = function PACKET_ZC_NOTIFY_MOVE(fp, end) {
-		this.GID           = fp.readULong();
+		this.AID           = fp.readULong();
 		this.MoveData      = fp.readPos2();
 		this.moveStartTime = fp.readULong();
 	};
@@ -5444,8 +5506,8 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 	// 0x8a
 	PACKET.ZC.NOTIFY_ACT = function PACKET_ZC_NOTIFY_ACT(fp, end) {
-		this.GID        = fp.readULong();
-		this.targetGID  = fp.readULong();
+		this.AID        = fp.readULong();
+		this.targetAID  = fp.readULong();
 		this.startTime  = fp.readULong();
 		this.attackMT   = fp.readLong();
 		this.attackedMT = fp.readLong();
@@ -5459,8 +5521,8 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 	// 0x8b
 	PACKET.ZC.NOTIFY_ACT_POSITION = function PACKET_ZC_NOTIFY_ACT_POSITION(fp, end) {
-		this.GID        = fp.readULong();
-		this.targetGID  = fp.readULong();
+		this.AID        = fp.readULong();
+		this.targetAID  = fp.readULong();
 		this.startTime  = fp.readULong();
 		this.xPos       = fp.readShort();
 		this.yPos       = fp.readShort();
@@ -5473,7 +5535,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 	// 0x8d
 	PACKET.ZC.NOTIFY_CHAT = function PACKET_ZC_NOTIFY_CHAT(fp, end) {
-		this.GID          = fp.readULong();
+		this.AID          = fp.readULong();
 		this.msg          = fp.readString(end-fp.tell());
 	};
 	PACKET.ZC.NOTIFY_CHAT.size = -1;
@@ -5852,7 +5914,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 	// 0xc0
 	PACKET.ZC.EMOTION = function PACKET_ZC_EMOTION(fp, end) {
-		this.GID        = fp.readULong();
+		this.AID        = fp.readULong();
 		this.type       = fp.readUChar();
 	};
 	PACKET.ZC.EMOTION.size = 7;
@@ -5867,7 +5929,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 	// 0xc3
 	PACKET.ZC.SPRITE_CHANGE = function PACKET_ZC_SPRITE_CHANGE(fp, end) {
-		this.GID        = fp.readULong();
+		this.AID        = fp.readULong();
 		this.type       = fp.readUChar();
 		this.value      = fp.readUChar();
 	};
@@ -7261,7 +7323,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 	// 0x194
 	PACKET.ZC.ACK_REQNAME_BYGID = function PACKET_ZC_ACK_REQNAME_BYGID(fp, end) {
-		this.GID        = fp.readULong();
+		this.AID        = fp.readULong();
 		this.CName      = fp.readString(24);
 	};
 	PACKET.ZC.ACK_REQNAME_BYGID.size = 30;
@@ -7348,7 +7410,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 	// 0x1a4
 	PACKET.ZC.CHANGESTATE_PET = function PACKET_ZC_CHANGESTATE_PET(fp, end) {
 		this.type       = fp.readChar();
-		this.GID        = fp.readLong();
+		this.AID        = fp.readLong();
 		this.data       = fp.readLong();
 	};
 	PACKET.ZC.CHANGESTATE_PET.size = 11;
@@ -7370,7 +7432,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 	// 0x1aa
 	PACKET.ZC.PET_ACT = function PACKET_ZC_PET_ACT(fp, end) {
-		this.GID        = fp.readLong();
+		this.AID        = fp.readLong();
 		this.data       = fp.readLong();
 	};
 	PACKET.ZC.PET_ACT.size = 10;
@@ -7408,7 +7470,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 	// 0x1b0
 	PACKET.ZC.NPCSPRITE_CHANGE = function PACKET_ZC_NPCSPRITE_CHANGE(fp, end) {
-		this.GID        = fp.readULong();
+		this.AID        = fp.readULong();
 		this.type       = fp.readUChar();
 		this.value      = fp.readULong();
 	};
@@ -7589,7 +7651,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 	// 0x1cc
 	PACKET.ZC.MONSTER_TALK = function PACKET_ZC_MONSTER_TALK(fp, end) {
-		this.GID        = fp.readULong();
+		this.AID        = fp.readULong();
 		this.stateId    = fp.readUChar();
 		this.skillId    = fp.readUChar();
 		this.arg1       = fp.readUChar();
@@ -7674,7 +7736,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 	// 0x1d7
 	PACKET.ZC.SPRITE_CHANGE2 = function PACKET_ZC_SPRITE_CHANGE2(fp, end) {
-		this.GID        = fp.readULong();
+		this.AID        = fp.readULong();
 		this.type       = fp.readUChar();
 		this.value      = fp.readULong();
 	};
@@ -7683,7 +7745,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 	// 0x1d8
 	PACKET.ZC.NOTIFY_STANDENTRY2 = function PACKET_ZC_NOTIFY_STANDENTRY2(fp, end) {
-		this.GID         = fp.readULong();
+		this.AID         = fp.readULong();
 		this.speed       = fp.readShort();
 		this.bodyState   = fp.readShort();
 		this.healthState = fp.readShort();
@@ -7714,7 +7776,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 	// 0x1d9
 	PACKET.ZC.NOTIFY_NEWENTRY2 = function PACKET_ZC_NOTIFY_NEWENTRY2(fp, end) {
-		this.GID         = fp.readULong();
+		this.AID         = fp.readULong();
 		this.speed       = fp.readShort();
 		this.bodyState   = fp.readShort();
 		this.healthState = fp.readShort();
@@ -7744,7 +7806,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 	// 0x1da
 	PACKET.ZC.NOTIFY_MOVEENTRY2 = function PACKET_ZC_NOTIFY_MOVEENTRY2(fp, end) {
-		this.GID           = fp.readULong();
+		this.AID           = fp.readULong();
 		this.speed         = fp.readShort();
 		this.bodyState     = fp.readShort();
 		this.healthState   = fp.readShort();
@@ -8143,7 +8205,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 	// 0x211
 	PACKET.ZH.MOVE_PVPWORLD = function PACKET_ZH_MOVE_PVPWORLD(fp, end) {
-		this.GID        = fp.readULong();
+		this.AID        = fp.readULong();
 	};
 	PACKET.ZH.MOVE_PVPWORLD.size = 6;
 
@@ -8354,7 +8416,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 	// 0x22a
 	PACKET.ZC.NOTIFY_STANDENTRY3 = function PACKET_ZC_NOTIFY_STANDENTRY3(fp, end) {
-		this.GID         = fp.readULong();
+		this.AID         = fp.readULong();
 		this.speed       = fp.readShort();
 		this.bodyState   = fp.readShort();
 		this.healthState = fp.readShort();
@@ -8385,7 +8447,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 	// 0x22b
 	PACKET.ZC.NOTIFY_NEWENTRY3 = function PACKET_ZC_NOTIFY_NEWENTRY3(fp, end) {
-		this.GID         = fp.readULong();
+		this.AID         = fp.readULong();
 		this.speed       = fp.readShort();
 		this.bodyState   = fp.readShort();
 		this.healthState = fp.readShort();
@@ -8416,7 +8478,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 	// 0x22c
 	PACKET.ZC.NOTIFY_MOVEENTRY3 = function PACKET_ZC_NOTIFY_MOVEENTRY3(fp, end) {
 		this.objecttype    = fp.readUChar();
-		this.GID           = fp.readULong();
+		this.AID           = fp.readULong();
 		this.speed         = fp.readShort();
 		this.bodyState     = fp.readShort();
 		this.healthState   = fp.readShort();
@@ -8477,7 +8539,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 	PACKET.ZC.CHANGESTATE_MER = function PACKET_ZC_CHANGESTATE_MER(fp, end) {
 		this.type       = fp.readChar();
 		this.state      = fp.readChar();
-		this.GID        = fp.readLong();
+		this.AID        = fp.readLong();
 		this.data       = fp.readLong();
 	};
 	PACKET.ZC.CHANGESTATE_MER.size = 12;
@@ -8820,7 +8882,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			for ( i=0; i<count; ++i ) {
 				out[i] = {};
 				out[i].questID  = fp.readULong();
-				out[i].mobGID   = fp.readULong();
+				out[i].mobAID   = fp.readULong();
 				out[i].maxCount = fp.readShort();
 				out[i].count    = fp.readShort();
 			}
@@ -9275,7 +9337,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 					var i, count=3, out=new Array(count);
 					for ( i=0; i<count; ++i ) {
 						out[i] = {};
-						out[i].mobGID    = fp.readULong();
+						out[i].mobAID    = fp.readULong();
 						out[i].huntCount = fp.readShort();
 						out[i].mobName   = fp.readString(24);
 					}
@@ -9299,7 +9361,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			var i, out=new Array(count);
 			for ( i=0; i<count; ++i ) {
 				out[i] = {};
-				out[i].mobGID    = fp.readULong();
+				out[i].mobAID    = fp.readULong();
 				out[i].huntCount = fp.readShort();
 				out[i].mobName   = fp.readString(24);
 			}
@@ -9324,7 +9386,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			for ( i=0; i<count; ++i ) {
 				out[i] = {};
 				out[i].questID  = fp.readULong();
-				out[i].mobGID   = fp.readULong();
+				out[i].mobAID   = fp.readULong();
 				out[i].maxCount = fp.readShort();
 				out[i].count    = fp.readShort();
 			}
@@ -9402,7 +9464,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 	// 0x2c1
 	PACKET.ZC.NPC_CHAT = function PACKET_ZC_NPC_CHAT(fp, end) {
-		this.accountID    = fp.readULong();
+		this.AID          = fp.readULong();
 		this.color        = fp.readULong();
 		this.msg          = fp.readString(end-fp.tell());
 	};
@@ -9703,8 +9765,8 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 	// 0x2e1
 	PACKET.ZC.NOTIFY_ACT2 = function PACKET_ZC_NOTIFY_ACT2(fp, end) {
-		this.GID        = fp.readULong();
-		this.targetGID  = fp.readULong();
+		this.AID        = fp.readULong();
+		this.targetAID  = fp.readULong();
 		this.startTime  = fp.readULong();
 		this.attackMT   = fp.readLong();
 		this.attackedMT = fp.readLong();
@@ -9714,6 +9776,21 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 		this.leftDamage = fp.readLong();
 	};
 	PACKET.ZC.NOTIFY_ACT2.size = 33;
+	
+	
+	PACKET.ZC.NOTIFY_ACT3 = function PACKET_ZC_NOTIFY_ACT3(fp, end) {
+		this.AID        = fp.readULong();
+		this.targetAID  = fp.readULong();
+		this.startTime  = fp.readULong();
+		this.attackMT   = fp.readLong();
+		this.attackedMT = fp.readLong();
+		this.damage     = fp.readLong();
+		this.isSpDamage = fp.readUChar();
+		this.count      = fp.readShort();
+		this.action     = fp.readUChar();
+		this.leftDamage = fp.readLong();
+	};
+	PACKET.ZC.NOTIFY_ACT2.size = 34;
 
 
 	// 0x2e7
@@ -9818,7 +9895,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 	// 0x2ec
 	PACKET.ZC.NOTIFY_MOVEENTRY4 = function PACKET_ZC_NOTIFY_MOVEENTRY4(fp, end) {
 		this.objecttype    = fp.readUChar();
-		this.GID           = fp.readULong();
+		this.AID           = fp.readULong();
 		this.speed         = fp.readShort();
 		this.bodyState     = fp.readShort();
 		this.healthState   = fp.readShort();
@@ -9850,7 +9927,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 	// 0x2ed
 	PACKET.ZC.NOTIFY_NEWENTRY4 = function PACKET_ZC_NOTIFY_NEWENTRY4(fp, end) {
-		this.GID         = fp.readULong();
+		this.AID         = fp.readULong();
 		this.speed       = fp.readShort();
 		this.bodyState   = fp.readShort();
 		this.healthState = fp.readShort();
@@ -9881,7 +9958,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 	// 0x2ee
 	PACKET.ZC.NOTIFY_STANDENTRY4 = function PACKET_ZC_NOTIFY_STANDENTRY4(fp, end) {
-		this.GID         = fp.readULong();
+		this.AID         = fp.readULong();
 		this.speed       = fp.readShort();
 		this.bodyState   = fp.readShort();
 		this.healthState = fp.readShort();
@@ -10322,7 +10399,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 	// 0x7f7
 	PACKET.ZC.NOTIFY_MOVEENTRY5 = function PACKET_ZC_NOTIFY_MOVEENTRY7(fp, end) {
 		this.objecttype    = fp.readUChar();
-		this.GID           = fp.readULong();
+		this.AID           = fp.readULong();
 		this.speed         = fp.readShort();
 		this.bodyState     = fp.readShort();
 		this.healthState   = fp.readShort();
@@ -10356,7 +10433,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 	// 0x7f8
 	PACKET.ZC.NOTIFY_NEWENTRY5 = function PACKET_ZC_NOTIFY_NEWENTRY5(fp, end) {
 		this.objecttype   = fp.readUChar();
-		this.GID          = fp.readULong();
+		this.AID          = fp.readULong();
 		this.speed        = fp.readShort();
 		this.bodyState    = fp.readShort();
 		this.healthState  = fp.readShort();
@@ -10389,7 +10466,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 	// 0x7f9
 	PACKET.ZC.NOTIFY_STANDENTRY5 = function PACKET_ZC_NOTIFY_STANDENTRY5(fp, end) {
 		this.objecttype   = fp.readUChar();
-		this.GID          = fp.readULong();
+		this.AID          = fp.readULong();
 		this.speed        = fp.readShort();
 		this.bodyState    = fp.readShort();
 		this.healthState  = fp.readShort();
@@ -10730,7 +10807,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 	// 0x820
 	PACKET.ZC.COSTUME_SPRITE_CHANGE = function PACKET_ZC_COSTUME_SPRITE_CHANGE(fp, end) {
-		this.GID        = fp.readULong();
+		this.AID        = fp.readULong();
 		this.type       = fp.readUChar();
 		this.value      = fp.readLong();
 	};
@@ -10896,7 +10973,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 	// 0x856
 	PACKET.ZC.NOTIFY_MOVEENTRY6 = function PACKET_ZC_NOTIFY_MOVEENTRY6(fp, end) {
 		this.objecttype    = fp.readUChar();
-		this.GID           = fp.readULong();
+		this.AID           = fp.readULong();
 		this.speed         = fp.readShort();
 		this.bodyState     = fp.readShort();
 		this.healthState   = fp.readShort();
@@ -10931,7 +11008,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 	// 0x857
 	PACKET.ZC.NOTIFY_STANDENTRY6 = function PACKET_ZC_NOTIFY_STANDENTRY6(fp, end) {
 		this.objecttype   = fp.readUChar();
-		this.GID          = fp.readULong();
+		this.AID          = fp.readULong();
 		this.speed        = fp.readShort();
 		this.bodyState    = fp.readShort();
 		this.healthState  = fp.readShort();
@@ -10965,7 +11042,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 	// 0x858
 	PACKET.ZC.NOTIFY_NEWENTRY6 = function PACKET_ZC_NOTIFY_NEWENTRY6(fp, end) {
 		this.objecttype   = fp.readUChar();
-		this.GID          = fp.readULong();
+		this.AID          = fp.readULong();
 		this.speed        = fp.readShort();
 		this.bodyState    = fp.readShort();
 		this.healthState  = fp.readShort();
@@ -11104,7 +11181,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 	// 0x90f
 	PACKET.ZC.NOTIFY_STANDENTRY7 = function PACKET_ZC_NOTIFY_STANDENTRY7(fp, end) {
 		this.objecttype   = fp.readUChar();
-		this.GID          = fp.readULong();
+		this.AID          = fp.readULong();
 		this.speed        = fp.readShort();
 		this.bodyState    = fp.readShort();
 		this.healthState  = fp.readShort();
@@ -11141,7 +11218,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 	// 0x914
 	PACKET.ZC.NOTIFY_MOVEENTRY7 = function PACKET_ZC_NOTIFY_MOVEENTRY7(fp, end) {
 		this.objecttype    = fp.readUChar();
-		this.GID           = fp.readULong();
+		this.AID           = fp.readULong();
 		this.speed         = fp.readShort();
 		this.bodyState     = fp.readShort();
 		this.healthState   = fp.readShort();
@@ -11179,7 +11256,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 	// 0x915
 	PACKET.ZC.NOTIFY_NEWENTRY7 = function PACKET_ZC_NOTIFY_NEWENTRY7(fp, end) {
 		this.objecttype   = fp.readUChar();
-		this.GID          = fp.readULong();
+		this.AID          = fp.readULong();
 		this.speed        = fp.readShort();
 		this.bodyState    = fp.readShort();
 		this.healthState  = fp.readShort();
