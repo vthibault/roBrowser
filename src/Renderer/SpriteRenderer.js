@@ -486,90 +486,110 @@ function(      WebGL,         glMatrix,      Camera )
 	/**
 	 * Render in 2D
 	 */
-	function RenderCanvas2D() {
-		this.size[0] *= 35;
-		this.size[1] *= 35;
+	var RenderCanvas2D = function RenderCanvas2DClosure()
+	{
+		var canvas, ctx, imageData;
 
-		// Mirror feature
-		var scale_x  = 1.0;
-		var scale_y  = 1.0;
+		canvas         = document.createElement("canvas");
+		ctx            = canvas.getContext("2d");
+		canvas.width   = 20;
+		canvas.height  = 20;
+		imageData      = ctx.createImageData(canvas.width, canvas.height);
 
-		if (this.size[0] < 0) {
-			scale_x      *= -1;
-			this.size[0] *= -1;
-		}
-
-		if (this.size[1] < 0) {
-			scale_y      *= -1;
-			this.size[1] *= -1;
-		}
-
-
-		var _x   = _pos[0] + this.offset[0] * 35;
-		var _y   = _pos[1] + this.offset[1] * 35;
-
-		var ctx;
-		var pal    = this.palette;
-		var canvas = document.createElement("canvas");
-		var frame  = this.sprite;
-		var width, height, y, x, idx1, idx2;
-		var imageData;
-
-		// Nothing to render
-		if (frame.width <= 0 || frame.height <= 0) {
-			return;
-		}
-
-		// Create canvas
-		ctx           = canvas.getContext("2d");
-		canvas.width  = width  = frame.width;
-		canvas.height = height = frame.height;
-		imageData     = ctx.createImageData( width, height );
-
-		// RGBA images
-		if (this.sprite.type === 1) {
-			for (y = 0; y < height; ++y) {
-				for (x = 0; x < width; ++x) {
-					idx1 = (x + y * width ) * 4;
-					imageData.data[ idx1 + 0 ] = frame.data[ idx1 + 0 ] * this.color[0];
-					imageData.data[ idx1 + 1 ] = frame.data[ idx1 + 1 ] * this.color[1];
-					imageData.data[ idx1 + 2 ] = frame.data[ idx1 + 2 ] * this.color[2];
-					imageData.data[ idx1 + 3 ] = frame.data[ idx1 + 3 ] * this.color[3];
-				}
+		return function RenderCanvas2D()
+		{
+			// Nothing to render
+			if (this.sprite.width <= 0 || this.sprite.height <= 0) {
+				return;
 			}
-		}
 
-		// Palettes
-		else {
-			for (y = 0; y < height; ++y) {
-				for (x = 0; x < width; ++x) {
-					if (frame.data[y * width + x]) {
-						idx1 = ( y * width + x ) * 4;
-						idx2 = frame.data[y * width + x] * 4;
-						imageData.data[ idx1 + 0 ] = pal[ idx2 + 0 ] * this.color[0];
-						imageData.data[ idx1 + 1 ] = pal[ idx2 + 1 ] * this.color[1];
-						imageData.data[ idx1 + 2 ] = pal[ idx2 + 2 ] * this.color[2];
-						imageData.data[ idx1 + 3 ] = 255             * this.color[3];
+			var scale_x, scale_y, idx1, idx2;
+			var x, y, _x, _y, width, height, outputWidth;
+			var pal, frame, color;
+			var input, output;
+
+			scale_x  = 1.0;
+			scale_y  = 1.0;
+			_x       = _pos[0] + this.offset[0] * 35;
+			_y       = _pos[1] + this.offset[1] * 35;
+			pal      = this.palette;
+			frame    = this.sprite;
+			width    = frame.width;
+			height   = frame.height;
+
+			// Divide by 35 in the entity renderer
+			this.size[0] *= 35;
+			this.size[1] *= 35;
+
+			// Mirror feature
+			if (this.size[0] < 0) {
+				scale_x      *= -1;
+				this.size[0] *= -1;
+			}
+
+			if (this.size[1] < 0) {
+				scale_y      *= -1;
+				this.size[1] *= -1;
+			}
+
+			// Resize canvas from memory
+			if (width > canvas.width || height > canvas.height) {
+				canvas.width  = width;
+				canvas.height = height;
+				imageData     = ctx.createImageData(width, height);
+			}
+
+			output      = imageData.data;
+			input       = frame.data;
+			color       = this.color;
+			outputWidth = canvas.width;
+
+			// RGBA images
+			if (this.sprite.type === 1) {
+				for (y = 0; y < height; ++y) {
+					for (x = 0; x < width; ++x) {
+						idx1 = (x + y * outputWidth) * 4;
+						idx2 = (x + y * width) * 4;
+						output[idx1 + 0] = input[idx2 + 0] * color[0];
+						output[idx1 + 1] = input[idx2 + 1] * color[1];
+						output[idx1 + 2] = input[idx2 + 2] * color[2];
+						output[idx1 + 3] = input[idx2 + 3] * color[3];
 					}
 				}
 			}
-		}
 
-		// Insert into the canvas
-		ctx.putImageData( imageData, 0, 0 );
+			// Palettes
+			else {
+				for (y = 0; y < height; ++y) {
+					for (x = 0; x < width; ++x) {
+						idx1 = (y * outputWidth + x) * 4;
+						idx2 = input[y * width + x] * 4;
+						output[idx1 + 0] = pal[idx2 + 0] * color[0];
+						output[idx1 + 1] = pal[idx2 + 1] * color[1];
+						output[idx1 + 2] = pal[idx2 + 2] * color[2];
+						output[idx1 + 3] = input[y * width + x] ? 255 * color[3] : 0;
+					}
+				}
+			}
 
-		// Render sprite in context
-		_ctx.save();
-		_ctx.translate( _x | 0, _y | 0 );
-		_ctx.rotate( this.angle / 180 * Math.PI );
-		_ctx.scale( scale_x, scale_y );
-		_ctx.drawImage(
-			 canvas,
-			-this.size[0] >> 1, -this.size[1] >> 1,
-			 this.size[0]  | 0,  this.size[1]  | 0
-		);
-		_ctx.restore();
-	}
+			// Insert into the canvas
+			ctx.putImageData( imageData, 0, 0, 0, 0, width, height);
+
+			// Render sprite in context
+			_ctx.save();
+			_ctx.translate( _x | 0, _y | 0 );
+			_ctx.rotate( this.angle / 180 * Math.PI );
+			_ctx.scale( scale_x, scale_y );
+			_ctx.drawImage(
+				 canvas,
+				 0,                  0,
+				 width,              height,
+				-this.size[0] >> 1, -this.size[1] >> 1,
+				 width,              height
+			);
+			_ctx.restore();
+		};
+	}();
 
 
 	/**
