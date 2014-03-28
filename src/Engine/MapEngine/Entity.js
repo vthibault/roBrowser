@@ -634,7 +634,9 @@ define(function( require )
 							Renderer.tick + aspd + ( 200 * i )
 						);
 
-						if (target.objecttype !== Entity.TYPE_PC) {
+						// Only display combo if the target is not entity and
+						// there are multiple attacks
+						if (target.objecttype !== Entity.TYPE_PC && pkt.count > 1) {
 							Damage.add(
 								Math.floor( pkt.damage / pkt.count * (i+1) ),
 								target,
