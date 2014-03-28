@@ -176,7 +176,11 @@ define([
 		UIManager.showErrorBox( DB.msgstringtable[msg_id] );
 	}
 
-
+	/**
+	 * Server tells the user the amount of characters
+	 *
+	 * @param {object} pkt - PACKET.HC.CHARLIST_NOTIFY
+	 */
 	function onCharlistNotify( pkt )
 	{
 		var pkt2 = new PACKET.CH.CHARLIST_REQ();

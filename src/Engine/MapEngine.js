@@ -101,8 +101,7 @@ define(function( require )
 			});
 		}, true);
 
-		if (initHooksAndExtends)
-		{
+		if (initHooksAndExtends) {
 			// Hook packets
 			Network.hookPacket( PACKET.ZC.AID,                 onReceiveAccountID );
 			Network.hookPacket( PACKET.ZC.ACCEPT_ENTER,        onConnectionAccepted );
