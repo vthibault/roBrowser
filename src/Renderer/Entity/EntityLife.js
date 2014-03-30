@@ -43,7 +43,7 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 	Life.prototype.remove = function remove()
 	{
 		this.display = false;
-		if (this.canvas && this.canvas.parentNode) {
+		if (this.canvas.parentNode) {
 			document.body.removeChild(this.canvas);
 		}
 	};
@@ -79,11 +79,6 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 		var hp_per   = this.hp / this.hp_max;
 		var sp       = this.sp > -1 && this.sp_max > -1;
 		var sp_per   = this.sp / this.sp_max;
-
-		// Add to DOM
-		if (!this.canvas.parentNode) {
-			document.body.appendChild(this.canvas);
-		}
 
 		if (sp) {
 			height += 4;
@@ -143,9 +138,13 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 		_pos[0] = _size[0] + Math.round(_size[0] * (_pos[0] * z));
 		_pos[1] = _size[1] - Math.round(_size[1] * (_pos[1] * z));
 
-
 		canvas.style.top  = (_pos[1] | 0 ) + 'px';
 		canvas.style.left = ((_pos[0] - canvas.width / 2) | 0) + 'px';
+
+		// Append to body
+		if (!canvas.parentNode) {
+			document.body.appendChild(canvas);
+		}
 	};
 
 

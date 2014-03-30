@@ -62,11 +62,6 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 	 */
 	Dialog.prototype.set = function Set( text, fontColor )
 	{
-		// Append to body
-		if (!this.canvas.parentNode) {
-			document.body.appendChild(this.canvas);
-		}
-
 		// Save info
 		this.text    = text;
 		this.tick    = Renderer.tick;
@@ -197,6 +192,11 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 
 		canvas.style.top  = ((_pos[1] - canvas.height - 2) | 0) + 'px';
 		canvas.style.left = ((_pos[0] - canvas.width/2) | 0) + 'px';
+
+		// Append to body
+		if (!canvas.parentNode) {
+			document.body.appendChild(canvas);
+		}
 	};
 
 
