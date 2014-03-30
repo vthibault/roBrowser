@@ -756,15 +756,30 @@ define(function( require )
 
 			case 27: //SI_RIDING
 				var job = entity.job;
-				var newjob  = (
-					job === 7    ? 13   : // knight
-					job === 14   ? 21   : // cruzader
-					job === 4030 ? 4036 : // baby knight
-					job === 4037 ? 4044 : // baby crusader
-					job === 4008 ? 4014 : // lord knight
-					job === 4015 ? 4022 : // paladin
-					job
-				);
+				var newjob;
+
+				if (pkt.state) {
+					newjob  = (
+						job === 7    ? 13   : // knight
+						job === 14   ? 21   : // cruzader
+						job === 4030 ? 4036 : // baby knight
+						job === 4037 ? 4044 : // baby crusader
+						job === 4008 ? 4014 : // lord knight
+						job === 4015 ? 4022 : // paladin
+						job
+					);
+				}
+				else {
+					newjob  = (
+						job === 13   ? 7    : // knight
+						job === 21   ? 14   : // cruzader
+						job === 4036 ? 4030 : // baby knight
+						job === 4044 ? 4037 : // baby crusader
+						job === 4014 ? 4008 : // lord knight
+						job === 4022 ? 4015 : // paladin
+						job
+					);
+				}
 
 				// Update job
 				if (newjob !== job) {
