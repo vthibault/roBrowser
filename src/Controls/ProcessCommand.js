@@ -140,6 +140,11 @@ function(
 				);
 				return;
 
+			case 'hide':
+				pkt = new PACKET.CZ.CHANGE_EFFECTSTATE();
+				pkt.EffectState = 0x40;
+				Network.sendPacket(pkt);
+				return;
 			case 'who':
 			case 'w':
 				pkt = new PACKET.CZ.REQ_USER_COUNT();
