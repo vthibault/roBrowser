@@ -105,12 +105,14 @@ define(function( require )
 				entity.position[2] = Altitude.getCellHeight( pkt.xPos,  pkt.yPos );
 			}
 
-			entity.setAction({
-				action: entity.ACTION.IDLE,
-				frame:  0,
-				repeat: true,
-				play:   true
-			});
+			if (entity.action === entity.ACTION.WALK) {
+				entity.setAction({
+					action: entity.ACTION.IDLE,
+					frame:  0,
+					repeat: true,
+					play:   true
+				});
+			}
 		}
 	}
 
@@ -204,10 +206,12 @@ define(function( require )
 		switch (pkt.action) {
 
 			// Damage
-			case 8:
-			case 0:
+			case 0:  // regular
+			case 8:  // double attack
+			case 9:  // endure
+			case 10: // critital
 				if (dstEntity) {
-					if (pkt.damage) {
+					if (pkt.damage && pkt.action !== 9) { // only if damage and do not have endure
 						dstEntity.setAction({
 							delay:  Renderer.tick + pkt.attackMT,
 							action: dstEntity.ACTION.HURT,
@@ -228,20 +232,34 @@ define(function( require )
 					target = pkt.damage ? dstEntity : srcEntity;
 
 					if (target) {
-						// Display damage
-						if (pkt.action === 0) {
-							Damage.add( pkt.damage, target, Renderer.tick + pkt.attackMT );
-						}
-						else if (pkt.action === 8) {
+						switch (pkt.action) {
 
-							// Display combo only if entity is mob and the attack don't miss
-							if (dstEntity.objecttype === Entity.TYPE_MOB && pkt.damage > 0) {
-								Damage.add( pkt.damage / 2, dstEntity, Renderer.tick + pkt.attackMT * 1, Damage.TYPE.COMBO );
-								Damage.add( pkt.damage ,    dstEntity, Renderer.tick + pkt.attackMT * 2, Damage.TYPE.COMBO | Damage.TYPE.COMBO_FINAL );
-							}
+							// regular damage
+							case 0: 
+								Damage.add( pkt.damage, target, Renderer.tick + pkt.attackMT );
+								break;
 
-							Damage.add( pkt.damage / 2, target, Renderer.tick + pkt.attackMT * 1 );
-							Damage.add( pkt.damage / 2, target, Renderer.tick + pkt.attackMT * 2 );
+							// double attack
+							case 8:
+								// Display combo only if entity is mob and the attack don't miss
+								if (dstEntity.objecttype === Entity.TYPE_MOB && pkt.damage > 0) {
+									Damage.add( pkt.damage / 2, dstEntity, Renderer.tick + pkt.attackMT * 1, Damage.TYPE.COMBO );
+									Damage.add( pkt.damage ,    dstEntity, Renderer.tick + pkt.attackMT * 2, Damage.TYPE.COMBO | Damage.TYPE.COMBO_FINAL );
+								}
+
+								Damage.add( pkt.damage / 2, target, Renderer.tick + pkt.attackMT * 1 );
+								Damage.add( pkt.damage / 2, target, Renderer.tick + pkt.attackMT * 2 );
+								break;
+
+							// TODO: critical damage
+							case 10:
+								Damage.add( pkt.damage, target, Renderer.tick + pkt.attackMT );
+								break;
+
+							// TODO: lucky miss
+							case 11:
+								Damage.add( 0, target, Renderer.tick + pkt.attackMT );
+								break;
 						}
 					}
 
@@ -249,8 +267,6 @@ define(function( require )
 					srcEntity.lookTo( dstEntity.position[0], dstEntity.position[1] );
 				}
 
-				pkt.attackMT = Math.min( 450, pkt.attackMT); // FIXME: cap value ?
-				pkt.attackMT = Math.max(   1, pkt.attackMT);
 				srcEntity.attack_speed = pkt.attackMT;
 				srcEntity.setAction({
 					action: srcEntity.ACTION.ATTACK,
@@ -258,7 +274,7 @@ define(function( require )
 					repeat: false,
 					play:   true,
 					next: {
-						delay:  Renderer.tick + pkt.attackMT * 2,
+						delay:  Renderer.tick + pkt.attackMT,
 						action: srcEntity.ACTION.READYFIGHT,
 						frame:  0,
 						repeat: true,
@@ -308,13 +324,9 @@ define(function( require )
 				});
 				break;
 
-			/* TODO:
-			 * type=04 reflected/absorbed damage?
-			 * type=08 double attack
-			 * type=09 don't display flinch animation (endure)
-			 * type=0a critical hit
-			 * type=0b lucky dodge
-			 */
+			// type=04 TODO: reflected/absorbed damage?
+			case 4: 
+				break;
 		}
 	}
 
@@ -602,11 +614,6 @@ define(function( require )
 		}
 
 		if (dstEntity) {
-			pkt.attackedMT = Math.min( 450, pkt.attackedMT ); // FIXME: cap value ?
-			pkt.attackedMT = Math.max(   1, pkt.attackedMT );
-			dstEntity.attack_speed = pkt.attackedMT;
-
-			var aspd   = (srcEntity && srcEntity.attack_speed) || 150;
 			var target = pkt.damage ? dstEntity : srcEntity;
 			var i;
 
@@ -631,7 +638,7 @@ define(function( require )
 						Damage.add(
 							Math.floor( pkt.damage / pkt.count ),
 							target,
-							Renderer.tick + aspd + ( 200 * i )
+							Renderer.tick + pkt.attackMT + ( 200 * i )
 						);
 
 						// Only display combo if the target is not entity and
@@ -640,7 +647,7 @@ define(function( require )
 							Damage.add(
 								Math.floor( pkt.damage / pkt.count * (i+1) ),
 								target,
-								Renderer.tick + aspd + ( 200 * i ), //TOFIX: why 200 ?
+								Renderer.tick + pkt.attackMT + ( 200 * i ), //TOFIX: why 200 ?
 								Damage.TYPE.COMBO | ( (i+1) === pkt.count ? Damage.TYPE.COMBO_FINAL : 0 )
 							);
 						}

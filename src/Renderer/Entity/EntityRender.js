@@ -382,8 +382,8 @@ define( function( require )
 		}
 
 		// Delay on attack
-		else if (ACTION === entity.ACTION.ATTACK  || ACTION === entity.ACTION.ATTACK2 || ACTION === entity.ACTION.ATTACK3) {
-			delay = entity.attack_speed / animations_count * 2;
+		else if (ACTION === entity.ACTION.ATTACK || ACTION === entity.ACTION.ATTACK1 || ACTION === entity.ACTION.ATTACK2 || ACTION === entity.ACTION.ATTACK3) {
+			delay = entity.attack_speed / animations_count;
 		}
 
 
