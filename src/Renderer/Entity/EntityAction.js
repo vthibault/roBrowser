@@ -122,6 +122,7 @@ define(['Renderer/Renderer', 'DB/DBManager'], function( Renderer, DB )
 				break;
 
 			// Mob action
+			case Entity.TYPE_PET:
 			case Entity.TYPE_MOB:
 				this.ACTION.IDLE   = 0;
 				this.ACTION.WALK   = 1;
@@ -156,7 +157,6 @@ define(['Renderer/Renderer', 'DB/DBManager'], function( Renderer, DB )
 				break;
 
 			//TODO: define others Entities ACTION
-			case Entity.TYPE_PET:
 			case Entity.TYPE_ELEM:
 				break;
 		}

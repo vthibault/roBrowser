@@ -1,0 +1,13 @@
+#ItemSelection { z-index:100; position:absolute; width:200px; }
+#ItemSelection .head { position:absolute; width:180px; height:22px; top:0px; left:0px; }
+#ItemSelection .bottom { position:relative; width:180px; height:120px; top:80px; left:0px; }
+
+#ItemSelection .content { position:absolute; width:158px; top:22px; left:0px; padding-left:10px; padding-right:10px; background-color:white; border-left:1px solid #c7c7c7; border-right:1px solid #c7c7c7; }
+#ItemSelection .list { background-color:#f7f7f7; height:130px; width:160px; font-size:12px; overflow-y:auto;}
+#ItemSelection .list .item { display:block; height:28px; margin:4px 4px 4px 4px; position:relative; }
+#ItemSelection .list .item .icon { width:24px; height:24px; border:none; background-color:transparent; background-repeat:no-repeat; }
+#ItemSelection .list .item .name { font-size:12px; position:absolute; top:7px; left:30px; width:90px; }
+
+#ItemSelection .btn { position:absolute; bottom:0px; border:0; width:42px; height:20px; bottom:4px; background-color:transparent; }
+#ItemSelection .ok { right: 50px; }
+#ItemSelection .cancel { right: 5px; }

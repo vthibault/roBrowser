@@ -44,7 +44,8 @@ define(function(require)
 		SELF:    4,
 		FRIEND: 16,
 		TRAP:   32,
-		TARGET: 1|2|16|32
+		TARGET: 1|2|16|32,
+		PET:    64
 	};
 
 
@@ -162,12 +163,13 @@ define(function(require)
 
 
 	/**
-	 * Add an announce with text and color
+	 * Set informations for the target
 	 *
-	 * @param {string} text to display
-	 * @param {string} color
+	 * @param {object} skill
+	 * @param {number} skill type
+	 * @param {string} description name (optional)
 	 */
-	SkillTargetSelection.set = function set( skill, target )
+	SkillTargetSelection.set = function set( skill, target, description )
 	{
 		_target = target;
 		_skill  = skill;
@@ -182,7 +184,7 @@ define(function(require)
 
 		// Render skillName
 		var sk = SkillInfo[ skill.SKID ];
-		render(sk.SkillName, _skillName);
+		render(description || sk.SkillName, _skillName);
 
 		Cursor.setType( Cursor.ACTION.TARGET);
 		Cursor.freeze = true;
@@ -242,7 +244,7 @@ define(function(require)
 		if (entity) {
 			switch (entity.objecttype) {
 				case Entity.TYPE_MOB:
-					target = SkillTargetSelection.TYPE.ENEMY;
+					target = SkillTargetSelection.TYPE.ENEMY | SkillTargetSelection.TYPE.PET;
 					break;
 
 				case Entity.TYPE_PC:
@@ -254,7 +256,12 @@ define(function(require)
 			}
 
 			if (target & _target || KEYS.SHIFT || Controls.noshift) {
-				SkillTargetSelection.onUseSkillToId(_skill.SKID, _skill.level, entity.GID);
+				if (_target === SkillTargetSelection.TYPE.PET) {
+					SkillTargetSelection.onPetSelected(entity.GID);
+				}
+				else {
+					SkillTargetSelection.onUseSkillToId(_skill.SKID, _skill.level, entity.GID);
+				}
 			}
 		}
 

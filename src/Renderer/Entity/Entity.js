@@ -162,10 +162,6 @@ define( function( require )
 		for (i = 0; i < count; ++i) {
 			switch (keys[i]) {
 
-				// Set it manually
-				case 'objecttype':
-					break;
-
 				// Already set
 				case 'sex':
 				case 'job':

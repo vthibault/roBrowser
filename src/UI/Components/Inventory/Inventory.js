@@ -143,7 +143,7 @@ define(function(require)
 			// Title feature
 			.on('mouseover', '.item', function(){
 				var idx  = parseInt( this.className.match(/ (\d+)$/)[1], 10);
-				var item = getItemByIndex(idx);
+				var item = Inventory.getItemByIndex(idx);
 
 				if (!item) {
 					return;
@@ -193,7 +193,7 @@ define(function(require)
 
 				var matches = this.className.match(/(\w+) (\d+)/);
 				var index   = parseInt(matches[2], 10);
-				var item    = getItemByIndex(index);
+				var item    = Inventory.getItemByIndex(index);
 
 				if (!item) {
 					return;
@@ -221,7 +221,7 @@ define(function(require)
 			.on('contextmenu', '.item', function(event) {
 				var matches = this.className.match(/(\w+) (\d+)/);
 				var index   = parseInt(matches[2], 10);
-				var item    = getItemByIndex(index);
+				var item    = Inventory.getItemByIndex(index);
 
 				event.stopImmediatePropagation();
 
@@ -246,7 +246,7 @@ define(function(require)
 			.on('dblclick', '.item', function(event) {
 				var matches = this.className.match(/(\w+) (\d+)/);
 				var index   = parseInt(matches[2], 10);
-				var item    = getItemByIndex(index);
+				var item    = Inventory.getItemByIndex(index);
 
 				if (item) {
 					Inventory.useItem(item);
@@ -471,7 +471,7 @@ define(function(require)
 	 * @param {number} index
 	 * @returns {Item}
 	 */
-	function getItemByIndex( index )
+	Inventory.getItemByIndex = function getItemByIndex( index )
 	{
 		var i, count;
 		var list = Inventory.list;
@@ -483,7 +483,7 @@ define(function(require)
 		}
 
 		return null;
-	}
+	};
 
 
 	/**
@@ -553,7 +553,7 @@ define(function(require)
 	 */
 	Inventory.addItem = function AddItem( item )
 	{
-		var object = getItemByIndex(item.index);
+		var object = this.getItemByIndex(item.index);
 
 		if (object) {
 			object.count += item.count;
@@ -639,7 +639,7 @@ define(function(require)
 	 */
 	Inventory.removeItem = function RemoveItem( index, count )
 	{
-		var item = getItemByIndex(index);
+		var item = this.getItemByIndex(index);
 
 		// Emulator failed to complete the operation
 		// do not remove item from inventory
@@ -678,7 +678,7 @@ define(function(require)
 	 */
 	Inventory.updateItem = function UpdateItem( index, count )
 	{
-		var item = getItemByIndex(index);
+		var item = this.getItemByIndex(index);
 
 		if (!item) {
 			return;
