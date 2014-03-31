@@ -1,9 +1,10 @@
 #ItemSelection { z-index:100; position:absolute; width:200px; }
-#ItemSelection .head { position:absolute; width:180px; height:22px; top:0px; left:0px; }
-#ItemSelection .bottom { position:relative; width:180px; height:120px; top:80px; left:0px; }
+#ItemSelection .head { position:absolute; width:100%; height:22px; top:0px; left:0px;background-repeat:repeat-x; background-color:white; }
+#ItemSelection .head .text { position:relative; top:2px; left:5px; }
+#ItemSelection .bottom { position:relative; height:120px; top:80px; left:0px; }
 
-#ItemSelection .content { position:absolute; width:158px; top:22px; left:0px; padding-left:10px; padding-right:10px; background-color:white; border-left:1px solid #c7c7c7; border-right:1px solid #c7c7c7; }
-#ItemSelection .list { background-color:#f7f7f7; height:130px; width:160px; font-size:12px; overflow-y:auto;}
+#ItemSelection .content { position:absolute; top:22px; left:0px; background-color:white; width:100%; }
+#ItemSelection .list { background-color:#f7f7f7; height:130px; font-size:12px; overflow-y:auto; margin-left:10px; margin-right:10px; }
 #ItemSelection .list .item { display:block; height:28px; margin:4px 4px 4px 4px; position:relative; }
 #ItemSelection .list .item .icon { width:24px; height:24px; border:none; background-color:transparent; background-repeat:no-repeat; }
 #ItemSelection .list .item .name { font-size:12px; position:absolute; top:7px; left:30px; width:90px; }

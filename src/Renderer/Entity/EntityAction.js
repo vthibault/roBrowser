@@ -33,6 +33,11 @@ define(['Renderer/Renderer', 'DB/DBManager'], function( Renderer, DB )
 		this.ATTACK3    = -1;
 		this.SKILL      = -1;
 		this.ACTION     = -1;
+
+		this.ACTION.PERF1   = -1;
+		this.ACTION.PERF2   = -1;
+		this.ACTION.PERF3   = -1;
+		this.ACTION.SPECIAL = -1;
 	}
 
 
@@ -122,13 +127,24 @@ define(['Renderer/Renderer', 'DB/DBManager'], function( Renderer, DB )
 				break;
 
 			// Mob action
-			case Entity.TYPE_PET:
 			case Entity.TYPE_MOB:
 				this.ACTION.IDLE   = 0;
 				this.ACTION.WALK   = 1;
 				this.ACTION.ATTACK = 2;
 				this.ACTION.HURT   = 3;
 				this.ACTION.DIE    = 4;
+				break;
+
+			case Entity.TYPE_PET:
+				this.ACTION.IDLE     = 0;
+				this.ACTION.WALK     = 1;
+				this.ACTION.ATTACK   = 2;
+				this.ACTION.HURT     = 3;
+				this.ACTION.DIE      = 4;
+				this.ACTION.PERF1    = 5;
+				this.ACTION.PERF2    = 6;
+				this.ACTION.PERF3    = 7;
+				this.ACTION.SPECIAL  = 8;
 				break;
 
 			// NPC action

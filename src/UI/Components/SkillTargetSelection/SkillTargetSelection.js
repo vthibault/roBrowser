@@ -85,18 +85,18 @@ define(function(require)
 		_skillName.style.top            = '45px';
 		_skillName.style.zIndex         = 100;
 		_skillName.style.borderRadius   = '3px';
-		_skillName.style.border         = "1px solid #555";
+		_skillName.style.border         = '1px solid #555';
 
 		_description.style.position     = 'absolute';
 		_description.style.bottom       = '60px';
 		_description.style.zIndex       = 100;
 		_description.style.borderRadius = '3px';
-		_description.style.border       = "1px solid #555";
+		_description.style.border       = '1px solid #555';
 
 		render( DB.msgstringtable[234], _description);
 
 		this.ui = jQuery('<div id ="SkillTargetSelection"/>'); // just to not break things
-		this.ui.append()
+		this.ui.append();
 	};
 
 
@@ -273,8 +273,8 @@ define(function(require)
 	/**
 	 * Functions to define
 	 */
-	SkillTargetSelection.onUseSkillToId = function onUseSkillToId(/*id, level, GID*/){}
-	SkillTargetSelection.onUseSkillToPos = function onUseSkillToId(/*id, level, x, y*/){}
+	SkillTargetSelection.onUseSkillToId = function onUseSkillToId(/*id, level, GID*/){};
+	SkillTargetSelection.onUseSkillToPos = function onUseSkillToId(/*id, level, x, y*/){};
 
 
 	/**

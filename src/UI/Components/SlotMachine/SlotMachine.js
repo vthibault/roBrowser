@@ -76,7 +76,8 @@ define(function(require)
 		this.ui = jQuery('<canvas/>')
 			.attr({
 				width:  270,
-				height: 260
+				height: 260,
+				id:     'SlotMachine'
 			})
 			.css({
 				zIndex:   500,
@@ -108,7 +109,7 @@ define(function(require)
 				event.stopImmediatePropagation();
 				return false;
 			}
-		})
+		});
 	};
 
 
