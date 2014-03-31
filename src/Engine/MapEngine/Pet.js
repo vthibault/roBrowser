@@ -119,7 +119,13 @@ define(function( require )
 		}
 
 		switch (pkt.type) {
-			case 0: /// pre-init (data = 0) only for main character ?
+			case 0: /// pre-init
+				// Hook entity to remove window when pet disapeared from scene
+				var clean = entity.clean;
+				entity.clean = function(){
+					PetInformations.remove();
+					clean.call(this);
+				};
 				break;
 
 			case 1:
