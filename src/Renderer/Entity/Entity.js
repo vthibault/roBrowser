@@ -167,6 +167,7 @@ define( function( require )
 				// roBrowser has a special type for warp.
 				case 'objecttype':
 					this.objecttype = (unit.job === 45) ? Entity.TYPE_WARP : unit.objecttype;
+					require('./EntityAction').call(this);
 					break;
 
 				// Already set

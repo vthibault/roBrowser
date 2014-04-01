@@ -34,10 +34,10 @@ define(['Renderer/Renderer', 'DB/DBManager'], function( Renderer, DB )
 		this.SKILL      = -1;
 		this.ACTION     = -1;
 
-		this.ACTION.PERF1   = -1;
-		this.ACTION.PERF2   = -1;
-		this.ACTION.PERF3   = -1;
-		this.ACTION.SPECIAL = -1;
+		this.SPECIAL    = -1;
+		this.PERF1      = -1;
+		this.PERF2      = -1;
+		this.PERF3      = -1;
 	}
 
 
@@ -141,10 +141,10 @@ define(['Renderer/Renderer', 'DB/DBManager'], function( Renderer, DB )
 				this.ACTION.ATTACK   = 2;
 				this.ACTION.HURT     = 3;
 				this.ACTION.DIE      = 4;
-				this.ACTION.PERF1    = 5;
-				this.ACTION.PERF2    = 6;
-				this.ACTION.PERF3    = 7;
-				this.ACTION.SPECIAL  = 8;
+				this.ACTION.SPECIAL  = 5;
+				this.ACTION.PERF1    = 6;
+				this.ACTION.PERF2    = 7;
+				this.ACTION.PERF3    = 8;
 				break;
 
 			// NPC action

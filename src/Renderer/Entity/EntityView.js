@@ -103,15 +103,17 @@ define(['Core/Client', 'DB/DBManager', 'DB/ShadowTable', 'DB/MountTable', './Ent
 		Entity                 = this.constructor;
 
 		// Define Object type based on its id
-		this.objecttype = (
-			job < 45   ? Entity.TYPE_PC   :
-			job < 46   ? Entity.TYPE_WARP :
-			job < 1000 ? Entity.TYPE_NPC  :
-			job < 4000 ? Entity.TYPE_MOB  :
-			job < 6000 ? Entity.TYPE_PC   :
-			job < 7000 ? Entity.TYPE_HOM  :
-						 Entity.TYPE_MERC
-		);
+		if (this.objecttype === Entity.TYPE_UNKNOWN) {
+			this.objecttype = (
+				job < 45   ? Entity.TYPE_PC   :
+				job < 46   ? Entity.TYPE_WARP :
+				job < 1000 ? Entity.TYPE_NPC  :
+				job < 4000 ? Entity.TYPE_MOB  :
+				job < 6000 ? Entity.TYPE_PC   :
+				job < 7000 ? Entity.TYPE_HOM  :
+				             Entity.TYPE_MERC
+			);
+		}
 
 		EntityAction.call(this);
 
