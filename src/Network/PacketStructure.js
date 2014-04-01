@@ -5001,9 +5001,9 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 				out[i].money              = fp.readLong();
 				out[i].jobexp             = fp.readLong();
 				out[i].joblevel           = fp.readLong();
-				out[i].bodystate          = fp.readLong();
-				out[i].healthstate        = fp.readLong();
-				out[i].effectstate        = fp.readLong();
+				out[i].bodyState          = fp.readLong();
+				out[i].healthState        = fp.readLong();
+				out[i].effectState        = fp.readLong();
 				out[i].virtue             = fp.readLong();
 				out[i].honor              = fp.readLong();
 				out[i].jobpoint           = fp.readShort();

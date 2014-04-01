@@ -90,7 +90,7 @@ define( function( require )
 			// Project to screen
 			mat4.multiply( _matrix, projection, _matrix );
 
-			if (entity.effectColor[3]) {
+			if (entity.effectColor[3] && entity._job !== 139) {
 				calculateBoundingRect( entity, _matrix );
 			}
 

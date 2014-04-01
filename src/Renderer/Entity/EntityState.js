@@ -7,11 +7,22 @@
  *
  * @author Vincent Thibault
  */
-define(['Engine/SessionStorage', 'DB/StatusConst'], function( Session, StatusConst )
+define(function( require )
 {
 	'use strict';
 
 
+	/**
+	 * Load dependencies
+	 */
+	var StatusConst = require('DB/StatusConst');
+	var MountTable  = require('DB/MountTable');
+	var Session     = require('Engine/SessionStorage');
+
+
+	/**
+	 * Status color
+	 */
 	var _bodyStateColor   = new Float32Array([1,1,1,1]);
 	var _healthStateColor = new Float32Array([1,1,1,1]);
 	var _effectStateColor = new Float32Array([1,1,1,1]);
@@ -27,7 +38,6 @@ define(['Engine/SessionStorage', 'DB/StatusConst'], function( Session, StatusCon
 		this.effectColor[2] = this._bodyStateColor[2] * this._healthStateColor[2] * this._effectStateColor[2];
 		this.effectColor[3] = this._bodyStateColor[3] * this._healthStateColor[3] * this._effectStateColor[3];
 	}
-
 
 
 	/**
@@ -155,7 +165,39 @@ define(['Engine/SessionStorage', 'DB/StatusConst'], function( Session, StatusCon
 		this._effectStateColor[1] = 1.0;
 		this._effectStateColor[2] = 1.0;
 		this._effectStateColor[3] = 1.0;
-		this._effectState         = value;
+
+
+		// Riding
+		var RIDING = (
+			StatusConst.EffectState.RIDING  |
+			StatusConst.EffectState.DRAGON1 |
+			StatusConst.EffectState.DRAGON2 |
+			StatusConst.EffectState.DRAGON3 |
+			StatusConst.EffectState.DRAGON4 |
+			StatusConst.EffectState.DRAGON5 |
+			StatusConst.EffectState.WUGRIDER|
+			StatusConst.EffectState.MADOGEAR
+		);
+
+		if ((value & RIDING) !== (this._effectState & RIDING)) {
+			// Add mount
+			if (value & RIDING) {
+				if (this._job in MountTable) {
+					this.job = MountTable[this._job];
+				}
+			}
+
+			// Remove mount
+			else {
+				for (var job in MountTable) {
+					if (MountTable[job] === this._job) {
+						this.job = job;
+						break;
+					}
+				}
+			}
+		}
+
 
 		// Never show option invisible
 		if (value & StatusConst.EffectState.INVISIBLE) {
@@ -175,6 +217,8 @@ define(['Engine/SessionStorage', 'DB/StatusConst'], function( Session, StatusCon
 			}
 		}
 
+
+		this._effectState = value;
 		recalculateBlendingColor.call(this);
 	}
 
