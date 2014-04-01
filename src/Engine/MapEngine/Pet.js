@@ -120,12 +120,6 @@ define(function( require )
 
 		switch (pkt.type) {
 			case 0: /// pre-init
-				// Hook entity to remove window when pet disapeared from scene
-				var clean = entity.clean;
-				entity.clean = function(){
-					PetInformations.remove();
-					clean.call(this);
-				};
 				break;
 
 			case 1:
@@ -226,6 +220,8 @@ define(function( require )
 		var pkt  = new PACKET.CZ.COMMAND_PET();
 		pkt.cSub = 3;
 		Network.sendPacket(pkt);
+
+		PetInformations.remove();
 	};
 
 
