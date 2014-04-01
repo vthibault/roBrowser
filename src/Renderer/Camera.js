@@ -51,12 +51,12 @@ define(['Controls/KeyEventHandler', 'Controls/MouseEventHandler', 'Preferences/C
 	/**
 	 * @var {number} zoom
 	 */
-	Camera.zoom      = 0.0;
+	Camera.zoom      = Preferences.zoom;
 
 	/**
 	 * @var {number} zoomFinal
 	 */
-	Camera.zoomFinal = 0.0;
+	Camera.zoomFinal = Preferences.zoom;
 
 
 	/**
@@ -146,10 +146,6 @@ define(['Controls/KeyEventHandler', 'Controls/MouseEventHandler', 'Preferences/C
 	{
 		this.lastTick  = Date.now();
 
-		// Should not re-initialize zoom ?
-		//this.zoom      = 0.0;
-		//this.zoomFinal = 0.0;
-
 		this.angle[0]      = 240.0;
 		this.angle[1]      = this.rotationFrom % 360.0;
 		this.angleFinal[0] = this.range % 360.0;
@@ -214,6 +210,9 @@ define(['Controls/KeyEventHandler', 'Controls/MouseEventHandler', 'Preferences/C
 			this.zoomFinal -= ( Mouse.screen.y - this.action.y  ) / Mouse.screen.height * 150;
 			this.zoomFinal  = Math.min( this.zoomFinal, Math.abs(this.altitudeTo-this.altitudeFrom) * this.MAX_ZOOM );
 			this.zoomFinal  = Math.max( this.zoomFinal,  2.0 );
+			
+			Preferences.zoom = this.zoomFinal;
+			Preferences.save();
 		}
 
 		// Rotate
@@ -250,6 +249,9 @@ define(['Controls/KeyEventHandler', 'Controls/MouseEventHandler', 'Preferences/C
 		this.zoomFinal += delta * 15;
 		this.zoomFinal  = Math.min( this.zoomFinal, Math.abs(this.altitudeTo-this.altitudeFrom) * this.MAX_ZOOM );
 		this.zoomFinal  = Math.max( this.zoomFinal,  2.0 );
+		
+		Preferences.zoom = this.zoomFinal;
+		Preferences.save();
 	};
 
 
@@ -282,7 +284,7 @@ define(['Controls/KeyEventHandler', 'Controls/MouseEventHandler', 'Preferences/C
 
 		// Zoom
 		this.zoom        += ( this.zoomFinal - this.zoom ) * lerp * 2.0;
-
+		
 		// Angle
 		this.angle[0]    += ( this.angleFinal[0] - this.angle[0] ) * lerp * 2.0;
 		this.angle[1]    += ( this.angleFinal[1] - this.angle[1] ) * lerp * 2.0;

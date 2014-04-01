@@ -17,5 +17,6 @@ define( ['Core/Preferences'], function( Preferences )
 	 */
 	return Preferences.get( 'Camera', {
 		smooth:  true,
+		zoom:    0.0
 	}, 1.0 );
 });
