@@ -162,6 +162,12 @@ define( function( require )
 		for (i = 0; i < count; ++i) {
 			switch (keys[i]) {
 
+				// Server send warp as npc,
+				// roBrowser has a special type for warp.
+				case 'objecttype':
+					this.objecttype = (unit.job === 45) ? Entity.TYPE_WARP : unit.objecttype;
+					break;
+
 				// Already set
 				case 'sex':
 				case 'job':
