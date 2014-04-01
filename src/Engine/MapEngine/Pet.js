@@ -19,6 +19,7 @@ define(function( require )
 	var DB                   = require('DB/DBManager');
 	var Network              = require('Network/NetworkManager');
 	var PACKET               = require('Network/PacketStructure');
+	var Client               = require('Core/Client');
 	var EntityManager        = require('Renderer/EntityManager');
 	var SlotMachine          = require('UI/Components/SlotMachine/SlotMachine');
 	var SkillTargetSelection = require('UI/Components/SkillTargetSelection/SkillTargetSelection');
@@ -114,6 +115,8 @@ define(function( require )
 	function onPetInformationUpdate( pkt )
 	{
 		var entity = EntityManager.get(pkt.GID);
+		var path;
+
 		if (!entity) {
 			return;
 		}
@@ -131,6 +134,17 @@ define(function( require )
 				break;
 
 			case 3: /// 3 = accessory ID
+				if (pkt.data) {
+					path = DB.getPetEquipPath(pkt.data)
+				}
+
+				if (!path && entity.files.body.spr) {
+					path = entity.files.body.spr.replace(/\.spr$/i, '.act');
+				}
+
+				if (path) {
+					Client.loadFile( path, function(){ entity.files.body.act = path; });
+				}
 				break;
 
 			case 4: /// 4 = performance (data = 1~3: normal, 4: special)
@@ -151,13 +165,7 @@ define(function( require )
 				break;
 
 			case 5: /// 5 = accessory
-				var path = DB.getPetEquipPath(entity.job);
-				if (pkt.data && path) {
-					entity.files.body.act = 'data/sprite/' + path;
-				}
-				else if (entity.files.body.spr) {
-					entity.files.body.act = entity.files.body.spr.replace(/\.spr$/i, '.act');
-				}
+
 		}
 	}
 

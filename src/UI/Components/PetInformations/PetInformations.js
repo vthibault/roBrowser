@@ -17,9 +17,11 @@ define(function(require)
 	 */
 	var DB                   = require('DB/DBManager');
 	var Client               = require('Core/Client');
+	var Preferences          = require('Core/Preferences');
+	var Renderer             = require('Renderer/Renderer');
+	var KEYS                 = require('Controls/KeyEventHandler');
 	var UIManager            = require('UI/UIManager');
 	var UIComponent          = require('UI/UIComponent');
-	var KEYS                 = require('Controls/KeyEventHandler');
 	var htmlText             = require('text!./PetInformations.html');
 	var cssText              = require('text!./PetInformations.css');
 
@@ -28,6 +30,16 @@ define(function(require)
 	 * Create Component
 	 */
 	var PetInformations = new UIComponent( 'PetInformations', htmlText, cssText );
+
+
+	/**
+	 * @var {Preferences} Window preferences
+	 */
+	var _preferences = Preferences.get('PetInformations', {
+		x:        100,
+		y:        200,
+		show:     true,
+	}, 1.0);
 
 
 	/**
@@ -81,6 +93,35 @@ define(function(require)
 			}
 			this.value = 'default';
 		});
+	};
+
+
+	/**
+	 * Once append to body, remember of user configs
+	 */
+	PetInformations.onAppend = function onAppend()
+	{
+		if (!_preferences.show) {
+			this.ui.hide();
+		}
+
+		this.ui.css({
+			top:  Math.min( Math.max( 0, _preferences.y), Renderer.height - this.ui.height()),
+			left: Math.min( Math.max( 0, _preferences.x), Renderer.width  - this.ui.width())
+		});
+	};
+
+
+	/**
+	 * Once remove from body, save user preferences
+	 */
+	PetInformations.onRemove = function onRemove()
+	{
+		// Save preferences
+		_preferences.show   =  this.ui.is(':visible');
+		_preferences.y      =  parseInt(this.ui.css('top'), 10);
+		_preferences.x      =  parseInt(this.ui.css('left'), 10);
+		_preferences.save();
 	};
 
 
