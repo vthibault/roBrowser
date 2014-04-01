@@ -7,7 +7,7 @@
  *
  * @author Vincent Thibault
  */
-define(['Core/Client', 'DB/DBManager', 'DB/ShadowTable', './EntityAction'], function( Client, DB, ShadowTable, EntityAction )
+define(['Core/Client', 'DB/DBManager', 'DB/ShadowTable', 'DB/MountTable', './EntityAction'], function( Client, DB, ShadowTable, MountTable, EntityAction )
 {
 	'use strict';
 
@@ -75,14 +75,32 @@ define(['Core/Client', 'DB/DBManager', 'DB/ShadowTable', './EntityAction'], func
 	 */
 	function UpdateBody( job )
 	{
+		var i, path;
+		var Entity;
+
 		if (job < 0) {
 			return;
 		}
 
-		this._job              = job;
+		// Avoid fuck*ng errors with mounts !
+		// Sometimes the server send us the job of the mount sprite instead
+		// of the base sprite + effect to have the mount.
+		for (i in MountTable) {
+			if (MountTable[i] === job) {
+				this._job    = i;
+				this.clothes = job;
+				break;
+			}
+		}
+
+		// Clothes keep the old job in memory
+		if (job !== this.clothes) {
+			this._job          = job;
+		}
+
 		this.files.shadow.size = job in ShadowTable ? ShadowTable[job] : 1.0;
-		var path               = this.isAdmin ? DB.getAdminPath(this._sex) : DB.getBodyPath( job, this._sex );
-		var Entity             = this.constructor;
+		path                   = this.isAdmin ? DB.getAdminPath(this._sex) : DB.getBodyPath( job, this._sex );
+		Entity                 = this.constructor;
 
 		// Define Object type based on its id
 		this.objecttype = (

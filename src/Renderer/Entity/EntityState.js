@@ -161,13 +161,20 @@ define(function( require )
 	 */
 	function updateEffectState( value )
 	{
+		var clothes = 0;
+
+
 		this._effectStateColor[0] = 1.0;
 		this._effectStateColor[1] = 1.0;
 		this._effectStateColor[2] = 1.0;
 		this._effectStateColor[3] = 1.0;
 
 
+		// ------------------------
 		// Riding
+		// ------------------------
+
+
 		var RIDING = (
 			StatusConst.EffectState.RIDING  |
 			StatusConst.EffectState.DRAGON1 |
@@ -179,24 +186,37 @@ define(function( require )
 			StatusConst.EffectState.MADOGEAR
 		);
 
-		if ((value & RIDING) !== (this._effectState & RIDING)) {
-			// Add mount
-			if (value & RIDING) {
-				if (this._job in MountTable) {
-					this.job = MountTable[this._job];
-				}
-			}
-
-			// Remove mount
-			else {
-				for (var job in MountTable) {
-					if (MountTable[job] === this._job) {
-						this.job = job;
-						break;
-					}
-				}
+		if (value & RIDING) {
+			if (this._job in MountTable) {
+				clothes = MountTable[this._job];
 			}
 		}
+
+
+		// ------------------------
+		// Clothes
+		// ------------------------
+
+
+		// Wedding clones
+		if (value & StatusConst.EffectState.WEDDING) {
+			clothes = 22;
+		}
+
+		// Xmas clothes 
+		if (value & StatusConst.EffectState.XMAS) {
+			clothes = 26;
+		}
+
+		// Summer
+		if (value & StatusConst.EffectState.SUMMER) {
+			clothes = 27;
+		}
+
+
+		// ------------------------
+		// Effects
+		// ------------------------
 
 
 		// Never show option invisible
@@ -218,6 +238,17 @@ define(function( require )
 		}
 
 
+		// ------------------------
+		// Apply
+		// ------------------------
+
+
+		if (clothes !== this.clothes) {
+			this.clothes = clothes;
+			this.job     = clothes || this._job;
+		}
+
+
 		this._effectState = value;
 		recalculateBlendingColor.call(this);
 	}
@@ -232,6 +263,8 @@ define(function( require )
 		this._healthStateColor = new Float32Array([1, 1, 1, 1]);
 		this._effectStateColor = new Float32Array([1, 1, 1, 1]);
 		this.effectColor       = new Float32Array([1, 1, 1, 1]);
+
+		this.clothes           = 0;
 
 		Object.defineProperty(this, 'bodyState', {
 			get: function(){ return this._bodyState },

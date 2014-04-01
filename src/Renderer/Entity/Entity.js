@@ -156,6 +156,7 @@ define( function( require )
 		this.isAdmin = Session.AdminList.indexOf(unit.GID) > -1;
 		this.sex     = unit.hasOwnProperty('sex') ? unit.sex : this._sex;
 		this.job     = unit.hasOwnProperty('job') ? unit.job : this._job;
+		this.clothes = 0;
 		keys         = Object.keys( unit );
 		count        = keys.length;
 
