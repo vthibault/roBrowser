@@ -93,6 +93,12 @@ define(['Controls/KeyEventHandler', 'Controls/MouseEventHandler', 'Preferences/C
 	 * @var {number} camera zoom
 	 */
 	Camera.MAX_ZOOM = 10;
+	
+	
+	/**
+	 * @var {boolean} timer status
+	 */
+	Camera.timerStatus = false;
 
 
 	/**
@@ -155,6 +161,24 @@ define(['Controls/KeyEventHandler', 'Controls/MouseEventHandler', 'Preferences/C
 		this.position[1] = -this.target.position[1];
 		this.position[2] =  this.target.position[2];
 	};
+	
+	
+	/**
+	 * Save the camera settings
+	 */
+	Camera.save = function Save()
+	{
+		if(this.timerStatus === false) {
+			this.timerStatus = true;
+			
+			setTimeout(function() {
+				Camera.timerStatus = false;
+				
+				Preferences.zoom = Camera.zoomFinal;
+				Preferences.save();
+			}, 3000); //Save camera settings after 3 seconds
+		}
+	}
 
 
 	/**
@@ -210,9 +234,6 @@ define(['Controls/KeyEventHandler', 'Controls/MouseEventHandler', 'Preferences/C
 			this.zoomFinal -= ( Mouse.screen.y - this.action.y  ) / Mouse.screen.height * 150;
 			this.zoomFinal  = Math.min( this.zoomFinal, Math.abs(this.altitudeTo-this.altitudeFrom) * this.MAX_ZOOM );
 			this.zoomFinal  = Math.max( this.zoomFinal,  2.0 );
-			
-			Preferences.zoom = this.zoomFinal;
-			Preferences.save();
 		}
 
 		// Rotate
@@ -236,6 +257,8 @@ define(['Controls/KeyEventHandler', 'Controls/MouseEventHandler', 'Preferences/C
 		// Update last check
 		this.action.x = +Mouse.screen.x ;
 		this.action.y = +Mouse.screen.y ;
+		
+		this.save();
 	};
 
 
@@ -250,8 +273,7 @@ define(['Controls/KeyEventHandler', 'Controls/MouseEventHandler', 'Preferences/C
 		this.zoomFinal  = Math.min( this.zoomFinal, Math.abs(this.altitudeTo-this.altitudeFrom) * this.MAX_ZOOM );
 		this.zoomFinal  = Math.max( this.zoomFinal,  2.0 );
 		
-		Preferences.zoom = this.zoomFinal;
-		Preferences.save();
+		this.save();
 	};
 
 
