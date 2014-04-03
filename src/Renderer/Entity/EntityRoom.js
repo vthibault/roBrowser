@@ -86,16 +86,19 @@ function(       glMatrix,            Renderer,        Client,      DB,          
 					break;
 			}
 
-			self.type       = type;
-			self.id         = id;
+			self.type = type;
+			self.id   = id;
 
 			if (clickable) {
-				self.node.onEnter  = self.owner.onRoomEnter.bind(self.owner);
+				self.node.onEnter = self.owner.onRoomEnter.bind(self.owner);
 			}
 
 			Client.loadFile( DB.INTERFACE_PATH + filename + '.bmp', function(url){
-				self.display    = true;
-				self.node.setTitle( title, url );
+				self.display = true;
+
+				if (self.node) {
+					self.node.setTitle( title, url );
+				}
 			});
 		};
 
