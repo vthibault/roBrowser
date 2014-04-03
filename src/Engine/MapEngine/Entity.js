@@ -540,6 +540,29 @@ define(function( require )
 			else {
 				// skill_lvl = heal.
 			}
+
+
+			var skillEffect, effect, position;
+			if (!(pkt.SKID in SkillEffect)) {
+				return;
+			}
+
+			skillEffect = SkillEffect[pkt.SKID];
+
+			if (!(skillEffect.effectId in EffectDB)) {
+				return;
+			}
+
+			effect   = EffectDB[skillEffect.effectId];
+			position = effect.attachedEntity ? dstEntity.position : [ dstEntity.position[0], dstEntity.position[1], dstEntity.position[2] ];
+
+			if (effect.str) {
+				Effects.add(new StrEffect('data/texture/effect/' + effect.str + '.str', position, Renderer.tick ), pkt.targetID );
+			}
+
+			if (effect.wav) {
+				Sound.play('effect/' + effect.wav + '.wav');
+			}
 		}
 	}
 
