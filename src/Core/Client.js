@@ -233,48 +233,48 @@ function(        Executable,                  PACKETVER,       Thread,      Memo
 						});
 					return;
 
-				case 'spr':
-					gl     = require('Renderer/Renderer').getContext();
-					frames = data.frames;
-					count  = frames.length;
+					case 'spr':
+						gl     = require('Renderer/Renderer').getContext();
+						frames = data.frames;
+						count  = frames.length;
 
-					// Send sprites to GPU
-					for (i = 0; i < count; i++) {
-						frames[i].texture = gl.createTexture();
-						precision  = frames[i].type ? gl.LINEAR : gl.NEAREST;
-						size       = frames[i].type ? gl.RGBA   : gl.LUMINANCE;
-						gl.bindTexture( gl.TEXTURE_2D, frames[i].texture );
-						gl.texImage2D(gl.TEXTURE_2D, 0, size, frames[i].width, frames[i].height, 0, size, gl.UNSIGNED_BYTE, frames[i].data );
-						gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, precision);
-						gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, precision);
-					}
+						// Send sprites to GPU
+						for (i = 0; i < count; i++) {
+							frames[i].texture = gl.createTexture();
+							precision  = frames[i].type ? gl.LINEAR : gl.NEAREST;
+							size       = frames[i].type ? gl.RGBA   : gl.LUMINANCE;
+							gl.bindTexture( gl.TEXTURE_2D, frames[i].texture );
+							gl.texImage2D(gl.TEXTURE_2D, 0, size, frames[i].width, frames[i].height, 0, size, gl.UNSIGNED_BYTE, frames[i].data );
+							gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, precision);
+							gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, precision);
+						}
 
-					// Send palette to GPU
-					if (data.rgba_index !== 0) {
-						data.texture = gl.createTexture();
-						gl.bindTexture( gl.TEXTURE_2D, data.texture );
-						gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 256, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, data.palette );
+						// Send palette to GPU
+						if (data.rgba_index !== 0) {
+							data.texture = gl.createTexture();
+							gl.bindTexture( gl.TEXTURE_2D, data.texture );
+							gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 256, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, data.palette );
+							gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+							gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+						}
+
+						Memory.set( input.filename, data, error);
+						return;
+
+					// Build palette
+					case 'pal':
+						gl      = require('Renderer/Renderer').getContext();
+						texture = gl.createTexture();
+						palette = new Uint8Array(data);
+
+						gl.bindTexture( gl.TEXTURE_2D, texture );
+						gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 256, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, palette );
 						gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
 						gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-					}
+						gl.generateMipmap( gl.TEXTURE_2D );
 
-					Memory.set( input.filename, data, error);
-					return;
-
-				// Build palette
-				case 'pal':
-					gl      = require('Renderer/Renderer').getContext();
-					texture = gl.createTexture();
-					palette = new Uint8Array(data);
-
-					gl.bindTexture( gl.TEXTURE_2D, texture );
-					gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 256, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, palette );
-					gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-					gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-					gl.generateMipmap( gl.TEXTURE_2D );
-
-					Memory.set( input.filename, { palette:palette, texture:texture }, error);
-					return;
+						Memory.set( input.filename, { palette:palette, texture:texture }, error);
+						return;
 				}
 			}
 

@@ -5009,9 +5009,9 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 				out[i].money              = fp.readLong();
 				out[i].jobexp             = fp.readLong();
 				out[i].joblevel           = fp.readLong();
-				out[i].bodystate          = fp.readLong();
-				out[i].healthstate        = fp.readLong();
-				out[i].effectstate        = fp.readLong();
+				out[i].bodyState          = fp.readLong();
+				out[i].healthState        = fp.readLong();
+				out[i].effectState        = fp.readLong();
 				out[i].virtue             = fp.readLong();
 				out[i].honor              = fp.readLong();
 				out[i].jobpoint           = fp.readShort();
@@ -11058,6 +11058,635 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 	};
 	PACKET.ZC.EQUIPWIN_MICROSCOPE2.size = -1;
 
+	// 0x85a
+	PACKET.ZC.REASSEMBLY_AUTH01 = function PACKET_ZC_REASSEMBLY_AUTH01(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH01.size = 2;
+
+	// 0x85b
+	PACKET.ZC.REASSEMBLY_AUTH02 = function PACKET_ZC_REASSEMBLY_AUTH02(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH02.size = 2;
+
+	// 0x85c
+	PACKET.ZC.REASSEMBLY_AUTH03 = function PACKET_ZC_REASSEMBLY_AUTH03(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH03.size = 2;
+
+	// 0x85d
+	PACKET.ZC.REASSEMBLY_AUTH04 = function PACKET_ZC_REASSEMBLY_AUTH04(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH04.size = 2;
+
+	// 0x85e
+	PACKET.ZC.REASSEMBLY_AUTH05 = function PACKET_ZC_REASSEMBLY_AUTH05(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH05.size = 2;
+
+	// 0x85f
+	PACKET.ZC.REASSEMBLY_AUTH06 = function PACKET_ZC_REASSEMBLY_AUTH06(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH06.size = 2;
+
+	// 0x860
+	PACKET.ZC.REASSEMBLY_AUTH07 = function PACKET_ZC_REASSEMBLY_AUTH07(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH07.size = 2;
+
+	// 0x861
+	PACKET.ZC.REASSEMBLY_AUTH08 = function PACKET_ZC_REASSEMBLY_AUTH08(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH08.size = 2;
+
+	// 0x862
+	PACKET.ZC.REASSEMBLY_AUTH09 = function PACKET_ZC_REASSEMBLY_AUTH09(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH09.size = 2;
+
+	// 0x863
+	PACKET.ZC.REASSEMBLY_AUTH10 = function PACKET_ZC_REASSEMBLY_AUTH10(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH10.size = 2;
+
+	// 0x864
+	PACKET.ZC.REASSEMBLY_AUTH11 = function PACKET_ZC_REASSEMBLY_AUTH11(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH11.size = 2;
+
+	// 0x865
+	PACKET.ZC.REASSEMBLY_AUTH12 = function PACKET_ZC_REASSEMBLY_AUTH12(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH12.size = 2;
+
+	// 0x866
+	PACKET.ZC.REASSEMBLY_AUTH13 = function PACKET_ZC_REASSEMBLY_AUTH13(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH13.size = 2;
+
+	// 0x867
+	PACKET.ZC.REASSEMBLY_AUTH14 = function PACKET_ZC_REASSEMBLY_AUTH14(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH14.size = 2;
+
+	// 0x868
+	PACKET.ZC.REASSEMBLY_AUTH15 = function PACKET_ZC_REASSEMBLY_AUTH15(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH15.size = 2;
+
+	// 0x869
+	PACKET.ZC.REASSEMBLY_AUTH16 = function PACKET_ZC_REASSEMBLY_AUTH16(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH16.size = 2;
+
+	// 0x86a
+	PACKET.ZC.REASSEMBLY_AUTH17 = function PACKET_ZC_REASSEMBLY_AUTH17(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH17.size = 2;
+
+	// 0x86b
+	PACKET.ZC.REASSEMBLY_AUTH18 = function PACKET_ZC_REASSEMBLY_AUTH18(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH18.size = 2;
+
+	// 0x86c
+	PACKET.ZC.REASSEMBLY_AUTH19 = function PACKET_ZC_REASSEMBLY_AUTH19(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH19.size = 2;
+
+	// 0x86d
+	PACKET.ZC.REASSEMBLY_AUTH20 = function PACKET_ZC_REASSEMBLY_AUTH20(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH20.size = 2;
+
+	// 0x86e
+	PACKET.ZC.REASSEMBLY_AUTH21 = function PACKET_ZC_REASSEMBLY_AUTH21(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH21.size = 2;
+
+	// 0x86f
+	PACKET.ZC.REASSEMBLY_AUTH22 = function PACKET_ZC_REASSEMBLY_AUTH22(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH22.size = 2;
+
+	// 0x870
+	PACKET.ZC.REASSEMBLY_AUTH23 = function PACKET_ZC_REASSEMBLY_AUTH23(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH23.size = 2;
+
+	// 0x871
+	PACKET.ZC.REASSEMBLY_AUTH24 = function PACKET_ZC_REASSEMBLY_AUTH24(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH24.size = 2;
+
+	// 0x872
+	PACKET.ZC.REASSEMBLY_AUTH25 = function PACKET_ZC_REASSEMBLY_AUTH25(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH25.size = 2;
+
+	// 0x873
+	PACKET.ZC.REASSEMBLY_AUTH26 = function PACKET_ZC_REASSEMBLY_AUTH26(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH26.size = 2;
+
+	// 0x874
+	PACKET.ZC.REASSEMBLY_AUTH27 = function PACKET_ZC_REASSEMBLY_AUTH27(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH27.size = 2;
+
+	// 0x875
+	PACKET.ZC.REASSEMBLY_AUTH28 = function PACKET_ZC_REASSEMBLY_AUTH28(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH28.size = 2;
+
+	// 0x876
+	PACKET.ZC.REASSEMBLY_AUTH29 = function PACKET_ZC_REASSEMBLY_AUTH29(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH29.size = 2;
+
+	// 0x877
+	PACKET.ZC.REASSEMBLY_AUTH30 = function PACKET_ZC_REASSEMBLY_AUTH30(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH30.size = 2;
+
+	// 0x878
+	PACKET.ZC.REASSEMBLY_AUTH31 = function PACKET_ZC_REASSEMBLY_AUTH31(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH31.size = 2;
+
+	// 0x879
+	PACKET.ZC.REASSEMBLY_AUTH32 = function PACKET_ZC_REASSEMBLY_AUTH32(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH32.size = 2;
+
+	// 0x87a
+	PACKET.ZC.REASSEMBLY_AUTH33 = function PACKET_ZC_REASSEMBLY_AUTH33(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH33.size = 2;
+
+	// 0x87b
+	PACKET.ZC.REASSEMBLY_AUTH34 = function PACKET_ZC_REASSEMBLY_AUTH34(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH34.size = 2;
+
+	// 0x87c
+	PACKET.ZC.REASSEMBLY_AUTH35 = function PACKET_ZC_REASSEMBLY_AUTH35(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH35.size = 2;
+
+	// 0x87d
+	PACKET.ZC.REASSEMBLY_AUTH36 = function PACKET_ZC_REASSEMBLY_AUTH36(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH36.size = 2;
+
+	// 0x87e
+	PACKET.ZC.REASSEMBLY_AUTH37 = function PACKET_ZC_REASSEMBLY_AUTH37(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH37.size = 2;
+
+	// 0x87f
+	PACKET.ZC.REASSEMBLY_AUTH38 = function PACKET_ZC_REASSEMBLY_AUTH38(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH38.size = 2;
+
+	// 0x880
+	PACKET.ZC.REASSEMBLY_AUTH39 = function PACKET_ZC_REASSEMBLY_AUTH39(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH39.size = 2;
+
+	// 0x881
+	PACKET.ZC.REASSEMBLY_AUTH40 = function PACKET_ZC_REASSEMBLY_AUTH40(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH40.size = 2;
+
+	// 0x882
+	PACKET.ZC.REASSEMBLY_AUTH41 = function PACKET_ZC_REASSEMBLY_AUTH41(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH41.size = 2;
+
+	// 0x883
+	PACKET.ZC.REASSEMBLY_AUTH42 = function PACKET_ZC_REASSEMBLY_AUTH42(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH42.size = 2;
+
+	// 0x884
+	PACKET.CZ.REASSEMBLY_AUTH01 = function PACKET_CZ_REASSEMBLY_AUTH01() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x885
+	PACKET.CZ.REASSEMBLY_AUTH02 = function PACKET_CZ_REASSEMBLY_AUTH02() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x886
+	PACKET.CZ.REASSEMBLY_AUTH03 = function PACKET_CZ_REASSEMBLY_AUTH03() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x887
+	PACKET.CZ.REASSEMBLY_AUTH04 = function PACKET_CZ_REASSEMBLY_AUTH04() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x888
+	PACKET.CZ.REASSEMBLY_AUTH05 = function PACKET_CZ_REASSEMBLY_AUTH05() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x889
+	PACKET.CZ.REASSEMBLY_AUTH06 = function PACKET_CZ_REASSEMBLY_AUTH06() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x88a
+	PACKET.CZ.REASSEMBLY_AUTH07 = function PACKET_CZ_REASSEMBLY_AUTH07() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x88b
+	PACKET.CZ.REASSEMBLY_AUTH08 = function PACKET_CZ_REASSEMBLY_AUTH08() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x88c
+	PACKET.CZ.REASSEMBLY_AUTH09 = function PACKET_CZ_REASSEMBLY_AUTH09() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x88d
+	PACKET.CZ.REASSEMBLY_AUTH10 = function PACKET_CZ_REASSEMBLY_AUTH10() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x88e
+	PACKET.CZ.REASSEMBLY_AUTH11 = function PACKET_CZ_REASSEMBLY_AUTH11() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x88f
+	PACKET.CZ.REASSEMBLY_AUTH12 = function PACKET_CZ_REASSEMBLY_AUTH12() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x890
+	PACKET.CZ.REASSEMBLY_AUTH13 = function PACKET_CZ_REASSEMBLY_AUTH13() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x891
+	PACKET.CZ.REASSEMBLY_AUTH14 = function PACKET_CZ_REASSEMBLY_AUTH14() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x892
+	PACKET.CZ.REASSEMBLY_AUTH15 = function PACKET_CZ_REASSEMBLY_AUTH15() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x893
+	PACKET.CZ.REASSEMBLY_AUTH16 = function PACKET_CZ_REASSEMBLY_AUTH16() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x894
+	PACKET.CZ.REASSEMBLY_AUTH17 = function PACKET_CZ_REASSEMBLY_AUTH17() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x895
+	PACKET.CZ.REASSEMBLY_AUTH18 = function PACKET_CZ_REASSEMBLY_AUTH18() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x896
+	PACKET.CZ.REASSEMBLY_AUTH19 = function PACKET_CZ_REASSEMBLY_AUTH19() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x897
+	PACKET.CZ.REASSEMBLY_AUTH20 = function PACKET_CZ_REASSEMBLY_AUTH20() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x898
+	PACKET.CZ.REASSEMBLY_AUTH21 = function PACKET_CZ_REASSEMBLY_AUTH21() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x899
+	PACKET.CZ.REASSEMBLY_AUTH22 = function PACKET_CZ_REASSEMBLY_AUTH22() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x89a
+	PACKET.CZ.REASSEMBLY_AUTH23 = function PACKET_CZ_REASSEMBLY_AUTH23() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x89b
+	PACKET.CZ.REASSEMBLY_AUTH24 = function PACKET_CZ_REASSEMBLY_AUTH24() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x89c
+	PACKET.CZ.REASSEMBLY_AUTH25 = function PACKET_CZ_REASSEMBLY_AUTH25() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x89d
+	PACKET.CZ.REASSEMBLY_AUTH26 = function PACKET_CZ_REASSEMBLY_AUTH26() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x89e
+	PACKET.CZ.REASSEMBLY_AUTH27 = function PACKET_CZ_REASSEMBLY_AUTH27() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x89f
+	PACKET.CZ.REASSEMBLY_AUTH28 = function PACKET_CZ_REASSEMBLY_AUTH28() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x8a0
+	PACKET.CZ.REASSEMBLY_AUTH29 = function PACKET_CZ_REASSEMBLY_AUTH29() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x8a1
+	PACKET.CZ.REASSEMBLY_AUTH30 = function PACKET_CZ_REASSEMBLY_AUTH30() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x8a2
+	PACKET.CZ.REASSEMBLY_AUTH31 = function PACKET_CZ_REASSEMBLY_AUTH31() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x8a3
+	PACKET.CZ.REASSEMBLY_AUTH32 = function PACKET_CZ_REASSEMBLY_AUTH32() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x8a4
+	PACKET.CZ.REASSEMBLY_AUTH33 = function PACKET_CZ_REASSEMBLY_AUTH33() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x8a5
+	PACKET.CZ.REASSEMBLY_AUTH34 = function PACKET_CZ_REASSEMBLY_AUTH34() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x8a6
+	PACKET.CZ.REASSEMBLY_AUTH35 = function PACKET_CZ_REASSEMBLY_AUTH35() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x8a7
+	PACKET.CZ.REASSEMBLY_AUTH36 = function PACKET_CZ_REASSEMBLY_AUTH36() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x8a8
+	PACKET.CZ.REASSEMBLY_AUTH37 = function PACKET_CZ_REASSEMBLY_AUTH37() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x8a9
+	PACKET.CZ.REASSEMBLY_AUTH38 = function PACKET_CZ_REASSEMBLY_AUTH38() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x8aa
+	PACKET.CZ.REASSEMBLY_AUTH39 = function PACKET_CZ_REASSEMBLY_AUTH39() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x8ab
+	PACKET.CZ.REASSEMBLY_AUTH40 = function PACKET_CZ_REASSEMBLY_AUTH40() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x8ac
+	PACKET.CZ.REASSEMBLY_AUTH41 = function PACKET_CZ_REASSEMBLY_AUTH41() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x8ad
+	PACKET.CZ.REASSEMBLY_AUTH42 = function PACKET_CZ_REASSEMBLY_AUTH42() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
 
 	// 0x8c7
 	PACKET.ZC.SKILL_ENTRY3 = function PACKET_ZC_SKILL_ENTRY3(fp, end) {
@@ -11123,6 +11752,28 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 	};
 	PACKET.ZC.MSG_STATE_CHANGE3.size = 24;
 
+	// 0x907
+	PACKET.CZ.INVENTORY_TAB = function PACKET_CZ_INVENTORY_TAB() {
+		this.index        = 0;
+		this.normalOrPrivate = 0;
+
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+
+			pkt.writeShort(ver[1]);
+			pkt.view.setUint16( ver[3], this.index,          true );
+			pkt.view.setUint8( ver[4], this.normalOrPrivate,   true );
+			return pkt;
+		};
+	};
+	
+	// 0x908
+	PACKET.ZC.INVENTORY_TAB = function PACKET_ZC_INVENTORY_TAB(fp, end) {
+		this.index   = fp.readShort();
+		this.normalOrPrivate          = fp.readUChar();
+	};
+	PACKET.ZC.INVENTORY_TAB.size = 5;
 
 	// 0x90f
 	PACKET.ZC.NOTIFY_STANDENTRY7 = function PACKET_ZC_NOTIFY_STANDENTRY7(fp, end) {
@@ -11235,8 +11886,637 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 		this.name         = fp.readString(end-fp.tell());
 	};
 	PACKET.ZC.NOTIFY_NEWENTRY7.size = -1;
+	
+	// 0x917
+	PACKET.ZC.REASSEMBLY_AUTH43 = function PACKET_ZC_REASSEMBLY_AUTH43(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH43.size = 2;
 
+	// 0x918
+	PACKET.ZC.REASSEMBLY_AUTH44 = function PACKET_ZC_REASSEMBLY_AUTH44(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH44.size = 2;
 
+	// 0x919
+	PACKET.ZC.REASSEMBLY_AUTH45 = function PACKET_ZC_REASSEMBLY_AUTH45(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH45.size = 2;
+
+	// 0x91a
+	PACKET.ZC.REASSEMBLY_AUTH46 = function PACKET_ZC_REASSEMBLY_AUTH46(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH46.size = 2;
+
+	// 0x91b
+	PACKET.ZC.REASSEMBLY_AUTH47 = function PACKET_ZC_REASSEMBLY_AUTH47(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH47.size = 2;
+
+	// 0x91c
+	PACKET.ZC.REASSEMBLY_AUTH48 = function PACKET_ZC_REASSEMBLY_AUTH48(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH48.size = 2;
+
+	// 0x91d
+	PACKET.ZC.REASSEMBLY_AUTH49 = function PACKET_ZC_REASSEMBLY_AUTH49(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH49.size = 2;
+
+	// 0x91e
+	PACKET.ZC.REASSEMBLY_AUTH50 = function PACKET_ZC_REASSEMBLY_AUTH50(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH50.size = 2;
+
+	// 0x91f
+	PACKET.ZC.REASSEMBLY_AUTH51 = function PACKET_ZC_REASSEMBLY_AUTH51(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH51.size = 2;
+
+	// 0x920
+	PACKET.ZC.REASSEMBLY_AUTH52 = function PACKET_ZC_REASSEMBLY_AUTH52(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH52.size = 2;
+
+	// 0x921
+	PACKET.ZC.REASSEMBLY_AUTH53 = function PACKET_ZC_REASSEMBLY_AUTH53(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH53.size = 2;
+
+	// 0x922
+	PACKET.ZC.REASSEMBLY_AUTH54 = function PACKET_ZC_REASSEMBLY_AUTH54(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH54.size = 2;
+
+	// 0x923
+	PACKET.ZC.REASSEMBLY_AUTH55 = function PACKET_ZC_REASSEMBLY_AUTH55(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH55.size = 2;
+
+	// 0x924
+	PACKET.ZC.REASSEMBLY_AUTH56 = function PACKET_ZC_REASSEMBLY_AUTH56(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH56.size = 2;
+
+	// 0x925
+	PACKET.ZC.REASSEMBLY_AUTH57 = function PACKET_ZC_REASSEMBLY_AUTH57(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH57.size = 2;
+
+	// 0x926
+	PACKET.ZC.REASSEMBLY_AUTH58 = function PACKET_ZC_REASSEMBLY_AUTH58(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH58.size = 2;
+
+	// 0x927
+	PACKET.ZC.REASSEMBLY_AUTH59 = function PACKET_ZC_REASSEMBLY_AUTH59(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH59.size = 2;
+
+	// 0x928
+	PACKET.ZC.REASSEMBLY_AUTH60 = function PACKET_ZC_REASSEMBLY_AUTH60(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH60.size = 2;
+
+	// 0x929
+	PACKET.ZC.REASSEMBLY_AUTH61 = function PACKET_ZC_REASSEMBLY_AUTH61(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH61.size = 2;
+
+	// 0x92a
+	PACKET.ZC.REASSEMBLY_AUTH62 = function PACKET_ZC_REASSEMBLY_AUTH62(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH62.size = 2;
+
+	// 0x92b
+	PACKET.ZC.REASSEMBLY_AUTH63 = function PACKET_ZC_REASSEMBLY_AUTH63(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH63.size = 2;
+
+	// 0x92c
+	PACKET.ZC.REASSEMBLY_AUTH64 = function PACKET_ZC_REASSEMBLY_AUTH64(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH64.size = 2;
+
+	// 0x92d
+	PACKET.ZC.REASSEMBLY_AUTH65 = function PACKET_ZC_REASSEMBLY_AUTH65(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH65.size = 2;
+
+	// 0x92e
+	PACKET.ZC.REASSEMBLY_AUTH66 = function PACKET_ZC_REASSEMBLY_AUTH66(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH66.size = 2;
+
+	// 0x92f
+	PACKET.ZC.REASSEMBLY_AUTH67 = function PACKET_ZC_REASSEMBLY_AUTH67(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH67.size = 2;
+
+	// 0x930
+	PACKET.ZC.REASSEMBLY_AUTH68 = function PACKET_ZC_REASSEMBLY_AUTH68(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH68.size = 2;
+
+	// 0x931
+	PACKET.ZC.REASSEMBLY_AUTH69 = function PACKET_ZC_REASSEMBLY_AUTH69(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH69.size = 2;
+
+	// 0x932
+	PACKET.ZC.REASSEMBLY_AUTH70 = function PACKET_ZC_REASSEMBLY_AUTH70(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH70.size = 2;
+
+	// 0x933
+	PACKET.ZC.REASSEMBLY_AUTH71 = function PACKET_ZC_REASSEMBLY_AUTH71(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH71.size = 2;
+
+	// 0x934
+	PACKET.ZC.REASSEMBLY_AUTH72 = function PACKET_ZC_REASSEMBLY_AUTH72(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH72.size = 2;
+
+	// 0x935
+	PACKET.ZC.REASSEMBLY_AUTH73 = function PACKET_ZC_REASSEMBLY_AUTH73(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH73.size = 2;
+
+	// 0x936
+	PACKET.ZC.REASSEMBLY_AUTH74 = function PACKET_ZC_REASSEMBLY_AUTH74(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH74.size = 2;
+
+	// 0x937
+	PACKET.ZC.REASSEMBLY_AUTH75 = function PACKET_ZC_REASSEMBLY_AUTH75(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH75.size = 2;
+
+	// 0x938
+	PACKET.ZC.REASSEMBLY_AUTH76 = function PACKET_ZC_REASSEMBLY_AUTH76(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH76.size = 2;
+
+	// 0x939
+	PACKET.ZC.REASSEMBLY_AUTH77 = function PACKET_ZC_REASSEMBLY_AUTH77(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH77.size = 2;
+
+	// 0x93a
+	PACKET.ZC.REASSEMBLY_AUTH78 = function PACKET_ZC_REASSEMBLY_AUTH78(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH78.size = 2;
+
+	// 0x93b
+	PACKET.ZC.REASSEMBLY_AUTH79 = function PACKET_ZC_REASSEMBLY_AUTH79(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH79.size = 2;
+
+	// 0x93c
+	PACKET.ZC.REASSEMBLY_AUTH80 = function PACKET_ZC_REASSEMBLY_AUTH80(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH80.size = 2;
+
+	// 0x93d
+	PACKET.ZC.REASSEMBLY_AUTH81 = function PACKET_ZC_REASSEMBLY_AUTH81(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH81.size = 2;
+
+	// 0x93e
+	PACKET.ZC.REASSEMBLY_AUTH82 = function PACKET_ZC_REASSEMBLY_AUTH82(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH82.size = 2;
+
+	// 0x93f
+	PACKET.ZC.REASSEMBLY_AUTH83 = function PACKET_ZC_REASSEMBLY_AUTH83(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH83.size = 2;
+
+	// 0x940
+	PACKET.ZC.REASSEMBLY_AUTH84 = function PACKET_ZC_REASSEMBLY_AUTH84(fp, end) {
+	}
+	PACKET.ZC.REASSEMBLY_AUTH84.size = 2;
+
+	// 0x941
+	PACKET.CZ.REASSEMBLY_AUTH43 = function PACKET_CZ_REASSEMBLY_AUTH43() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x942
+	PACKET.CZ.REASSEMBLY_AUTH44 = function PACKET_CZ_REASSEMBLY_AUTH44() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x943
+	PACKET.CZ.REASSEMBLY_AUTH45 = function PACKET_CZ_REASSEMBLY_AUTH45() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x944
+	PACKET.CZ.REASSEMBLY_AUTH46 = function PACKET_CZ_REASSEMBLY_AUTH46() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x945
+	PACKET.CZ.REASSEMBLY_AUTH47 = function PACKET_CZ_REASSEMBLY_AUTH47() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x946
+	PACKET.CZ.REASSEMBLY_AUTH48 = function PACKET_CZ_REASSEMBLY_AUTH48() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x947
+	PACKET.CZ.REASSEMBLY_AUTH49 = function PACKET_CZ_REASSEMBLY_AUTH49() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x948
+	PACKET.CZ.REASSEMBLY_AUTH50 = function PACKET_CZ_REASSEMBLY_AUTH50() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x949
+	PACKET.CZ.REASSEMBLY_AUTH51 = function PACKET_CZ_REASSEMBLY_AUTH51() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x94a
+	PACKET.CZ.REASSEMBLY_AUTH52 = function PACKET_CZ_REASSEMBLY_AUTH52() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x94b
+	PACKET.CZ.REASSEMBLY_AUTH53 = function PACKET_CZ_REASSEMBLY_AUTH53() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x94c
+	PACKET.CZ.REASSEMBLY_AUTH54 = function PACKET_CZ_REASSEMBLY_AUTH54() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x94d
+	PACKET.CZ.REASSEMBLY_AUTH55 = function PACKET_CZ_REASSEMBLY_AUTH55() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x94e
+	PACKET.CZ.REASSEMBLY_AUTH56 = function PACKET_CZ_REASSEMBLY_AUTH56() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x94f
+	PACKET.CZ.REASSEMBLY_AUTH57 = function PACKET_CZ_REASSEMBLY_AUTH57() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x950
+	PACKET.CZ.REASSEMBLY_AUTH58 = function PACKET_CZ_REASSEMBLY_AUTH58() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x951
+	PACKET.CZ.REASSEMBLY_AUTH59 = function PACKET_CZ_REASSEMBLY_AUTH59() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x952
+	PACKET.CZ.REASSEMBLY_AUTH60 = function PACKET_CZ_REASSEMBLY_AUTH60() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x953
+	PACKET.CZ.REASSEMBLY_AUTH61 = function PACKET_CZ_REASSEMBLY_AUTH61() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x954
+	PACKET.CZ.REASSEMBLY_AUTH62 = function PACKET_CZ_REASSEMBLY_AUTH62() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x955
+	PACKET.CZ.REASSEMBLY_AUTH63 = function PACKET_CZ_REASSEMBLY_AUTH63() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x956
+	PACKET.CZ.REASSEMBLY_AUTH64 = function PACKET_CZ_REASSEMBLY_AUTH64() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x957
+	PACKET.CZ.REASSEMBLY_AUTH65 = function PACKET_CZ_REASSEMBLY_AUTH65() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x958
+	PACKET.CZ.REASSEMBLY_AUTH66 = function PACKET_CZ_REASSEMBLY_AUTH66() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x959
+	PACKET.CZ.REASSEMBLY_AUTH67 = function PACKET_CZ_REASSEMBLY_AUTH67() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x95a
+	PACKET.CZ.REASSEMBLY_AUTH68 = function PACKET_CZ_REASSEMBLY_AUTH68() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x95b
+	PACKET.CZ.REASSEMBLY_AUTH69 = function PACKET_CZ_REASSEMBLY_AUTH69() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x95c
+	PACKET.CZ.REASSEMBLY_AUTH70 = function PACKET_CZ_REASSEMBLY_AUTH70() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x95d
+	PACKET.CZ.REASSEMBLY_AUTH71 = function PACKET_CZ_REASSEMBLY_AUTH71() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x95e
+	PACKET.CZ.REASSEMBLY_AUTH72 = function PACKET_CZ_REASSEMBLY_AUTH72() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x95f
+	PACKET.CZ.REASSEMBLY_AUTH73 = function PACKET_CZ_REASSEMBLY_AUTH73() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x960
+	PACKET.CZ.REASSEMBLY_AUTH74 = function PACKET_CZ_REASSEMBLY_AUTH74() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x961
+	PACKET.CZ.REASSEMBLY_AUTH75 = function PACKET_CZ_REASSEMBLY_AUTH75() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x962
+	PACKET.CZ.REASSEMBLY_AUTH76 = function PACKET_CZ_REASSEMBLY_AUTH76() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x963
+	PACKET.CZ.REASSEMBLY_AUTH77 = function PACKET_CZ_REASSEMBLY_AUTH77() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x964
+	PACKET.CZ.REASSEMBLY_AUTH78 = function PACKET_CZ_REASSEMBLY_AUTH78() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x965
+	PACKET.CZ.REASSEMBLY_AUTH79 = function PACKET_CZ_REASSEMBLY_AUTH79() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x966
+	PACKET.CZ.REASSEMBLY_AUTH80 = function PACKET_CZ_REASSEMBLY_AUTH80() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x967
+	PACKET.CZ.REASSEMBLY_AUTH81 = function PACKET_CZ_REASSEMBLY_AUTH81() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x968
+	PACKET.CZ.REASSEMBLY_AUTH82 = function PACKET_CZ_REASSEMBLY_AUTH82() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x969
+	PACKET.CZ.REASSEMBLY_AUTH83 = function PACKET_CZ_REASSEMBLY_AUTH83() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+
+	// 0x96a
+	PACKET.CZ.REASSEMBLY_AUTH84 = function PACKET_CZ_REASSEMBLY_AUTH84() {
+		this.build = function() {
+			var ver = this.getPacketVersion();
+			var pkt = new BinaryWriter(ver[2]);
+			pkt.writeShort( ver[1] );
+			return pkt;
+		};
+	};
+	
 	// 0x977
 	PACKET.ZC.NOTIFY_MONSTER_HP = function PACKET_ZC_NOTIFY_MONSTER_HP(fp, end) {
 		this.AID        = fp.readULong();

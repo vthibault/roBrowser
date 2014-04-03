@@ -7,11 +7,22 @@
  *
  * @author Vincent Thibault
  */
-define(['Engine/SessionStorage', 'DB/StatusConst'], function( Session, StatusConst )
+define(function( require )
 {
 	'use strict';
 
 
+	/**
+	 * Load dependencies
+	 */
+	var StatusConst = require('DB/StatusConst');
+	var MountTable  = require('DB/MountTable');
+	var Session     = require('Engine/SessionStorage');
+
+
+	/**
+	 * Status color
+	 */
 	var _bodyStateColor   = new Float32Array([1,1,1,1]);
 	var _healthStateColor = new Float32Array([1,1,1,1]);
 	var _effectStateColor = new Float32Array([1,1,1,1]);
@@ -27,7 +38,6 @@ define(['Engine/SessionStorage', 'DB/StatusConst'], function( Session, StatusCon
 		this.effectColor[2] = this._bodyStateColor[2] * this._healthStateColor[2] * this._effectStateColor[2];
 		this.effectColor[3] = this._bodyStateColor[3] * this._healthStateColor[3] * this._effectStateColor[3];
 	}
-
 
 
 	/**
@@ -151,11 +161,63 @@ define(['Engine/SessionStorage', 'DB/StatusConst'], function( Session, StatusCon
 	 */
 	function updateEffectState( value )
 	{
+		var clothes = 0;
+
+
 		this._effectStateColor[0] = 1.0;
 		this._effectStateColor[1] = 1.0;
 		this._effectStateColor[2] = 1.0;
 		this._effectStateColor[3] = 1.0;
-		this._effectState         = value;
+
+
+		// ------------------------
+		// Riding
+		// ------------------------
+
+
+		var RIDING = (
+			StatusConst.EffectState.RIDING  |
+			StatusConst.EffectState.DRAGON1 |
+			StatusConst.EffectState.DRAGON2 |
+			StatusConst.EffectState.DRAGON3 |
+			StatusConst.EffectState.DRAGON4 |
+			StatusConst.EffectState.DRAGON5 |
+			StatusConst.EffectState.WUGRIDER|
+			StatusConst.EffectState.MADOGEAR
+		);
+
+		if (value & RIDING) {
+			if (this._job in MountTable) {
+				clothes = MountTable[this._job];
+			}
+		}
+
+
+		// ------------------------
+		// Clothes
+		// ------------------------
+
+
+		// Wedding clones
+		if (value & StatusConst.EffectState.WEDDING) {
+			clothes = 22;
+		}
+
+		// Xmas clothes 
+		if (value & StatusConst.EffectState.XMAS) {
+			clothes = 26;
+		}
+
+		// Summer
+		if (value & StatusConst.EffectState.SUMMER) {
+			clothes = 27;
+		}
+
+
+		// ------------------------
+		// Effects
+		// ------------------------
+
 
 		// Never show option invisible
 		if (value & StatusConst.EffectState.INVISIBLE) {
@@ -175,6 +237,19 @@ define(['Engine/SessionStorage', 'DB/StatusConst'], function( Session, StatusCon
 			}
 		}
 
+
+		// ------------------------
+		// Apply
+		// ------------------------
+
+
+		if (clothes !== this.clothes) {
+			this.clothes = clothes;
+			this.job     = clothes || this._job;
+		}
+
+
+		this._effectState = value;
 		recalculateBlendingColor.call(this);
 	}
 
@@ -188,6 +263,8 @@ define(['Engine/SessionStorage', 'DB/StatusConst'], function( Session, StatusCon
 		this._healthStateColor = new Float32Array([1, 1, 1, 1]);
 		this._effectStateColor = new Float32Array([1, 1, 1, 1]);
 		this.effectColor       = new Float32Array([1, 1, 1, 1]);
+
+		this.clothes           = 0;
 
 		Object.defineProperty(this, 'bodyState', {
 			get: function(){ return this._bodyState },

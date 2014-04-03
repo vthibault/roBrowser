@@ -183,6 +183,7 @@ function(
 			pkt.Passwd     = password;
 			pkt.Version    = parseInt(_server.version, 10);
 			pkt.clienttype = parseInt(_server.langtype, 10);
+			pkt.clienttype = 1;
 			Network.sendPacket(pkt);
 		});
 	}
@@ -227,7 +228,7 @@ function(
 		Session.AuthCode  = pkt.AuthCode;
 		Session.AID       = pkt.AID;
 		Session.UserLevel = pkt.userLevel;
-		Session.Sex       = pkt.Sex;
+		Session.Sex = pkt.Sex ? 1 : 0;
 		_charServers      = pkt.ServerList;
 
 		// Build list of servers

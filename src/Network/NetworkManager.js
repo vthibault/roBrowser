@@ -94,10 +94,12 @@ function( require,        Context,         BinaryReader,       PACKETVER,       
 		socket.onClose    = onClose;
 		socket.onComplete = function onComplete(success)
 		{
-			var msg = 'Fail';
+			var msg   = 'Fail';
+			var color = 'red';
 
 			if (success) {
-				msg = 'Success';
+				msg   = 'Success';
+				color = 'green';
 
 				// If current socket has ping, remove it
 				if (_socket && _socket.ping) {
@@ -113,7 +115,7 @@ function( require,        Context,         BinaryReader,       PACKETVER,       
 				}
 			}
 
-			console.warn( 'Network::Connect() - ' + msg + ' to connect to ' + host + ':' + port);
+			console.log( '%c[Network] ' + msg + ' to connect to ' + host + ':' + port, 'font-weight:bold;color:' + color);
 			callback.call( this, success);
 		};
 	}

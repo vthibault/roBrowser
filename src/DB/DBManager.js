@@ -294,7 +294,7 @@ function(      Client,     ClassTable,     ClassPalTable,     MonsterTable,     
 			return null;
 		}
 
-		return 'data/texture/' + PetInfo.EquipAct[id];
+		return 'data/sprite/' + PetInfo.EquipAct[id];
 	};
 
 
@@ -304,7 +304,7 @@ function(      Client,     ClassTable,     ClassPalTable,     MonsterTable,     
 	 */
 	DB.getPetIllustPath = function GetPetIllustPath( id )
 	{
-		return 'data/sprite/' + (PetInfo.IllustPath[id] || PetInfo.IllustPath[1002]);
+		return 'data/texture/' + (PetInfo.IllustPath[id] || PetInfo.IllustPath[1002]);
 	};
 
 

@@ -433,15 +433,13 @@ define(function(require)
 		$charinfo.find('.exp').text( info.exp );
 		$charinfo.find('.hp').text( info.hp );
 		$charinfo.find('.sp').text( info.sp );
-
-		//TODO: Check win_select.bmp size to insert it if needed ?
-		//$charinfo.find('.map').text( info.lastMap || '' );
 		$charinfo.find('.str').text( info.Str );
 		$charinfo.find('.agi').text( info.Agi );
 		$charinfo.find('.vit').text( info.Vit );
 		$charinfo.find('.int').text( info.Int );
 		$charinfo.find('.dex').text( info.Dex );
-		$charinfo.find('.luk').text( info.Luk );
+		$charinfo.find('.luk').text( info.Luk );		
+		$charinfo.find('.map').text( DB.mapname[ info.lastMap.replace('.gat','.rsw') ] || DB.msgstringtable[187] );
 	}
 
 

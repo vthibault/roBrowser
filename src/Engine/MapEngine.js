@@ -113,6 +113,92 @@ define(function( require )
 			Network.hookPacket( PACKET.ZC.RESTART_ACK,         onRestartAnswer );
 			Network.hookPacket( PACKET.ZC.ACK_REQ_DISCONNECT,  onDisconnectAnswer );
 			Network.hookPacket( PACKET.ZC.NOTIFY_TIME,         onPong );
+			Network.hookPacket( PACKET.ZC.NOTIFY_TIME,         onPong );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH01,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH02,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH03,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH04,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH05,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH06,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH07,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH08,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH09,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH10,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH11,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH12,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH13,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH14,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH15,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH16,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH17,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH18,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH19,   onReassemblyAuth );			
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH20,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH21,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH22,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH23,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH24,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH25,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH26,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH27,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH28,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH29,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH30,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH31,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH32,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH33,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH34,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH35,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH36,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH37,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH38,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH39,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH40,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH41,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH42,   onReassemblyAuth );			
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH43,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH44,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH45,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH46,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH47,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH48,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH49,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH50,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH51,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH52,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH53,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH54,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH55,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH56,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH57,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH58,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH59,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH60,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH61,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH62,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH63,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH64,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH65,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH66,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH67,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH68,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH69,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH70,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH71,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH72,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH73,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH74,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH75,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH76,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH77,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH78,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH79,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH80,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH81,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH82,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH83,   onReassemblyAuth );
+			Network.hookPacket( PACKET.ZC.REASSEMBLY_AUTH84,   onReassemblyAuth );
+
 
 			// Extend controller
 			require('./MapEngine/Main').call();
@@ -125,6 +211,7 @@ define(function( require )
 			require('./MapEngine/Guild').call();
 			require('./MapEngine/Skill').call();
 			require('./MapEngine/ChatRoom').call();
+			require('./MapEngine/Pet').call();
 		}
 	}
 
@@ -171,6 +258,7 @@ define(function( require )
 		Equipment.onUnEquip             = onUnEquip;
 		Equipment.onConfigUpdate        = onConfigUpdate;
 		Equipment.onEquipItem           = onEquipItem;
+		Inventory.onSetItemFavorite     = onSetItemFavorite;
 		Inventory.onUseItem             = onUseItem;
 		Inventory.onEquipItem           = onEquipItem;
 		Escape.onExitRequest            = onExitRequest;
@@ -573,6 +661,20 @@ define(function( require )
 
 
 	/**
+	 * Use an item
+	 *
+	 * @param {number} item's index
+	 */
+	function onSetItemFavorite( index, normalOrPrivate )
+	{
+		var pkt          = new PACKET.CZ.INVENTORY_TAB();
+		pkt.index        = index;
+		pkt.normalOrPrivate = normalOrPrivate;
+		Network.sendPacket(pkt);
+	}
+
+
+	/**
 	 * Equip item
 	 *
 	 * @param {number} item's index
@@ -597,6 +699,272 @@ define(function( require )
 		var pkt   = new PACKET.CZ.REQ_TAKEOFF_EQUIP();
 		pkt.index = index;
 		Network.sendPacket(pkt);
+	}
+	
+	/**
+	 * Reassembly Auth
+	 */
+	function onReassemblyAuth( pktIn )
+	{
+		var pkt = null;
+		switch (parseInt(pktIn.constructor.id)) {
+			case 0x85a:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH01();
+			break;
+			case 0x85b:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH02();
+			break;
+			case 0x85c:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH03();
+			break;
+			case 0x85d:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH04();
+			break;
+			case 0x85e:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH05();
+			break;
+			case 0x85f:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH06();
+			break;
+			case 0x860:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH07();
+			break;
+			case 0x861:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH08();
+			break;
+			case 0x862:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH09();
+			break;
+			case 0x863:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH10();
+			break;
+			case 0x864:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH11();
+			break;
+			case 0x865:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH12();
+			break;
+			case 0x866:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH13();
+			break;
+			case 0x867:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH14();
+			break;
+			case 0x868:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH15();
+			break;
+			case 0x869:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH16();
+			break;
+			case 0x86a:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH17();
+			break;
+			case 0x86b:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH18();
+			break;
+			case 0x86c:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH19();
+			break;
+			case 0x86d:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH20();
+			break;
+			case 0x86e:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH21();
+			break;
+			case 0x86f:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH22();
+			break;
+			case 0x870:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH23();
+			break;
+			case 0x871:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH24();
+			break;
+			case 0x872:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH25();
+			break;
+			case 0x873:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH26();
+			break;
+			case 0x874:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH27();
+			break;
+			case 0x875:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH28();
+			break;
+			case 0x876:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH29();
+			break;
+			case 0x877:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH30();
+			break;
+			case 0x878:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH31();
+			break;
+			case 0x879:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH32();
+			break;
+			case 0x87a:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH33();
+			break;
+			case 0x87b:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH34();
+			break;
+			case 0x87c:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH35();
+			break;
+			case 0x87d:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH36();
+			break;
+			case 0x87e:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH37();
+			break;
+			case 0x87f:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH38();
+			break;
+			case 0x880:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH39();
+			break;
+			case 0x881:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH40();
+			break;
+			case 0x882:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH41();
+			break;
+			case 0x883:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH42();
+			break;
+			case 0x917:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH43();
+			break;
+			case 0x918:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH44();
+			break;
+			case 0x919:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH45();
+			break;
+			case 0x91a:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH46();
+			break;
+			case 0x91b:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH47();
+			break;
+			case 0x91c:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH48();
+			break;
+			case 0x91d:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH49();
+			break;
+			case 0x91e:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH50();
+			break;
+			case 0x91f:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH51();
+			break;
+			case 0x920:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH52();
+			break;
+			case 0x921:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH53();
+			break;
+			case 0x922:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH54();
+			break;
+			case 0x923:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH55();
+			break;
+			case 0x924:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH56();
+			break;
+			case 0x925:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH57();
+			break;
+			case 0x926:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH58();
+			break;
+			case 0x927:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH59();
+			break;
+			case 0x928:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH60();
+			break;
+			case 0x929:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH61();
+			break;
+			case 0x92a:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH62();
+			break;
+			case 0x92b:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH63();
+			break;
+			case 0x92c:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH64();
+			break;
+			case 0x92d:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH65();
+			break;
+			case 0x92e:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH66();
+			break;
+			case 0x92f:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH67();
+			break;
+			case 0x930:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH68();
+			break;
+			case 0x931:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH69();
+			break;
+			case 0x932:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH70();
+			break;
+			case 0x933:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH71();
+			break;
+			case 0x934:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH72();
+			break;
+			case 0x935:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH73();
+			break;
+			case 0x936:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH74();
+			break;
+			case 0x937:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH75();
+			break;
+			case 0x938:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH76();
+			break;
+			case 0x939:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH77();
+			break;
+			case 0x93a:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH78();
+			break;
+			case 0x93b:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH79();
+			break;
+			case 0x93c:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH80();
+			break;
+			case 0x93d:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH81();
+			break;
+			case 0x93e:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH82();
+			break;
+			case 0x93f:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH83();
+			break;
+			case 0x940:
+				pkt = new PACKET.CZ.REASSEMBLY_AUTH84();
+			break;
+		}
+		
+		if (pkt !== null) {
+			Network.sendPacket(pkt);
+		}
 	}
 
 

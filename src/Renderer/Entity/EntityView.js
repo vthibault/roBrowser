@@ -7,7 +7,7 @@
  *
  * @author Vincent Thibault
  */
-define(['Core/Client', 'DB/DBManager', 'DB/ShadowTable', './EntityAction'], function( Client, DB, ShadowTable, EntityAction )
+define(['Core/Client', 'DB/DBManager', 'DB/ShadowTable', 'DB/MountTable', './EntityAction'], function( Client, DB, ShadowTable, MountTable, EntityAction )
 {
 	'use strict';
 
@@ -75,45 +75,58 @@ define(['Core/Client', 'DB/DBManager', 'DB/ShadowTable', './EntityAction'], func
 	 */
 	function UpdateBody( job )
 	{
+		var i, path;
+		var Entity;
+
 		if (job < 0) {
 			return;
 		}
 
-		var path   = this.isAdmin ? DB.getAdminPath(this._sex) : DB.getBodyPath( job, this._sex );
-		var Entity = this.constructor;
-		this._job  = -1;
+		// Avoid fuck*ng errors with mounts !
+		// Sometimes the server send us the job of the mount sprite instead
+		// of the base sprite + effect to have the mount.
+		for (i in MountTable) {
+			if (MountTable[i] === job) {
+				this._job    = i;
+				this.clothes = job;
+				break;
+			}
+		}
+
+		// Clothes keep the old job in memory
+		if (job !== this.clothes) {
+			this._job          = job;
+		}
 
 		this.files.shadow.size = job in ShadowTable ? ShadowTable[job] : 1.0;
+		path                   = this.isAdmin ? DB.getAdminPath(this._sex) : DB.getBodyPath( job, this._sex );
+		Entity                 = this.constructor;
 
-		// Do not render 139 sprite
-		if (job === 139) {
+		// Define Object type based on its id
+		if (this.objecttype === Entity.TYPE_UNKNOWN) {
+			this.objecttype = (
+				job < 45   ? Entity.TYPE_PC   :
+				job < 46   ? Entity.TYPE_WARP :
+				job < 1000 ? Entity.TYPE_NPC  :
+				job < 4000 ? Entity.TYPE_MOB  :
+				job < 6000 ? Entity.TYPE_PC   :
+				job < 7000 ? Entity.TYPE_HOM  :
+				             Entity.TYPE_MERC
+			);
+		}
+
+		EntityAction.call(this);
+
+		// Invisible sprites
+		if (job === 111 || job === 139 || job === 45) {
 			this.files.body.spr = null;
 			this.files.body.act = null;
 			return;
 		}
 
-		// Define Object type based on its id
-		// TODO: find a better way ?
-		this.objecttype = (
-			job < 45   ? Entity.TYPE_PC   :
-			job < 46   ? Entity.TYPE_WARP :
-			job < 1000 ? Entity.TYPE_NPC  :
-			job < 4000 ? Entity.TYPE_MOB  :
-			job < 6000 ? Entity.TYPE_PC   :
-			job < 7000 ? Entity.TYPE_HOM  :
-						 Entity.TYPE_MERC
-		);
-
-		// warp ?
-		if (path === null) {
-			// Reload actions frames (the type can change...)
-			EntityAction.call(this);
-			return;
-		}
-
 		// granny model not supported yet :(
 		// Display a poring instead
-		if (path.match(/\.gr2$/i)) {
+		if (path === null || path.match(/\.gr2$/i)) {
 			path = DB.getBodyPath( 1002, this._sex );
 		}
 
@@ -122,12 +135,6 @@ define(['Core/Client', 'DB/DBManager', 'DB/ShadowTable', './EntityAction'], func
 		Client.loadFile(path + '.spr', function(){
 			this.files.body.spr = path + '.spr';
 			this.files.body.act = path + '.act';
-
-			// TODO: find a better way ?
-			this._job       = job;
-
-			// Reload actions frames (the type can change...)
-			EntityAction.call(this);
 
 			// Update linked attachments
 			this.bodypalette = this._bodypalette;
@@ -160,10 +167,7 @@ define(['Core/Client', 'DB/DBManager', 'DB/ShadowTable', './EntityAction'], func
 			return;
 		}
 
-		var path = DB.getBodyPalPath( this._job, this._bodypalette, this._sex);
-		Client.loadFile( path, function(){
-			this.files.body.pal = path;
-		}.bind(this));
+		this.files.body.pal = DB.getBodyPalPath( this._job, this._bodypalette, this._sex);
 	}
 
 
@@ -174,21 +178,24 @@ define(['Core/Client', 'DB/DBManager', 'DB/ShadowTable', './EntityAction'], func
 	 */
 	function UpdateHead( head )
 	{
-		if (head <= 0) {
+		var path;
+
+		if (head < 0) {
 			return;
 		}
+		
+		if (head == 0) {
+			head = 1;
+		}
 
-		var path   = DB.getHeadPath( head, this._sex );
-		this._head = -1;
+		this._head  = head;
+		path        = DB.getHeadPath( head, this._sex );
 
 		Client.loadFile(path + '.act');
 		Client.loadFile(path + '.spr', function(){
-			this._head          = head;
 			this.files.head.spr = path + '.spr';
 			this.files.head.act = path + '.act';
 			this.files.head.pal = null;
-
-			// Update head palette
 			this.headpalette    = this._headpalette;
 		}.bind(this));
 	}
@@ -214,11 +221,7 @@ define(['Core/Client', 'DB/DBManager', 'DB/ShadowTable', './EntityAction'], func
 			return;
 		}
 
-		var path = DB.getHeadPalPath( this._head, this._headpalette, this._sex);
-
-		Client.loadFile( path, function(){
-			this.files.head.pal = path;
-		}.bind(this));
+		this.files.head.pal = DB.getHeadPalPath( this._head, this._headpalette, this._sex);
 	}
 
 

@@ -130,7 +130,7 @@ define(function(require)
 
 		this.ui.find('.input .message').blur(function(){
 			setTimeout(function(){
-				if (document.activeElement.tagName !== 'INPUT') {
+				if (!document.activeElement.tagName.match(/input|select|textarea/i)) {
 					this.focus();
 				}
 			}.bind(this), 1);

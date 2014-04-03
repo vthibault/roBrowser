@@ -145,6 +145,31 @@ function(
 				pkt.EffectState = 0x40;
 				Network.sendPacket(pkt);
 				return;
+
+			case 'summer':
+				pkt = new PACKET.CZ.CHANGE_EFFECTSTATE();
+				pkt.EffectState = 0x40000;
+				Network.sendPacket(pkt);
+				return;
+
+			case 'santa':
+				pkt = new PACKET.CZ.CHANGE_EFFECTSTATE();
+				pkt.EffectState = 0x10000;
+				Network.sendPacket(pkt);
+				return;
+
+			case 'mm':
+			case 'mapmove':
+				//pkt = new PACKET.CZ.MOVETO_MAP();
+				//Network.sendPacket(pkt);
+				return;
+
+			case 'item':
+			case 'monster':
+				//pkt = new PACKET.CZ.ITEM_CREATE();
+				//Network.sendPacket(pkt);
+				return;
+
 			case 'who':
 			case 'w':
 				pkt = new PACKET.CZ.REQ_USER_COUNT();

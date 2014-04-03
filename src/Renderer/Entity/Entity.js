@@ -156,14 +156,18 @@ define( function( require )
 		this.isAdmin = Session.AdminList.indexOf(unit.GID) > -1;
 		this.sex     = unit.hasOwnProperty('sex') ? unit.sex : this._sex;
 		this.job     = unit.hasOwnProperty('job') ? unit.job : this._job;
+		this.clothes = 0;
 		keys         = Object.keys( unit );
 		count        = keys.length;
 
 		for (i = 0; i < count; ++i) {
 			switch (keys[i]) {
 
-				// Set it manually
+				// Server send warp as npc,
+				// roBrowser has a special type for warp.
 				case 'objecttype':
+					this.objecttype = (unit.job === 45) ? Entity.TYPE_WARP : unit.objecttype;
+					require('./EntityAction').call(this);
 					break;
 
 				// Already set

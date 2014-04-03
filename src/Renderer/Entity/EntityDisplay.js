@@ -139,9 +139,6 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 	 */
 	Display.prototype.add = function add()
 	{
-		if (this.canvas && !this.canvas.parentNode) {
-			document.body.appendChild(this.canvas);
-		}
 		this.display = true;
 	};
 
@@ -151,7 +148,7 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 	 */
 	Display.prototype.remove = function remove()
 	{
-		if (this.canvas && this.canvas.parentNode) {
+		if (this.canvas.parentNode) {
 			document.body.removeChild(this.canvas);
 		}
 		this.display = false;
@@ -275,9 +272,13 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 		_pos[0] = _size[0] + Math.round(_size[0] * (_pos[0] * z));
 		_pos[1] = _size[1] - Math.round(_size[1] * (_pos[1] * z));
 
-
 		canvas.style.top  = ((_pos[1] + 15 ) | 0) + 'px';
 		canvas.style.left = ((_pos[0] - canvas.width / 2) | 0) + 'px';
+
+		// Append to body
+		if (!canvas.parentNode) {
+			document.body.appendChild(canvas);
+		}
 	};
 
 

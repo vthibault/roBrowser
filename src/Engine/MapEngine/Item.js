@@ -119,9 +119,24 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET.ZC.ITEM_THROW_ACK
 	 */
-	function onIventoryRemoveItem( pkt )
+	function onInventoryRemoveItem( pkt )
 	{
 		Inventory.removeItem( pkt.Index, pkt.count || pkt.Count || 0);
+	}
+	
+	/**
+	 * Place item in another Tab
+	 *
+	 * @param {object} pkt - PACKET.ZC.INVENTORY_TAB
+	 */
+	function onInventoryTab( pkt )
+	{
+		var item    = Inventory.getItemByIndex(pkt.index);
+		var count = item.count;
+		Inventory.removeItem( pkt.index, count );
+		item.count = count;
+		item.PlaceETCTab = !pkt.normalOrPrivate;
+		Inventory.addItem(item);
 	}
 
 
@@ -235,7 +250,8 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.ITEM_PICKUP_ACK2,       onItemPickAnswer );
 		Network.hookPacket( PACKET.ZC.ITEM_PICKUP_ACK3,       onItemPickAnswer );
 		Network.hookPacket( PACKET.ZC.ITEM_PICKUP_ACK5,       onItemPickAnswer );
-		Network.hookPacket( PACKET.ZC.ITEM_THROW_ACK,         onIventoryRemoveItem );
+		Network.hookPacket( PACKET.ZC.ITEM_THROW_ACK,         onInventoryRemoveItem );
+		Network.hookPacket( PACKET.ZC.INVENTORY_TAB,          onInventoryTab );
 		Network.hookPacket( PACKET.ZC.NORMAL_ITEMLIST,        onInventorySetList );
 		Network.hookPacket( PACKET.ZC.NORMAL_ITEMLIST2,       onInventorySetList );
 		Network.hookPacket( PACKET.ZC.NORMAL_ITEMLIST3,       onInventorySetList );
@@ -250,7 +266,7 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.REQ_WEAR_EQUIP_ACK,     onItemEquip );
 		Network.hookPacket( PACKET.ZC.REQ_WEAR_EQUIP_ACK2,    onItemEquip );
 		Network.hookPacket( PACKET.ZC.ACK_WEAR_EQUIP_V5,      onItemEquip );
-		Network.hookPacket( PACKET.ZC.DELETE_ITEM_FROM_BODY,  onIventoryRemoveItem );
+		Network.hookPacket( PACKET.ZC.DELETE_ITEM_FROM_BODY,  onInventoryRemoveItem );
 		Network.hookPacket( PACKET.ZC.USE_ITEM_ACK,           onItemUseAnswer );
 		Network.hookPacket( PACKET.ZC.USE_ITEM_ACK2,          onItemUseAnswer );
 		Network.hookPacket( PACKET.ZC.CONFIG_NOTIFY,          onConfigEquip );

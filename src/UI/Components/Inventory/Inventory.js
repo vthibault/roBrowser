@@ -62,7 +62,8 @@ define(function(require)
 	Inventory.TAB = {
 		USABLE: 0,
 		EQUIP:  1,
-		ETC:    2
+		ETC:    2,
+		FAV:    3
 	};
 
 
@@ -118,7 +119,8 @@ define(function(require)
 
 		// on drop item
 		this.ui
-			.on('drop', OnDrop)
+			.on('drop', '.container', OnDrop)
+			.on('drop', '.tabs button', OnDropTab)
 			.on('dragover', function(event){
 				event.stopImmediatePropagation();
 				return false;
@@ -143,7 +145,7 @@ define(function(require)
 			// Title feature
 			.on('mouseover', '.item', function(){
 				var idx  = parseInt( this.className.match(/ (\d+)$/)[1], 10);
-				var item = getItemByIndex(idx);
+				var item = Inventory.getItemByIndex(idx);
 
 				if (!item) {
 					return;
@@ -193,7 +195,7 @@ define(function(require)
 
 				var matches = this.className.match(/(\w+) (\d+)/);
 				var index   = parseInt(matches[2], 10);
-				var item    = getItemByIndex(index);
+				var item    = Inventory.getItemByIndex(index);
 
 				if (!item) {
 					return;
@@ -221,7 +223,7 @@ define(function(require)
 			.on('contextmenu', '.item', function(event) {
 				var matches = this.className.match(/(\w+) (\d+)/);
 				var index   = parseInt(matches[2], 10);
-				var item    = getItemByIndex(index);
+				var item    = Inventory.getItemByIndex(index);
 
 				event.stopImmediatePropagation();
 
@@ -246,7 +248,7 @@ define(function(require)
 			.on('dblclick', '.item', function(event) {
 				var matches = this.className.match(/(\w+) (\d+)/);
 				var index   = parseInt(matches[2], 10);
-				var item    = getItemByIndex(index);
+				var item    = Inventory.getItemByIndex(index);
 
 				if (item) {
 					Inventory.useItem(item);
@@ -272,7 +274,7 @@ define(function(require)
 		}
 
 		_tab = this.preferences.tab;
-		Client.loadFile( DB.INTERFACE_PATH + 'basic_interface/tab_itm_0'+ (_tab+1) +'.bmp', function(data){
+		Client.loadFile( DB.INTERFACE_PATH + 'basic_interface/tab_pri_0'+ (_tab+1) +'.bmp', function(data){
 			Inventory.ui.find('.tabs').css('backgroundImage', 'url("' + data + '")');
 		});
 
@@ -420,7 +422,7 @@ define(function(require)
 		var idx = jQuery(this).index();
 		_tab = idx;
 
-		Client.loadFile(DB.INTERFACE_PATH + 'basic_interface/tab_itm_0'+ (idx+1) +'.bmp', function(data){
+		Client.loadFile(DB.INTERFACE_PATH + 'basic_interface/tab_pri_0'+ (idx+1) +'.bmp', function(data){
 			Inventory.ui.find('.tabs').css('backgroundImage', 'url(' + data + ')');
 			Filter.call(Inventory, idx);
 		});
@@ -471,7 +473,7 @@ define(function(require)
 	 * @param {number} index
 	 * @returns {Item}
 	 */
-	function getItemByIndex( index )
+	Inventory.getItemByIndex = function getItemByIndex( index )
 	{
 		var i, count;
 		var list = Inventory.list;
@@ -483,8 +485,34 @@ define(function(require)
 		}
 
 		return null;
-	}
+	};
 
+	/**
+	 * Drop an item from storage to inventory
+	 *
+	 * @param {event}
+	 */
+	function OnDropTab( event )
+	{
+		var item, data;
+		event.stopImmediatePropagation();
+
+		try {
+			data = JSON.parse(event.originalEvent.dataTransfer.getData('Text'));
+			item = data.data;
+		}
+		catch(e) {
+			return false;
+		}
+
+		// Just allow item from storage
+		if (data.type !== 'item') {
+			return false;
+		}
+		
+		Inventory.onSetItemFavorite(item.index, event.currentTarget.className !== 'fav');		
+		return false;
+	}
 
 	/**
 	 * Drop an item from storage to inventory
@@ -553,7 +581,7 @@ define(function(require)
 	 */
 	Inventory.addItem = function AddItem( item )
 	{
-		var object = getItemByIndex(item.index);
+		var object = this.getItemByIndex(item.index);
 
 		if (object) {
 			object.count += item.count;
@@ -601,6 +629,11 @@ define(function(require)
 				tab = Inventory.TAB.ETC;
 				break;
 		}
+		
+		if (item.PlaceETCTab)
+		{
+			tab = Inventory.TAB.FAV;
+		}
 
 		// Equip item (if not arrow)
 		if (item.WearState && item.WearState !== 32768) {
@@ -639,7 +672,7 @@ define(function(require)
 	 */
 	Inventory.removeItem = function RemoveItem( index, count )
 	{
-		var item = getItemByIndex(index);
+		var item = this.getItemByIndex(index);
 
 		// Emulator failed to complete the operation
 		// do not remove item from inventory
@@ -678,7 +711,7 @@ define(function(require)
 	 */
 	Inventory.updateItem = function UpdateItem( index, count )
 	{
-		var item = getItemByIndex(index);
+		var item = this.getItemByIndex(index);
 
 		if (!item) {
 			return;
@@ -766,9 +799,10 @@ define(function(require)
 	/**
 	 * functions to define
 	 */
-	Inventory.onUseItem    = function OnUseItem(/* index */){};
-	Inventory.onEquipItem  = function OnEquipItem(/* index, location */){};
-	Inventory.onUpdateItem = function OnUpdateItem(/* index, amount */){};
+	Inventory.onUseItem            = function OnUseItem(/* index */){};
+	Inventory.onSetItemFavorite    = function onSetItemFavorite(/* index, value */){};
+	Inventory.onEquipItem          = function OnEquipItem(/* index, location */){};
+	Inventory.onUpdateItem         = function OnUpdateItem(/* index, amount */){};
 
 
 	/**

@@ -33,6 +33,11 @@ define(['Renderer/Renderer', 'DB/DBManager'], function( Renderer, DB )
 		this.ATTACK3    = -1;
 		this.SKILL      = -1;
 		this.ACTION     = -1;
+
+		this.SPECIAL    = -1;
+		this.PERF1      = -1;
+		this.PERF2      = -1;
+		this.PERF3      = -1;
 	}
 
 
@@ -68,9 +73,16 @@ define(['Renderer/Renderer', 'DB/DBManager'], function( Renderer, DB )
 		else {
 
 			// Know attack frame based on weapon type
-			if (option.action === this.ACTION.ATTACK && this.objecttype === this.constructor.TYPE_PC) {
-				var attack    = DB.getWeaponAction( this.weapon, this._job, this._sex );
-				option.action = [ this.ACTION.ATTACK1, this.ACTION.ATTACK2, this.ACTION.ATTACK3 ][attack];
+			if (option.action === this.ACTION.ATTACK) {
+				if (this.objecttype === this.constructor.TYPE_PC) {
+					var attack    = DB.getWeaponAction( this.weapon, this._job, this._sex );
+					option.action = [ this.ACTION.ATTACK1, this.ACTION.ATTACK2, this.ACTION.ATTACK3 ][attack];
+				}
+
+				// No action loaded yet
+				if (option.action === -2) {
+					option.action = this.ACTION.ATTACK1;
+				}
 			}
 
 			this.action = option.action === -1 || typeof option.action === 'undefined' ? this.ACTION.IDLE : option.action;
@@ -123,6 +135,18 @@ define(['Renderer/Renderer', 'DB/DBManager'], function( Renderer, DB )
 				this.ACTION.DIE    = 4;
 				break;
 
+			case Entity.TYPE_PET:
+				this.ACTION.IDLE     = 0;
+				this.ACTION.WALK     = 1;
+				this.ACTION.ATTACK   = 2;
+				this.ACTION.HURT     = 3;
+				this.ACTION.DIE      = 4;
+				this.ACTION.SPECIAL  = 5;
+				this.ACTION.PERF1    = 6;
+				this.ACTION.PERF2    = 7;
+				this.ACTION.PERF3    = 8;
+				break;
+
 			// NPC action
 			case Entity.TYPE_NPC:
 				this.ACTION.IDLE   = 0;
@@ -149,7 +173,6 @@ define(['Renderer/Renderer', 'DB/DBManager'], function( Renderer, DB )
 				break;
 
 			//TODO: define others Entities ACTION
-			case Entity.TYPE_PET:
 			case Entity.TYPE_ELEM:
 				break;
 		}

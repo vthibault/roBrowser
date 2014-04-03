@@ -90,7 +90,7 @@ define( function( require )
 			// Project to screen
 			mat4.multiply( _matrix, projection, _matrix );
 
-			if (entity.effectColor[3]) {
+			if (entity.effectColor[3] && entity._job !== 139) {
 				calculateBoundingRect( entity, _matrix );
 			}
 
@@ -217,7 +217,7 @@ define( function( require )
 			}
 
 			// Avoid look up, render as IDLE all not supported frames
-			var action    = this.action === -1 ? this.ACTION.IDLE : this.action;
+			var action    = this.action < 0 ? this.ACTION.IDLE : this.action;
 			var direction = (Camera.direction + this.direction + 8) % 8;
 			var behind    = direction > 1 && direction < 6;
 
@@ -382,8 +382,8 @@ define( function( require )
 		}
 
 		// Delay on attack
-		else if (ACTION === entity.ACTION.ATTACK  || ACTION === entity.ACTION.ATTACK2 || ACTION === entity.ACTION.ATTACK3) {
-			delay = entity.attack_speed / animations_count * 2;
+		else if (ACTION === entity.ACTION.ATTACK || ACTION === entity.ACTION.ATTACK1 || ACTION === entity.ACTION.ATTACK2 || ACTION === entity.ACTION.ATTACK3) {
+			delay = entity.attack_speed / animations_count;
 		}
 
 
