@@ -254,6 +254,11 @@ define(function( require )
 
 		Client.loadFile( DB.INTERFACE_PATH + 'illust/' + pkt.imageName + '.bmp', function( url ){
 
+			// If the npc box is already closed, don't show the image
+			if (!NpcBox.ui || !NpcBox.ui.is(':visible')) {
+				return;
+			}
+
 			var img            = new Image();
 			img.src            = url;
 			img.style.position = 'absolute';
