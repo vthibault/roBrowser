@@ -211,6 +211,12 @@ function(      WebGL,         glMatrix,       SkillId,        Client,           
 
 
 	/**
+	 * @var {boolean} should we render it before entities ?
+	 */
+	MagicTarget.renderBeforeEntities = true;
+
+
+	/**
 	 * Destroy objects
 	 *
 	 * @param {object} webgl context

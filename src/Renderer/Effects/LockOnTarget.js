@@ -210,6 +210,12 @@ function(      WebGL,         Texture,          glMatrix,       SkillId,        
 
 
 	/**
+	 * @var {boolean} should we render it before entities ?
+	 */
+	LockOnTarget.renderBeforeEntities = true;
+
+
+	/**
 	 * Destroy objects
 	 *
 	 * @param {object} webgl context

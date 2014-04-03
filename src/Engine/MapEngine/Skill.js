@@ -17,14 +17,46 @@ define(function( require )
 	 * Load dependencies
 	 */
 	var DB                   = require('DB/DBManager');
+	var EffectDB             = require('DB/EffectList');
 	var SkillId              = require('DB/SkillId');
 	var Session              = require('Engine/SessionStorage');
 	var Network              = require('Network/NetworkManager');
 	var PACKET               = require('Network/PacketStructure');
+	var Effects              = require('Renderer/Effects');
+	var StrEffect            = require('Renderer/StrEffect');
+	var EntityManager        = require('Renderer/EntityManager');
+	var Renderer             = require('Renderer/Renderer');
+	var Sound                = require('Audio/SoundManager');
 	var ShortCut             = require('UI/Components/ShortCut/ShortCut');
 	var ChatBox              = require('UI/Components/ChatBox/ChatBox');
 	var SkillWindow          = require('UI/Components/SkillList/SkillList');
 	var SkillTargetSelection = require('UI/Components/SkillTargetSelection/SkillTargetSelection');
+
+
+	/**
+	 * Spam an effect
+	 *
+	 * @param {object} pkt - PACKET.ZC.NOTIFY_EFFECT
+	 */
+	function onEffect( pkt )
+	{
+		if (pkt.effectID in EffectDB) {
+			var entity = EntityManager.get(pkt.AID);
+			var effect = EffectDB[pkt.effectID];
+
+			if (!entity) {
+				return;
+			}
+
+			if (effect.str) {
+				Effects.add(new StrEffect('data/texture/effect/' + effect.str + '.str', entity.position, Renderer.tick ), pkt.AID );
+			}
+
+			if (effect.wav) {
+				Sound.play('effect/' + effect.wav + '.wav');
+			}
+		}
+	}
 
 
 	/**
@@ -240,5 +272,9 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.SHORTCUT_KEY_LIST,    onShortCutList );
 		Network.hookPacket( PACKET.ZC.SHORTCUT_KEY_LIST_V2, onShortCutList );
 		Network.hookPacket( PACKET.ZC.ACK_TOUSESKILL,       onSkillResult );
+		Network.hookPacket( PACKET.ZC.NOTIFY_EFFECT,        onEffect );
+		Network.hookPacket( PACKET.ZC.NOTIFY_EFFECT2,       onEffect );
+		Network.hookPacket( PACKET.ZC.NOTIFY_EFFECT3,       onEffect );
+
 	};
 });

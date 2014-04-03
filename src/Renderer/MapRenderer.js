@@ -350,8 +350,10 @@ define(function( require )
 			}
 		}
 
-		Effects.render( gl, modelView, projection, fog, tick );
+		Effects.render( gl, modelView, projection, fog, tick, true);
 		EntityManager.render( gl, modelView, projection, fog );
+		Effects.render( gl, modelView, projection, fog, tick, false);
+
 
 		Water.render( gl, modelView, projection, fog, light, tick );
 

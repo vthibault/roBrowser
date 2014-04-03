@@ -9,8 +9,8 @@
  * @author Vincent Thibault
  */
 
-define( [ 'Utils/Executable',  'Network/PacketVerManager',  './Thread',  './MemoryManager', 'Utils/Texture'],
-function(        Executable,                  PACKETVER,       Thread,      Memory,                Texture)
+define( [ 'Utils/Executable',  'Network/PacketVerManager',  './Thread',  './MemoryManager', 'Utils/Texture', 'Utils/WebGL'],
+function(        Executable,                  PACKETVER,       Thread,      Memory,                Texture,         WebGL)
 {
 	'use strict';
 
@@ -220,8 +220,8 @@ function(        Executable,                  PACKETVER,       Thread,      Memo
 
 		function callback(data, error, input)
 		{
-			var i, count;
-			var gl, frames, texture, palette;
+			var i, count, j, size;
+			var gl, frames, texture, textures, layers, palette;
 			var precision, size;
 
 			if (data && !error) {
@@ -231,7 +231,29 @@ function(        Executable,                  PACKETVER,       Thread,      Memo
 						Texture.load( data, function(){
 							Memory.set( input.filename, this.toDataURL(), error);
 						});
-					return;
+						return;
+
+					// Load str textures
+					case 'str':
+						gl     = require('Renderer/Renderer').getContext();
+						layers = data.layers;
+
+						for (i = 0; i < data.layernum; ++i) {
+							layers[i].materials = new Array(layers[i].texcnt);
+
+							for (j = 0; j < layers[i].texcnt; ++j) {
+								(function(url, materials, textureId){
+									Client.loadFile( url, function(url){
+										WebGL.texture( gl, url, function(texture) {
+											materials[textureId] = texture;
+										});
+									});
+								})(layers[i].texname[j], layers[i].materials, j);
+							}
+						}
+
+						Memory.set(input.filename, data, error);
+						return;
 
 					case 'spr':
 						gl     = require('Renderer/Renderer').getContext();

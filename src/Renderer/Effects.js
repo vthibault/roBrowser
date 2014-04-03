@@ -55,6 +55,10 @@ define(function()
 			if (effect.constructor.init) {
 				effect.constructor.init(_gl);
 			}
+
+			if (!effect.constructor.renderBeforeEntities) {
+				effect.constructor.renderBeforeEntities = false;
+			}
 		}
 
 		if (effect.init) {
@@ -139,8 +143,9 @@ define(function()
 	 * @param {object} fog structure
 	 * @param {object} light structure
 	 * @param {number} game tick
+	 * @param {boolean} render before entities ?
 	 */
-	Effects.render = function render(gl, modelView, projection, fog, tick)
+	Effects.render = function render(gl, modelView, projection, fog, tick, renderBeforeEntities )
 	{
 		var keys = Object.keys(_list);
 		var i, count = keys.length;
@@ -156,6 +161,11 @@ define(function()
 			}
 
 			constructor = list[0].constructor;
+
+			// Will be render after/before.
+			if (constructor.renderBeforeEntities !== renderBeforeEntities) {
+				continue;
+			}
 
 			if (constructor.ready) {
 				constructor.beforeRender(gl, modelView, projection, fog, tick);
