@@ -646,8 +646,10 @@ define(function( require )
 					}
 				}
 			}
+		}
 
-
+		// Avoid casting zone skill again if srcEntity is a skill
+		if (srcEntity && dstEntity) {
 			var skillEffect, effect, position;
 			if (!(pkt.SKID in SkillEffect)) {
 				return;
