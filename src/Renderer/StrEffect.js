@@ -225,7 +225,9 @@ define(['Utils/WebGL', 'Utils/gl-matrix', 'Core/Client'], function( WebGL, glMat
 
 				if (layer.materials.length) {
 					if (calculateAnimation( layer, keyIndex, anim)) {
-						this.renderAnimation( gl, layer.materials[anim.aniframe | 0], anim);
+						if (layer.materials[anim.aniframe | 0]) {
+							this.renderAnimation( gl, layer.materials[anim.aniframe | 0], anim);
+						}
 					}
 				}
 			}
@@ -376,6 +378,10 @@ define(['Utils/WebGL', 'Utils/gl-matrix', 'Core/Client'], function( WebGL, glMat
 
 
 		switch (to.anitype) {
+			default: // bug fix
+				result.aniframe = 0;
+				break;
+
 			case 1: // normal
 				result.aniframe = from.aniframe + to.aniframe * delta;
 				break;
