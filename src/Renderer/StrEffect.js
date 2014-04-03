@@ -145,7 +145,7 @@ define(['Utils/WebGL', 'Utils/gl-matrix', 'Core/Client'], function( WebGL, glMat
 	{
 		this.filename   = filename;
 		this.startTick  = tick;
-		this.position   = new Float32Array(position);
+		this.position   = position;
 
 		// If can't render it, just remove it.
 		Client.loadFile( this.filename, null, function(){

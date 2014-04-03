@@ -18,6 +18,7 @@ define(function( require )
 	 */
 	var DB                   = require('DB/DBManager');
 	var EffectDB             = require('DB/EffectList');
+	var SkillEffect          = require('DB/SkillEffectList');
 	var SkillId              = require('DB/SkillId');
 	var Session              = require('Engine/SessionStorage');
 	var Network              = require('Network/NetworkManager');
@@ -26,6 +27,7 @@ define(function( require )
 	var StrEffect            = require('Renderer/StrEffect');
 	var EntityManager        = require('Renderer/EntityManager');
 	var Renderer             = require('Renderer/Renderer');
+	var Altitude             = require('Renderer/Map/Altitude');
 	var Sound                = require('Audio/SoundManager');
 	var ShortCut             = require('UI/Components/ShortCut/ShortCut');
 	var ChatBox              = require('UI/Components/ChatBox/ChatBox');
@@ -41,15 +43,16 @@ define(function( require )
 	function onEffect( pkt )
 	{
 		if (pkt.effectID in EffectDB) {
-			var entity = EntityManager.get(pkt.AID);
-			var effect = EffectDB[pkt.effectID];
+			var entity   = EntityManager.get(pkt.AID);
+			var effect   = EffectDB[pkt.effectID];
+			var position = effect.attachedEntity ? entity.position : [ entity.position[0], entity.position[1], entity.position[2] ];
 
 			if (!entity) {
 				return;
 			}
 
 			if (effect.str) {
-				Effects.add(new StrEffect('data/texture/effect/' + effect.str + '.str', entity.position, Renderer.tick ), pkt.AID );
+				Effects.add(new StrEffect('data/texture/effect/' + effect.str + '.str', position, Renderer.tick ), pkt.AID );
 			}
 
 			if (effect.wav) {
@@ -57,6 +60,39 @@ define(function( require )
 			}
 		}
 	}
+
+
+	/**
+	 * Display an effect to the scene
+	 *
+	 * @param {object} pkt - PACKET.ZC.NOTIFY_GROUNDSKILL  
+	 */
+	function onSkillToGround( pkt )
+	{
+		var skillEffect, effect, position;
+
+		if (!(pkt.SKID in SkillEffect)) {
+			return;
+		}
+
+		skillEffect = SkillEffect[pkt.SKID];
+
+		if (!(skillEffect.effectId in EffectDB)) {
+			return;
+		}
+
+		effect   = EffectDB[skillEffect.effectId];
+		position = [ pkt.xPos, pkt.yPos, Altitude.getCellHeight(pkt.xPos, pkt.yPos) ];
+
+		if (effect.str) {
+			Effects.add(new StrEffect('data/texture/effect/' + effect.str + '.str', position, Renderer.tick ), pkt.AID );
+		}
+
+		if (effect.wav) {
+			Sound.play('effect/' + effect.wav + '.wav');
+		}
+	}
+
 
 
 	/**
@@ -275,6 +311,6 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.NOTIFY_EFFECT,        onEffect );
 		Network.hookPacket( PACKET.ZC.NOTIFY_EFFECT2,       onEffect );
 		Network.hookPacket( PACKET.ZC.NOTIFY_EFFECT3,       onEffect );
-
+		Network.hookPacket( PACKET.ZC.NOTIFY_GROUNDSKILL,   onSkillToGround );
 	};
 });
