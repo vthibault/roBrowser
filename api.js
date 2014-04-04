@@ -47,7 +47,8 @@
 		ONLINE:      1,
 		MAPVIEWER:   2,
 		GRFVIEWER:   3,
-		MODELVIEWER: 4
+		MODELVIEWER: 4,
+		STRVIEWER:   5
 	};
 
 
@@ -289,6 +290,10 @@
 
 			case ROBrowser.APP.MODELVIEWER:
 				this.application = 'ModelViewer';
+				break;
+
+			case ROBrowser.APP.STRVIEWER:
+				this.application = 'StrViewer';
 				break;
 		}
 
