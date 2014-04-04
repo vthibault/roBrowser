@@ -18,26 +18,23 @@ define(function( require )
 	 */
 	var SkillId       = require('DB/SkillId');
 	var SkillInfo     = require('DB/SkillInfo');
-	var EffectDB      = require('DB/EffectList');
-	var SkillEffect   = require('DB/SkillEffectList');
-	var Sound         = require('Audio/SoundManager');
 	var Session       = require('Engine/SessionStorage');
 	var Network       = require('Network/NetworkManager');
 	var PACKET        = require('Network/PacketStructure');
 	var Renderer      = require('Renderer/Renderer');
-	var Effects       = require('Renderer/Effects');
-	var StrEffect     = require('Renderer/StrEffect');
+	var Altitude      = require('Renderer/Map/Altitude');
 	var EntityManager = require('Renderer/EntityManager');
 	var Entity        = require('Renderer/Entity/Entity');
-	var Altitude      = require('Renderer/Map/Altitude');
+	var Effects       = require('Renderer/Effects');
+	var Damage        = require('Renderer/Effects/Damage');
+	var MagicTarget   = require('Renderer/Effects/MagicTarget');
+	var LockOnTarget  = require('Renderer/Effects/LockOnTarget');
+	var Sound         = require('Audio/SoundManager');
 	var ChatBox       = require('UI/Components/ChatBox/ChatBox');
 	var ChatRoom      = require('UI/Components/ChatRoom/ChatRoom');
 	var StatusIcons   = require('UI/Components/StatusIcons/StatusIcons');
 	var BasicInfo     = require('UI/Components/BasicInfo/BasicInfo');
 	var Escape        = require('UI/Components/Escape/Escape');
-	var Damage        = require('Renderer/Effects/Damage');
-	var MagicTarget   = require('Renderer/Effects/MagicTarget');
-	var LockOnTarget  = require('Renderer/Effects/LockOnTarget');
 
 
 	/**
@@ -541,28 +538,7 @@ define(function( require )
 				// skill_lvl = heal.
 			}
 
-
-			var skillEffect, effect, position;
-			if (!(pkt.SKID in SkillEffect)) {
-				return;
-			}
-
-			skillEffect = SkillEffect[pkt.SKID];
-
-			if (!(skillEffect.effectId in EffectDB)) {
-				return;
-			}
-
-			effect   = EffectDB[skillEffect.effectId];
-			position = effect.attachedEntity ? dstEntity.position : [ dstEntity.position[0], dstEntity.position[1], dstEntity.position[2] ];
-
-			if (effect.str) {
-				Effects.add(new StrEffect('data/texture/effect/' + effect.str + '.str', position, Renderer.tick ), pkt.targetID );
-			}
-
-			if (effect.wav) {
-				Sound.play('effect/' + effect.wav + '.wav');
-			}
+			Effects.spamSkill( pkt.SKID, pkt.targetAID );
 		}
 	}
 
@@ -673,27 +649,7 @@ define(function( require )
 
 		// Avoid casting zone skill again if srcEntity is a skill
 		if (srcEntity && dstEntity) {
-			var skillEffect, effect, position;
-			if (!(pkt.SKID in SkillEffect)) {
-				return;
-			}
-
-			skillEffect = SkillEffect[pkt.SKID];
-
-			if (!(skillEffect.effectId in EffectDB)) {
-				return;
-			}
-
-			effect   = EffectDB[skillEffect.effectId];
-			position = effect.attachedEntity ? dstEntity.position : [ dstEntity.position[0], dstEntity.position[1], dstEntity.position[2] ];
-
-			if (effect.str) {
-				Effects.add(new StrEffect('data/texture/effect/' + effect.str + '.str', position, Renderer.tick ), pkt.targetID );
-			}
-
-			if (effect.wav) {
-				Sound.play('effect/' + effect.wav + '.wav');
-			}
+			Effects.spamSkill( pkt.SKID, dstEntity.GID);
 		}
 	}
 

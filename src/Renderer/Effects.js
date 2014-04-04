@@ -7,9 +7,20 @@
  *
  * @author Vincent Thibault
  */
-define(function()
+define(function( require )
 {
 	'use strict';
+
+
+	/**
+	 * Load dependencies
+	 */
+	var EffectDB      = require('DB/EffectList');
+	var SkillEffect   = require('DB/SkillEffectList');
+	var StrEffect     = require('Renderer/StrEffect');
+	var EntityManager = require('Renderer/EntityManager');
+	var Renderer      = require('Renderer/Renderer');
+	var Sound         = require('Audio/SoundManager');
 
 
 	/**
@@ -191,6 +202,73 @@ define(function()
 				}
 			}
 		}
+	};
+
+
+	/**
+	 * Spam an effect to the scene
+	 *
+	 * @param {number} effect id
+	 * @param {number} owner aid
+	 * @param {Array} position
+	 */
+	Effects.spam = function spam( effectId, AID, position)
+	{
+		var entity, effect, pos;
+
+		if (!(effectId in EffectDB)) {
+			return;
+		}
+
+		entity   = EntityManager.get(AID);
+		effect   = EffectDB[effectId];
+
+		// Effect required entity attached
+		if (!entity && effect.attachedEntity) {
+			return;
+		}
+
+		// No position, get it from entity
+		if (!position) {
+			position = entity.position;
+		}
+
+		// Create a new point to not have update for entity
+		// movement (if position is atteched to entity)
+		if (!effect.attachedEntity) {
+			pos    = new Array(3);
+			pos[0] = position[0];
+			pos[1] = position[1];
+			pos[2] = position[2]; 
+		}
+		else {
+			pos = position;
+		}
+
+		if (effect.str) {
+			Effects.add(new StrEffect('data/texture/effect/' + effect.str + '.str', pos, Renderer.tick), AID );
+		}
+
+		if (effect.wav) {
+			Sound.play('effect/' + effect.wav + '.wav');
+		}
+	};
+
+
+	/**
+	 * Spam a skill on a target
+	 *
+	 * @param {number} skill id
+	 * @param {number} target aid
+	 * @param {Array} position
+	 */
+	Effects.spamSkill = function spamSkill( skillId, AID, position )
+	{
+		if (!(skillId in SkillEffect)) {
+			return;
+		}
+
+		Effects.spam( SkillEffect[skillId].effectId, AID, position);
 	};
 
 

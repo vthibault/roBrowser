@@ -17,18 +17,12 @@ define(function( require )
 	 * Load dependencies
 	 */
 	var DB                   = require('DB/DBManager');
-	var EffectDB             = require('DB/EffectList');
-	var SkillEffect          = require('DB/SkillEffectList');
 	var SkillId              = require('DB/SkillId');
 	var Session              = require('Engine/SessionStorage');
 	var Network              = require('Network/NetworkManager');
 	var PACKET               = require('Network/PacketStructure');
 	var Effects              = require('Renderer/Effects');
-	var StrEffect            = require('Renderer/StrEffect');
-	var EntityManager        = require('Renderer/EntityManager');
-	var Renderer             = require('Renderer/Renderer');
 	var Altitude             = require('Renderer/Map/Altitude');
-	var Sound                = require('Audio/SoundManager');
 	var ShortCut             = require('UI/Components/ShortCut/ShortCut');
 	var ChatBox              = require('UI/Components/ChatBox/ChatBox');
 	var SkillWindow          = require('UI/Components/SkillList/SkillList');
@@ -42,23 +36,7 @@ define(function( require )
 	 */
 	function onEffect( pkt )
 	{
-		if (pkt.effectID in EffectDB) {
-			var entity   = EntityManager.get(pkt.AID);
-			var effect   = EffectDB[pkt.effectID];
-			var position = effect.attachedEntity ? entity.position : [ entity.position[0], entity.position[1], entity.position[2] ];
-
-			if (!entity) {
-				return;
-			}
-
-			if (effect.str) {
-				Effects.add(new StrEffect('data/texture/effect/' + effect.str + '.str', position, Renderer.tick ), pkt.AID );
-			}
-
-			if (effect.wav) {
-				Sound.play('effect/' + effect.wav + '.wav');
-			}
-		}
+		Effects.spam(pkt.effectID, pkt.AID);
 	}
 
 
@@ -69,28 +47,12 @@ define(function( require )
 	 */
 	function onSkillToGround( pkt )
 	{
-		var skillEffect, effect, position;
+		var position = new Array(3);
+		position[0]  = pkt.xPos;
+		position[1]  = pkt.yPos;
+		position[2]  = Altitude.getCellHeight(pkt.xPos, pkt.yPos);
 
-		if (!(pkt.SKID in SkillEffect)) {
-			return;
-		}
-
-		skillEffect = SkillEffect[pkt.SKID];
-
-		if (!(skillEffect.effectId in EffectDB)) {
-			return;
-		}
-
-		effect   = EffectDB[skillEffect.effectId];
-		position = [ pkt.xPos, pkt.yPos, Altitude.getCellHeight(pkt.xPos, pkt.yPos) ];
-
-		if (effect.str) {
-			Effects.add(new StrEffect('data/texture/effect/' + effect.str + '.str', position, Renderer.tick ), pkt.AID );
-		}
-
-		if (effect.wav) {
-			Sound.play('effect/' + effect.wav + '.wav');
-		}
+		Effects.spamSkill(pkt.SKID, pkt.AID, position);
 	}
 
 
