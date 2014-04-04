@@ -75,7 +75,7 @@ define(['Core/Client', 'DB/DBManager', 'DB/ShadowTable', 'DB/MountTable', './Ent
 	 */
 	function UpdateBody( job )
 	{
-		var i, path;
+		var baseJob, path;
 		var Entity;
 
 		if (job < 0) {
@@ -85,18 +85,21 @@ define(['Core/Client', 'DB/DBManager', 'DB/ShadowTable', 'DB/MountTable', './Ent
 		// Avoid fuck*ng errors with mounts !
 		// Sometimes the server send us the job of the mount sprite instead
 		// of the base sprite + effect to have the mount.
-		for (i in MountTable) {
-			if (MountTable[i] === job) {
-				this._job    = i;
-				this.clothes = job;
+		for (baseJob in MountTable) {
+			if (MountTable[baseJob] === job) {
+				this.costume = job;
+				job          = baseJob;
 				break;
 			}
 		}
 
 		// Clothes keep the old job in memory
-		if (job !== this.clothes) {
-			this._job          = job;
+		// and show the costum if used
+		this._job = job;
+		if (this.costume) {
+			job = this.costume;
 		}
+
 
 		this.files.shadow.size = job in ShadowTable ? ShadowTable[job] : 1.0;
 		path                   = this.isAdmin ? DB.getAdminPath(this._sex) : DB.getBodyPath( job, this._sex );

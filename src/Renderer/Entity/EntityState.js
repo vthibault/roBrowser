@@ -161,7 +161,7 @@ define(function( require )
 	 */
 	function updateEffectState( value )
 	{
-		var clothes = 0;
+		var costume = 0;
 
 
 		this._effectStateColor[0] = 1.0;
@@ -188,29 +188,29 @@ define(function( require )
 
 		if (value & RIDING) {
 			if (this._job in MountTable) {
-				clothes = MountTable[this._job];
+				costume = MountTable[this._job];
 			}
 		}
 
 
 		// ------------------------
-		// Clothes
+		// Costume
 		// ------------------------
 
 
 		// Wedding clones
 		if (value & StatusConst.EffectState.WEDDING) {
-			clothes = 22;
+			costume = 22;
 		}
 
-		// Xmas clothes 
+		// Xmas costume 
 		if (value & StatusConst.EffectState.XMAS) {
-			clothes = 26;
+			costume = 26;
 		}
 
 		// Summer
 		if (value & StatusConst.EffectState.SUMMER) {
-			clothes = 27;
+			costume = 27;
 		}
 
 
@@ -243,9 +243,9 @@ define(function( require )
 		// ------------------------
 
 
-		if (clothes !== this.clothes) {
-			this.clothes = clothes;
-			this.job     = clothes || this._job;
+		if (costume !== this.costume) {
+			this.costume = costume;
+			this.job     = this._job;
 		}
 
 
@@ -264,7 +264,6 @@ define(function( require )
 		this._effectStateColor = new Float32Array([1, 1, 1, 1]);
 		this.effectColor       = new Float32Array([1, 1, 1, 1]);
 
-		this.clothes           = 0;
 
 		Object.defineProperty(this, 'bodyState', {
 			get: function(){ return this._bodyState },

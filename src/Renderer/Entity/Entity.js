@@ -117,6 +117,7 @@ define( function( require )
 	Entity.prototype.state        = 0;
 	Entity.prototype.clevel       = 0;
 	Entity.prototype.action       = 0;
+	Entity.prototype.costume      = 0;
 
 	Entity.prototype.matrix       = null;
 	Entity.prototype.depth        = 0;
