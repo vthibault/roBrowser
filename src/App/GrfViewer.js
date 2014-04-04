@@ -34,3 +34,8 @@ require({
 
 	GRFViewer.append();
 });
+
+// Avoid user from mistakenly leaving
+window.onbeforeunload = function() {
+	return 'GrfViewer';
+};

@@ -36,3 +36,8 @@ require( {
 		GameEngine.init();
 	}
 );
+
+// Avoid user from mistakenly leave roBrowser
+window.onbeforeunload = function() {
+	return 'roBrowser';
+};
