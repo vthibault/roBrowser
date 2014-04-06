@@ -330,7 +330,7 @@ define(function(require)
 	 * @param {number} type
 	 * @param {string} color
 	 */
-	ChatBox.addText = function addText( text, type, color )
+	ChatBox.addText = function addText( text, type, color, override )
 	{
 		if (!this.__loaded) {
 			_stack.push(arguments);
@@ -371,8 +371,8 @@ define(function(require)
 
 		$content.append(
 			jQuery('<div/>').
-				css('color', color).
-				text(text)
+				css('color', color)
+				[ !override ? 'text' : 'html' ](text)
 		);
 
 		// If there is too many line, remove the older one
