@@ -15,7 +15,7 @@ define([
 	'UI/Components/InputBox/InputBox',
 	'UI/Components/ChatBox/ChatBox',
 	'UI/Components/Equipment/Equipment',
-	'Controls/KeyEventHandler', 'Controls/MouseEventHandler',
+	'Controls/KeyEventHandler', 'Controls/MouseEventHandler', 'Controls/ScreenShot',
 	'Renderer/Renderer', 'Renderer/Camera', 'Renderer/EntityManager',
 	'Engine/SessionStorage',
 	'Preferences/Controls'
@@ -28,7 +28,7 @@ function(
 	InputBox,
 	ChatBox,
 	Equipment,
-	KEYS, Mouse,
+	KEYS, Mouse, ScreenShot,
 	Renderer, Camera, EntityManager,
 	Session,
 	Preferences

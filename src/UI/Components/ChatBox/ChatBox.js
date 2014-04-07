@@ -376,9 +376,19 @@ define(function(require)
 		);
 
 		// If there is too many line, remove the older one
+		var element, url;
 		var list = $content.find('div');
 		if (list.length > MAX_MSG) {
-			list.find(':first').remove();
+			element = list.find(':first');
+			
+			//Check if theres any blob url object to be released from buffer (Check Controls/ScreenShot.js)
+			url = element.attr('href');
+			
+			if( url && url.match(/blob/) ) {
+				window.URL.revokeObjectURL(url);
+			}
+			
+			element.remove();
 		}
 
 		// Always put the scroll at the bottom

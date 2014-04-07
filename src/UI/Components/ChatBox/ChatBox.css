@@ -67,7 +67,10 @@
 	overflow-y:auto;
 	line-height:14px;
 }
-
+#chatbox .content a {
+	color:inherit;
+	text-decoration:underline;
+}
 
 /** Input **/
 #chatbox .input {

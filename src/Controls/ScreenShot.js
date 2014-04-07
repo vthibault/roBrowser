@@ -10,8 +10,8 @@
 define(function(require)
 {
 	"use strict";
-
-console.log('loaded')
+	
+	
 	/**
 	 * Dependencies
 	 */
@@ -87,8 +87,8 @@ console.log('loaded')
 		}
  
 		// We create a local image with the buffer
-		url = URL.createObjectURL(new Blob([data], {type: 'image/png'}));
- 
+		url = window.URL.createObjectURL(new Blob([data], {type: 'image/png'}));
+
 		ChatBox.addText('<a download="ScreenShot (' + date + ').png" href="'+ url +'" target="_blank">Screenshot (' + date + ')</a>', ChatBox.TYPE.INFO, null, true);
 	}
 
