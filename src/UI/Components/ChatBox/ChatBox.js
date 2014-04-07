@@ -170,6 +170,15 @@ define(function(require)
 	 */
 	ChatBox.clean = function Clean()
 	{
+		var matches, i, count;
+
+		matches = this.ui.find('.content').html().match(/(blob:[^"]+)/g);
+		if (matches) {
+			for (i = 0, count = matches.length; i < count; ++i) {
+				window.URL.revokeObjectURL(matches[i]);
+			}
+		}
+
 		this.ui.find('.content').empty();
 		this.ui.find('.input .message').val('');
 		this.ui.find('.input .username').val('');
@@ -329,6 +338,7 @@ define(function(require)
 	 * @param {string} text
 	 * @param {number} type
 	 * @param {string} color
+	 * @param {boolean} default false, html or text ? 
 	 */
 	ChatBox.addText = function addText( text, type, color, override )
 	{
@@ -376,18 +386,22 @@ define(function(require)
 		);
 
 		// If there is too many line, remove the older one
-		var element, url;
+		
 		var list = $content.find('div');
 		if (list.length > MAX_MSG) {
-			element = list.find(':first');
-			
+			var element, matches;
+			var i, count;
+
 			//Check if theres any blob url object to be released from buffer (Check Controls/ScreenShot.js)
-			url = element.attr('href');
-			
-			if( url && url.match(/blob/) ) {
-				window.URL.revokeObjectURL(url);
+			element = list.find(':first');
+			matches = element.html().match(/(blob:[^"]+)/g);
+
+			if (matches) {
+				for (i = 0, count = matches.length; i < count; ++i) {
+					window.URL.revokeObjectURL(matches[i]);
+				}
 			}
-			
+
 			element.remove();
 		}
 
