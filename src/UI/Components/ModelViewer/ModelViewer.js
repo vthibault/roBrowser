@@ -160,14 +160,26 @@ define(function(require)
 
 
 	/**
+	 * Stop to render
+	 */
+	function stop()
+	{
+		var gl = Renderer.getContext();
+
+		Renderer.stop();
+		ModelRenderer.free(gl);
+		gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT );
+	}
+
+
+	/**
 	 * Start loading a model
 	 *
 	 * @param {string} filename
 	 */
 	function loadModel( filename )
 	{
-		Renderer.stop();
-		ModelRenderer.free( Renderer.getContext() );
+		stop();
 
 		Client.getFile( filename, function( buf ) {
 
@@ -277,6 +289,13 @@ define(function(require)
 
 		ModelRenderer.render(gl, _modelView, Camera.projection, _normalMat, _fog, _light );
 	}
+
+
+	/**
+	 * Export
+	 */
+	Viewer.loadModel = loadModel;
+	Viewer.stop      = stop;
 
 
 	/**

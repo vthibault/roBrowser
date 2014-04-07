@@ -142,7 +142,7 @@ define(function(require)
 	 */
 	function loadEffect( filename )
 	{
-		Renderer.stop();
+		stop();
 
 		Client.loadFile( filename, function(buf) {
 
@@ -174,6 +174,19 @@ define(function(require)
 
 
 	/**
+	 * Stop to render
+	 */
+	function stop()
+	{
+		var gl = Renderer.getContext();
+
+		Renderer.stop();
+		Effects.free(gl);
+		gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT );
+	}
+
+
+	/**
 	 * Rendering scene
 	 *
 	 * @param {number} tick
@@ -191,6 +204,13 @@ define(function(require)
 
 		Effects.render( gl, _modelView, Camera.projection, _fog, tick, false);
 	}
+
+
+	/**
+	 * Exports methods
+	 */
+	Viewer.loadEffect = loadEffect;
+	Viewer.stop       = stop;
 
 
 	/**

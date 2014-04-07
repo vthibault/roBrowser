@@ -33,17 +33,33 @@ require({
 function( Thread,        Context,        Client,                           StrViewer ) {
 	'use strict';
 
-	function synchronise( event ) {
-		Thread.delegate( event.source, event.origin );
-		Thread.init();
-		StrViewer.append();
+	function onAPIMessage( event ) {
+		if (typeof event.data !== 'object') {
+			return;
+		}
 
-		window.removeEventListener('message', synchronise, false);
+		switch (event.data.type) {
+			case 'init':
+				Thread.delegate( event.source, event.origin );
+				Thread.init();
+				StrViewer.append();
+				break;
+
+			case 'load':
+				StrViewer.loadEffect(event.data.data);
+				event.stopPropagation();
+				break;
+
+			case 'stop':
+				StrViewer.stop();
+				event.stopPropagation();
+				break;
+		}
 	}
 
 	// Resources sharing
 	if (ROConfig.API) {
-		window.addEventListener('message', synchronise, false);
+		window.addEventListener('message', onAPIMessage, false);
 		return;
 	}
 

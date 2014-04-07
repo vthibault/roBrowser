@@ -75,21 +75,50 @@ function(
 		// Increase max intersection test (because of the max zoom)
 		Altitude.MAX_INTERSECT_COUNT = 500;
 
-		var q = new Queue();
+		var ready     = false;
+		var maptoload = '';
+		var q         = new Queue();
 
 		// Resources sharing
 		if (ROConfig.API) {
 			q.add(function(){
-				function Synchronise( event ) {
-					Thread.delegate( event.source, event.origin );
-					Thread.init();
-					Renderer.init();
-					q._next();
-		
-					window.removeEventListener('message', Synchronise, false);
+				function onAPIMessage( event ) {
+					if (typeof event.data !== 'object') {
+						return;
+					}
+
+					switch (event.data.type) {
+						case 'init':
+							Thread.delegate( event.source, event.origin );
+							Thread.init();
+							Renderer.init();
+							q._next();
+							break;
+
+						case 'load':
+							if (ready) {
+								MapRenderer.setMap(event.data.data.replace('data\\',''));
+							}
+							else {
+								maptoload = event.data.data.replace('data\\','');
+							}
+							if (MapViewer.dropDown && MapViewer.dropDown.parentNode) {
+								document.body.removeChild( MapViewer.dropDown );
+							}
+							event.stopPropagation();
+							break;
+
+						case 'stop':
+							var gl = Renderer.getContext();
+							MapRenderer.free();
+							Renderer.stop();
+							gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT );
+							event.stopPropagation();
+							break;
+					}
 				}
-		
-				window.addEventListener('message', Synchronise, false);
+
+				window.addEventListener('message', onAPIMessage, false);
 			});
 		}
 
@@ -127,7 +156,9 @@ function(
 
 			// Direct access from API
 			if (ROConfig.API) {
-				MapRenderer.setMap( location.hash.substr(1).replace('data/','') );
+				ready     = true;
+				maptoload = maptoload || location.hash.substr(1).replace('data/','');
+				MapRenderer.setMap( maptoload );
 				return;
 			}
 
