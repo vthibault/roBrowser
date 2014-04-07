@@ -15,10 +15,12 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
-	var jQuery             = require('Utils/jquery');
-	var html2canvas        = require('Utils/html2canvas');
-	var KEYS               = require('Controls/KeyEventHandler');
-	var ChatBox            = require('UI/Components/ChatBox/ChatBox');
+	var DB            = require('DB/DBManager');
+	var Client        = require('Core/Client');
+	var jQuery        = require('Utils/jquery');
+	var html2canvas   = require('Utils/html2canvas');
+	var KEYS          = require('Controls/KeyEventHandler');
+	var ChatBox       = require('UI/Components/ChatBox/ChatBox');
 
 
 	/**
@@ -27,25 +29,31 @@ define(function(require)
 	jQuery(window).bind('keydown', function( event )
 	{
 		if( KEYS.ALT && event.which === KEYS.P ) {
-			takeScreenShot();
+			ScreenShot.take();
 			event.stopImmediatePropagation();
 			return false;
 		}
 
 		return true;
-	});;
+	});
+	
+	
+	/**
+	 * Initiate methods
+	 */
+	var ScreenShot = {};
 	
 	
 	/**
 	 * Take a ScreenShot
 	 */
-	function takeScreenShot() {
+	ScreenShot.take = function takeScreenShot() {
 		if(! ChatBox.ui) {
 			return; //UI not loaded yet, cant display screenshot
 		}
 
 		html2canvas([document.body], {
-			onrendered: processScreenShot
+			onrendered: this.process
 		});
 	}
 
@@ -53,9 +61,9 @@ define(function(require)
 	/**
 	 * Process ScreenShot
 	 */
-	function processScreenShot(canvas) {
-		var context, binary, data, url, date;
-		var i, count, x, y;
+	ScreenShot.process = function processScreenShot(canvas) {
+		var context, date;
+		var x, y;
 
 		// Create a date to add to canvas
 		date = new Date().toString();
@@ -75,7 +83,30 @@ define(function(require)
 		
 		context.fill();
 		context.stroke();
- 
+		
+		// Get and draw src_logo to canvas
+		Client.loadFile( 'data/texture/scr_logo.bmp', function(url) {
+			var src_logo = document.createElement('img');
+			
+			src_logo.src = url;
+			
+			x = canvas.width - src_logo.width - 20;
+			y = canvas.height - src_logo.height - 5;
+				
+			context.drawImage(src_logo, x, y);
+				
+			ScreenShot.display(canvas, date);
+		});	
+	}
+	
+	
+	/**
+	 * Display the ScreenShot, this method is ment to be replaced by plugins if wanted.
+	 */
+	ScreenShot.display = function displayScreenShot(canvas, date) {
+		var binary, data, url;
+		var i, count;
+		
 		// We decode the base64 to get the binary of the png
 		binary = atob( canvas.toDataURL('image/png').replace(/^data[^,]+,/,'') );
 		count  = binary.length;
@@ -91,10 +122,11 @@ define(function(require)
 
 		ChatBox.addText('<a download="ScreenShot (' + date + ').png" href="'+ url +'" target="_blank">Screenshot (' + date + ')</a>', ChatBox.TYPE.INFO, null, true);
 	}
+	
 
 	/**
 	 * Exports
 	 */
 	 
-	return;
+	return ScreenShot;
 });
