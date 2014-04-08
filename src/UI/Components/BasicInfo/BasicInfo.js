@@ -85,7 +85,7 @@ define(function(require)
 					break;
 
 				case 'info':
-					Equipment.ui.toggle();
+					Equipment.toggle();
 					break;
 
 				case 'skill':

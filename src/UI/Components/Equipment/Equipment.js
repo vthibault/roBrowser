@@ -251,6 +251,22 @@ define(function(require)
 
 
 	/**
+	 * Start/stop rendering character in UI
+	 */
+	Equipment.toggle = function toggle()
+	{
+		this.ui.toggle();
+
+		if (this.ui.is(':visible')) {
+			Renderer.render(renderCharacter);
+		}
+		else {
+			Renderer.stop(renderCharacter);
+		}
+	};
+
+
+	/**
 	 * Key Listener
 	 *
 	 * @param {object} event
