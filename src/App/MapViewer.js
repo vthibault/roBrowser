@@ -96,11 +96,13 @@ function(
 							break;
 
 						case 'load':
+							MapRenderer.currentMap = '';
+
 							if (ready) {
-								MapRenderer.setMap(event.data.data.replace('data\\',''));
+								MapRenderer.setMap(event.data.data.replace('data/',''));
 							}
 							else {
-								maptoload = event.data.data.replace('data\\','');
+								maptoload = event.data.data.replace('data/','');
 							}
 							if (MapViewer.dropDown && MapViewer.dropDown.parentNode) {
 								document.body.removeChild( MapViewer.dropDown );

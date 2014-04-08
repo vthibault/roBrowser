@@ -754,7 +754,7 @@ define(function(require)
 			development:   ROConfig.development,
 			api:           true,
 			width:         500,
-			height:        300
+			height:        400
 		});
 
 		// Ressource sharing
@@ -794,10 +794,10 @@ define(function(require)
 		return function onObjectClick()
 		{
 			var ui    = Viewer.ui;
-			var path  = this.getAttribute('data-path');
+			var path  = this.getAttribute('data-path').replace(/\\/g, '/');
 
 			// Show iframe
-			ui.find('#preview .box').css('top', (jQuery(window).height()-300)* 0.5 );
+			ui.find('#preview .box').css('top', (jQuery(window).height()-400)* 0.5 );
 			element.style.display = 'block';
 
 
@@ -890,7 +890,7 @@ define(function(require)
 		return function onEffectClick()
 		{
 			var ui   = Viewer.ui;
-			var path = this.getAttribute('data-path');
+			var path = this.getAttribute('data-path').replace(/\\/g, '/');
 
 			// Show iframe
 			ui.find('#preview .box').css('top', (jQuery(window).height()-400)* 0.5 );
@@ -993,7 +993,7 @@ define(function(require)
 		return function onWorldClick()
 		{
 			var ui   = Viewer.ui;
-			var path = this.getAttribute('data-path');
+			var path = this.getAttribute('data-path').replace(/\\/g, '/');
 
 			ui.find('#progress').show();
 			element.style.display = 'block';
