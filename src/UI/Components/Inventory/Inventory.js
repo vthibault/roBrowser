@@ -322,6 +322,9 @@ define(function(require)
 			if (this.ui.is(':visible')) {
 				this.ui[0].parentNode.appendChild(this.ui[0]);
 			}
+			else { // Fix Mouse.intersect bug
+				this.ui.trigger('mouseleave');
+			}
 			event.stopImmediatePropagation();
 			return false;
 		}

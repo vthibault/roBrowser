@@ -265,6 +265,9 @@ define(function(require)
 			}
 			else {
 				Renderer.stop(renderCharacter);
+
+				// Fix Mouse.intersect bug
+				this.ui.trigger('mouseleave');
 			}
 			event.stopImmediatePropagation();
 			return false;
