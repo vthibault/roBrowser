@@ -66,11 +66,14 @@ define(function(require)
 	 */
 	ScreenShot.process = function processScreenShot(canvas)
 	{
-		var context, date;
+		var context, date, timezone;
 		var x, y;
 
 		// Create a date to add to canvas
-		date    = new Date().toLocaleString();
+		date     = new Date();
+		timezone = (date.getTimezoneOffset() / 60);
+		date     = date.toLocaleString() + ' (GMT ' + (timezone > 0 ? '-' : '+') + timezone + ')'; //GMT
+		
 		context = canvas.getContext('2d');
 
 		// Input the timestamp on screenshot
