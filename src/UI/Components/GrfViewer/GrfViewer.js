@@ -754,7 +754,8 @@ define(function(require)
 			development:   ROConfig.development,
 			api:           true,
 			width:         500,
-			height:        400
+			height:        400,
+			version:       ROConfig.version || ''
 		});
 
 		// Ressource sharing
@@ -850,7 +851,8 @@ define(function(require)
 			development:   ROConfig.development,
 			api:           true,
 			width:         400,
-			height:        400
+			height:        400,
+			version:       ROConfig.version || ''
 		});
 
 		// Ressource sharing
@@ -943,7 +945,8 @@ define(function(require)
 			development:   ROConfig.development,
 			api:           true,
 			width:         600,
-			height:        480
+			height:        480,
+			version:       ROConfig.version || ''
 		});
 
 		// Ressource sharing
