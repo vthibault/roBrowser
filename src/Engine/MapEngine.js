@@ -126,6 +126,7 @@ define(function( require )
 		require('./MapEngine/Skill').call();
 		require('./MapEngine/ChatRoom').call();
 		require('./MapEngine/Pet').call();
+		require('./MapEngine/Store').call();
 	}
 
 

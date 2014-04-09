@@ -1,0 +1,22 @@
+#NpcStore .titlebar { width:100%; height:17px; background-color:white; background-repeat:repeat-x; border-radius:3px 3px 0px 0px; text-shadow:1px 1px white; }
+#NpcStore .titlebar .text { position:relative; top:2px; left:15px; }
+#NpcStore .content {  }
+#NpcStore .footer { width:100%; height:27px; background-repeat:repeat-x; background-color:transparent; position:relative; border-radius:0px 0px 3px 3px; position:relative;}
+#NpcStore .resize { position:absolute; right:1px; bottom:1px; width:13px; height:13px; border:none; background-repeat:no-repeat; background-color:transparent; }
+#NpcStore .btn { width:42px; height:20px; border:none; margin:0; background-color:transparent; background-repeat:no-repeat; }
+#NpcStore .selectall { vertical-align:2px; width:10px; height:10px; border:none; background-color:transparent; background-repeat:no-repeat; }
+#NpcStore .ask_quantity { padding-top:7px; padding-left:20px;}
+
+#NpcStore .container { padding-left: 16px; border-right:1px solid #ccc; background:white; background-repeat:repeat-y; padding-right:2px; }
+#NpcStore .content { overflow-y:scroll; padding-top:10px; width:100%; height:100%; min-height:65px; background-color:transparent; background-repeat:repeat-y; background-position-y:6px; }
+#NpcStore .content .item { display:block; position:relative; height:32px; }
+#NpcStore .content .item .icon { float:left; margin-left:4px; width:24px; height:24px; border:none; background-color:transparent; background-repeat:no-repeat; }
+#NpcStore .content .item .amount { float:left; position:absolute; white-space:nowrap; font-size:11px; top:15px; left:17px; text-align:left; text-shadow:-1px -1px white; }
+#NpcStore .content .item .name { padding-top:5px; padding-left:5px; float:left; width:115px; white-space:nowrap; }
+#NpcStore .content .item .price { padding-top:5px; float:left; width:80px; text-align:right; }
+#NpcStore .content .item .unity { padding-top:5px; padding-left:5px; float:left; width:10px; }
+
+#NpcStore .footer .total { padding-left:10px; padding-top:8px; }
+#NpcStore .InputWindow, #NpcStore .OutputWindow  { width:280px; position:absolute; z-index:50; }
+#NpcStore .btn.buy, #NpcStore .btn.sell { position:absolute; top:4px; right:62px; }
+#NpcStore .btn.cancel { position:absolute; top:4px; right:15px;} 

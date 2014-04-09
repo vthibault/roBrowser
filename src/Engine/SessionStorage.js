@@ -15,18 +15,20 @@ define(function()
 
 	return {
 
-		AuthCode:  0,
-		AID:       0,
-		UserLevel: 0,
-		Sex:       0,
-		LangType:  0,
+		AuthCode:    0,
+		AID:         0,
+		UserLevel:   0,
+		Sex:         0,
+		LangType:    0,
 
-		Character: null,
-		Entity:    null,
+		Character:   null,
+		Entity:      null,
 
 		AdminList:   [],
 
 		intravision: false,
-		moveTarget:  null
+		moveTarget:  null,
+
+		zeny:        0,
 	};
 });

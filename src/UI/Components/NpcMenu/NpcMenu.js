@@ -1,7 +1,7 @@
 /**
- * UI/Components/BasicInfo/BasicInfo.js
+ * UI/Components/NpcMenu/NpcMenu.js
  *
- * Chararacter Basic information windows
+ * Display npc menu
  *
  * This file is part of ROBrowser, Ragnarok Online in the Web Browser (http://www.robrowser.com/).
  *

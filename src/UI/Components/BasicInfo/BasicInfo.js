@@ -19,6 +19,7 @@ define(function(require)
 	var Client             = require('Core/Client');
 	var Preferences        = require('Core/Preferences');
 	var Renderer           = require('Renderer/Renderer');
+	var Session            = require('Engine/SessionStorage');
 	var KEYS               = require('Controls/KeyEventHandler');
 	var UIManager          = require('UI/UIManager');
 	var UIComponent        = require('UI/UIComponent');
@@ -262,6 +263,8 @@ define(function(require)
 				break;
 
 			case 'zeny':
+				Session.zeny = val1;
+
 				var list = val1.toString().split('');
 				var i, count = list.length;
 				var str = '';
