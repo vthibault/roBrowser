@@ -108,87 +108,12 @@ define(function(require)
 		OutputWindow.find('.resize').mousedown(function(event){ onResize(OutputWindow); event.stopImmediatePropagation(); return false; });
 
 		ui.find('.content')
-
-			// Scrolling
-			.scroll(function(){
-				var lastScrollPos = 0;
-				return function(){
-					if (this.scrollTop > lastScrollPos) {
-						this.scrollTop = Math.floor(this.scrollTop/32) * 32;
-					}
-					else {
-						this.scrollTop = Math.ceil(this.scrollTop/32) * 32;
-					}
-					lastScrollPos = this.scrollTop;
-				};
-			}())
-
-			// Right click on item
-			.on('contextmenu', '.item', function(event) {
-				var index = parseInt( this.getAttribute('data-index'), 10);
-				var item  = _input[index];
-
-				event.stopImmediatePropagation();
-				if (!item) {
-					return false;
-				}
-
-				// Don't add the same UI twice, remove it
-				if (ItemInfo.uid === item.ITID) {
-					ItemInfo.remove();
-					return false;
-				}
-
-				// Add ui to window
-				ItemInfo.append();
-				ItemInfo.uid = item.ITID;
-				ItemInfo.setItem(item);
-				return false;
-			})
-
-			// Select the item
-			.on('dblclick', '.item', function(){
-				var container = (jQuery.contains(InputWindow[0], this) ? InputWindow : OutputWindow);
-
-				requestMoveItem(
-					parseInt( this.getAttribute('data-index'), 10),
-					container.find('.content'),
-					(container === InputWindow ? OutputWindow : InputWindow).find('.content'),
-					container[0].className === 'InputWindow'
-				);
-			})
-
-			// Select the item
-			.on('mousedown', '.item', function(event){
-				event.stopImmediatePropagation();
-				return false;
-			})
-
-			// Item drag drop feature
-			.on('dragstart', '.item', function(event) {
-				var container, img, url;
-
-				container = (jQuery.contains(InputWindow[0], this) ? InputWindow : OutputWindow)[0].className;
-				img       = new Image();
-				url       = this.firstChild.style.backgroundImage.match(/\(([^\)]+)/)[1].replace(/"/g, '');
-				img.src   = url;
-
-				event.originalEvent.dataTransfer.setDragImage( img, 12, 12 );
-				event.originalEvent.dataTransfer.setData('Text',
-					JSON.stringify( window._OBJ_DRAG_ = {
-						type:      'item',
-						from:      'store',
-						container: container,
-						index:     this.getAttribute('data-index')
-					})
-				);
-
-				// Stop component to be draggable
-				jQuery(window).trigger('mouseup');
-			})
-
-			// Clean up
-			.on('dragend', '.item', function(){
+			.on('scroll',               onScroll)
+			.on('contextmenu', '.icon', onItemInfo)
+			.on('dblclick',    '.item', onItemSelected)
+			.on('mousedown',   '.item', onItemFocus)
+			.on('dragstart',   '.item', onDragStart)
+			.on('dragend',     '.item', function(){
 				delete window._OBJ_DRAG_;
 			});
 
@@ -202,7 +127,7 @@ define(function(require)
 			});
 
 		// Hacky drag drop
-		this.draggable.call({ui: InputWindow });
+		this.draggable.call({ui: InputWindow  });
 		this.draggable.call({ui: OutputWindow });
 	};
 
@@ -214,8 +139,7 @@ define(function(require)
 	{
 		var InputWindow  = this.ui.find('.InputWindow');
 		var OutputWindow = this.ui.find('.OutputWindow');
-
-		Mouse.intersect = false;
+		Mouse.intersect  = false;
 
 		InputWindow.css({  top:  _preferences.inputWindow.y,  left: _preferences.inputWindow.x });
 		OutputWindow.css({ top:  _preferences.outputWindow.y, left: _preferences.outputWindow.x });
@@ -223,8 +147,6 @@ define(function(require)
 		Client.loadFile(DB.INTERFACE_PATH + 'checkbox_' + (_preferences.select_all ? 1 : 0) + '.bmp', function(data){
 			this.ui.find('.selectall:first').css('backgroundImage', 'url('+ data +')');
 		}.bind(this));
-
-		// TODO: stackable equip
 
 		resize( InputWindow.find('.content'),  _preferences.inputWindow.height );
 		resize( OutputWindow.find('.content'), _preferences.outputWindow.height );
@@ -236,14 +158,16 @@ define(function(require)
 
 
 	/**
-	 * Released movement
+	 * Released movement and save preferences
 	 */
 	NpcStore.onRemove = function onRemove()
 	{
 		var InputWindow  = this.ui.find('.InputWindow');
 		var OutputWindow = this.ui.find('.OutputWindow');
 
-		Mouse.intersect = true;
+		Mouse.intersect  = true;
+		_input.length    = 0;
+		_output.length   = 0;
 
 		_preferences.inputWindow.x       = parseInt( InputWindow.css('left'), 10);
 		_preferences.inputWindow.y       = parseInt( InputWindow.css('top'), 10);
@@ -254,6 +178,9 @@ define(function(require)
 		_preferences.outputWindow.height = OutputWindow.find('.content').height() / 32 | 0;
 
 		_preferences.save();
+
+		this.ui.find('.content').empty();
+		this.ui.find('.total .result').text(0);
 	};
 
 
@@ -408,7 +335,7 @@ define(function(require)
 	function addItem( content, item )
 	{
 		var it = DB.getItemInfo( item.ITID );
-		var element = content.find('.item[data-index='+ item.index +']');
+		var element = content.find('.item[data-index='+ item.index +']:first');
 
 		// 0 as amount ? remove it
 		if (item.count === 0) {
@@ -465,7 +392,7 @@ define(function(require)
 	function onResize( ui )
 	{
 		var top        = ui.position().top;
-		var content    = ui.find('.content');
+		var content    = ui.find('.content:first');
 		var lastHeight = 0;
 		var interval;
 
@@ -587,7 +514,7 @@ define(function(require)
 		);
 
 		if (isAdding) {
-			count = isFinite(_input[index].count) ? _input[index].count : 0;
+			count = isFinite(_input[index].count) ? _input[index].count : 1;
 		}
 		else {
 			count = _output[index].count;
@@ -649,6 +576,135 @@ define(function(require)
 		);
 
 		return false;
+	}
+
+
+	/**
+	 * Get informations about an item
+	 */
+	function onItemInfo(event)
+	{
+		var index = parseInt( this.parentNode.getAttribute('data-index'), 10);
+		var item  = _input[index];
+
+		event.stopImmediatePropagation();
+
+		if (!item) {
+			return false;
+		}
+
+		// Don't add the same UI twice, remove it
+		if (ItemInfo.uid === item.ITID) {
+			ItemInfo.remove();
+			return false;
+		}
+
+		// Add ui to window
+		ItemInfo.append();
+		ItemInfo.uid = item.ITID;
+		ItemInfo.setItem(item);
+		return false;
+	}
+
+
+	/**
+	 * Select an item, put it on the other box
+	 */
+	function onItemSelected()
+	{
+		var input, from, to;
+
+		if (_type === NpcStore.Type.BUY) {
+			return;
+		}
+
+		input = NpcStore.ui.find('.InputWindow:first');
+
+		if (jQuery.contains(input.get(0), this)) {
+			from = input;
+			to   = NpcStore.ui.find('.OutputWindow:first');
+		}
+		else {
+			from = NpcStore.ui.find('.OutputWindow:first');
+			to   = input;
+		}
+
+		requestMoveItem(
+			parseInt( this.getAttribute('data-index'), 10),
+			from.find('.content:first'),
+			to.find('.content:first'),
+			from === input
+		);
+	}
+
+
+	/**
+	 * Focus an item
+	 */
+	var onItemFocus = function onItemFocusClosure()
+	{
+		var $window = jQuery(window);
+
+		function stopDragDrop() {
+			$window.trigger('mouseup');
+		}
+
+		return  function onItemFocus()
+		{
+			NpcStore.ui.find('.item.selected').removeClass('selected');
+			jQuery(this).addClass('selected');
+
+			setTimeout( stopDragDrop, 4);
+		};
+	}();
+
+
+	/**
+	 * Block the scroll to move 32px at each move
+	 */
+	var onScroll = function onScrollClosure()
+	{
+		var lastScrollPos = 0;
+
+		return function onScroll()
+		{
+			if (this.scrollTop > lastScrollPos) {
+				this.scrollTop = Math.floor(this.scrollTop/32) * 32;
+			}
+			else {
+				this.scrollTop = Math.ceil(this.scrollTop/32) * 32;
+			}
+		
+			lastScrollPos = this.scrollTop;
+		};
+	}();
+
+
+	/**
+	 * Start dragging an item
+	 */
+	function onDragStart( event )
+	{
+		var container, img, url;
+		var InputWindow, OutputWindow;
+
+		InputWindow  = NpcStore.ui.find('.InputWindow:first').get(0);
+		OutputWindow = NpcStore.ui.find('.OutputWindow:first').get(0);
+
+		container = (jQuery.contains(InputWindow, this) ? InputWindow : OutputWindow).className;
+		img       = new Image();
+		url       = this.firstChild.style.backgroundImage.match(/\(([^\)]+)/)[1].replace(/"/g, '');
+		img.src   = url;
+
+		event.originalEvent.dataTransfer.setDragImage( img, 12, 12 );
+		event.originalEvent.dataTransfer.setData('Text',
+			JSON.stringify( window._OBJ_DRAG_ = {
+				type:      'item',
+				from:      'store',
+				container: container,
+				index:     this.getAttribute('data-index')
+			})
+		);
 	}
 
 
