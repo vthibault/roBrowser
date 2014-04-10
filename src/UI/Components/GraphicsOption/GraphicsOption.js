@@ -34,7 +34,7 @@ define(function(require)
 	/**
 	 * @var {Preferences} Graphics
 	 */
-	var _preferences=  Preferences.get('GraphicsOption', {
+	var _preferences =  Preferences.get('GraphicsOption', {
 		x:    300,
 		y:    300,
 		show: false,
@@ -47,7 +47,7 @@ define(function(require)
 	GraphicsOption.init = function Init()
 	{
 		this.ui.find('.close').click(function(){
-			this.remove();
+			this.ui.hide();
 		}.bind(this));
 
 		//Avoid drag and drop in input elements
