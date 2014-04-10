@@ -21,7 +21,6 @@ define(function(require)
 	var Preferences        = require('Core/Preferences');
 	var Renderer           = require('Renderer/Renderer');
 	var Mouse              = require('Controls/MouseEventHandler');
-	var KEYS               = require('Controls/KeyEventHandler');
 	var UIManager          = require('UI/UIManager');
 	var UIComponent        = require('UI/UIComponent');
 	var InputBox           = require('UI/Components/InputBox/InputBox');
@@ -301,26 +300,23 @@ define(function(require)
 
 
 	/**
-	 * Key Listener
+	 * Process shortcut
 	 *
-	 * @param {object} event
-	 * @return {boolean}
+	 * @param {object} key
 	 */
-	Inventory.onKeyDown = function OnKeyDown( event )
+	Inventory.onShortCut = function onShurtCut( key )
 	{
-		if (KEYS.ALT && event.which === KEYS.E) {
-			this.ui.toggle();
-			if (this.ui.is(':visible')) {
-				this.ui[0].parentNode.appendChild(this.ui[0]);
-			}
-			else { // Fix Mouse.intersect bug
-				this.ui.trigger('mouseleave');
-			}
-			event.stopImmediatePropagation();
-			return false;
-		}
-
-		return true;
+		switch (key.cmd) {
+			case 'TOGGLE':
+				this.ui.toggle();
+				if (this.ui.is(':visible')) {
+					this.ui[0].parentNode.appendChild(this.ui[0]);
+				}
+				else { // Fix Mouse.intersect bug
+					this.ui.trigger('mouseleave');
+				}
+				break;
+ 		}
 	};
 
 

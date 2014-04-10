@@ -20,6 +20,7 @@ define(function(require)
 	var Renderer           = require('Renderer/Renderer');
 	var KEYS               = require('Controls/KeyEventHandler');
 	var Client             = require('Core/Client');
+	var BattleMode         = require('Preferences/BattleMode');
 	var UIManager          = require('UI/UIManager');
 	var UIComponent        = require('UI/UIComponent');
 	var htmlText           = require('text!./ChatBox.html');
@@ -208,6 +209,51 @@ define(function(require)
 
 
 	/**
+	 * BattleMode processing
+	 */
+	ChatBox.processBattleMode = function processBattleModeClosure()
+	{
+		// Todo: move this part somewhere else.
+		// I don't see a reason to keep it in ChatBox.js
+		function process( keyId )
+		{
+			var key = BattleMode[keyId];
+
+			if (key &&
+			   (!key.shift || KEYS.SHIFT) &&
+			   (!key.alt   || KEYS.ALT)   &&
+			   (!key.ctrl  || KEYS.CTRL)
+			) {
+				UIManager.getComponent(key.component).onShortCut(key);
+			}
+		}
+
+		return function processBattleMode( keyId )
+		{
+			// Direct process
+			if (this.ui.find('.battlemode').is(':visible') || KEYS.ALT) {
+				process( keyId );
+				return;
+			}
+
+			var messageBox = this.ui.find('.input .message');
+			var text       = messageBox.val();
+
+			// Hacky, need to wait the browser to add text in the input
+			// If there is no change, send the shortcut.
+			setTimeout(function(){
+				// Nothing rendered, can process the shortcut
+				if (messageBox.val() === text) {
+					process(keyId);
+				}
+			}.bind(this), 4)
+
+			return true;
+		};
+	}();
+
+
+	/**
 	 * Key Event Handler
 	 *
 	 * @param {object} event - KeyEventHandler
@@ -215,46 +261,59 @@ define(function(require)
 	 */
 	ChatBox.onKeyDown = function OnKeyDown( event )
 	{
-		var is_focus = document.activeElement === this.ui.find('.input .message')[0];
+		var messageBox, nickBox;
+		var isFocus;
+
+		messageBox = this.ui.find('.input .message');
+		isFocus    = (document.activeElement === messageBox[0]);
 
 		switch (event.which) {
+
+			// Battle mode system
 			default:
+				if (!this.processBattleMode(event.which)) {
+					event.stopImmediatePropagation();
+					return false;
+				}
 				return true;
 
 			// Switch from user name, to message input
 			case KEYS.TAB:
-				if (document.activeElement === this.ui.find('.input .message')[0]) {
-					this.ui.find('.input .username').select().focus();
+				nickBox = this.ui.find('.input .username');
+
+				if (isFocus) {
+					nickBox.select().focus();
+					break;
 				}
-				else if (document.activeElement === this.ui.find('.input .username')[0]) {
-					this.ui.find('.input .message').select().focus();
+
+				if (document.activeElement === nickBox[0]) {
+					messageBox.select().focus();
+					break;
 				}
-				else {
-					return true;
-				}
-				break;
+
+				return true;
 
 			// Get back message from history
 			case KEYS.UP:
-				if (!is_focus || jQuery('#NpcMenu').length) {
-					return true;
+				if (isFocus && !jQuery('#NpcMenu').length) {
+					if (_historyIndex > 0) {
+						_historyIndex--;
+					}
+					messageBox.val(_history[_historyIndex]).select();
+					break;
 				}
-				if (_historyIndex > 0) {
-					_historyIndex--;
-				}
-				this.ui.find('.input .message').val(_history[_historyIndex]).select();
-				break;
+				return true;
 
 			// Message from history + 1
 			case KEYS.DOWN:
-				if (!is_focus || jQuery('#NpcMenu').length) {
-					return true;
+				if (isFocus && !jQuery('#NpcMenu').length) {
+					if (_historyIndex < _history.length) {
+						_historyIndex++;
+					}
+					messageBox.val(_history[_historyIndex]).select();
+					break;
 				}
-				if (_historyIndex < _history.length ) {
-					_historyIndex++;
-				}
-				this.ui.find('.input .message').val(_history[_historyIndex]).select();
-				break;
+				return true;
 
 			// Update chat height
 			case KEYS.F10:
@@ -263,19 +322,19 @@ define(function(require)
 
 			// Send message
 			case KEYS.ENTER:
-				if (document.activeElement.tagName === 'INPUT' && !is_focus) {
+				if (document.activeElement.tagName === 'INPUT' && !isFocus) {
 					return true;
 				}
 
-				if (jQuery('#NpcMenu').length || jQuery('#NpcBox').length) {
+				if (jQuery('#NpcMenu, #NpcBox').length) {
 					return true;
 				}
 
-				this.ui.find('.input .message').focus();
+				messageBox.focus();
 				this.submit();
 				break;
 		}
-	
+
 		event.stopImmediatePropagation();
 		return false;
 	};
@@ -286,17 +345,21 @@ define(function(require)
 	 */
 	ChatBox.submit = function Submit()
 	{
-		var $user = this.ui.find('.input .username');
-		var $text = this.ui.find('.input .message');
+		var input = this.ui.find('.input');
+		var $user = input.find('.username');
+		var $text = input.find('.message');
 
 		var user = $user.val();
 		var text = $text.val();
 
-		// block.
+		// Battle mode
 		if (!text.length) {
+			input.toggle();
+			this.ui.find('.battlemode').toggle();
 			return;
 		}
 
+		// Private message
 		if (user.length && text[0] !== '/') {
 			this.PrivateMessageStorage.nick = user;
 			this.PrivateMessageStorage.msg  = text;
@@ -315,6 +378,7 @@ define(function(require)
 
 		$text.val('');
 
+		// Command
 		if (text[0] === '/') {
 			ProcessCommand.call(this, text.substr(1) );
 			return;

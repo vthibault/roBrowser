@@ -19,7 +19,6 @@ define(function(require)
 	var Client               = require('Core/Client');
 	var Preferences          = require('Core/Preferences');
 	var Renderer             = require('Renderer/Renderer');
-	var KEYS                 = require('Controls/KeyEventHandler');
 	var UIManager            = require('UI/UIManager');
 	var UIComponent          = require('UI/UIComponent');
 	var htmlText             = require('text!./PetInformations.html');
@@ -126,20 +125,20 @@ define(function(require)
 
 
 	/**
-	 * Bind keys
+	 * Process shortcut
+	 *
+	 * @param {object} key
 	 */
-	PetInformations.onKeyDown = function onKeyDown(event)
+	PetInformations.onShortCut = function onShortCut( key )
 	{
-		if (KEYS.ALT && event.which === KEYS.J) {
-			this.ui.toggle();
-			if (this.ui.is(':visible')) {
-				this.ui[0].parentNode.appendChild(this.ui[0]);
-			}
-			event.stopImmediatePropagation();
-			return false;
+		switch (key.cmd) {
+			case 'TOGGLE':
+				this.ui.toggle();
+				if (this.ui.is(':visible')) {
+					this.ui[0].parentNode.appendChild(this.ui[0]);
+				}
+				break;
 		}
-
-		return true;
 	};
 
 

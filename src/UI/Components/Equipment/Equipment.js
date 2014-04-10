@@ -23,7 +23,6 @@ define(function(require)
 	var Renderer           = require('Renderer/Renderer');
 	var Camera             = require('Renderer/Camera');
 	var SpriteRenderer     = require('Renderer/SpriteRenderer');
-	var KEYS               = require('Controls/KeyEventHandler');
 	var UIManager          = require('UI/UIManager');
 	var UIComponent        = require('UI/UIComponent');
 	var ItemInfo           = require('UI/Components/ItemInfo/ItemInfo');
@@ -267,29 +266,26 @@ define(function(require)
 
 
 	/**
-	 * Key Listener
+	 * Process shortcut
 	 *
-	 * @param {object} event
-	 * @return {boolean}
+	 * @param {object} key
 	 */
-	Equipment.onKeyDown = function onKeyDown( event )
+	Equipment.onShortCut = function onShurtCut( key )
 	{
-		if (KEYS.ALT && event.which === KEYS.Q) {
-			this.ui.toggle();
-			if (this.ui.is(':visible')) {
-				Renderer.render(renderCharacter);
-			}
-			else {
-				Renderer.stop(renderCharacter);
+		switch (key.cmd) {
+			case 'TOGGLE':
+				this.ui.toggle();
+				if (this.ui.is(':visible')) {
+					Renderer.render(renderCharacter);
+				}
+				else {
+					Renderer.stop(renderCharacter);
 
-				// Fix Mouse.intersect bug
-				this.ui.trigger('mouseleave');
-			}
-			event.stopImmediatePropagation();
-			return false;
-		}
-
-		return true;
+					// Fix Mouse.intersect bug
+					this.ui.trigger('mouseleave');
+				}
+				break;
+ 		}
 	};
 
 

@@ -21,7 +21,6 @@ define(function(require)
 	var Client               = require('Core/Client');
 	var Preferences          = require('Core/Preferences');
 	var Renderer             = require('Renderer/Renderer');
-	var KEYS                 = require('Controls/KeyEventHandler');
 	var Mouse                = require('Controls/MouseEventHandler');
 	var UIManager            = require('UI/UIManager');
 	var UIComponent          = require('UI/UIComponent');
@@ -149,38 +148,23 @@ define(function(require)
 
 
 	/**
-	 * Key Listener
+	 * Process shortcut
 	 *
-	 * @param {object} event
-	 * @return {boolean}
+	 * @param {object} key
 	 */
-	ShortCut.onKeyDown = function onKeyDown( event )
+	ShortCut.onShortCut = function onShurtCut( key )
 	{
-		switch (event.which)
-		{
-			// TODO: remove KEYS.Fx and replace with user settings
-			case KEYS.F1:  clickElement(0); break;
-			case KEYS.F2:  clickElement(1); break;
-			case KEYS.F3:  clickElement(2); break;
-			case KEYS.F4:  clickElement(3); break;
-			case KEYS.F5:  clickElement(4); break;
-			case KEYS.F6:  clickElement(5); break;
-			case KEYS.F7:  clickElement(6); break;
-			case KEYS.F8:  clickElement(7); break;
-			case KEYS.F9:  clickElement(8); break;
+		switch (key.cmd) {
+			case 'EXECUTE':
+				clickElement( key.index );
+				break;
 
-			case KEYS.F12:
+			case 'EXTEND':
 				_preferences.size = (_preferences.size + 1) % (_rowCount + 1);
 				_preferences.save();
 				this.ui.css('height', _preferences.size * 34 );
 				break;
-
-			default:
-				return true;
-		}
-
-		event.stopImmediatePropagation();
-		return false;
+ 		}
 	};
 
 

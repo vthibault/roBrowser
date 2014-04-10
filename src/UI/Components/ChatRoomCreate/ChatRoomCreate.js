@@ -155,20 +155,7 @@ define(function(require)
 	 */
 	ChatRoomCreate.onKeyDown = function onKeyDown( event )
 	{
-		var isVisible = this.ui.is(':visible');
-
-		if (KEYS.ALT && event.which === KEYS.C && !ChatRoom.isOpen) {
-			if (isVisible) {
-				this.hide();
-			}
-			else {
-				this.show();
-			}
-			event.stopImmediatePropagation();
-			return false;
-		}
-
-		if (isVisible) {
+		if (this.ui.is(':visible')) {
 			if (event.which === KEYS.ENTER) {
 				parseChatSetup.call(this);
 				event.stopImmediatePropagation();
@@ -182,6 +169,24 @@ define(function(require)
 		}
 
 		return true;
+	};
+
+
+	/**
+	 * Process shortcut
+	 *
+	 * @param {object} key
+	 */
+	ChatRoomCreate.onShortCut = function onShurtCut( key )
+	{
+		switch (key.cmd) {
+			case 'TOGGLE':
+				this.ui.toggle();
+				if (this.ui.is(':visible')) {
+					this.ui[0].parentNode.appendChild(this.ui[0]);
+				}
+				break;
+ 		}
 	};
 
 

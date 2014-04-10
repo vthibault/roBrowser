@@ -23,7 +23,6 @@ define(function(require)
 	var Preferences          = require('Core/Preferences');
 	var Renderer             = require('Renderer/Renderer');
 	var Mouse                = require('Controls/MouseEventHandler');
-	var KEYS                 = require('Controls/KeyEventHandler');
 	var UIManager            = require('UI/UIManager');
 	var UIComponent          = require('UI/UIComponent');
 	var SkillTargetSelection = require('UI/Components/SkillTargetSelection/SkillTargetSelection');
@@ -196,26 +195,22 @@ define(function(require)
 
 
 	/**
-	 * Key Listener
+	 * Process shortcut
 	 *
-	 * @param {object} event
-	 * @return {boolean}
+	 * @param {object} key
 	 */
-	SkillList.onKeyDown = function OnKeyDown( event )
+	SkillList.onShortCut = function onShortCut( key )
 	{
-		if (KEYS.ALT && event.which === KEYS.S) {
-			this.ui.toggle();
+		switch (key.cmd) {
+			case 'TOGGLE':
+				this.ui.toggle();
 
-			// Fix zIndex
-			if (this.ui.is(':visible')) {
-				this.ui.parent().append(this.ui);
-			}
-
-			event.stopImmediatePropagation();
-			return false;
+				// Fix zIndex
+				if (this.ui.is(':visible')) {
+					this.ui.parent().append(this.ui);
+				}
+				break;
 		}
-
-		return true;
 	};
 
 

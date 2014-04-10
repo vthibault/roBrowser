@@ -20,7 +20,6 @@ define(function(require)
 	var Preferences        = require('Core/Preferences');
 	var Renderer           = require('Renderer/Renderer');
 	var Session            = require('Engine/SessionStorage');
-	var KEYS               = require('Controls/KeyEventHandler');
 	var UIManager          = require('UI/UIManager');
 	var UIComponent        = require('UI/UIComponent');
 	var Inventory          = require('UI/Components/Inventory/Inventory');
@@ -166,20 +165,17 @@ define(function(require)
 
 
 	/**
-	 * Key Listener
+	 * Process shortcut
 	 *
-	 * @param {object} event
-	 * @return {boolean}
+	 * @param {object} key
 	 */
-	BasicInfo.onKeyDown = function onKeyDown( event )
+	BasicInfo.onShortCut = function onShortCut( key )
 	{
-		if (KEYS.ALT && event.which === KEYS.V) {
-			this.toggleMode();
-			event.stopImmediatePropagation();
-			return false;
+		switch (key.cmd) {
+			case 'EXTEND':
+				this.toggleMode();
+				break;
 		}
-
-		return true;
 	};
 
 
