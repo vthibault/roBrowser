@@ -304,10 +304,17 @@ function(        CommonCSS,          jQuery,     Cursor,             DB,        
 		var preload    = $node.data('preload');
 		var hover      = $node.data('hover');
 		var down       = $node.data('down');
+		var msgId      = $node.data('text');
+
 		var preloads, i, count;
 
 		var bg_uri    = null;
 		var hover_uri = null;
+
+		// text
+		if (msgId && (msgId in DB.msgstringtable)) {
+			$node.text( DB.msgstringtable[msgId] );
+		}
 
 		// Default background
 		if (background) {
