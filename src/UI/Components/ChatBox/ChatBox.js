@@ -152,16 +152,7 @@ define(function(require)
 		});
 
 		// Scroll feature should block at each line
-		var lastScrollPos = 0;
-		this.ui.find('.content').on('scroll', function(){
-			if (this.scrollTop > lastScrollPos) {
-				this.scrollTop = Math.ceil(this.scrollTop/14) * 14;
-			}
-			else {
-				this.scrollTop = Math.floor(this.scrollTop/14) * 14;
-			}
-			lastScrollPos = this.scrollTop;
-		});
+		this.ui.find('.content').on('mousewheel DOMMouseScroll', onScroll);
 	};
 
 
@@ -450,6 +441,28 @@ define(function(require)
 
 		$content[0].scrollTop = $content[0].scrollHeight;
 	};
+
+
+	/**
+	 * Update scroll by block (14px)
+	 */
+	function onScroll( event )
+	{
+		var delta;
+
+		if (event.originalEvent.wheelDelta) {
+			delta = event.originalEvent.wheelDelta / 120 ;
+			if (window.opera) {
+				delta = -delta;
+			}
+		}
+		else if (event.originalEvent.detail) {
+			delta = -event.originalEvent.detail;
+		}
+
+		this.scrollTop = Math.floor(this.scrollTop/14) * 14 - (delta * 14);
+		return false;
+	}
 
 
 	/**

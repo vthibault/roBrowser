@@ -100,20 +100,11 @@ define(function(require)
 		});
 
 		var overlay = this.ui.find('.overlay');
-		var lastScrollPos = 0;
 
 		this.ui.find('.container .content')
 
 			// Scroll feature should block at each line
-			.on('scroll', function(){
-				if (this.scrollTop > lastScrollPos) {
-					this.scrollTop = Math.floor(this.scrollTop/32) * 32;
-				}
-				else {
-					this.scrollTop = Math.ceil(this.scrollTop/32) * 32;
-				}
-				lastScrollPos = this.scrollTop;
-			})
+			.on('mousewheel DOMMouseScroll', onScroll)
 
 			// Title feature
 			.on('mouseover', '.item', function(){
@@ -543,6 +534,28 @@ define(function(require)
 		}
 
 		return -1;
+	}
+
+
+	/**
+	 * Update scroll by block (32px)
+	 */
+	function onScroll( event )
+	{
+		var delta;
+
+		if (event.originalEvent.wheelDelta) {
+			delta = event.originalEvent.wheelDelta / 120 ;
+			if (window.opera) {
+				delta = -delta;
+			}
+		}
+		else if (event.originalEvent.detail) {
+			delta = -event.originalEvent.detail;
+		}
+
+		this.scrollTop = Math.floor(this.scrollTop/32) * 32 - (delta * 32);
+		return false;
 	}
 
 

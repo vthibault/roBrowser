@@ -58,16 +58,7 @@ define(function(require)
 		this.draggable();
 
 		// Scroll feature should block at each line
-		var lastScrollPos = 0;
-		this.ui.find('.content').on('scroll', function(){
-			if (this.scrollTop > lastScrollPos) {
-				this.scrollTop = Math.ceil(this.scrollTop/20) * 20;
-			}
-			else {
-				this.scrollTop = Math.floor(this.scrollTop/20) * 20;
-			}
-			lastScrollPos = this.scrollTop;
-		});
+		this.ui.find('.content').on('mousewheel DOMMouseScroll', onScroll);
 	};
 
 
@@ -201,6 +192,28 @@ define(function(require)
 		NpcMenu.ui.find('.content div').removeClass('selected');
 		_index = parseInt(jQuery(this).data('index'), 10);
 		NpcMenu.ui.find('.content div:eq('+ _index +')').addClass('selected');
+	}
+
+
+	/**
+	 * Update scroll by block (20px)
+	 */
+	function onScroll( event )
+	{
+		var delta;
+
+		if (event.originalEvent.wheelDelta) {
+			delta = event.originalEvent.wheelDelta / 120 ;
+			if (window.opera) {
+				delta = -delta;
+			}
+		}
+		else if (event.originalEvent.detail) {
+			delta = -event.originalEvent.detail;
+		}
+
+		this.scrollTop = Math.floor(this.scrollTop/20) * 20 - (delta * 20);
+		return false;
 	}
 
 

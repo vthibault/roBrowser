@@ -108,12 +108,12 @@ define(function(require)
 		OutputWindow.find('.resize').mousedown(function(event){ onResize(OutputWindow); event.stopImmediatePropagation(); return false; });
 
 		ui.find('.content')
-			.on('scroll',               onScroll)
-			.on('contextmenu', '.icon', onItemInfo)
-			.on('dblclick',    '.item', onItemSelected)
-			.on('mousedown',   '.item', onItemFocus)
-			.on('dragstart',   '.item', onDragStart)
-			.on('dragend',     '.item', function(){
+			.on('mousewheel DOMMouseScroll', onScroll)
+			.on('contextmenu',      '.icon', onItemInfo)
+			.on('dblclick',         '.item', onItemSelected)
+			.on('mousedown',        '.item', onItemFocus)
+			.on('dragstart',        '.item', onDragStart)
+			.on('dragend',          '.item', function(){
 				delete window._OBJ_DRAG_;
 			});
 
@@ -649,35 +649,37 @@ define(function(require)
 			$window.trigger('mouseup');
 		}
 
-		return  function onItemFocus()
+		return function onItemFocus( event )
 		{
 			NpcStore.ui.find('.item.selected').removeClass('selected');
 			jQuery(this).addClass('selected');
 
 			setTimeout( stopDragDrop, 4);
+			event.stopImmediatePropagation();
 		};
 	}();
 
 
 	/**
-	 * Block the scroll to move 32px at each move
+	 * Update scroll by block (32px)
 	 */
-	var onScroll = function onScrollClosure()
+	function onScroll( event )
 	{
-		var lastScrollPos = 0;
+		var delta;
 
-		return function onScroll()
-		{
-			if (this.scrollTop > lastScrollPos) {
-				this.scrollTop = Math.floor(this.scrollTop/32) * 32;
+		if (event.originalEvent.wheelDelta) {
+			delta = event.originalEvent.wheelDelta / 120 ;
+			if (window.opera) {
+				delta = -delta;
 			}
-			else {
-				this.scrollTop = Math.ceil(this.scrollTop/32) * 32;
-			}
-		
-			lastScrollPos = this.scrollTop;
-		};
-	}();
+		}
+		else if (event.originalEvent.detail) {
+			delta = -event.originalEvent.detail;
+		}
+
+		this.scrollTop = Math.floor(this.scrollTop/32) * 32 - (delta * 32);
+		return false;
+	}
 
 
 	/**

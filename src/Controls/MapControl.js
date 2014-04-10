@@ -151,7 +151,7 @@ function(
 			}
 		}
 		else if (event.originalEvent.detail) {
-			delta = -event.originalEvent.detail / 3;
+			delta = -event.originalEvent.detail;
 		}
 
 		Camera.setZoom(delta);
