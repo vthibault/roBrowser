@@ -277,6 +277,7 @@ define(function(require)
 				this.ui.toggle();
 				if (this.ui.is(':visible')) {
 					Renderer.render(renderCharacter);
+					this.ui[0].parentNode.appendChild(this.ui[0]);
 				}
 				else {
 					Renderer.stop(renderCharacter);

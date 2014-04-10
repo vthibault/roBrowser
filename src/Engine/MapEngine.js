@@ -34,6 +34,7 @@ define(function( require )
 	var UIManager        = require('UI/UIManager');
 	var Background       = require('UI/Background');
 	var Escape           = require('UI/Components/Escape/Escape');
+	var GraphicsOption   = require('UI/Components/GraphicsOption/GraphicsOption');
 	var ChatBox          = require('UI/Components/ChatBox/ChatBox');
 	var MiniMap          = require('UI/Components/MiniMap/MiniMap');
 	var BasicInfo        = require('UI/Components/BasicInfo/BasicInfo');
@@ -233,6 +234,7 @@ define(function( require )
 			ShortCut.append();
 			ChatRoomCreate.append();
 			SkillList.append();
+			GraphicsOption.append();
 
 			// Map loaded
 			Network.sendPacket(

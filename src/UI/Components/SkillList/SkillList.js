@@ -207,7 +207,7 @@ define(function(require)
 
 				// Fix zIndex
 				if (this.ui.is(':visible')) {
-					this.ui.parent().append(this.ui);
+					this.ui[0].parentNode.appendChild(this.ui[0]);
 				}
 				break;
 		}

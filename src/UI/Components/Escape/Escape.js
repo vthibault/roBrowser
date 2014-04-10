@@ -57,12 +57,7 @@ define(function(require)
 		});
 
 		this.ui.find('.graphics').click(function(){
-			if (!GraphicsOption.ui || !GraphicsOption.ui[0].parentNode) {
-				GraphicsOption.append();
-			}
-			else {
-				GraphicsOption.remove();
-			}
+			GraphicsOption.ui.toggle();
 		});
 
 		this.ui.find('.resurection').click(this.onResurectionRequest);

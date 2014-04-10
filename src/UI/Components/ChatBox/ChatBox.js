@@ -18,9 +18,9 @@ define(function(require)
 	var DB                 = require('DB/DBManager');
 	var jQuery             = require('Utils/jquery');
 	var Renderer           = require('Renderer/Renderer');
-	var KEYS               = require('Controls/KeyEventHandler');
 	var Client             = require('Core/Client');
-	var BattleMode         = require('Preferences/BattleMode');
+	var KEYS               = require('Controls/KeyEventHandler');
+	var BattleMode         = require('Controls/BattleMode');
 	var UIManager          = require('UI/UIManager');
 	var UIComponent        = require('UI/UIComponent');
 	var htmlText           = require('text!./ChatBox.html');
@@ -210,47 +210,31 @@ define(function(require)
 
 	/**
 	 * BattleMode processing
+	 *
+	 * @param {number} key id to check
+	 * @return {boolean} found a shortcut ?
 	 */
-	ChatBox.processBattleMode = function processBattleModeClosure()
+	ChatBox.processBattleMode = function processBattleMode( keyId )
 	{
-		// Todo: move this part somewhere else.
-		// I don't see a reason to keep it in ChatBox.js
-		function process( keyId )
-		{
-			var key = BattleMode[keyId];
-
-			if (key &&
-			   (!key.shift || KEYS.SHIFT) &&
-			   (!key.alt   || KEYS.ALT)   &&
-			   (!key.ctrl  || KEYS.CTRL)
-			) {
-				UIManager.getComponent(key.component).onShortCut(key);
-			}
+		// Direct process
+		if (this.ui.find('.battlemode').is(':visible') || KEYS.ALT || KEYS.SHIFT || KEYS.ctrl) {
+			return BattleMode.process(keyId);
 		}
 
-		return function processBattleMode( keyId )
-		{
-			// Direct process
-			if (this.ui.find('.battlemode').is(':visible') || KEYS.ALT) {
-				process( keyId );
-				return;
+		var messageBox = this.ui.find('.input .message');
+		var text       = messageBox.val();
+
+		// Hacky, need to wait the browser to add text in the input
+		// If there is no change, send the shortcut.
+		setTimeout(function(){
+			// Nothing rendered, can process the shortcut
+			if (messageBox.val() === text) {
+				BattleMode.process(keyId);
 			}
+		}.bind(this), 4)
 
-			var messageBox = this.ui.find('.input .message');
-			var text       = messageBox.val();
-
-			// Hacky, need to wait the browser to add text in the input
-			// If there is no change, send the shortcut.
-			setTimeout(function(){
-				// Nothing rendered, can process the shortcut
-				if (messageBox.val() === text) {
-					process(keyId);
-				}
-			}.bind(this), 4)
-
-			return true;
-		};
-	}();
+		return false;
+	};
 
 
 	/**
@@ -271,7 +255,7 @@ define(function(require)
 
 			// Battle mode system
 			default:
-				if (!this.processBattleMode(event.which)) {
+				if (ChatBox.processBattleMode(event.which)) {
 					event.stopImmediatePropagation();
 					return false;
 				}

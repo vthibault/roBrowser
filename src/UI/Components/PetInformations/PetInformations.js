@@ -131,6 +131,11 @@ define(function(require)
 	 */
 	PetInformations.onShortCut = function onShortCut( key )
 	{
+		// Not in body
+		if (!this.ui) {
+			return;
+		}
+
 		switch (key.cmd) {
 			case 'TOGGLE':
 				this.ui.toggle();
