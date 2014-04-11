@@ -28,6 +28,9 @@ define(function(require)
 
 	/**
 	 * BattleMode processing
+	 *
+	 * @param {number} key pressed id
+	 * @return {boolean} is shortcut found ?
 	 */
 	BattleMode.process = function process( keyId )
 	{
@@ -43,6 +46,52 @@ define(function(require)
 		}
 
 		return false;
+	};
+
+
+	/**
+	 * Convert component key to a readable string
+	 *
+	 * @param {string} component name
+	 * @param {string} command type
+	 * @return {string} readable key pressed
+	 */
+	BattleMode.shortcutToKeyString = function shortcutToKeyString( component, cmd )
+	{
+		var keys, shortcut;
+		var i, count;
+
+		keys  = Object.keys(Preferences);
+		count = keys.length;
+
+		for (i = 0; i < count; ++i) {
+			shortcut = Preferences[keys[i]];
+
+			if (shortcut.component === component && shortcut.cmd === cmd) {
+				var str = [];
+				var tmp = KEYS.toReadableKey(parseInt(keys[i], 10));
+
+				if (shortcut.alt) {
+					str.push('ALT');
+				}
+
+				if (shortcut.shift) {
+					str.push('SHIFT');
+				}
+
+				if (shortcut.ctrl) {
+					str.push('CTRL');
+				}
+
+				if (tmp) {
+					str.push(tmp);
+				}
+
+				return str.join(' + ');
+			}
+		}
+
+		return 'None';
 	};
 
 

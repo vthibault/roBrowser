@@ -154,9 +154,9 @@ define(function(require)
 	 */
 	ShortCut.onShortCut = function onShurtCut( key )
 	{
-		switch (key.cmd) {
+		switch (key.cmd.replace(/\d+$/, '')) {
 			case 'EXECUTE':
-				clickElement( key.index );
+				clickElement( parseInt( key.cmd.match(/\d+$/).toString(), 10) );
 				break;
 
 			case 'EXTEND':

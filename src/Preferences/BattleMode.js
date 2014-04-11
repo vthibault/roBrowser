@@ -18,16 +18,16 @@ define( ['Core/Preferences', 'Controls/KeyEventHandler'], function( Preferences,
 	var defaultKey = {};
 
 	// Shortcut
-	defaultKey[ KEYS.F1 ]  = { component:'ShortCut',        cmd:'EXECUTE', index:0 };
-	defaultKey[ KEYS.F2 ]  = { component:'ShortCut',        cmd:'EXECUTE', index:1 };
-	defaultKey[ KEYS.F3 ]  = { component:'ShortCut',        cmd:'EXECUTE', index:2 };
-	defaultKey[ KEYS.F4 ]  = { component:'ShortCut',        cmd:'EXECUTE', index:3 };
-	defaultKey[ KEYS.F5 ]  = { component:'ShortCut',        cmd:'EXECUTE', index:4 };
-	defaultKey[ KEYS.F6 ]  = { component:'ShortCut',        cmd:'EXECUTE', index:5 };
-	defaultKey[ KEYS.F7 ]  = { component:'ShortCut',        cmd:'EXECUTE', index:6 };
-	defaultKey[ KEYS.F8 ]  = { component:'ShortCut',        cmd:'EXECUTE', index:7 };
-	defaultKey[ KEYS.F9 ]  = { component:'ShortCut',        cmd:'EXECUTE', index:8 };
-	defaultKey[ KEYS.F12 ] = { component:'ShortCut',        cmd:'EXTEND'           };
+	defaultKey[ KEYS.F1 ]  = { component:'ShortCut',        cmd:'EXECUTE0' };
+	defaultKey[ KEYS.F2 ]  = { component:'ShortCut',        cmd:'EXECUTE1' };
+	defaultKey[ KEYS.F3 ]  = { component:'ShortCut',        cmd:'EXECUTE2' };
+	defaultKey[ KEYS.F4 ]  = { component:'ShortCut',        cmd:'EXECUTE3' };
+	defaultKey[ KEYS.F5 ]  = { component:'ShortCut',        cmd:'EXECUTE4' };
+	defaultKey[ KEYS.F6 ]  = { component:'ShortCut',        cmd:'EXECUTE5' };
+	defaultKey[ KEYS.F7 ]  = { component:'ShortCut',        cmd:'EXECUTE6' };
+	defaultKey[ KEYS.F8 ]  = { component:'ShortCut',        cmd:'EXECUTE7' };
+	defaultKey[ KEYS.F9 ]  = { component:'ShortCut',        cmd:'EXECUTE8' };
+	defaultKey[ KEYS.F12 ] = { component:'ShortCut',        cmd:'EXTEND'   };
 
 	// UI
 	defaultKey[ KEYS.V ]   = { component:'BasicInfo',       cmd:'EXTEND', alt:true };
@@ -41,5 +41,5 @@ define( ['Core/Preferences', 'Controls/KeyEventHandler'], function( Preferences,
 	/**
 	 * Export
 	 */
-	return Preferences.get( 'BattleMode', defaultKey, 1.1 );
+	return Preferences.get( 'BattleMode', defaultKey, 1.2 );
 });

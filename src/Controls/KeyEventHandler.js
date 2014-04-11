@@ -18,6 +18,11 @@ define( ['Utils/jquery'], function( jQuery )
 	 */
 	var KEYS = {
 
+		// Special Keys
+		CTRL:    false,
+		SHIFT:   false,
+		ALT:     false,
+
 		TAB:       9,
 		ENTER:    13,
 		ESCAPE:   27,
@@ -30,23 +35,18 @@ define( ['Utils/jquery'], function( jQuery )
 		DOWN:     40,
 		INSERT:   45,
 		SUPR:     46,
-		F1:      112,
-		F2:      113,
-		F3:      114,
-		F4:      115,
-		F5:      116,
-		F6:      117,
-		F7:      118,
-		F8:      119,
-		F9:      120,
-		F10:     121,
-		F11:     122,
-		F12:     123,
 
-		// Special Keys
-		CTRL:    false,
-		SHIFT:   false,
-		ALT:     false,
+		// Numeric
+		0:        48,
+		1:        49,
+		2:        50,
+		3:        51,
+		4:        52,
+		5:        53,
+		6:        54,
+		7:        55,
+		8:        56,
+		9:        57,
 
 		// Regular keys:
 		A:        65,
@@ -74,8 +74,105 @@ define( ['Utils/jquery'], function( jQuery )
 		W:        87,
 		X:        88,
 		Y:        89,
-		Z:        90	
+		Z:        90,
+
+		// Num pad
+		Num_0:    96,
+		Num_1:    97,
+		Num_2:    98,
+		Num_3:    99,
+		Num_4:   100,
+		Num_5:   101,
+		Num_6:   102,
+		Num_7:   103,
+		Num_8:   104,
+		Num_9:   105,
+		'*':     106,
+		'+':     107,
+		'-':     109,
+		'/':     111,
+
+		// Functions keys
+		F1:      112,
+		F2:      113,
+		F3:      114,
+		F4:      115,
+		F5:      116,
+		F6:      117,
+		F7:      118,
+		F8:      119,
+		F9:      120,
+		F10:     121,
+		F11:     122,
+		F12:     123,
+		F13:     124,
+		F14:     125,
+		F15:     126,
+		F16:     127,
+		F17:     128,
+		F18:     129,
+		F19:     130,
 	};
+
+
+	/**
+	 * Get Key name from id
+	 *
+	 * @param {number} key id
+	 * @param {string} readable key nam
+	 */
+	Object.defineProperty(KEYS, 'toReadableKey', {
+		writable:   false,
+		enumerable: false,
+		value: function toReadableKey( keyId ){
+			var keys, i, count;
+
+			keys  = Object.keys(this);
+			count = keys.length;
+
+			for (i = 0; i < count; ++i) {
+				if (this[keys[i]] === keyId) {
+					return keys[i];
+				}
+			}
+
+			return '';
+		},
+	});
+
+
+	/**
+	 * Get Key name from id
+	 *
+	 * @param {number} key id
+	 * @param {string} readable key nam
+	 */
+	Object.defineProperty(KEYS, 'getKeyIdString', {
+		writable:   false,
+		enumerable: false,
+		value: function getKeyIdString( keyId ){
+			var str = [];
+			var tmp = this.toReadableKey(parseInt(keys[i], 10));
+
+			if (shortcut.alt) {
+				str.push('ALT');
+			}
+
+			if (shortcut.shift) {
+				str.push('SHIFT');
+			}
+
+			if (shortcut.ctrl) {
+				str.push('CTRL');
+			}
+
+			if (tmp) {
+				str.push(tmp);
+			}
+
+			return str.join(' + ');
+		},
+	});
 
 
 	/**
