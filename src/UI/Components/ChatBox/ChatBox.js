@@ -341,6 +341,10 @@ define(function(require)
 		if (!text.length) {
 			input.toggle();
 			this.ui.find('.battlemode').toggle();
+
+			if (input.is(':visible')) {
+				$text.focus();
+			}
 			return;
 		}
 
