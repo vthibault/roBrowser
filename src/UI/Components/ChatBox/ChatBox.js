@@ -21,6 +21,7 @@ define(function(require)
 	var Client             = require('Core/Client');
 	var KEYS               = require('Controls/KeyEventHandler');
 	var BattleMode         = require('Controls/BattleMode');
+	var History            = require('./History');
 	var UIManager          = require('UI/UIManager');
 	var UIComponent        = require('UI/UIComponent');
 	var htmlText           = require('text!./ChatBox.html');
@@ -35,21 +36,15 @@ define(function(require)
 
 
 	/**
-	 * @var {number} max message sent saved for history features
+	 * @var {History} message cached in history
 	 */
-	var MAX_HISTORY = 50;
+	var _historyMessage = new History();
 
 
 	/**
-	 * @var {Array} history of message sent
+	 * @var {History} nickname cached in history
 	 */
-	var _history = [];
-
-
-	/**
-	 * @var {number} current index in history
-	 */
-	var _historyIndex = 0;
+	var _historyNickName = new History(true);
 
 
 	/**
@@ -175,6 +170,9 @@ define(function(require)
 		this.ui.find('.content').empty();
 		this.ui.find('.input .message').val('');
 		this.ui.find('.input .username').val('');
+
+		_historyMessage.clear();
+		_historyNickName.clear();
 	};
 
 
@@ -231,7 +229,7 @@ define(function(require)
 			if (messageBox.val() === text) {
 				BattleMode.process(keyId);
 			}
-		}.bind(this), 4)
+		}.bind(this), 4);
 
 		return false;
 	};
@@ -245,11 +243,8 @@ define(function(require)
 	 */
 	ChatBox.onKeyDown = function OnKeyDown( event )
 	{
-		var messageBox, nickBox;
-		var isFocus;
-
-		messageBox = this.ui.find('.input .message');
-		isFocus    = (document.activeElement === messageBox[0]);
+		var messageBox = this.ui.find('.input .message');
+		var nickBox    = this.ui.find('.input .username');
 
 		switch (event.which) {
 
@@ -263,9 +258,7 @@ define(function(require)
 
 			// Switch from user name, to message input
 			case KEYS.TAB:
-				nickBox = this.ui.find('.input .username');
-
-				if (isFocus) {
+				if (document.activeElement === messageBox[0]) {
 					nickBox.select().focus();
 					break;
 				}
@@ -274,28 +267,35 @@ define(function(require)
 					messageBox.select().focus();
 					break;
 				}
-
 				return true;
 
 			// Get back message from history
 			case KEYS.UP:
-				if (isFocus && !jQuery('#NpcMenu').length) {
-					if (_historyIndex > 0) {
-						_historyIndex--;
+				if (!jQuery('#NpcMenu').length) {
+					if (document.activeElement === messageBox[0]) {
+						messageBox.val(_historyMessage.previous()).select();
+						break;
 					}
-					messageBox.val(_history[_historyIndex]).select();
-					break;
+
+					if (document.activeElement === nickBox[0]) {
+						nickBox.val(_historyNickName.previous()).select();
+						break;
+					}
 				}
 				return true;
 
-			// Message from history + 1
+			// Message from history
 			case KEYS.DOWN:
-				if (isFocus && !jQuery('#NpcMenu').length) {
-					if (_historyIndex < _history.length) {
-						_historyIndex++;
+				if (!jQuery('#NpcMenu').length) {
+					if (document.activeElement === messageBox[0]) {
+						messageBox.val(_historyMessage.next()).select();
+						break;
 					}
-					messageBox.val(_history[_historyIndex]).select();
-					break;
+
+					if (document.activeElement === nickBox[0]) {
+						nickBox.val(_historyNickName.next()).select();
+						break;
+					}
 				}
 				return true;
 
@@ -306,7 +306,8 @@ define(function(require)
 
 			// Send message
 			case KEYS.ENTER:
-				if (document.activeElement.tagName === 'INPUT' && !isFocus) {
+				if (document.activeElement.tagName === 'INPUT' &&
+				    document.activeElement !== messageBox[0]) {
 					return true;
 				}
 
@@ -347,18 +348,12 @@ define(function(require)
 		if (user.length && text[0] !== '/') {
 			this.PrivateMessageStorage.nick = user;
 			this.PrivateMessageStorage.msg  = text;
+			_historyNickName.push(user);
+			_historyNickName.previous();
 		}
 
 		// Save in history
-		if (_history[_historyIndex] !== text) {
-
-			if (_history.length >= MAX_HISTORY) {
-				_history.shift();
-			}
-			_history.push(text);
-		}
-
-		_historyIndex = _history.length;
+		_historyMessage.push(text);
 
 		$text.val('');
 
