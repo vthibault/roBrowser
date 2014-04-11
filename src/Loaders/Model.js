@@ -113,7 +113,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 		}
 
 		// Read poskeyframes
-		if (this.version >= 1.5) {
+		if (this.version < 1.5) {
 			count         = fp.readLong();
 			posKeyframes  = new Array(count);
 
