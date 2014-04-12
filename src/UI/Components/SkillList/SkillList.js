@@ -17,7 +17,6 @@ define(function(require)
 	 */
 	var DB                   = require('DB/DBManager');
 	var SkillInfo            = require('DB/SkillInfo');
-	//var SkillDescription     = require('DB/SkillDescription');
 	var jQuery               = require('Utils/jquery');
 	var Client               = require('Core/Client');
 	var Preferences          = require('Core/Preferences');
@@ -26,6 +25,7 @@ define(function(require)
 	var UIManager            = require('UI/UIManager');
 	var UIComponent          = require('UI/UIComponent');
 	var SkillTargetSelection = require('UI/Components/SkillTargetSelection/SkillTargetSelection');
+	var SkillDescription     = require('UI/Components/SkillDescription/SkillDescription');
 	var htmlText             = require('text!./SkillList.html');
 	var cssText              = require('text!./SkillList.css');
 
@@ -107,6 +107,15 @@ define(function(require)
 				}
 
 				SkillList.useSkill(parseInt(main.data('index'), 10));
+			})
+
+			// Skill info
+			.on('contextmenu', '.skill .icon, .skill .name', function(){
+				var index = parseInt(this.parentNode.getAttribute('data-index'), 10);
+				var skill = getSkillById(index);
+
+				SkillDescription.append();
+				SkillDescription.setSkill(skill.SKID);
 			})
 
 			// background color
@@ -245,6 +254,13 @@ define(function(require)
 		if (!(skill.SKID in SkillInfo)) {
 			return;
 		}
+
+		// Already in list, update it instead of duplicating it
+		if (this.ui.find('.skill .id' + skill.SKID + ':first').length) {
+			this.updateSkill( skill );
+			return;
+		}
+
 
 		var sk = SkillInfo[ skill.SKID ];
 

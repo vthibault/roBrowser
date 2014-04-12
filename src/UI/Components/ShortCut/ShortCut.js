@@ -27,7 +27,7 @@ define(function(require)
 	var ItemInfo             = require('UI/Components/ItemInfo/ItemInfo');
 	var Inventory            = require('UI/Components/Inventory/Inventory');
 	var SkillWindow          = require('UI/Components/SkillList/SkillList');
-	//var SkillInfoWindow    = require('UI/Components/SkillInfo/SkillInfo');
+	var SkillDescription     = require('UI/Components/SkillDescription/SkillDescription');
 	var SkillTargetSelection = require('UI/Components/SkillTargetSelection/SkillTargetSelection');
 	var htmlText             = require('text!./ShortCut.html');
 	var cssText              = require('text!./ShortCut.css');
@@ -456,23 +456,14 @@ define(function(require)
 
 		// Display skill informations
 		if (element.isSkill) {
-/*
-			if (SkillInfoWindow.uid === _list[index].ID) {
-				SkillInfoWindow.remove();
-				return false;
-			}
-
-			SkillInfoWindow.append();
-			SkillInfoWindow.uid = _list[index].ID;
-			SkillInfoWindow.setSkill( _list[index] );
-*/
+			SkillDescription.append();
+			SkillDescription.setSkill( _list[index].ID );
 		}
 
 		// Display item informations
 		else {
 
-			if (ItemInfo.uid === _list[index].ID
-				) {
+			if (ItemInfo.uid === _list[index].ID) {
 				ItemInfo.remove();
 				return false;
 			}
