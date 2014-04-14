@@ -15,8 +15,9 @@ function imagecreatefrombmpstring($data) {
 
 	// Read header
 	extract( unpack("a2signature/x8/Voffset/x4/Vwidth/Vheight/x2/vbits", substr($data, 0, 30)));
-	if( $signature !== 'BM' )
+	if ($signature !== 'BM') {
 		return false;
+	}
 
 
 	// Create image
@@ -28,18 +29,19 @@ function imagecreatefrombmpstring($data) {
 	// Load palette (if used)
 	$paletteSize  = $offset - 54;
 	$imagePalette = array();
-	if( $paletteSize > 0 && $bits < 16 ) {
+	if ($paletteSize > 0 && $bits < 16) {
 		$palette = unpack('C'. $paletteSize, substr($data, 54, $paletteSize));
 
-		for( $i=1, $p=0; $i<$paletteSize; $i+=4 ) {
+		for ($i = 1, $p = 0; $i < $paletteSize; $i += 4) {
 			$b = $palette[$i+0];
 			$g = $palette[$i+1];
 			$r = $palette[$i+2];
 			$a = $palette[$i+3];
 
 			// Magenta is transparent.
-			if( ($r & 0xf8 === 0xf8) && ($g === 0) && ($b & 0xf8 === 0xf8) )
+			if (($r & 0xf8 === 0xf8) && ($g === 0) && ($b & 0xf8 === 0xf8)) {
 				$a = 127;
+			}
 
 			$imagePalette[$p++] = imagecolorallocatealpha($img, $r, $g, $b, $a);
 		}
@@ -52,23 +54,25 @@ function imagecreatefrombmpstring($data) {
 	$imageData = unpack('C'. $size, substr($data, $offset, $size) );
 
 
-	switch( $bits ) {
+	switch ($bits) {
 
 		// Not an original DIB file ?
 		default: return false;
 
 		// 24 bits BMP
 		case 24:
-			for( $i=1, $y = $height-1; $y > -1; $y--, $i += $skip ) {
-				for( $x=0; $x<$width; $x++, $i+=3 ) {
+			for ($i = 1, $y = $height-1; $y > -1; $y--, $i += $skip) {
+				for ($x = 0; $x < $width; $x++, $i+=3) {
 					$b = $imageData[$i+0];
 					$g = $imageData[$i+1];
 					$r = $imageData[$i+2];
 
-					if ( $r === 255 && $g === 0 && $b === 255)
+					if ($r === 255 && $g === 0 && $b === 255) {
 						$c = imagecolorallocatealpha($img, $r, $g, $b, 127);
-					else 
+					}
+					else {
 						$c = imagecolorallocate($img, $r, $g, $b); 
+					}
 
 					imagesetpixel($img, $x, $y, $c );
 				}
@@ -78,8 +82,8 @@ function imagecreatefrombmpstring($data) {
 
 		// 8 bits BMP
 		case 8:
-			for( $i=1, $y = $height-1; $y > -1; $y--, $i += $skip ) {
-				for( $x=0; $x<$width; $x++, $i++ ) {
+			for ($i = 1, $y = $height-1; $y > -1; $y--, $i += $skip) {
+				for ($x = 0; $x < $width; $x++, $i++) {
 					imagesetpixel($img, $x, $y, $imagePalette[$imageData[$i]] );
 				}
 			}
@@ -88,8 +92,8 @@ function imagecreatefrombmpstring($data) {
 
 		// 4 bits BMP
 		case 4:
-			for( $i=1, $y = $height-1; $y > -1; $y--, $i += $skip ) {
-				for( $x=0; $x<$width; $x+=2, $i++ ) {
+			for ($i = 1, $y = $height-1; $y > -1; $y--, $i += $skip) {
+				for ($x = 0; $x < $width; $x += 2, $i++) {
 					$byte = &$imageData[$i];
 					imagesetpixel($img, $x+0, $y, $imagePalette[$byte >> 4  ]);
 					imagesetpixel($img, $x+1, $y, $imagePalette[$byte & 0x0F]);
@@ -100,8 +104,8 @@ function imagecreatefrombmpstring($data) {
 
 		// 1 bit BMP
 		case 1:
-			for( $i=1, $y = $height-1; $y > -1; $y--, $i += $skip ) {
-				for( $x=0; $x<$width; $x+=8, $i++ ) {
+			for ($i = 1, $y = $height-1; $y > -1; $y--, $i += $skip) {
+				for ($x = 0; $x < $width; $x+=8, $i++) {
 					$byte = &$imageData[$i];
 					imagesetpixel($img, $x+0, $y, $imagePalette[ !!($byte & 0x80) ]);
 					imagesetpixel($img, $x+1, $y, $imagePalette[ !!($byte & 0x40) ]);

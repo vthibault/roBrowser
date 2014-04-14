@@ -1,4 +1,13 @@
 <?php
+
+	// Include library
+	require_once('Debug.php');
+	require_once('Grf.php');
+	require_once('Bmp.php');
+	require_once('Client.php');
+	$CONFIGS = require_once('configs.php');
+
+
 	// To set the header as 200 OK
 	function set_http_ok()
 	{
@@ -8,113 +17,110 @@
 		}
 	
 		$protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');
-		header("Status: 200 OK"); // fast cgi
+		header('Status: 200 OK'); // fast cgi
 		header($protocol . ' 200 OK');
 	}
 
-	define('DEBUG', false);
 
-	if (DEBUG) {
-		ini_set('display_errors', 1);
-		error_reporting(E_ALL);
-
-		header("HTTP/1.1 200 OK");
-		header('Content-type:text/plain');
+	// Apply configs
+	if ($CONFIGS['DEBUG']) {
+		Debug::enable();
 	}
 
+
+	Client::$path        =  '';
+	Client::$data_ini    =  $CONFIGS['CLIENT_RESPATH'] . $CONFIGS['CLIENT_DATAINI'];
+	Client::$AutoExtract =  $CONFIGS['CLIENT_AUTOEXTRACT'];
+
+
+	// Initialize client
 	ini_set('memory_limit', '1000M');
-
-
-	// Include library
-	require_once('Grf.php');
-	require_once('Bmp.php');
-	require_once('Client.php');
-
-
-	// Client Config
-	Client::$path        =  ""           ;  // Define where is locate your full client (note: updating the location can provoke errors on BGM (no looping) because of some headers not properly set)
-	Client::$data_ini    =  "DATA.INI"   ;  // the name of your data.ini file (case sensitive)
-	Client::$AutoExtract =  false        ;  // Do you want to cache files once extracted from GRF ?
 	Client::init();
 
-	// Search Feature
-	if ( isset($_POST['filter']) && is_string($_POST['filter']) ) {
+
+	/**
+	 * SEARCH ACCESS
+	 * This features is only used in map/rsm/str/grf viewer
+	 * If you are not using them, you can comment this block
+	 */
+	if (isset($_POST['filter']) && is_string($_POST['filter'])) {
 		set_http_ok();
 		header('Content-type: text/plain');
+
+		if (!$CONFIGS['CLIENT_ENABLESEARCH']) {
+			exit();
+		}
+
 		$filter = ini_get('magic_quotes_gpc') ? stripslashes($_POST['filter']) : $_POST['filter'];
-		$filter = '/'. $filter. '/i';
-		$filter = utf8_decode($filter);
+		$filter = utf8_decode('/'. $filter. '/i');
 		$list   = Client::search($filter);
-		die( implode("\n",$list) );
+
+		die( implode("\n", $list) );
 	}
 
 
-	// Nothing to do
-	if( empty($_SERVER['REDIRECT_STATUS']) || $_SERVER['REDIRECT_STATUS'] != 404 || empty($_SERVER['REQUEST_URI']) ) {
-		if (DEBUG) {
-			echo 'No file requested';
-		}
-		die();	
+	/**
+	 * DIRECT ACCESS
+	 */
+	if (empty($_SERVER['REDIRECT_STATUS']) || $_SERVER['REDIRECT_STATUS'] != 404 || empty($_SERVER['REQUEST_URI'])) {
+		Debug::write('Direct access, no file requested ! You have to request a file (from the url), for example: <a href="data/clientinfo.xml">data/clientinfo.xml</a>', 'error');
+		Debug::output();
 	}
 
 
 	// Decode path
-	$path      = utf8_decode(urldecode($_SERVER['REQUEST_URI']));
+	$path      = str_replace('\\', '/', utf8_decode(urldecode($_SERVER['REQUEST_URI'])));
 	$directory = basename(dirname(__FILE__));
-	$args      = explode($directory . '/', $path, 2 );
-	$path      = end($args);
-	$args      = explode('/', $path);
 
-	if( empty($args[0]) ) {
-		array_shift($args);
+	// Check Allowed directory
+	if (!preg_match( '/\/'. $directory . '\/(data|BGM)\//', $path)) {
+		Debug::write('Forbidden directory, you can just access files located in data and BGM folder.', 'error');
+		Debug::output();
 	}
 
-	// Allowed directory
-	if( !preg_match( "/^(data|BGM)$/", $args[0]) ) {
-		if (DEBUG) {
-			echo 'Forbidden directory';
-		}
-		exit;
-	}
-
-	$path = implode($args, '\\');
+	// Get file
+	$path = preg_replace('/.*'. $directory . '\/(data|BGM\/.*)/', '$1', $path );
+	$path = str_replace('/', '\\', $path);
 	$ext  = strtolower(pathinfo($path, PATHINFO_EXTENSION));
-
-
-	// Search the file
 	$file = Client::getFile($path);
 
 
 	// File not found, end.
 	if ($file === false) {
-		if (DEBUG) {
-			echo 'File not found';
-		}
-		die();
+		Debug::write('Failed, file not found...', 'error');
+		Debug::output();
+	}
+	else {
+		Debug::write('Success !', 'success');
 	}
 
-	if (DEBUG) {
-		die();
-	}
 
 	set_http_ok();
 	header("Cache-Control: max-age=2592000, public");
 	header("Expires: Sat, 31 Jan 2015 05:00:00 GMT");
 
+	// Display appropriate header
 	switch ($ext) {
 		case 'jpg':
-		case 'jpeg': header('Content-type:image/jpeg');                break;
-		case 'bmp':  header('Content-type:image/bmp');                 break;
-		case 'gif':  header('Content-type:image/gif');                 break;
-		case 'xml':  header('Content-type:application/xml');           break;
-		case 'txt':  header('Content-type:text/plain');                break;
-		case 'mp3':  header('Content-type:audio/mp3');                 break;
-		default:     header('Content-type:application/octet-stream');  break;
+		case 'jpeg': header('Content-type:image/jpeg');               break;
+		case 'bmp':  header('Content-type:image/bmp');                break;
+		case 'gif':  header('Content-type:image/gif');                break;
+		case 'xml':  header('Content-type:application/xml');          break;
+		case 'txt':  header('Content-type:text/plain');               break;
+		case 'mp3':  header('Content-type:audio/mp3');                break;
+		default:     header('Content-type:application/octet-stream'); break;
 	}
 
+
+	// GZIP some files
 	if (in_array($ext, array('txt', 'xml', 'rsw', 'rsm', 'gnd', 'gat', 'spr', 'act', 'pal'))) {
 		ob_start("ob_gzhandler");
 	}
 
+
+	// Output
+	if (Debug::isEnable()) {
+		Debug::output();
+	}
+
 	echo $file;
-?>
