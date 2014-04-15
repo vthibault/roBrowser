@@ -85,8 +85,10 @@
 			},
 			optimize: "uglify",
 			uglify: {
-				ascii_only: true
+				ascii_only:   true,
+				no_functions: true  // keep functions name (func.name is used in some places)
 			},
+			useStrict: true,
 		}, function (buildText) {
 			trace.value = buildText;
 		}, function (error){
