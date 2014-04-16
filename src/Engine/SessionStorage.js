@@ -17,6 +17,7 @@ define(function()
 
 		AuthCode:    0,
 		AID:         0,
+		GID:         0,
 		UserLevel:   0,
 		Sex:         0,
 		LangType:    0,

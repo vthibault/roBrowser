@@ -54,14 +54,19 @@ define(function( require )
 
 
 	/**
+	 * @var {boolean} is initialized
+	 */
+	var _isInitialised = false;
+
+
+	/**
 	 * Connect to Map Server
 	 *
 	 * @param {number} IP
 	 * @param {number} port
-	 * @param {number} Character ID
 	 * @param {string} mapName
 	 */
-	function init( ip, port, GID, mapName )
+	function init( ip, port, mapName )
 	{
 		_mapName = mapName;
 
@@ -80,7 +85,7 @@ define(function( require )
 			// Success, try to login.
 			var pkt        = new PACKET.CZ.ENTER();
 			pkt.AID        = Session.AID;
-			pkt.GID        = GID;
+			pkt.GID        = Session.GID;
 			pkt.AuthCode   = Session.AuthCode;
 			pkt.clientTime = Date.now();
 			pkt.Sex        = Session.Sex;
@@ -102,6 +107,12 @@ define(function( require )
 			});
 		}, true);
 
+		// Do not hook multiple time
+		if (_isInitialised) {
+			return;
+		}
+
+		_isInitialised = true;
 
 		// Hook packets
 		Network.hookPacket( PACKET.ZC.AID,                 onReceiveAccountID );
@@ -248,21 +259,13 @@ define(function( require )
 
 	/**
 	 * Change zone server
-	 * TODO: add support for zone-server changed.
 	 *
 	 * @param {object} pkt - PACKET.ZC.NPCACK_SERVERMOVE
 	 */
 	function onServerChange( pkt )
 	{
 		jQuery(window).off('keydown.map');
-		/*
-			pkt.mapName
-			pkt.xPos
-			pkt.yPos
-			pkt.addr.ip
-			pkt.addr.port
-		*/
-		// Have to resend authcode sex etc ?
+		init( pkt.addr.ip, pkt.addr.port, pkt.mapName );
 	}
 
 

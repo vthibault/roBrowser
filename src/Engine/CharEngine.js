@@ -431,7 +431,8 @@ define([
 	 */
 	function onReceiveMapInfo( pkt )
 	{
-		MapEngine.init( pkt.addr.ip, pkt.addr.port, pkt.GID, pkt.mapName);
+		Session.GID = pkt.GID;
+		MapEngine.init( pkt.addr.ip, pkt.addr.port, pkt.mapName);
 	}
 
 
