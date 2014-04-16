@@ -209,7 +209,10 @@ function(        CommonCSS,          jQuery,     Cursor,             DB,        
 		});
 
 		element.mouseleave(function(){
-			_enter--;
+			if (_enter > 0) {
+				_enter--;
+			}
+
 			if(_intersect) {
 				Mouse.intersect = true;
 				require('Renderer/EntityManager').setOverEntity(null);
