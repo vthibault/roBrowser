@@ -73,13 +73,13 @@
 	$directory = basename(dirname(__FILE__));
 
 	// Check Allowed directory
-	if (!preg_match( '/\/'. $directory . '\/(data|BGM)\//', $path)) {
+	if (!preg_match( '/\/('. $directory . '\/)?(data|BGM)\//', $path)) {
 		Debug::write('Forbidden directory, you can just access files located in data and BGM folder.', 'error');
 		Debug::output();
 	}
 
 	// Get file
-	$path = preg_replace('/.*'. $directory . '\/(data|BGM\/.*)/', '$1', $path );
+	$path = preg_replace('/(.*('. $directory . '\/)?)(data|BGM\/.*)/', '$3', $path );
 	$path = str_replace('/', '\\', $path);
 	$ext  = strtolower(pathinfo($path, PATHINFO_EXTENSION));
 	$file = Client::getFile($path);
