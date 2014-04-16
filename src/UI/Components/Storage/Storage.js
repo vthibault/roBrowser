@@ -108,7 +108,7 @@ define(function(require)
 
 			// Title feature
 			.on('mouseover', '.item', function(){
-				var idx = parseInt( this.className.match(/ (\d+)$/)[1], 10);
+				var idx = parseInt( this.getAttribute('data-index'), 10);
 				var i   = getItemIndexById(idx);
 
 				// Not found
@@ -157,8 +157,7 @@ define(function(require)
 				url     = url = url.replace(/^\"/, '').replace(/\"$/, ''); // Firefox bug
 				img.src = url;
 
-				var matches = this.className.match(/(\w+) (\d+)/);
-				var index   = parseInt(matches[2], 10);
+				var index   = parseInt(this.getAttribute('data-index'), 10);
 				var i       = getItemIndexById(index);
 
 				if (i > -1) {
@@ -183,8 +182,7 @@ define(function(require)
 
 			// Right click on item
 			.on('contextmenu', '.item', function(event) {
-				var matches = this.className.match(/(\w+) (\d+)/);
-				var index   = parseInt(matches[2], 10);
+				var index   = parseInt(this.getAttribute('data-index'), 10);
 				var i       = getItemIndexById(index);
 
 				if (i > -1) {
@@ -271,7 +269,7 @@ define(function(require)
 		// Found, update quantity
 		if (i > -1) {
 			_list[i].count += item.count;
-			this.ui.find('.item.'+ item.index + ' .count').text(_list[i].count);
+			this.ui.find('.item[data-index="'+ item.index +'"] .count').text(_list[i].count);
 			return;
 		}
 
@@ -289,7 +287,6 @@ define(function(require)
 	Storage.addItemSub = function addItemSub( item )
 	{
 		var tab;
-		var ui = this.ui;
 		
 		switch (item.type) {
 			case Storage.ITEM.HEALING:
@@ -328,17 +325,19 @@ define(function(require)
 		}
 
 		if (tab === _preferences.tab) {
-			var it = DB.getItemInfo( item.ITID );
+			var it   = DB.getItemInfo( item.ITID );
+
+			this.ui.find('.container .content').append(
+				'<div class="item" data-index="' + item.index +'" draggable="true">' +
+					'<div class="icon"></div>' +
+					'<div class="amount">'+ (item.count ? '<span class="count">' + item.count + '</span>' + ' ' : '') + '</div>' +
+					'<span class="name">' + ( item.RefiningLevel ? '+' + item.RefiningLevel + ' ' : '') + ( item.IsIdentified ? it.identifiedDisplayName : it.unidentifiedDisplayName ) + '</span>' +
+				'</div>'
+			);
 
 			Client.loadFile( DB.INTERFACE_PATH + 'item/' + ( item.IsIdentified ? it.identifiedResourceName : it.unidentifiedResourceName ) + '.bmp', function(data){
-				ui.find('.container .content').append(
-					'<div class="item '+ item.index +'" draggable="true">' +
-						'<div class="icon" style="background-image:url(' + data + ')"></div>' +
-						'<div class="amount">'+ (item.count ? '<span class="count">' + item.count + '</span>' + ' ' : '') + '</div>' +
-						'<span class="name">' + ( item.RefiningLevel ? '+' + item.RefiningLevel + ' ' : '') + ( item.IsIdentified ? it.identifiedDisplayName : it.unidentifiedDisplayName ) + '</span>' +
-					'</div>'
-				);
-			});
+				this.ui.find('.item[data-index="'+ item.index +'"] .icon').css('backgroundImage', 'url('+ data +')');
+			}.bind(this));
 		}
 
 		return true;
@@ -364,7 +363,7 @@ define(function(require)
 			_list[i].count -= count;
 
 			if (_list[i].count > 0) {
-				this.ui.find('.item.'+ index + ' .count').text(_list[i].count);
+				this.ui.find('.item[data-index="'+ index +'"] .count').text(_list[i].count);
 				return _list[i];
 			}
 		}
@@ -372,7 +371,7 @@ define(function(require)
 		// Remove item
 		item = _list[i];
 		_list.splice( i, 1 );
-		this.ui.find('.item.' + index).remove();
+		this.ui.find('.item[data-index="'+ index +'"]').remove();
 
 		return item;
 	};

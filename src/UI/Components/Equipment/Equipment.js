@@ -286,7 +286,7 @@ define(function(require)
 					this.ui.trigger('mouseleave');
 				}
 				break;
- 		}
+		}
 	};
 
 
@@ -324,25 +324,26 @@ define(function(require)
 			}
 		}
 
-		var ui = this.ui.find(getSelectorFromLocation(location));
+		var name  = ( item.RefiningLevel ? '+' + item.RefiningLevel + ' ' : '') + it.identifiedDisplayName;
+		var lines = [];
+
+		while (name.length) {
+			lines.push( name.substr(0,13) );
+			name = name.substr(13);
+		}
+
+		this.ui.find(getSelectorFromLocation(location)).html(
+			'<div class="item" data-index="'+ item.index +'">' +
+				'<button></button>' +
+				'<span>' +
+					 lines.join('\n') +
+				'</span>' +
+			'</div>'
+		);
 
 		Client.loadFile( DB.INTERFACE_PATH + 'item/' + it.identifiedResourceName + '.bmp', function(data){
-			var name  = ( item.RefiningLevel ? '+' + item.RefiningLevel + ' ' : '') + it.identifiedDisplayName;
-			var lines = [];
-			while (name.length) {
-				lines.push( name.substr(0,13) );
-				name = name.substr(13);
-			}
-
-			ui.html(
-				'<div class="item" data-index="'+ item.index +'">' +
-					'<button style="background-image:url(' + data + ')"></button>' +
-					'<span>' +
-						 lines.join('\n') +
-					'</span>' +
-				'</div>'
-			);
-		});
+			this.ui.find('.item[data-index="'+ item.index +'"] button').css('backgroundImage', 'url('+ data +')');
+		}.bind(this));
 	};
 
 

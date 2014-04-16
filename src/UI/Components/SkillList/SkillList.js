@@ -111,8 +111,14 @@ define(function(require)
 
 			// Skill info
 			.on('contextmenu', '.skill .icon, .skill .name', function(){
-				var index = parseInt(this.parentNode.getAttribute('data-index'), 10);
-				var skill = getSkillById(index);
+				var main  = jQuery(this).parent();
+				var skill;
+
+				if (!main.hasClass('skill')) {
+					main = main.parent();
+				}
+
+				skill = getSkillById(parseInt(main.data('index'), 10));
 
 				SkillDescription.append();
 				SkillDescription.setSkill(skill.SKID);
@@ -262,43 +268,43 @@ define(function(require)
 		}
 
 
-		var sk = SkillInfo[ skill.SKID ];
+		var sk        = SkillInfo[ skill.SKID ];
+		var levelup   = _levelupBtn.clone(true);
+		var className = !skill.level ? 'disabled' : skill.type ? 'active' : 'passive';
+		var element   = jQuery(
+			'<tr class="skill id' + skill.SKID + ' ' + className + '" data-index="'+ skill.SKID +'" draggable="true">' +
+				'<td class="icon"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" width="24" height="24" /></td>' +
+				'<td class="levelupcontainer"></td>' +
+				'<td class=selectable>' +
+					'<div class="name">' +
+						sk.SkillName  +'<br/>' +
+						'<span class="level">' +
+						(
+							sk.bSeperateLv ? 'Lv : <span class="current">'+ skill.level + '</span> / <span class="max">' + skill.level + '</span>'
+							               : 'Lv : <span class="current">'+ skill.level +'</span>'
+						) +
+						'</span>' +
+					'</div>' +
+				'</td>' +
+				'<td class="selectable type">' +
+					'<div class="consume">' +
+					(
+						skill.type ? 'Sp : <span class="spcost">' + skill.spcost + '</span>' : 'Passive'
+					) +
+					'</div>' +
+				'</td>' +
+			'</tr>'
+		);
+
+		if (!skill.upgradable || !_points) {
+			levelup.hide();
+		}
+
+		element.find('.levelupcontainer').append( levelup );
+		SkillList.ui.find('.content table').append(element);
 
 		Client.loadFile( DB.INTERFACE_PATH + 'item/' + sk.Name + '.bmp', function(data){
-			var levelup   = _levelupBtn.clone(true);
-			var className = !skill.level ? 'disabled' : skill.type ? 'active' : 'passive';
-			var element   = jQuery(
-				'<tr class="skill id' + skill.SKID + ' ' + className + '" data-index="'+ skill.SKID +'" draggable="true">' +
-					'<td class="icon"><img src="'+ data +'" width="24" height="24" /></td>' +
-					'<td class="levelupcontainer"></td>' +
-					'<td class=selectable>' +
-						'<div class="name">' +
-							sk.SkillName  +'<br/>' +
-							'<span class="level">' +
-							(
-								sk.bSeperateLv ? 'Lv : <span class="current">'+ skill.level + '</span> / <span class="max">' + skill.level + '</span>'
-								               : 'Lv : <span class="current">'+ skill.level +'</span>'
-							) +
-							'</span>' +
-						'</div>' +
-					'</td>' +
-					'<td class="selectable type">' +
-						'<div class="consume">' +
-						(
-							skill.type ? 'Sp : <span class="spcost">' + skill.spcost + '</span>' : 'Passive'
-						) +
-						'</div>' +
-					'</td>' +
-				'</tr>'
-			);
-
-			if (!skill.upgradable || !_points) {
-				levelup.hide();
-			}
-
-			element.find('.levelupcontainer').append( levelup );
-			SkillList.ui.find('.content table').append(element);
-
+			element.find('.icon img').attr('src', data);
 		});
 
 		_list.push(skill);

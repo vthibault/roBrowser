@@ -72,15 +72,23 @@ define(function(require)
 
 
 	/**
-	 * @var {number} tab
-	 */
-	var _tab = Inventory.TAB.USABLE;
-
-
-	/**
 	 * @var {number} used to remember the window height
 	 */
 	var _realSize = 0;
+
+
+	/**
+	 * @var {Preferences} structure
+	 */
+	var _preferences = Preferences.get('Inventory', {
+		x:        200,
+		y:        200,
+		width:    7,
+		height:   4,
+		show:     false,
+		reduce:   false,
+		tab:      Inventory.TAB.USABLE
+	}, 1.0);
 
 
 	/**
@@ -88,17 +96,6 @@ define(function(require)
 	 */
 	Inventory.init = function Init()
 	{
-		// Preferences structure
-		this.preferences = Preferences.get('Inventory', {
-			x:        200,
-			y:        200,
-			width:    7,
-			height:   4,
-			show:     false,
-			reduce:   false,
-			tab:      this.TAB.USABLE
-		}, 1.0);
-
 		// Don't activate drag drop when clicking on buttons
 		this.ui.find('.titlebar .base').mousedown(function( event ){
 			event.stopImmediatePropagation();
@@ -132,7 +129,7 @@ define(function(require)
 
 			// Title feature
 			.on('mouseover', '.item', function(){
-				var idx  = parseInt( this.className.match(/ (\d+)$/)[1], 10);
+				var idx  = parseInt( this.getAttribute('data-index'), 10);
 				var item = Inventory.getItemByIndex(idx);
 
 				if (!item) {
@@ -176,14 +173,12 @@ define(function(require)
 				// Set image to the drag drop element
 				var img = new Image();
 				var url = this.firstChild.style.backgroundImage.match(/\(([^\)]+)/)[1];
-				url     = url = url.replace(/^\"/, '').replace(/\"$/, ''); // Firefox bug
-				img.src = url;
+				img.src = url.replace(/^\"/, '').replace(/\"$/, '');
 
 				event.originalEvent.dataTransfer.setDragImage( img, 12, 12 );
 
-				var matches = this.className.match(/(\w+) (\d+)/);
-				var index   = parseInt(matches[2], 10);
-				var item    = Inventory.getItemByIndex(index);
+				var index = parseInt(this.getAttribute('data-index'), 10);
+				var item  = Inventory.getItemByIndex(index);
 
 				if (!item) {
 					return;
@@ -209,8 +204,7 @@ define(function(require)
 
 			// Right click on item
 			.on('contextmenu', '.item', function(event) {
-				var matches = this.className.match(/(\w+) (\d+)/);
-				var index   = parseInt(matches[2], 10);
+				var index   = parseInt(this.getAttribute('data-index'), 10);
 				var item    = Inventory.getItemByIndex(index);
 
 				event.stopImmediatePropagation();
@@ -234,9 +228,8 @@ define(function(require)
 
 			// Equip/Use item
 			.on('dblclick', '.item', function(event) {
-				var matches = this.className.match(/(\w+) (\d+)/);
-				var index   = parseInt(matches[2], 10);
-				var item    = Inventory.getItemByIndex(index);
+				var index = parseInt(this.getAttribute('data-index'), 10);
+				var item  = Inventory.getItemByIndex(index);
 
 				if (item) {
 					Inventory.useItem(item);
@@ -257,23 +250,22 @@ define(function(require)
 	Inventory.onAppend = function OnAppend()
 	{
 		// Apply preferences
-		if (!this.preferences.show) {
+		if (!_preferences.show) {
 			this.ui.hide();
 		}
 
-		_tab = this.preferences.tab;
-		Client.loadFile( DB.INTERFACE_PATH + 'basic_interface/tab_itm_0'+ (_tab+1) +'.bmp', function(data){
+		Client.loadFile( DB.INTERFACE_PATH + 'basic_interface/tab_itm_0'+ (_preferences.tab+1) +'.bmp', function(data){
 			Inventory.ui.find('.tabs').css('backgroundImage', 'url("' + data + '")');
 		});
 
-		this.resize( this.preferences.width, this.preferences.height );
+		this.resize( _preferences.width, _preferences.height );
 
 		this.ui.css({
-			top:  Math.min( Math.max( 0, this.preferences.y), Renderer.height - this.ui.height()),
-			left: Math.min( Math.max( 0, this.preferences.x), Renderer.width  - this.ui.width())
+			top:  Math.min( Math.max( 0, _preferences.y), Renderer.height - this.ui.height()),
+			left: Math.min( Math.max( 0, _preferences.x), Renderer.width  - this.ui.width())
 		});
 
-		_realSize = this.preferences.reduce ? 0 : this.ui.height();
+		_realSize = _preferences.reduce ? 0 : this.ui.height();
 		this.ui.find('.titlebar .mini').trigger('mousedown');
 	};
 
@@ -288,14 +280,13 @@ define(function(require)
 		jQuery('.ItemInfo').remove();
 
 		// Save preferences
-		this.preferences.show   =  this.ui.is(':visible');
-		this.preferences.reduce = !!_realSize;
-		this.preferences.tab    =  _tab;
-		this.preferences.y      =  parseInt(this.ui.css('top'), 10);
-		this.preferences.x      =  parseInt(this.ui.css('left'), 10);
-		this.preferences.width  =  Math.floor( (this.ui.width()  - (23 + 16 + 16 - 30)) / 32 );
-		this.preferences.height =  Math.floor( (this.ui.height() - (31 + 19 - 30     )) / 32 );
-		this.preferences.save();
+		_preferences.show   =  this.ui.is(':visible');
+		_preferences.reduce = !!_realSize;
+		_preferences.y      =  parseInt(this.ui.css('top'), 10);
+		_preferences.x      =  parseInt(this.ui.css('left'), 10);
+		_preferences.width  =  Math.floor( (this.ui.width()  - (23 + 16 + 16 - 30)) / 32 );
+		_preferences.height =  Math.floor( (this.ui.height() - (31 + 19 - 30     )) / 32 );
+		_preferences.save();
 	};
 
 
@@ -316,7 +307,7 @@ define(function(require)
 					this.ui.trigger('mouseleave');
 				}
 				break;
- 		}
+		}
 	};
 
 
@@ -407,8 +398,8 @@ define(function(require)
 	 */
 	function SwitchTab( event )
 	{
-		var idx = jQuery(this).index();
-		_tab = idx;
+		var idx          = jQuery(this).index();
+		_preferences.tab = parseInt(idx, 10);
 
 		Client.loadFile(DB.INTERFACE_PATH + 'basic_interface/tab_itm_0'+ (idx+1) +'.bmp', function(data){
 			Inventory.ui.find('.tabs').css('backgroundImage', 'url(' + data + ')');
@@ -570,7 +561,7 @@ define(function(require)
 
 		if (object) {
 			object.count += item.count;
-			this.ui.find('.item.'+ item.index + ' .count').text( object.count );
+			this.ui.find('.item[data-index="'+ item.index +'"] .count').text( object.count );
 			this.onUpdateItem(object.ITID, object.count);
 			return;
 		}
@@ -590,7 +581,6 @@ define(function(require)
 	Inventory.addItemSub = function AddItemSub( item )
 	{
 		var tab;
-		var ui = this.ui;
 
 		switch (item.type) {
 			case Inventory.ITEM.HEALING:
@@ -621,22 +611,23 @@ define(function(require)
 			return false;
 		}
 
-		if (tab === _tab) {
-			var it = DB.getItemInfo( item.ITID );
+		if (tab === _preferences.tab) {
+			var it      = DB.getItemInfo( item.ITID );
+			var content = this.ui.find('.container .content');
+
+			content.append(
+				'<div class="item" data-index="'+ item.index +'" draggable="true">' +
+					'<div class="icon"></div>' +
+					'<div class="amount">'+ (item.count ? '<span class="count">' + item.count + '</span>' + ' ' : '') + '</div>' +
+				'</div>'
+			);
+
+			if (content.height() < content[0].scrollHeight) {
+				this.ui.find('.hide').hide();
+			}
 
 			Client.loadFile( DB.INTERFACE_PATH + 'item/' + ( item.IsIdentified ? it.identifiedResourceName : it.unidentifiedResourceName ) + '.bmp', function(data){
-				var content = ui.find('.container .content');
-
-				content.append(
-					'<div class="item '+ item.index +'" draggable="true">' +
-						'<div class="icon" style="background-image:url(' + data + ')"></div>' +
-						'<div class="amount">'+ (item.count ? '<span class="count">' + item.count + '</span>' + ' ' : '') + '</div>' +
-					'</div>'
-				);
-
-				if (content.height() < content[0].scrollHeight) {
-					ui.find('.hide').hide();
-				}
+				content.find('.item[data-index="'+ item.index +'"] .icon').css('backgroundImage', 'url('+ data +')');
 			});
 		}
 
@@ -664,14 +655,14 @@ define(function(require)
 			item.count -= count;
 
 			if (item.count > 0) {
-				this.ui.find('.item.' + index + ' .count').text( item.count );
+				this.ui.find('.item[data-index="'+ item.index +'"] .count').text( item.count );
 				this.onUpdateItem(item.ITID, item.count);
 				return item;
 			}
 		}
 
 		this.list.splice( this.list.indexOf(item), 1 );
-		this.ui.find('.item.' + index).remove();
+		this.ui.find('.item[data-index="'+ item.index +'"]').remove();
 		this.onUpdateItem(item.ITID, 0);
 
 		var content = this.ui.find('.container .content');
@@ -701,14 +692,14 @@ define(function(require)
 
 		// Update quantity
 		if (item.count > 0) {
-			this.ui.find('.item.' + index + ' .count').text( item.count );
+			this.ui.find('.item[data-index="'+ item.index +'"] .count').text( item.count );
 			this.onUpdateItem(item.ITID, item.count);
 			return;
 		}
 
 		// no quantity, remove
 		this.list.splice( this.list.indexOf(item), 1 );
-		this.ui.find('.item.' + index).remove();
+		this.ui.find('.item[data-index="'+ item.index +'"]').remove();
 		this.onUpdateItem(item.ITID, 0);
 
 		var content = this.ui.find('.container .content');

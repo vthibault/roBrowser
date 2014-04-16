@@ -81,8 +81,8 @@ define(function(require)
 		this.ui.find('.content').text(SkillDB[id] || '...');
 
 		this.ui.css({
-			top:  Math.min( Mouse.screen.y, Renderer.height - this.ui.height()),
-			left: Math.min( Mouse.screen.x, Renderer.width - this.ui.width())
+			top:  Math.min( Mouse.screen.y + 10, Renderer.height - this.ui.height()),
+			left: Math.min( Mouse.screen.x + 10, Renderer.width - this.ui.width())
 		});
 	};
 
