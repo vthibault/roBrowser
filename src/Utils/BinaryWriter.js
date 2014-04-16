@@ -10,7 +10,7 @@
  * @author Vincent Thibault
  */
 
-define(function()
+define(['Vendors/text-encoding'], function(TextEncoding)
 {
 	"use strict";
 
@@ -49,9 +49,12 @@ define(function()
 		if (len) {
 			str = String(str).substr(0,len);
 		}
+
+		var i, count;
+		var data = BinaryWriter.encoder.encode(str);
 	
-		for (var i = 0, count = str.length; i < count; ++i) {
-			this.setUint8( offset+i, str.charCodeAt(i));
+		for (i = 0, count = data.length; i < count; ++i) {
+			this.setUint8( offset+i, data[i]);
 		}
 	};
 
@@ -68,6 +71,12 @@ define(function()
 		this.view   = new DataView( this.buffer );
 		this.offset = 0;
 	}
+
+
+	/**
+	 * @var {TextEncoder}
+	 */
+	BinaryWriter.encoder = TextEncoding.TextEncoder('utf-8');
 
 
 	/**
@@ -202,13 +211,15 @@ define(function()
 	BinaryWriter.prototype.setString   =
 	BinaryWriter.prototype.writeString = function setString( str, length )
 	{
-		if ( length )
+		if (length) {
 			str = String(str).substr(0, length);
+		}
 
 		var i, count = str.length;
+		var data = BinaryWriter.encoder.encode(str);
 
-		for ( i=0; i<count; ++i ) {
-			this.view.setUint8( this.offset + i, str.charCodeAt(i) );
+		for (i = 0; i < count; ++i) {
+			this.view.setUint8( this.offset + i, data[i] );
 		}
 
 		this.offset += ( length || str.length );
