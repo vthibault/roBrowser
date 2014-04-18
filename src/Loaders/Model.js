@@ -70,7 +70,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 
 		// Read header.
 		fp      = new BinaryReader(data);
-		header  = fp.readString(4);
+		header  = fp.readBinaryString(4);
 	
 		if (header !== 'GRSM') {
 			throw new Error('RSM::load() - Incorrect header "' + header + '", must be "GRSM"');
@@ -91,11 +91,11 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 		count     = fp.readLong();
 		textures  =  new Array(count);
 		for (i = 0; i < count; ++i) {
-			textures[i] = fp.readString(40);
+			textures[i] = fp.readBinaryString(40);
 		}
 
 		// Read nodes.
-		name   =  fp.readString(40);
+		name   =  fp.readBinaryString(40);
 		count  =  fp.readLong();
 		nodes  =  new Array(count);
 
@@ -251,8 +251,8 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 		this.is_only  =  only;
 
 		// Read name
-		this.name       =  fp.readString(40);
-		this.parentname =  fp.readString(40);
+		this.name       =  fp.readBinaryString(40);
+		this.parentname =  fp.readBinaryString(40);
 
 		// Read textures
 		count    = fp.readLong();

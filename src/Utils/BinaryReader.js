@@ -213,7 +213,31 @@ define( ['./Struct', 'Vendors/text-encoding'], function( Struct, TextEncoding )
 
 		this.offset = offset + len;
 
-		return BinaryReader.decoder.decode(data.subarray(0,i));
+		return BinaryReader.decoder.decode(data.subarray(0, i));
+	};
+
+
+	/**
+	 * Read binary string from buffer
+	 *
+	 * @param integer string length
+	 * @return string
+	 */
+	BinaryReader.prototype.getBinaryString  =
+	BinaryReader.prototype.readBinaryString = function getBinaryString( len )
+	{
+		var offset = this.offset + 0, i;
+		var uint8, out = '';
+	
+		for (i = 0; i < len; ++i) {
+			if (!(uint8 = this.getUint8())) {
+				break;
+			}
+			out += String.fromCharCode(uint8);
+		}
+
+		this.offset = offset + len;
+		return out;
 	};
 
 

@@ -257,9 +257,9 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			var pkt_len = 2 + 2 + this.msg.length + 1;
 			var pkt_buf = new BinaryWriter(pkt_len);
 
-			pkt_buf.writeShort( version[1] );
-			pkt_buf.view.setInt16(  version[3], pkt_len, true );
-			pkt_buf.view.setString( version[4], this.msg );
+			pkt_buf.writeShort(version[1]);
+			pkt_buf.writeShort(pkt_len);
+			pkt_buf.writeString(this.msg);
 
 			return pkt_buf;
 		};
@@ -1386,7 +1386,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			var pkt_buf = new BinaryWriter(pkt_len);
 
 			pkt_buf.writeShort(0x140);
-			pkt_buf.writeString(this.mapName, 16);
+			pkt_buf.writeBinaryString(this.mapName, 16);
 			pkt_buf.writeShort(this.xPos);
 			pkt_buf.writeShort(this.yPos);
 			return pkt_buf;
@@ -1505,7 +1505,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x153);
 			pkt_buf.writeShort(pkt_len);
-			pkt_buf.writeString(this.img);
+			pkt_buf.writeBinaryString(this.img);
 			return pkt_buf;
 		};
 	};
@@ -2686,7 +2686,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			var pkt_buf = new BinaryWriter(pkt_len);
 
 			pkt_buf.writeShort(0x204);
-			pkt_buf.writeString(this.HashValue, 16);
+			pkt_buf.writeBinaryString(this.HashValue, 16);
 			return pkt_buf;
 		};
 	};
@@ -2731,7 +2731,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x20b);
 			pkt_buf.writeUChar(this.ClientType);
-			pkt_buf.writeString(this.HashValue, 16);
+			pkt_buf.writeBinaryString(this.HashValue, 16);
 			return pkt_buf;
 		};
 	};
@@ -2749,7 +2749,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			pkt_buf.writeShort(0x20c);
 			pkt_buf.writeUChar(this.ClientType);
-			pkt_buf.writeString(this.HashValue, 16);
+			pkt_buf.writeBinaryString(this.HashValue, 16);
 			return pkt_buf;
 		};
 	};
@@ -3340,8 +3340,8 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			var pkt_buf = new BinaryWriter(pkt_len);
 
 			pkt_buf.writeShort(0x264);
-			pkt_buf.writeString(this.m_SeedValue, 9);
-			pkt_buf.writeString(this.m_EKey, 9);
+			pkt_buf.writeBinaryString(this.m_SeedValue, 9);
+			pkt_buf.writeBinaryString(this.m_EKey, 9);
 			return pkt_buf;
 		};
 	};
@@ -3358,8 +3358,8 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			var pkt_buf = new BinaryWriter(pkt_len);
 
 			pkt_buf.writeShort(0x265);
-			pkt_buf.writeString(this.m_SeedValue, 9);
-			pkt_buf.writeString(this.m_EKey, 9);
+			pkt_buf.writeBinaryString(this.m_SeedValue, 9);
+			pkt_buf.writeBinaryString(this.m_EKey, 9);
 			return pkt_buf;
 		};
 	};
@@ -3440,7 +3440,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeULong(this.userLevel);
 			pkt_buf.writeUShort(this.clientType);
 			pkt_buf.writeUChar(this.Sex);
-			pkt_buf.writeString(this.macData, 16);
+			pkt_buf.writeBinaryString(this.macData, 16);
 			pkt_buf.writeLong(this.iAccountSID);
 			return pkt_buf;
 		};
@@ -3466,8 +3466,8 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeString(this.ID, 24);
 			pkt_buf.writeString(this.Passwd, 24);
 			pkt_buf.writeUChar(this.clienttype);
-			pkt_buf.writeString(this.IP, 16);
-			pkt_buf.writeString(this.MacAdress, 13);
+			pkt_buf.writeBinaryString(this.IP, 16);
+			pkt_buf.writeBinaryString(this.MacAdress, 13);
 			return pkt_buf;
 		};
 	};
@@ -3505,7 +3505,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeString(this.ID, 24);
 			pkt_buf.writeString(this.PasswdMD5, 16);
 			pkt_buf.writeUChar(this.clienttype);
-			pkt_buf.writeString(this.macData, 13);
+			pkt_buf.writeBinaryString(this.macData, 13);
 			return pkt_buf;
 		};
 	};
@@ -3786,8 +3786,8 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeString(this.ID, 24);
 			pkt_buf.writeString(this.Passwd, 24);
 			pkt_buf.writeUChar(this.clienttype);
-			pkt_buf.writeString(this.m_szIP, 16);
-			pkt_buf.writeString(this.m_szMacAddr, 13);
+			pkt_buf.writeBinaryString(this.m_szIP, 16);
+			pkt_buf.writeBinaryString(this.m_szMacAddr, 13);
 			pkt_buf.writeUChar(this.isHanGameUser);
 			return pkt_buf;
 		};
@@ -4716,9 +4716,9 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeULong(this.Version);
 			pkt_buf.writeUChar(this.clienttype);
 			pkt_buf.writeString(this.ID, 24);
-			pkt_buf.writeString(this.MacAddr, 17);
-			pkt_buf.writeString(this.IpAddr, 15);
-			pkt_buf.writeString(this.t1);
+			pkt_buf.writeBinaryString(this.MacAddr, 17);
+			pkt_buf.writeBinaryString(this.IpAddr, 15);
+			pkt_buf.writeBinaryString(this.t1);
 			return pkt_buf;
 		};
 	};
@@ -4745,9 +4745,9 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt_buf.writeUChar(this.clienttype);
 			pkt_buf.writeString(this.ID, 24);
 			pkt_buf.writeString(this.Passwd, 27);
-			pkt_buf.writeString(this.MacAdress, 17);
-			pkt_buf.writeString(this.IP, 15);
-			pkt_buf.writeString(this.t1);
+			pkt_buf.writeBinaryString(this.MacAdress, 17);
+			pkt_buf.writeBinaryString(this.IP, 15);
+			pkt_buf.writeBinaryString(this.t1);
 			return pkt_buf;
 		};
 	};
@@ -4952,7 +4952,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 		this.AID           = fp.readULong();
 		this.userLevel     = fp.readULong();
 		this.lastLoginIP   = fp.readULong();
-		this.lastLoginTime = fp.readString(26);
+		this.lastLoginTime = fp.readBinaryString(26);
 		this.Sex           = fp.readUChar();
 		this.ServerList    = (function(){
 			var i, count=(end-fp.tell())/32|0, out=new Array(count);
@@ -4974,7 +4974,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 	// 0x6a
 	PACKET.AC.REFUSE_LOGIN = function PACKET_AC_REFUSE_LOGIN(fp, end) {
 		this.ErrorCode  = fp.readUChar();
-		this.blockDate  = fp.readString(20);
+		this.blockDate  = fp.readBinaryString(20);
 	};
 	PACKET.AC.REFUSE_LOGIN.size = 23;
 
@@ -4990,7 +4990,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 		this.code                = fp.readULong();
 		this.time1               = fp.readULong();
 		this.time2               = fp.readULong();
-		this.dummy2_endbilling   = fp.readString(7);
+		this.dummy2_endbilling   = fp.readBinaryString(7);
 		this.charInfo            = (function(){
 			var i = -1, out=[];
 			while (fp.tell() < end) {
@@ -5045,7 +5045,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 					out[i].bIsChangedCharName = fp.readShort();
 
 					if ((PACKETVER.min >= 20100720 && PACKETVER.min <= 20100727) || PACKETVER.min >= 20100803) {
-						out[i].lastMap = fp.readString(16);
+						out[i].lastMap = fp.readBinaryString(16);
 					}
 					if (PACKETVER.min >= 20100803) {
 						out[i].DeleteDate = fp.readLong();
@@ -5128,7 +5128,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			this.charinfo.bIsChangedCharName = fp.readShort();
 
 			if ((PACKETVER.min >= 20100720 && PACKETVER.min <= 20100727) || PACKETVER.min >= 20100803) {
-				this.charinfo.lastMap = fp.readString(16);
+				this.charinfo.lastMap = fp.readBinaryString(16);
 
 				if (PACKETVER.min >= 20100803) {
 					this.charinfo.DeleteDate = fp.readLong();
@@ -5175,7 +5175,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 	// 0x71
 	PACKET.HC.NOTIFY_ZONESVR = function PACKET_HC_NOTIFY_ZONESVR(fp, end) {
 		this.GID        = fp.readULong();
-		this.mapName    = fp.readString(16);
+		this.mapName    = fp.readBinaryString(16);
 		this.addr       = {};
 		this.addr.ip   = fp.readULong();
 		this.addr.port = fp.readShort();
@@ -5496,7 +5496,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 	// 0x91
 	PACKET.ZC.NPCACK_MAPMOVE = function PACKET_ZC_NPCACK_MAPMOVE(fp, end) {
-		this.mapName    = fp.readString(16);
+		this.mapName    = fp.readBinaryString(16);
 		this.xPos       = fp.readShort();
 		this.yPos       = fp.readShort();
 	};
@@ -5505,7 +5505,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 	// 0x92
 	PACKET.ZC.NPCACK_SERVERMOVE = function PACKET_ZC_NPCACK_SERVERMOVE(fp, end) {
-		this.mapName    = fp.readString(16);
+		this.mapName    = fp.readBinaryString(16);
 		this.xPos       = fp.readShort();
 		this.yPos       = fp.readShort();
 		this.addr       = {};
@@ -6170,7 +6170,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 				out[i] = {};
 				out[i].AID           = fp.readULong();
 				out[i].characterName = fp.readString(24);
-				out[i].mapName       = fp.readString(16);
+				out[i].mapName       = fp.readBinaryString(16);
 				out[i].role          = fp.readUChar();
 				out[i].state         = fp.readUChar();
 			}
@@ -6212,7 +6212,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 		this.state         = fp.readUChar();
 		this.groupName     = fp.readString(24);
 		this.characterName = fp.readString(24);
-		this.mapName       = fp.readString(16);
+		this.mapName       = fp.readBinaryString(16);
 	};
 	PACKET.ZC.ADD_MEMBER_TO_GROUP.size = 79;
 
@@ -6301,7 +6301,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 				out[i].level       = fp.readShort();
 				out[i].spcost      = fp.readShort();
 				out[i].attackRange = fp.readShort();
-				out[i].skillName   = fp.readString(24);
+				out[i].skillName   = fp.readBinaryString(24);
 				out[i].upgradable  = fp.readChar();
 			}
 			return out;
@@ -6328,7 +6328,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 		this.data.level       = fp.readShort();
 		this.data.spcost      = fp.readShort();
 		this.data.attackRange = fp.readShort();
-		this.data.skillName   = fp.readString(24);
+		this.data.skillName   = fp.readBinaryString(24);
 		this.data.upgradable  = fp.readUChar();
 	};
 	PACKET.ZC.ADD_SKILL.size = 39;
@@ -6408,7 +6408,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 		this.mapName    = (function(){
 			var count = 4, out = new Array(count);
 			for ( var i=0; i<count; ++i )
-				out[i] = fp.readString(16);
+				out[i] = fp.readBinaryString(16);
 			return out;
 		})();
 	};
@@ -6711,7 +6711,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 	// 0x145
 	PACKET.ZC.SHOW_IMAGE = function PACKET_ZC_SHOW_IMAGE(fp, end) {
-		this.imageName  = fp.readString(16);
+		this.imageName  = fp.readBinaryString(16);
 		this.type       = fp.readUChar();
 	};
 	PACKET.ZC.SHOW_IMAGE.size = 19;
@@ -6725,7 +6725,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 		this.data.level       = fp.readShort();
 		this.data.spcost      = fp.readShort();
 		this.data.attackRange = fp.readShort();
-		this.data.skillName   = fp.readString(24);
+		this.data.skillName   = fp.readBinaryString(24);
 		this.data.upgradable  = fp.readUChar();
 	};
 	PACKET.ZC.AUTORUN_SKILL.size = 39;
@@ -6792,7 +6792,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 		this.emblemVersion    = fp.readLong();
 		this.guildname        = fp.readString(24);
 		this.masterName       = fp.readString(24);
-		this.manageLand       = fp.readString(16);
+		this.manageLand       = fp.readBinaryString(16);
 	};
 	PACKET.ZC.GUILD_INFO.size = 110;
 
@@ -6801,7 +6801,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 	PACKET.ZC.GUILD_EMBLEM_IMG = function PACKET_ZC_GUILD_EMBLEM_IMG(fp, end) {
 		this.GDID          = fp.readLong();
 		this.emblemVersion = fp.readLong();
-		this.img           = fp.readString(end-fp.tell());
+		this.img           = fp.readBinaryString(end-fp.tell());
 	};
 	PACKET.ZC.GUILD_EMBLEM_IMG.size = -1;
 
@@ -6913,7 +6913,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 				out[i].level       = fp.readShort();
 				out[i].spcost      = fp.readShort();
 				out[i].attackRange = fp.readShort();
-				out[i].skillName   = fp.readString(24);
+				out[i].skillName   = fp.readBinaryString(24);
 				out[i].upgradable  = fp.readChar();
 			}
 			return out;
@@ -7244,7 +7244,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 	// 0x191
 	PACKET.ZC.TALKBOX_CHATCONTENTS = function PACKET_ZC_TALKBOX_CHATCONTENTS(fp, end) {
 		this.AID        = fp.readULong();
-		this.contents   = fp.readString(80);
+		this.contents   = fp.readBinaryString(80);
 	};
 	PACKET.ZC.TALKBOX_CHATCONTENTS.size = 86;
 
@@ -7254,7 +7254,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 		this.xPos       = fp.readShort();
 		this.yPos       = fp.readShort();
 		this.type       = fp.readShort();
-		this.mapName    = fp.readString(16);
+		this.mapName    = fp.readBinaryString(16);
 	};
 	PACKET.ZC.UPDATE_MAPINFO.size = 24;
 
@@ -7425,7 +7425,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 	// 0x1b3
 	PACKET.ZC.SHOW_IMAGE2 = function PACKET_ZC_SHOW_IMAGE2(fp, end) {
-		this.imageName  = fp.readString(64);
+		this.imageName  = fp.readBinaryString(64);
 		this.type       = fp.readUChar();
 	};
 	PACKET.ZC.SHOW_IMAGE2.size = 67;
@@ -7465,7 +7465,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 		this.emblemVersion    = fp.readLong();
 		this.guildname        = fp.readString(24);
 		this.masterName       = fp.readString(24);
-		this.manageLand       = fp.readString(16);
+		this.manageLand       = fp.readBinaryString(16);
 		this.zeny             = fp.readLong();
 	};
 	PACKET.ZC.GUILD_INFO2.size = 114;
@@ -7650,7 +7650,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 	// 0x1d3
 	PACKET.ZC.SOUND = function PACKET_ZC_SOUND(fp, end) {
-		this.fileName   = fp.readString(24);
+		this.fileName   = fp.readBinaryString(24);
 		this.act        = fp.readUChar();
 		this.term       = fp.readULong();
 		this.NAID       = fp.readULong();
@@ -7775,7 +7775,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 	// 0x1dc
 	PACKET.AC.ACK_HASH = function PACKET_AC_ACK_HASH(fp, end) {
-		this.secret       = fp.readString(end-fp.tell());
+		this.secret       = fp.readBinaryString(end-fp.tell());
 	};
 	PACKET.AC.ACK_HASH.size = -1;
 
@@ -7843,7 +7843,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 		this.state            = fp.readUChar();
 		this.groupName        = fp.readString(24);
 		this.characterName    = fp.readString(24);
-		this.mapName          = fp.readString(16);
+		this.mapName          = fp.readBinaryString(16);
 		this.ItemPickupRule   = fp.readUChar();
 		this.ItemDivisionRule = fp.readUChar();
 	};
@@ -7870,7 +7870,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 	PACKET.ZC.GUILD_MEMBER_MAP_CHANGE = function PACKET_ZC_GUILD_MEMBER_MAP_CHANGE(fp, end) {
 		this.GDID       = fp.readULong();
 		this.AID        = fp.readULong();
-		this.mapName    = fp.readString(16);
+		this.mapName    = fp.readBinaryString(16);
 	};
 	PACKET.ZC.GUILD_MEMBER_MAP_CHANGE.size = 26;
 
@@ -8111,7 +8111,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			for ( i=0; i<count; ++i ) {
 				out[i] = {};
 				out[i].GID          = fp.readULong();
-				out[i].szExpireDate = fp.readString(20);
+				out[i].szExpireDate = fp.readBinaryString(20);
 			}
 			return out;
 		})();
@@ -8121,7 +8121,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 	// 0x20e
 	PACKET.ZC.STARSKILL = function PACKET_ZC_STARSKILL(fp, end) {
-		this.mapName    = fp.readString(24);
+		this.mapName    = fp.readBinaryString(24);
 		this.monsterID  = fp.readLong();
 		this.star       = fp.readUChar();
 		this.result     = fp.readUChar();
@@ -8691,21 +8691,21 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 	// 0x261
 	PACKET.AC.REQ_LOGIN_OLDEKEY = function PACKET_AC_REQ_LOGIN_OLDEKEY(fp, end) {
-		this.m_SeedValue = fp.readString(9);
+		this.m_SeedValue = fp.readBinaryString(9);
 	};
 	PACKET.AC.REQ_LOGIN_OLDEKEY.size = 11;
 
 
 	// 0x262
 	PACKET.AC.REQ_LOGIN_NEWEKEY = function PACKET_AC_REQ_LOGIN_NEWEKEY(fp, end) {
-		this.m_SeedValue = fp.readString(9);
+		this.m_SeedValue = fp.readBinaryString(9);
 	};
 	PACKET.AC.REQ_LOGIN_NEWEKEY.size = 11;
 
 
 	// 0x263
 	PACKET.AC.REQ_LOGIN_CARDPASS = function PACKET_AC_REQ_LOGIN_CARDPASS(fp, end) {
-		this.m_SeedValue = fp.readString(9);
+		this.m_SeedValue = fp.readBinaryString(9);
 	};
 	PACKET.AC.REQ_LOGIN_CARDPASS.size = 11;
 
@@ -8780,8 +8780,8 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 	// 0x272
 	PACKET.AC.ACK_PT_ID_INFO = function PACKET_AC_ACK_PT_ID_INFO(fp, end) {
-		this.szPTID     = fp.readString(21);
-		this.szPTNumID  = fp.readString(21);
+		this.szPTID     = fp.readBinaryString(21);
+		this.szPTNumID  = fp.readBinaryString(21);
 	};
 	PACKET.AC.ACK_PT_ID_INFO.size = 44;
 
@@ -8800,7 +8800,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 		this.AID           = fp.readULong();
 		this.userLevel     = fp.readULong();
 		this.lastLoginIP   = fp.readULong();
-		this.lastLoginTime = fp.readString(26);
+		this.lastLoginTime = fp.readBinaryString(26);
 		this.Sex           = fp.readUChar();
 		this.iAccountSID   = fp.readLong();
 	};
@@ -8866,7 +8866,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 	// 0x27e
 	PACKET.ZC.SHANDA_PROTECT = function PACKET_ZC_SHANDA_PROTECT(fp, end) {
 		this.CodeLen      = fp.readShort();
-		this.Code         = fp.readString(end-fp.tell());
+		this.Code         = fp.readBinaryString(end-fp.tell());
 	};
 	PACKET.ZC.SHANDA_PROTECT.size = -1;
 
@@ -9181,7 +9181,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 				out[i].level       = fp.readShort();
 				out[i].spcost      = fp.readShort();
 				out[i].attackRange = fp.readShort();
-				out[i].skillName   = fp.readString(24);
+				out[i].skillName   = fp.readBinaryString(24);
 				out[i].upgradable  = fp.readChar();
 			}
 			return out;
@@ -10165,7 +10165,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 		this.Name       = fp.readString(24);
 		this.Job        = fp.readULong();
 		this.Level      = fp.readULong();
-		this.mapName    = fp.readString(16);
+		this.mapName    = fp.readBinaryString(16);
 		this.Option     = fp.readULong();
 	};
 	PACKET.ZC.SEEK_PARTY.size = 54;
@@ -10176,7 +10176,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 		this.Name       = fp.readString(24);
 		this.Job        = fp.readULong();
 		this.Level      = fp.readULong();
-		this.mapName    = fp.readString(16);
+		this.mapName    = fp.readBinaryString(16);
 		this.Option     = fp.readULong();
 	};
 	PACKET.ZC.SEEK_PARTY_MEMBER.size = 54;
@@ -10227,7 +10227,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 	// 0x7e8
 	PACKET.HC.CHECKBOT = function PACKET_HC_CHECKBOT(fp, end) {
-		this.img          = fp.readString(end-fp.tell());
+		this.img          = fp.readBinaryString(end-fp.tell());
 	};
 	PACKET.HC.CHECKBOT.size = -1;
 
@@ -10453,7 +10453,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 	// 0x7fe
 	PACKET.ZC.PLAY_NPC_BGM = function PACKET_ZC_PLAY_NPC_BGM(fp, end) {
-		this.Bgm        = fp.readString(24);
+		this.Bgm        = fp.readBinaryString(24);
 	};
 	PACKET.ZC.PLAY_NPC_BGM.size = 26;
 
@@ -10791,7 +10791,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 		this.code                = fp.readULong();
 		this.time1               = fp.readULong();
 		this.time2               = fp.readULong();
-		this.dummy2_endbilling   = fp.readString(7);
+		this.dummy2_endbilling   = fp.readBinaryString(7);
 	};
 	PACKET.HC.ACCEPT_ENTER_NEO_UNION_HEADER.size = -1;
 
@@ -10866,7 +10866,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 	// 0x83e
 	PACKET.AC.REFUSE_LOGIN_R2 = function PACKET_AC_REFUSE_LOGIN_R2(fp, end) {
 		this.ErrorCode  = fp.readULong();
-		this.blockDate  = fp.readString(20);
+		this.blockDate  = fp.readBinaryString(20);
 	};
 	PACKET.AC.REFUSE_LOGIN_R2.size = 26;
 
@@ -11573,11 +11573,11 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 				out[i].CharNum            = fp.readUChar();
 				out[i].haircolor          = fp.readUChar();
 				out[i].bIsChangedCharName = fp.readShort();
-				out[i].lastMap = fp.readString(16);
-				out[i].DeleteDate = fp.readLong();
-				out[i].Robe = fp.readLong();
-				out[i].SlotAddon = fp.readLong();
-				out[i].RenameAddon = fp.readLong();
+				out[i].lastMap            = fp.readBinaryString(16);
+				out[i].DeleteDate         = fp.readLong();
+				out[i].Robe               = fp.readLong();
+				out[i].SlotAddon          = fp.readLong();
+				out[i].RenameAddon        = fp.readLong();
 			}
 			return out;
 		})();

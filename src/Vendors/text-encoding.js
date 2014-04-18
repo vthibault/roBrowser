@@ -969,9 +969,9 @@ define(function()
 		options = Object(options);
 		/** @private */
 		this._encoding = getEncoding(opt_encoding);
-		if (this._encoding === null || (this._encoding.name !== 'utf-8' &&
+		if (this._encoding === null /*|| (this._encoding.name !== 'utf-8' &&
 																		this._encoding.name !== 'utf-16le' &&
-																		this._encoding.name !== 'utf-16be'))
+																		this._encoding.name !== 'utf-16be')*/)
 			throw new TypeError('Unknown encoding: ' + opt_encoding);
 
 		if (!this._encoding.getEncoder)
@@ -2454,7 +2454,7 @@ define(function()
 	 * Exports
 	 */
 	return {
-		TextDecoder: self.TextDecoder || TextDecoder,
-		TextEncoder: self.TextEncoder || TextEncoder
+		TextDecoder: self.TextDecoder   ||   TextDecoder,
+		TextEncoder: /*self.TextEncoder ||*/ TextEncoder // native text encoder just support utf-8 and utf-16...
 	};
 });

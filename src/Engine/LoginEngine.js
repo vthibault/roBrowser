@@ -11,6 +11,9 @@
 
 define([
 	'require',
+	'Utils/BinaryReader',
+	'Utils/BinaryWriter',
+	'Vendors/text-encoding',
 	'DB/DBManager',
 	'Audio/SoundManager',
 	'Core/Thread',
@@ -27,6 +30,9 @@ define([
 ],
 function(
 	require,
+	BinaryReader,
+	BinaryWriter,
+	TextEncoding,
 	DB,
 	Sound,
 	Thread,
@@ -82,7 +88,51 @@ function(
 		UIManager.removeComponents();
 
 		Session.LangType = parseInt(server.langtype, 10);
-		_server = server;
+		var charset      = 'utf-8';
+
+		// TODO: find charset based on langtype
+		switch (Session.LangType) {
+			case 0x00: // CLIENTTYPE_KOREAN
+			case 0x01: // CLIENTTYPE_ENGLISH
+			case 0x02: // CLIENTTYPE_SAKRAY
+			case 0x03: // CLIENTTYPE_JAPAN
+			case 0x04: // CLIENTTYPE_CHINA
+			case 0x05: // CLIENTTYPE_TAIWAN
+			case 0x06: // CLIENTTYPE_HONGKONG
+			case 0x07: // CLIENTTYPE_THAI
+			case 0x08: // CLIENTTYPE_LOCAL
+			case 0x09: // CLIENTTYPE_JAPAN_SAKRAY
+			case 0x0a: // CLIENTTYPE_THAI_SAKRAY
+			case 0x0b: // CLIENTTYPE_TAIWAN_SAKRAY
+			case 0x0c: // CLIENTTYPE_INDONESIA
+			case 0x0d: // CLIENTTYPE_INDONESIA_SAKRAY
+			case 0x0e: // CLIENTTYPE_ENGLISH_SAKRAY
+			case 0x0f: // CLIENTTYPE_PHILIPPINE
+			case 0x10: // CLIENTTYPE_MALAYSIA
+			case 0x11: // CLIENTTYPE_SINGAPORE
+			case 0x12: // CLIENTTYPE_PHILIPPINE_SAKRAY
+			case 0x13: // CLIENTTYPE_THAI_FREE
+			case 0x14: // CLIENTTYPE_GERMANY
+			case 0x15: // CLIENTTYPE_INDIA
+			case 0x16: // CLIENTTYPE_BRAZIL
+			case 0x17: // CLIENTTYPE_AUSTRALIA
+			case 0x18: // CLIENTTYPE_KOREAN_PK
+			case 0x19: // CLIENTTYPE_RUSSIA
+			case 0x1a: // CLIENTTYPE_VIETNAM
+			case 0x1b: // CLIENTTYPE_PHILIPPINE_PK
+			case 0x1c: // CLIENTTYPE_JAPAN_PK
+			case 0x1d: // CLIENTTYPE_THAI_PK
+			case 0x1e: // CLIENTTYPE_CHILE
+			case 0x1f: // CLIENTTYPE_FRANCE
+			case 0x20: // CLIENTTYPE_VIETNAM_PK
+			case 0x21: // CLIENTTYPE_VIETNAM_SAKRAY
+			case 0x22: // CLIENTTYPE_INDONESIA_PK
+			case 0x23: // CLIENTTYPE_UAE
+		}
+
+		BinaryReader.decoder = TextEncoding.TextDecoder(charset);
+		BinaryReader.encoder = TextEncoding.TextEncoder(charset);
+		_server              = server;
 
 		// Add support for "packetver" definition in Server listing
 		if ('packetver' in server && server.packetver !== '') {

@@ -112,7 +112,7 @@ function(    GameFileDecrypt,         BinaryReader,         Struct,         Infl
 		fp     = new BinaryReader(buffer);
 		header = fp.readStruct( GRF.struct_header );
 
-		header.signature  = String.fromCharCode.apply( null, header.signature.toString().split(',') ); // Check a better way for this...
+		header.signature  = String.fromCharCode.apply( null, header.signature);
 		header.filecount -= header.skip + 7;
 
 
