@@ -103,9 +103,9 @@ define(function( require )
 
 			jQuery(window).resize(this.onResize.bind(this));
 			this.render(null);
+			this.resize();
 		}
 
-		this.resize();
 		var gl = this.gl;
 
 		gl.clearDepth( 1.0 );
