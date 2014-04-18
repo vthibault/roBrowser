@@ -214,12 +214,6 @@ define(['Utils/WebGL', 'Utils/gl-matrix', 'Core/Client'], function( WebGL, glMat
 
 			keyIndex = (tick - this.startTick) / 1000 * strFile.fps;
 
-			// animation ended
-			if (keyIndex >= strFile.maxKey) {
-				this.needCleanUp = true;
-				return;
-			}
-
 			for (i = 0; i < strFile.layernum; i++) {
 				layer = strFile.layers[i];
 
@@ -230,6 +224,11 @@ define(['Utils/WebGL', 'Utils/gl-matrix', 'Core/Client'], function( WebGL, glMat
 						}
 					}
 				}
+			}
+
+			// animation ended
+			if (keyIndex >= strFile.maxKey) {
+				this.needCleanUp = true;
 			}
 		};
 	}();

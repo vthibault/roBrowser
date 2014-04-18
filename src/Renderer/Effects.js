@@ -17,10 +17,13 @@ define(function( require )
 	 */
 	var EffectDB      = require('DB/EffectList');
 	var SkillEffect   = require('DB/SkillEffectList');
+	var SkillUnit     = require('DB/SkillUnit');
 	var StrEffect     = require('Renderer/StrEffect');
 	var EntityManager = require('Renderer/EntityManager');
 	var Renderer      = require('Renderer/Renderer');
+	var Altitude      = require('Renderer/Map/Altitude');
 	var Sound         = require('Audio/SoundManager');
+	var Preferences   = require('Preferences/Map');
 
 
 	/**
@@ -55,8 +58,9 @@ define(function( require )
 	 *
 	 * @param {function} effect
 	 * @param {mixed} effect unique id
+	 * @param {boolean} persistent
 	 */
-	Effects.add = function add(effect, uid)
+	Effects.add = function add(effect, uid, persistent)
 	{
 		var name   = effect.constructor.name;
 
@@ -76,7 +80,9 @@ define(function( require )
 			effect.init(_gl);
 		}
 
-		effect._uid = uid;
+		effect._uid        = uid;
+		effect._persistent = !!persistent;
+
 		_list[name].push(effect);
 	};
 
@@ -84,36 +90,55 @@ define(function( require )
 	/**
 	 * Remove an effect
 	 *
-	 * @param {effect} TODO
+	 * @param {effect}
 	 * @param {mixed} effect unique id
 	 */
-	Effects.remove = function remove(effect, uid)
+	Effects.remove = function removeClosure()
 	{
-		if (!(effect.name in _list)) {
-			return;
-		}
+		function clean(name, uid) {
+			var list;
+			var i, count;
 
-		var list = _list[effect.name];
-		var i, count = list.length;
+			list  = _list[name];
+			count = list.length;
 
-		for (i = 0; i < count; ++i) {
-			if (list[i]._uid === uid) {
-				if (list[i].free) {
-					list[i].free(_gl);
+			for (i = 0; i < count; ++i) {
+				if (list[i]._uid === uid) {
+					if (list[i].free) {
+						list[i].free(_gl);
+					}
+					list.splice(i, 1);
+					i--;
+					count--;
 				}
-				list.splice(i, 1);
-				i--;
-				count--;
+			}
+
+			if (!count) {
+				//if (effect.free) {
+				//	effect.free(_gl);
+				//}
+				delete _list[name];
 			}
 		}
 
-		if (!count) {
-			if (effect.free) {
-				effect.free(_gl);
+		return function remove(effect, uid)
+		{
+			if (!effect) {
+				var i, count;
+				var keys = Object.keys(_list);
+
+				for (i = 0, count = keys.length; i < count; ++i) {
+					clean( keys[i], uid);
+				}
+
+				return;
 			}
-			delete _list[effect.name];
-		}
-	};
+
+			if (effect.name in _list) {
+				clean( effect.name, uid);
+			}
+		};
+	}();
 
 
 	/**
@@ -187,6 +212,12 @@ define(function( require )
 					}
 
 					if (list[j].needCleanUp) {
+						if (list[j]._persistent) {
+							list[j].startTick   = tick;
+							list[j].needCleanUp = false;
+							continue;
+						}
+
 						list[j].free(gl);
 						list.splice( j, 1);
 						j--;
@@ -211,10 +242,17 @@ define(function( require )
 	 * @param {number} effect id
 	 * @param {number} owner aid
 	 * @param {Array} position
+	 * @param {number} tick
 	 */
-	Effects.spam = function spam( effectId, AID, position)
+	Effects.spam = function spam( effectId, AID, position, tick )
 	{
+		// No effect mode (/effect)
+		if (!Preferences.effect) {
+			return;
+		}
+
 		var entity, effect, pos;
+		var filename;
 
 		if (!(effectId in EffectDB)) {
 			return;
@@ -245,12 +283,63 @@ define(function( require )
 			pos = position;
 		}
 
-		if (effect.str) {
-			Effects.add(new StrEffect('data/texture/effect/' + effect.str + '.str', pos, Renderer.tick), AID );
+		filename = (Preferences.mineffect && effect.str_min) || effect.str;
+		if (filename) {
+			Effects.add(new StrEffect('data/texture/effect/' + filename + '.str', pos, tick || Renderer.tick), AID );
 		}
 
 		if (effect.wav) {
-			Sound.play('effect/' + effect.wav + '.wav');
+			Sound.play(effect.wav + '.wav');
+		}
+	};
+
+
+	/**
+	 * Spam effect on ground
+	 *
+	 * @param {number} unit id
+	 * @param {number} position x
+	 * @param {number} position y
+	 * @param {number} skill unique id
+	 */
+	Effects.spamSkillZone = function spamUnit( unit_id, xPos, yPos, uid )
+	{
+		// No effect mode (/effect)
+		if (!Preferences.effect) {
+			return;
+		}
+
+		var skillId, effectId;
+		var filename, effect, skill, pos;
+
+		if (!(unit_id in SkillUnit)) {
+			return;
+		}
+
+		skillId = SkillUnit[unit_id];
+
+		if (!(skillId in SkillEffect)) {
+			return;
+		}
+
+		skill = SkillEffect[skillId];
+
+		if (!skill.groundEffectId) {
+			return;
+		}
+
+		effectId = skill.groundEffectId;
+
+		if (!(effectId in EffectDB)) {
+			return;
+		}
+
+		effect   = EffectDB[effectId];
+		pos      = [ xPos, yPos, Altitude.getCellHeight( xPos, yPos) ];
+		filename = (Preferences.mineffect && effect.str_min) || effect.str;
+
+		if (filename) {
+			Effects.add(new StrEffect('data/texture/effect/' + filename + '.str', pos, Renderer.tick), uid, true );
 		}
 	};
 
@@ -261,14 +350,34 @@ define(function( require )
 	 * @param {number} skill id
 	 * @param {number} target aid
 	 * @param {Array} position
+	 * @param {number} tick
 	 */
-	Effects.spamSkill = function spamSkill( skillId, AID, position )
+	Effects.spamSkill = function spamSkill( skillId, AID, position, tick )
 	{
 		if (!(skillId in SkillEffect)) {
 			return;
 		}
 
-		Effects.spam( SkillEffect[skillId].effectId, AID, position);
+		Effects.spam( SkillEffect[skillId].effectId, AID, position, tick);
+	};
+
+
+	/**
+	 * Spam skill hit
+	 *
+	 * @param {number} skill id
+	 * @param {number} target aid
+	 * @param {number} tick
+	 */
+	Effects.spamSkillHit = function spamSkillHit( skillId, AID, tick)
+	{
+		if (!(skillId in SkillEffect)) {
+			return;
+		}
+
+		if (SkillEffect[skillId].hitEffectId) {
+			Effects.spam( SkillEffect[skillId].hitEffectId, AID, null, tick);
+		}
 	};
 
 

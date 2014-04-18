@@ -58,6 +58,18 @@ function(
 				}
 				return;
 
+			case 'effect':
+				this.addText( DB.msgstringtable[23 + MapPreferences.effect], this.TYPE.INFO );
+				MapPreferences.effect = !MapPreferences.effect;
+				MapPreferences.save();
+				return;
+
+			case 'mineffect':
+				this.addText( DB.msgstringtable[687 + MapPreferences.mineffect], this.TYPE.INFO );
+				MapPreferences.mineffect = !MapPreferences.mineffect;
+				MapPreferences.save();
+				return;
+
 			case 'miss':
 				this.addText( DB.msgstringtable[317 + MapPreferences.miss], this.TYPE.INFO );
 				MapPreferences.miss = !MapPreferences.miss;

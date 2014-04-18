@@ -32,10 +32,49 @@ define(function( require )
 	/**
 	 * Spam an effect
 	 *
+	 * 0 = base level up
+	 * 1 = job level up
+	 * 2 = refine failure
+	 * 3 = refine success
+	 * 4 = game over
+	 * 5 = pharmacy success
+	 * 6 = pharmacy failure
+	 * 7 = base level up (super novice)
+	 * 8 = job level up (super novice)
+	 * 9 = base level up (taekwon)
+	 *
 	 * @param {object} pkt - PACKET.ZC.NOTIFY_EFFECT
+	 */
+	function onSpecialEffect( pkt )
+	{
+		var EnumEffect = [
+			371,
+			158,
+			155,
+			154,
+			-1,   // game over
+			305,
+			306,
+			// TODO: find level up effect
+			371,
+			158,
+			371
+		];
+
+		if (EnumEffect[pkt.effectID] > -1) {
+			Effects.spam(EnumEffect[pkt.effectID], pkt.AID);
+		}
+	}
+
+
+	/**
+	 * Spam an effect
+	 *
+	 * @param {object} pkt - PACKET.ZC.NOTIFY_EFFECT2
 	 */
 	function onEffect( pkt )
 	{
+
 		Effects.spam(pkt.effectID, pkt.AID);
 	}
 
@@ -270,7 +309,7 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.SHORTCUT_KEY_LIST,    onShortCutList );
 		Network.hookPacket( PACKET.ZC.SHORTCUT_KEY_LIST_V2, onShortCutList );
 		Network.hookPacket( PACKET.ZC.ACK_TOUSESKILL,       onSkillResult );
-		Network.hookPacket( PACKET.ZC.NOTIFY_EFFECT,        onEffect );
+		Network.hookPacket( PACKET.ZC.NOTIFY_EFFECT,        onSpecialEffect );
 		Network.hookPacket( PACKET.ZC.NOTIFY_EFFECT2,       onEffect );
 		Network.hookPacket( PACKET.ZC.NOTIFY_EFFECT3,       onEffect );
 		Network.hookPacket( PACKET.ZC.NOTIFY_GROUNDSKILL,   onSkillToGround );
