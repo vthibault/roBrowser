@@ -269,7 +269,7 @@ define(function(require)
 
 
 		var sk        = SkillInfo[ skill.SKID ];
-		var levelup   = _levelupBtn.clone(true);
+		var levelup   = _levelupBtn.clone();
 		var className = !skill.level ? 'disabled' : skill.type ? 'active' : 'passive';
 		var element   = jQuery(
 			'<tr class="skill id' + skill.SKID + ' ' + className + '" data-index="'+ skill.SKID +'" draggable="true">' +
@@ -302,6 +302,7 @@ define(function(require)
 
 		element.find('.levelupcontainer').append( levelup );
 		SkillList.ui.find('.content table').append(element);
+		this.parseHTML.call(levelup);
 
 		Client.loadFile( DB.INTERFACE_PATH + 'item/' + sk.Name + '.bmp', function(data){
 			element.find('.icon img').attr('src', data);
