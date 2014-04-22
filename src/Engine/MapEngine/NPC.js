@@ -264,6 +264,7 @@ define(function( require )
 			img.style.position = 'absolute';
 			img.style.zIndex   = 40;
 			img.id             = 'cutin';
+			img.draggable      = false;
 
 			switch (pkt.type) {
 				default:
