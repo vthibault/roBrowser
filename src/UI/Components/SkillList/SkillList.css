@@ -29,7 +29,7 @@
 
 #SkillList .footer { width:100%; height:27px; background-repeat:repeat-x; background-color:transparent; position:relative; }
 #SkillList .footer .text { padding-top:7px; margin-left:10px; }
-#SkillList .footer .btn { position: absolute; top:5px; border:0; width:42px; height:20px; background-repeat:no-repeat; background-color:transparent; }
+#SkillList .footer .btn { position: absolute; top:5px; border:0; width:42px; height:20px; background-repeat:no-repeat; background-color:transparent; display:none; }
 #SkillList .footer .apply { right:70px; }
 #SkillList .footer .reset { right:20px; }
 #SkillList .footer .extend { position:absolute; right:0px; bottom:1px; width:13px; height:13px; border:none; background-repeat:no-repeat; background-color:transparent; }
