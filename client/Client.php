@@ -60,13 +60,23 @@ final class Client
 		$data_ini = parse_ini_file($path, true );
 		$grfs     = array();
 		$info     = pathinfo($path);
-		ksort($data_ini['Data']);
+
+		$keys     = array_keys($data_ini);
+		$index    = array_search('data', array_map('strtolower', $keys));
+
+		if ($index === false) {
+			Debug::write('Can\'t find token "[Data]" in "' . $path . '".', 'error');
+			return;
+		}
+
+		$grfs = $data_ini[ $keys[$index] ];
+		ksort($grfs);
 
 		Debug::write('File ' . $path . ' loaded.', 'success');
 		Debug::write('GRFs to use :', 'info');
 
 		// Open GRFs files
-		foreach ($data_ini['Data'] as $index => $grf_filename) {
+		foreach ($grfs as $index => $grf_filename) {
 			Debug::write($index . ') ' . $info['dirname'] . '/' . $grf_filename);
 
 			self::$grfs[$index] = new Grf($info['dirname'] . '/' . $grf_filename);
