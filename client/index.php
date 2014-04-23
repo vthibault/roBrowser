@@ -111,16 +111,14 @@
 		default:     header('Content-type:application/octet-stream'); break;
 	}
 
+	// Output
+	if (Debug::isEnable()) {
+		Debug::output();
+	}
 
 	// GZIP some files
 	if (in_array($ext, array('txt', 'xml', 'rsw', 'rsm', 'gnd', 'gat', 'spr', 'act', 'pal'))) {
 		ob_start("ob_gzhandler");
-	}
-
-
-	// Output
-	if (Debug::isEnable()) {
-		Debug::output();
 	}
 
 	echo $file;
