@@ -107,7 +107,6 @@ function(
 			case 0x09: // SERVICETYPE_SINGAPORE
 			case 0x0a: // SERVICETYPE_GERMANY
 			case 0x0b: // SERVICETYPE_INDIA
-			case 0x0c: // SERVICETYPE_BRAZIL
 			case 0x0d: // SERVICETYPE_AUSTRALIA
 			case 0x0e: // SERVICETYPE_RUSSIA
 			case 0x11: // SERVICETYPE_CHILE
@@ -135,7 +134,8 @@ function(
 				break;
 
 			case 0x12: // SERVICETYPE_FRANCE
-				charset = 'windows-11252';
+			case 0x0c: // SERVICETYPE_BRAZIL
+				charset = 'windows-1252';
 				break;
 
 			case 0x14: // SERVICETYPE_UAE
@@ -144,7 +144,7 @@ function(
 		}
 
 		BinaryReader.decoder = TextEncoding.TextDecoder(charset);
-		BinaryReader.encoder = TextEncoding.TextEncoder(charset);
+		BinaryWriter.encoder = TextEncoding.TextEncoder(charset);
 		_server              = server;
 
 		// Add support for "packetver" definition in Server listing
