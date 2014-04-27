@@ -285,6 +285,9 @@ define(function( require )
 
 		filename = (Preferences.mineffect && effect.str_min) || effect.str;
 		if (filename) {
+			if (effect.random) {
+				filename = filename.replace('%d', Math.round(effect.random[0] + (effect.random[1]-effect.random[0]) * Math.random()) );
+			}
 			Effects.add(new StrEffect('data/texture/effect/' + filename + '.str', pos, tick || Renderer.tick), AID );
 		}
 
@@ -339,7 +342,15 @@ define(function( require )
 		filename = (Preferences.mineffect && effect.str_min) || effect.str;
 
 		if (filename) {
+			if (effect.random) {
+				filename = filename.replace('%d', Math.round(effect.random[0] + (effect.random[1]-effect.random[0]) * Math.random()) );
+			}
+
 			Effects.add(new StrEffect('data/texture/effect/' + filename + '.str', pos, Renderer.tick), uid, true );
+		}
+
+		if (effect.wav) {
+			Sound.play(effect.wav + '.wav');
 		}
 	};
 

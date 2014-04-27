@@ -49,7 +49,7 @@ define(function()
 		83:  { effectId:  92, hitEffectId:  49 }, // meteor storm
 		85:  { effectId:  90, hitEffectId:  52 }, // lord of vermilion
 		89:  { effectId:  89 }, // storm Gust
-		92:  { effectId:  95 }, // quagmire
+		92:  { groundEffectId: 95 }, // quagmire
 		110: { effectId: 102 }, // hammer fall
 		112: { effectId: 103 }, // weapon perfection
 		114: { effectId: 104 }, // maximize power

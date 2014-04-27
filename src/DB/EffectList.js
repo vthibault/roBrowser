@@ -19,18 +19,20 @@ define(function()
 		13:  { attachedEntity: false,  str: 'magician_safe' },
 
 		23:  { attachedEntity: true,   str: 'stonecurse' },
-		25:  { attachedEntity: false,  str: 'firewall2',         wav: 'effect/ef_firewall' },
+		25:  { attachedEntity: false,  str: 'firewall%d',        wav: 'effect/ef_firewall',                random:[1,2] },
 
 		29:  { attachedEntity: true,   str: 'lightning' },
 		30:  { attachedEntity: false,  str: 'thunderstorm',      wav: 'effect/magician_thunderstorm' },
 
 		40:  { attachedEntity: true,   str: 'cross' },
-		41:  { attachedEntity: true,   str: 'angelus',           wav: 'effect/ef_angelus' },
+		41:  { attachedEntity: true,   str: 'angelus',           wav: 'effect/ef_angelus',                 str_min: 'jong_mini' },
 
-		49:  { attachedEntity: true,   str: 'firehit',           wav: 'effect/ef_firehit' },
+		49:  { attachedEntity: true,   str: 'firehit%d',         wav: 'effect/ef_firehit',                 random:[1,3] },
 
-		52:  { attachedEntity: true,   str: 'windhit' },
+		52:  { attachedEntity: true,   str: 'windhit%d',                                                   random:[1,3] },
 
+		64:  { attachedEntity: true,   str: 'arrowshot' },
+		65:  { attachedEntity: true,   str: 'invenom' },
 		66:  { attachedEntity: true,   str: 'cure',              wav: 'effect/acolyte_cure',               str_min: 'cure_min' },
 		67:  { attachedEntity: true,   str: 'provoke',           wav: 'effect/swordman_provoke' },
 		68:  { attachedEntity: true,   str: 'mvp',               wav: 'effect/st_mvp'},
@@ -51,7 +53,7 @@ define(function()
 		89:  { attachedEntity: false,  str: 'stormgust',         wav: 'effect/wizard_stormgust',           str_min: 'storm_min' },
 		90:  { attachedEntity: false,  str: 'lord',              wav: 'effect/wizard_fire_ivy' },
 		91:  { attachedEntity: true,   str: 'benedictio',        wav: 'effect/priest_benedictio' },
-		92:  { attachedEntity: false,  str: 'meteor1',           wav: 'effect/priest_meteor' },
+		92:  { attachedEntity: false,  str: 'meteor%d',          wav: 'effect/priest_meteor',              random:[1,4] },
 
 		94:  { attachedEntity: true,   str: 'ufidel_pang' },
 		95:  { attachedEntity: false,  str: 'quagmire' },
@@ -59,14 +61,14 @@ define(function()
 		97:  { attachedEntity: false,  str: 'firepillarbomp',    wav: 'effect/wizard_fire_pillar_b' },
 
 		101: { attachedEntity: true,   str: 'repairweapon',      wav: 'effect/black_weapon_repear' },
-		102: { attachedEntity: false,  str: 'black_hammerfall',  wav: 'effect/black_hammerfall' },
+		102: { attachedEntity: false,  str: 'crashearth',        wav: 'effect/black_hammerfall' },
 		103: { attachedEntity: true,   str: 'weaponperfection',  wav: 'effect/black_weapon_perfection',    str_min: 'weaponperfection_min' },
 		104: { attachedEntity: true,   str: 'maximizepower',     wav: 'effect/black_maximize_power_sword', str_min: 'maximize_min' },
 
 		106: { attachedEntity: false,  str: 'blastmine',         wav: 'effect/hunter_blastmine' },
 		107: { attachedEntity: false,  str: 'claymore',          wav: 'effect/hunter_claymoretrap' },
 		108: { attachedEntity: false,  str: 'freezing',          wav: 'effect/hunter_freezingtrap' },
-		109: { attachedEntity: false,  str: 'bubble' },
+		109: { attachedEntity: false,  str: 'bubble%d',                                                    random:[1,4] },
 		110: { attachedEntity: false,  str: 'gaspush',           wav: 'effect/se_gas_pushhh' },
 		111: { attachedEntity: false,  str: 'spring',            wav: 'effect/hunter_springtrap' },
 		112: { attachedEntity: true,   str: 'kyrie',             wav: 'effect/priest_kyrie_eleison_a',     str_min: 'kyrie_min' },
@@ -81,36 +83,43 @@ define(function()
 		130: { attachedEntity: true,   str: 'twohand',           wav: 'effect/knight_twohandquicken' },
 		131: { attachedEntity: true,   str: 'autocounter',       wav: 'effect/knight_autocounter' },
 
-		133: { attachedEntity: true,   str: 'ice_status' },
-		134: { attachedEntity: true,   str: 'icestatusing' },
+		133: { attachedEntity: true,   str: 'freeze' },
+		134: { attachedEntity: true,   str: 'freezed' },
 		135: { attachedEntity: true,   str: 'icecrash'},
+		136: { attachedEntity: false,  str: 'slowp' },
 
 		139: { attachedEntity: false,  str: 'sandman',           wav: 'effect/hunter_sandman' },
 
-		141: { attachedEntity: false,  str: 'pneuma1' },
+		141: { attachedEntity: false,  str: 'pneuma%d',                                                     random:[1,3] },
 
 		143: { attachedEntity: true,   str: 'sonicblow' },
 		144: { attachedEntity: true,   str: 'brandish2',         wav: 'effect/knight_brandish_spear' },
 		145: { attachedEntity: true,   str: 'shockwave',         wav: 'effect/hunter_shockwavetrap' },
 		146: { attachedEntity: true,   str: 'shockwavehit' },
-
+		147: { attachedEntity: true,   str: 'earthhit' },
 		148: { attachedEntity: true,   str: 'pierce' },
 		149: { attachedEntity: true,   str: 'bowling',           wav: 'effect/knight_bowling_bash' },
 		150: { attachedEntity: true,   str: 'spearstab' },
 		151: { attachedEntity: true,   str: 'spearboomerang',    wav: 'effect/knight_spear_boomerang' },
 		152: { attachedEntity: true,   str: 'holyhit' },
-		153: { attachedEntity: true,   str: 'ac_concentration',  wav: 'effect/ac_concentration' },
+		153: { attachedEntity: true,   str: 'concentration',     wav: 'effect/ac_concentration' },
 		154: { attachedEntity: true,   str: 'bs_refinesuccess',  wav: 'effect/bs_refinesuccess' },
 		155: { attachedEntity: true,   str: 'bs_refinefailed',   wav: 'effect/bs_refinefailed' },
-
+		// not used because not in RO game data (causing error in the official client)
+		// 156: jobchange
+		// 157: levelup
 		158: { attachedEntity: true,   str: 'joblvup' },
 
+		// 167: tamingsuccess
+		// 168: tamingfailed
 		169: { attachedEntity: true,   str: 'energycoat' },
 		170: { attachedEntity: true,   str: 'cartrevolution'},
 
 		181: { attachedEntity: true,   str: 'mentalbreak' },
 		182: { attachedEntity: true,   str: 'magical' },
-		//183: self destruction ?
+		183: { attachedEntity: true,   str: 'sui_explosion' },
+
+		185: { attachedEntity: true,   str: 'suicide' },
 
 		186: { attachedEntity: true,   str: 'yunta_1' },
 		187: { attachedEntity: true,   str: 'yunta_2' },
@@ -124,7 +133,8 @@ define(function()
 		195: { attachedEntity: true,   str: 'stonecurse',  }, // second stone curse ?
 
 		197: { attachedEntity: true,   str: 'sleep' },
-		199: { attachedEntity: false,  str: 'pong' }, // pong1 pong2 , ... ?
+
+		199: { attachedEntity: false,  str: 'pong%d',           random:[1,3] },
 
 		204: { attachedEntity: true,   str: '»¡°£Æ÷¼Ç' },
 		205: { attachedEntity: true,   str: 'ÁÖÈ«Æ÷¼Ç' },
@@ -138,6 +148,7 @@ define(function()
 		213: { attachedEntity: true,   str: 'deffender' },
 		214: { attachedEntity: true,   str: 'keeping' },
 
+		218: { attachedEntity: true,   str: 'ÁýÁß' },
 		219: { attachedEntity: true,   str: '°¢¼º' },
 		220: { attachedEntity: true,   str: '¹ö¼­Å©' },
 
@@ -162,6 +173,7 @@ define(function()
 		270: { attachedEntity: true,   str: 'strip_shield',      wav: 'effect/t_º®Æ¨±è' },
 		271: { attachedEntity: true,   str: 'strip_armor',       wav: 'effect/t_º®Æ¨±è' },
 		272: { attachedEntity: true,   str: 'strip_helm',        wav: 'effect/t_º®Æ¨±è' },
+		273: { attachedEntity: true,   str: '¿¬È¯' },
 
 		305: { attachedEntity: true,   str: 'p_success' },
 		306: { attachedEntity: true,   str: 'p_failed' },
@@ -171,6 +183,8 @@ define(function()
 
 		337: { attachedEntity: true,   str: 'joblvup' },
 
+		369: { attachedEntity: true,   str: 'twohand' },
+
 		371: { attachedEntity: true,   str: 'angel',             wav: 'levelup' },
 		372: { attachedEntity: true,   str: 'devil' },
 
@@ -178,7 +192,13 @@ define(function()
 		391: { attachedEntity: true,   str: 'cart' },
 		392: { attachedEntity: true,   str: 'sword' },
 
+		406: { attachedEntity: true,   str: '¼Ò¿ï¹ø' },
+		407: { attachedEntity: true,   str: '»ç¶÷È¿°ú' },
+
 		440: { attachedEntity: true,   str: 'asum' },
+
+		491: { attachedEntity: true,   str: 'Âý½Ò¶±' },
+		492: { attachedEntity: true,   str: 'ramadan' },
 
 		507: { attachedEntity: true,   str: 'mapae' },
 		508: { attachedEntity: true,   str: 'itempokjuk' },
@@ -196,8 +216,12 @@ define(function()
 		597: { attachedEntity: true,   str: 'food_dex' },
 		598: { attachedEntity: true,   str: 'food_luk' },
 
+		603: { attachedEntity: true,   str: 'firehit%d', random:[1,3] },
+
 		608: { attachedEntity: true,   str: 'cook_suc' },
 		609: { attachedEntity: true,   str: 'cook_fail' },
+
+		612: { attachedEntity: true,   str: 'itempokjuk' },
 
 		635: { attachedEntity: false,  str: 'fire_dragon' },
 		636: { attachedEntity: false,  str: 'icy' },
@@ -207,9 +231,93 @@ define(function()
 		649: { attachedEntity: true,   str: 'ºÒ½º¾ÆÀÌ' },
 
 		668: { attachedEntity: true,   str: 'dragon_h' },
-
+		669: { attachedEntity: true,   str: 'wideb' },
 		670: { attachedEntity: true,   str: 'dfear' },
 
 		677: { attachedEntity: true,   str: 'cwound' },
+
+		699: { attachedEntity: true,   str: 'flower_leaf' },
+
+		704: { attachedEntity: true,   str: 'mobile_ef02' },
+		705: { attachedEntity: true,   str: 'mobile_ef01' },
+		706: { attachedEntity: true,   str: 'mobile_ef03' },
+
+		708: { attachedEntity: false,  str: 'storm_min' },
+		709: { attachedEntity: false,  str: 'pokjuk_jap' },
+
+		717: { attachedEntity: true,   str: 'angelus',           wav: 'effect/ef_angelus',                 str_min: 'jong_mini' },
+
+		721: { attachedEntity: true,   str: 'ado' },
+		722: { attachedEntity: true,   str: 'ÀÌ±×´Ï¼Çºê·¹ÀÌÅ©' },
+
+		727: { attachedEntity: true,   str: 'crimson_r' },
+		728: { attachedEntity: true,   str: 'hell_in' },
+
+		731: { attachedEntity: true,   str: 'dragon_h' },
+
+		734: { attachedEntity: true,   str: 'chainlight' },
+
+		745: { attachedEntity: true,   str: 'aimed' },
+		746: { attachedEntity: true,   str: 'arrowstorm' },
+		747: { attachedEntity: true,   str: 'laulamus' },
+		748: { attachedEntity: true,   str: 'lauagnus' },
+		749: { attachedEntity: true,   str: 'mil_shield' },
+		750: { attachedEntity: true,   str: 'concentration' },
+
+		756: { attachedEntity: true,   str: '¹ö¼­Å©' },
+
+		795: { attachedEntity: true,   str: 'powerswing' },
+		813: { attachedEntity: true,   str: 'enervation' },
+		814: { attachedEntity: true,   str: 'groomy' },
+		815: { attachedEntity: true,   str: 'ignorance' },
+		816: { attachedEntity: true,   str: 'laziness' },
+		817: { attachedEntity: true,   str: 'unlucky' },
+		818: { attachedEntity: true,   str: 'weakness' },
+
+		920: { attachedEntity: true,   str: 'firewall_per' },
+
+		926: { attachedEntity: true,   str: 'hunter_shockwave_blue' },
+
+		959: { attachedEntity: true,   str: 'poison_mist' },
+		960: { attachedEntity: true,   str: 'eraser_cutter' },
+
+		964: { attachedEntity: true,   str: 'lava_slide' },
+		965: { attachedEntity: true,   str: 'sonic_claw' },
+		966: { attachedEntity: true,   str: 'tinder' },
+		967: { attachedEntity: true,   str: 'mid_frenzy' },
+
+		975: { attachedEntity: true,   str: 'vash00' },
+
+		987: { attachedEntity: true,   str: 'rwc2011' },
+		988: { attachedEntity: true,   str: 'rwc2011_2' },
+
+		1015: { attachedEntity: true,  str: 'rune_success' },
+		1016: { attachedEntity: true,  str: 'rune_fail' },
+		1017: { attachedEntity: true,  str: 'changematerial_su' },
+		1018: { attachedEntity: true,  str: 'changematerial_fa' },
+		1019: { attachedEntity: true,  str: 'Guardian' },
+		1020: { attachedEntity: true,  str: 'bubble%d_1', random:[1,4] },
+		1021: { attachedEntity: true,  str: 'dust' },
+
+		1029: { attachedEntity: true,  str: 'dancingblade' },
+		1031: { attachedEntity: true,  str: 'invincibleoff2' },
+
+		1033: { attachedEntity: true,  str: 'devil' },
+
+		1040: { attachedEntity: true,  str: 'gc_darkcrow' },
+
+		1042: { attachedEntity: true,  str: 'all_full_throttle' },
+		1043: { attachedEntity: true,  str: 'sr_flashcombo' },
+		1044: { attachedEntity: true,  str: 'rk_luxanima' },
+
+		1046: { attachedEntity: true,  str: 'so_elemental_shield' },
+		1047: { attachedEntity: true,  str: 'ab_offertorium' },
+		1048: { attachedEntity: true,  str: 'wl_telekinesis_intense' },
+		1049: { attachedEntity: true,  str: 'gn_illusiondoping' },
+		1050: { attachedEntity: true,  str: 'nc_magma_eruption' },
+
+		1055: { attachedEntity: true,  str: 'chill' },
+		1057: { attachedEntity: true,  str: 'ab_offertorium_ring' },
+		1062: { attachedEntity: true,  str: 'stormgust' },
 	};
 });
