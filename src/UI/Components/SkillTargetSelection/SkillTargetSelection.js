@@ -93,7 +93,7 @@ define(function(require)
 		_description.style.borderRadius = '3px';
 		_description.style.border       = '1px solid #555';
 
-		render( DB.msgstringtable[234], _description);
+		render( DB.getMessage(234), _description);
 
 		this.ui = jQuery('<div id ="SkillTargetSelection"/>'); // just to not break things
 		this.ui.append();

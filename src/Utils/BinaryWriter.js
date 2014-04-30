@@ -51,7 +51,7 @@ define(['Vendors/text-encoding'], function(TextEncoding)
 		}
 
 		var i, count;
-		var data = BinaryWriter.encoder.encode(str);
+		var data = TextEncoding.encode(str);
 
 		// fuck it, need to rebuild the buffer
 		if (!len && data.length > str.length) {
@@ -96,12 +96,6 @@ define(['Vendors/text-encoding'], function(TextEncoding)
 		this.view   = new DataView( this.buffer );
 		this.offset = 0;
 	}
-
-
-	/**
-	 * @var {TextEncoder}
-	 */
-	BinaryWriter.encoder = TextEncoding.TextEncoder('utf-8');
 
 
 	/**
@@ -240,7 +234,7 @@ define(['Vendors/text-encoding'], function(TextEncoding)
 			str = String(str).substr(0, length);
 		}
 
-		var data = BinaryWriter.encoder.encode(str);
+		var data = TextEncoding.encode(str);
 		var i, count = length || data.length;
 
 		// TODO: make it better.

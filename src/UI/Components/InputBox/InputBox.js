@@ -125,7 +125,7 @@ define(function(require)
 		switch (type) {
 			case 'number':
 				this.ui.addClass('number');
-				this.ui.find('.text').text( DB.msgstringtable[1259] );
+				this.ui.find('.text').text( DB.getMessage(1259) );
 				this.ui.find('input').attr('type', 'text');
 				defaultVal = defaultVal || 0;
 				break;
@@ -144,7 +144,7 @@ define(function(require)
 
 			case 'mail':
 				this.ui.removeClass('number');
-				this.ui.find('.text').text( DB.msgstringtable[300] );
+				this.ui.find('.text').text( DB.getMessage(300) );
 				this.ui.find('input').attr('type', 'password');
 				break;
 		}

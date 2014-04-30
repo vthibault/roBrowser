@@ -114,17 +114,17 @@ define(function( require )
 				ChatRoom.owner   = Session.Entity.display.name;
 				ChatRoom.append();
 
-				ChatBox.addText( DB.msgstringtable[64], ChatBox.TYPE.BLUE );
+				ChatBox.addText( DB.getMessage(64), ChatBox.TYPE.BLUE );
 				break;
 
 			// Room limit exceeded
 			case 1:
-				ChatBox.addText( DB.msgstringtable[65], ChatBox.TYPE.ERROR );
+				ChatBox.addText( DB.getMessage(65), ChatBox.TYPE.ERROR );
 				break;
 
 			// Same room already exists
 			case 2:
-				ChatBox.addText( DB.msgstringtable[66], ChatBox.TYPE.ERROR );
+				ChatBox.addText( DB.getMessage(66), ChatBox.TYPE.ERROR );
 				break;
 		}
 	}
@@ -147,7 +147,7 @@ define(function( require )
 		switch (pkt.result) {
 			// full
 			case 0:
-				ChatBox.addText( DB.msgstringtable[65], ChatBox.TYPE.ERROR );
+				ChatBox.addText( DB.getMessage(65), ChatBox.TYPE.ERROR );
 				break;
 
 			// TODO:
@@ -173,7 +173,7 @@ define(function( require )
 		ChatRoom.members.push( pkt.name );
 
 		ChatRoom.updateChat();
-		ChatRoom.message(DB.msgstringtable[179].replace('%s', pkt.name), 'join');
+		ChatRoom.message(DB.getMessage(179).replace('%s', pkt.name), 'join');
 	}
 
 
@@ -211,12 +211,12 @@ define(function( require )
 
 		// Leave the room
 		if (pkt.type === 0) {
-			ChatRoom.message(DB.msgstringtable[180].replace('%s', pkt.name), 'leave');
+			ChatRoom.message(DB.getMessage(180).replace('%s', pkt.name), 'leave');
 		}
 
 		// Kick out of the room
 		else {
-			ChatRoom.message(DB.msgstringtable[181].replace('%s', pkt.name), 'leave');
+			ChatRoom.message(DB.getMessage(181).replace('%s', pkt.name), 'leave');
 		}
 	}
 

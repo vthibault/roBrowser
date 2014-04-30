@@ -418,7 +418,7 @@ define(function( require )
 	 */
 	function onPlayerCountAnswer( pkt )
 	{
-		ChatBox.addText( DB.msgstringtable[178].replace('%d', pkt.count), ChatBox.TYPE.INFO );
+		ChatBox.addText( DB.getMessage(178).replace('%d', pkt.count), ChatBox.TYPE.INFO );
 	}
 
 
@@ -435,7 +435,7 @@ define(function( require )
 			case 0:
 				Equipment.setEquipConfig( pkt.Value );
 				ChatBox.addText(
-					DB.msgstringtable[1358 + (pkt.Value ? 1 : 0) ],
+					DB.getMessage(1358 + (pkt.Value ? 1 : 0) ),
 					ChatBox.TYPE.INFO
 				);
 				break;

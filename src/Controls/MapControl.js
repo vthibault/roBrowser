@@ -191,7 +191,7 @@ function(
 			// Can't drop an item on map if Equipment window is open
 			if (Equipment.ui.is(':visible')) {
 				ChatBox.addText(
-					DB.msgstringtable[189],
+					DB.getMessage(189),
 					ChatBox.TYPE.ERROR
 				);
 				return;

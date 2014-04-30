@@ -86,7 +86,7 @@ define(function( require )
 	{
 		// Fail
 		if (pkt.result === 6) {
-			ChatBox.addText( DB.msgstringtable[53], ChatBox.TYPE.ERROR );
+			ChatBox.addText( DB.getMessage(53), ChatBox.TYPE.ERROR );
 			return;
 		}
 
@@ -95,7 +95,7 @@ define(function( require )
 
 		var it = DB.getItemInfo( pkt.ITID );
 		ChatBox.addText(
-			DB.msgstringtable[153].replace('%s', pkt.IsIdentified ? it.identifiedDisplayName : it.unidentifiedDisplayName ).replace('%d', pkt.count ),
+			DB.getMessage(153).replace('%s', pkt.IsIdentified ? it.identifiedDisplayName : it.unidentifiedDisplayName ).replace('%d', pkt.count ),
 			ChatBox.TYPE.BLUE
 		);
 
@@ -140,7 +140,7 @@ define(function( require )
 	
 				var it = DB.getItemInfo( item.ITID );
 				ChatBox.addText(
-					it.identifiedDisplayName + ' ' + DB.msgstringtable[171],
+					it.identifiedDisplayName + ' ' + DB.getMessage(171),
 					ChatBox.TYPE.ERROR
 				);
 
@@ -168,7 +168,7 @@ define(function( require )
 			var it   = DB.getItemInfo( item.ITID );
 			Equipment.equip( item, pkt.wearLocation );
 			ChatBox.addText(
-				it.identifiedDisplayName + ' ' + DB.msgstringtable[170],
+				it.identifiedDisplayName + ' ' + DB.getMessage(170),
 				ChatBox.TYPE.BLUE
 			);
 
@@ -183,7 +183,7 @@ define(function( require )
 		// Fail to equip
 		else {
 			ChatBox.addText(
-				DB.msgstringtable[372],
+				DB.getMessage(372),
 				ChatBox.TYPE.ERROR
 			);
 		}
@@ -216,7 +216,7 @@ define(function( require )
 	{
 		Equipment.setEquipConfig( pkt.bOpenEquipmentWin );
 		ChatBox.addText(
-			DB.msgstringtable[1358 + (pkt.bOpenEquipmentWin ? 1 : 0) ],
+			DB.getMessage(1358 + (pkt.bOpenEquipmentWin ? 1 : 0) ),
 			ChatBox.TYPE.INFO
 		);
 	}

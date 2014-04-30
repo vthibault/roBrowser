@@ -67,12 +67,6 @@ define( ['./Struct', 'Vendors/text-encoding'], function( Struct, TextEncoding )
 
 
 	/**
-	 * @var {TextDecoder}
-	 */
-	BinaryReader.decoder = TextEncoding.TextDecoder('utf-8');
-
-
-	/**
 	 * Read Int8 from buffer
 	 * @return int8
 	 */
@@ -213,7 +207,7 @@ define( ['./Struct', 'Vendors/text-encoding'], function( Struct, TextEncoding )
 
 		this.offset = offset + len;
 
-		return BinaryReader.decoder.decode(data.subarray(0, i));
+		return TextEncoding.decode(data.subarray(0, i));
 	};
 
 

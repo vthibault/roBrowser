@@ -38,7 +38,7 @@ function(   DB,            EntityManager,            Entity,        Client )
 		entity.position[2]  = z;
 
 		entity.display.load = entity.display.TYPE.COMPLETE;
-		entity.display.name = DB.msgstringtable[183].replace('%s', name).replace('%d', count);
+		entity.display.name = DB.getMessage(183).replace('%s', name).replace('%d', count);
 		entity.display.update('#FFEF94');
 
 		entity.files.body.spr = path + '.spr';

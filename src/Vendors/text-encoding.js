@@ -2453,8 +2453,45 @@ define(function()
 	/**
 	 * Exports
 	 */
-	return {
+	var TextEncoding = {
+
+		charset: 'utf-8',
+
+		setCharset: function setCharset(charset)
+		{
+			this.charset = charset;
+			this.encoder  = new this.TextEncoder(charset);
+			this.decoder  = new this.TextDecoder(charset);
+
+			this.encode = this.encoder.encode.bind(this.encoder);
+			this.decode = this.decoder.decode.bind(this.decoder);
+		},
+
+		decodeString: function decodeString(str)
+		{
+			if (!str) {
+				return '';
+			}
+
+			var i, count;
+			var data;
+
+			count = str.length;
+			data  = new Uint8Array(count);
+
+			for (i = 0; i < count; ++i) {
+				data[i] = str.charCodeAt(i);
+			}
+
+			return this.decode(data);
+		},
+
 		TextDecoder: self.TextDecoder   ||   TextDecoder,
 		TextEncoder: /*self.TextEncoder ||*/ TextEncoder // native text encoder just support utf-8 and utf-16...
 	};
+
+	TextEncoding.setCharset('utf-8');
+
+
+	return TextEncoding;
 });

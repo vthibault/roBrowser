@@ -136,7 +136,7 @@ define(function( require )
 		}
 
 		if (error) {
-			ChatBox.addText( DB.msgstringtable[error], ChatBox.TYPE.ERROR );
+			ChatBox.addText( DB.getMessage(error), ChatBox.TYPE.ERROR );
 		}
 	}
 

@@ -8,8 +8,8 @@
  * @author Vincent Thibault
  */
 
-define( ['Core/Client', './ClassTable', './ClassPalTable', './MonsterTable', './PetInfo', './HatTable', './WeaponTable', './WeaponAction', './ShieldTable', './Weather' ],
-function(      Client,     ClassTable,     ClassPalTable,     MonsterTable,     PetInfo,     HatTable,     WeaponTable,     WeaponAction,     ShieldTable,     Weather)
+define( ['Core/Client', 'Vendors/text-encoding', './ClassTable', './ClassPalTable', './MonsterTable', './PetInfo', './HatTable', './WeaponTable', './WeaponAction', './ShieldTable', './Weather' ],
+function(      Client,           TextEncoding,      ClassTable,     ClassPalTable,     MonsterTable,     PetInfo,     HatTable,     WeaponTable,     WeaponAction,     ShieldTable,     Weather)
 {
 	'use strict';
 
@@ -446,7 +446,17 @@ function(      Client,     ClassTable,     ClassPalTable,     MonsterTable,     
 	 */
 	DB.getItemInfo = function GetItemInfo( itemid )
 	{
-		return DB.itemList[itemid] || DB.itemList[512];
+		var item = DB.itemList[itemid] || DB.itemList[512];
+
+		if (!item._decoded) {
+			item.identifiedDescriptionName   = TextEncoding.decodeString(item.identifiedDescriptionName);
+			item.identifiedDisplayName       = TextEncoding.decodeString(item.identifiedDisplayName);
+			item.unidentifiedDescriptionName = TextEncoding.decodeString(item.unidentifiedDescriptionName);
+			item.unidentifiedDisplayName     = TextEncoding.decodeString(item.unidentifiedDisplayName);
+			item._decoded                    = true;
+		}
+
+		return item;
 	};
 
 
@@ -459,6 +469,39 @@ function(      Client,     ClassTable,     ClassPalTable,     MonsterTable,     
 		return 'data/sprite/\xbe\xc6\xc0\xcc\xc5\xdb/' + ( identify ? it.identifiedResourceName : it.unidentifiedResourceName );
 	};
 
+
+	/**
+	 * Get a message from msgstringtable
+	 *
+	 * @param {number} message id
+	 * @param {string} optional string to show if the text isn't defined
+	 */
+	DB.getMessage = function getMessage(id, defaultText)
+	{
+		if (!(id in DB.msgstringtable)) {
+			return defaultText !== undefined ? defaultText : 'NO MSG ' + id;
+		}
+
+		return TextEncoding.decodeString( DB.msgstringtable[id] );
+	};
+
+
+	/**
+	 * Get a message from msgstringtable
+	 *
+	 * @param {string} mapname
+	 */
+	DB.getMapName = function getMapName( mapname )
+	{
+		var name;
+		var map = mapname.replace('.gat','.rsw');
+
+		if (!(map in DB.mapname)) {
+			return DB.getMessage(187);
+		}
+
+		return TextEncoding.decodeString(DB.mapname[map]);
+	};
 
 	/**
 	 * Export

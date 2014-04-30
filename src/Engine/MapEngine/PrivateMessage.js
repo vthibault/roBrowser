@@ -48,7 +48,7 @@ define(function( require )
 			ChatBox.addText( '(To '+ user +') : ' + msg, ChatBox.TYPE.PRIVATE );
 		}
 		else {
-			ChatBox.addText( '('+ user +') : ' + DB.msgstringtable[147 + pkt.result],  ChatBox.TYPE.PRIVATE );
+			ChatBox.addText( '('+ user +') : ' + DB.getMessage(147 + pkt.result),  ChatBox.TYPE.PRIVATE );
 		}
 	
 		ChatBox.PrivateMessageStorage.nick = '';

@@ -93,12 +93,7 @@ define(function(require)
 					break;
 
 				case 'option':
-					if (Graphics.ui && Graphics.ui.is(':visible')) {
-						Graphics.remove();
-					}
-					else {
-						Graphics.append();
-					}
+					Graphics.ui.toggle();
 					break;
 
 				case 'map':

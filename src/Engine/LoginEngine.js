@@ -11,8 +11,6 @@
 
 define([
 	'require',
-	'Utils/BinaryReader',
-	'Utils/BinaryWriter',
 	'Vendors/text-encoding',
 	'DB/DBManager',
 	'Audio/SoundManager',
@@ -30,8 +28,6 @@ define([
 ],
 function(
 	require,
-	BinaryReader,
-	BinaryWriter,
 	TextEncoding,
 	DB,
 	Sound,
@@ -57,7 +53,7 @@ function(
 	var WinLoading = WinPopup.clone('WinLoading');
 	WinLoading.init = function(){
 		this.ui.css({ top: (Renderer.height - 120) / 1.5, left: (Renderer.width - 280) / 2.0 });
-		this.ui.find('.text').text( DB.msgstringtable[121] );
+		this.ui.find('.text').text( DB.getMessage(121) );
 	};
 	UIManager.addComponent(WinLoading);
 
@@ -143,9 +139,8 @@ function(
 				break;
 		}
 
-		BinaryReader.decoder = TextEncoding.TextDecoder(charset);
-		BinaryWriter.encoder = TextEncoding.TextEncoder(charset);
-		_server              = server;
+		TextEncoding.setCharset(charset);
+		_server = server;
 
 		// Add support for "packetver" definition in Server listing
 		if ('packetver' in server && server.packetver !== '') {
@@ -236,7 +231,7 @@ function(
 		Network.connect( _server.address, _server.port, function( success ) {
 			// Fail to connect...
 			if ( !success ) {
-				UIManager.showErrorBox(DB.msgstringtable[1]);
+				UIManager.showErrorBox(DB.getMessage(1));
 				return;
 			}
 
@@ -297,9 +292,9 @@ function(
 		var i, count = _charServers.length;
 		var list     = new Array(count);
 		for (i = 0; i < count; ++i) {
-			list[i]  =  _charServers[i].property ? DB.msgstringtable[482] + ' ' : '';
+			list[i]  =  _charServers[i].property ? DB.getMessage(482) + ' ' : '';
 			list[i] +=  _charServers[i].name;
-			list[i] +=  _charServers[i].state    ? DB.msgstringtable[484] : ' ' + DB.msgstringtable[483].replace('%d', _charServers[i].usercount);
+			list[i] +=  _charServers[i].state    ? DB.getMessage(484) : ' ' + DB.getMessage(483).replace('%d', _charServers[i].usercount);
 		}
 
 		// No choice, connect directly to the server
@@ -365,7 +360,7 @@ function(
 		}
 
 		UIManager.showMessageBox(
-			DB.msgstringtable[error].replace('%s', pkt.blockDate),
+			DB.getMessage(error).replace('%s', pkt.blockDate),
 			null,
 			function(){
 				UIManager.removeComponents();
@@ -403,7 +398,7 @@ function(
 			case 102: msg_id = 1179; break; // More than 10 connections sharing the same IP have logged into the game for an hour. (1176)
 		}
 
-		UIManager.showErrorBox( DB.msgstringtable[msg_id] );
+		UIManager.showErrorBox( DB.getMessage(msg_id) );
 		Network.close();
 	}
 

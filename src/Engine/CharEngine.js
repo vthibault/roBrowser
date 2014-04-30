@@ -73,7 +73,7 @@ define([
 
 			// Fail to connect...
 			if (!success) {
-				UIManager.showErrorBox( DB.msgstringtable[1] );
+				UIManager.showErrorBox( DB.getMessage(1) );
 				return;
 			}
 
@@ -172,7 +172,7 @@ define([
 			// other types ?
 		}
 
-		UIManager.showErrorBox( DB.msgstringtable[msg_id] );
+		UIManager.showErrorBox( DB.getMessage(msg_id) );
 	}
 
 
@@ -184,7 +184,7 @@ define([
 	function onMapUnavailable( pkt )
 	{
 		// no map server avaiable
-		UIManager.showMessageBox( DB.msgstringtable[1811], null, function(){
+		UIManager.showMessageBox( DB.getMessage(1811), null, function(){
 			UIManager.getComponent('WinLoading').remove();
 			CharSelect.append();
 		});
@@ -233,7 +233,7 @@ define([
 		}
 
 		// Display prompt message
-		_ui_box  = UIManager.showPromptBox( DB.msgstringtable[19], 'ok', 'cancel', onOk, onCancel);
+		_ui_box  = UIManager.showPromptBox( DB.getMessage(19), 'ok', 'cancel', onOk, onCancel);
 		_overlay = jQuery('<div/>').addClass('win_popup_overlay').appendTo('body');
 
 		// Submit the mail
@@ -243,7 +243,7 @@ define([
 			_ui_box.remove();
 
 			// Stop rendering...
-			_ui_box = UIManager.showMessageBox( DB.msgstringtable[296].replace('%d',10), 'cancel', function(){
+			_ui_box = UIManager.showMessageBox( DB.getMessage(296).replace('%d',10), 'cancel', function(){
 				_render = false;
 				onCancel();
 			});
@@ -280,7 +280,7 @@ define([
 			}
 
 			// Update text
-			_ui_box.ui.find('.text').text( DB.msgstringtable[296].replace('%d', Math.round(10-percent/10) ) );
+			_ui_box.ui.find('.text').text( DB.getMessage(296).replace('%d', Math.round(10-percent/10) ) );
 
 			// Update progressbar
 			_ctx.clearRect(0, 0, _width, _height);
@@ -400,7 +400,7 @@ define([
 			case 0xFF: msg_id =   11;  break; // 'Char creation denied'
 		}
 
-		UIManager.showMessageBox( DB.msgstringtable[msg_id], 'ok' );
+		UIManager.showMessageBox( DB.getMessage(msg_id), 'ok' );
 	}
 
 
