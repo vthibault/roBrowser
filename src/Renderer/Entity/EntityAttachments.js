@@ -100,6 +100,7 @@ function(     Client,            Renderer,            SpriteRenderer,           
 				}
 			}
 
+			SpriteRenderer.depth = 0.0;
 			entity.effectColor.set(effectColor);
 		};
 	}();
@@ -137,6 +138,7 @@ function(     Client,            Renderer,            SpriteRenderer,           
 			frame                 %= act.actions.length;
 			animations             = act.actions[frame].animations;
 			delay                  = attachment.delay || act.actions[frame].delay;
+			SpriteRenderer.depth   = attachment.depth || 0.0;
 
 			// pause
 			if ('animationId' in attachment) {

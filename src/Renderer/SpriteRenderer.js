@@ -40,6 +40,7 @@ function(      WebGL,         glMatrix,      Camera )
 		"uniform vec2 uSpriteRendererOffset;",
 		"uniform mat4 uSpriteRendererAngle;",
 		"uniform vec3 uSpriteRendererPosition;",
+		"uniform float uSpriteRendererDepth;",
 
 		"mat4 Project( mat4 mat, vec3 pos) {",
 
@@ -75,7 +76,7 @@ function(      WebGL,         glMatrix,      Camera )
 
 			// Hack for billboarding
 			"vec3 camPosition = vec3( uViewModelMat[0].w, uViewModelMat[1].w, uViewModelMat[2].w);",
-			"gl_Position.z   -= aIsUp * (uCameraLatitude * 0.25 / distance( gl_Position.xyz, camPosition.xyz));",
+			"gl_Position.z   -= uSpriteRendererDepth + aIsUp * (uCameraLatitude * 0.25 / distance( gl_Position.xyz, camPosition.xyz));",
 		"}"
 	].join("\n");
 
@@ -191,6 +192,13 @@ function(      WebGL,         glMatrix,      Camera )
 	 */
 	SpriteRenderer.angle = 0;
 
+
+	/**
+	 * @var {number} depth
+	 */
+	SpriteRenderer.depth = 0.0;
+
+
 	/**
 	 * @var {Float32Array[3]} sprite position in 3D world
 	 */
@@ -290,6 +298,11 @@ function(      WebGL,         glMatrix,      Camera )
 	 * @var {number} last rotation angle used
 	 */
 	var _angle = null;
+
+	/**
+	 * @var {number} last depth operation
+	 */
+	var _depth = null;
 
 
 	/**
@@ -456,6 +469,10 @@ function(      WebGL,         glMatrix,      Camera )
 
 		if (_usepal !== use_pal) {
 			gl.uniform1i(  uniform.uUsePal, _usepal = use_pal );
+		}
+
+		if (this.depth !== _depth) {
+			gl.uniform1f( uniform.uSpriteRendererDepth, _depth = this.depth);
 		}
 
 		// Rotate

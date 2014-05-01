@@ -8,8 +8,8 @@
  * @author Vincent Thibault
  */
 
-define([ 'require', 'Utils/jquery', 'Core/Client', 'Preferences/Graphics', 'Loaders/Sprite', 'Loaders/Action'],
-function( require,         jQuery,        Client,               Graphics,           Sprite,           Action )
+define([ 'require', 'Utils/jquery', 'Core/Client', 'Core/MemoryManager', 'Preferences/Graphics', 'Loaders/Sprite', 'Loaders/Action'],
+function( require,         jQuery,        Client,        MemoryManager,               Graphics,           Sprite,           Action )
 {
 	'use strict';
 
@@ -27,6 +27,7 @@ function( require,         jQuery,        Client,               Graphics,       
 		DEFAULT: 0,
 		TALK:    1,
 		CLICK:   2,
+		LOCK:    3,
 		ROTATE:  4,
 		ATTACK:  5,
 		WARP:    7,
@@ -155,9 +156,14 @@ function( require,         jQuery,        Client,               Graphics,       
 				return;
 			}
 
+			// Load it properly later using webgl
+			MemoryManager.remove(null, 'data/sprite/cursors.spr');
+			MemoryManager.remove(null, 'data/sprite/cursors.act');
+
 			bindMouseEvent();
 			preCompiledAnimations();
 			fn();
+
 		});
 
 		EntityManager  = require('Renderer/EntityManager');

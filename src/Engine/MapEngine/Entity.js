@@ -169,7 +169,8 @@ define(function( require )
 				frame: Emotions.indexes[pkt.type],
 				file:  'emotion',
 				play:   true,
-				head:   true
+				head:   true,
+				depth:  5.0
 			});
 		}
 	}
