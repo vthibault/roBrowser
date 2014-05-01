@@ -18,6 +18,7 @@ define(function( require )
 	 */
 	var SkillId       = require('DB/SkillId');
 	var SkillInfo     = require('DB/SkillInfo');
+	var Emotions      = require('DB/Emotions');
 	var Session       = require('Engine/SessionStorage');
 	var Network       = require('Network/NetworkManager');
 	var PACKET        = require('Network/PacketStructure');
@@ -151,6 +152,25 @@ define(function( require )
 					entity.walk.speed = speed;
 				};
 			}
+		}
+	}
+
+
+	/**
+	 * Display entity's emotion
+	 *
+	 * @param {object} pkt - PACKET.ZC.EMOTION
+	 */
+	function onEntityEmotion( pkt )
+	{
+		var entity = EntityManager.get(pkt.GID);
+		if (entity && (pkt.type in Emotions.indexes)) {
+			entity.attachments.add({
+				frame: Emotions.indexes[pkt.type],
+				file:  'emotion',
+				play:   true,
+				head:   true
+			});
 		}
 	}
 
@@ -966,5 +986,6 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.HIGHJUMP,                     onEntityJump);
 		Network.hookPacket( PACKET.ZC.FASTMOVE,                     onEntityFastMove);
 		Network.hookPacket( PACKET.ZC.RESURRECTION,                 onEntityResurect);
+		Network.hookPacket( PACKET.ZC.EMOTION,                      onEntityEmotion);
 	};
 });

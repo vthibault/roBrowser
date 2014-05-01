@@ -43,6 +43,7 @@ define( function( require )
 		require('./EntityRender').call(this);
 		require('./EntityRoom').call(this);
 		require('./EntityState').call(this);
+		require('./EntityAttachments').call(this);
 
 		this.boundingRect = { x1:0, y1:0, x2:0, y2:0 };
 		this.matrix       = mat4.create();

@@ -9,7 +9,7 @@
  */
 define([
 	'require',
-	'DB/DBManager',
+	'DB/DBManager',            'DB/Emotions',
 	'Audio/BGM',               'Audio/SoundManager',
 	'Engine/SessionStorage',
 	'Network/PacketStructure', 'Network/NetworkManager',
@@ -17,7 +17,7 @@ define([
 ],
 function(
 	require,
-	DB,
+	DB,                  Emotions,
 	BGM,                 Sound,
 	Session,
 	PACKET,              Network,
@@ -182,6 +182,13 @@ function(
 			}
 		}
 
+		// Show emotion
+		if (cmd in Emotions.commands) {
+			pkt      = new PACKET.CZ.REQ_EMOTION();
+			pkt.type = Emotions.commands[cmd];
+			Network.sendPacket(pkt);
+			return;
+		}
 
 		// Command not found
 		this.addText( DB.msgstringtable[95], this.TYPE.INFO );

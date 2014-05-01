@@ -105,31 +105,9 @@ define(function( require )
 	{
 
 		// Yeah success !
-		if (pkt.success) {
-			Session.Entity.setAction({
-				action: Session.Entity.ACTION.SKILL,
-				frame:  0,
-				repeat: false,
-				play:   true,
-				next: {
-					action: Session.Entity.ACTION.IDLE,
-					frame: 0,
-					repeat: true,
-					play: true,
-					next: false
-				}
-			});
+		if (pkt.result) {
 			return;
 		}
-
-		// Fail
-		Session.Entity.setAction({
-			action: Session.Entity.ACTION.READYFIGHT,
-			frame:  0,
-			repeat: true,
-			play:   true,
-			next:   false
-		});
 
 		var error = 0;
 

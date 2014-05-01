@@ -75,7 +75,7 @@ define( ['./PacketStructure' ], function( PACKET )
 		0xbc: PACKET.ZC.STATUS_CHANGE_ACK, // ok
 		0xbd: PACKET.ZC.STATUS, // ok
 		0xbe: PACKET.ZC.STATUS_CHANGE, // ok
-		0xc0: PACKET.ZC.EMOTION,
+		0xc0: PACKET.ZC.EMOTION, // ok
 		0xc2: PACKET.ZC.USER_COUNT, // ok
 		0xc3: PACKET.ZC.SPRITE_CHANGE, // ok
 		0xc4: PACKET.ZC.SELECT_DEALTYPE, // ok

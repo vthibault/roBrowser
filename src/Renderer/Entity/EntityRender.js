@@ -53,6 +53,7 @@ define( function( require )
 		// Render it only if visible
 		if (this.effectColor[3]) {
 			this.renderEntity();
+			this.attachments.render(this, Renderer.tick);
 		}
 
 		// Update character UI (life, dialog, etc.)
