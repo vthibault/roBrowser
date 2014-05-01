@@ -4,7 +4,7 @@
 
 #Equipment .titlebar { width:280px; height:17px; background-color:white; background-repeat:repeat-x; border-radius:3px 3px 0px 0px; }
 #Equipment .titlebar .base { width:11px; height:11px; border:none; background-color:transparent; background-repeat:no-repeat; vertical-align:middle;}
-#Equipment .titlebar .text { text-shadow:1px 1px white; vertical-align:-2px; 
+#Equipment .titlebar .text { text-shadow:1px 1px white; vertical-align:-2px; white-space:nowrap;
  /* chrome bug */ display: inline-block; width: 32px; height:13px; }
 
 #Equipment .titlebar .left { margin-left:3px; float:left; }
@@ -20,7 +20,7 @@
 #Equipment .overlay { position:absolute; display:none; white-space:nowrap; z-index:900; height:13px; padding:5px; background:rgba(0,0,0,0.7); color:white; text-shadow:1px 1px black;}
 
 #Equipment .item button { width:24px; height:24px; background-color:transparent; background-repeat:no-repeat; border: none; }
-#Equipment .item span { white-space:pre; width:80px; height:24px; display:inline-block; line-height:12px; }
+#Equipment .item span { width:80px; height:24px; display:inline-block; line-height:12px; word-break:break-all; overflow:hidden; }
 
 #Equipment .col3 .item button, #Equipment .col3 .item span { float:right; }
 #Equipment .col1 .item button, #Equipment .col1 .item span { float:left; }

@@ -22,6 +22,7 @@
 	top:2px;
 	left:18px;
 	text-shadow:1px 1px white;
+	white-space:nowrap;
 }
 
 #Escape .container {

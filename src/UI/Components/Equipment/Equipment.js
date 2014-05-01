@@ -325,19 +325,11 @@ define(function(require)
 		}
 
 		var name  = ( item.RefiningLevel ? '+' + item.RefiningLevel + ' ' : '') + it.identifiedDisplayName;
-		var lines = [];
-
-		while (name.length) {
-			lines.push( name.substr(0,13) );
-			name = name.substr(13);
-		}
 
 		this.ui.find(getSelectorFromLocation(location)).html(
 			'<div class="item" data-index="'+ item.index +'">' +
 				'<button></button>' +
-				'<span>' +
-					 lines.join('\n') +
-				'</span>' +
+				'<span>' + name + '</span>' +
 			'</div>'
 		);
 
