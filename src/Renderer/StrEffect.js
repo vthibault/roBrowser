@@ -310,6 +310,8 @@ define(['Utils/WebGL', 'Utils/gl-matrix', 'Core/Client'], function( WebGL, glMat
 	{
 		var i, delta;
 		var animations, from, to;
+		var lastFrame  = 0;
+		var lastSource = 0;
 		var fromId = -1, toId = -1;
 
 		animations = layer.animations;
@@ -320,10 +322,15 @@ define(['Utils/WebGL', 'Utils/gl-matrix', 'Core/Client'], function( WebGL, glMat
 				if (animations[i].type === 0) fromId = i;
 				if (animations[i].type === 1) toId   = i;
 			}
+			lastFrame = Math.max(lastFrame, animations[i].frame);
+
+			if (animations[i].type === 0) {
+				lastSource = Math.max(lastSource, animations[i].frame);
+			}
 		}
 
 		// Nothing to render
-		if (fromId < 0) {
+		if (fromId < 0 || (toId < 0 && lastFrame < keyIndex)) {
 			return false;
 		}
 
@@ -333,9 +340,14 @@ define(['Utils/WebGL', 'Utils/gl-matrix', 'Core/Client'], function( WebGL, glMat
 		result.srcalpha  = from.srcalpha;
 		result.destalpha = from.destalpha;
 
-
 		// Static frame (or frame that can't be updated)
 		if (toId !== fromId + 1 || to.frame !== from.frame) {
+
+			// No other source
+			if (to && lastSource <= from.frame) {
+				return false;
+			}
+
 			result.angle     = from.angle;
 			result.aniframe  = from.aniframe;
 
@@ -382,7 +394,7 @@ define(['Utils/WebGL', 'Utils/gl-matrix', 'Core/Client'], function( WebGL, glMat
 				break;
 
 			case 1: // normal
-				result.aniframe = from.aniframe + to.delay * delta;
+				result.aniframe = from.aniframe + to.aniframe * delta;
 				break;
 
 			case 2: // Stop at end
@@ -396,7 +408,7 @@ define(['Utils/WebGL', 'Utils/gl-matrix', 'Core/Client'], function( WebGL, glMat
 			case 4: // play reverse infinitly
 				result.aniframe = (from.aniframe - to.delay * delta) % layer.texcnt;
 				break;
-		}		
+		}
 
 		return true;
 	}
