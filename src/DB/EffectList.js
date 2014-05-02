@@ -58,7 +58,7 @@ define(function()
 		94:  { attachedEntity: true,   str: 'ufidel_pang' },
 		95:  { attachedEntity: false,  str: 'quagmire' },
 		96:  { attachedEntity: false,  str: 'firepillar',        wav: 'effect/wizard_fire_pillar_a' },
-		97:  { attachedEntity: false,  str: 'firepillarbomp',    wav: 'effect/wizard_fire_pillar_b' },
+		97:  { attachedEntity: false,  str: 'firepillarbomb',    wav: 'effect/wizard_fire_pillar_b' },
 
 		101: { attachedEntity: true,   str: 'repairweapon',      wav: 'effect/black_weapon_repear' },
 		102: { attachedEntity: false,  str: 'crashearth',        wav: 'effect/black_hammerfall' },
