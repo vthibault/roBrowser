@@ -4959,7 +4959,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			for ( i=0; i<count; ++i ) {
 				out[i] = {};
 				out[i].ip        = fp.readULong();
-				out[i].port      = fp.readShort();
+				out[i].port      = fp.readUShort();
 				out[i].name      = fp.readString(20);
 				out[i].usercount = fp.readUShort();
 				out[i].state     = fp.readUShort();
@@ -5178,7 +5178,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 		this.mapName    = fp.readString(16);
 		this.addr       = {};
 		this.addr.ip   = fp.readULong();
-		this.addr.port = fp.readShort();
+		this.addr.port = fp.readUShort();
 	};
 	PACKET.HC.NOTIFY_ZONESVR.size = 28;
 
@@ -5510,7 +5510,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 		this.yPos       = fp.readShort();
 		this.addr       = {};
 		this.addr.ip   = fp.readULong();
-		this.addr.port = fp.readShort();
+		this.addr.port = fp.readUShort();
 	};
 	PACKET.ZC.NPCACK_SERVERMOVE.size = 28;
 
