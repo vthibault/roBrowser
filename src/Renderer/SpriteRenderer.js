@@ -111,20 +111,12 @@ function(      WebGL,         glMatrix,      Camera )
 			"float blLUT = texture2D(indexT, uv + vec2(0.0, TextInterval.y)).x;",
 			"float brLUT = texture2D(indexT, uv + TextInterval).x;",
 
-			"float atlLUT = 1.0;",
-			"float atrLUT = 1.0;",
-			"float ablLUT = 1.0;",
-			"float abrLUT = 1.0;",
+			"vec4 transparent = vec4( 0.5, 0.5, 0.5, 0.0);",
 
-			"if (tlLUT == 0.0) atlLUT = 0.0;",
-			"if (trLUT == 0.0) atrLUT = 0.0;",
-			"if (blLUT == 0.0) ablLUT = 0.0;",
-			"if (brLUT == 0.0) abrLUT = 0.0;",
-
-			"vec4 tl = vec4( texture2D(LUT, vec2(tlLUT,1.0)).rgb, atlLUT);",
-			"vec4 tr = vec4( texture2D(LUT, vec2(trLUT,1.0)).rgb, atrLUT);",
-			"vec4 bl = vec4( texture2D(LUT, vec2(blLUT,1.0)).rgb, ablLUT);",
-			"vec4 br = vec4( texture2D(LUT, vec2(brLUT,1.0)).rgb, abrLUT);",
+			"vec4 tl = tlLUT == 0.0 ? transparent : vec4( texture2D(LUT, vec2(tlLUT,1.0)).rgb, 1.0);",
+			"vec4 tr = trLUT == 0.0 ? transparent : vec4( texture2D(LUT, vec2(trLUT,1.0)).rgb, 1.0);",
+			"vec4 bl = blLUT == 0.0 ? transparent : vec4( texture2D(LUT, vec2(blLUT,1.0)).rgb, 1.0);",
+			"vec4 br = brLUT == 0.0 ? transparent : vec4( texture2D(LUT, vec2(brLUT,1.0)).rgb, 1.0);",
 
 			"vec2 f  = fract( uv.xy * uTextSize );",
 			"vec4 tA = mix( tl, tr, f.x );",
