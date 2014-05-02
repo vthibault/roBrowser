@@ -84,8 +84,7 @@ function(      WebGL,         glMatrix,       SkillId,        Client,           
 			'gl_Position    = uProjectionMat * uModelViewMat * vec4( aPosition, 1.0);',
 			'gl_Position.z -= 0.01;',
 
-			'vTextureCoord  = (uRotationMat * vec4( aTextureCoord - 0.5, 1.0, 1.0)).xy;',
-			'vTextureCoord  = clamp(vTextureCoord + 0.5, 0.0, 1.0);',
+			'vTextureCoord  = (uRotationMat * vec4( aTextureCoord - 0.5, 1.0, 1.0)).xy + 0.5;',
 		'}'
 	].join('\n');
 
