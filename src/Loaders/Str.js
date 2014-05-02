@@ -103,7 +103,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 		this.xy        = new Float32Array([ fp.readFloat(), fp.readFloat(), fp.readFloat(), fp.readFloat(), fp.readFloat(), fp.readFloat(), fp.readFloat(), fp.readFloat() ]);
 		this.aniframe  = fp.readFloat();
 		this.anitype   = fp.readULong();
-		this.delay     = fp.readFloat() * 1000;
+		this.delay     = fp.readFloat();
 		this.angle     = fp.readFloat() / (1024/360);
 		this.color     = new Float32Array([ fp.readFloat() / 255.0, fp.readFloat() / 255.0, fp.readFloat() / 255.0, fp.readFloat() / 255.0 ]);
 		this.srcalpha  = fp.readULong();

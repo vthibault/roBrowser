@@ -382,21 +382,21 @@ define(['Utils/WebGL', 'Utils/gl-matrix', 'Core/Client'], function( WebGL, glMat
 				break;
 
 			case 1: // normal
-				result.aniframe = from.aniframe + to.aniframe * delta;
+				result.aniframe = from.aniframe + to.delay * delta;
 				break;
 
 			case 2: // Stop at end
-				result.aniframe = from.aniframe + to.aniframe * Math.min(delta, 1.0);
+				result.aniframe = Math.min(from.aniframe + to.delay * delta, layer.texcnt - 1);
 				break;
 
 			case 3: // Repeat
-				result.aniframe = from.aniframe + to.aniframe * (delta % 1.0);
+				result.aniframe = (from.aniframe + to.delay * delta) % layer.texcnt;
 				break;
 
 			case 4: // play reverse infinitly
-				result.aniframe = from.aniframe - to.aniframe * (delta % 1.0);
+				result.aniframe = (from.aniframe - to.delay * delta) % layer.texcnt;
 				break;
-		}
+		}		
 
 		return true;
 	}
