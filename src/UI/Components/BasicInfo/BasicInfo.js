@@ -25,7 +25,7 @@ define(function(require)
 	var Inventory          = require('UI/Components/Inventory/Inventory');
 	var Equipment          = require('UI/Components/Equipment/Equipment');
 	var SkillList          = require('UI/Components/SkillList/SkillList');
-	var Graphics           = require('UI/Components/GraphicsOption/GraphicsOption');
+	var Escape             = require('UI/Components/Escape/Escape');
 	var htmlText           = require('text!./BasicInfo.html');
 	var cssText            = require('text!./BasicInfo.css');
 
@@ -93,12 +93,7 @@ define(function(require)
 					break;
 
 				case 'option':
-					if (Graphics.ui && Graphics.ui.is(':visible')) {
-						Graphics.remove();
-					}
-					else {
-						Graphics.append();
-					}
+					Escape.ui.toggle();
 					break;
 
 				case 'map':
