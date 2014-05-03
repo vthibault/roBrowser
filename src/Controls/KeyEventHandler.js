@@ -23,18 +23,36 @@ define( ['Utils/jquery'], function( jQuery )
 		SHIFT:   false,
 		ALT:     false,
 
+		MB_L:      1,
+		MB_R:      2,
+		MB_C:      4,
+		BACK:      8,
 		TAB:       9,
+		CLEAR:    12,
 		ENTER:    13,
+		//SHIFT:    16,
+		//CTRL:     17,
+		//ALT:      18,
+		PAUSE:    19,
+		CAPS:     20,
+		HANGUL:   21,
+		HANJA:    25,
 		ESCAPE:   27,
 		SPACE:    32,
 		PAGEDOWN: 33,
 		PAGEUP:   34,
+		HOME:     35,
+		END:      36,
 		LEFT:     37,
 		UP:       38,
 		RIGHT:    39,
 		DOWN:     40,
+		SELECT:   41,
+		EXECUTE:  43,
+		SNAPSHOT: 44,
 		INSERT:   45,
 		SUPR:     46,
+		HELP:     47,
 
 		// Numeric
 		0:        48,
@@ -76,6 +94,9 @@ define( ['Utils/jquery'], function( jQuery )
 		Y:        89,
 		Z:        90,
 
+		APPS:     93,
+
+
 		// Num pad
 		Num_0:    96,
 		Num_1:    97,
@@ -87,10 +108,12 @@ define( ['Utils/jquery'], function( jQuery )
 		Num_7:   103,
 		Num_8:   104,
 		Num_9:   105,
-		'*':     106,
-		'+':     107,
-		'-':     109,
-		'/':     111,
+		MULTIPLY:106,
+		ADD:     107,
+		SEP:     108,
+		SUB:     109,
+		DECIMAL: 110,
+		DEVIDE:  111,
 
 		// Functions keys
 		F1:      112,
@@ -112,6 +135,25 @@ define( ['Utils/jquery'], function( jQuery )
 		F17:     128,
 		F18:     129,
 		F19:     130,
+		F20:     131,
+		F21:     132,
+		F22:     133,
+		F23:     134,
+		F24:     135,
+
+		NUM:     144,
+		SCROLL:  145,
+		';':     186,
+		'=':     187,
+		',':     188,
+		'-':     189,
+		'.':     190,
+		'/':     191,
+		'`':     192,
+		'[':     219,
+		'\\':    220,
+		']':     221,
+		'\'':    222
 	};
 
 
