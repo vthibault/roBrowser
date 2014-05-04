@@ -350,18 +350,17 @@ define(function( require )
 			}
 		}
 
+		// Display zone effects and entities
+		Sky.render( gl, modelView, projection, fog, tick );
 		Effects.render( gl, modelView, projection, fog, tick, true);
 		EntityManager.render( gl, modelView, projection, fog );
-		Effects.render( gl, modelView, projection, fog, tick, false);
 
-
+		// Rendering water
 		Water.render( gl, modelView, projection, fog, light, tick );
-
-		// Display clouds on maps
-		Sky.render( gl, modelView, projection, fog, tick );
 
 		// Rendering effects
 		Damage.render( gl, modelView, projection, fog, tick );
+		Effects.render( gl, modelView, projection, fog, tick, false);
 
 		// Play sounds
 		Sounds.render( Session.Entity.position, tick );
