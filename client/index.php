@@ -70,6 +70,7 @@
 
 	// Decode path
 	$path      = str_replace('\\', '/', utf8_decode(urldecode($_SERVER['REQUEST_URI'])));
+	$path      = preg_replace('/\?.*/', '', $path); // remove query
 	$directory = basename(dirname(__FILE__));
 
 	// Check Allowed directory

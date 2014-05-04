@@ -150,29 +150,24 @@ final class Client
 		$path         = utf8_encode($path);
 		$current_path = self::$path;
 		$local_path   = $current_path . str_replace('\\', '/', $path );
-		$directories  = explode('\\', $path );
-		array_pop($directories);
+		$parent_path  = preg_replace("/[^\/]+$/", '', $local_path);
 
-		// Creating directories
-		foreach ($directories as $dir) {
-			$current_path .= $dir . DIRECTORY_SEPARATOR;
-
-			if (!file_exists($current_path)) {
-
-				// Need write access
-				if (!is_writable($current_path)) {
-					Debug::write('Need write permission at ' . $current_path, 'error');
-					return $content;
-				}
-
-				mkdir( $current_path );
+		if (!file_exists($parent_path)) {
+			if (!@mkdir( $parent_path, 0777, true)) {
+				Debug::write("Can't build path '{$parent_path}', need write permission ?", 'error');
+				return $content;
 			}
 		}
 
+		if (!is_writable($parent_path)) {
+			Debug::write("Can't write file to '{$parent_path}', need write permission.", 'error');
+			return $content;
+		}
+
 		// storing bmp images as png
-		if (pathinfo($path, PATHINFO_EXTENSION) === 'bmp')  {
+		if (strtolower(pathinfo($path, PATHINFO_EXTENSION)) === 'bmp')  {
 			$img  = imagecreatefrombmpstring( $content );
-			$path = str_replace('.bmp', '.png', $local_path);
+			$path = str_ireplace('.bmp', '.png', $local_path);
 			imagepng($img, $path );
 			return file_get_contents( $path );
 		}
