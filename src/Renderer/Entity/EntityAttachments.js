@@ -35,6 +35,8 @@ function(     Client,            Renderer,            SpriteRenderer,           
 
 		attachment.startTick = Renderer.tick;
 		attachment.opacity   = 'opacity' in attachment ? attachment.opacity : 1.0;
+		attachment.direction = 'frame'   in attachment ? false : true;
+		attachment.frame     = attachment.frame || 0;
 
 		if (attachment.file) {
 			attachment.spr       = 'data/sprite/\xc0\xcc\xc6\xd1\xc6\xae/' + attachment.file + '.spr';
@@ -134,7 +136,7 @@ function(     Client,            Renderer,            SpriteRenderer,           
 
 			entity.effectColor[3]  = attachment.opacity;
 			position[1]            = attachment.head ? -100 : 0;
-			frame                  = 'frame'   in attachment ? attachment.frame : (Camera.direction + entity.direction + 8) % 8;
+			frame                  = attachment.direction ? (Camera.direction + entity.direction + 8) % 8 : attachment.frame;
 			frame                 %= act.actions.length;
 			animations             = act.actions[frame].animations;
 			delay                  = attachment.delay || act.actions[frame].delay;

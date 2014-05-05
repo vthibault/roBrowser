@@ -78,7 +78,6 @@ function(      WebGL,         glMatrix,       SkillId,        Client,           
 		'uniform mat4 uModelViewMat;',
 		'uniform mat4 uProjectionMat;',
 		'uniform mat4 uRotationMat;',
-		'uniform float uCenter;',
 
 		'void main(void) {',
 			'gl_Position    = uProjectionMat * uModelViewMat * vec4( aPosition, 1.0);',

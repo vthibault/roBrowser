@@ -19,7 +19,7 @@ define(function(require)
 	var Client             = require('Core/Client');
 	var Renderer           = require('Renderer/Renderer');
 	var Effects            = require('Renderer/Effects');
-	var StrEffect          = require('Renderer/StrEffect');
+	var StrEffect          = require('Renderer/Effects/StrEffect');
 	var Camera             = require('Renderer/Camera');
 
 	var UIManager          = require('UI/UIManager');

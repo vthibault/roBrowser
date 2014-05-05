@@ -18,7 +18,9 @@ define(function( require )
 	var EffectDB      = require('DB/EffectList');
 	var SkillEffect   = require('DB/SkillEffectList');
 	var SkillUnit     = require('DB/SkillUnit');
-	var StrEffect     = require('Renderer/StrEffect');
+	var Cylinder      = require('Renderer/Effects/Cylinder');
+	var StrEffect     = require('Renderer/Effects/StrEffect');
+	var SpriteEffect  = require('Renderer/Effects/SpriteEffect');
 	var EntityManager = require('Renderer/EntityManager');
 	var Renderer      = require('Renderer/Renderer');
 	var Altitude      = require('Renderer/Map/Altitude');
@@ -218,7 +220,9 @@ define(function( require )
 							continue;
 						}
 
-						list[j].free(gl);
+						if (list[j].free) {
+							list[j].free(gl);
+						}
 						list.splice( j, 1);
 						j--;
 						size--;
@@ -228,7 +232,9 @@ define(function( require )
 				constructor.afterRender(gl);
 
 				if (size === 0) {
-					constructor.free(gl);
+					if (constructor.free) {
+						constructor.free(gl);
+					}
 					delete _list[keys[i]];
 				}
 			}
@@ -246,54 +252,165 @@ define(function( require )
 	 */
 	Effects.spam = function spam( effectId, AID, position, tick )
 	{
+		var effects, effect, entity;
+		var i, count, pos;
+
 		// No effect mode (/effect)
 		if (!Preferences.effect) {
 			return;
 		}
 
-		var entity, effect, pos;
-		var filename;
-
+		// Not found
 		if (!(effectId in EffectDB)) {
 			return;
 		}
 
-		entity   = EntityManager.get(AID);
-		effect   = EffectDB[effectId];
+		entity  = EntityManager.get(AID);
+		effects = EffectDB[effectId];
 
-		// Effect required entity attached
-		if (!entity && effect.attachedEntity) {
+		// No position to work with
+		if (!position && !entity) {
 			return;
 		}
 
-		// No position, get it from entity
+		for (i = 0, count = effects.length; i < count; ++i) {
+			effect = effects[i];
+
+			switch (effect.type) {
+				case 'SPR':
+					Effects.spamSPR( effect, AID, position, tick );
+					break;
+
+				case 'STR':
+					Effects.spamSTR( effect, AID, position, tick );
+					break;
+
+				case 'FUNC':
+					break;
+
+				case 'CYLINDER':
+					if (entity) {
+						Effects.add(new Cylinder( entity, effect.topSize, effect.bottomSize, effect.height, effect.textureName, tick), AID);
+					}
+					break;
+			}
+		}
+	};
+
+
+	/**
+	 * Spam an effect to the scene
+	 *
+	 * @param {object} effect
+	 * @param {number} owner aid
+	 * @param {Array} position
+	 * @param {number} tick
+	 */
+	Effects.spamSTR = function spamSTR( effect, AID, position, tick )
+	{
+		var filename, entity;
+
 		if (!position) {
-			position = entity.position;
+			entity = EntityManager.get(AID);
+
+			if (!entity) {
+				return;
+			}
+
+			// Get reference
+			if (effect.attachedEntity) {
+				position = entity.position;
+			}
+
+			// copy
+			else {
+				position    = new Array(3);
+				position[0] = entity.position[0];
+				position[1] = entity.position[1];
+				position[2] = entity.position[2];
+			}
 		}
 
-		// Create a new point to not have update for entity
-		// movement (if position is atteched to entity)
-		if (!effect.attachedEntity) {
-			pos    = new Array(3);
-			pos[0] = position[0];
-			pos[1] = position[1];
-			pos[2] = position[2]; 
+		// Get STR file
+		if (Preferences.mineffect && effect.min) {
+			filename = effect.min;
 		}
 		else {
-			pos = position;
+			filename = effect.file;
 		}
 
-		filename = (Preferences.mineffect && effect.str_min) || effect.str;
-		if (filename) {
-			if (effect.random) {
-				filename = filename.replace('%d', Math.round(effect.random[0] + (effect.random[1]-effect.random[0]) * Math.random()) );
-			}
-			Effects.add(new StrEffect('data/texture/effect/' + filename + '.str', pos, tick || Renderer.tick), AID );
+		// Randomize STR file name
+		if (effect.rand) {
+			filename = filename.replace('%d', Math.round(effect.rand[0] + (effect.rand[1]-effect.rand[0]) * Math.random()) );
 		}
 
+		// Play sound
 		if (effect.wav) {
 			Sound.play(effect.wav + '.wav');
 		}
+
+		// Start effect
+		Effects.add(new StrEffect('data/texture/effect/' + filename + '.str', position, tick || Renderer.tick), AID );
+	};
+
+
+	/**
+	 * Spam an effect to the scene
+	 *
+	 * @param {object} effect
+	 * @param {number} owner aid
+	 * @param {Array} position
+	 * @param {number} tick
+	 */
+	Effects.spamSPR = function spamSPR( effect, AID, position, tick )
+	{
+		var entity;
+
+		// Play sound
+		if (effect.wav) {
+			Sound.play(effect.wav + '.wav');
+		}
+
+		if (!position) {
+			entity = EntityManager.get(AID);
+
+			if (!entity) {
+				return;
+			}
+
+			// Get reference
+			if (effect.attachedEntity) {
+				position = entity.position;
+			}
+
+			// copy
+			else {
+				position    = new Array(3);
+				position[0] = entity.position[0];
+				position[1] = entity.position[1];
+				position[2] = entity.position[2];
+			}
+		}
+
+		// Zone effect
+		if (!effect.attachedEntity) {
+			Effects.add(new SpriteEffect({
+				file:        effect.file,
+				head:      !!effect.head,
+				direction: !!effect.direction,
+				position:    position,
+				tick:        Renderer.tick
+			}));
+			return;
+		}
+
+		// Sprite effect
+		entity.attachments.add({
+			file:        effect.file,
+			head:      !!effect.head,
+			direction: !!effect.direction,
+			position:    position
+		});
 	};
 
 

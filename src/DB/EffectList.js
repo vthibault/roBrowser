@@ -8,316 +8,2006 @@
  *
  * @author Vincent Thibault
  */
-
-define(function()
+define(function( require )
 {
 	'use strict';
 
+	/// type = STR
+	///
+	/// - file:
+	///   STR file name stored in data/texture/effect/(.*).str
+	///
+	/// - min:
+	///   minify str file stored in data/texture/effect/(.*).str
+	///   used when /mineffect is enabled
+	///
+	/// - rand
+	///   replace the %d in the file name with a rand(val1, val2).
+	///
+	/// - wav:
+	///   autio file stored in data/wav/ folder
+	///
+	/// - attachedEntity:
+	///   if set to true, the effect will follow the entity attached
+
+
+	/// type = SPR
+	///
+	/// - file:
+	///   Sprite file name stored in data/sprite/ÀÌÆÑÆ®/(.*).spr
+	///
+	/// - wav:
+	///   autio file stored in data/wav/ folder
+	///
+	/// - attachedEntity:
+	///   if set to true, the effect will follow the entity attached
+	///
+	/// - head
+	///   if set to true, the sprite will be at the character's head
+	///
+	/// - stopAtEnd
+	///   to do, stop the animation at end
+	///
+	/// - direction
+	///   if set to true, the sprite will inherit character's direction
+
+	/// type = FUNC
+	///
+	/// - func:
+	///   callback to use
+
+
 	return {
-		10:  { attachedEntity: true,   str: 'maemor',                                                      str_min: 'memor_min' },
-
-		13:  { attachedEntity: false,  str: 'magician_safe' },
-
-		23:  { attachedEntity: true,   str: 'stonecurse' },
-		25:  { attachedEntity: false,  str: 'firewall%d',        wav: 'effect/ef_firewall',                random:[1,2] },
-
-		29:  { attachedEntity: true,   str: 'lightning' },
-		30:  { attachedEntity: false,  str: 'thunderstorm',      wav: 'effect/magician_thunderstorm' },
-
-		40:  { attachedEntity: true,   str: 'cross' },
-		41:  { attachedEntity: true,   str: 'angelus',           wav: 'effect/ef_angelus',                 str_min: 'jong_mini' },
-
-		49:  { attachedEntity: true,   str: 'firehit%d',         wav: 'effect/ef_firehit',                 random:[1,3] },
-
-		52:  { attachedEntity: true,   str: 'windhit%d',                                                   random:[1,3] },
-
-		64:  { attachedEntity: true,   str: 'arrowshot' },
-		65:  { attachedEntity: true,   str: 'invenom' },
-		66:  { attachedEntity: true,   str: 'cure',              wav: 'effect/acolyte_cure',               str_min: 'cure_min' },
-		67:  { attachedEntity: true,   str: 'provoke',           wav: 'effect/swordman_provoke' },
-		68:  { attachedEntity: true,   str: 'mvp',               wav: 'effect/st_mvp'},
-		69:  { attachedEntity: false,  str: 'skidtrap',          wav: 'effect/hunter_skidtrap' },
-		70:  { attachedEntity: true,   str: 'brandish',          wav: 'effect/knight_brandish_spear' },
-
-		75:  { attachedEntity: true,   str: 'gloria',            wav: 'effect/priest_gloria',              str_min: 'gloria_min' },
-		76:  { attachedEntity: true,   str: 'magnificat',        wav: 'effect/priest_magnificat',          str_min: 'magnificat_min' },
-		77:  { attachedEntity: true,   str: 'resurrection',      wav: 'effect/priest_resurrection',        str_min: 'resurrection_min' },
-		78:  { attachedEntity: true,   str: 'recovery',          wav: 'effect/priest_recovery' },
-
-		83:  { attachedEntity: false,  str: 'sanctuary',         wav: 'effect/priest_sanctuary' },
-		84:  { attachedEntity: true,   str: 'impositio',         wav: 'effect/priest_impositio' },
-		85:  { attachedEntity: true,   str: 'lexaeterna',        wav: 'effect/priest_lexaeterna',          str_min: 'lexaeterna_min' },
-		86:  { attachedEntity: true,   str: 'aspersio',          wav: 'effect/priest_aspersio'  },
-		87:  { attachedEntity: true,   str: 'lexdivina',         wav: 'effect/priest_lexdivina' },
-		88:  { attachedEntity: true,   str: 'suffragium',        wav: 'effect/priest_suffrahium',          str_min: 'suffragium_min' },
-		89:  { attachedEntity: false,  str: 'stormgust',         wav: 'effect/wizard_stormgust',           str_min: 'storm_min' },
-		90:  { attachedEntity: false,  str: 'lord',              wav: 'effect/wizard_fire_ivy' },
-		91:  { attachedEntity: true,   str: 'benedictio',        wav: 'effect/priest_benedictio' },
-		92:  { attachedEntity: false,  str: 'meteor%d',          wav: 'effect/priest_meteor',              random:[1,4] },
-
-		94:  { attachedEntity: true,   str: 'ufidel_pang' },
-		95:  { attachedEntity: false,  str: 'quagmire' },
-		96:  { attachedEntity: false,  str: 'firepillar',        wav: 'effect/wizard_fire_pillar_a' },
-		97:  { attachedEntity: false,  str: 'firepillarbomb',    wav: 'effect/wizard_fire_pillar_b' },
-
-		101: { attachedEntity: true,   str: 'repairweapon',      wav: 'effect/black_weapon_repear' },
-		102: { attachedEntity: false,  str: 'crashearth',        wav: 'effect/black_hammerfall' },
-		103: { attachedEntity: true,   str: 'weaponperfection',  wav: 'effect/black_weapon_perfection',    str_min: 'weaponperfection_min' },
-		104: { attachedEntity: true,   str: 'maximizepower',     wav: 'effect/black_maximize_power_sword', str_min: 'maximize_min' },
-
-		106: { attachedEntity: false,  str: 'blastmine',         wav: 'effect/hunter_blastmine' },
-		107: { attachedEntity: false,  str: 'claymore',          wav: 'effect/hunter_claymoretrap' },
-		108: { attachedEntity: false,  str: 'freezing',          wav: 'effect/hunter_freezingtrap' },
-		109: { attachedEntity: false,  str: 'bubble%d',                                                    random:[1,4] },
-		110: { attachedEntity: false,  str: 'gaspush',           wav: 'effect/se_gas_pushhh' },
-		111: { attachedEntity: false,  str: 'spring',            wav: 'effect/hunter_springtrap' },
-		112: { attachedEntity: true,   str: 'kyrie',             wav: 'effect/priest_kyrie_eleison_a',     str_min: 'kyrie_min' },
-		113: { attachedEntity: false,  str: 'magnus',            wav: 'effect/priest_magnus' },
-
-		124: { attachedEntity: false,  str: 'venomdust',         wav: 'effect/assasin_venomdust' },
-
-		126: { attachedEntity: true,   str: 'poisonreact_1st',   wav: 'effect/assasin_poisonreact' },
-		127: { attachedEntity: true,   str: 'poisonreact',       wav: 'effect/assasin_poisonreact' }, 
-
-		129: { attachedEntity: true,   str: 'venomsplasher',     wav: 'effect/assasin_venomsplasher' },
-		130: { attachedEntity: true,   str: 'twohand',           wav: 'effect/knight_twohandquicken' },
-		131: { attachedEntity: true,   str: 'autocounter',       wav: 'effect/knight_autocounter' },
-
-		133: { attachedEntity: true,   str: 'freeze' },
-		134: { attachedEntity: true,   str: 'freezed' },
-		135: { attachedEntity: true,   str: 'icecrash'},
-		136: { attachedEntity: false,  str: 'slowp' },
-
-		139: { attachedEntity: false,  str: 'sandman',           wav: 'effect/hunter_sandman' },
-
-		141: { attachedEntity: false,  str: 'pneuma%d',                                                     random:[1,3] },
-
-		143: { attachedEntity: true,   str: 'sonicblow' },
-		144: { attachedEntity: true,   str: 'brandish2',         wav: 'effect/knight_brandish_spear' },
-		145: { attachedEntity: true,   str: 'shockwave',         wav: 'effect/hunter_shockwavetrap' },
-		146: { attachedEntity: true,   str: 'shockwavehit' },
-		147: { attachedEntity: true,   str: 'earthhit' },
-		148: { attachedEntity: true,   str: 'pierce' },
-		149: { attachedEntity: true,   str: 'bowling',           wav: 'effect/knight_bowling_bash' },
-		150: { attachedEntity: true,   str: 'spearstab' },
-		151: { attachedEntity: true,   str: 'spearboomerang',    wav: 'effect/knight_spear_boomerang' },
-		152: { attachedEntity: true,   str: 'holyhit' },
-		153: { attachedEntity: true,   str: 'concentration',     wav: 'effect/ac_concentration' },
-		154: { attachedEntity: true,   str: 'bs_refinesuccess',  wav: 'effect/bs_refinesuccess' },
-		155: { attachedEntity: true,   str: 'bs_refinefailed',   wav: 'effect/bs_refinefailed' },
-		// not used because not in RO game data (causing error in the official client)
-		// 156: jobchange
-		// 157: levelup
-		158: { attachedEntity: true,   str: 'joblvup' },
-
-		// 167: tamingsuccess
-		// 168: tamingfailed
-		169: { attachedEntity: true,   str: 'energycoat' },
-		170: { attachedEntity: true,   str: 'cartrevolution'},
-
-		181: { attachedEntity: true,   str: 'mentalbreak' },
-		182: { attachedEntity: true,   str: 'magical' },
-		183: { attachedEntity: true,   str: 'sui_explosion' },
 
-		185: { attachedEntity: true,   str: 'suicide' },
+		10: [{
+			type: 'STR',
+			file: 'maemor',
+			min:  'memor_min',
+			attachedEntity: true
+		}],
 
-		186: { attachedEntity: true,   str: 'yunta_1' },
-		187: { attachedEntity: true,   str: 'yunta_2' },
-		188: { attachedEntity: true,   str: 'yunta_3' },
-		189: { attachedEntity: true,   str: 'yunta_4' },
-		190: { attachedEntity: true,   str: 'yunta_5' },
-		191: { attachedEntity: true,   str: 'homing' },
-		192: { attachedEntity: true,   str: 'poison' },
-		193: { attachedEntity: true,   str: 'silence' },
-		194: { attachedEntity: true,   str: 'stun' },
-		195: { attachedEntity: true,   str: 'stonecurse',  }, // second stone curse ?
 
-		197: { attachedEntity: true,   str: 'sleep' },
+		13: [{
+			type: 'STR',
+			file: 'magician_safe',
+			attachedEntity: false
+		}],
 
-		199: { attachedEntity: false,  str: 'pong%d',           random:[1,3] },
 
-		204: { attachedEntity: true,   str: '»¡°£Æ÷¼Ç' },
-		205: { attachedEntity: true,   str: 'ÁÖÈ«Æ÷¼Ç' },
-		206: { attachedEntity: true,   str: '³ë¶õÆ÷¼Ç' },
-		207: { attachedEntity: true,   str: 'ÇÏ¾áÆ÷¼Ç' },
-		208: { attachedEntity: true,   str: 'ÆÄ¶õÆ÷¼Ç' },
-		209: { attachedEntity: true,   str: 'ÃÊ·ÏÆ÷¼Ç' },
-		210: { attachedEntity: true,   str: 'fruit' },
-		211: { attachedEntity: true,   str: 'fruit_' },
+		23: [{
+			type: 'STR',
+			file: 'stonecurse',
+			attachedEntity: true
+		}],
 
-		213: { attachedEntity: true,   str: 'deffender' },
-		214: { attachedEntity: true,   str: 'keeping' },
 
-		218: { attachedEntity: true,   str: 'ÁýÁß' },
-		219: { attachedEntity: true,   str: '°¢¼º' },
-		220: { attachedEntity: true,   str: '¹ö¼­Å©' },
+		25: [{
+			type: 'STR',
+			file: 'firewall%d',
+			wav:  'effect/ef_firewall',
+			rand: [1, 2],
+			attachedEntity: false
+		}],
 
-		234: { attachedEntity: true,   str: 'spell' },
-		235: { attachedEntity: true,   str: 'µð½ºÆç' },
 
-		244: { attachedEntity: true,   str: '¸ÅÁ÷·Îµå' },
-		245: { attachedEntity: true,   str: 'holy_cross',        wav: 'effect/cru_holycross' },
-		246: { attachedEntity: true,   str: 'shield_charge' },
+		29: [{
+			type: 'STR',
+			file: 'lightning',
+			attachedEntity: true
+		}],
 
-		248: { attachedEntity: true,   str: 'providence' },
-		249: { attachedEntity: true,   str: 'twohand' },
-		251: { attachedEntity: true,   str: 'devotion' },
 
-		255: { attachedEntity: true,   str: 'enc_fire' },
-		256: { attachedEntity: true,   str: 'enc_ice' },
-		257: { attachedEntity: true,   str: 'enc_wind' },
-		258: { attachedEntity: true,   str: 'enc_earth' },
+		30: [{
+			type: 'STR',
+			file: 'thunderstorm',
+			wav:  'effect/magician_thunderstorm',
+			attachedEntity: false
+		}],
 
-		268: { attachedEntity: true,   str: 'steal_coin' },
-		269: { attachedEntity: true,   str: 'strip_weapon',      wav: 'effect/t_º®Æ¨±è' },
-		270: { attachedEntity: true,   str: 'strip_shield',      wav: 'effect/t_º®Æ¨±è' },
-		271: { attachedEntity: true,   str: 'strip_armor',       wav: 'effect/t_º®Æ¨±è' },
-		272: { attachedEntity: true,   str: 'strip_helm',        wav: 'effect/t_º®Æ¨±è' },
-		273: { attachedEntity: true,   str: '¿¬È¯' },
 
-		305: { attachedEntity: true,   str: 'p_success' },
-		306: { attachedEntity: true,   str: 'p_failed' },
+		39: [{
+			type: 'SPR',
+			file: '¼º¼ö¶ß±â',
+			head:  true,
+			attachedEntity: true
+		}],
 
-		311: { attachedEntity: true,   str: 'loud.str' },
-		315: { attachedEntity: false,  str: 'safetywall' },
 
-		337: { attachedEntity: true,   str: 'joblvup' },
+		40: [{
+			type: 'STR',
+			file: 'cross',
+			attachedEntity: true
+		}],
 
-		369: { attachedEntity: true,   str: 'twohand' },
 
-		371: { attachedEntity: true,   str: 'angel',             wav: 'levelup' },
-		372: { attachedEntity: true,   str: 'devil' },
+		41: [{
+			type: 'STR',
+			file: 'angelus',
+			wav:  'effect/ef_angelus',
+			min:  'jong_mini',
+			attachedEntity: true
+		}],
 
-		390: { attachedEntity: true,   str: 'melt' },
-		391: { attachedEntity: true,   str: 'cart' },
-		392: { attachedEntity: true,   str: 'sword' },
 
-		406: { attachedEntity: true,   str: '¼Ò¿ï¹ø' },
-		407: { attachedEntity: true,   str: '»ç¶÷È¿°ú' },
+		47: [{
+			type: 'SPR',
+			file: 'torch_01',
+			attachedEntity: false
+		}],
 
-		440: { attachedEntity: true,   str: 'asum' },
 
-		491: { attachedEntity: true,   str: 'Âý½Ò¶±' },
-		492: { attachedEntity: true,   str: 'ramadan' },
+		49: [{
+			type: 'STR',
+			file: 'firehit%d',
+			wav:  'effect/ef_firehit',
+			rand: [1, 3],
+			attachedEntity: true
+		}],
 
-		507: { attachedEntity: true,   str: 'mapae' },
-		508: { attachedEntity: true,   str: 'itempokjuk' },
 
-		565: { attachedEntity: true,   str: 'moonlight_1' },
-		566: { attachedEntity: true,   str: 'moonlight_2' },
-		567: { attachedEntity: true,   str: 'moonlight_3' },
-		568: { attachedEntity: true,   str: 'h_levelup' },
-		569: { attachedEntity: true,   str: 'defense' },
+		52: [{
+			type: 'STR',
+			file: 'windhit%d',
+			rand: [1, 3],
+			attachedEntity: true
+		}],
 
-		593: { attachedEntity: true,   str: 'food_str' },
-		594: { attachedEntity: true,   str: 'food_int' },
-		595: { attachedEntity: true,   str: 'food_vit' },
-		596: { attachedEntity: true,   str: 'food_agi' },
-		597: { attachedEntity: true,   str: 'food_dex' },
-		598: { attachedEntity: true,   str: 'food_luk' },
 
-		603: { attachedEntity: true,   str: 'firehit%d', random:[1,3] },
+		60: [{
+			type: 'FUNC',
+			func: require('Renderer/Effects/LockOnTarget'),
+			attachedEntity: false
+		}],
 
-		608: { attachedEntity: true,   str: 'cook_suc' },
-		609: { attachedEntity: true,   str: 'cook_fail' },
 
-		612: { attachedEntity: true,   str: 'itempokjuk' },
+		64: [{
+			type: 'STR',
+			file: 'arrowshot',
+			attachedEntity: true
+		}],
 
-		635: { attachedEntity: false,  str: 'fire_dragon' },
-		636: { attachedEntity: false,  str: 'icy' },
 
-		646: { attachedEntity: true,   str: 'Æ®·¢Å·' },
+		65: [{
+			type: 'STR',
+			file: 'invenom',
+			attachedEntity: true
+		}],
+
+
+		66: [{
+			type: 'STR',
+			file: 'cure',
+			wav:  'effect/acolyte_cure',
+			min:  'cure_min',
+			attachedEntity: true
+		}],
+
 
-		649: { attachedEntity: true,   str: 'ºÒ½º¾ÆÀÌ' },
+		67: [{
+			type: 'STR',
+			file: 'provoke',
+			wav:  'effect/swordman_provoke',
+			attachedEntity: true
+		}],
+
 
-		668: { attachedEntity: true,   str: 'dragon_h' },
-		669: { attachedEntity: true,   str: 'wideb' },
-		670: { attachedEntity: true,   str: 'dfear' },
+		68: [{
+			type: 'STR',
+			file: 'mvp',
+			wav:  'effect/st_mvp',
+			attachedEntity: true
+		}],
+
+
+		69: [{
+			type: 'STR',
+			file: 'skidtrap',
+			wav:  'effect/hunter_skidtrap',
+			attachedEntity: false
+		}],
+
+
+		70: [{
+			type: 'STR',
+			file: 'brandish',
+			wav:  'effect/knight_brandish_spear',
+			attachedEntity: true
+		}],
+
+
+		75: [{
+			type: 'STR',
+			file: 'gloria',
+			wav:  'effect/priest_gloria',
+			min:  'gloria_min',
+			attachedEntity: true
+		}],
+
+
+		76: [{
+			type: 'STR',
+			file: 'magnificat',
+			wav:  'effect/priest_magnificat',
+			min:  'magnificat_min',
+			attachedEntity: true
+		}],
+
+
+		77: [{
+			type: 'STR',
+			file: 'resurrection',
+			wav:  'effect/priest_resurrection',
+			min:  'resurrection_min',
+			attachedEntity: true
+		}],
+
 
-		677: { attachedEntity: true,   str: 'cwound' },
+		78: [{
+			type: 'STR',
+			file: 'recovery',
+			wav:  'effect/priest_recovery',
+			attachedEntity: true
+		}],
 
-		699: { attachedEntity: true,   str: 'flower_leaf' },
 
-		704: { attachedEntity: true,   str: 'mobile_ef02' },
-		705: { attachedEntity: true,   str: 'mobile_ef01' },
-		706: { attachedEntity: true,   str: 'mobile_ef03' },
+		83: [{
+			type: 'STR',
+			file: 'sanctuary',
+			wav:  'effect/priest_sanctuary',
+			attachedEntity: false
+		}],
 
-		708: { attachedEntity: false,  str: 'storm_min' },
-		709: { attachedEntity: false,  str: 'pokjuk_jap' },
 
-		717: { attachedEntity: true,   str: 'angelus',           wav: 'effect/ef_angelus',                 str_min: 'jong_mini' },
+		84: [{
+			type: 'STR',
+			file: 'impositio',
+			wav:  'effect/priest_impositio',
+			attachedEntity: true
+		}],
 
-		721: { attachedEntity: true,   str: 'ado' },
-		722: { attachedEntity: true,   str: 'ÀÌ±×´Ï¼Çºê·¹ÀÌÅ©' },
 
-		727: { attachedEntity: true,   str: 'crimson_r' },
-		728: { attachedEntity: true,   str: 'hell_in' },
+		85: [{
+			type: 'STR',
+			file: 'lexaeterna',
+			wav:  'effect/priest_lexaeterna',
+			min:  'lexaeterna_min',
+			attachedEntity: true
+		}],
 
-		731: { attachedEntity: true,   str: 'dragon_h' },
 
-		734: { attachedEntity: true,   str: 'chainlight' },
+		86: [{
+			type: 'STR',
+			file: 'aspersio',
+			wav:  'effect/priest_aspersio',
+			attachedEntity: true
+		}],
 
-		745: { attachedEntity: true,   str: 'aimed' },
-		746: { attachedEntity: true,   str: 'arrowstorm' },
-		747: { attachedEntity: true,   str: 'laulamus' },
-		748: { attachedEntity: true,   str: 'lauagnus' },
-		749: { attachedEntity: true,   str: 'mil_shield' },
-		750: { attachedEntity: true,   str: 'concentration' },
 
-		756: { attachedEntity: true,   str: '¹ö¼­Å©' },
+		87: [{
+			type: 'STR',
+			file: 'lexdivina',
+			wav:  'effect/priest_lexdivina',
+			attachedEntity: true
+		}],
 
-		795: { attachedEntity: true,   str: 'powerswing' },
-		813: { attachedEntity: true,   str: 'enervation' },
-		814: { attachedEntity: true,   str: 'groomy' },
-		815: { attachedEntity: true,   str: 'ignorance' },
-		816: { attachedEntity: true,   str: 'laziness' },
-		817: { attachedEntity: true,   str: 'unlucky' },
-		818: { attachedEntity: true,   str: 'weakness' },
 
-		920: { attachedEntity: true,   str: 'firewall_per' },
+		88: [{
+			type: 'STR',
+			file: 'suffragium',
+			wav:  'effect/priest_suffrahium',
+			min:  'suffragium_min',
+			attachedEntity: true
+		}],
 
-		926: { attachedEntity: true,   str: 'hunter_shockwave_blue' },
+
+		89: [{
+			type: 'STR',
+			file: 'stormgust',
+			wav:  'effect/wizard_stormgust',
+			min:  'storm_min',
+			attachedEntity: false
+		}],
+
+
+		90: [{
+			type: 'STR',
+			file: 'lord',
+			wav:  'effect/wizard_fire_ivy',
+			attachedEntity: false
+		}],
+
+
+		91: [{
+			type: 'STR',
+			file: 'benedictio',
+			wav:  'effect/priest_benedictio',
+			attachedEntity: true
+		}],
+
+
+		92: [{
+			type: 'STR',
+			file: 'meteor%d',
+			wav:  'effect/priest_meteor',
+			rand: [1, 4],
+			attachedEntity: false
+		}],
+
+
+		94: [{
+			type: 'STR',
+			file: 'ufidel_pang',
+			attachedEntity: true
+		}],
+
+
+		95: [{
+			type: 'STR',
+			file: 'quagmire',
+			attachedEntity: false
+		}],
 
-		959: { attachedEntity: true,   str: 'poison_mist' },
-		960: { attachedEntity: true,   str: 'eraser_cutter' },
+
+		96: [{
+			type: 'STR',
+			file: 'firepillar',
+			wav:  'effect/wizard_fire_pillar_a',
+			attachedEntity: false
+		}],
+
+
+		97: [{
+			type: 'STR',
+			file: 'firepillarbomb',
+			wav:  'effect/wizard_fire_pillar_b',
+			attachedEntity: false
+		}],
+
+
+		101: [{
+			type: 'STR',
+			file: 'repairweapon',
+			wav:  'effect/black_weapon_repear',
+			attachedEntity: true
+		}],
+
+
+		102: [{
+			type: 'STR',
+			file: 'crashearth',
+			wav:  'effect/black_hammerfall',
+			attachedEntity: false
+		}],
+
+
+		103: [{
+			type: 'STR',
+			file: 'weaponperfection',
+			wav:  'effect/black_weapon_perfection',
+			min:  'weaponperfection_min',
+			attachedEntity: true
+		}],
+
+
+		104: [{
+			type: 'STR',
+			file: 'maximizepower',
+			wav:  'effect/black_maximize_power_sword',
+			min:  'maximize_min',
+			attachedEntity: true
+		}],
+
+
+		106: [{
+			type: 'STR',
+			file: 'blastmine',
+			wav:  'effect/hunter_blastmine',
+			attachedEntity: false
+		}],
+
+
+		107: [{
+			type: 'STR',
+			file: 'claymore',
+			wav:  'effect/hunter_claymoretrap',
+			attachedEntity: false
+		}],
+
+
+		108: [{
+			type: 'STR',
+			file: 'freezing',
+			wav:  'effect/hunter_freezingtrap',
+			attachedEntity: false
+		}],
+
+
+		109: [{
+			type: 'STR',
+			file: 'bubble%d',
+			rand: [1, 4],
+			attachedEntity: false
+		}],
+
+
+		110: [{
+			type: 'STR',
+			file: 'gaspush',
+			wav:  'effect/se_gas_pushhh',
+			attachedEntity: false
+		}],
+
+
+		111: [{
+			type: 'STR',
+			file: 'spring',
+			wav:  'effect/hunter_springtrap',
+			attachedEntity: false
+		}],
+
+
+		112: [{
+			type: 'STR',
+			file: 'kyrie',
+			wav:  'effect/priest_kyrie_eleison_a',
+			min:  'kyrie_min',
+			attachedEntity: true
+		}],
+
 
-		964: { attachedEntity: true,   str: 'lava_slide' },
-		965: { attachedEntity: true,   str: 'sonic_claw' },
-		966: { attachedEntity: true,   str: 'tinder' },
-		967: { attachedEntity: true,   str: 'mid_frenzy' },
+		113: [{
+			type: 'STR',
+			file: 'magnus',
+			wav:  'effect/priest_magnus',
+			attachedEntity: false
+		}],
 
-		975: { attachedEntity: true,   str: 'vash00' },
 
-		987: { attachedEntity: true,   str: 'rwc2011' },
-		988: { attachedEntity: true,   str: 'rwc2011_2' },
+		124: [{
+			type: 'STR',
+			file: 'venomdust',
+			wav:  'effect/assasin_venomdust',
+			attachedEntity: false
+		}],
 
-		1015: { attachedEntity: true,  str: 'rune_success' },
-		1016: { attachedEntity: true,  str: 'rune_fail' },
-		1017: { attachedEntity: true,  str: 'changematerial_su' },
-		1018: { attachedEntity: true,  str: 'changematerial_fa' },
-		1019: { attachedEntity: true,  str: 'Guardian' },
-		1020: { attachedEntity: true,  str: 'bubble%d_1', random:[1,4] },
-		1021: { attachedEntity: true,  str: 'dust' },
 
-		1029: { attachedEntity: true,  str: 'dancingblade' },
-		1031: { attachedEntity: true,  str: 'invincibleoff2' },
+		126: [{
+			type: 'STR',
+			file: 'poisonreact_1st',
+			wav:  'effect/assasin_poisonreact',
+			attachedEntity: true
+		}],
 
-		1033: { attachedEntity: true,  str: 'devil' },
 
-		1040: { attachedEntity: true,  str: 'gc_darkcrow' },
+		127: [{
+			type: 'STR',
+			file: 'poisonreact',
+			wav:  'effect/assasin_poisonreact',
+			attachedEntity: true
+		}],
 
-		1042: { attachedEntity: true,  str: 'all_full_throttle' },
-		1043: { attachedEntity: true,  str: 'sr_flashcombo' },
-		1044: { attachedEntity: true,  str: 'rk_luxanima' },
 
-		1046: { attachedEntity: true,  str: 'so_elemental_shield' },
-		1047: { attachedEntity: true,  str: 'ab_offertorium' },
-		1048: { attachedEntity: true,  str: 'wl_telekinesis_intense' },
-		1049: { attachedEntity: true,  str: 'gn_illusiondoping' },
-		1050: { attachedEntity: true,  str: 'nc_magma_eruption' },
+		129: [{
+			type: 'STR',
+			file: 'venomsplasher',
+			wav:  'effect/assasin_venomsplasher',
+			attachedEntity: true
+		}],
 
-		1055: { attachedEntity: true,  str: 'chill' },
-		1057: { attachedEntity: true,  str: 'ab_offertorium_ring' },
-		1062: { attachedEntity: true,  str: 'stormgust' },
+
+		130: [{
+			type: 'STR',
+			file: 'twohand',
+			wav:  'effect/knight_twohandquicken',
+			attachedEntity: true
+		}],
+
+
+		131: [{
+			type: 'STR',
+			file: 'autocounter',
+			wav:  'effect/knight_autocounter',
+			attachedEntity: true
+		}],
+
+
+		133: [{
+			type: 'STR',
+			file: 'freeze',
+			attachedEntity: true
+		}],
+
+
+		134: [{
+			type: 'STR',
+			file: 'freezed',
+			attachedEntity: true
+		}],
+
+
+		135: [{
+			type: 'STR',
+			file: 'icecrash',
+			attachedEntity: true
+		}],
+
+
+		136: [{
+			type: 'STR',
+			file: 'slowp',
+			attachedEntity: false
+		}],
+
+
+		139: [{
+			type: 'STR',
+			file: 'sandman',
+			wav:  'effect/hunter_sandman',
+			attachedEntity: false
+		}],
+
+
+		141: [{
+			type: 'STR',
+			file: 'pneuma%d',
+			rand: [1, 3],
+			attachedEntity: false
+		}],
+
+
+		143: [{
+			type: 'STR',
+			file: 'sonicblow',
+			attachedEntity: true
+		}],
+
+
+		144: [{
+			type: 'STR',
+			file: 'brandish2',
+			wav:  'effect/knight_brandish_spear',
+			attachedEntity: true
+		}],
+
+
+		145: [{
+			type: 'STR',
+			file: 'shockwave',
+			wav:  'effect/hunter_shockwavetrap',
+			attachedEntity: true
+		}],
+
+
+		146: [{
+			type: 'STR',
+			file: 'shockwavehit',
+			attachedEntity: true
+		}],
+
+
+		147: [{
+			type: 'STR',
+			file: 'earthhit',
+			attachedEntity: true
+		}],
+
+
+		148: [{
+			type: 'STR',
+			file: 'pierce',
+			attachedEntity: true
+		}],
+
+
+		149: [{
+			type: 'STR',
+			file: 'bowling',
+			wav:  'effect/knight_bowling_bash',
+			attachedEntity: true
+		}],
+
+
+		150: [{
+			type: 'STR',
+			file: 'spearstab',
+			attachedEntity: true
+		}],
+
+
+		151: [{
+			type: 'STR',
+			file: 'spearboomerang',
+			wav:  'effect/knight_spear_boomerang',
+			attachedEntity: true
+		}],
+
+
+		152: [{
+			type: 'STR',
+			file: 'holyhit',
+			attachedEntity: true
+		}],
+
+
+		153: [{
+			type: 'STR',
+			file: 'concentration',
+			wav:  'effect/ac_concentration',
+			attachedEntity: true
+		}],
+
+
+		154: [{
+			type: 'STR',
+			file: 'bs_refinesuccess',
+			wav:  'effect/bs_refinesuccess',
+			attachedEntity: true
+		}],
+
+
+		155: [{
+			type: 'STR',
+			file: 'bs_refinefailed',
+			wav:  'effect/bs_refinefailed',
+			attachedEntity: true
+		}],
+
+
+		158: [{
+			type: 'STR',
+			file: 'joblvup',
+			attachedEntity: true
+		}],
+
+
+		169: [{
+			type: 'STR',
+			file: 'energycoat',
+			attachedEntity: true
+		}],
+
+
+		170: [{
+			type: 'STR',
+			file: 'cartrevolution',
+			attachedEntity: true
+		}],
+
+
+		181: [{
+			type: 'STR',
+			file: 'mentalbreak',
+			attachedEntity: true
+		}],
+
+
+		182: [{
+			type: 'STR',
+			file: 'magical',
+			attachedEntity: true
+		}],
+
+
+		183: [{
+			type: 'STR',
+			file: 'sui_explosion',
+			attachedEntity: true
+		}],
+
+
+		185: [{
+			type: 'STR',
+			file: 'suicide',
+			attachedEntity: true
+		}],
+
+
+		186: [{
+			type: 'STR',
+			file: 'yunta_1',
+			attachedEntity: true
+		}],
+
+
+		187: [{
+			type: 'STR',
+			file: 'yunta_2',
+			attachedEntity: true
+		}],
+
+
+		188: [{
+			type: 'STR',
+			file: 'yunta_3',
+			attachedEntity: true
+		}],
+
+
+		189: [{
+			type: 'STR',
+			file: 'yunta_4',
+			attachedEntity: true
+		}],
+
+
+		190: [{
+			type: 'STR',
+			file: 'yunta_5',
+			attachedEntity: true
+		}],
+
+
+		191: [{
+			type: 'STR',
+			file: 'homing',
+			attachedEntity: true
+		}],
+
+
+		192: [{
+			type: 'STR',
+			file: 'poison',
+			attachedEntity: true
+		}],
+
+
+		193: [{
+			type: 'STR',
+			file: 'silence',
+			attachedEntity: true
+		}],
+
+
+		194: [{
+			type: 'STR',
+			file: 'stun',
+			attachedEntity: true
+		}],
+
+
+		195: [{
+			type: 'STR',
+			file: 'stonecurse',
+			attachedEntity: true
+		}],
+
+
+		197: [{
+			type: 'STR',
+			file: 'sleep',
+			attachedEntity: true
+		}],
+
+
+		199: [{
+			type: 'STR',
+			file: 'pong%d',
+			rand: [1, 3],
+			attachedEntity: false
+		}],
+
+
+		204: [{
+			type: 'STR',
+			file: '»¡°£Æ÷¼Ç',
+			attachedEntity: true
+		}],
+
+
+		205: [{
+			type: 'STR',
+			file: 'ÁÖÈ«Æ÷¼Ç',
+			attachedEntity: true
+		}],
+
+
+		206: [{
+			type: 'STR',
+			file: '³ë¶õÆ÷¼Ç',
+			attachedEntity: true
+		}],
+
+
+		207: [{
+			type: 'STR',
+			file: 'ÇÏ¾áÆ÷¼Ç',
+			attachedEntity: true
+		}],
+
+
+		208: [{
+			type: 'STR',
+			file: 'ÆÄ¶õÆ÷¼Ç',
+			attachedEntity: true
+		}],
+
+
+		209: [{
+			type: 'STR',
+			file: 'ÃÊ·ÏÆ÷¼Ç',
+			attachedEntity: true
+		}],
+
+
+		210: [{
+			type: 'STR',
+			file: 'fruit',
+			attachedEntity: true
+		}],
+
+
+		211: [{
+			type: 'STR',
+			file: 'fruit_',
+			attachedEntity: true
+		}],
+
+
+		212: [{
+			type: 'SPR',
+			file: 'darkbreath',
+			head: true,
+			attachedEntity: true
+		}],
+
+
+		213: [{
+			type: 'STR',
+			file: 'deffender',
+			attachedEntity: true
+		}],
+
+
+		214: [{
+			type: 'STR',
+			file: 'keeping',
+			attachedEntity: true
+		}],
+
+
+		218: [{
+			type: 'STR',
+			file: 'ÁýÁß',
+			attachedEntity: true
+		}],
+
+
+		219: [{
+			type: 'STR',
+			file: '°¢¼º',
+			attachedEntity: true
+		}],
+
+
+		220: [{
+			type: 'STR',
+			file: '¹ö¼­Å©',
+			attachedEntity: true
+		}],
+
+
+		234: [{
+			type: 'STR',
+			file: 'spell',
+			attachedEntity: true
+		}],
+
+
+		235: [{
+			type: 'STR',
+			file: 'µð½ºÆç',
+			attachedEntity: true
+		}],
+
+
+		244: [{
+			type: 'STR',
+			file: '¸ÅÁ÷·Îµå',
+			attachedEntity: true
+		}],
+
+
+		245: [{
+			type: 'STR',
+			file: 'holy_cross',
+			wav:  'effect/cru_holycross',
+			attachedEntity: true
+		}],
+
+
+		246: [{
+			type: 'STR',
+			file: 'shield_charge',
+			attachedEntity: true
+		}],
+
+
+		248: [{
+			type: 'STR',
+			file: 'providence',
+			attachedEntity: true
+		}],
+
+
+		249: [{
+			type: 'STR',
+			file: 'twohand',
+			attachedEntity: true
+		}],
+
+
+		251: [{
+			type: 'STR',
+			file: 'devotion',
+			attachedEntity: true
+		}],
+
+
+		255: [{
+			type: 'STR',
+			file: 'enc_fire',
+			attachedEntity: true
+		}],
+
+
+		256: [{
+			type: 'STR',
+			file: 'enc_ice',
+			attachedEntity: true
+		}],
+
+
+		257: [{
+			type: 'STR',
+			file: 'enc_wind',
+			attachedEntity: true
+		}],
+
+
+		258: [{
+			type: 'STR',
+			file: 'enc_earth',
+			attachedEntity: true
+		}],
+
+
+		268: [{
+			type: 'STR',
+			file: 'steal_coin',
+			attachedEntity: true
+		}],
+
+
+		269: [{
+			type: 'STR',
+			file: 'strip_weapon',
+			wav:  'effect/t_º®Æ¨±è',
+			attachedEntity: true
+		}],
+
+
+		270: [{
+			type: 'STR',
+			file: 'strip_shield',
+			wav:  'effect/t_º®Æ¨±è',
+			attachedEntity: true
+		}],
+
+
+		271: [{
+			type: 'STR',
+			file: 'strip_armor',
+			wav:  'effect/t_º®Æ¨±è',
+			attachedEntity: true
+		}],
+
+
+		272: [{
+			type: 'STR',
+			file: 'strip_helm',
+			wav:  'effect/t_º®Æ¨±è',
+			attachedEntity: true
+		}],
+
+
+		273: [{
+			type: 'STR',
+			file: '¿¬È¯',
+			attachedEntity: true
+		}],
+
+
+		302: [{
+			type: 'SPR',
+			file: 'µ¥¸ó½ºÆ®·¹ÀÌ¼Ç',
+			attachedEntity: false
+		}],
+
+
+		305: [{
+			type: 'STR',
+			file: 'p_success',
+			attachedEntity: true
+		}],
+
+
+		306: [{
+			type: 'STR',
+			file: 'p_failed',
+			attachedEntity: true
+		}],
+
+
+		311: [{
+			type: 'STR',
+			file: 'loud',
+			attachedEntity: true
+		}],
+
+
+		315: [{
+			type: 'STR',
+			file: 'safetywall',
+			attachedEntity: false
+		}],
+
+
+		337: [{
+			type: 'STR',
+			file: 'joblvup',
+			attachedEntity: true
+		}],
+
+
+		363: [{
+			type: 'SPR',
+			file: 'vallentine',
+			attachedEntity: true
+		}],
+
+
+		369: [{
+			type: 'STR',
+			file: 'twohand',
+			attachedEntity: true
+		}],
+
+
+		371: [{
+			type: 'STR',
+			file: 'angel',
+			wav:  'levelup',
+			attachedEntity: true
+		}],
+
+
+		372: [{
+			type: 'STR',
+			file: 'devil',
+			attachedEntity: true
+		}],
+
+
+		373: [{
+			type: 'SPR',
+			file: 'poisonhit',
+			attachedEntity: true
+		}],
+
+
+		382: [{
+			type: 'SPR',
+			file: 'ÇÑº¹Ãµ»ç',
+			head: true,
+			attachedEntity: true
+		}],
+
+
+		390: [{
+			type: 'STR',
+			file: 'melt',
+			attachedEntity: true
+		}],
+
+
+		391: [{
+			type: 'STR',
+			file: 'cart',
+			attachedEntity: true
+		}],
+
+
+		392: [{
+			type: 'STR',
+			file: 'sword',
+			attachedEntity: true
+		}],
+
+
+		406: [{
+			type: 'STR',
+			file: '¼Ò¿ï¹ø',
+			attachedEntity: true
+		}],
+
+
+		407: [{
+			type: 'STR',
+			file: '»ç¶÷È¿°ú',
+			attachedEntity: true
+		}],
+
+
+		440: [{
+			type: 'STR',
+			file: 'asum',
+			attachedEntity: true
+		}],
+
+
+		491: [{
+			type: 'STR',
+			file: 'Âý½Ò¶±',
+			attachedEntity: true
+		}],
+
+
+		492: [{
+			type: 'STR',
+			file: 'ramadan',
+			attachedEntity: true
+		}],
+
+
+		507: [{
+			type: 'STR',
+			file: 'mapae',
+			attachedEntity: true
+		}],
+
+
+		508: [{
+			type: 'STR',
+			file: 'itempokjuk',
+			attachedEntity: true
+		}],
+
+
+		509: [{
+			type: 'SPR',
+			file: '05vallentine',
+			attachedEntity: true
+		}],
+
+
+		519: [{
+			type: 'SPR',
+			file: 'fast',
+			attachedEntity: true
+		}],
+
+
+		565: [{
+			type: 'STR',
+			file: 'moonlight_1',
+			attachedEntity: true
+		}],
+
+
+		566: [{
+			type: 'STR',
+			file: 'moonlight_2',
+			attachedEntity: true
+		}],
+
+
+		567: [{
+			type: 'STR',
+			file: 'moonlight_3',
+			attachedEntity: true
+		}],
+
+
+		568: [{
+			type: 'STR',
+			file: 'h_levelup',
+			attachedEntity: true
+		}],
+
+
+		569: [{
+			type: 'STR',
+			file: 'defense',
+			attachedEntity: true
+		}],
+
+
+		570: [{
+			type: 'SPR',
+			file: 'Ä³½½¸µ',
+			attachedEntity: true
+		}],
+
+
+		571: [{
+			type: 'SPR',
+			file: 'ºí·¯µå·¯½ºÆ®',
+			attachedEntity: true
+		}],
+
+
+		576: [{
+			type: 'SPR',
+			file: 'item_thunder',
+			attachedEntity: true
+		}],
+
+
+		577: [{
+			type: 'SPR',
+			file: 'item_cloud',
+			attachedEntity: true
+		}],
+
+
+		578: [{
+			type: 'SPR',
+			file: 'item_curse',
+			attachedEntity: true
+		}],
+
+
+		579: [{
+			type: 'SPR',
+			file: 'item_zzz',
+			attachedEntity: true
+		}],
+
+
+		580: [{
+			type: 'SPR',
+			file: 'item_rain',
+			attachedEntity: true
+		}],
+
+
+		583: [{
+			type: 'SPR',
+			file: 'm_ef01',
+			attachedEntity: true
+		}],
+
+
+		584: [{
+			type: 'SPR',
+			file: 'm_ef02',
+			attachedEntity: true,
+			direction: true
+		}],
+
+
+		585: [{
+			type: 'SPR',
+			file: 'm_ef03',
+			attachedEntity: true
+		}],
+
+
+		586: [{
+			type: 'SPR',
+			file: 'm_ef04',
+			attachedEntity: true
+		}],
+
+
+		587: [{
+			type: 'SPR',
+			file: 'm_ef05',
+			attachedEntity: true
+		}],
+
+
+		588: [{
+			type: 'SPR',
+			file: 'm_ef06',
+			attachedEntity: true
+		}],
+
+
+		589: [{
+			type: 'SPR',
+			file: 'm_ef07',
+			attachedEntity: true
+		}],
+
+
+		593: [{
+			type: 'STR',
+			file: 'food_str',
+			attachedEntity: true
+		}],
+
+
+		594: [{
+			type: 'STR',
+			file: 'food_int',
+			attachedEntity: true
+		}],
+
+
+		595: [{
+			type: 'STR',
+			file: 'food_vit',
+			attachedEntity: true
+		}],
+
+
+		596: [{
+			type: 'STR',
+			file: 'food_agi',
+			attachedEntity: true
+		}],
+
+
+		597: [{
+			type: 'STR',
+			file: 'food_dex',
+			attachedEntity: true
+		}],
+
+
+		598: [{
+			type: 'STR',
+			file: 'food_luk',
+			attachedEntity: true
+		}],
+
+
+		603: [{
+			type: 'STR',
+			file: 'firehit%d',
+			rand: [1, 3],
+			attachedEntity: true
+		}],
+
+
+		604: [{
+			type: 'SPR',
+			file: 'cconfine',
+			attachedEntity: true,
+			stopAtEnd: true
+		}],
+
+
+		608: [{
+			type: 'STR',
+			file: 'cook_suc',
+			attachedEntity: true
+		}],
+
+
+		609: [{
+			type: 'STR',
+			file: 'cook_fail',
+			attachedEntity: true
+		}],
+
+
+		612: [{
+			type: 'SPR',
+			file: 'ÇÕ°Ý_',
+			attachedEntity: true
+		},{
+			type: 'STR',
+			file: 'itempokjuk',
+			attachedEntity: true
+		}],
+
+
+		630: [{
+			type: 'SPR',
+			file: '±×¸²ÀÚº£±â',
+			attachedEntity: true
+		}],
+
+
+		631: [{
+			type: 'SPR',
+			file: '´Ù´Ù¹Ì',
+			attachedEntity: true
+		}],
+
+
+		632: [{
+			type: 'SPR',
+			file: '¾È°³º£±â',
+			attachedEntity: true
+		}],
+
+
+		633: [{
+			type: 'SPR',
+			file: 'ÀÏ¼¶',
+			attachedEntity: true
+		}],
+
+
+		634: [{
+			type: 'SPR',
+			file: 'È­¿°Áø',
+			attachedEntity: false
+		}],
+
+
+		635: [{
+			type: 'STR',
+			file: 'fire dragon',
+			attachedEntity: false
+		}],
+
+
+		636: [{
+			type: 'STR',
+			file: 'icy',
+			attachedEntity: false
+		}],
+
+
+		637: [{
+			type: 'SPR',
+			file: 'µ¥½ºÆä¶óµµ',
+			attachedEntity: true
+		}],
+
+
+		638: [{
+			type: 'SPR',
+			file: '¶óÀÌÆ®´×½ºÇÇ¾î',
+			attachedEntity: false
+		}],
+
+
+		639: [{
+			type: 'SPR',
+			file: 'ºí¶óÀÎµå½ºÇÇ¾î',
+			attachedEntity: false
+		}],
+
+
+		640: [{
+			type: 'SPR',
+			file: 'Æ÷ÀÌÁð½ºÇÇ¾î',
+			attachedEntity: false
+		}],
+
+
+		641: [{
+			type: 'SPR',
+			file: 'ÇÁ¸®Â¡½ºÇÇ¾î',
+			attachedEntity: false
+		}],
+
+
+		642: [{
+			type: 'SPR',
+			file: 'ÇÃ·¹¾î½ºÇÇ¾î',
+			attachedEntity: false
+		}],
+
+
+		643: [{
+			type: 'SPR',
+			file: '·¡ÇÇµå»þ¿ö',
+			attachedEntity: true
+		}],
+
+
+		644: [{
+			type: 'SPR',
+			file: '¸ÅÁöÄÃºÒ¸´',
+			attachedEntity: true
+		}],
+
+
+		645: [{
+			type: 'SPR',
+			file: '½ºÇÁ·¹µå',
+			attachedEntity: true,
+			direction: true,
+		}],
+
+
+		646: [{
+			type: 'STR',
+			file: 'Æ®·¢Å·',
+			attachedEntity: true
+		}],
+
+
+		647: [{
+			type: 'SPR',
+			file: 'Æ®·¡Å·',
+			attachedEntity: true
+		}],
+
+
+		648: [{
+			type: 'SPR',
+			file: 'Æ®¸®ÇÃ¾×¼Ç',
+			attachedEntity: true
+		}],
+
+
+		649: [{
+			type: 'STR',
+			file: 'ºÒ½º¾ÆÀÌ',
+			attachedEntity: true
+		}],
+
+
+		666: [{
+			type: 'SPR',
+			file: '¾î½ºÄùÀÌÅ©',
+			attachedEntity: true
+		}],
+
+
+		668: [{
+			type: 'STR',
+			file: 'dragon_h',
+			attachedEntity: true
+		}],
+
+
+		669: [{
+			type: 'STR',
+			file: 'wideb',
+			attachedEntity: true
+		}],
+
+
+		670: [{
+			type: 'STR',
+			file: 'dfear',
+			attachedEntity: true
+		}],
+
+
+		674: [{
+			type: 'SPR',
+			file: 'status-curse',
+			head: true,
+			attachedEntity: true
+		}],
+
+
+		677: [{
+			type: 'STR',
+			file: 'cwound',
+			attachedEntity: true
+		}],
+
+
+		699: [{
+			type: 'STR',
+			file: 'flower_leaf',
+			attachedEntity: true
+		}],
+
+
+		704: [{
+			type: 'STR',
+			file: 'mobile_ef02',
+			attachedEntity: true
+		}],
+
+
+		705: [{
+			type: 'STR',
+			file: 'mobile_ef01',
+			attachedEntity: true
+		}],
+
+
+		706: [{
+			type: 'STR',
+			file: 'mobile_ef03',
+			attachedEntity: true
+		}],
+
+
+		708: [{
+			type: 'STR',
+			file: 'storm_min',
+			attachedEntity: false
+		}],
+
+
+		709: [{
+			type: 'STR',
+			file: 'pokjuk_jap',
+			attachedEntity: false
+		}],
+
+
+		717: [{
+			type: 'STR',
+			file: 'angelus',
+			wav:  'effect/ef_angelus',
+			min:  'jong_mini',
+			attachedEntity: true
+		}],
+
+
+		721: [{
+			type: 'STR',
+			file: 'ado',
+			attachedEntity: true
+		}],
+
+
+		722: [{
+			type: 'STR',
+			file: 'ÀÌ±×´Ï¼Çºê·¹ÀÌÅ©',
+			attachedEntity: true
+		}],
+
+
+		727: [{
+			type: 'STR',
+			file: 'crimson_r',
+			attachedEntity: true
+		}],
+
+
+		728: [{
+			type: 'STR',
+			file: 'hell_in',
+			attachedEntity: true
+		}],
+
+
+		731: [{
+			type: 'STR',
+			file: 'dragon_h',
+			attachedEntity: true
+		}],
+
+
+		734: [{
+			type: 'STR',
+			file: 'chainlight',
+			attachedEntity: true
+		}],
+
+
+		745: [{
+			type: 'STR',
+			file: 'aimed',
+			attachedEntity: true
+		}],
+
+
+		746: [{
+			type: 'STR',
+			file: 'arrowstorm',
+			attachedEntity: true
+		}],
+
+
+		747: [{
+			type: 'STR',
+			file: 'laulamus',
+			attachedEntity: true
+		}],
+
+
+		748: [{
+			type: 'STR',
+			file: 'lauagnus',
+			attachedEntity: true
+		}],
+
+
+		749: [{
+			type: 'STR',
+			file: 'mil_shield',
+			attachedEntity: true
+		}],
+
+
+		750: [{
+			type: 'STR',
+			file: 'concentration',
+			attachedEntity: true
+		}],
+
+
+		756: [{
+			type: 'STR',
+			file: '¹ö¼­Å©',
+			attachedEntity: true
+		}],
+
+
+		795: [{
+			type: 'STR',
+			file: 'powerswing',
+			attachedEntity: true
+		}],
+
+
+		813: [{
+			type: 'STR',
+			file: 'enervation',
+			attachedEntity: true
+		}],
+
+
+		814: [{
+			type: 'STR',
+			file: 'groomy',
+			attachedEntity: true
+		}],
+
+
+		815: [{
+			type: 'STR',
+			file: 'ignorance',
+			attachedEntity: true
+		}],
+
+
+		816: [{
+			type: 'STR',
+			file: 'laziness',
+			attachedEntity: true
+		}],
+
+
+		817: [{
+			type: 'STR',
+			file: 'unlucky',
+			attachedEntity: true
+		}],
+
+
+		818: [{
+			type: 'STR',
+			file: 'weakness',
+			attachedEntity: true
+		}],
+
+
+		920: [{
+			type: 'STR',
+			file: 'firewall_per',
+			attachedEntity: true
+		}],
+
+
+		926: [{
+			type: 'STR',
+			file: 'hunter_shockwave_blue',
+			attachedEntity: true
+		}],
+
+
+		959: [{
+			type: 'STR',
+			file: 'poison_mist',
+			attachedEntity: true
+		}],
+
+
+		960: [{
+			type: 'STR',
+			file: 'eraser_cutter',
+			attachedEntity: true
+		}],
+
+
+		964: [{
+			type: 'STR',
+			file: 'lava_slide',
+			attachedEntity: true
+		}],
+
+
+		965: [{
+			type: 'STR',
+			file: 'sonic_claw',
+			attachedEntity: true
+		}],
+
+
+		966: [{
+			type: 'STR',
+			file: 'tinder',
+			attachedEntity: true
+		}],
+
+
+		967: [{
+			type: 'STR',
+			file: 'mid_frenzy',
+			attachedEntity: true
+		}],
+
+
+		975: [{
+			type: 'STR',
+			file: 'vash00',
+			attachedEntity: true
+		}],
+
+
+		987: [{
+			type: 'STR',
+			file: 'rwc2011',
+			attachedEntity: true
+		}],
+
+
+		988: [{
+			type: 'STR',
+			file: 'rwc2011_2',
+			attachedEntity: true
+		}],
+
+
+		1015: [{
+			type: 'STR',
+			file: 'rune_success',
+			attachedEntity: true
+		}],
+
+
+		1016: [{
+			type: 'STR',
+			file: 'rune_fail',
+			attachedEntity: true
+		}],
+
+
+		1017: [{
+			type: 'STR',
+			file: 'changematerial_su',
+			attachedEntity: true
+		}],
+
+
+		1018: [{
+			type: 'STR',
+			file: 'changematerial_fa',
+			attachedEntity: true
+		}],
+
+
+		1019: [{
+			type: 'STR',
+			file: 'guardian',
+			attachedEntity: true
+		}],
+
+
+		1020: [{
+			type: 'STR',
+			file: 'bubble%d_1',
+			rand: [1, 4],
+			attachedEntity: true
+		}],
+
+
+		1021: [{
+			type: 'STR',
+			file: 'dust',
+			attachedEntity: true
+		}],
+
+
+		1029: [{
+			type: 'STR',
+			file: 'dancingblade',
+			attachedEntity: true
+		}],
+
+
+		1031: [{
+			type: 'STR',
+			file: 'invincibleoff2',
+			attachedEntity: true
+		}],
+
+
+		1033: [{
+			type: 'STR',
+			file: 'devil',
+			attachedEntity: true
+		}],
+
+
+		1040: [{
+			type: 'STR',
+			file: 'gc_darkcrow',
+			attachedEntity: true
+		}],
+
+
+		1042: [{
+			type: 'STR',
+			file: 'all_full_throttle',
+			attachedEntity: true
+		}],
+
+
+		1043: [{
+			type: 'STR',
+			file: 'sr_flashcombo',
+			attachedEntity: true
+		}],
+
+
+		1044: [{
+			type: 'STR',
+			file: 'rk_luxanima',
+			attachedEntity: true
+		}],
+
+
+		1046: [{
+			type: 'STR',
+			file: 'so_elemental_shield',
+			attachedEntity: true
+		}],
+
+
+		1047: [{
+			type: 'STR',
+			file: 'ab_offertorium',
+			attachedEntity: true
+		}],
+
+
+		1048: [{
+			type: 'STR',
+			file: 'wl_telekinesis_intense',
+			attachedEntity: true
+		}],
+
+
+		1049: [{
+			type: 'STR',
+			file: 'gn_illusiondoping',
+			attachedEntity: true
+		}],
+
+
+		1050: [{
+			type: 'STR',
+			file: 'nc_magma_eruption',
+			attachedEntity: true
+		}],
+
+
+		1055: [{
+			type: 'STR',
+			file: 'chill',
+			attachedEntity: true
+		}],
+
+
+		1057: [{
+			type: 'STR',
+			file: 'ab_offertorium_ring',
+			attachedEntity: true
+		}],
+
+
+		1062: [{
+			type: 'STR',
+			file: 'stormgust',
+			attachedEntity: true
+		}],
 	};
 });
