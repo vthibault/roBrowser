@@ -177,7 +177,6 @@ function(      WebGL,         glMatrix,       SkillId,        Client,           
 		var attribute = _program.attribute;
 
 		gl.bindBuffer( gl.ARRAY_BUFFER, this.buffer );
-		gl.uniform1f( uniform.uCenter, this.size );
 
 		gl.vertexAttribPointer( attribute.aPosition,     3, gl.FLOAT, false, 5*4,  0   );
 		gl.vertexAttribPointer( attribute.aTextureCoord, 2, gl.FLOAT, false, 5*4,  3*4 );
