@@ -24,10 +24,10 @@ define(['Renderer/Renderer', 'DB/DBManager'], function( Renderer, DB )
 		this.SIT        = -1;
 		this.PICKUP     = -1;
 		this.READYFIGHT = -1;
-		this.WTF        = -1;
+		this.FREEZE     = -1;
 		this.HURT       = -1;
 		this.DIE        = -1;
-		this.WTF2       = -1;
+		this.FREEZE2    = -1;
 		this.ATTACK1    = -1;
 		this.ATTACK2    = -1;
 		this.ATTACK3    = -1;
@@ -118,9 +118,9 @@ define(['Renderer/Renderer', 'DB/DBManager'], function( Renderer, DB )
 				this.ACTION.READYFIGHT = 4;
 				this.ACTION.ATTACK1    = 5;
 				this.ACTION.HURT       = 6;
-				this.ACTION.WTF        = 7;
+				this.ACTION.FREEZE     = 7;
 				this.ACTION.DIE        = 8;
-				this.ACTION.WTF2       = 9;
+				this.ACTION.FREEZE2    = 9;
 				this.ACTION.ATTACK2    = 10;
 				this.ACTION.ATTACK3    = 11;
 				this.ACTION.SKILL      = 12;

@@ -625,6 +625,9 @@ define(function(require)
 			if (content.height() < content[0].scrollHeight) {
 				this.ui.find('.hide').hide();
 			}
+			else {
+				this.ui.find('.hide').show();
+			}
 
 			Client.loadFile( DB.INTERFACE_PATH + 'item/' + ( item.IsIdentified ? it.identifiedResourceName : it.unidentifiedResourceName ) + '.bmp', function(data){
 				content.find('.item[data-index="'+ item.index +'"] .icon').css('backgroundImage', 'url('+ data +')');

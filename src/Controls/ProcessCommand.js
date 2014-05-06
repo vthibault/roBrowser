@@ -9,7 +9,7 @@
  */
 define([
 	'require',
-	'DB/DBManager',
+	'DB/DBManager',            'DB/Emotions',
 	'Audio/BGM',               'Audio/SoundManager',
 	'Engine/SessionStorage',
 	'Network/PacketStructure', 'Network/NetworkManager',
@@ -17,7 +17,7 @@ define([
 ],
 function(
 	require,
-	DB,
+	DB,                  Emotions,
 	BGM,                 Sound,
 	Session,
 	PACKET,              Network,
@@ -56,6 +56,18 @@ function(
 				else {
 					BGM.stop();
 				}
+				return;
+
+			case 'effect':
+				this.addText( DB.msgstringtable[23 + MapPreferences.effect], this.TYPE.INFO );
+				MapPreferences.effect = !MapPreferences.effect;
+				MapPreferences.save();
+				return;
+
+			case 'mineffect':
+				this.addText( DB.msgstringtable[687 + MapPreferences.mineffect], this.TYPE.INFO );
+				MapPreferences.mineffect = !MapPreferences.mineffect;
+				MapPreferences.save();
 				return;
 
 			case 'miss':
@@ -169,6 +181,13 @@ function(
 			}
 		}
 
+		// Show emotion
+		if (cmd in Emotions.commands) {
+			pkt      = new PACKET.CZ.REQ_EMOTION();
+			pkt.type = Emotions.commands[cmd];
+			Network.sendPacket(pkt);
+			return;
+		}
 
 		// Command not found
 		this.addText( DB.getMessage(95), this.TYPE.INFO );

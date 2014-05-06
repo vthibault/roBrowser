@@ -70,6 +70,7 @@
 
 	// Decode path
 	$path      = str_replace('\\', '/', utf8_decode(urldecode($_SERVER['REQUEST_URI'])));
+	$path      = preg_replace('/\?.*/', '', $path); // remove query
 	$directory = basename(dirname(__FILE__));
 
 	// Check Allowed directory
@@ -111,16 +112,14 @@
 		default:     header('Content-type:application/octet-stream'); break;
 	}
 
+	// Output
+	if (Debug::isEnable()) {
+		Debug::output();
+	}
 
 	// GZIP some files
 	if (in_array($ext, array('txt', 'xml', 'rsw', 'rsm', 'gnd', 'gat', 'spr', 'act', 'pal'))) {
 		ob_start("ob_gzhandler");
-	}
-
-
-	// Output
-	if (Debug::isEnable()) {
-		Debug::output();
 	}
 
 	echo $file;

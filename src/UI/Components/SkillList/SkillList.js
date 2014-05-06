@@ -302,6 +302,7 @@ define(function(require)
 
 		element.find('.levelupcontainer').append( levelup );
 		SkillList.ui.find('.content table').append(element);
+		this.parseHTML.call(levelup);
 
 		Client.loadFile( DB.INTERFACE_PATH + 'item/' + sk.Name + '.bmp', function(data){
 			element.find('.icon img').attr('src', data);

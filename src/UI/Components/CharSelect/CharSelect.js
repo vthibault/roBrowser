@@ -207,16 +207,20 @@ define(function(require)
 	 */
 	CharSelect.setInfo = function setInfo( pkt )
 	{
-		_maxSlots           = pkt.TotalSlotNum;
+		_maxSlots           = pkt.TotalSlotNum || 9; // default 9 ?
 		_sex                = pkt.sex;
 		_slots.length       = 0;
 		_entitySlots.length = 0;
-		_list.length        =  0;
+		_list.length        = 0;
 
 		if (pkt.charInfo) {
 			var i, count = pkt.charInfo.length;
 			for (i = 0; i < count; ++i) {
 				CharSelect.addCharacter( pkt.charInfo[i] );
+
+				// Guess the max slot
+				// required if the client is < 20100413 and have more than 9 slots
+				_maxSlots = Math.max( _maxSlots, Math.floor(pkt.charInfo[i].CharNum / 3 + 1) * 3 );
 			}
 		}
 

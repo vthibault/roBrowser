@@ -18,6 +18,7 @@ define(function( require )
 	 */
 	var SkillId       = require('DB/SkillId');
 	var SkillInfo     = require('DB/SkillInfo');
+	var Emotions      = require('DB/Emotions');
 	var Session       = require('Engine/SessionStorage');
 	var Network       = require('Network/NetworkManager');
 	var PACKET        = require('Network/PacketStructure');
@@ -151,6 +152,26 @@ define(function( require )
 					entity.walk.speed = speed;
 				};
 			}
+		}
+	}
+
+
+	/**
+	 * Display entity's emotion
+	 *
+	 * @param {object} pkt - PACKET.ZC.EMOTION
+	 */
+	function onEntityEmotion( pkt )
+	{
+		var entity = EntityManager.get(pkt.GID);
+		if (entity && (pkt.type in Emotions.indexes)) {
+			entity.attachments.add({
+				frame: Emotions.indexes[pkt.type],
+				file:  'emotion',
+				play:   true,
+				head:   true,
+				depth:  5.0
+			});
 		}
 	}
 
@@ -548,7 +569,7 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET.ZC.SKILL_ENTRY
 	 */
-	function onEntityUseSkillToPosition( pkt )
+	function onSkillAppear( pkt )
 	{
 		var srcEntity = EntityManager.get(pkt.creatorAID);
 
@@ -567,6 +588,19 @@ define(function( require )
 				}
 			});
 		}
+
+		Effects.spamSkillZone( pkt.job, pkt.xPos, pkt.yPos, pkt.AID );
+	}
+
+
+	/**
+	 * Remove a skill from screen
+	 *
+	 * @param {object} pkt - PACKET.ZC.SKILL_DISAPPEAR
+	 */
+	function onSkillDisapear( pkt )
+	{
+		Effects.remove( null, pkt.AID );
 	}
 
 
@@ -626,6 +660,8 @@ define(function( require )
 				// Combo
 				if (target) {
 					for (i = 0; i<pkt.count; ++i) {
+						Effects.spamSkillHit( pkt.SKID, dstEntity.GID, Renderer.tick + pkt.attackMT + (200 * i));
+
 						Damage.add(
 							Math.floor( pkt.damage / pkt.count ),
 							target,
@@ -647,9 +683,8 @@ define(function( require )
 			}
 		}
 
-		// Avoid casting zone skill again if srcEntity is a skill
 		if (srcEntity && dstEntity) {
-			Effects.spamSkill( pkt.SKID, dstEntity.GID);
+			Effects.spamSkill( pkt.SKID, dstEntity.GID, null, Renderer.tick + pkt.attackMT);
 		}
 	}
 
@@ -942,14 +977,16 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.DISAPPEAR_BUYING_STORE_ENTRY, onEntityDestroyRoom );
 		Network.hookPacket( PACKET.ZC.ROOM_NEWENTRY,                onEntityCreateRoom );
 		Network.hookPacket( PACKET.ZC.DESTROY_ROOM,                 onEntityDestroyRoom );
-		Network.hookPacket( PACKET.ZC.SKILL_ENTRY,                  onEntityUseSkillToPosition);
-		Network.hookPacket( PACKET.ZC.SKILL_ENTRY2,                 onEntityUseSkillToPosition);
-		Network.hookPacket( PACKET.ZC.SKILL_ENTRY3,                 onEntityUseSkillToPosition);
-		Network.hookPacket( PACKET.ZC.SKILL_ENTRY4,                 onEntityUseSkillToPosition);
-		Network.hookPacket( PACKET.ZC.SKILL_ENTRY5,                 onEntityUseSkillToPosition);
+		Network.hookPacket( PACKET.ZC.SKILL_ENTRY,                  onSkillAppear);
+		Network.hookPacket( PACKET.ZC.SKILL_ENTRY2,                 onSkillAppear);
+		Network.hookPacket( PACKET.ZC.SKILL_ENTRY3,                 onSkillAppear);
+		Network.hookPacket( PACKET.ZC.SKILL_ENTRY4,                 onSkillAppear);
+		Network.hookPacket( PACKET.ZC.SKILL_ENTRY5,                 onSkillAppear);
+		Network.hookPacket( PACKET.ZC.SKILL_DISAPPEAR,              onSkillDisapear);
 		Network.hookPacket( PACKET.ZC.DISPEL,                       onEntityCastCancel);
 		Network.hookPacket( PACKET.ZC.HIGHJUMP,                     onEntityJump);
 		Network.hookPacket( PACKET.ZC.FASTMOVE,                     onEntityFastMove);
 		Network.hookPacket( PACKET.ZC.RESURRECTION,                 onEntityResurect);
+		Network.hookPacket( PACKET.ZC.EMOTION,                      onEntityEmotion);
 	};
 });

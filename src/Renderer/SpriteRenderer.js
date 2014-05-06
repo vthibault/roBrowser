@@ -40,6 +40,7 @@ function(      WebGL,         glMatrix,      Camera )
 		"uniform vec2 uSpriteRendererOffset;",
 		"uniform mat4 uSpriteRendererAngle;",
 		"uniform vec3 uSpriteRendererPosition;",
+		"uniform float uSpriteRendererDepth;",
 
 		"mat4 Project( mat4 mat, vec3 pos) {",
 
@@ -75,7 +76,7 @@ function(      WebGL,         glMatrix,      Camera )
 
 			// Hack for billboarding
 			"vec3 camPosition = vec3( uViewModelMat[0].w, uViewModelMat[1].w, uViewModelMat[2].w);",
-			"gl_Position.z   -= aIsUp * (uCameraLatitude * 0.25 / distance( gl_Position.xyz, camPosition.xyz));",
+			"gl_Position.z   -= uSpriteRendererDepth + aIsUp * (uCameraLatitude * 0.25 / distance( gl_Position.xyz, camPosition.xyz));",
 		"}"
 	].join("\n");
 
@@ -110,20 +111,12 @@ function(      WebGL,         glMatrix,      Camera )
 			"float blLUT = texture2D(indexT, uv + vec2(0.0, TextInterval.y)).x;",
 			"float brLUT = texture2D(indexT, uv + TextInterval).x;",
 
-			"float atlLUT = 1.0;",
-			"float atrLUT = 1.0;",
-			"float ablLUT = 1.0;",
-			"float abrLUT = 1.0;",
+			"vec4 transparent = vec4( 0.5, 0.5, 0.5, 0.0);",
 
-			"if (tlLUT == 0.0) atlLUT = 0.0;",
-			"if (trLUT == 0.0) atrLUT = 0.0;",
-			"if (blLUT == 0.0) ablLUT = 0.0;",
-			"if (brLUT == 0.0) abrLUT = 0.0;",
-
-			"vec4 tl = vec4( texture2D(LUT, vec2(tlLUT,1.0)).rgb, atlLUT);",
-			"vec4 tr = vec4( texture2D(LUT, vec2(trLUT,1.0)).rgb, atrLUT);",
-			"vec4 bl = vec4( texture2D(LUT, vec2(blLUT,1.0)).rgb, ablLUT);",
-			"vec4 br = vec4( texture2D(LUT, vec2(brLUT,1.0)).rgb, abrLUT);",
+			"vec4 tl = tlLUT == 0.0 ? transparent : vec4( texture2D(LUT, vec2(tlLUT,1.0)).rgb, 1.0);",
+			"vec4 tr = trLUT == 0.0 ? transparent : vec4( texture2D(LUT, vec2(trLUT,1.0)).rgb, 1.0);",
+			"vec4 bl = blLUT == 0.0 ? transparent : vec4( texture2D(LUT, vec2(blLUT,1.0)).rgb, 1.0);",
+			"vec4 br = brLUT == 0.0 ? transparent : vec4( texture2D(LUT, vec2(brLUT,1.0)).rgb, 1.0);",
 
 			"vec2 f  = fract( uv.xy * uTextSize );",
 			"vec4 tA = mix( tl, tr, f.x );",
@@ -190,6 +183,13 @@ function(      WebGL,         glMatrix,      Camera )
 	 * @var {number} sprite angle rotation
 	 */
 	SpriteRenderer.angle = 0;
+
+
+	/**
+	 * @var {number} depth
+	 */
+	SpriteRenderer.depth = 0.0;
+
 
 	/**
 	 * @var {Float32Array[3]} sprite position in 3D world
@@ -290,6 +290,11 @@ function(      WebGL,         glMatrix,      Camera )
 	 * @var {number} last rotation angle used
 	 */
 	var _angle = null;
+
+	/**
+	 * @var {number} last depth operation
+	 */
+	var _depth = null;
 
 
 	/**
@@ -456,6 +461,10 @@ function(      WebGL,         glMatrix,      Camera )
 
 		if (_usepal !== use_pal) {
 			gl.uniform1i(  uniform.uUsePal, _usepal = use_pal );
+		}
+
+		if (this.depth !== _depth) {
+			gl.uniform1f( uniform.uSpriteRendererDepth, _depth = this.depth);
 		}
 
 		// Rotate

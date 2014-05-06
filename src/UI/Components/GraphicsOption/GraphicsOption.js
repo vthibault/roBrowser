@@ -140,24 +140,6 @@ define(function(require)
 
 
 	/**
-	 * Process shortcut
-	 *
-	 * @param {object} key
-	 */
-	GraphicsOption.onShortCut = function onShortCut( key )
-	{
-		switch (key.cmd) {
-			case 'TOGGLE':
-				this.ui.toggle();
-				if (this.ui.is(':visible')) {
-					this.ui[0].parentNode.appendChild(this.ui[0]);
-				}
-				break;
-		}
-	};
-
-
-	/**
 	 * Create component and export it
 	 */
 	return UIManager.addComponent(GraphicsOption);

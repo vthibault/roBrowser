@@ -41,7 +41,10 @@ define(function(require)
 		   (!key.alt   || KEYS.ALT)   &&
 		   (!key.ctrl  || KEYS.CTRL)
 		) {
-			UIManager.getComponent(key.component).onShortCut(key);
+			var component = UIManager.getComponent(key.component);
+			if (component.onShortCut) {
+				component.onShortCut(key);
+			}
 			return true;
 		}
 

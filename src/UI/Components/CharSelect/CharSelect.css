@@ -24,7 +24,7 @@
 /** Characters infos **/
 #charselect .charinfo { position:absolute; width:285px; top:204px; left:16px; }
 #charselect .charinfo div { position:absolute; width:90px; height:13px; font-size:12px; }
-#charselect .charinfo .name { left: 52px; top: 2px; }
+#charselect .charinfo .name { left: 52px; top: 2px; white-space:nowrap; }
 #charselect .charinfo .job  { left: 52px; top:18px; }
 #charselect .charinfo .lvl  { left: 52px; top:34px; }
 #charselect .charinfo .exp  { left: 52px; top:50px; }

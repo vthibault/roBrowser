@@ -219,6 +219,17 @@ define( [
 			// no break intended.
 
 			case Entity.TYPE_MOB:
+
+				// Start rendering the lock on arrow
+				this.attachments.add({
+					uid:    'lockon',
+					spr:    'data/sprite/cursors.spr',
+					act:    'data/sprite/cursors.act',
+					frame:   Cursor.ACTION.LOCK,
+					repeat:  true,
+					depth:   10.0,
+				});
+
 				var out   = [];
 				var count = PathFinding.search(
 					main.position[0] | 0, main.position[1] | 0,
@@ -279,6 +290,9 @@ define( [
 		// Stop displaying name
 		this.display.display = false;
 		this.display.remove();
+
+		// Stop rendering t he lock on arrow
+		this.attachments.remove('lockon');
 	}
 
 

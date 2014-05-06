@@ -62,15 +62,25 @@ define(function( require )
 		// Remove previous effect
 		switch (this._bodyState) {
 			case StatusConst.BodyState.SLEEP:
-				// detach data\sprite\ÀÌÆÑÆ®\status-sleep
+				this.attachments.remove('status-sleep');
 				break;
 
 			case StatusConst.BodyState.FREEZE:
-				// detach data\sprite\ÀÌÆÑÆ®\¾óÀ½¶¯
+				this.attachments.add({
+					frame:     1,
+					uid:       'status-freeze',
+					file:      '\xbe\xf3\xc0\xbd\xb6\xaf',
+				});
+				this.setAction({
+					action: this.ACTION.READYFIGHT,
+					frame:  0,
+					repeat: true,
+					play:   true,
+				});
 				break;
 
 			case StatusConst.BodyState.STUN:
-				// detach data\sprite\ÀÌÆÑÆ®\status-stun
+				this.attachments.remove('status-stun');
 				break;
 		}
 
@@ -89,7 +99,13 @@ define(function( require )
 				break;
 
 			case StatusConst.BodyState.SLEEP:
-				// attach data\sprite\ÀÌÆÑÆ®\status-sleep
+				this.attachments.add({
+					repeat:    true,
+					frame:     0,
+					uid:       'status-sleep',
+					file:      'status-sleep',
+					head:      true,
+				});
 				break;
 
 
@@ -97,11 +113,28 @@ define(function( require )
 				this._bodyStateColor[0] = 0.0;
 				this._bodyStateColor[1] = 0.4;
 				this._bodyStateColor[2] = 0.8;
-				// attach data\sprite\ÀÌÆÑÆ®\¾óÀ½¶¯
+				this.attachments.add({
+					animationId: 0,
+					frame:       0,
+					uid:         'status-freeze',
+					file:        '\xbe\xf3\xc0\xbd\xb6\xaf',
+				});
+				this.setAction({
+					action: this.ACTION.FREEZE2,
+					frame:  0,
+					repeat: false,
+					play:   false
+				});
 				break;
 
 			case StatusConst.BodyState.STUN:
-				// attach data\sprite\ÀÌÆÑÆ®\status-stun
+				this.attachments.add({
+					repeat:    true,
+					frame:     0,
+					uid:       'status-stun',
+					file:      'status-stun',
+					head:      true
+				});
 				break;
 		}
 
@@ -131,7 +164,13 @@ define(function( require )
 
 			// Do not attach multiple times.
 			if (!(this._healthState & StatusConst.HealthState.CURSE)) {
-				// attach data/sprite/ÀÌÆÑÆ®/status-curse
+				this.attachments.add({
+					repeat:    true,
+					uid:       'status-curse',
+					file:      'status-curse',
+					head:      true,
+					opacity:   0.5
+				});
 			}
 
 			this._healthStateColor[0] *= 0.50;
@@ -139,7 +178,7 @@ define(function( require )
 			this._healthStateColor[2] *= 0.10;
 		}
 		else if (!(value & StatusConst.HealthState.CURSE)) {
-			// detach data/sprite/ÀÌÆÑÆ®/status-curse
+			this.attachments.remove('status-curse');
 		}
 
 		// Poison

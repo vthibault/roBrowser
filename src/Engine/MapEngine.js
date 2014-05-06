@@ -34,7 +34,6 @@ define(function( require )
 	var UIManager        = require('UI/UIManager');
 	var Background       = require('UI/Background');
 	var Escape           = require('UI/Components/Escape/Escape');
-	var GraphicsOption   = require('UI/Components/GraphicsOption/GraphicsOption');
 	var ChatBox          = require('UI/Components/ChatBox/ChatBox');
 	var MiniMap          = require('UI/Components/MiniMap/MiniMap');
 	var BasicInfo        = require('UI/Components/BasicInfo/BasicInfo');
@@ -245,7 +244,6 @@ define(function( require )
 			ShortCut.append();
 			ChatRoomCreate.append();
 			SkillList.append();
-			GraphicsOption.append();
 
 			// Map loaded
 			Network.sendPacket(
@@ -457,7 +455,7 @@ define(function( require )
 		clearTimeout(_walkTimer);
 
 		// If siting, update direction
-		if (Session.Entity.action === Session.Entity.ACTION.SIT || KEYS.SHIFT) {
+		if (Session.Entity.action === Session.Entity.ACTION.SIT /*|| KEYS.SHIFT see: http://forum.robrowser.com/index.php?topic=32240#msg32446 */) {
 			Session.Entity.lookTo( Mouse.world.x, Mouse.world.y );
 
 			var pkt     = new PACKET.CZ.CHANGE_DIRECTION();

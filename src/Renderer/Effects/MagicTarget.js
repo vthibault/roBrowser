@@ -78,14 +78,12 @@ function(      WebGL,         glMatrix,       SkillId,        Client,           
 		'uniform mat4 uModelViewMat;',
 		'uniform mat4 uProjectionMat;',
 		'uniform mat4 uRotationMat;',
-		'uniform float uCenter;',
 
 		'void main(void) {',
 			'gl_Position    = uProjectionMat * uModelViewMat * vec4( aPosition, 1.0);',
 			'gl_Position.z -= 0.01;',
 
-			'vTextureCoord  = (uRotationMat * vec4( aTextureCoord - 0.5, 1.0, 1.0)).xy;',
-			'vTextureCoord  = clamp(vTextureCoord + 0.5, 0.0, 1.0);',
+			'vTextureCoord  = (uRotationMat * vec4( aTextureCoord - 0.5, 1.0, 1.0)).xy + 0.5;',
 		'}'
 	].join('\n');
 
@@ -179,7 +177,6 @@ function(      WebGL,         glMatrix,       SkillId,        Client,           
 		var attribute = _program.attribute;
 
 		gl.bindBuffer( gl.ARRAY_BUFFER, this.buffer );
-		gl.uniform1f( uniform.uCenter, this.size );
 
 		gl.vertexAttribPointer( attribute.aPosition,     3, gl.FLOAT, false, 5*4,  0   );
 		gl.vertexAttribPointer( attribute.aTextureCoord, 2, gl.FLOAT, false, 5*4,  3*4 );

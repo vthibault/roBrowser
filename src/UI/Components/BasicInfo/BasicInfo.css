@@ -34,7 +34,7 @@
 #basicinfo .buttons .clear { clear:both; }
 
 /* REDUCED */
-#basicinfo .small .line1 { position:absolute; top:2px;  left:18px; text-shadow:1px 1px white; }
-#basicinfo .small .line2 { position:absolute; top:20px; left:10px; }
-#basicinfo .small .line3 { position:absolute; top:36px; left:10px; }
+#basicinfo .small .line1 { position:absolute; top:2px;  left:18px; text-shadow:1px 1px white; white-space:nowrap; }
+#basicinfo .small .line2 { position:absolute; top:20px; left:10px; white-space:nowrap; }
+#basicinfo .small .line3 { position:absolute; top:36px; left:10px; white-space:nowrap; }
 #basicinfo .small .toggle_btns { width:9px; height:14px; border:none; background:none; background-repeat:no-repeat; position:absolute; right:2px; bottom: 2px; }
