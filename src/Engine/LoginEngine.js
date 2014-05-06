@@ -99,7 +99,7 @@ function(
 				}
 
 				console.warn("%c[Warning] You are using a Korean langtype. If you have some charset " +
-				             "problem set 'ROConfig.disableKorean' to true or use a proper langtype !",
+				             "problem set ROConfig.servers[<index>].disableKorean to true or use a proper langtype !",
 				             "font-weight:bold; color:red; font-size:14px");
 
 				charset = 'windows-949';
