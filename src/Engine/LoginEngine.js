@@ -81,31 +81,41 @@ function(
 	 */
 	function init( server )
 	{
-		UIManager.removeComponents();
-
-		Session.LangType = parseInt(server.langtype, 10);
 		var charset;
 
+		UIManager.removeComponents();
+		Session.LangType = 'langtype' in server ? parseInt(server.langtype, 10) : 1; // default to SERVICETYPE_AMERICA
 
-		/// Special thanks to curiosity, see:
+
+		/// Special thanks to curiosity, siriuswhite and ai4rei. See:
 		/// - http://hercules.ws/wiki/Clientinfo.xml
 		/// - http://forum.robrowser.com/index.php?topic=32231
+		/// - http://siriuswhite.de/rodoc/codepage.html
 		switch (Session.LangType) {
 			case 0x00: // SERVICETYPE_KOREA
+				if (ROConfig.disableKorean) {
+					charset = 'windows-1252';
+					break;
+				}
+
+				console.warn("%c[Warning] You are using a Korean langtype. If you have some charset " +
+				             "problem set 'ROConfig.disableKorean' to true or use a proper langtype !",
+				             "font-weight:bold; color:red; font-size:14px");
+
 				charset = 'windows-949';
 				break;
 
+			// SERVICETYPE_AMERICA
+			// SERVICETYPE_INDONESIA
+			// SERVICETYPE_PHILIPPINE
+			// SERVICETYPE_MALAYSIA
+			// SERVICETYPE_SINGAPORE
+			// SERVICETYPE_GERMANY
+			// SERVICETYPE_INDIA
+			// SERVICETYPE_AUSTRALIA
 			default:
-			case 0x01: // SERVICETYPE_AMERICA
-			case 0x06: // SERVICETYPE_INDONESIA
-			case 0x07: // SERVICETYPE_PHILIPPINE
-			case 0x08: // SERVICETYPE_MALAYSIA
-			case 0x09: // SERVICETYPE_SINGAPORE
-			case 0x0a: // SERVICETYPE_GERMANY
-			case 0x0b: // SERVICETYPE_INDIA
-			case 0x0d: // SERVICETYPE_AUSTRALIA
-			case 0x0e: // SERVICETYPE_RUSSIA
-			case 0x11: // SERVICETYPE_CHILE
+			case 0x0c: // SERVICETYPE_BRAZIL
+			case 0x12: // SERVICETYPE_FRANCE
 				charset = 'windows-1252';
 				break;
 
@@ -125,14 +135,18 @@ function(
 				charset = 'windows-874';
 				break;
 
+			case 0x0e: // SERVICETYPE_RUSSIA
+				charset = 'windows-1251';
+				break;
+
 			case 0x0f: // SERVICETYPE_VIETNAM
 				charset = 'windows-1258';
 				break;
 
-			case 0x12: // SERVICETYPE_FRANCE
-			case 0x0c: // SERVICETYPE_BRAZIL
-				charset = 'windows-1252';
-				break;
+			// Not supported by the encoder/decoder, jump to windows-1252
+			//case 0x11: // SERVICETYPE_CHILE
+			//	charset = 'windows-1145';
+			//	break;
 
 			case 0x14: // SERVICETYPE_UAE
 				charset = 'windows-1256';

@@ -2455,13 +2455,13 @@ define(function()
 	 */
 	var TextEncoding = {
 
-		charset: 'utf-8',
+		charset: 'windows-1252',
 
 		setCharset: function setCharset(charset)
 		{
 			this.charset = charset;
-			this.encoder  = new this.TextEncoder(charset);
-			this.decoder  = new this.TextDecoder(charset);
+			this.encoder = new this.TextEncoder(charset);
+			this.decoder = new this.TextDecoder(charset);
 
 			this.encode = this.encoder.encode.bind(this.encoder);
 			this.decode = this.decoder.decode.bind(this.decoder);
@@ -2490,7 +2490,7 @@ define(function()
 		TextEncoder: /*self.TextEncoder ||*/ TextEncoder // native text encoder just support utf-8 and utf-16...
 	};
 
-	TextEncoding.setCharset('utf-8');
+	TextEncoding.setCharset('windows-1252');
 
 
 	return TextEncoding;
