@@ -83,9 +83,9 @@ define(function( require )
 	 */
 	function onPartyOption( pkt )
 	{
-		ChatBox.addText( DB.msgstringtable[291] + '  - ' + DB.msgstringtable[292] + '  : ' + DB.msgstringtable[287 + pkt.expOption ], ChatBox.TYPE.INFO );
-		ChatBox.addText( DB.msgstringtable[291] + '  - ' + DB.msgstringtable[293] + '  : ' + DB.msgstringtable[289 + pkt.ItemPickupRule], ChatBox.TYPE.INFO );
-		ChatBox.addText( DB.msgstringtable[291] + '  - ' + DB.msgstringtable[738] + '  : ' + DB.msgstringtable[287 + pkt.ItemDivisionRule], ChatBox.TYPE.INFO );
+		ChatBox.addText( DB.getMessage(291) + '  - ' + DB.getMessage(292) + '  : ' + DB.getMessage(287 + pkt.expOption ), ChatBox.TYPE.INFO );
+		ChatBox.addText( DB.getMessage(291) + '  - ' + DB.getMessage(293) + '  : ' + DB.getMessage(289 + pkt.ItemPickupRule), ChatBox.TYPE.INFO );
+		ChatBox.addText( DB.getMessage(291) + '  - ' + DB.getMessage(738) + '  : ' + DB.getMessage(287 + pkt.ItemDivisionRule), ChatBox.TYPE.INFO );
 	}
 
 
@@ -96,7 +96,7 @@ define(function( require )
 	 */
 	function onPartyConfig( pkt )
 	{
-		ChatBox.addText( DB.msgstringtable[pkt.bRefuseJoinMsg ? 1325 : 1326], ChatBox.TYPE.INFO );
+		ChatBox.addText( DB.getMessage(pkt.bRefuseJoinMsg ? 1325 : 1326), ChatBox.TYPE.INFO );
 	}
 
 
@@ -118,7 +118,7 @@ define(function( require )
 			};
 		}
 
-		UIManager.showPromptBox( pkt.groupName + DB.msgstringtable[94], 'ok', 'cancel', onAnswer(1), onAnswer(0) );
+		UIManager.showPromptBox( pkt.groupName + DB.getMessage(94), 'ok', 'cancel', onAnswer(1), onAnswer(0) );
 	}
 
 
@@ -149,7 +149,7 @@ define(function( require )
 			case 9: id = 1871; break;
 		}
 
-		ChatBox.addText( DB.msgstringtable[id].replace('%s', pkt.characterName), ChatBox.TYPE.INFO);
+		ChatBox.addText( DB.getMessage(id).replace('%s', pkt.characterName), ChatBox.TYPE.INFO);
 	}
 
 

@@ -315,8 +315,8 @@ function(        CommonCSS,          jQuery,     Cursor,             DB,        
 		var hover_uri = null;
 
 		// text
-		if (msgId && (msgId in DB.msgstringtable)) {
-			$node.text( DB.msgstringtable[msgId] );
+		if (msgId) {
+			$node.text( DB.getMessage(msgId, '') );
 		}
 
 		// Default background

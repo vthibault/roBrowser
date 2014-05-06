@@ -115,7 +115,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 	LuaByte.prototype.load = function load( data )
 	{
 		this.fp        = new BinaryReader(data);
-		this.signature = this.fp.readString(4);
+		this.signature = this.fp.readBinaryString(4);
 		this.version   = this.fp.readByte();
 
 		// Check file header
@@ -191,7 +191,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 		var fp  = this.fp;
 		var out = {};
 
-		out.source_name  =  fp.readString(fp.readULong());
+		out.source_name  =  fp.readBinaryString(fp.readULong());
 		out.first_line   =  fp.readLong();
 		out.last_line    =  (this.version > 0x50) ? fp.readLong() : out.first_line;
 		out.nups         =  fp.readByte();
@@ -248,7 +248,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 			case 0:  return 'undefined';
 			case 1:  return !this.fp.readByte();
 			case 3:  return  this.fp.readDouble();
-			case 4:  return  this.fp.readString(this.fp.readULong());
+			case 4:  return  this.fp.readBinaryString(this.fp.readULong());
 			default: return '...';
 		}
 	};
@@ -261,7 +261,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 	{
 		var fp = this.fp;
 		return {
-			name:  fp.readString(fp.readULong()),
+			name:  fp.readBinaryString(fp.readULong()),
 			start: fp.readLong(),
 			end:   fp.readLong()
 		};
@@ -291,7 +291,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 	 */
 	LuaByte.prototype.loadUpValue = function loadUpValue()
 	{
-		return this.fp.readString(this.fp.readULong());
+		return this.fp.readBinaryString(this.fp.readULong());
 	};
 
 

@@ -211,7 +211,7 @@ define(function(require)
 			overlay.className = 'win_popup_overlay';
 			document.body.appendChild(overlay);
 
-			var popup = UIManager.showMessageBox( DB.msgstringtable[13], 'ok', function(){
+			var popup = UIManager.showMessageBox( DB.getMessage(13), 'ok', function(){
 				document.body.removeChild(overlay);
 			}, true);
 

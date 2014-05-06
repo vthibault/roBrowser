@@ -180,7 +180,7 @@ define(function( require )
 		WinDeal.init = function Init()
 		{
 			this.draggable();
-			this.ui.find('.text').text( DB.msgstringtable[92] );
+			this.ui.find('.text').text( DB.getMessage(92) );
 
 			this.ui.css({
 				top:  (Renderer.height) / 1.5,

@@ -41,7 +41,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 	GND.prototype.load = function load( data )
 	{
 		this.fp     = new BinaryReader(data);
-		var header  = this.fp.readString(4);
+		var header  = this.fp.readBinaryString(4);
 
 		if (header !== 'GRGN') {
 			throw new Error('GND::load() - Invalid header "' + header + '"');
@@ -75,7 +75,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 		textures = new Array(count);
 
 		for (i = 0 ; i < count; ++i) {
-			textures[i] = this.fp.readString(length);
+			textures[i] = this.fp.readBinaryString(length);
 		}
 
 		return textures;

@@ -71,7 +71,7 @@ define(function(require)
 		ui.find('.command').change(function(){
 			switch (this.value) {
 				case 'feed':
-					UIManager.showPromptBox( DB.msgstringtable[601], 'ok', 'cancel', function(){
+					UIManager.showPromptBox( DB.getMessage(601), 'ok', 'cancel', function(){
 						PetInformations.reqPetFeed();
 					}, null);
 					break;
@@ -160,7 +160,7 @@ define(function(require)
 		this.setHunger(info.nFullness);
 		this.setIntimacy(info.nRelationship);
 
-		this.ui.find('.accessory').text(DB.msgstringtable[info.ITID ? 598 : 600]);
+		this.ui.find('.accessory').text(DB.getMessage(info.ITID ? 598 : 600));
 
 		Client.loadFile( DB.getPetIllustPath(info.job), function(data){
 			this.ui.find('.content').css('backgroundImage', 'url('+ data +')');
@@ -182,13 +182,13 @@ define(function(require)
 	 */
 	PetInformations.setIntimacy = function setIntimacy(val)
 	{
-		this.ui.find('.intimacy').text(DB.msgstringtable[
+		this.ui.find('.intimacy').text(DB.getMessage(
 			val < 100 ? 672 :
 			val < 250 ? 673 :
 			val < 600 ? 669 :
 			val < 900 ? 674 :
 			675
-		]);
+		));
 	};
 
 
@@ -199,13 +199,13 @@ define(function(require)
 	 */
 	PetInformations.setHunger = function setHunger(val)
 	{
-		this.ui.find('.hunger').text(DB.msgstringtable[
+		this.ui.find('.hunger').text(DB.getMessage(
 			val < 10 ? 667 :
 			val < 25 ? 668 :
 			val < 75 ? 669 :
 			val < 90 ? 670 :
 			671
-		]);
+		));
 	};
 
 

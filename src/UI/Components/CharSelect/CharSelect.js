@@ -134,7 +134,6 @@ define(function(require)
 	{
 		_index = _preferences.index;
 
-		this.ui.find('.slotinfo .content').text( DB.msgstringtable[2004] );
 		this.ui.find('.slotinfo .number').text( _list.length + ' / ' + _maxSlots );
 		this.ui.find('.pageinfo .count').text( _maxSlots / 3 );
 
@@ -271,7 +270,7 @@ define(function(require)
 
 			default: // Others error ?
 			case  0: // Incorrect adress email
-				UIManager.showMessageBox( DB.msgstringtable[301], 'ok' );
+				UIManager.showMessageBox( DB.getMessage(301), 'ok' );
 				break;
 		}
 	};
@@ -337,7 +336,7 @@ define(function(require)
 	 */
 	function cancel()
 	{
-		UIManager.showPromptBox( DB.msgstringtable[17], 'ok', 'cancel', function(){
+		UIManager.showPromptBox( DB.getMessage(17), 'ok', 'cancel', function(){
 			CharSelect.onExitRequest();
 		}, null);
 	}

@@ -93,7 +93,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 	
 		// Read header.
 		fp      = new BinaryReader(data);
-		header  = fp.readString(4);
+		header  = fp.readBinaryString(4);
 		version = fp.readByte() + fp.readByte()/10;
 	
 		if (header != 'GRSW') {
@@ -101,12 +101,12 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 		}
 
 		// Read sub files.
-		this.files.ini = fp.readString(40);
-		this.files.gnd = fp.readString(40);
-		this.files.gat = fp.readString(40);
+		this.files.ini = fp.readBinaryString(40);
+		this.files.gnd = fp.readBinaryString(40);
+		this.files.gat = fp.readBinaryString(40);
 
 		if (version >= 1.4) {
-			this.files.src = fp.readString(40);
+			this.files.src = fp.readBinaryString(40);
 		}
 
 		// Read water info.
@@ -162,12 +162,12 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 
 				case 1:
 					models[m++] = {
-						name:      version >= 1.3 ? fp.readString(40) : null,
+						name:      version >= 1.3 ? fp.readBinaryString(40) : null,
 						animType:  version >= 1.3 ? fp.readLong()  : 0,
 						animSpeed: version >= 1.3 ? fp.readFloat() : 0.0,
 						blockType: version >= 1.3 ? fp.readLong()  : 0,
-						filename:  fp.readString(80),
-						nodename:  fp.readString(80),
+						filename:  fp.readBinaryString(80),
+						nodename:  fp.readBinaryString(80),
 						position:[ fp.readFloat()/5, fp.readFloat()/5, fp.readFloat()/5 ],
 						rotation:[ fp.readFloat(),   fp.readFloat(),   fp.readFloat() ],
 						scale:   [ fp.readFloat()/5, fp.readFloat()/5, fp.readFloat()/5 ]
@@ -176,7 +176,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 	
 				case 2:
 					lights[l++] = {
-						name:    fp.readString(80),
+						name:    fp.readBinaryString(80),
 						pos:   [ fp.readFloat()/5, fp.readFloat()/5, fp.readFloat()/5 ],
 						color: [ fp.readLong(),    fp.readLong(),    fp.readLong()  ],
 						range:   fp.readFloat()
@@ -185,8 +185,8 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 	
 				case 3:
 					sounds[s++] = {
-						name:     fp.readString(80),
-						file:     fp.readString(80),
+						name:     fp.readBinaryString(80),
+						file:     fp.readBinaryString(80),
 						pos:    [ fp.readFloat()/5, fp.readFloat()/5, fp.readFloat()/5 ],
 						vol:      fp.readFloat(),
 						width:    fp.readLong(),
@@ -198,7 +198,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 	
 				case 4:
 					effects[e++] = {
-						name:   fp.readString(80),
+						name:   fp.readBinaryString(80),
 						pos:  [ fp.readFloat()/5, fp.readFloat()/5, fp.readFloat()/5 ],
 						type:   fp.readLong(),
 						loop:   fp.readFloat(),

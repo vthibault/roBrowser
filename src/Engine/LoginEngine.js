@@ -11,6 +11,7 @@
 
 define([
 	'require',
+	'Vendors/text-encoding',
 	'DB/DBManager',
 	'Audio/SoundManager',
 	'Core/Thread',
@@ -27,6 +28,7 @@ define([
 ],
 function(
 	require,
+	TextEncoding,
 	DB,
 	Sound,
 	Thread,
@@ -51,7 +53,7 @@ function(
 	var WinLoading = WinPopup.clone('WinLoading');
 	WinLoading.init = function(){
 		this.ui.css({ top: (Renderer.height - 120) / 1.5, left: (Renderer.width - 280) / 2.0 });
-		this.ui.find('.text').text( DB.msgstringtable[121] );
+		this.ui.find('.text').text( DB.getMessage(121) );
 	};
 	UIManager.addComponent(WinLoading);
 
@@ -79,9 +81,79 @@ function(
 	 */
 	function init( server )
 	{
-		UIManager.removeComponents();
+		var charset;
 
-		Session.LangType = parseInt(server.langtype, 10);
+		UIManager.removeComponents();
+		Session.LangType = 'langtype' in server ? parseInt(server.langtype, 10) : 1; // default to SERVICETYPE_AMERICA
+
+
+		/// Special thanks to curiosity, siriuswhite and ai4rei. See:
+		/// - http://hercules.ws/wiki/Clientinfo.xml
+		/// - http://forum.robrowser.com/index.php?topic=32231
+		/// - http://siriuswhite.de/rodoc/codepage.html
+		switch (Session.LangType) {
+			case 0x00: // SERVICETYPE_KOREA
+				if (ROConfig.disableKorean) {
+					charset = 'windows-1252';
+					break;
+				}
+
+				console.warn("%c[Warning] You are using a Korean langtype. If you have some charset " +
+				             "problem set ROConfig.servers[<index>].disableKorean to true or use a proper langtype !",
+				             "font-weight:bold; color:red; font-size:14px");
+
+				charset = 'windows-949';
+				break;
+
+			// SERVICETYPE_AMERICA
+			// SERVICETYPE_INDONESIA
+			// SERVICETYPE_PHILIPPINE
+			// SERVICETYPE_MALAYSIA
+			// SERVICETYPE_SINGAPORE
+			// SERVICETYPE_GERMANY
+			// SERVICETYPE_INDIA
+			// SERVICETYPE_AUSTRALIA
+			default:
+			case 0x0c: // SERVICETYPE_BRAZIL
+			case 0x12: // SERVICETYPE_FRANCE
+				charset = 'windows-1252';
+				break;
+
+			case 0x02: // SERVICETYPE_JAPAN
+				charset = 'shift-jis';
+				break;
+
+			case 0x03: // SERVICETYPE_CHINA
+				charset = 'gbk';
+				break;
+
+			case 0x04: // SERVICETYPE_TAIWAN
+				charset = 'big5';
+				break;
+
+			case 0x05: // SERVICETYPE_THAI
+				charset = 'windows-874';
+				break;
+
+			case 0x0e: // SERVICETYPE_RUSSIA
+				charset = 'windows-1251';
+				break;
+
+			case 0x0f: // SERVICETYPE_VIETNAM
+				charset = 'windows-1258';
+				break;
+
+			// Not supported by the encoder/decoder, jump to windows-1252
+			//case 0x11: // SERVICETYPE_CHILE
+			//	charset = 'windows-1145';
+			//	break;
+
+			case 0x14: // SERVICETYPE_UAE
+				charset = 'windows-1256';
+				break;
+		}
+
+		TextEncoding.setCharset(charset);
 		_server = server;
 
 		// Add support for "packetver" definition in Server listing
@@ -173,7 +245,7 @@ function(
 		Network.connect( _server.address, _server.port, function( success ) {
 			// Fail to connect...
 			if ( !success ) {
-				UIManager.showErrorBox(DB.msgstringtable[1]);
+				UIManager.showErrorBox(DB.getMessage(1));
 				return;
 			}
 
@@ -234,9 +306,9 @@ function(
 		var i, count = _charServers.length;
 		var list     = new Array(count);
 		for (i = 0; i < count; ++i) {
-			list[i]  =  _charServers[i].property ? DB.msgstringtable[482] + ' ' : '';
+			list[i]  =  _charServers[i].property ? DB.getMessage(482) + ' ' : '';
 			list[i] +=  _charServers[i].name;
-			list[i] +=  _charServers[i].state    ? DB.msgstringtable[484] : ' ' + DB.msgstringtable[483].replace('%d', _charServers[i].usercount);
+			list[i] +=  _charServers[i].state    ? DB.getMessage(484) : ' ' + DB.getMessage(483).replace('%d', _charServers[i].usercount);
 		}
 
 		// No choice, connect directly to the server
@@ -302,7 +374,7 @@ function(
 		}
 
 		UIManager.showMessageBox(
-			DB.msgstringtable[error].replace('%s', pkt.blockDate),
+			DB.getMessage(error).replace('%s', pkt.blockDate),
 			null,
 			function(){
 				UIManager.removeComponents();
@@ -340,7 +412,7 @@ function(
 			case 102: msg_id = 1179; break; // More than 10 connections sharing the same IP have logged into the game for an hour. (1176)
 		}
 
-		UIManager.showErrorBox( DB.msgstringtable[msg_id] );
+		UIManager.showErrorBox( DB.getMessage(msg_id) );
 		Network.close();
 	}
 

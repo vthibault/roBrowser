@@ -39,7 +39,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 		var fp, i;
 
 		fp          = new BinaryReader(data);
-		this.header = fp.readString(4);
+		this.header = fp.readBinaryString(4);
 
 		if (this.header !== 'STRM') {
 			throw new Error('STR::load() - Incorrect header "' + this.header + '", must be "STRM"');
@@ -77,7 +77,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 		this.texname = new Array(this.texcnt);
 
 		for (i = 0; i < this.texcnt; ++i) {
-			this.texname[i] = 'data\\texture\\effect\\' + fp.readString(128);
+			this.texname[i] = 'data\\texture\\effect\\' + fp.readBinaryString(128);
 		}
 
 		this.anikeynum  = fp.readLong();

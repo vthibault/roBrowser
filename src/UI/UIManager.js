@@ -79,7 +79,7 @@ function( require,         jQuery,     UIComponent,            KEYS,            
 	 * @param {number} Game screen width
 	 * @param {number} Game screen height
 	 */
-	UIManager.fixResizeOverflow = function dixResizeOverflow( WIDTH, HEIGHT)
+	UIManager.fixResizeOverflow = function fixResizeOverflow( WIDTH, HEIGHT)
 	{
 		var keys = Object.keys(this.components);
 		var i, count = keys.length;

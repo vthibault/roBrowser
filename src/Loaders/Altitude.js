@@ -63,7 +63,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 		var version, width, height, i, count;
 
 		fp        = new BinaryReader(data);
-		header    = fp.readString(4);
+		header    = fp.readBinaryString(4);
 
 		// Well, the file should be a gat file, noh ?
 		if ( header !== 'GRAT' ) {

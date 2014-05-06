@@ -36,7 +36,7 @@ function(
 		switch (cmd) {
 
 			case 'sound':
-				this.addText( DB.msgstringtable[27 + AudioPreferences.Sound.play], this.TYPE.INFO );
+				this.addText( DB.getMessage(27 + AudioPreferences.Sound.play), this.TYPE.INFO );
 				AudioPreferences.Sound.play = !AudioPreferences.Sound.play;
 				AudioPreferences.save();
 
@@ -46,7 +46,7 @@ function(
 				return;
 
 			case 'bgm':
-				this.addText( DB.msgstringtable[31 + AudioPreferences.BGM.play], this.TYPE.INFO );
+				this.addText( DB.getMessage(31 + AudioPreferences.BGM.play), this.TYPE.INFO );
 				AudioPreferences.BGM.play = !AudioPreferences.BGM.play;
 				AudioPreferences.save();
 
@@ -71,13 +71,13 @@ function(
 				return;
 
 			case 'miss':
-				this.addText( DB.msgstringtable[317 + MapPreferences.miss], this.TYPE.INFO );
+				this.addText( DB.getMessage(317 + MapPreferences.miss), this.TYPE.INFO );
 				MapPreferences.miss = !MapPreferences.miss;
 				MapPreferences.save();
 				return;
 
 			case 'camera':
-				this.addText( DB.msgstringtable[319 + CameraPreferences.smooth], this.TYPE.INFO );
+				this.addText( DB.getMessage(319 + CameraPreferences.smooth), this.TYPE.INFO );
 				CameraPreferences.smooth = !CameraPreferences.smooth;
 				CameraPreferences.save();
 				return;
@@ -95,14 +95,14 @@ function(
 
 			case 'noctrl':
 			case 'nc':
-				this.addText( DB.msgstringtable[717 + ControlPreferences.noctrl], this.TYPE.INFO );
+				this.addText( DB.getMessage(717 + ControlPreferences.noctrl), this.TYPE.INFO );
 				ControlPreferences.noctrl = !ControlPreferences.noctrl;
 				ControlPreferences.save();
 				return;
 
 			case 'noshift':
 			case 'ns':
-				this.addText( DB.msgstringtable[701 + ControlPreferences.noshift], this.TYPE.INFO );
+				this.addText( DB.getMessage(701 + ControlPreferences.noshift), this.TYPE.INFO );
 				ControlPreferences.noshift = !ControlPreferences.noshift;
 				ControlPreferences.save();
 				return;
@@ -146,8 +146,7 @@ function(
 			case 'where':
 				var currentMap = require('Renderer/MapRenderer').currentMap;
 				this.addText(
-					( DB.mapname[ currentMap.replace('.gat','.rsw') ] || DB.msgstringtable[187] ) +
-					'(' + currentMap + ') : ' + Math.floor(Session.Entity.position[0]) + ', ' + Math.floor(Session.Entity.position[1]),
+					DB.getMapName(currentMap) + '(' + currentMap + ') : ' + Math.floor(Session.Entity.position[0]) + ', ' + Math.floor(Session.Entity.position[1]),
 					this.TYPE.INFO
 				);
 				return;
@@ -191,6 +190,6 @@ function(
 		}
 
 		// Command not found
-		this.addText( DB.msgstringtable[95], this.TYPE.INFO );
+		this.addText( DB.getMessage(95), this.TYPE.INFO );
 	};
 });

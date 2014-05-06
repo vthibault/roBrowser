@@ -10,7 +10,7 @@
  * @author Vincent Thibault
  */
 
-define(function()
+define(['Vendors/text-encoding'], function(TextEncoding)
 {
 	"use strict";
 
@@ -49,9 +49,37 @@ define(function()
 		if (len) {
 			str = String(str).substr(0,len);
 		}
-	
-		for (var i = 0, count = str.length; i < count; ++i) {
-			this.setUint8( offset+i, str.charCodeAt(i));
+
+		var i, count;
+		var data = TextEncoding.encode(str);
+
+		// fuck it, need to rebuild the buffer
+		if (!len && data.length > str.length) {
+			// make sure to not use it in this case, else it will bug :(
+		}
+
+		for (i = 0, count = len || data.length; i < count; ++i) {
+			this.setUint8( offset+i, data[i]);
+		}
+	};
+
+
+	/**
+	 * Extend DataView to get setBinaryString method
+	 *
+	 * @param {number} offset
+	 * @param {string} str
+	 * @param {number} len
+	 */
+	DataView.prototype.setBinaryString = function SetBinaryString( offset, str, len) {
+		if (len) {
+			str = String(str).substr(0,len);
+		}
+
+		var i, count;
+
+		for (i = 0, count = str.length; i < count; ++i) {
+			this.setUint8( offset+i, str.charCodeAt(i) & 0xff);
 		}
 	};
 
@@ -202,16 +230,59 @@ define(function()
 	BinaryWriter.prototype.setString   =
 	BinaryWriter.prototype.writeString = function setString( str, length )
 	{
-		if ( length )
+		if (length) {
 			str = String(str).substr(0, length);
+		}
+
+		var data = TextEncoding.encode(str);
+		var i, count = length || data.length;
+
+		// TODO: make it better.
+		// Fuck it ! Because of the charset the string is longer
+		// So we need to create another buffer with the new size for it
+		if (!length && data.length > str.length) {
+			// create new buffer
+			var uint8 = new Uint8Array( this.buffer.byteLength + (data.length-str.length) );
+
+			// copy the old one and use the new one
+			uint8.set(new Uint8Array(this.buffer), 0);
+			this.buffer = uint8.buffer;
+			this.view   = new DataView(this.buffer);
+
+			// Modify packet size
+			this.view.setInt16( 2, uint8.length, true );
+		}
+
+		for (i = 0; i < count; ++i) {
+			this.view.setUint8( this.offset + i, data[i] );
+		}
+
+		this.offset += (length || count);
+		return this;
+	};
+
+
+	/**
+	 * Write Binary String to buffer
+	 *
+	 * @param {string} str
+	 * @param {number} length
+	 * @return {BinaryWriter}
+	 */
+	BinaryWriter.prototype.setBinaryString   =
+	BinaryWriter.prototype.writeBinaryString = function setBinaryString( str, length )
+	{
+		if (length) {
+			str = String(str).substr(0, length);
+		}
 
 		var i, count = str.length;
 
-		for ( i=0; i<count; ++i ) {
-			this.view.setUint8( this.offset + i, str.charCodeAt(i) );
+		for (i = 0; i < count; ++i) {
+			this.view.setUint8( this.offset + i, str.charCodeAt(i) & 0xff );
 		}
 
-		this.offset += ( length || str.length );
+		this.offset += (length || count);
 		return this;
 	};
 

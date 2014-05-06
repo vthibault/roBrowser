@@ -77,7 +77,7 @@ define(function( require )
 
 			// Fail to connect...
 			if (!success) {
-				UIManager.showErrorBox( DB.msgstringtable[1] );
+				UIManager.showErrorBox( DB.getMessage(1) );
 				return;
 			}
 
@@ -297,7 +297,7 @@ define(function( require )
 	 */
 	function onExitFail( pkt )
 	{
-		ChatBox.addText( DB.msgstringtable[502], ChatBox.TYPE.ERROR);
+		ChatBox.addText( DB.getMessage(502), ChatBox.TYPE.ERROR);
 	}
 
 
@@ -366,7 +366,7 @@ define(function( require )
 	{
 		if (!pkt.type) {
 			// Have to wait 10sec
-			ChatBox.addText( DB.msgstringtable[502], ChatBox.TYPE.ERROR );
+			ChatBox.addText( DB.getMessage(502), ChatBox.TYPE.ERROR );
 		}
 		else {
 			StatusIcons.clean();
@@ -395,7 +395,7 @@ define(function( require )
 
 			case 1:
 				// Have to wait 10 sec
-				ChatBox.addText( DB.msgstringtable[502], ChatBox.TYPE.ERROR);
+				ChatBox.addText( DB.getMessage(502), ChatBox.TYPE.ERROR);
 				break;
 
 			default:
