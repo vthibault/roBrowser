@@ -263,6 +263,7 @@ define( function( require )
 		this.dialog.clean();
 		this.cast.clean();
 		this.room.clean();
+		this.attachments.remove('lockon');
 
 		// Remove
 		this.remove_tick  = 0;
