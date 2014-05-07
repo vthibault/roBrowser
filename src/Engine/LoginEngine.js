@@ -81,11 +81,10 @@ function(
 	 */
 	function init( server )
 	{
-		var charset;
+		var charset, disableKorean;
 
 		UIManager.removeComponents();
 		Session.LangType = 'langtype' in server ? parseInt(server.langtype, 10) : 1; // default to SERVICETYPE_AMERICA
-
 
 		/// Special thanks to curiosity, siriuswhite and ai4rei. See:
 		/// - http://hercules.ws/wiki/Clientinfo.xml
@@ -93,14 +92,16 @@ function(
 		/// - http://siriuswhite.de/rodoc/codepage.html
 		switch (Session.LangType) {
 			case 0x00: // SERVICETYPE_KOREA
-				if (ROConfig.disableKorean) {
+				disableKorean = 'disableKorean' in server ? !!server.disableKorean : !!ROConfig.disableKorean;
+
+				if (disableKorean) {
 					charset = 'windows-1252';
 					break;
 				}
 
-				console.warn("%c[Warning] You are using a Korean langtype. If you have some charset " +
-				             "problem set ROConfig.servers[<index>].disableKorean to true or use a proper langtype !",
-				             "font-weight:bold; color:red; font-size:14px");
+				console.warn('%c[Warning] You are using a Korean langtype. If you have some charset ' +
+				             'problem set ROConfig.servers[<index>].disableKorean to true or use a proper langtype !',
+				             'font-weight:bold; color:red; font-size:14px');
 
 				charset = 'windows-949';
 				break;
@@ -187,7 +188,7 @@ function(
 
 
 		// GMs account list from server
-		Session.AdminList = server['adminList'] || [];
+		Session.AdminList = server.adminList || [];
 
 
 		// Hooking win_login
