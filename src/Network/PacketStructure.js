@@ -3590,9 +3590,11 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 					pkt.view.setInt32(  ver[3], this.kafrapts, true);
 					pkt.view.setInt16(  ver[4], this.list.length, true);
 					var pos = ver[4] + 2;
-					for (var index in this.list) {
-						pkt.view.setUint16( pos + 0, this.list[index].id,    true);
-						pkt.view.setInt16(  pos + 2, this.list[index].count, true);
+					var i, count = this.list.length;
+
+					for (i = 0; i < count; ++i) {
+						pkt.view.setUint16( pos + 0, this.list[i].id,    true);
+						pkt.view.setInt16(  pos + 2, this.list[i].count, true);
 						pos += 4;
 					}
 					break;
@@ -4335,10 +4337,11 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			pkt.view.setInt32( ver[3], this.Type, true );
 			pkt.view.setInt32( ver[4], this.Action, true );
 			var pos = ver[5];
+			var i, count = this.MaterialList.length;
 
-			for (var index in this.MaterialList) {
-				pkt.view.setUint16( pos + 0, this.MaterialList[index].id,    true );
-				pkt.view.setUint16( pos + 2, this.MaterialList[index].count, true );
+			for (i = 0; i < count; ++i) {
+				pkt.view.setUint16( pos + 0, this.MaterialList[i].id,    true );
+				pkt.view.setUint16( pos + 2, this.MaterialList[i].count, true );
 				pos += 4;
 			}
 
@@ -4814,7 +4817,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 		this.CardIDList     = 0;
 
 		this.build = function() {
-			var index, offset;
+			var i, count, offset;
 			var ver = this.getPacketVersion();
 			var pkt = new BinaryWriter(ver[2]);
 
@@ -4828,13 +4831,13 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			offset = ver[9];
 
-			for (index in this.ItemIDList) {
-				pkt.view.setUint16( offset, this.ItemIDList[index], true );
+			for (i = 0, count = this.ItemIDList.length; i < count; ++i) {
+				pkt.view.setUint16( offset, this.ItemIDList[i], true );
 				offset += 2;
 			}
 
-			for (index in this.CardIDList) {
-				pkt.view.setUint16( offset, this.CardIDList[index], true );
+			for (i = 0, count = this.CardIDList.length; i < count; ++i) {
+				pkt.view.setUint16( offset, this.CardIDList[i], true );
 				offset += 2;
 			}
 

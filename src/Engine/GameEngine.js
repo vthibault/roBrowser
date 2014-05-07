@@ -96,10 +96,10 @@ function(
 		q.add(function(){
 			Client.onFilesLoaded = function(count){
 				if (!ROConfig.remoteClient && !count) {
-					try {
+					if (!Context.Is.APP) {
 						alert( 'No client to initialize roBrowser');
 					}
-					catch(e){
+					else {
 						// FIXME: no window.alert() in chrome app.
 					}
 					Intro.remove();
