@@ -249,8 +249,9 @@ define(function( require )
 	 * @param {number} owner aid
 	 * @param {Array} position
 	 * @param {number} tick
+	 * @param {boolean} persistent
 	 */
-	Effects.spam = function spam( effectId, AID, position, tick )
+	Effects.spam = function spam( effectId, AID, position, tick, persistent )
 	{
 		var effects, effect, entity;
 		var i, count, pos;
@@ -267,6 +268,7 @@ define(function( require )
 
 		entity  = EntityManager.get(AID);
 		effects = EffectDB[effectId];
+		tick    = tick || Renderer.tick;
 
 		// No position to work with
 		if (!position && !entity) {
@@ -278,11 +280,11 @@ define(function( require )
 
 			switch (effect.type) {
 				case 'SPR':
-					Effects.spamSPR( effect, AID, position, tick );
+					Effects.spamSPR( effect, AID, position, tick, persistent );
 					break;
 
 				case 'STR':
-					Effects.spamSTR( effect, AID, position, tick );
+					Effects.spamSTR( effect, AID, position, tick, persistent );
 					break;
 
 				case 'FUNC':
@@ -305,8 +307,9 @@ define(function( require )
 	 * @param {number} owner aid
 	 * @param {Array} position
 	 * @param {number} tick
+	 * @param {boolean} persistent
 	 */
-	Effects.spamSTR = function spamSTR( effect, AID, position, tick )
+	Effects.spamSTR = function spamSTR( effect, AID, position, tick, persistent)
 	{
 		var filename, entity;
 
@@ -331,6 +334,10 @@ define(function( require )
 			}
 		}
 
+		if (typeof persistent === 'undefined') {
+			persistent = effect.persistent;
+		}
+
 		// Get STR file
 		if (Preferences.mineffect && effect.min) {
 			filename = effect.min;
@@ -350,7 +357,7 @@ define(function( require )
 		}
 
 		// Start effect
-		Effects.add(new StrEffect('data/texture/effect/' + filename + '.str', position, tick || Renderer.tick), AID );
+		Effects.add(new StrEffect('data/texture/effect/' + filename + '.str', position, tick), AID, persistent);
 	};
 
 
@@ -361,14 +368,19 @@ define(function( require )
 	 * @param {number} owner aid
 	 * @param {Array} position
 	 * @param {number} tick
+	 * @param {boolean} persistent
 	 */
-	Effects.spamSPR = function spamSPR( effect, AID, position, tick )
+	Effects.spamSPR = function spamSPR( effect, AID, position, tick, persistent)
 	{
 		var entity;
 
 		// Play sound
 		if (effect.wav) {
 			Sound.play(effect.wav + '.wav');
+		}
+
+		if (typeof persistent === 'undefined') {
+			persistent = effect.persistent;
 		}
 
 		if (!position) {
@@ -399,7 +411,8 @@ define(function( require )
 				head:      !!effect.head,
 				direction: !!effect.direction,
 				position:    position,
-				tick:        Renderer.tick
+				tick:        tick,
+				repeat:     !!persistent
 			}));
 			return;
 		}
@@ -409,6 +422,7 @@ define(function( require )
 			file:        effect.file,
 			head:      !!effect.head,
 			direction: !!effect.direction,
+			repeat:    !!persistent,
 			position:    position
 		});
 	};
@@ -430,7 +444,7 @@ define(function( require )
 		}
 
 		var skillId, effectId;
-		var filename, effect, skill, pos;
+		var filename, effect, effects, skill, pos;
 
 		if (!(unit_id in SkillUnit)) {
 			return;
@@ -454,21 +468,7 @@ define(function( require )
 			return;
 		}
 
-		effect   = EffectDB[effectId];
-		pos      = [ xPos, yPos, Altitude.getCellHeight( xPos, yPos) ];
-		filename = (Preferences.mineffect && effect.str_min) || effect.str;
-
-		if (filename) {
-			if (effect.random) {
-				filename = filename.replace('%d', Math.round(effect.random[0] + (effect.random[1]-effect.random[0]) * Math.random()) );
-			}
-
-			Effects.add(new StrEffect('data/texture/effect/' + filename + '.str', pos, Renderer.tick), uid, true );
-		}
-
-		if (effect.wav) {
-			Sound.play(effect.wav + '.wav');
-		}
+		this.spam( effectId, uid, [ xPos, yPos, Altitude.getCellHeight( xPos, yPos) ], 0, true);
 	};
 
 
