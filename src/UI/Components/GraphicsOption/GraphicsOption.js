@@ -36,8 +36,7 @@ define(function(require)
 	 */
 	var _preferences =  Preferences.get('GraphicsOption', {
 		x:    300,
-		y:    300,
-		show: false,
+		y:    300
 	}, 1.1);
 
 
@@ -117,10 +116,6 @@ define(function(require)
 			left:    _preferences.x,
 		});
 
-		if (!_preferences.show) {
-			this.ui.hide();
-		}
-
 		this.ui.find('.details').val(GraphicsSettings.quality);
 		this.ui.find('.screensize').val(GraphicsSettings.screensize);
 		this.ui.find('.cursor').attr('checked', GraphicsSettings.cursor);
@@ -134,7 +129,6 @@ define(function(require)
 	{
 		_preferences.x    = parseInt(this.ui.css('left'), 10);
 		_preferences.y    = parseInt(this.ui.css('top'), 10);
-		_preferences.show = this.ui.is(':visible');
 		_preferences.save();
 	};
 

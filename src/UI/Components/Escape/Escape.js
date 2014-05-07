@@ -57,7 +57,12 @@ define(function(require)
 		});
 
 		this.ui.find('.graphics').click(function(){
-			GraphicsOption.ui.toggle();
+			if (!GraphicsOption.ui || !GraphicsOption.ui[0].parentNode) {
+				GraphicsOption.append();
+			}
+			else {
+				GraphicsOption.remove();
+			}
 		});
 
 		this.ui.find('.resurection').click(this.onResurectionRequest);
