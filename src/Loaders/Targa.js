@@ -201,7 +201,7 @@ define( function()
 		if (this.use_pal) {
 			this.palettes = data.subarray(
 				this.offset,
-				this.offset += _header.colormap_length * pixel_size
+				this.offset += _header.colormap_length * (_header.colormap_size >> 3)
 			);
 		}
 
