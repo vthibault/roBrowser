@@ -7,16 +7,10 @@
  *
  * @author Vincent Thibault
  */
-define(['Utils/WebGL', 'Utils/Texture', 'Utils/gl-matrix', 'DB/SkillId', 'Core/Client', 'Renderer/Effects', 'Renderer/Map/Altitude'],
-function(      WebGL,         Texture,          glMatrix,      SkillId,        Client,            Effects,                Altitude) {
+define(['Utils/WebGL', 'Utils/Texture', 'Utils/gl-matrix', 'Core/Client'],
+function(      WebGL,         Texture,          glMatrix,        Client) {
 
 	'use strict';
-
-
-	/**
-	 * @var {WebGLTexture}
-	 */
-	var _texture;
 
 
 	/**
@@ -157,16 +151,16 @@ function(      WebGL,         Texture,          glMatrix,      SkillId,        C
 	/**
 	 * Cylinder constructor
 	 *
-	 * @param {Entity} attached entity
+	 * @param {Array} position
 	 * @param {number} top size of the cylinder
 	 * @param {number} bottom size of the cylinder
 	 * @param {number} height of the cylinder
 	 * @param {string} texture name
 	 * @param {number} game tick
 	 */
-	function Cylinder( entity, topSize, bottomSize, height, textureName, tick)
+	function Cylinder( position, topSize, bottomSize, height, textureName, tick)
 	{
-		this.target      = entity;
+		this.position    = position;
 		this.topSize     = topSize;
 		this.bottomSize  = bottomSize;
 		this.textureName = textureName;
@@ -225,10 +219,10 @@ function(      WebGL,         Texture,          glMatrix,      SkillId,        C
 		gl.vertexAttribPointer( attribute.aPosition,     3, gl.FLOAT, false, 4*5,  0   );
 		gl.vertexAttribPointer( attribute.aTextureCoord, 2, gl.FLOAT, false, 4*5,  3*4 );
 
-		gl.uniform3fv( _program.uniform.uPosition,   this.target.position);
-		gl.uniform1f(  _program.uniform.uBottomSize, this.bottomSize);
-		gl.uniform1f(  _program.uniform.uTopSize,    this.topSize);
-		gl.uniform1f(  _program.uniform.uHeight,     this.height);
+		gl.uniform3fv( uniform.uPosition,   this.position);
+		gl.uniform1f(  uniform.uBottomSize, this.bottomSize);
+		gl.uniform1f(  uniform.uTopSize,    this.topSize);
+		gl.uniform1f(  uniform.uHeight,     this.height);
 
 		gl.drawArrays( gl.TRIANGLES, 0, _verticeCount );
 	};
@@ -282,7 +276,6 @@ function(      WebGL,         Texture,          glMatrix,      SkillId,        C
 	Cylinder.beforeRender = function beforeRender(gl, modelView, projection, fog, tick)
 	{
 		var uniform   = _program.uniform;
-		var attribute = _program.attribute;
 
 		mat4.identity(_matrix);
 		mat4.rotateY( _matrix, _matrix, (tick/4) / 180 * Math.PI);

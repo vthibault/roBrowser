@@ -7,8 +7,8 @@
  *
  * @author Vincent Thibault
  */
-define(['Utils/WebGL', 'Utils/gl-matrix', 'DB/SkillId', 'Core/Client', 'Renderer/Effects', 'Renderer/Map/Altitude'],
-function(      WebGL,         glMatrix,       SkillId,        Client,            Effects,                Altitude) {
+define(['Utils/WebGL', 'Utils/gl-matrix', 'DB/SkillId', 'Core/Client', 'Renderer/Map/Altitude'],
+function(      WebGL,         glMatrix,       SkillId,        Client,                Altitude) {
 
 	'use strict';
 
@@ -173,7 +173,6 @@ function(      WebGL,         glMatrix,       SkillId,        Client,           
 	 */
 	MagicTarget.prototype.render = function render( gl, tick )
 	{
-		var uniform   = _program.uniform;
 		var attribute = _program.attribute;
 
 		gl.bindBuffer( gl.ARRAY_BUFFER, this.buffer );

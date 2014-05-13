@@ -35,7 +35,7 @@ define(function( require )
 	var Models         = require('Renderer/Map/Models');
 	var Sounds         = require('Renderer/Map/Sounds');
 	var SpriteRenderer = require('Renderer/SpriteRenderer');
-	var Effects        = require('Renderer/Effects');
+	var EffectManager  = require('Renderer/EffectManager');
 	var Sky            = require('Renderer/Effects/Sky');
 	var Damage         = require('Renderer/Effects/Damage');
 	var MapPreferences = require('Preferences/Map');
@@ -146,7 +146,7 @@ define(function( require )
 		var gl = Renderer.getContext();
 		EntityManager.free();
 		Damage.free( gl );
-		Effects.free( gl );
+		EffectManager.free( gl );
 
 		// Basic TP
 		Background.remove(function(){
@@ -172,7 +172,7 @@ define(function( require )
 		Water.free( gl );
 		Models.free( gl );
 		Damage.free( gl );
-		Effects.free( gl );
+		EffectManager.free( gl );
 
 		Mouse.intersect = false;
 
@@ -254,7 +254,7 @@ define(function( require )
 			this.effects[i].pos[2]  = tmp;
 
 			//TODO: add effect object
-			//Effects.spam( this.effects[i].id, -1, this.effects[i].pos, 0, this.effects[i].delay);
+			//EffectManager.spam( this.effects[i].id, -1, this.effects[i].pos, 0, this.effects[i].delay);
 		}
 	}
 
@@ -311,7 +311,7 @@ define(function( require )
 		SpriteRenderer.init(gl);
 		Sky.init( gl, worldResource );
 		Damage.init(gl);
-		Effects.init(gl);
+		EffectManager.init(gl);
 
 		// Starting to render
 		Background.remove(function(){
@@ -375,7 +375,7 @@ define(function( require )
 
 		// Display zone effects and entities
 		Sky.render( gl, modelView, projection, fog, tick );
-		Effects.render( gl, modelView, projection, fog, tick, true);
+		EffectManager.render( gl, modelView, projection, fog, tick, true);
 		EntityManager.render( gl, modelView, projection, fog );
 
 		// Rendering water
@@ -383,7 +383,7 @@ define(function( require )
 
 		// Rendering effects
 		Damage.render( gl, modelView, projection, fog, tick );
-		Effects.render( gl, modelView, projection, fog, tick, false);
+		EffectManager.render( gl, modelView, projection, fog, tick, false);
 
 		// Play sounds
 		Sounds.render( Session.Entity.position, tick );

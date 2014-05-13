@@ -1,5 +1,5 @@
 /**
- * Renderer/Effects.js
+ * Renderer/EffectManager.js
  *
  * Effects Manager
  *
@@ -43,13 +43,13 @@ define(function( require )
 	/**
 	 * @var {object} Effects namespace
 	 */
-	var Effects = {};
+	var EffectManager = {};
 
 
 	/**
 	 * Initialize effects manager
 	 */
-	Effects.init = function init(gl)
+	EffectManager.init = function init(gl)
 	{
 		_gl = gl;
 	};
@@ -62,7 +62,7 @@ define(function( require )
 	 * @param {mixed} effect unique id
 	 * @param {boolean} persistent
 	 */
-	Effects.add = function add(effect, uid, persistent)
+	EffectManager.add = function add(effect, uid, persistent)
 	{
 		var name   = effect.constructor.name;
 
@@ -95,7 +95,7 @@ define(function( require )
 	 * @param {effect}
 	 * @param {mixed} effect unique id
 	 */
-	Effects.remove = function removeClosure()
+	EffectManager.remove = function removeClosure()
 	{
 		function clean(name, uid) {
 			var list;
@@ -146,7 +146,7 @@ define(function( require )
 	/**
 	 * Destroy all effects
 	 */
-	Effects.free = function free( gl )
+	EffectManager.free = function free( gl )
 	{
 		var keys = Object.keys(_list);
 		var i, j, size, count;
@@ -183,7 +183,7 @@ define(function( require )
 	 * @param {number} game tick
 	 * @param {boolean} render before entities ?
 	 */
-	Effects.render = function render(gl, modelView, projection, fog, tick, renderBeforeEntities )
+	EffectManager.render = function render(gl, modelView, projection, fog, tick, renderBeforeEntities )
 	{
 		var keys = Object.keys(_list);
 		var i, count = keys.length;
@@ -251,7 +251,7 @@ define(function( require )
 	 * @param {number} tick
 	 * @param {boolean} persistent
 	 */
-	Effects.spam = function spam( effectId, AID, position, tick, persistent )
+	EffectManager.spam = function spam( effectId, AID, position, tick, persistent )
 	{
 		var effects;
 		var i, count;
@@ -270,7 +270,7 @@ define(function( require )
 		tick    = tick || Renderer.tick;
 
 		for (i = 0, count = effects.length; i < count; ++i) {
-			Effects.spamEffect(effects[i], AID, position, tick, persistent);
+			EffectManager.spamEffect(effects[i], AID, position, tick, persistent);
 		}
 	};
 
@@ -284,7 +284,7 @@ define(function( require )
 	 * @param {number} tick
 	 * @param {boolean} persistent
 	 */
-	Effects.spamEffect = function spamEffect( effect, AID, position, tick, persistent )
+	EffectManager.spamEffect = function spamEffect( effect, AID, position, tick, persistent )
 	{
 		var entity = EntityManager.get(AID);
 
@@ -309,7 +309,7 @@ define(function( require )
 				break;
 
 			case 'CYLINDER':
-				Effects.add(new Cylinder( position, effect.topSize, effect.bottomSize, effect.height, effect.textureName, tick), AID);
+				EffectManager.add(new Cylinder( position, effect.topSize, effect.bottomSize, effect.height, effect.textureName, tick), AID);
 				break;
 		}
 	};
@@ -347,7 +347,7 @@ define(function( require )
 		}
 
 		// Start effect
-		Effects.add(new StrEffect('data/texture/effect/' + filename + '.str', position, tick), AID, persistent);
+		EffectManager.add(new StrEffect('data/texture/effect/' + filename + '.str', position, tick), AID, persistent);
 	}
 
 
@@ -404,7 +404,7 @@ define(function( require )
 	 * @param {number} position y
 	 * @param {number} skill unique id
 	 */
-	Effects.spamSkillZone = function spamUnit( unit_id, xPos, yPos, uid )
+	EffectManager.spamSkillZone = function spamUnit( unit_id, xPos, yPos, uid )
 	{
 		var skillId, effectId;
 		var skill;
@@ -436,7 +436,7 @@ define(function( require )
 			return;
 		}
 
-		this.spam( effectId, uid, [ xPos, yPos, Altitude.getCellHeight( xPos, yPos) ], Renderer.tick, 0);
+		EffectManager.spam( effectId, uid, [ xPos, yPos, Altitude.getCellHeight( xPos, yPos) ], Renderer.tick, true);
 	};
 
 
@@ -448,13 +448,13 @@ define(function( require )
 	 * @param {Array} position
 	 * @param {number} tick
 	 */
-	Effects.spamSkill = function spamSkill( skillId, AID, position, tick )
+	EffectManager.spamSkill = function spamSkill( skillId, AID, position, tick )
 	{
 		if (!(skillId in SkillEffect)) {
 			return;
 		}
 
-		Effects.spam( SkillEffect[skillId].effectId, AID, position, tick);
+		EffectManager.spam( SkillEffect[skillId].effectId, AID, position, tick);
 	};
 
 
@@ -465,14 +465,14 @@ define(function( require )
 	 * @param {number} target aid
 	 * @param {number} tick
 	 */
-	Effects.spamSkillHit = function spamSkillHit( skillId, AID, tick)
+	EffectManager.spamSkillHit = function spamSkillHit( skillId, AID, tick)
 	{
 		if (!(skillId in SkillEffect)) {
 			return;
 		}
 
 		if (SkillEffect[skillId].hitEffectId) {
-			Effects.spam( SkillEffect[skillId].hitEffectId, AID, null, tick);
+			EffectManager.spam( SkillEffect[skillId].hitEffectId, AID, null, tick);
 		}
 	};
 
@@ -480,5 +480,5 @@ define(function( require )
 	/**
 	 * Export
 	 */
-	return Effects;
+	return EffectManager;
 });

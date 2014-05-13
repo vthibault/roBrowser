@@ -18,7 +18,7 @@ define(function(require)
 	var glMatrix           = require('Utils/gl-matrix');
 	var Client             = require('Core/Client');
 	var Renderer           = require('Renderer/Renderer');
-	var Effects            = require('Renderer/Effects');
+	var EffectManager      = require('Renderer/EffectManager');
 	var StrEffect          = require('Renderer/Effects/StrEffect');
 	var Camera             = require('Renderer/Camera');
 
@@ -76,7 +76,7 @@ define(function(require)
 		});
 
 		Renderer.show();
-		Effects.init(Renderer.getContext());
+		EffectManager.init(Renderer.getContext());
 		Client.init([]);
 
 		// Initialize the dropdown
@@ -167,7 +167,7 @@ define(function(require)
 			});
 
 
-			Effects.add( _strObject, 0);
+			EffectManager.add( _strObject, 0);
 			Renderer.render(render);
 		});
 	}
@@ -181,7 +181,7 @@ define(function(require)
 		var gl = Renderer.getContext();
 
 		Renderer.stop();
-		Effects.free(gl);
+		EffectManager.free(gl);
 		gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT );
 	}
 
@@ -202,7 +202,7 @@ define(function(require)
 		// Clear screen, update camera
 		gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT );
 
-		Effects.render( gl, _modelView, Camera.projection, _fog, tick, false);
+		EffectManager.render( gl, _modelView, Camera.projection, _fog, tick, false);
 	}
 
 

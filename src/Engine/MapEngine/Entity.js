@@ -26,7 +26,7 @@ define(function( require )
 	var Altitude      = require('Renderer/Map/Altitude');
 	var EntityManager = require('Renderer/EntityManager');
 	var Entity        = require('Renderer/Entity/Entity');
-	var Effects       = require('Renderer/Effects');
+	var EffectManager = require('Renderer/EffectManager');
 	var Damage        = require('Renderer/Effects/Damage');
 	var MagicTarget   = require('Renderer/Effects/MagicTarget');
 	var LockOnTarget  = require('Renderer/Effects/LockOnTarget');
@@ -559,7 +559,7 @@ define(function( require )
 				// skill_lvl = heal.
 			}
 
-			Effects.spamSkill( pkt.SKID, pkt.targetAID );
+			EffectManager.spamSkill( pkt.SKID, pkt.targetAID );
 		}
 	}
 
@@ -589,7 +589,7 @@ define(function( require )
 			});
 		}
 
-		Effects.spamSkillZone( pkt.job, pkt.xPos, pkt.yPos, pkt.AID );
+		EffectManager.spamSkillZone( pkt.job, pkt.xPos, pkt.yPos, pkt.AID );
 	}
 
 
@@ -600,7 +600,7 @@ define(function( require )
 	 */
 	function onSkillDisapear( pkt )
 	{
-		Effects.remove( null, pkt.AID );
+		EffectManager.remove( null, pkt.AID );
 	}
 
 
@@ -660,7 +660,7 @@ define(function( require )
 				// Combo
 				if (target) {
 					for (i = 0; i<pkt.count; ++i) {
-						Effects.spamSkillHit( pkt.SKID, dstEntity.GID, Renderer.tick + pkt.attackMT + (200 * i));
+						EffectManager.spamSkillHit( pkt.SKID, dstEntity.GID, Renderer.tick + pkt.attackMT + (200 * i));
 
 						Damage.add(
 							Math.floor( pkt.damage / pkt.count ),
@@ -684,7 +684,7 @@ define(function( require )
 		}
 
 		if (srcEntity && dstEntity) {
-			Effects.spamSkill( pkt.SKID, dstEntity.GID, null, Renderer.tick + pkt.attackMT);
+			EffectManager.spamSkill( pkt.SKID, dstEntity.GID, null, Renderer.tick + pkt.attackMT);
 		}
 	}
 
@@ -739,14 +739,14 @@ define(function( require )
 			srcEntity.lookTo( dstEntity.position[0], dstEntity.position[1] );
 
 			if (pkt.delayTime) {
-				Effects.add(new LockOnTarget( dstEntity, Renderer.tick, Renderer.tick + pkt.delayTime), srcEntity.GID);
+				EffectManager.add(new LockOnTarget( dstEntity, Renderer.tick, Renderer.tick + pkt.delayTime), srcEntity.GID);
 			}
 		}
 		else if (pkt.xPos && pkt.yPos) {
 			srcEntity.lookTo( pkt.xPos, pkt.yPos );
 
 			if (pkt.delayTime) {
-				Effects.add(new MagicTarget( pkt.SKID, pkt.xPos, pkt.yPos, Renderer.tick + pkt.delayTime), srcEntity.GID);
+				EffectManager.add(new MagicTarget( pkt.SKID, pkt.xPos, pkt.yPos, Renderer.tick + pkt.delayTime), srcEntity.GID);
 			}
 		}
 	}
@@ -764,8 +764,8 @@ define(function( require )
 			entity.cast.clean();
 
 			// Cancel effects
-			Effects.remove(LockOnTarget, entity.GID);
-			Effects.remove(MagicTarget, entity.GID);
+			EffectManager.remove(LockOnTarget, entity.GID);
+			EffectManager.remove(MagicTarget, entity.GID);
 		}
 	}
 

@@ -21,7 +21,7 @@ define(function( require )
 	var Session              = require('Engine/SessionStorage');
 	var Network              = require('Network/NetworkManager');
 	var PACKET               = require('Network/PacketStructure');
-	var Effects              = require('Renderer/Effects');
+	var EffectManager        = require('Renderer/EffectManager');
 	var Altitude             = require('Renderer/Map/Altitude');
 	var ShortCut             = require('UI/Components/ShortCut/ShortCut');
 	var ChatBox              = require('UI/Components/ChatBox/ChatBox');
@@ -62,7 +62,7 @@ define(function( require )
 		];
 
 		if (EnumEffect[pkt.effectID] > -1) {
-			Effects.spam(EnumEffect[pkt.effectID], pkt.AID);
+			EffectManager.spam(EnumEffect[pkt.effectID], pkt.AID);
 		}
 	}
 
@@ -74,8 +74,7 @@ define(function( require )
 	 */
 	function onEffect( pkt )
 	{
-
-		Effects.spam(pkt.effectID, pkt.AID);
+		EffectManager.spam(pkt.effectID, pkt.AID);
 	}
 
 
@@ -91,7 +90,7 @@ define(function( require )
 		position[1]  = pkt.yPos;
 		position[2]  = Altitude.getCellHeight(pkt.xPos, pkt.yPos);
 
-		Effects.spamSkill(pkt.SKID, pkt.AID, position);
+		EffectManager.spamSkill(pkt.SKID, pkt.AID, position);
 	}
 
 
