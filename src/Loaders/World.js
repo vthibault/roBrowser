@@ -173,7 +173,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 						scale:   [ fp.readFloat()/5, fp.readFloat()/5, fp.readFloat()/5 ]
 					};
 					continue;
-	
+
 				case 2:
 					lights[l++] = {
 						name:    fp.readBinaryString(80),
@@ -182,7 +182,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 						range:   fp.readFloat()
 					};
 					continue;
-	
+
 				case 3:
 					sounds[s++] = {
 						name:     fp.readBinaryString(80),
@@ -195,25 +195,22 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 						cycle:    version >= 2.0 ? fp.readFloat() : 0.0
 					};
 					continue;
-	
+
 				case 4:
 					effects[e++] = {
 						name:   fp.readBinaryString(80),
 						pos:  [ fp.readFloat()/5, fp.readFloat()/5, fp.readFloat()/5 ],
-						type:   fp.readLong(),
-						loop:   fp.readFloat(),
-						unk1:   fp.readFloat(),
-						unk2:   fp.readFloat(),
-						unk3:   fp.readFloat(),
-						unk4:   fp.readFloat()
+						id:     fp.readLong(),
+						delay:  fp.readFloat() * 10,
+						param: [ fp.readFloat(), fp.readFloat(), fp.readFloat(), fp.readFloat() ] // effectClass.apply(effect, effect.param) ?
 					};
 			}
 		}
 
 		// Remove empty content
-		models.length = m;
-		sounds.length = s;
-		lights.length = l;
+		models.length  = m;
+		sounds.length  = s;
+		lights.length  = l;
 		effects.length = e;
 
 		// skip quadtree (not used)

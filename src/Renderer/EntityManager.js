@@ -23,6 +23,10 @@ function(       Session,                   Entity,     SpriteRenderer,          
 	 */
 	function getEntityIndex( gid )
 	{
+		if (gid < 0) {
+			return -1;
+		}
+
 		var i, count = _list.length;
 	
 		for (i = 0; i < count; ++i) {

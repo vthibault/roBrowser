@@ -60,34 +60,36 @@ define( function( require )
 	/**
 	 * Constantes
 	 */
-	Entity.TYPE_UNKNOWN   =-2;
-	Entity.TYPE_WARP      =-1;
-	Entity.TYPE_PC        = 0;
-	Entity.TYPE_DISGUISED = 1;
-	Entity.TYPE_MOB       = 5;
-	Entity.TYPE_NPC       = 6;
-	Entity.TYPE_PET       = 7;
-	Entity.TYPE_HOM       = 8;
-	Entity.TYPE_MERC      = 9;
-	Entity.TYPE_ELEM      =10;
-	Entity.TYPE_ITEM      =11;
+	Entity.TYPE_EFFECT    = -3;
+	Entity.TYPE_UNKNOWN   = -2;
+	Entity.TYPE_WARP      = -1;
+	Entity.TYPE_PC        =  0;
+	Entity.TYPE_DISGUISED =  1;
+	Entity.TYPE_MOB       =  5;
+	Entity.TYPE_NPC       =  6;
+	Entity.TYPE_PET       =  7;
+	Entity.TYPE_HOM       =  8;
+	Entity.TYPE_MERC      =  9;
+	Entity.TYPE_ELEM      = 10;
+	Entity.TYPE_ITEM      = 11;
 
 
 	/**
 	 * Priority in picking
 	 */
 	Entity.PickingPriority = {};
-	Entity.PickingPriority[Entity.TYPE_MOB]       = 3;
-	Entity.PickingPriority[Entity.TYPE_ITEM]      = 2;
-	Entity.PickingPriority[Entity.TYPE_NPC]       = 1;
-	Entity.PickingPriority[Entity.TYPE_UNKNOWN]   = 0;
-	Entity.PickingPriority[Entity.TYPE_WARP]      = 0;
-	Entity.PickingPriority[Entity.TYPE_PC]        = 0;
-	Entity.PickingPriority[Entity.TYPE_DISGUISED] = 0;
-	Entity.PickingPriority[Entity.TYPE_PET]       = 0;
-	Entity.PickingPriority[Entity.TYPE_HOM]       = 0;
-	Entity.PickingPriority[Entity.TYPE_MERC]      = 0;
-	Entity.PickingPriority[Entity.TYPE_ELEM]      = 0;
+	Entity.PickingPriority[Entity.TYPE_MOB]       =  3;
+	Entity.PickingPriority[Entity.TYPE_ITEM]      =  2;
+	Entity.PickingPriority[Entity.TYPE_NPC]       =  1;
+	Entity.PickingPriority[Entity.TYPE_UNKNOWN]   =  0;
+	Entity.PickingPriority[Entity.TYPE_WARP]      =  0;
+	Entity.PickingPriority[Entity.TYPE_PC]        =  0;
+	Entity.PickingPriority[Entity.TYPE_DISGUISED] =  0;
+	Entity.PickingPriority[Entity.TYPE_PET]       =  0;
+	Entity.PickingPriority[Entity.TYPE_HOM]       =  0;
+	Entity.PickingPriority[Entity.TYPE_MERC]      =  0;
+	Entity.PickingPriority[Entity.TYPE_ELEM]      =  0;
+	Entity.PickingPriority[Entity.TYPE_EFFECT]    = -1;
 
 
 	/**

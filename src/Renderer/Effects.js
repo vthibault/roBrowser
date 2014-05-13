@@ -20,7 +20,7 @@ define(function( require )
 	var SkillUnit     = require('DB/SkillUnit');
 	var Cylinder      = require('Renderer/Effects/Cylinder');
 	var StrEffect     = require('Renderer/Effects/StrEffect');
-	var SpriteEffect  = require('Renderer/Effects/SpriteEffect');
+	var Entity        = require('Renderer/Entity/Entity');
 	var EntityManager = require('Renderer/EntityManager');
 	var Renderer      = require('Renderer/Renderer');
 	var Altitude      = require('Renderer/Map/Altitude');
@@ -226,7 +226,7 @@ define(function( require )
 						list.splice( j, 1);
 						j--;
 						size--;
-					} 
+					}
 				}
 
 				constructor.afterRender(gl);
@@ -253,8 +253,8 @@ define(function( require )
 	 */
 	Effects.spam = function spam( effectId, AID, position, tick, persistent )
 	{
-		var effects, effect, entity;
-		var i, count, pos;
+		var effects;
+		var i, count;
 
 		// No effect mode (/effect)
 		if (!Preferences.effect) {
@@ -266,36 +266,51 @@ define(function( require )
 			return;
 		}
 
-		entity  = EntityManager.get(AID);
 		effects = EffectDB[effectId];
 		tick    = tick || Renderer.tick;
 
-		// No position to work with
-		if (!position && !entity) {
-			return;
+		for (i = 0, count = effects.length; i < count; ++i) {
+			Effects.spamEffect(effects[i], AID, position, tick, persistent);
+		}
+	};
+
+
+	/**
+	 * Spam en effect
+	 *
+	 * @param {object} effect
+	 * @param {number} AID
+	 * @param {vec3} position
+	 * @param {number} tick
+	 * @param {boolean} persistent
+	 */
+	Effects.spamEffect = function spamEffect( effect, AID, position, tick, persistent )
+	{
+		var entity = EntityManager.get(AID);
+
+		if (!position) {
+			if (!entity) {
+				return;
+			}
+			position = entity.position;
 		}
 
-		for (i = 0, count = effects.length; i < count; ++i) {
-			effect = effects[i];
+		// Copy instead of get reference
+		position   = effect.attachedEntity ? position : [ position[0], position[1], position[2] ];
+		persistent = persistent || effect.repeat || false;
 
-			switch (effect.type) {
-				case 'SPR':
-					Effects.spamSPR( effect, AID, position, tick, persistent );
-					break;
+		switch (effect.type) {
+			case 'SPR':
+				spamSprite( effect, AID, position, tick, persistent );
+				break;
 
-				case 'STR':
-					Effects.spamSTR( effect, AID, position, tick, persistent );
-					break;
+			case 'STR':
+				spamSTR( effect, AID, position, tick, persistent );
+				break;
 
-				case 'FUNC':
-					break;
-
-				case 'CYLINDER':
-					if (entity) {
-						Effects.add(new Cylinder( entity, effect.topSize, effect.bottomSize, effect.height, effect.textureName, tick), AID);
-					}
-					break;
-			}
+			case 'CYLINDER':
+				Effects.add(new Cylinder( position, effect.topSize, effect.bottomSize, effect.height, effect.textureName, tick), AID);
+				break;
 		}
 	};
 
@@ -309,34 +324,9 @@ define(function( require )
 	 * @param {number} tick
 	 * @param {boolean} persistent
 	 */
-	Effects.spamSTR = function spamSTR( effect, AID, position, tick, persistent)
+	function spamSTR( effect, AID, position, tick, persistent)
 	{
-		var filename, entity;
-
-		if (!position) {
-			entity = EntityManager.get(AID);
-
-			if (!entity) {
-				return;
-			}
-
-			// Get reference
-			if (effect.attachedEntity) {
-				position = entity.position;
-			}
-
-			// copy
-			else {
-				position    = new Array(3);
-				position[0] = entity.position[0];
-				position[1] = entity.position[1];
-				position[2] = entity.position[2];
-			}
-		}
-
-		if (typeof persistent === 'undefined') {
-			persistent = effect.persistent;
-		}
+		var filename;
 
 		// Get STR file
 		if (Preferences.mineffect && effect.min) {
@@ -358,7 +348,7 @@ define(function( require )
 
 		// Start effect
 		Effects.add(new StrEffect('data/texture/effect/' + filename + '.str', position, tick), AID, persistent);
-	};
+	}
 
 
 	/**
@@ -370,62 +360,40 @@ define(function( require )
 	 * @param {number} tick
 	 * @param {boolean} persistent
 	 */
-	Effects.spamSPR = function spamSPR( effect, AID, position, tick, persistent)
+	function spamSprite( effect, AID, position, tick, persistent)
 	{
-		var entity;
+		var entity = EntityManager.get(AID);
+
+		if (!entity) {
+			entity            = new Entity();
+			entity.GID        = AID;
+			entity.position   = position;
+			entity.objecttype = entity.constructor.TYPE_EFFECT;
+			EntityManager.add(entity);
+		}
+
+		else if (!effect.attachedEntity) {
+			entity            = new Entity();
+			entity.GID        = -1;
+			entity.position   = position;
+			entity.objecttype = entity.constructor.TYPE_EFFECT;
+			EntityManager.add(entity);
+		}
 
 		// Play sound
 		if (effect.wav) {
 			Sound.play(effect.wav + '.wav');
 		}
 
-		if (typeof persistent === 'undefined') {
-			persistent = effect.persistent;
-		}
-
-		if (!position) {
-			entity = EntityManager.get(AID);
-
-			if (!entity) {
-				return;
-			}
-
-			// Get reference
-			if (effect.attachedEntity) {
-				position = entity.position;
-			}
-
-			// copy
-			else {
-				position    = new Array(3);
-				position[0] = entity.position[0];
-				position[1] = entity.position[1];
-				position[2] = entity.position[2];
-			}
-		}
-
-		// Zone effect
-		if (!effect.attachedEntity) {
-			Effects.add(new SpriteEffect({
-				file:        effect.file,
-				head:      !!effect.head,
-				direction: !!effect.direction,
-				position:    position,
-				tick:        tick,
-				repeat:     !!persistent
-			}));
-			return;
-		}
-
 		// Sprite effect
 		entity.attachments.add({
-			file:        effect.file,
-			head:      !!effect.head,
-			direction: !!effect.direction,
-			repeat:    !!persistent,
-			position:    position
+			file:           effect.file,
+			head:         !!effect.head,
+			direction:    !!effect.direction,
+			repeat:         persistent,
+			stopAtEnd:      effect.stopAtEnd
 		});
-	};
+	}
 
 
 	/**
@@ -438,13 +406,13 @@ define(function( require )
 	 */
 	Effects.spamSkillZone = function spamUnit( unit_id, xPos, yPos, uid )
 	{
+		var skillId, effectId;
+		var skill;
+
 		// No effect mode (/effect)
 		if (!Preferences.effect) {
 			return;
 		}
-
-		var skillId, effectId;
-		var filename, effect, effects, skill, pos;
 
 		if (!(unit_id in SkillUnit)) {
 			return;
@@ -468,7 +436,7 @@ define(function( require )
 			return;
 		}
 
-		this.spam( effectId, uid, [ xPos, yPos, Altitude.getCellHeight( xPos, yPos) ], 0, true);
+		this.spam( effectId, uid, [ xPos, yPos, Altitude.getCellHeight( xPos, yPos) ], Renderer.tick, 0);
 	};
 
 

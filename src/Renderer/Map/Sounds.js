@@ -1,5 +1,5 @@
 /**
- * Renderer/Sounds.js
+ * Renderer/Map/Sounds.js
  *
  * Play 3D sounds
  *

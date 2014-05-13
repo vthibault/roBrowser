@@ -46,7 +46,7 @@ define(function( require )
 	///   if set to true, the sprite will be at the character's head
 	///
 	/// - stopAtEnd
-	///   to do, stop the animation at end
+	///   do not remove when animation end
 	///
 	/// - direction
 	///   if set to true, the sprite will inherit character's direction
@@ -132,7 +132,8 @@ define(function( require )
 		47: [{
 			type: 'SPR',
 			file: 'torch_01',
-			attachedEntity: false
+			attachedEntity: false,
+			repeat: true
 		}],
 
 

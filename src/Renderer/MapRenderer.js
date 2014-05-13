@@ -33,7 +33,7 @@ define(function( require )
 	var Altitude       = require('Renderer/Map/Altitude');
 	var Water          = require('Renderer/Map/Water');
 	var Models         = require('Renderer/Map/Models');
-	var Sounds         = require('Renderer/Sounds');
+	var Sounds         = require('Renderer/Map/Sounds');
 	var SpriteRenderer = require('Renderer/SpriteRenderer');
 	var Effects        = require('Renderer/Effects');
 	var Sky            = require('Renderer/Effects/Sky');
@@ -66,9 +66,15 @@ define(function( require )
 
 
 	/**
-	 * @var {array} Sounds object
+	 * @var {array} Sounds object list
 	 */
 	MapRenderer.sounds = null;
+
+
+	/**
+	 * @var {array} Effects object list
+	 */
+	MapRenderer.effects = null;
 
 
 	/**
@@ -170,9 +176,10 @@ define(function( require )
 
 		Mouse.intersect = false;
 
-		this.light  = null;
-		this.water  = null;
-		this.sounds = null;
+		this.light   = null;
+		this.water   = null;
+		this.sounds  = null;
+		this.effects = null;
 	};
 
 
@@ -192,9 +199,10 @@ define(function( require )
 	 */
 	function onWorldComplete( data )
 	{
-		this.light  = data.light;
-		this.water  = data.water;
-		this.sounds = data.sound;
+		this.light   = data.light;
+		this.water   = data.water;
+		this.sounds  = data.sound;
+		this.effects = data.effect;
 
 		// Calculate light direction
 		this.light.direction = new Float32Array(3);
@@ -221,10 +229,11 @@ define(function( require )
 		Water.init( gl, this.water );
 
 		// Initialize sounds
-		var i, count = this.sounds.length;
-		var tmp;
+		var i, count, tmp;
+
+		count = this.sounds.length;
 		for (i = 0; i < count; ++i) {
-			tmp = -this.sounds[i].pos[1];
+			tmp                    = -this.sounds[i].pos[1];
 			this.sounds[i].pos[0] += data.width;
 			this.sounds[i].pos[1]  = this.sounds[i].pos[2] + data.height;
 			this.sounds[i].pos[2]  = tmp;
@@ -232,6 +241,20 @@ define(function( require )
 			this.sounds[i].tick    =   0;
 
 			Sounds.add(this.sounds[i]);
+		}
+
+
+		count = this.effects.length;
+		for (i = 0; i < count; ++i) {
+			// Note: effects objects do not need to be centered in a cell
+			// as we apply +0.5 in the shader, we have to revert it.
+			tmp                     = -this.effects[i].pos[1];
+			this.effects[i].pos[0] += data.width - 0.5;
+			this.effects[i].pos[1]  = this.effects[i].pos[2] + data.height - 0.5;
+			this.effects[i].pos[2]  = tmp;
+
+			//TODO: add effect object
+			//Effects.spam( this.effects[i].id, -1, this.effects[i].pos, 0, this.effects[i].delay);
 		}
 	}
 
