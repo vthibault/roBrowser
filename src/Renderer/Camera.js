@@ -226,7 +226,7 @@ define(['Controls/KeyEventHandler', 'Controls/MouseEventHandler', 'Preferences/C
 		if (KEYS.SHIFT) {
 			this.angleFinal[0] += ( Mouse.screen.y - this.action.y ) / Mouse.screen.height * 300;
 			this.angleFinal[0]  = Math.max( this.angleFinal[0], 190 );
-			this.angleFinal[0]  = Math.min( this.angleFinal[0], 270 );
+			this.angleFinal[0]  = Math.min( this.angleFinal[0], 260 );
 		}
 
 		// Zoom

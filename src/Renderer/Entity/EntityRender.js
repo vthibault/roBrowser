@@ -206,6 +206,7 @@ define( function( require )
 		{
 			// Update shadow
 			SpriteRenderer.shadow = Ground.getShadowFactor( this.position[0], this.position[1] );
+			SpriteRenderer.zIndex = 1;
 
 			var animation  = this.animation;
 			var Entity     = this.constructor;
