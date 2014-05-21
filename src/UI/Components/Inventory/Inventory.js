@@ -606,7 +606,7 @@ define(function(require)
 		}
 
 		// Equip item (if not arrow)
-		if (item.WearState && item.WearState !== 32768) {
+		if (item.WearState && !(item.WearState & Equipment.LOCATION.AMMO)) {
 			Equipment.equip(item);
 			return false;
 		}
@@ -736,12 +736,10 @@ define(function(require)
 			case Inventory.ITEM.WEAPON:
 			case Inventory.ITEM.EQUIP:
 			case Inventory.ITEM.PETEQUIP:
+			case Inventory.ITEM.AMMO:
 				if (item.IsIdentified && !item.IsDamaged) {
 					Inventory.onEquipItem( item.index, item.location );
 				}
-				break;
-
-			case Inventory.ITEM.AMMO:
 				break;
 		}
 

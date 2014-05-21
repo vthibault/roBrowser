@@ -20,12 +20,15 @@
 #Equipment .overlay { position:absolute; display:none; white-space:nowrap; z-index:900; height:13px; padding:5px; background:rgba(0,0,0,0.7); color:white; text-shadow:1px 1px black;}
 
 #Equipment .item button { width:24px; height:24px; background-color:transparent; background-repeat:no-repeat; border: none; }
-#Equipment .item span { width:80px; height:24px; display:inline-block; line-height:12px; word-break:break-all; overflow:hidden; }
+#Equipment .item span { width:80px; height:24px; display:inline-block; line-height:12px; word-break:break-all; overflow:hidden; text-shadow:1px 1px white; }
 
 #Equipment .col3 .item button, #Equipment .col3 .item span { float:right; }
 #Equipment .col1 .item button, #Equipment .col1 .item span { float:left; }
 #Equipment .col1 .item { padding-left:4px; }
 #Equipment .col3 .item { padding-right:4px; }
+
+#Equipment .ammo_container { position:relative; }
+#Equipment .ammo { position:absolute; top:30px; }
 
 #Equipment .footer { height:20px; border-bottom:1px solid #c0c0c0; }
 #Equipment .footer .left { float:left; text-align:left; margin-left:5px; margin-top:3px; }

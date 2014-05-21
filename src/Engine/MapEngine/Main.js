@@ -446,6 +446,34 @@ define(function( require )
 
 
 	/**
+	 * Despite the name, it give information about item equipped
+	 *
+	 * @param {object} pkt - PACKET_ZC_ACTION_FAILURE
+	 */
+	function onActionFailure( pkt )
+	{
+		switch (pkt.errorCode) {
+			case 0: // Please equip the proper amnution first
+				ChatBox.addText( DB.getMessage(242), ChatBox.TYPE.ERROR );
+				break;
+
+			case 1:  // You can't Attack or use Skills because your Weight Limit has been exceeded.
+				ChatBox.addText( DB.getMessage(243), ChatBox.TYPE.ERROR );
+				break;
+
+			case 2: // You can't use Skills because Weight Limit has been exceeded.
+				ChatBox.addText( DB.getMessage(244), ChatBox.TYPE.ERROR );
+				break;
+
+			case 3: // Ammunition has been equipped.
+				// TODO: check the class - assassin: 1040 | gunslinger: 1175 | default: 245
+				ChatBox.addText( DB.getMessage(245), ChatBox.TYPE.BLUE );
+				break;
+		}
+	}
+
+
+	/**
 	 * Initialize
 	 */
 	return function MainEngine()
@@ -465,5 +493,6 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.NOTIFY_PLAYERCHAT,           onPlayerMessage );
 		Network.hookPacket( PACKET.ZC.ATTACK_FAILURE_FOR_DISTANCE, onPlayerTooFarToAttack );
 		Network.hookPacket( PACKET.ZC.CONFIG,                      onConfigUpdate );
+		Network.hookPacket( PACKET.ZC.ACTION_FAILURE,              onActionFailure );
 	};
 });

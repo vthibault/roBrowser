@@ -50,7 +50,8 @@ define(function(require)
 		SHOES:       1 << 6,
 		ACCESSORY2:  1 << 7,
 		HEAD_TOP:    1 << 8,
-		HEAD_MID:    1 << 9
+		HEAD_MID:    1 << 9,
+		AMMO:        1 << 15
 	};
 
 
@@ -153,7 +154,7 @@ define(function(require)
 			.on('dblclick', '.item', function() {
 				var index   = parseInt(this.getAttribute('data-index'), 10);
 				Equipment.onUnEquip( index );
-				Equipment.ui.find('.overlay').remove();
+				Equipment.ui.find('.overlay').hide();
 			})
 
 			// Stop drag drop feature
@@ -174,6 +175,11 @@ define(function(require)
 				var overlay = Equipment.ui.find('.overlay');
 				var it      = DB.getItemInfo( item.ITID );
 				var pos     = jQuery(this).position();
+
+				// Possible jquery error
+				if (!pos.top && !pos.left) {
+					return;
+				}
 
 				// Display box
 				overlay.show();
@@ -456,6 +462,7 @@ define(function(require)
 		if (location & Equipment.LOCATION.SHOES)       selector.push('.shoes');
 		if (location & Equipment.LOCATION.ACCESSORY1)  selector.push('.accessory1');
 		if (location & Equipment.LOCATION.ACCESSORY2)  selector.push('.accessory2');
+		if (location & Equipment.LOCATION.AMMO)        selector.push('.ammo');
 
 		return selector.join(', ');
 	}

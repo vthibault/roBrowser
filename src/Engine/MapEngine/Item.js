@@ -137,14 +137,16 @@ define(function( require )
 
 			if (item) {
 				item.WearState = 0;
-	
+
 				var it = DB.getItemInfo( item.ITID );
 				ChatBox.addText(
 					it.identifiedDisplayName + ' ' + DB.getMessage(171),
 					ChatBox.TYPE.ERROR
 				);
 
-				Inventory.addItem(item);
+				if (!(pkt.wearLocation & Equipment.LOCATION.AMMO)) {
+					Inventory.addItem(item);
+				}
 			}
 
 			if (pkt.wearLocation & Equipment.LOCATION.HEAD_TOP)    Session.Entity.accessory2 = 0;
@@ -223,6 +225,18 @@ define(function( require )
 
 
 	/**
+	 * Equip an arrow
+	 *
+	 * @param {object} pkt - PACKET_ZC_EQUIP_ARROW
+	 */
+	function onArrowEquipped( pkt )
+	{
+		var item = Inventory.getItemByIndex( pkt.index );
+		Equipment.equip( item, Equipment.LOCATION.AMMO);
+	}
+
+
+	/**
 	 * Initialize
 	 */
 	return function ItemEngine()
@@ -254,5 +268,6 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.USE_ITEM_ACK,           onItemUseAnswer );
 		Network.hookPacket( PACKET.ZC.USE_ITEM_ACK2,          onItemUseAnswer );
 		Network.hookPacket( PACKET.ZC.CONFIG_NOTIFY,          onConfigEquip );
+		Network.hookPacket( PACKET.ZC.EQUIP_ARROW,            onArrowEquipped );
 	};
 });
