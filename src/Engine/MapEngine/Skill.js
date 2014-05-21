@@ -202,6 +202,17 @@ define(function( require )
 
 
 	/**
+	 * Server notify use that we need to cast a skill
+	 *
+	 * @param {object} pkt - PACKET.ZC.AUTORUN_SKILL
+	 */
+	function onAutoCastSkill( pkt )
+	{
+		SkillWindow.useSkill(pkt.data);
+	}
+
+
+	/**
 	 * Send back informations from server
 	 * The user want to modify the shortcut
 	 *
@@ -290,5 +301,6 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.NOTIFY_EFFECT2,       onEffect );
 		Network.hookPacket( PACKET.ZC.NOTIFY_EFFECT3,       onEffect );
 		Network.hookPacket( PACKET.ZC.NOTIFY_GROUNDSKILL,   onSkillToGround );
+		Network.hookPacket( PACKET.ZC.AUTORUN_SKILL,        onAutoCastSkill );
 	};
 });

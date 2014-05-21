@@ -95,7 +95,7 @@ define(function(require)
 			);
 		});
 
-		// TODO:
+
 		this.ui
 
 			// Use skill
@@ -106,7 +106,7 @@ define(function(require)
 					main = main.parent();
 				}
 
-				SkillList.useSkill(parseInt(main.data('index'), 10));
+				SkillList.useSkillID(parseInt(main.data('index'), 10));
 			})
 
 			// Skill info
@@ -363,11 +363,11 @@ define(function(require)
 
 
 	/**
-	 * Use a skill
+	 * Use a skill index
 	 *
 	 * @param {number} skill id
 	 */
-	SkillList.useSkill = function useSkill( id )
+	SkillList.useSkillID = function useSkillID( id )
 	{
 		var skill = getSkillById(id);
 
@@ -375,6 +375,17 @@ define(function(require)
 			return;
 		}
 
+		SkillList.useSkill( skill );
+	};
+
+
+	/**
+	 * Use a skill
+	 *
+	 * @param {object} skill
+	 */
+	SkillList.useSkill = function useSkill( skill )
+	{
 		// Self
 		if (skill.type & SkillTargetSelection.TYPE.SELF) {
 			this.onUseSkill( skill.SKID, skill.level);

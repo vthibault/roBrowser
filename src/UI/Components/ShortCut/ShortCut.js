@@ -495,7 +495,7 @@ define(function(require)
 
 		// Execute skill
 		if (shortcut.isSkill) {
-			SkillWindow.useSkill(shortcut.ID);
+			SkillWindow.useSkillID(shortcut.ID);
 		}
 
 		// Use the item
