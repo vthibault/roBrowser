@@ -474,6 +474,17 @@ define(function( require )
 
 
 	/**
+	 * Server message using msgstringtable
+	 *
+	 * @param {object} pkt - PACKET_ZC_MSG
+	 */
+	function onMessage( pkt )
+	{
+		ChatBox.addText( DB.getMessage(pkt.msg), ChatBox.TYPE.PUBLIC );
+	}
+
+
+	/**
 	 * Initialize
 	 */
 	return function MainEngine()
@@ -494,5 +505,6 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.ATTACK_FAILURE_FOR_DISTANCE, onPlayerTooFarToAttack );
 		Network.hookPacket( PACKET.ZC.CONFIG,                      onConfigUpdate );
 		Network.hookPacket( PACKET.ZC.ACTION_FAILURE,              onActionFailure );
+		Network.hookPacket( PACKET.ZC.MSG,                         onMessage );
 	};
 });
