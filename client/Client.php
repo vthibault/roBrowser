@@ -94,22 +94,23 @@ final class Client
 	 */
 	static public function getFile($path)
 	{
-		$local_path  = self::$path;
-		$local_path .= str_replace('\\', '/', $path );
-		$grf_path    = str_replace('/', '\\', $path );
+		$local_path         = self::$path;
+		$local_path        .= str_replace('\\', '/', $path );
+		$local_pathEncoded  = utf8_encode($local_path);
+		$grf_path           = str_replace('/', '\\', $path );
 
 		Debug::write('Searching file ' . $path . '...', 'title');
 
 		// Read data first
-		if (file_exists($local_path) && !is_dir($local_path) && is_readable($local_path)) {
+		if (file_exists($local_pathEncoded) && !is_dir($local_pathEncoded) && is_readable($local_pathEncoded)) {
 			Debug::write('File found at ' . $local_path, 'success');
 
 			// Store file
 			if(self::$AutoExtract) {
-				return self::store( $path, file_get_contents($local_path) );
+				return self::store( $path, file_get_contents($local_pathEncoded) );
 			}
 
-			return file_get_contents($local_path);
+			return file_get_contents($local_pathEncoded);
 		}
 		else {
 			Debug::write('File not found at ' . $local_path);
