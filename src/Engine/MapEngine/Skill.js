@@ -27,6 +27,8 @@ define(function( require )
 	var ChatBox              = require('UI/Components/ChatBox/ChatBox');
 	var SkillWindow          = require('UI/Components/SkillList/SkillList');
 	var SkillTargetSelection = require('UI/Components/SkillTargetSelection/SkillTargetSelection');
+	var ItemSelection        = require('UI/Components/ItemSelection/ItemSelection');
+	var Inventory            = require('UI/Components/Inventory/Inventory');
 
 
 	/**
@@ -213,6 +215,61 @@ define(function( require )
 
 
 	/**
+	 * Get a list of item to identify
+	 *
+	 * @param {object} pkt - PACKET.ZC.ITEMIDENTIFY_LIST
+	 */
+	function onIdentifyList( pkt )
+	{
+		if (!pkt.ITIDList.length) {
+			return;
+		}
+
+		ItemSelection.append();
+		ItemSelection.setList(pkt.ITIDList);
+		ItemSelection.setTitle(DB.getMessage(521));
+		ItemSelection.onIndexSelected = function(index) {
+			var pkt   = new PACKET.CZ.REQ_ITEMIDENTIFY();
+			pkt.index = index;
+			Network.sendPacket(pkt);
+		};
+	}
+
+
+	/**
+	 * Get the result once item identified
+	 *
+	 * @param {object} pkt - PACKET.ZC.ACK_ITEMIDENTIFY
+	 */
+	function onIdentifyResult( pkt )
+	{
+		// Self closed, no message.
+		if (pkt.index < 0) {
+			return;
+		}
+
+		switch (pkt.result) {
+			case 0: // success
+				ChatBox.addText( DB.getMessage(491), ChatBox.TYPE.BLUE);
+
+				// Remove old item
+				var item = Inventory.removeItem(pkt.index, 1);
+
+				// Add new item updated
+				if (item) {
+					item.IsIdentified = true;
+					Inventory.addItem(item);
+				}
+				break;
+
+			case 1: // Fail
+				ChatBox.addText( DB.getMessage(492), ChatBox.TYPE.ERROR);
+				break;
+		}
+	}
+
+
+	/**
 	 * Send back informations from server
 	 * The user want to modify the shortcut
 	 *
@@ -302,5 +359,7 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.NOTIFY_EFFECT3,       onEffect );
 		Network.hookPacket( PACKET.ZC.NOTIFY_GROUNDSKILL,   onSkillToGround );
 		Network.hookPacket( PACKET.ZC.AUTORUN_SKILL,        onAutoCastSkill );
+		Network.hookPacket( PACKET.ZC.ITEMIDENTIFY_LIST,    onIdentifyList );
+		Network.hookPacket( PACKET.ZC.ACK_ITEMIDENTIFY,     onIdentifyResult );
 	};
 });

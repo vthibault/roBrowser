@@ -7362,8 +7362,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 		this.eggList      = (function(){
 			var i, count=(end-fp.tell())/2|0, out=new Array(count);
 			for ( i=0; i<count; ++i ) {
-				out[i] = {};
-				out[i].index = fp.readShort();
+				out[i] = fp.readShort();
 			}
 			return out;
 		})();

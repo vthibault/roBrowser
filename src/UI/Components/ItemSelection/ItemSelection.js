@@ -49,7 +49,10 @@ define(function(require)
 
 		// Click Events
 		this.ui.find('.ok').click( this.selectIndex.bind(this) );
-		this.ui.find('.cancel').click( this.remove.bind(this) );
+		this.ui.find('.cancel').click(function(){
+			this.index = -1;
+			this.selectIndex();
+		}.bind(this) );
 
 		// Bind events
 		this.ui
@@ -70,6 +73,7 @@ define(function(require)
 		var i, count;
 		var item, it, file, name;
 
+		ItemSelection.list.empty();
 
 		for (i = 0, count = list.length; i < count; ++i) {
 			if (isSkill) {
@@ -79,16 +83,16 @@ define(function(require)
 				//name = SkillInfo[ID].SkillName;
 			}
 			else {
-				item = Inventory.getItemByIndex(list[i].index);
+				item = Inventory.getItemByIndex(list[i]);
 				it   = DB.getItemInfo( item.ITID );
-				file = it.identifiedResourceName;
+				file = item.IsIdentified ? it.identifiedResourceName : it.unidentifiedResourceName;
 				name = item.IsIdentified ? it.identifiedDisplayName : it.unidentifiedDisplayName;
 			}
 
-			addElement( DB.INTERFACE_PATH + 'item/' + file + '.bmp', list[i].index, name);
+			addElement( DB.INTERFACE_PATH + 'item/' + file + '.bmp', list[i], name);
 		}
 
-		this.setIndex(list[0].index);
+		this.setIndex(list[0]);
 	};
 
 
@@ -146,6 +150,17 @@ define(function(require)
 	ItemSelection.onRemove = function onRemove()
 	{
 		this.index = 0;
+	};
+
+
+	/**
+	 * Set new window name
+	 *
+	 * @param {string} title
+	 */
+	ItemSelection.setTitle = function setTitle( title )
+	{
+		this.ui.find('.head .text').text( title );
 	};
 
 

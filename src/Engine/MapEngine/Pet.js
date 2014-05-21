@@ -68,12 +68,19 @@ define(function( require )
 	 */
 	function onPetList( pkt )
 	{
+		if (!pkt.eggList.length) {
+			return;
+		}
+
 		ItemSelection.append();
 		ItemSelection.setList(pkt.eggList);
+		ItemSelection.setTitle(DB.getMessage(599));
 		ItemSelection.onIndexSelected = function(index) {
-			var pkt   = new PACKET.CZ.SELECT_PETEGG();
-			pkt.index = index;
-			Network.sendPacket(pkt);
+			if (index > -1) {
+				var pkt   = new PACKET.CZ.SELECT_PETEGG();
+				pkt.index = index;
+				Network.sendPacket(pkt);
+			}
 		};
 	}
 
