@@ -150,7 +150,8 @@ define(['Renderer/Renderer', 'DB/DBManager'], function( Renderer, DB )
 			// NPC action
 			case Entity.TYPE_NPC:
 				this.ACTION.IDLE   = 0;
-				// NPC don't have other frame ?
+				// For those NPC that move with unitwalk scriptcommand
+				this.ACTION.WALK     = 1;
 				break;
 
 			// When you see a warp with /effect, it's 3 times bigger.
