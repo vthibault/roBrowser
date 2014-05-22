@@ -77,9 +77,20 @@ define(function(require)
 	 * Window must not be visible once append
 	 * but need to be here to manage key event
 	 */
-	Escape.onAppend = function OnAppend()
+	Escape.onAppend = function onAppend()
 	{
 		this.ui.hide();
+	};
+
+
+	/**
+	 * Reset buttons once UI is removed
+	 */
+	Escape.onRemove = function onRemove()
+	{
+		this.ui.hide();
+		this.ui.find('.savepoint').hide();
+		this.ui.find('.graphics, .sound, .hotkey').show();
 	};
 
 
@@ -89,7 +100,7 @@ define(function(require)
 	 * @param {object} event
 	 * @return {boolean}
 	 */
-	Escape.onKeyDown = function OnKeyDown( event )
+	Escape.onKeyDown = function onKeyDown( event )
 	{
 		if (event.which === KEYS.ESCAPE) {
 
@@ -111,25 +122,25 @@ define(function(require)
 	/**
 	 * @var {function} callback when player want to resuret using Token of Siegfried
 	 */
-	Escape.onResurectionRequest = function OnResurectionRequest(){};
+	Escape.onResurectionRequest = function onResurectionRequest(){};
 
 
 	/**
 	 * @var {function} callback to define to disconnect from game
 	 */
-	Escape.onExitRequest = function OnExitRequest(){};
+	Escape.onExitRequest = function onExitRequest(){};
 
 
 	/**
 	 * @var {function} callback when player want to resurect using Token of Siegfried
 	 */
-	Escape.onReturnSavePointRequest = function OnReturnSavePointRequest(){};
+	Escape.onReturnSavePointRequest = function onReturnSavePointRequest(){};
 
 
 	/**
 	 * @var {function} callback when player want to return to char selection
 	 */
-	Escape.onCharSelectionRequest = function OnCharSelectionRequest(){};
+	Escape.onCharSelectionRequest = function onCharSelectionRequest(){};
 
 
 	/**
