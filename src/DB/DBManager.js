@@ -85,6 +85,7 @@ function(      Client,           TextEncoding,      ClassTable,     ClassPalTabl
 		DB.loadTable( 'data/num2itemdesctable.txt',          2, function(index, key, val){   (DB.itemList[key] || (DB.itemList[key] = {})).unidentifiedDescriptionName = val;                     }, onLoad());
 		DB.loadTable( 'data/num2itemdisplaynametable.txt',   2, function(index, key, val){   (DB.itemList[key] || (DB.itemList[key] = {})).unidentifiedDisplayName     = val.replace(/\_/g, ' '); }, onLoad());
 		DB.loadTable( 'data/num2itemresnametable.txt',       2, function(index, key, val){   (DB.itemList[key] || (DB.itemList[key] = {})).unidentifiedResourceName    = val;                     }, onLoad());
+		DB.loadTable( 'data/num2cardillustnametable.txt',    2, function(index, key, val){   (DB.itemList[key] || (DB.itemList[key] = {})).illustResourcesName         = val;                     }, onLoad());
 		DB.loadTable( 'data/itemslotcounttable.txt',         2, function(index, key, val){   (DB.itemList[key] || (DB.itemList[key] = {})).slotCount                   = parseInt(val, 10);       }, onLoad());
 		DB.loadTable( 'data/fogparametertable.txt',          5, function(index, mapname, near, far, color, factor) {
 			var int_color = parseInt(color,16);

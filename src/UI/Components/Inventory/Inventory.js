@@ -606,7 +606,7 @@ define(function(require)
 		}
 
 		// Equip item (if not arrow)
-		if (item.WearState && !(item.WearState & Equipment.LOCATION.AMMO)) {
+		if (item.WearState && item.type !== Inventory.ITEM.AMMO && item.type !== Inventory.ITEM.CARD) {
 			Equipment.equip(item);
 			return false;
 		}
@@ -729,6 +729,11 @@ define(function(require)
 				Inventory.onUseItem( item.index );
 				break;
 
+			// Use card
+			case Inventory.ITEM.CARD:
+				Inventory.onUseCard( item.index );
+				break;
+
 			case Inventory.ITEM.USABLE_SKILL:
 				break;
 
@@ -772,6 +777,7 @@ define(function(require)
 	 * functions to define
 	 */
 	Inventory.onUseItem    = function OnUseItem(/* index */){};
+	Inventory.onUseCard    = function onUseCard(/* index */){};
 	Inventory.onEquipItem  = function OnEquipItem(/* index, location */){};
 	Inventory.onUpdateItem = function OnUpdateItem(/* index, amount */){};
 

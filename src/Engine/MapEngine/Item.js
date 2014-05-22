@@ -24,6 +24,7 @@ define(function( require )
 	var Session       = require('Engine/SessionStorage');
 	var ChatBox       = require('UI/Components/ChatBox/ChatBox');
 	var ItemObtain    = require('UI/Components/ItemObtain/ItemObtain');
+	var ItemSelection = require('UI/Components/ItemSelection/ItemSelection');
 	var Inventory     = require('UI/Components/Inventory/Inventory');
 	var Equipment     = require('UI/Components/Equipment/Equipment');
 
@@ -237,6 +238,84 @@ define(function( require )
 
 
 	/**
+	 * @var {object} item
+	 */
+	var _cardComposition;
+
+
+	/**
+	 * Ask to get a list of equipments where we can put a card
+	 *
+	 * @param {number} card index
+	 */
+	Inventory.onUseCard = function onUseCard(index)
+	{
+		_cardComposition = index;
+		var pkt          = new PACKET.CZ.REQ_ITEMCOMPOSITION_LIST();
+		pkt.cardIndex    = index;
+		Network.sendPacket(pkt);
+	};
+
+
+	/**
+	 * Get a list of equipments to insert card
+	 *
+	 * @param {object} pkt - PACKET.ZC.ITEMCOMPOSITION_LIST
+	 */
+	function onItemCompositionList( pkt )
+	{
+		if (!pkt.ITIDList.length) {
+			return;
+		}
+
+		var card = Inventory.getItemByIndex(_cardComposition);
+
+		ItemSelection.append();
+		ItemSelection.setList(pkt.ITIDList);
+		ItemSelection.setTitle(DB.getMessage(522) + '(' + DB.getItemInfo(card.ITID).identifiedDisplayName + ')');
+		ItemSelection.onIndexSelected = function(index) {
+			if (index >= 0) {
+				var pkt        = new PACKET.CZ.REQ_ITEMCOMPOSITION();
+				pkt.cardIndex  = _cardComposition;
+				pkt.equipIndex = index;
+				Network.sendPacket(pkt);
+			}
+
+			_cardComposition = null;
+		};
+	}
+
+
+	/**
+	 * Get the result once card inserted
+	 *
+	 * @param {object} pkt - PACKET.ZC.ACK_ITEMCOMPOSITION
+	 */
+	function onItemCompositionResult( pkt )
+	{
+		switch (pkt.result) {
+			case 0: // success
+				var item = Inventory.removeItem(pkt.equipIndex, 1);
+				var card = Inventory.removeItem(pkt.cardIndex,  1);
+
+				if (item) {
+					for (var i = 0; i < 4; ++i) {
+						if (!item.slot['card'+(i+1)]) {
+							item.slot['card'+(i+1)] = card.ITID;
+							break;
+						}
+					}
+					Inventory.addItem(item);
+				}
+				break;
+
+			case 1: // Fail
+				break;
+		}
+	}
+
+
+	/**
 	 * Initialize
 	 */
 	return function ItemEngine()
@@ -269,5 +348,7 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.USE_ITEM_ACK2,          onItemUseAnswer );
 		Network.hookPacket( PACKET.ZC.CONFIG_NOTIFY,          onConfigEquip );
 		Network.hookPacket( PACKET.ZC.EQUIP_ARROW,            onArrowEquipped );
+		Network.hookPacket( PACKET.ZC.ITEMCOMPOSITION_LIST,   onItemCompositionList );
+		Network.hookPacket( PACKET.ZC.ACK_ITEMCOMPOSITION,    onItemCompositionResult );
 	};
 });
