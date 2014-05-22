@@ -785,7 +785,7 @@ define(function( require )
 
 		// TODO: add other status
 		switch (pkt.index) {
-			case 184:// SI_CLAIRVOYANCE
+			case 184: // SI_CLAIRVOYANCE
 				if (entity === Session.Entity) {
 					Session.intravision = pkt.state;
 					EntityManager.forEach(function(entity){
@@ -794,6 +794,10 @@ define(function( require )
 				}
 				break;
 
+			case 673: // SI_ON_PUSH_CART
+				if (entity === Session.Entity) {
+					Session.hasCart = pkt.state;
+				}
 			default:
 		}
 

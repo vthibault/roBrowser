@@ -16,6 +16,7 @@ define(function(require)
 	 * Dependencies
 	 */
 	var DB                 = require('DB/DBManager');
+	var StatusConst        = require('DB/StatusConst');
 	var jQuery             = require('Utils/jquery');
 	var Client             = require('Core/Client');
 	var Preferences        = require('Core/Preferences');
@@ -113,6 +114,8 @@ define(function(require)
 			Equipment.ui.hide();
 			return false;
 		});
+
+		this.ui.find('.removeOption').click(this.onRemoveOption);
 
 		// Show Status ?
 		this.ui.find('.view_status').mousedown(toggleStatus);
@@ -397,6 +400,9 @@ define(function(require)
 	 */
 	var renderCharacter = function renderCharacterClosure()
 	{
+		var _lastState = 0;
+		var _hasCart   = 0;
+
 		var _cleanColor = new Float32Array([1.0, 1.0, 1.0, 1.0]);
 		var _savedColor = new Float32Array(4);
 		var _animation  = {
@@ -409,6 +415,22 @@ define(function(require)
 			save:  false
 		};
 
+		// Current removable options
+		var OptionFlag =
+			StatusConst.EffectState.FALCON   |
+			StatusConst.EffectState.RIDING   |
+			StatusConst.EffectState.DRAGON1  |
+			StatusConst.EffectState.DRAGON2  |
+			StatusConst.EffectState.DRAGON3  |
+			StatusConst.EffectState.DRAGON4  |
+			StatusConst.EffectState.DRAGON5  |
+			StatusConst.EffectState.MADOGEAR |
+			StatusConst.EffectState.CART1    |
+			StatusConst.EffectState.CART2    |
+			StatusConst.EffectState.CART3    |
+			StatusConst.EffectState.CART4    |
+			StatusConst.EffectState.CART5;
+
 		return function rencerCharacter()
 		{
 			var character = Session.Entity;
@@ -416,6 +438,19 @@ define(function(require)
 			var headDir   = character.headDir;
 			var action    = character.action;
 			var animation = character.animation;
+
+			// If state change, we have to check if the new option is removable.
+			if (character.effectState !== _lastState || _hasCart !== Session.hasCart) {
+				_lastState = character.effectState;
+				_hasCart   = Session.hasCart;
+
+				if (_lastState & OptionFlag || _hasCart) {
+					Equipment.ui.find('.removeOption').show();
+				}
+				else {
+					Equipment.ui.find('.removeOption').hide();
+				}
+			}
 
 			// Set action
 			Camera.direction    = 4;
@@ -543,9 +578,10 @@ define(function(require)
 	/**
 	 * Method to define
 	 */
-	Equipment.onUnEquip      = function OnUnEquip(/* index */){};
-	Equipment.onConfigUpdate = function OnConfigUpdate(/* type, value*/){};
-	Equipment.onEquipItem    = function OnEquipItem(/* index, location */){};
+	Equipment.onUnEquip      = function onUnEquip(/* index */){};
+	Equipment.onConfigUpdate = function onConfigUpdate(/* type, value*/){};
+	Equipment.onEquipItem    = function onEquipItem(/* index, location */){};
+	Equipment.onRemoveCart   = function onRemoveCart(){};
 
 
 	/**

@@ -183,6 +183,7 @@ define(function( require )
 		Equipment.onUnEquip             = onUnEquip;
 		Equipment.onConfigUpdate        = onConfigUpdate;
 		Equipment.onEquipItem           = onEquipItem;
+		Equipment.onRemoveOption        = onRemoveOption;
 		Inventory.onUseItem             = onUseItem;
 		Inventory.onEquipItem           = onEquipItem;
 		Escape.onExitRequest            = onExitRequest;
@@ -431,6 +432,16 @@ define(function( require )
 			pkt.msg = Session.Entity.display.name + ' : ' + text;
 		}
 
+		Network.sendPacket(pkt);
+	}
+
+
+	/**
+	 * Remove cart/peco/falcon
+	 */
+	function onRemoveOption()
+	{
+		var pkt = new PACKET.CZ.REQ_CARTOFF();
 		Network.sendPacket(pkt);
 	}
 
