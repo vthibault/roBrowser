@@ -16,7 +16,7 @@ define(function(require)
 	 * Dependencies
 	 */
 	var jQuery      = require('Utils/jquery');
-	var SkillDB     = require('DB/SkillDescription');
+	var SkillDB     = require('DB/Skills/SkillDescription');
 	var Renderer    = require('Renderer/Renderer');
 	var KEYS        = require('Controls/KeyEventHandler');
 	var Mouse       = require('Controls/MouseEventHandler');

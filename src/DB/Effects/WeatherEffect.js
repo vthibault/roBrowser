@@ -1,5 +1,5 @@
 /**
- * DB/Weather.js
+ * DB/Effects/WeatherEffect.js
  *
  * Weather DB
  *
@@ -14,8 +14,10 @@ define(function()
 
 	var Weather = {};
 
+
 	// Sky and clouds features
 	Weather.sky = {};
+
 
 	// Blue sky and white clouds
 	Weather.sky['airplane.rsw']    = { skyColor:[0.4, 0.6, 0.8, 1.0], cloudColor:[1.0, 1.0, 1.0] };
@@ -33,7 +35,9 @@ define(function()
 	Weather.sky['5@tower.rsw']     = { skyColor:[0.2, 0.0, 0.2, 1.0],    cloudColor:[1.0, 0.7, 0.7] };
 	Weather.sky['thana_boss.rsw']  = { skyColor:[0.88, 0.83, 0.76, 1.0], cloudColor:[0.37, 0.0, 0.0] };
 
+
 	// TODO: add others effect (snow, fireworks, etc.)
+
 
 	/**
 	 * Export

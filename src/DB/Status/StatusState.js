@@ -1,7 +1,7 @@
 /**
- * DB/StatusConst.js
+ * DB/Status/StatusState.js
  *
- * List of status constants
+ * List of status state
  *
  * This file is part of ROBrowser, Ragnarok Online in the Web Browser (http://www.robrowser.com/).
  *

@@ -1,5 +1,5 @@
 /**
- * DB/SkillDescription.js
+ * DB/Skills/SkillDescription.js
  *
  * Skill Description tABLE
  *
@@ -8,16 +8,15 @@
  * @author Vincent Thibault
  */
 
-define(["./SkillId"], function( SKID )
+define(["./SkillConst"], function( SKID )
 {
 	"use strict";
 
 
-	var exports = {};
+	var SkillDescription = {};
 
 
-	exports[SKID.NV_BASIC] = [
-
+	SkillDescription[SKID.NV_BASIC] = [
 		"Basic Skill",
 		"MAX Lv : 9",
 		"Type:^000099 Passive ^000000",
@@ -41,8 +40,7 @@ define(["./SkillId"], function( SKID )
 		"^777777Qualifies character for change from Novice to one of the First Job Classes.^000000",
 	].join("\n");
 
-	exports[SKID.SM_SWORD] = [
-
+	SkillDescription[SKID.SM_SWORD] = [
 		"Sword Mastery",
 		"MAX Lv : 10",
 		"Type:^000099 Passive ^000000",
@@ -59,8 +57,7 @@ define(["./SkillId"], function( SKID )
 		"[Lv 10]: ^777777Atk +40^000000",
 	].join("\n");
 
-	exports[SKID.SM_TWOHAND] = [
-
+	SkillDescription[SKID.SM_TWOHAND] = [
 		"Two-Handed Sword Mastery",
 		"MAX Lv : 10",
 		"Type:^000099 Passive ^000000",
@@ -77,8 +74,7 @@ define(["./SkillId"], function( SKID )
 		"[Lv 10]: ^777777Atk +40^000000",
 	].join("\n");
 
-	exports[SKID.SM_RECOVERY] = [
-
+	SkillDescription[SKID.SM_RECOVERY] = [
 		"Increase Recuperative Power",
 		"MAX Lv : 10",
 		"Type:^000099 Passive ^000000",
@@ -95,8 +91,7 @@ define(["./SkillId"], function( SKID )
 		"[Lv 10]: ^777777HP +50/10 sec^000000",
 	].join("\n");
 
-	exports[SKID.SM_BASH] = [
-
+	SkillDescription[SKID.SM_BASH] = [
 		"Bash",
 		"MAX Lv : 10",
 		"Type:^777777 Offensive^000000",
@@ -114,8 +109,7 @@ define(["./SkillId"], function( SKID )
 		"[Lv 10]: ^777777+Atk 400%^000000",
 	].join("\n");
 
-	exports[SKID.SM_PROVOKE] = [
-
+	SkillDescription[SKID.SM_PROVOKE] = [
 		"Provoke",
 		"MAX Lv : 10",
 		"Type:^33cc00 Supportive ^000000",
@@ -133,8 +127,7 @@ define(["./SkillId"], function( SKID )
 		"[Lv 10]: ^777777+32% Atk, -55% DEF^000000",
 	].join("\n");
 
-	exports[SKID.SM_MAGNUM] = [
-
+	SkillDescription[SKID.SM_MAGNUM] = [
 		"Magnum Break",
 		"MAX Lv : 10",
 		"Type: ^777777Offensive^000000",
@@ -152,8 +145,7 @@ define(["./SkillId"], function( SKID )
 		"[Lv 10]: ^777777+Atk 300%^000000",
 	].join("\n");
 
-	exports[SKID.SM_ENDURE] = [
-
+	SkillDescription[SKID.SM_ENDURE] = [
 		"Endure",
 		"MAX Lv : 10",
 		"Type:^33cc00 Active ^000000",
@@ -172,8 +164,7 @@ define(["./SkillId"], function( SKID )
 		"[Lv 10]: ^77777737 sec, Mdef +10^000000",
 	].join("\n");
 
-	exports[SKID.MG_SRECOVERY] = [
-
+	SkillDescription[SKID.MG_SRECOVERY] = [
 		"Increase Spiritual Power",
 		"MAX Lv : 10",
 		"Type:^000099 Passive ^000000",
@@ -190,16 +181,14 @@ define(["./SkillId"], function( SKID )
 		"[Lv 10]: ^777777+30 SP/10 sec^000000",
 	].join("\n");
 
-	exports[SKID.MG_SIGHT] = [
-
+	SkillDescription[SKID.MG_SIGHT] = [
 		"Sight",
 		"MAX Lv : 1",
 		"Type:^33cc00 Active ^000000",
 		"Effect:^777777Detects enemies hidden in the caster's vicinity.^000000",
 	].join("\n");
 
-	exports[SKID.MG_NAPALMBEAT] = [
-
+	SkillDescription[SKID.MG_NAPALMBEAT] = [
 		"Napalm Beat",
 		"MAX Lv : 10",
 		"Type:^777777 Offensive ^000000",
@@ -208,8 +197,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777Attack an enemy from a distance through the use of psychokinetic energy.^000000",
 	].join("\n");
 
-	exports[SKID.MG_SAFETYWALL] = [
-
+	SkillDescription[SKID.MG_SAFETYWALL] = [
 		"Safety Wall",
 		"MAX Lv : 10",
 		"Type:^33cc00 Active ^000000",
@@ -219,8 +207,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777Create a magic barrier on a targeted spot that will block short range melee attacks for the duration of the Safety Wall.^000000",
 	].join("\n");
 
-	exports[SKID.MG_SOULSTRIKE] = [
-
+	SkillDescription[SKID.MG_SOULSTRIKE] = [
 		"Soul Strike",
 		"MAX Lv : 10",
 		"Type:^777777 Offensive ^000000",
@@ -228,8 +215,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777Summon ancient spirits to attack an enemy. Especially effective against Undead monsters.^000000",
 	].join("\n");
 
-	exports[SKID.MG_COLDBOLT] = [
-
+	SkillDescription[SKID.MG_COLDBOLT] = [
 		"Cold Bolt",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive, Level Selectable ^000000",
@@ -242,8 +228,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Hits the targeted enemy with 1 Water property Bolt per SkillLV for 1*MATK damage each. ^000000",
 	].join("\n");
 
-	exports[SKID.MG_FROSTDIVER] = [
-
+	SkillDescription[SKID.MG_FROSTDIVER] = [
 		"Frost Diver",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -267,8 +252,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 65% Success / 200% MATK 16 SP ^000000",
 	].join("\n");
 
-	exports[SKID.MG_STONECURSE] = [
-
+	SkillDescription[SKID.MG_STONECURSE] = [
 		"Stone Curse",
 		"Max Level:^777777 10 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -293,8 +277,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 60% Success Chance 16 SP ^000000",
 	].join("\n");
 
-	exports[SKID.MG_FIREBALL] = [
-
+	SkillDescription[SKID.MG_FIREBALL] = [
 		"Fire Ball",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -317,8 +300,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 170% MATK ^000000",
 	].join("\n");
 
-	exports[SKID.MG_FIREWALL] = [
-
+	SkillDescription[SKID.MG_FIREWALL] = [
 		"Fire Wall",
 		"Max Level:^777777 10 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -341,8 +323,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 14 Hits, 14 sec ^000000",
 	].join("\n");
 
-	exports[SKID.MG_FIREBOLT] = [
-
+	SkillDescription[SKID.MG_FIREBOLT] = [
 		"Fire Bolt",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive, Level Selectable ^000000",
@@ -355,8 +336,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Hits the targeted enemy with 1 Fire Element Bolt per SkillLV for 1*MATK each. ^000000",
 	].join("\n");
 
-	exports[SKID.MG_LIGHTNINGBOLT] = [
-
+	SkillDescription[SKID.MG_LIGHTNINGBOLT] = [
 		"Lightning Bolt",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive, Level Selectable ^000000",
@@ -369,8 +349,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Hits the targeted enemy with 1 Wind Element Bolt per SkillLV for 1*MATK each. ^000000",
 	].join("\n");
 
-	exports[SKID.MG_THUNDERSTORM] = [
-
+	SkillDescription[SKID.MG_THUNDERSTORM] = [
 		"Thunder Storm",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -393,8 +372,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 10 Bolts ^000000",
 	].join("\n");
 
-	exports[SKID.AL_DP] = [
-
+	SkillDescription[SKID.AL_DP] = [
 		"Divine Protection",
 		"Max Level:^777777 10 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -412,8 +390,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 DEF +30 ^000000",
 	].join("\n");
 
-	exports[SKID.AL_DEMONBANE] = [
-
+	SkillDescription[SKID.AL_DEMONBANE] = [
 		"Demon Bane",
 		"Max Level:^777777 10 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -431,8 +408,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 ATK +30 ^000000",
 	].join("\n");
 
-	exports[SKID.AL_RUWACH] = [
-
+	SkillDescription[SKID.AL_RUWACH] = [
 		"Ruwach",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -445,8 +421,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Reveals Hiding and Cloaking players and monsters within range. Revealed players and monsters are hit with a holy element Magic attack with a strength of MATK*1.45. ^000000",
 	].join("\n");
 
-	exports[SKID.AL_PNEUMA] = [
-
+	SkillDescription[SKID.AL_PNEUMA] = [
 		"Pneuma",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -462,8 +437,7 @@ define(["./SkillId"], function( SKID )
 		"Does not block splash damage or negate the Flee reducing effects of having multiple targets attacking you. Do note that although you can see the animation on top of a Land Protector, Pneuma will have no effect. ^000000",
 	].join("\n");
 
-	exports[SKID.AL_TELEPORT] = [
-
+	SkillDescription[SKID.AL_TELEPORT] = [
 		"Teleportation",
 		"Max Level:^777777 2 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -478,8 +452,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 2]^777777 Save Point. ^000000",
 	].join("\n");
 
-	exports[SKID.AL_WARP] = [
-
+	SkillDescription[SKID.AL_WARP] = [
 		"Warp Portal",
 		"Max Level:^777777 4 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -502,8 +475,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 4]^777777 Enable to Use 3 Memo points. ^000000",
 	].join("\n");
 
-	exports[SKID.AL_HEAL] = [
-
+	SkillDescription[SKID.AL_HEAL] = [
 		"Heal",
 		"Max Level:^777777 10 ^000000",
 		"Type:^33cc00 Active, Level Selectable ^000000",
@@ -517,8 +489,7 @@ define(["./SkillId"], function( SKID )
 		"To use against a monster, you must shift-click it or turn on /noshift. ^000000",
 	].join("\n");
 
-	exports[SKID.AL_INCAGI] = [
-
+	SkillDescription[SKID.AL_INCAGI] = [
 		"Increase Agility",
 		"Max Level:^777777 10 ^000000",
 		"Type:^33cc00 Active, Level Selectable ^000000",
@@ -544,8 +515,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 + 12 AGI ^000000",
 	].join("\n");
 
-	exports[SKID.AL_DECAGI] = [
-
+	SkillDescription[SKID.AL_DECAGI] = [
 		"Decrease Agility",
 		"Max Level:^777777 10 ^000000",
 		"Type:^33cc00 Active, Level Selectable ^000000",
@@ -570,8 +540,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 -12 AGI ^000000",
 	].join("\n");
 
-	exports[SKID.AL_HOLYWATER] = [
-
+	SkillDescription[SKID.AL_HOLYWATER] = [
 		"Aqua Benedicta",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -584,8 +553,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Creates 1 Holy Water. Caster must stand in water for the skill to succeed. Map-wide submersion (Undersea Tunnel LV 4/5 or Sunken Ship) does not work. ^000000",
 	].join("\n");
 
-	exports[SKID.AL_CRUCIS] = [
-
+	SkillDescription[SKID.AL_CRUCIS] = [
 		"Signum Crucis",
 		"Max Level:^777777 10 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -610,8 +578,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 -50% DEF ^000000",
 	].join("\n");
 
-	exports[SKID.AL_ANGELUS] = [
-
+	SkillDescription[SKID.AL_ANGELUS] = [
 		"Angelus",
 		"Max Level:^777777 10 ^000000",
 		"Type:^33cc00 Active, Level Selectable ^000000",
@@ -633,8 +600,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 150% VIT DEF ^000000",
 	].join("\n");
 
-	exports[SKID.AL_BLESSING] = [
-
+	SkillDescription[SKID.AL_BLESSING] = [
 		"Blessing",
 		"Max Level:^777777 10 ^000000",
 		"Type:^33cc00 Active, Level Selectable ^000000",
@@ -660,8 +626,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 +10 STR, DEX & INT ^000000",
 	].join("\n");
 
-	exports[SKID.AL_CURE] = [
-
+	SkillDescription[SKID.AL_CURE] = [
 		"Cure",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -675,8 +640,7 @@ define(["./SkillId"], function( SKID )
 		"Does not work against Players. ^000000",
 	].join("\n");
 
-	exports[SKID.MC_INCCARRY] = [
-
+	SkillDescription[SKID.MC_INCCARRY] = [
 		"Enlarge Weight Limit",
 		"Max Level:^777777 10 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -693,8 +657,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 Weight capacity +2000 ^000000",
 	].join("\n");
 
-	exports[SKID.MC_DISCOUNT] = [
-
+	SkillDescription[SKID.MC_DISCOUNT] = [
 		"Discount",
 		"Max Level:^777777 10 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -711,8 +674,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 -24% Price ^000000",
 	].join("\n");
 
-	exports[SKID.MC_OVERCHARGE] = [
-
+	SkillDescription[SKID.MC_OVERCHARGE] = [
 		"Overcharge",
 		"Max Level:^777777 10 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -729,8 +691,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 +24% Price ^000000",
 	].join("\n");
 
-	exports[SKID.MC_PUSHCART] = [
-
+	SkillDescription[SKID.MC_PUSHCART] = [
 		"Pushcart",
 		"Max Level:^777777 10 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -749,8 +710,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 100% Movement Speed ^000000",
 	].join("\n");
 
-	exports[SKID.MC_IDENTIFY] = [
-
+	SkillDescription[SKID.MC_IDENTIFY] = [
 		"Identify",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -762,8 +722,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Identifies an unidentified item. Unidentified item must be in inventory (not cart). A Magnifier duplicates the effect of this skill. ^000000",
 	].join("\n");
 
-	exports[SKID.MC_VENDING] = [
-
+	SkillDescription[SKID.MC_VENDING] = [
 		"Vending",
 		"Max Level:^777777 10 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -786,8 +745,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 12 Items ^000000",
 	].join("\n");
 
-	exports[SKID.MC_MAMMONITE] = [
-
+	SkillDescription[SKID.MC_MAMMONITE] = [
 		"Mammonite",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive, Level Selectable ^000000",
@@ -810,8 +768,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 ATK 600%, 1000Z spent ^000000",
 	].join("\n");
 
-	exports[SKID.AC_OWL] = [
-
+	SkillDescription[SKID.AC_OWL] = [
 		"Owl's Eye",
 		"Max Level:^777777 10 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -828,8 +785,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 DEX +10 ^000000",
 	].join("\n");
 
-	exports[SKID.AC_VULTURE] = [
-
+	SkillDescription[SKID.AC_VULTURE] = [
 		"Vulture's Eye",
 		"Max Level:^777777 10 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -846,8 +802,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 Range and HIT +10 ^000000",
 	].join("\n");
 
-	exports[SKID.AC_CONCENTRATION] = [
-
+	SkillDescription[SKID.AC_CONCENTRATION] = [
 		"Attention Concentrate",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Active ^000000",
@@ -869,8 +824,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 + 12% AGI/DEX ^000000",
 	].join("\n");
 
-	exports[SKID.AC_DOUBLE] = [
-
+	SkillDescription[SKID.AC_DOUBLE] = [
 		"Double Strafing",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -893,8 +847,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 380% Damage ^000000",
 	].join("\n");
 
-	exports[SKID.AC_SHOWER] = [
-
+	SkillDescription[SKID.AC_SHOWER] = [
 		"Arrow Shower",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -917,8 +870,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 125% Damage ^000000",
 	].join("\n");
 
-	exports[SKID.TF_DOUBLE] = [
-
+	SkillDescription[SKID.TF_DOUBLE] = [
 		"Double Attack",
 		"Max Level:^777777 10 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -936,8 +888,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 50% Chance, +10 HIT, +21% Katar DMG ^000000",
 	].join("\n");
 
-	exports[SKID.TF_MISS] = [
-
+	SkillDescription[SKID.TF_MISS] = [
 		"Increase Dodge",
 		"Max Level:^777777 10 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -955,8 +906,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 Flee Rate +30 (2nd class Flee Rate +40) ^000000",
 	].join("\n");
 
-	exports[SKID.TF_STEAL] = [
-
+	SkillDescription[SKID.TF_STEAL] = [
 		"Steal",
 		"Max Level:^777777 10 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -982,8 +932,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 Success Chance 64% ^000000",
 	].join("\n");
 
-	exports[SKID.TF_HIDING] = [
-
+	SkillDescription[SKID.TF_HIDING] = [
 		"Hiding",
 		"Max Level:^777777 10 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -1008,8 +957,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 300 Seconds, SP 1 / 14sec ^000000",
 	].join("\n");
 
-	exports[SKID.TF_POISON] = [
-
+	SkillDescription[SKID.TF_POISON] = [
 		"Envenom",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -1034,8 +982,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 +150 ATK ^000000",
 	].join("\n");
 
-	exports[SKID.TF_DETOXIFY] = [
-
+	SkillDescription[SKID.TF_DETOXIFY] = [
 		"Detoxify",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -1048,8 +995,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Cures poison status on target. ^000000",
 	].join("\n");
 
-	exports[SKID.ALL_RESURRECTION] = [
-
+	SkillDescription[SKID.ALL_RESURRECTION] = [
 		"Resurrection",
 		"Max Level:^777777 4 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -1068,8 +1014,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 4]^777777 Revive at 80% HP ^000000",
 	].join("\n");
 
-	exports[SKID.KN_SPEARMASTERY] = [
-
+	SkillDescription[SKID.KN_SPEARMASTERY] = [
 		"Spear Mastery",
 		"Max Level:^777777 10 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -1086,8 +1031,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 ATK +40/+50 ^000000",
 	].join("\n");
 
-	exports[SKID.KN_PIERCE] = [
-
+	SkillDescription[SKID.KN_PIERCE] = [
 		"Pierce",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive",
@@ -1113,8 +1057,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 200% ATK, HIT +50 ^000000",
 	].join("\n");
 
-	exports[SKID.KN_BRANDISHSPEAR] = [
-
+	SkillDescription[SKID.KN_BRANDISHSPEAR] = [
 		"Brandish Spear",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -1150,8 +1093,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 300% ATK 4 cell Splash range ^000000",
 	].join("\n");
 
-	exports[SKID.KN_SPEARSTAB] = [
-
+	SkillDescription[SKID.KN_SPEARSTAB] = [
 		"Spear Stab",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -1175,8 +1117,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 300% ATK ^000000",
 	].join("\n");
 
-	exports[SKID.KN_SPEARBOOMERANG] = [
-
+	SkillDescription[SKID.KN_SPEARBOOMERANG] = [
 		"Spear Boomerang",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -1194,8 +1135,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 350% ATK, 11 cell Range ^000000",
 	].join("\n");
 
-	exports[SKID.KN_TWOHANDQUICKEN] = [
-
+	SkillDescription[SKID.KN_TWOHANDQUICKEN] = [
 		"Two-Hand Quicken",
 		"Max Level:^777777 10 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -1217,8 +1157,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 Lasts 300Secs ^000000",
 	].join("\n");
 
-	exports[SKID.KN_AUTOCOUNTER] = [
-
+	SkillDescription[SKID.KN_AUTOCOUNTER] = [
 		"Auto Counter",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -1236,8 +1175,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 2.0 Seconds ^000000",
 	].join("\n");
 
-	exports[SKID.KN_BOWLINGBASH] = [
-
+	SkillDescription[SKID.KN_BOWLINGBASH] = [
 		"Bowling Bash",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -1260,8 +1198,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 500% Damage, Knock back 5 cell ^000000",
 	].join("\n");
 
-	exports[SKID.KN_RIDING] = [
-
+	SkillDescription[SKID.KN_RIDING] = [
 		"Riding",
 		"Max Level:^777777 1 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -1270,8 +1207,7 @@ define(["./SkillId"], function( SKID )
 		"The Peco Peco must be hired from Peco Peco Breeder in Prontera (55/350) at a cost of 2500z. If the character dismounts (by clicking on the \"OFF\" button in the equipment window), then the Peco Peco disappears and a new one must be hired. ^000000",
 	].join("\n");
 
-	exports[SKID.KN_CAVALIERMASTERY] = [
-
+	SkillDescription[SKID.KN_CAVALIERMASTERY] = [
 		"Cavalry Mastery",
 		"Max Level:^777777 5 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -1283,8 +1219,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Normal ASPD ^000000",
 	].join("\n");
 
-	exports[SKID.PR_MACEMASTERY] = [
-
+	SkillDescription[SKID.PR_MACEMASTERY] = [
 		"Mace Mastery",
 		"Max Level:^777777 10 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -1301,8 +1236,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 ATK +30 ^000000",
 	].join("\n");
 
-	exports[SKID.PR_IMPOSITIO] = [
-
+	SkillDescription[SKID.PR_IMPOSITIO] = [
 		"Impositio Manus",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -1322,8 +1256,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 ATK +25 ^000000",
 	].join("\n");
 
-	exports[SKID.PR_SUFFRAGIUM] = [
-
+	SkillDescription[SKID.PR_SUFFRAGIUM] = [
 		"Suffragium",
 		"Max Level:^777777 3 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -1340,8 +1273,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 3] -45% Cast Time, 10 secs ^000000",
 	].join("\n");
 
-	exports[SKID.PR_ASPERSIO] = [
-
+	SkillDescription[SKID.PR_ASPERSIO] = [
 		"Aspersio",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -1362,8 +1294,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Lasts 180Secs ^000000",
 	].join("\n");
 
-	exports[SKID.PR_BENEDICTIO] = [
-
+	SkillDescription[SKID.PR_BENEDICTIO] = [
 		"Benedictio Sanctissimi Sacramenti",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -1384,8 +1315,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 200 Seconds ^000000",
 	].join("\n");
 
-	exports[SKID.PR_SANCTUARY] = [
-
+	SkillDescription[SKID.PR_SANCTUARY] = [
 		"Sanctuary",
 		"Max Level:^777777 10 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -1418,8 +1348,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 777 HP, 388 Damage ^000000",
 	].join("\n");
 
-	exports[SKID.PR_SLOWPOISON] = [
-
+	SkillDescription[SKID.PR_SLOWPOISON] = [
 		"Slow Poison",
 		"Max Level:^777777 4 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -1436,8 +1365,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 4]^777777 Lasts 40 Seconds ^000000",
 	].join("\n");
 
-	exports[SKID.PR_STRECOVERY] = [
-
+	SkillDescription[SKID.PR_STRECOVERY] = [
 		"Recovery",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -1450,8 +1378,7 @@ define(["./SkillId"], function( SKID )
 		"Recovery may inflict Blind effect on Undead property monsters. One Blind effect cannot overlap another. ^000000",
 	].join("\n");
 
-	exports[SKID.PR_KYRIE] = [
-
+	SkillDescription[SKID.PR_KYRIE] = [
 		"Kyrie Eleison",
 		"Max Level:^777777 10 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -1476,8 +1403,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 30% of Maximum HP, 10 attacks ^000000",
 	].join("\n");
 
-	exports[SKID.PR_MAGNIFICAT] = [
-
+	SkillDescription[SKID.PR_MAGNIFICAT] = [
 		"Magnificat",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -1495,8 +1421,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Lasts 90 Seconds ^000000",
 	].join("\n");
 
-	exports[SKID.PR_GLORIA] = [
-
+	SkillDescription[SKID.PR_GLORIA] = [
 		"Gloria",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -1514,8 +1439,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Lasts 30 Seconds ^000000",
 	].join("\n");
 
-	exports[SKID.PR_LEXDIVINA] = [
-
+	SkillDescription[SKID.PR_LEXDIVINA] = [
 		"Lex Divina",
 		"Max Level:^777777 10 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -1539,8 +1463,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 Lasts 60 Seconds ^000000",
 	].join("\n");
 
-	exports[SKID.PR_TURNUNDEAD] = [
-
+	SkillDescription[SKID.PR_TURNUNDEAD] = [
 		"Turn Undead",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -1554,8 +1477,7 @@ define(["./SkillId"], function( SKID )
 		"On failure, an Undead property monster will take Holy property damage equal to [BaseLV + INT + 10*SkillLV]. Does not work against Boss monsters. ^000000",
 	].join("\n");
 
-	exports[SKID.PR_LEXAETERNA] = [
-
+	SkillDescription[SKID.PR_LEXAETERNA] = [
 		"Lex Aeterna",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -1568,8 +1490,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 The target will take double damage from the next damage source. Healing, misses and status effects do not trigger the effect. Cannot be cast on a Frozen or Stone Cursed target. ^000000",
 	].join("\n");
 
-	exports[SKID.PR_MAGNUS] = [
-
+	SkillDescription[SKID.PR_MAGNUS] = [
 		"Magnus Exorcismus",
 		"Max Level:^777777 10 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -1596,8 +1517,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 10 Hits ^000000",
 	].join("\n");
 
-	exports[SKID.WZ_FIREPILLAR] = [
-
+	SkillDescription[SKID.WZ_FIREPILLAR] = [
 		"Fire Pillar",
 		"Max Level:^777777 10 ^000000",
 		"Type:^33cc00 Active, Trap ^000000",
@@ -1623,8 +1543,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 12 Hits /^0000ff Blue Gemstone ^000000",
 	].join("\n");
 
-	exports[SKID.WZ_SIGHTRASHER] = [
-
+	SkillDescription[SKID.WZ_SIGHTRASHER] = [
 		"Sightrasher",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive, Combo ^000000",
@@ -1648,8 +1567,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 300% MATK ^000000",
 	].join("\n");
 
-	exports[SKID.WZ_FIREIVY] = [
-
+	SkillDescription[SKID.WZ_FIREIVY] = [
 		"Fire Ivy",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive^bb0000(Fire) ^000000",
@@ -1659,8 +1577,7 @@ define(["./SkillId"], function( SKID )
 		"^777777Summon Ivy Vines of Flames. ^000000",
 	].join("\n");
 
-	exports[SKID.WZ_METEOR] = [
-
+	SkillDescription[SKID.WZ_METEOR] = [
 		"Meteor Storm",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -1683,8 +1600,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 7 Meteors 5 Hit Each 30% StunChance, SP 64 ^000000",
 	].join("\n");
 
-	exports[SKID.WZ_JUPITEL] = [
-
+	SkillDescription[SKID.WZ_JUPITEL] = [
 		"Jupitel Thunder",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -1707,8 +1623,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 12 Hits / 7.0 sec Cast Time ^000000",
 	].join("\n");
 
-	exports[SKID.WZ_VERMILION] = [
-
+	SkillDescription[SKID.WZ_VERMILION] = [
 		"Lord of Vermillion",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -1731,8 +1646,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 40% BlindChance, 28% MATK/Bolt ^000000",
 	].join("\n");
 
-	exports[SKID.WZ_WATERBALL] = [
-
+	SkillDescription[SKID.WZ_WATERBALL] = [
 		"Water Ball",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -1773,8 +1687,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 24 Waterball / 5x5 Grid, 250% MATK ^000000",
 	].join("\n");
 
-	exports[SKID.WZ_ICEWALL] = [
-
+	SkillDescription[SKID.WZ_ICEWALL] = [
 		"Ice Wall",
 		"Max Level:^777777 10 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -1799,8 +1712,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 2200 HP / 44 sec ^000000",
 	].join("\n");
 
-	exports[SKID.WZ_FROSTNOVA] = [
-
+	SkillDescription[SKID.WZ_FROSTNOVA] = [
 		"Frost Nova",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -1824,8 +1736,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 4 Seconds Cast Time ^000000",
 	].join("\n");
 
-	exports[SKID.WZ_STORMGUST] = [
-
+	SkillDescription[SKID.WZ_STORMGUST] = [
 		"Storm Gust",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -1850,8 +1761,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 500% MATK / 15 sec Cast Time ^000000",
 	].join("\n");
 
-	exports[SKID.WZ_EARTHSPIKE] = [
-
+	SkillDescription[SKID.WZ_EARTHSPIKE] = [
 		"Earth Spike",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive, Level Selectable ^000000",
@@ -1864,8 +1774,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Hits the targeted enemy with 1 Earth Element Spike per SkillLV for 100%*MATK damage each. Technically this is a normal Bolt-type spell using the Earth element. ^000000",
 	].join("\n");
 
-	exports[SKID.WZ_HEAVENDRIVE] = [
-
+	SkillDescription[SKID.WZ_HEAVENDRIVE] = [
 		"Heaven's Drive",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -1879,8 +1788,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Hits every enemy in a 5x5 cell area around the target cell with 1 Spike per SkillLV for 1*MATK damage each. ^000000",
 	].join("\n");
 
-	exports[SKID.WZ_QUAGMIRE] = [
-
+	SkillDescription[SKID.WZ_QUAGMIRE] = [
 		"Quagmire",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -1893,8 +1801,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Decreases the AGI and DEX of the Enemies within the area of effect by 10% per SkillLV. In PvP maps is only 5% per SkillLV. Does not work against Boss monsters. ^000000",
 	].join("\n");
 
-	exports[SKID.WZ_ESTIMATION] = [
-
+	SkillDescription[SKID.WZ_ESTIMATION] = [
 		"Monster Property",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -1907,8 +1814,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Brings up a window with information about the targeted monster such as HP, element, level, etc at the time the spell is cast. Party members also see this window. ^000000",
 	].join("\n");
 
-	exports[SKID.BS_IRON] = [
-
+	SkillDescription[SKID.BS_IRON] = [
 		"Iron Tempering",
 		"Max Level:^777777 5 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -1918,8 +1824,7 @@ define(["./SkillId"], function( SKID )
 		"Success chance in %: Skill Value + JobLV * 0.2 + DEX * 0.1 + LUK * 0.1 ^000000",
 	].join("\n");
 
-	exports[SKID.BS_STEEL] = [
-
+	SkillDescription[SKID.BS_STEEL] = [
 		"Steel Tempering",
 		"Max Level:^777777 5 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -1929,8 +1834,7 @@ define(["./SkillId"], function( SKID )
 		"Success chance in %: Skill Value + JobLV * 0.2 + DEX * 0.1 + LUK * 0.1 ^000000",
 	].join("\n");
 
-	exports[SKID.BS_ENCHANTEDSTONE] = [
-
+	SkillDescription[SKID.BS_ENCHANTEDSTONE] = [
 		"Enchanted Stone Craft",
 		"Max Level:^777777 5 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -1940,8 +1844,7 @@ define(["./SkillId"], function( SKID )
 		"Success chance in %: Skill Value + JobLV * 0.2 + DEX * 0.1 + LUK * 0.1 ^000000",
 	].join("\n");
 
-	exports[SKID.BS_ORIDEOCON] = [
-
+	SkillDescription[SKID.BS_ORIDEOCON] = [
 		"Research Oridecon",
 		"Max Level:^777777 5 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -1949,8 +1852,7 @@ define(["./SkillId"], function( SKID )
 		"Increasing this skill`s level raises the success rate of forging Level 3 Weapons by (1%+SkillLV). ^000000",
 	].join("\n");
 
-	exports[SKID.BS_DAGGER] = [
-
+	SkillDescription[SKID.BS_DAGGER] = [
 		"Smith Dagger",
 		"Max Level:^777777 3 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -2000,8 +1902,7 @@ define(["./SkillId"], function( SKID )
 		"Elemental Stone -20% ^000000",
 	].join("\n");
 
-	exports[SKID.BS_SWORD] = [
-
+	SkillDescription[SKID.BS_SWORD] = [
 		"Smith Sword",
 		"Max Level:^777777 3 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -2057,8 +1958,7 @@ define(["./SkillId"], function( SKID )
 		"Elemental Stone -20% ^000000",
 	].join("\n");
 
-	exports[SKID.BS_TWOHANDSWORD] = [
-
+	SkillDescription[SKID.BS_TWOHANDSWORD] = [
 		"Smith Two-Handed Sword",
 		"Max Level:^777777 3 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -2104,8 +2004,7 @@ define(["./SkillId"], function( SKID )
 		"Elemental Stone -20% ^000000",
 	].join("\n");
 
-	exports[SKID.BS_AXE] = [
-
+	SkillDescription[SKID.BS_AXE] = [
 		"Smith Axe",
 		"Max Level:^777777 3 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -2146,8 +2045,7 @@ define(["./SkillId"], function( SKID )
 		"Elemental Stone -20% ^000000",
 	].join("\n");
 
-	exports[SKID.BS_MACE] = [
-
+	SkillDescription[SKID.BS_MACE] = [
 		"Smith Mace",
 		"Max Level:^777777 3 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -2196,8 +2094,7 @@ define(["./SkillId"], function( SKID )
 		"Elemental Stone -20% ^000000",
 	].join("\n");
 
-	exports[SKID.BS_KNUCKLE] = [
-
+	SkillDescription[SKID.BS_KNUCKLE] = [
 		"Smith Brass Knuckle",
 		"Max Level:^777777 3 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -2241,8 +2138,7 @@ define(["./SkillId"], function( SKID )
 		"Elemental Stone -20% ^000000",
 	].join("\n");
 
-	exports[SKID.BS_SPEAR] = [
-
+	SkillDescription[SKID.BS_SPEAR] = [
 		"Smith Spear",
 		"Max Level:^777777 3 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -2296,24 +2192,21 @@ define(["./SkillId"], function( SKID )
 		"Elemental Stone -20% ^000000",
 	].join("\n");
 
-	exports[SKID.BS_HILTBINDING] = [
-
+	SkillDescription[SKID.BS_HILTBINDING] = [
 		"Hilt Binding",
 		"Max Level:^777777 1 ^000000",
 		"Type:^000099 Passive ^000000",
 		"Effect:^777777 Gives a +1 bonus to STR and +4 ATK. Increases Adrenaline Rush, Over Thrust and Weapon Perfection duration by 10%. DOES NO LONGER prevent you from dropping the equipped weapon upon death. The chance of items dropping on death is only implemented in Nightmare mode PvP currently. ^000000",
 	].join("\n");
 
-	exports[SKID.BS_FINDINGORE] = [
-
+	SkillDescription[SKID.BS_FINDINGORE] = [
 		"Finding Ore",
 		"Max Level:^777777 1 ^000000",
 		"Type:^000099 Passive ^000000",
 		"Effect:^777777 Adds a pretty low chance of monsters dropping any Ore or Refining Item. ^000000",
 	].join("\n");
 
-	exports[SKID.BS_WEAPONRESEARCH] = [
-
+	SkillDescription[SKID.BS_WEAPONRESEARCH] = [
 		"Weaponry Research",
 		"Max Level:^777777 10 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -2331,8 +2224,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 + 20 ATK/HIT, +10% Forging ^000000",
 	].join("\n");
 
-	exports[SKID.BS_REPAIRWEAPON] = [
-
+	SkillDescription[SKID.BS_REPAIRWEAPON] = [
 		"Repair Weapon",
 		"Max Level:^777777 1 ^000000",
 		"Type:^000099 Active ^000000",
@@ -2351,8 +2243,7 @@ define(["./SkillId"], function( SKID )
 		"Armors: Steel ^000000",
 	].join("\n");
 
-	exports[SKID.BS_SKINTEMPER] = [
-
+	SkillDescription[SKID.BS_SKINTEMPER] = [
 		"Skin Tempering",
 		"Max Level:^777777 5 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -2364,8 +2255,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 DEF +5% FireDEF +20% ^000000",
 	].join("\n");
 
-	exports[SKID.BS_HAMMERFALL] = [
-
+	SkillDescription[SKID.BS_HAMMERFALL] = [
 		"Hammer Fall",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -2382,8 +2272,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 70% Stun Chance ^000000",
 	].join("\n");
 
-	exports[SKID.BS_ADRENALINE] = [
-
+	SkillDescription[SKID.BS_ADRENALINE] = [
 		"Adrenaline Rush",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -2400,8 +2289,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 150 Seconds Effect ^000000",
 	].join("\n");
 
-	exports[SKID.BS_WEAPONPERFECT] = [
-
+	SkillDescription[SKID.BS_WEAPONPERFECT] = [
 		"Weapon Perfection",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -2418,8 +2306,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 50 Sec Effect ^000000",
 	].join("\n");
 
-	exports[SKID.BS_OVERTHRUST] = [
-
+	SkillDescription[SKID.BS_OVERTHRUST] = [
 		"Over Thrust",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -2436,8 +2323,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 ATK +25%, Break Chance +0.1% ^000000",
 	].join("\n");
 
-	exports[SKID.BS_MAXIMIZE] = [
-
+	SkillDescription[SKID.BS_MAXIMIZE] = [
 		"Maximize Power",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -2454,8 +2340,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Drains 1 SP every 5 Seconds ^000000",
 	].join("\n");
 
-	exports[SKID.HT_SKIDTRAP] = [
-
+	SkillDescription[SKID.HT_SKIDTRAP] = [
 		"Skid Trap",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active, Trap ^000000",
@@ -2476,8 +2361,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Sliding Range 10 cells, Setting Time 60 secs ^000000",
 	].join("\n");
 
-	exports[SKID.HT_LANDMINE] = [
-
+	SkillDescription[SKID.HT_LANDMINE] = [
 		"Land Mine",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active, Trap ^000000",
@@ -2499,8 +2383,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 ATK 150%, Setting Time 40secs ^000000",
 	].join("\n");
 
-	exports[SKID.HT_ANKLESNARE] = [
-
+	SkillDescription[SKID.HT_ANKLESNARE] = [
 		"Ankle Snare",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active, Trap ^000000",
@@ -2522,8 +2405,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Setting Time 50secs ^000000",
 	].join("\n");
 
-	exports[SKID.HT_SHOCKWAVE] = [
-
+	SkillDescription[SKID.HT_SHOCKWAVE] = [
 		"Shockwave Trap",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active, Trap ^000000",
@@ -2544,8 +2426,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 SP 80% Consume, Setting Time 40secs ^000000",
 	].join("\n");
 
-	exports[SKID.HT_SANDMAN] = [
-
+	SkillDescription[SKID.HT_SANDMAN] = [
 		"Sandman",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active, Trap ^000000",
@@ -2566,8 +2447,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Setting Time 30sec 90% Sleep Chance ^000000",
 	].join("\n");
 
-	exports[SKID.HT_FLASHER] = [
-
+	SkillDescription[SKID.HT_FLASHER] = [
 		"Flasher",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active, Trap ^000000",
@@ -2589,8 +2469,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Setting Time30secs ^000000",
 	].join("\n");
 
-	exports[SKID.HT_FREEZINGTRAP] = [
-
+	SkillDescription[SKID.HT_FREEZINGTRAP] = [
 		"Freezing Trap",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active, Trap ^000000",
@@ -2612,8 +2491,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Setting Time 30secs ^000000",
 	].join("\n");
 
-	exports[SKID.HT_BLASTMINE] = [
-
+	SkillDescription[SKID.HT_BLASTMINE] = [
 		"Blast Mine",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active, Trap ^000000",
@@ -2634,8 +2512,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Explode after 5secs ^000000",
 	].join("\n");
 
-	exports[SKID.HT_CLAYMORETRAP] = [
-
+	SkillDescription[SKID.HT_CLAYMORETRAP] = [
 		"Claymore Trap",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active, Trap ^000000",
@@ -2657,8 +2534,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Setting Time100secs ^000000",
 	].join("\n");
 
-	exports[SKID.HT_REMOVETRAP] = [
-
+	SkillDescription[SKID.HT_REMOVETRAP] = [
 		"Remove Trap",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -2671,8 +2547,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Turns one set trap back into a Trap item. You only get one trap even if you needed two for setting it. Can be used with an Ankle Snare that has already caught a target, but in this case you will not get a Trap item. Only works with your own traps. ^000000",
 	].join("\n");
 
-	exports[SKID.HT_TALKIEBOX] = [
-
+	SkillDescription[SKID.HT_TALKIEBOX] = [
 		"Talkie Box",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active, Trap ^000000",
@@ -2686,8 +2561,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Repeats a message input at casting time in blue text (does not appear in chat window). ^000000",
 	].join("\n");
 
-	exports[SKID.HT_BEASTBANE] = [
-
+	SkillDescription[SKID.HT_BEASTBANE] = [
 		"Beast Bane",
 		"Max Level:^777777 10 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -2704,8 +2578,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 ATK +40 ^000000",
 	].join("\n");
 
-	exports[SKID.HT_FALCON] = [
-
+	SkillDescription[SKID.HT_FALCON] = [
 		"Falconry Mastery",
 		"Max Level:^777777 1 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -2713,8 +2586,7 @@ define(["./SkillId"], function( SKID )
 		"Cost to hire is around 800z to normal Falcons, but may change for Scarf Falcons and Baby Falcons. If a Falcon is released, a new one must be hired. ^000000",
 	].join("\n");
 
-	exports[SKID.HT_STEELCROW] = [
-
+	SkillDescription[SKID.HT_STEELCROW] = [
 		"Steel Crow",
 		"Max Level:^777777 10 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -2731,8 +2603,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 ATK +60 ^000000",
 	].join("\n");
 
-	exports[SKID.HT_BLITZBEAT] = [
-
+	SkillDescription[SKID.HT_BLITZBEAT] = [
 		"Blitz Beat",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -2752,8 +2623,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 5 Falcon Hit ^000000",
 	].join("\n");
 
-	exports[SKID.HT_DETECTING] = [
-
+	SkillDescription[SKID.HT_DETECTING] = [
 		"Detecting",
 		"Max Level:^777777 4 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -2770,8 +2640,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 4]^777777 9 cell Range ^000000",
 	].join("\n");
 
-	exports[SKID.HT_SPRINGTRAP] = [
-
+	SkillDescription[SKID.HT_SPRINGTRAP] = [
 		"Spring Trap",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -2789,8 +2658,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 8 cell Range ^000000",
 	].join("\n");
 
-	exports[SKID.AS_RIGHT] = [
-
+	SkillDescription[SKID.AS_RIGHT] = [
 		"Right-Hand Mastery",
 		"Max Level:^777777 5 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -2802,8 +2670,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 ATK 100% ^000000",
 	].join("\n");
 
-	exports[SKID.AS_LEFT] = [
-
+	SkillDescription[SKID.AS_LEFT] = [
 		"Left-Hand Mastery",
 		"Max Level:^777777 5 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -2815,8 +2682,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 ATK 80% ^000000",
 	].join("\n");
 
-	exports[SKID.AS_KATAR] = [
-
+	SkillDescription[SKID.AS_KATAR] = [
 		"Katar Mastery",
 		"Max Level:^777777 10 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -2833,8 +2699,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 ATK +30 ^000000",
 	].join("\n");
 
-	exports[SKID.AS_CLOAKING] = [
-
+	SkillDescription[SKID.AS_CLOAKING] = [
 		"Cloaking",
 		"Max Level:^777777 10 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -2862,8 +2727,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 125% / 100% ^000000",
 	].join("\n");
 
-	exports[SKID.AS_SONICBLOW] = [
-
+	SkillDescription[SKID.AS_SONICBLOW] = [
 		"Sonic Blow",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -2887,8 +2751,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 800% ATK 30% Stun ^000000",
 	].join("\n");
 
-	exports[SKID.AS_GRIMTOOTH] = [
-
+	SkillDescription[SKID.AS_GRIMTOOTH] = [
 		"Grimtooth",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -2906,8 +2769,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 6 cells, 200% ATK ^000000",
 	].join("\n");
 
-	exports[SKID.AS_ENCHANTPOISON] = [
-
+	SkillDescription[SKID.AS_ENCHANTPOISON] = [
 		"Enchant Poison",
 		"Max Level:^777777 10 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -2929,8 +2791,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 165 Sec 7.5% Chance ^000000",
 	].join("\n");
 
-	exports[SKID.AS_POISONREACT] = [
-
+	SkillDescription[SKID.AS_POISONREACT] = [
 		"Poison React",
 		"Max Level:^777777 10 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -2953,8 +2814,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 6 Envenom Counters, +300% bonus damage on boosted counter, 60 Sec ^000000",
 	].join("\n");
 
-	exports[SKID.AS_VENOMDUST] = [
-
+	SkillDescription[SKID.AS_VENOMDUST] = [
 		"Venom Dust",
 		"Max Level:^777777 10 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -2978,8 +2838,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 50 Sec ^000000",
 	].join("\n");
 
-	exports[SKID.AS_SPLASHER] = [
-
+	SkillDescription[SKID.AS_SPLASHER] = [
 		"Venom Splasher",
 		"Max Level:^777777 10 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -3006,8 +2865,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 1000% ATK + Bonus, timer starts at 9.5 ^000000",
 	].join("\n");
 
-	exports[SKID.NV_FIRSTAID] = [
-
+	SkillDescription[SKID.NV_FIRSTAID] = [
 		"First Aid",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -3019,8 +2877,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Heal yourself for 5 HP. Not a crazy powerful skill, but mages seem to like it for saving money on healing items. ^000000",
 	].join("\n");
 
-	exports[SKID.NV_TRICKDEAD] = [
-
+	SkillDescription[SKID.NV_TRICKDEAD] = [
 		"Trick Dead",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -3031,16 +2888,14 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 You lay on the ground like you were dead and aggressive monsters won't target you. You can't recover HP or SP while pretending to be dead. You can Trick Dead as long as you want. Casting Trick Dead a second time cancels it, letting you move again. Once you choose another Job, you lose the ability to use this skill. ^000000",
 	].join("\n");
 
-	exports[SKID.SM_MOVINGRECOVERY] = [
-
+	SkillDescription[SKID.SM_MOVINGRECOVERY] = [
 		"Moving HP Recovery",
 		"Max Level:^777777 1 ^000000",
 		"Type:^000099 Passive ^000000",
 		"Effect:^777777 Character regenerates HP while walking. Rate is 50% of standing recovery, and not affected by Increase Recuperative Power skill. ^000000",
 	].join("\n");
 
-	exports[SKID.SM_FATALBLOW] = [
-
+	SkillDescription[SKID.SM_FATALBLOW] = [
 		"Fatal Blow",
 		"Max Level:^777777 1 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -3052,8 +2907,7 @@ define(["./SkillId"], function( SKID )
 		"[Bash LV 10]^777777 25% Stun Chance ^000000",
 	].join("\n");
 
-	exports[SKID.SM_AUTOBERSERK] = [
-
+	SkillDescription[SKID.SM_AUTOBERSERK] = [
 		"Auto Berserk",
 		"Max Level:^777777 1 ^000000",
 		"Type:^000099 Passive with activation ^000000",
@@ -3065,8 +2919,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 When your HP goes below 25%, you gain the effect of Provoke L10 on yourself. That means +32% ATK and -60% VIT DEF. The effect lasts until the character returns to more than 25% HP. The skill can be set to activate or not. The skill will even function after it has drained all your SP. ^000000",
 	].join("\n");
 
-	exports[SKID.AC_MAKINGARROW] = [
-
+	SkillDescription[SKID.AC_MAKINGARROW] = [
 		"Making Arrow",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -3213,8 +3066,7 @@ define(["./SkillId"], function( SKID )
 		"- Zenorc's Fang = 5 Rusty Arrows ^000000",
 	].join("\n");
 
-	exports[SKID.AC_CHARGEARROW] = [
-
+	SkillDescription[SKID.AC_CHARGEARROW] = [
 		"Charge Arrow",
 		"Max Level:^777777 1 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -3227,8 +3079,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Ranged attack at 150% ATK. The target is pushed back 6 cells. Only 1 arrow is consumed. ^000000",
 	].join("\n");
 
-	exports[SKID.TF_SPRINKLESAND] = [
-
+	SkillDescription[SKID.TF_SPRINKLESAND] = [
 		"Sprinkle Sand",
 		"Type:^777777 Offensive ^000000",
 		"SP Cost:^777777 9 ^000000",
@@ -3241,8 +3092,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 An attack with 130% normal ATK and with a 20% chance to cause blind effect. Although it has no Cast Time or Cool Down it can't be spamed. ^000000",
 	].join("\n");
 
-	exports[SKID.TF_BACKSLIDING] = [
-
+	SkillDescription[SKID.TF_BACKSLIDING] = [
 		"Back Sliding",
 		"Type:^33cc00 Active ^000000",
 		"SP Cost:^777777 7 ^000000",
@@ -3253,8 +3103,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Moves you backwards 5 cells (depends on the direction you are facing). ^000000",
 	].join("\n");
 
-	exports[SKID.TF_PICKSTONE] = [
-
+	SkillDescription[SKID.TF_PICKSTONE] = [
 		"Pick Stone",
 		"Type:^33cc00 Active ^000000",
 		"SP Cost:^777777 2 ^000000",
@@ -3263,8 +3112,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Adds one Stone item to your inventory. Will not work if you are overweight (more than 50% of total weight capacity). ^000000",
 	].join("\n");
 
-	exports[SKID.TF_THROWSTONE] = [
-
+	SkillDescription[SKID.TF_THROWSTONE] = [
 		"Throw Stone",
 		"Type:^777777 Offensive ^000000",
 		"SP Cost:^777777 2 ^000000",
@@ -3278,8 +3126,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 An attack that always does 50 points of damage (but does not ignore damage reduction cards) and has a 3% chance of causing the stun effect on the target. Consumes one stone per use. Useful for luring monsters link monsters away from a pack and other such sneaky thief-like tricks. ^000000",
 	].join("\n");
 
-	exports[SKID.MC_CARTREVOLUTION] = [
-
+	SkillDescription[SKID.MC_CARTREVOLUTION] = [
 		"Cart Revolution",
 		"Type:^777777 Offensive ^000000",
 		"SP Cost:^777777 12 ^000000",
@@ -3292,8 +3139,7 @@ define(["./SkillId"], function( SKID )
 		"Putting items in your cart increases the damage by up to 100% more (1% per 80 weight as it has 8000 weight max). So the total you could do is 250% damage. ^000000",
 	].join("\n");
 
-	exports[SKID.MC_CHANGECART] = [
-
+	SkillDescription[SKID.MC_CHANGECART] = [
 		"Change Cart",
 		"Type:^33cc00 Active ^000000",
 		"SP Cost:^777777 40 ^000000",
@@ -3303,8 +3149,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Lets you change the appearance of your cart. A \"for fun\" skill, but because the appearances you can pick is restricted by the characters base level, you can tell a high level merchant or blacksmith just by looking at their cart.",
 	].join("\n");
 
-	exports[SKID.MC_LOUD] = [
-
+	SkillDescription[SKID.MC_LOUD] = [
 		"Loud Exclamation",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -3316,8 +3161,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Adds +4 STR. ^000000",
 	].join("\n");
 
-	exports[SKID.AL_HOLYLIGHT] = [
-
+	SkillDescription[SKID.AL_HOLYLIGHT] = [
 		"Holy Light",
 		"Max Level:^777777 1 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -3329,8 +3173,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Does a single Holy element hit for 125% of your MATK. ^000000",
 	].join("\n");
 
-	exports[SKID.MG_ENERGYCOAT] = [
-
+	SkillDescription[SKID.MG_ENERGYCOAT] = [
 		"Energy Coat",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -3348,8 +3191,7 @@ define(["./SkillId"], function( SKID )
 		"81-100, 30, 3 ^000000",
 	].join("\n");
 
-	exports[SKID.RG_SNATCHER] = [
-
+	SkillDescription[SKID.RG_SNATCHER] = [
 		"Snatcher",
 		"Type:^000099 Passive ^000000",
 		"Target:^777777 Enemy ^000000",
@@ -3366,8 +3208,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 20% Chance of Auto Steal ^000000",
 	].join("\n");
 
-	exports[SKID.RG_STEALCOIN] = [
-
+	SkillDescription[SKID.RG_STEALCOIN] = [
 		"Steal Coin",
 		"Max Level:^777777 10 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -3380,8 +3221,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Steals Zeny from a monster, affected by DEX, LUK, and SkillLV, amount stolen is based on monsters level. Can only be used to steal Zeny once, however it is possible to steal Zeny from monsters that the user stole items before. (1*SkillLV)% chance to steal. ^000000",
 	].join("\n");
 
-	exports[SKID.RG_BACKSTAP] = [
-
+	SkillDescription[SKID.RG_BACKSTAP] = [
 		"Back Stab",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -3404,8 +3244,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 700% ATK ^000000",
 	].join("\n");
 
-	exports[SKID.RG_TUNNELDRIVE] = [
-
+	SkillDescription[SKID.RG_TUNNELDRIVE] = [
 		"Tunnel Drive",
 		"Max Level:^777777 5 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -3419,8 +3258,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 50% ^000000",
 	].join("\n");
 
-	exports[SKID.RG_RAID] = [
-
+	SkillDescription[SKID.RG_RAID] = [
 		"Raid",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -3438,8 +3276,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 300% Attack, 25% Chance ^000000",
 	].join("\n");
 
-	exports[SKID.RG_STRIPWEAPON] = [
-
+	SkillDescription[SKID.RG_STRIPWEAPON] = [
 		"Strip Weapon",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -3458,8 +3295,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 15% Chance ^000000",
 	].join("\n");
 
-	exports[SKID.RG_STRIPSHIELD] = [
-
+	SkillDescription[SKID.RG_STRIPSHIELD] = [
 		"Strip Shield",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -3478,8 +3314,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 15% Chance ^000000",
 	].join("\n");
 
-	exports[SKID.RG_STRIPARMOR] = [
-
+	SkillDescription[SKID.RG_STRIPARMOR] = [
 		"Strip Armor",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -3498,8 +3333,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 15% Chance ^000000",
 	].join("\n");
 
-	exports[SKID.RG_STRIPHELM] = [
-
+	SkillDescription[SKID.RG_STRIPHELM] = [
 		"Strip Helm",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -3518,8 +3352,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 15% Chance ^000000",
 	].join("\n");
 
-	exports[SKID.RG_INTIMIDATE] = [
-
+	SkillDescription[SKID.RG_INTIMIDATE] = [
 		"Intimidate",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -3537,8 +3370,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 250% ATK ^000000",
 	].join("\n");
 
-	exports[SKID.RG_GRAFFITI] = [
-
+	SkillDescription[SKID.RG_GRAFFITI] = [
 		"Graffiti",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -3552,8 +3384,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Creates a user defined text message on the ground. ^000000",
 	].join("\n");
 
-	exports[SKID.RG_FLAGGRAFFITI] = [
-
+	SkillDescription[SKID.RG_FLAGGRAFFITI] = [
 		"Flag Graffiti",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -3573,8 +3404,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 15 Guild Icons ^000000",
 	].join("\n");
 
-	exports[SKID.RG_CLEANER] = [
-
+	SkillDescription[SKID.RG_CLEANER] = [
 		"Cleaner",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -3589,16 +3419,14 @@ define(["./SkillId"], function( SKID )
 		"^ee0000(Not implemented by Gravity yet). ^000000",
 	].join("\n");
 
-	exports[SKID.RG_GANGSTER] = [
-
+	SkillDescription[SKID.RG_GANGSTER] = [
 		"Gangster's Paradise",
 		"Max Level:^777777 1 ^000000",
 		"Type:^000099 Passive ^000000",
 		"Effect:^777777 When 2 or more Rogues sit next to each other (all must have this skill) aggressive monsters, except Boss monsters, won't attack. ^000000",
 	].join("\n");
 
-	exports[SKID.RG_COMPULSION] = [
-
+	SkillDescription[SKID.RG_COMPULSION] = [
 		"Compulsion Discount",
 		"Max Level:^777777 5 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -3610,8 +3438,7 @@ define(["./SkillId"], function( SKID )
 		"[Level 5]^777777 Discount Rate 25% ^000000",
 	].join("\n");
 
-	exports[SKID.RG_PLAGIARISM] = [
-
+	SkillDescription[SKID.RG_PLAGIARISM] = [
 		"Plagiarism",
 		"Max Level:^777777 10 ^000000",
 		"Type:^33cc00 Passive ^000000",
@@ -3628,8 +3455,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 LV. 10 Skills can be copied ^000000",
 	].join("\n");
 
-	exports[SKID.AM_AXEMASTERY] = [
-
+	SkillDescription[SKID.AM_AXEMASTERY] = [
 		"Axe Mastery",
 		"Max Level:^777777 10 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -3646,8 +3472,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 ATK +30 ^000000",
 	].join("\n");
 
-	exports[SKID.AM_LEARNINGPOTION] = [
-
+	SkillDescription[SKID.AM_LEARNINGPOTION] = [
 		"Learning Potion",
 		"Max Level:^777777 10 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -3664,8 +3489,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 +50%, +10% potion creation ^000000",
 	].join("\n");
 
-	exports[SKID.AM_PHARMACY] = [
-
+	SkillDescription[SKID.AM_PHARMACY] = [
 		"Pharmacy",
 		"Max Level:^777777 10 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -3689,8 +3513,7 @@ define(["./SkillId"], function( SKID )
 		"^000099And as an important note to remember, an adopted Alchemist will have -30% success rates! ^000000",
 	].join("\n");
 
-	exports[SKID.AM_DEMONSTRATION] = [
-
+	SkillDescription[SKID.AM_DEMONSTRATION] = [
 		"Demonstration",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive^bb0000 (Fire) ^000000",
@@ -3710,8 +3533,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 200% ATK & 5% Chance ^000000",
 	].join("\n");
 
-	exports[SKID.AM_ACIDTERROR] = [
-
+	SkillDescription[SKID.AM_ACIDTERROR] = [
 		"Acid Terror",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -3734,8 +3556,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 13% chance to damage Armor, 15% chance of Bleeding ^000000",
 	].join("\n");
 
-	exports[SKID.AM_POTIONPITCHER] = [
-
+	SkillDescription[SKID.AM_POTIONPITCHER] = [
 		"Potion Pitcher",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active, Level Selectable ^000000",
@@ -3755,8 +3576,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 +50% Heal, Up to Blue Potion ^000000",
 	].join("\n");
 
-	exports[SKID.AM_CANNIBALIZE] = [
-
+	SkillDescription[SKID.AM_CANNIBALIZE] = [
 		"Bio Cannibalize",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active, Level selectable ^000000",
@@ -3818,8 +3638,7 @@ define(["./SkillId"], function( SKID )
 
 	].join("\n");
 
-	exports[SKID.AM_SPHEREMINE] = [
-
+	SkillDescription[SKID.AM_SPHEREMINE] = [
 		"Sphere Mine",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -3839,8 +3658,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 4000 HP, lasts 80 sec ^000000",
 	].join("\n");
 
-	exports[SKID.AM_CP_WEAPON] = [
-
+	SkillDescription[SKID.AM_CP_WEAPON] = [
 		"Chemical Protection Weapon",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Support ^000000",
@@ -3859,8 +3677,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 600 sec ^000000",
 	].join("\n");
 
-	exports[SKID.AM_CP_SHIELD] = [
-
+	SkillDescription[SKID.AM_CP_SHIELD] = [
 		"Chemical Protection Shield",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Support ^000000",
@@ -3879,8 +3696,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 600 sec ^000000",
 	].join("\n");
 
-	exports[SKID.AM_CP_ARMOR] = [
-
+	SkillDescription[SKID.AM_CP_ARMOR] = [
 		"Chemical Protection Armor",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Support ^000000",
@@ -3899,8 +3715,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 600 sec ^000000",
 	].join("\n");
 
-	exports[SKID.AM_CP_HELM] = [
-
+	SkillDescription[SKID.AM_CP_HELM] = [
 		"Chemical Protection Helm",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Support ^000000",
@@ -3919,23 +3734,20 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 600 sec ^000000",
 	].join("\n");
 
-	exports[SKID.AM_BIOETHICS] = [
-
+	SkillDescription[SKID.AM_BIOETHICS] = [
 		"Bioethics",
 		"Max Level:^777777 1 ^000000",
 		"Type:^000099 Passive ^000000",
 		"Effect:^777777 Allows Alchemist to begin learning the Homunculus Skill Tree. ^000000",
 	].join("\n");
 
-	exports[SKID.AM_BIOTECHNOLOGY] = [
-
+	SkillDescription[SKID.AM_BIOTECHNOLOGY] = [
 		"Biotechnology",
 		"Type:^000099 Passive ^000000",
 		"Effect:^777777 Increase chance of Homunculus creation and Maximum HP of creature. ^000000",
 	].join("\n");
 
-	exports[SKID.AM_CREATECREATURE] = [
-
+	SkillDescription[SKID.AM_CREATECREATURE] = [
 		"Create Creature",
 		"Type:^33cc00 Active ^000000",
 		"Effect:^777777 Creates an embryo. Skill level affects success chance.",
@@ -3944,23 +3756,20 @@ define(["./SkillId"], function( SKID )
 		"- Requires the Potion Creation Guide present in your inventory. ^000000",
 	].join("\n");
 
-	exports[SKID.AM_CULTIVATION] = [
-
+	SkillDescription[SKID.AM_CULTIVATION] = [
 		"Cultivation",
 		"Type:^33cc00 Active ^000000",
 		"Catalyst:^777777 1 Embryo ^000000",
 		"Effect:^777777 Creates a Homunculus. Skill level affects success chance. Cannot be used if the caster already has a Homunculus present. ^000000",
 	].join("\n");
 
-	exports[SKID.AM_FLAMECONTROL] = [
-
+	SkillDescription[SKID.AM_FLAMECONTROL] = [
 		"Flame Control",
 		"Type:^000099 Passive ^000000",
 		"Effect:^777777 Increase chances of Cultivation skill and fire resistance of user. ^000000",
 	].join("\n");
 
-	exports[SKID.AM_CALLHOMUN] = [
-
+	SkillDescription[SKID.AM_CALLHOMUN] = [
 		"Call Homunculus",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -4035,16 +3844,14 @@ define(["./SkillId"], function( SKID )
 		"- Currently the only way to recover the Homunculus's HP is to let it rest. Potion Pitcher, Heal, etc, all of them have no effect. ^000000",
 	].join("\n");
 
-	exports[SKID.AM_REST] = [
-
+	SkillDescription[SKID.AM_REST] = [
 		"Rest",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
 		"Effect:^777777 Destroys a currently created Homunculus. ^000000",
 	].join("\n");
 
-	exports[SKID.AM_DRILLMASTER] = [
-
+	SkillDescription[SKID.AM_DRILLMASTER] = [
 		"Drillmaster",
 		"Type:^000099 Passive ^000000",
 		"Effect:^777777 Raises Attack Power of Homunculus. ^000000",
@@ -4060,8 +3867,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 ATK +30 ^000000",
 	].join("\n");
 
-	exports[SKID.AM_HEALHOMUN] = [
-
+	SkillDescription[SKID.AM_HEALHOMUN] = [
 		"Heal Homunculus",
 		"Max Level:^777777 10 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -4071,8 +3877,7 @@ define(["./SkillId"], function( SKID )
 		"^777777 Casts heal on Homunculus. Skill power is that of an Acolyte's Heal. ^000000",
 	].join("\n");
 
-	exports[SKID.AM_RESURRECTHOMUN] = [
-
+	SkillDescription[SKID.AM_RESURRECTHOMUN] = [
 		"Resurrect Homunculus",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -4081,8 +3886,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Resurrect a killed Homunculus. ^000000",
 	].join("\n");
 
-	exports[SKID.CR_TRUST] = [
-
+	SkillDescription[SKID.CR_TRUST] = [
 		"Faith",
 		"Max Level:^777777 10 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -4099,8 +3903,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 +2000 HP, 50% Resist ^000000",
 	].join("\n");
 
-	exports[SKID.CR_AUTOGUARD] = [
-
+	SkillDescription[SKID.CR_AUTOGUARD] = [
 		"Auto Guard",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Supportive ^000000",
@@ -4122,8 +3925,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 30% Chance, 0.1 delay ^000000",
 	].join("\n");
 
-	exports[SKID.CR_SHIELDCHARGE] = [
-
+	SkillDescription[SKID.CR_SHIELDCHARGE] = [
 		"Shield Charge",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -4141,8 +3943,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 200% Attack, 40% Stun Chance, 9 cells ^000000",
 	].join("\n");
 
-	exports[SKID.CR_SHIELDBOOMERANG] = [
-
+	SkillDescription[SKID.CR_SHIELDBOOMERANG] = [
 		"Shield Boomerang",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -4160,8 +3961,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 250% Attack Range 11 ^000000",
 	].join("\n");
 
-	exports[SKID.CR_REFLECTSHIELD] = [
-
+	SkillDescription[SKID.CR_REFLECTSHIELD] = [
 		"Reflect Shield",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Support ^000000",
@@ -4183,8 +3983,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 40% ATK Returned ^000000",
 	].join("\n");
 
-	exports[SKID.CR_HOLYCROSS] = [
-
+	SkillDescription[SKID.CR_HOLYCROSS] = [
 		"Holy Cross",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -4207,8 +4006,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 450% ATK, 30% Chance ^000000",
 	].join("\n");
 
-	exports[SKID.CR_GRANDCROSS] = [
-
+	SkillDescription[SKID.CR_GRANDCROSS] = [
 		"Grand Cross",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -4239,8 +4037,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 500% ATK ^000000",
 	].join("\n");
 
-	exports[SKID.CR_DEVOTION] = [
-
+	SkillDescription[SKID.CR_DEVOTION] = [
 		"Devotion",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Support ^000000",
@@ -4262,8 +4059,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 90 sec, 5 Players ^000000",
 	].join("\n");
 
-	exports[SKID.CR_PROVIDENCE] = [
-
+	SkillDescription[SKID.CR_PROVIDENCE] = [
 		"Providence",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Support ^000000",
@@ -4281,8 +4077,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 25% Reduced ATK ^000000",
 	].join("\n");
 
-	exports[SKID.CR_DEFENDER] = [
-
+	SkillDescription[SKID.CR_DEFENDER] = [
 		"Defender",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Support ^000000",
@@ -4301,8 +4096,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 -80% ATK, no ASPD reduction ^000000",
 	].join("\n");
 
-	exports[SKID.CR_SPEARQUICKEN] = [
-
+	SkillDescription[SKID.CR_SPEARQUICKEN] = [
 		"Spear Quicken",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Support ^000000",
@@ -4324,8 +4118,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 300 sec, +30% ASPD ^000000",
 	].join("\n");
 
-	exports[SKID.MO_IRONHAND] = [
-
+	SkillDescription[SKID.MO_IRONHAND] = [
 		"Iron Hand",
 		"Max Level:^777777 10 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -4342,8 +4135,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 ATK +30 ^000000",
 	].join("\n");
 
-	exports[SKID.MO_SPIRITSRECOVERY] = [
-
+	SkillDescription[SKID.MO_SPIRITSRECOVERY] = [
 		"Spirits Recovery",
 		"Max Level:^777777 5 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -4357,8 +4149,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 +20 HP & 10 SP ^000000",
 	].join("\n");
 
-	exports[SKID.MO_CALLSPIRITS] = [
-
+	SkillDescription[SKID.MO_CALLSPIRITS] = [
 		"Call Spirits",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -4371,8 +4162,7 @@ define(["./SkillId"], function( SKID )
 		"Each active Sphere gives +3 ATK with holy element that never misses. The cast is uninterruptable. ^000000",
 	].join("\n");
 
-	exports[SKID.MO_ABSORBSPIRITS] = [
-
+	SkillDescription[SKID.MO_ABSORBSPIRITS] = [
 		"Absorb Spirits",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -4385,8 +4175,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Uses up all Spirit Spheres and regains 10 SP per sphere. Can be used on another Monk's Spheres in PVP. If used against a monster it steals 2 SP per monster level with a success chance of 20%. ^000000",
 	].join("\n");
 
-	exports[SKID.MO_TRIPLEATTACK] = [
-
+	SkillDescription[SKID.MO_TRIPLEATTACK] = [
 		"Triple Attack",
 		"Max Level:^777777 10 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -4409,8 +4198,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 20% Chance for 300% ATK. ^000000",
 	].join("\n");
 
-	exports[SKID.MO_BODYRELOCATION] = [
-
+	SkillDescription[SKID.MO_BODYRELOCATION] = [
 		"Body Relocation",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -4424,8 +4212,7 @@ define(["./SkillId"], function( SKID )
 		"If under Critical Explosion state, you can use this skill without the need for Spirit Spheres. After using this skill, you cannot use Asura Strike for the following 2 seconds. ^000000",
 	].join("\n");
 
-	exports[SKID.MO_DODGE] = [
-
+	SkillDescription[SKID.MO_DODGE] = [
 		"Dodge",
 		"Type:^000099 Passive ^000000",
 		"Effect:^777777 Increases Flee Rate by +1.5 per SkillLV rounded down. ^000000",
@@ -4441,8 +4228,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 Flee Rate + 15 ^000000",
 	].join("\n");
 
-	exports[SKID.MO_INVESTIGATE] = [
-
+	SkillDescription[SKID.MO_INVESTIGATE] = [
 		"Investigate",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -4455,8 +4241,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Strong ranged Physical attack. The more defense the target has the more damage this skill will do. It never misses and uses up one Spirit Sphere. Damage is [ATK x (1 + 0.75*SkillLV) x (Enemy Armor+Enemy VIT)/50] x Card Effect. ^000000",
 	].join("\n");
 
-	exports[SKID.MO_FINGEROFFENSIVE] = [
-
+	SkillDescription[SKID.MO_FINGEROFFENSIVE] = [
 		"Finger Offensive",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -4476,8 +4261,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 250% ATK Uses 5 Spheres ^000000",
 	].join("\n");
 
-	exports[SKID.MO_STEELBODY] = [
-
+	SkillDescription[SKID.MO_STEELBODY] = [
 		"Steel Body",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -4495,8 +4279,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 150 sec ^000000",
 	].join("\n");
 
-	exports[SKID.MO_BLADESTOP] = [
-
+	SkillDescription[SKID.MO_BLADESTOP] = [
 		"Blade Stop",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -4517,8 +4300,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Asura Strike (Critical Explosion, 4 Spheres needed), 1.3 sec catch time ^000000",
 	].join("\n");
 
-	exports[SKID.MO_EXPLOSIONSPIRITS] = [
-
+	SkillDescription[SKID.MO_EXPLOSIONSPIRITS] = [
 		"Critical Explosion",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -4535,8 +4317,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 +20 Critical Rate ^000000",
 	].join("\n");
 
-	exports[SKID.MO_EXTREMITYFIST] = [
-
+	SkillDescription[SKID.MO_EXTREMITYFIST] = [
 		"Asura Strike",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -4550,8 +4331,7 @@ define(["./SkillId"], function( SKID )
 		"Consumes all Spirit Spheres. SP will not regenerate for 10 seconds after using Asura Strike",
 	].join("\n");
 
-	exports[SKID.MO_CHAINCOMBO] = [
-
+	SkillDescription[SKID.MO_CHAINCOMBO] = [
 		"Chain Combo",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -4569,8 +4349,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 4]^777777 Does 350% ATK ^000000",
 	].join("\n");
 
-	exports[SKID.MO_COMBOFINISH] = [
-
+	SkillDescription[SKID.MO_COMBOFINISH] = [
 		"Combo Finish",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -4589,8 +4368,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Does 540% ATK ^000000",
 	].join("\n");
 
-	exports[SKID.SA_ADVANCEDBOOK] = [
-
+	SkillDescription[SKID.SA_ADVANCEDBOOK] = [
 		"Advanced Book",
 		"Max Level:^777777 10 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -4607,8 +4385,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 ATK +30, +5.0% ASPD ^000000",
 	].join("\n");
 
-	exports[SKID.SA_CASTCANCEL] = [
-
+	SkillDescription[SKID.SA_CASTCANCEL] = [
 		"Cast Cancel",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -4625,8 +4402,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 90% SP Kept ^000000",
 	].join("\n");
 
-	exports[SKID.SA_MAGICROD] = [
-
+	SkillDescription[SKID.SA_MAGICROD] = [
 		"Magic Rod",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -4644,8 +4420,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 1.2[s] Active Period/100% SP absorbed ^000000",
 	].join("\n");
 
-	exports[SKID.SA_SPELLBREAKER] = [
-
+	SkillDescription[SKID.SA_SPELLBREAKER] = [
 		"Spell Breaker",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -4665,8 +4440,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 100% SP Absorbed, 1% HP Absorbed ^000000",
 	].join("\n");
 
-	exports[SKID.SA_FREECAST] = [
-
+	SkillDescription[SKID.SA_FREECAST] = [
 		"Free Cast",
 		"Max Level:^777777 10 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -4684,8 +4458,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 75% Move Speed/100% ATK Speed ^000000",
 	].join("\n");
 
-	exports[SKID.SA_AUTOSPELL] = [
-
+	SkillDescription[SKID.SA_AUTOSPELL] = [
 		"Auto Spell",
 		"Max Level:^777777 10 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -4708,8 +4481,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 LV 1 Frost Diver/25% cast chance ^000000",
 	].join("\n");
 
-	exports[SKID.SA_FLAMELAUNCHER] = [
-
+	SkillDescription[SKID.SA_FLAMELAUNCHER] = [
 		"Flare Launcher",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -4728,8 +4500,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 100% Chance to Work, 30 min duration ^000000",
 	].join("\n");
 
-	exports[SKID.SA_FROSTWEAPON] = [
-
+	SkillDescription[SKID.SA_FROSTWEAPON] = [
 		"Frost Weapon",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -4748,8 +4519,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 100% Chance to Work, 30 min duration ^000000",
 	].join("\n");
 
-	exports[SKID.SA_LIGHTNINGLOADER] = [
-
+	SkillDescription[SKID.SA_LIGHTNINGLOADER] = [
 		"Lightning Loader",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -4768,8 +4538,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 100% Chance to Work, 30 min duration ^000000",
 	].join("\n");
 
-	exports[SKID.SA_SEISMICWEAPON] = [
-
+	SkillDescription[SKID.SA_SEISMICWEAPON] = [
 		"Seismic Weapon",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -4788,8 +4557,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 100% Chance to Work, 30 min duration ^000000",
 	].join("\n");
 
-	exports[SKID.SA_DRAGONOLOGY] = [
-
+	SkillDescription[SKID.SA_DRAGONOLOGY] = [
 		"Dragonology",
 		"Max Level:^777777 5 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -4801,8 +4569,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 +20% MATK and DEF, +3 INT ^000000",
 	].join("\n");
 
-	exports[SKID.SA_VOLCANO] = [
-
+	SkillDescription[SKID.SA_VOLCANO] = [
 		"Volcano",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active, Area Enchantment ^000000",
@@ -4822,8 +4589,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 +20% DMG for Fire Attacks/+50 ATK for Fire armor wearer ^000000",
 	].join("\n");
 
-	exports[SKID.SA_DELUGE] = [
-
+	SkillDescription[SKID.SA_DELUGE] = [
 		"Deluge",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active, Area Enchantment ^000000",
@@ -4843,8 +4609,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 +20% DMG from Water Attacks/+15% Maximum HP for Water Armor ^000000",
 	].join("\n");
 
-	exports[SKID.SA_VIOLENTGALE] = [
-
+	SkillDescription[SKID.SA_VIOLENTGALE] = [
 		"Violent Gale",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active, Area Enchantment ^000000",
@@ -4863,8 +4628,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 +20% DMG for Wind Attacks/+15 Flee Rate for Wind Armor ^000000",
 	].join("\n");
 
-	exports[SKID.SA_LANDPROTECTOR] = [
-
+	SkillDescription[SKID.SA_LANDPROTECTOR] = [
 		"Land Protector",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active, Area Enchantment ^000000",
@@ -4884,8 +4648,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Area 11x11 cells ^000000",
 	].join("\n");
 
-	exports[SKID.SA_DISPELL] = [
-
+	SkillDescription[SKID.SA_DISPELL] = [
 		"Dispell",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -4903,8 +4666,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 100% Base Success Rate ^000000",
 	].join("\n");
 
-	exports[SKID.SA_ABRACADABRA] = [
-
+	SkillDescription[SKID.SA_ABRACADABRA] = [
 		"Abracadabra",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Random ^000000",
@@ -4918,112 +4680,98 @@ define(["./SkillId"], function( SKID )
 		"Even with catalyst reducing items (Mistress Card) or buffs (Bard/Dancer Into the Abyss) the cost will not drop below^ffff00 1 Yellow Gemstone^777777. A For-Fun-Skill. ^000000",
 	].join("\n");
 
-	exports[SKID.SA_MONOCELL] = [
-
+	SkillDescription[SKID.SA_MONOCELL] = [
 		"Monocell",
 		"Type:^33cc00 Active ^000000",
 		"Target:^777777 Enemy ^000000",
 		"Effect:^777777 Change enemy into a Poring. Success chance based on skill level. ^000000",
 	].join("\n");
 
-	exports[SKID.SA_CLASSCHANGE] = [
-
+	SkillDescription[SKID.SA_CLASSCHANGE] = [
 		"Class Change",
 		"Type:^33cc00 Active ^000000",
 		"Target:^777777 Enemy ^000000",
 		"Effect:^777777 Change an enemy into a Boss monster. Success chance is based on caster BaseLV. ^000000",
 	].join("\n");
 
-	exports[SKID.SA_SUMMONMONSTER] = [
-
+	SkillDescription[SKID.SA_SUMMONMONSTER] = [
 		"Summon Monster",
 		"Type:^33cc00 Active ^000000",
 		"Target:^777777 Cell ^000000",
 		"Effect:^777777 Summons a random monster, as per Dead Branch. ^000000",
 	].join("\n");
 
-	exports[SKID.SA_REVERSEORCISH] = [
-
+	SkillDescription[SKID.SA_REVERSEORCISH] = [
 		"Reverse Orcish",
 		"Type:^33cc00 Active ^000000",
 		"Target:^777777 Player ^000000",
 		"Effect:^777777 Changes head of another player to that of an Orc. ^000000",
 	].join("\n");
 
-	exports[SKID.SA_DEATH] = [
-
+	SkillDescription[SKID.SA_DEATH] = [
 		"Death",
 		"Type:^33cc00 Active ^000000",
 		"Target:^777777 Enemy ^000000",
 		"Effect:^777777 Kill enemy instantly, with no item drop or experience gain. Success chance based on skill level. ^000000",
 	].join("\n");
 
-	exports[SKID.SA_FORTUNE] = [
-
+	SkillDescription[SKID.SA_FORTUNE] = [
 		"Fortune",
 		"Type:^33cc00 Active ^000000",
 		"Target:^777777 Enemy ^000000",
 		"Effect:^777777 It gets the LV of the Target * the Zeny as of 100 ^000000",
 	].join("\n");
 
-	exports[SKID.SA_TAMINGMONSTER] = [
-
+	SkillDescription[SKID.SA_TAMINGMONSTER] = [
 		"Taming Monster",
 		"Type:^33cc00 Active ^000000",
 		"Target:^777777 Enemy ^000000",
 		"Effect:^777777 Tame monster as if a taming item was used on it. ^000000",
 	].join("\n");
 
-	exports[SKID.SA_QUESTION] = [
-
+	SkillDescription[SKID.SA_QUESTION] = [
 		"Question",
 		"Type:^33cc00 Active ^000000",
 		"Target:^777777 Enemy ^000000",
 		"Effect:^777777 Create a ? emote above monster's head ^000000",
 	].join("\n");
 
-	exports[SKID.SA_GRAVITY] = [
-
+	SkillDescription[SKID.SA_GRAVITY] = [
 		"Gravity",
 		"Type:^33cc00 Active ^000000",
 		"Target:^777777 Self ^000000",
 		"Effect:^777777 Create a Drop Emote above caster's head. ^000000",
 	].join("\n");
 
-	exports[SKID.SA_LEVELUP] = [
-
+	SkillDescription[SKID.SA_LEVELUP] = [
 		"Level Up",
 		"Type:^33cc00 Active ^000000",
 		"Target:^777777 Self ^000000",
 		"Effect:^777777 Gain a level. ^000000",
 	].join("\n");
 
-	exports[SKID.SA_INSTANTDEATH] = [
-
+	SkillDescription[SKID.SA_INSTANTDEATH] = [
 		"Instant Death",
 		"Type:^33cc00 Active ^000000",
 		"Target:^777777 Self ^000000",
 		"Effect:^777777 Commit suicide. Experience is lost as normal. ^000000",
 	].join("\n");
 
-	exports[SKID.SA_FULLRECOVERY] = [
-
+	SkillDescription[SKID.SA_FULLRECOVERY] = [
 		"Full Recovery",
 		"Type:^33cc00 Active ^000000",
 		"Target:^777777 Self ^000000",
 		"Effect:^777777 Recover all HP and SP, and stop any abnormal status effects. ^000000",
 	].join("\n");
 
-	exports[SKID.SA_COMA] = [
-
+	SkillDescription[SKID.SA_COMA] = [
 		"Coma",
 		"Type:^33cc00 Active ^000000",
 		"Target:^777777 Self ^000000",
 		"Effect:^777777 Drop to 1 HP and SP. ^000000",
 	].join("\n");
 
-	exports[SKID.BD_ADAPTATION] = [
-
+	SkillDescription[SKID.BD_ADAPTATION] = [
 		"Adaptation to Circumstances",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -5035,8 +4783,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Cancels a current song or dance. The same song may not be performed again immediately. ^000000",
 	].join("\n");
 
-	exports[SKID.BD_ENCORE] = [
-
+	SkillDescription[SKID.BD_ENCORE] = [
 		"Encore",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -5046,8 +4793,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Performs the last song or dance again at half SP cost. ^000000",
 	].join("\n");
 
-	exports[SKID.BD_LULLABY] = [
-
+	SkillDescription[SKID.BD_LULLABY] = [
 		"Lullaby",
 		"Max Level:^777777 1 ^000000",
 		"Type:^000099 Ensemble ^000000",
@@ -5061,8 +4807,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Casts sleep on all enemies within area of effect. Effect will occur every 6 seconds for 60 seconds (11 times) and is affected by INT of the caster, but it has a chance to fail depending on resistances. Cannot be canceled by Dispell. ^000000",
 	].join("\n");
 
-	exports[SKID.BD_RICHMANKIM] = [
-
+	SkillDescription[SKID.BD_RICHMANKIM] = [
 		"Mr. Kim A Rich Man",
 		"Max Level:^777777 5 ^000000",
 		"Type:^000099 Ensemble ^000000",
@@ -5081,8 +4826,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 +180% Experience Rate ^000000",
 	].join("\n");
 
-	exports[SKID.BD_ETERNALCHAOS] = [
-
+	SkillDescription[SKID.BD_ETERNALCHAOS] = [
 		"Eternal Chaos",
 		"Max Level:^777777 1 ^000000",
 		"Type:^000099 Ensemble ^000000",
@@ -5096,8 +4840,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Reduces the DEF of enemies to 0 within the area of effect. Cannot be canceled by Dispell. ^000000",
 	].join("\n");
 
-	exports[SKID.BD_DRUMBATTLEFIELD] = [
-
+	SkillDescription[SKID.BD_DRUMBATTLEFIELD] = [
 		"A Drum on the Battlefield",
 		"Max Level:^777777 5 ^000000",
 		"Type:^000099 Ensemble ^000000",
@@ -5116,8 +4859,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 +150 ATK, +12 DEF ^000000",
 	].join("\n");
 
-	exports[SKID.BD_RINGNIBELUNGEN] = [
-
+	SkillDescription[SKID.BD_RINGNIBELUNGEN] = [
 		"The Ring of Nibelungen",
 		"Max Level:^777777 5 ^000000",
 		"Type:^000099 Ensemble ^000000",
@@ -5136,8 +4878,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 +175 Damage ^000000",
 	].join("\n");
 
-	exports[SKID.BD_ROKISWEIL] = [
-
+	SkillDescription[SKID.BD_ROKISWEIL] = [
 		"Loki's Veil",
 		"Max Level:^777777 1 ^000000",
 		"Type:^000099 Ensemble ^000000",
@@ -5151,8 +4892,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Blocks all skill use for everything (including players) within area of effect. Can not be canceled by Dispell. Does not work against Boss monsters. ^000000",
 	].join("\n");
 
-	exports[SKID.BD_INTOABYSS] = [
-
+	SkillDescription[SKID.BD_INTOABYSS] = [
 		"Into the Abyss",
 		"Max Level:^777777 1 ^000000",
 		"Type:^000099 Ensemble ^000000",
@@ -5166,8 +4906,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 All party members within the area of effect are able to cast spells without gemstones and lay traps without using an item. Cannot be canceled by Dispell. ^000000",
 	].join("\n");
 
-	exports[SKID.BD_SIEGFRIED] = [
-
+	SkillDescription[SKID.BD_SIEGFRIED] = [
 		"Invulnerable Siegfried",
 		"Max Level:^777777 5 ^000000",
 		"Type:^000099 Ensemble ^000000",
@@ -5186,15 +4925,13 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Elemental 80%, Ailments 50% ^000000",
 	].join("\n");
 
-	exports[SKID.BD_RAGNAROK] = [
-
+	SkillDescription[SKID.BD_RAGNAROK] = [
 		"Ragnarok",
 		"^ee0000This skill has been dropped by Gravity. ^000000",
 		"No info, supposed to cast random area skill and affect players and monsters alike.",
 	].join("\n");
 
-	exports[SKID.BA_MUSICALLESSON] = [
-
+	SkillDescription[SKID.BA_MUSICALLESSON] = [
 		"Musical Lesson",
 		"Max Level:^777777 10 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -5211,8 +4948,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 ATK +30 ^000000",
 	].join("\n");
 
-	exports[SKID.BA_MUSICALSTRIKE] = [
-
+	SkillDescription[SKID.BA_MUSICALSTRIKE] = [
 		"Musical Strike",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -5230,8 +4966,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 +250% ATK ^000000",
 	].join("\n");
 
-	exports[SKID.BA_DISSONANCE] = [
-
+	SkillDescription[SKID.BA_DISSONANCE] = [
 		"Dissonance",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -5250,8 +4985,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 80 ATK ^000000",
 	].join("\n");
 
-	exports[SKID.BA_FROSTJOKE] = [
-
+	SkillDescription[SKID.BA_FROSTJOKE] = [
 		"Frost Joker",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -5269,8 +5003,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 40% Chance to Freeze ^000000",
 	].join("\n");
 
-	exports[SKID.BA_WHISTLE] = [
-
+	SkillDescription[SKID.BA_WHISTLE] = [
 		"A Whistle",
 		"Max Level:^777777 10 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -5295,8 +5028,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 +10 Flee Rate & 5 Perfect Dodge ^000000",
 	].join("\n");
 
-	exports[SKID.BA_ASSASSINCROSS] = [
-
+	SkillDescription[SKID.BA_ASSASSINCROSS] = [
 		"BA_ASSASSINCROSS#",
 		"Assassin Cross of Sunset",
 		"Max Level:^777777 10 ^000000",
@@ -5321,8 +5053,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 +20% ASPD ^000000",
 	].join("\n");
 
-	exports[SKID.BA_POEMBRAGI] = [
-
+	SkillDescription[SKID.BA_POEMBRAGI] = [
 		"A Poem of Bragi",
 		"Max Level:^777777 10 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -5347,8 +5078,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 30% Faster Cast & 50% Less Delay ^000000",
 	].join("\n");
 
-	exports[SKID.BA_APPLEIDUN] = [
-
+	SkillDescription[SKID.BA_APPLEIDUN] = [
 		"The Apple of Idun",
 		"Max Level:^777777 10 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -5372,8 +5102,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 + 25% Maximum HP & Heals 80HP ^000000",
 	].join("\n");
 
-	exports[SKID.DC_DANCINGLESSON] = [
-
+	SkillDescription[SKID.DC_DANCINGLESSON] = [
 		"Dancing Lesson",
 		"Max Level:^777777 10 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -5390,8 +5119,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 ATK +30 ^000000",
 	].join("\n");
 
-	exports[SKID.DC_THROWARROW] = [
-
+	SkillDescription[SKID.DC_THROWARROW] = [
 		"Throw Arrow",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -5409,8 +5137,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 +250% ATK ^000000",
 	].join("\n");
 
-	exports[SKID.DC_UGLYDANCE] = [
-
+	SkillDescription[SKID.DC_UGLYDANCE] = [
 		"Ugly Dance",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -5429,8 +5156,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Drains 30 SP per 3 sec ^000000",
 	].join("\n");
 
-	exports[SKID.DC_SCREAM] = [
-
+	SkillDescription[SKID.DC_SCREAM] = [
 		"Scream",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -5448,8 +5174,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 50% Chance to Stun ^000000",
 	].join("\n");
 
-	exports[SKID.DC_HUMMING] = [
-
+	SkillDescription[SKID.DC_HUMMING] = [
 		"Humming",
 		"Max Level:^777777 10 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -5474,8 +5199,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 +20 HIT ^000000",
 	].join("\n");
 
-	exports[SKID.DC_DONTFORGETME] = [
-
+	SkillDescription[SKID.DC_DONTFORGETME] = [
 		"Please Don't Forget Me",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -5501,8 +5225,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 -20% Move SPD & -30% Attack SPD ^000000",
 	].join("\n");
 
-	exports[SKID.DC_FORTUNEKISS] = [
-
+	SkillDescription[SKID.DC_FORTUNEKISS] = [
 		"Fortune's Kiss",
 		"Max Level:^777777 10 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -5527,8 +5250,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 +10% Critical Rate ^000000",
 	].join("\n");
 
-	exports[SKID.DC_SERVICEFORYOU] = [
-
+	SkillDescription[SKID.DC_SERVICEFORYOU] = [
 		"Service for You",
 		"Max Level:^777777 10 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -5554,24 +5276,21 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 + 25% Maximum SP & 50% Less SP Usage ^000000",
 	].join("\n");
 
-	exports[SKID.WE_MALE] = [
-
+	SkillDescription[SKID.WE_MALE] = [
 		"I'll save you",
 		"Type:^777777 Wedding Skill ^000000",
 		"Restores HP of one's partner by consuming 10% of one's total HP amount.",
 		"Partner must have at least 10% of his HP in order to cast this skill.",
 	].join("\n");
 
-	exports[SKID.WE_FEMALE] = [
-
+	SkillDescription[SKID.WE_FEMALE] = [
 		"I'll sacrifice myself for you",
 		"Type:^777777 Wedding Skill ^000000",
 		"Restores SP of one's partner by consuming 10% of one's total SP amount.",
 		"Partner must have at least 10% of his SP in order to cast this skill.",
 	].join("\n");
 
-	exports[SKID.WE_CALLPARTNER] = [
-
+	SkillDescription[SKID.WE_CALLPARTNER] = [
 		"I miss you",
 		"Type:^777777 Wedding Skill ^000000",
 		"Summons one's marital partner to caster's location.",
@@ -5579,14 +5298,12 @@ define(["./SkillId"], function( SKID )
 		"It might not be possible to use this skill in some places such as Guild Siege maps.",
 	].join("\n");
 
-	exports[SKID.ITM_TOMAHAWK] = [
-
+	SkillDescription[SKID.ITM_TOMAHAWK] = [
 		"Throw Tomahawk",
 		"Effect:^777777 Enable use of the Skill Throw Tomahawk. ^000000",
 	].join("\n");
 
-	exports[SKID.LK_AURABLADE] = [
-
+	SkillDescription[SKID.LK_AURABLADE] = [
 		"Aura Blade",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Supportive ^000000",
@@ -5603,8 +5320,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 ATK +100, 120 Sec Duration ^000000",
 	].join("\n");
 
-	exports[SKID.LK_PARRYING] = [
-
+	SkillDescription[SKID.LK_PARRYING] = [
 		"Parrying",
 		"Max Level:^777777 10 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -5628,8 +5344,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 Block Chance 50%, 60 Sec ^000000",
 	].join("\n");
 
-	exports[SKID.LK_CONCENTRATION] = [
-
+	SkillDescription[SKID.LK_CONCENTRATION] = [
 		"Concentration",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Supportive ^000000",
@@ -5649,8 +5364,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 HIT +50, ATK +25%, DEF -25%, 45 Sec ^000000",
 	].join("\n");
 
-	exports[SKID.LK_TENSIONRELAX] = [
-
+	SkillDescription[SKID.LK_TENSIONRELAX] = [
 		"Tension Relax",
 		"Max Level:^777777 1 ^000000",
 		"Type:^777777 Supportive ^000000",
@@ -5662,8 +5376,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Triples your HP recovery speed when sitting. This skill cancels out immediately if you stand up, use items, change equip or are hit by somebody else. ^000000",
 	].join("\n");
 
-	exports[SKID.LK_BERSERK] = [
-
+	SkillDescription[SKID.LK_BERSERK] = [
 		"Berserk",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -5678,8 +5391,7 @@ define(["./SkillId"], function( SKID )
 		"You do not regain HP and SP naturally for 5 minutes after the skill ends (you can be healed or use items though). The Skill cancels out if your HP drops to 100 or below. Can be used during Guild Siege. ^000000",
 	].join("\n");
 
-	exports[SKID.HP_ASSUMPTIO] = [
-
+	SkillDescription[SKID.HP_ASSUMPTIO] = [
 		"Assumptio",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Supportive ^000000",
@@ -5698,8 +5410,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Duration 100 Sec ^000000",
 	].join("\n");
 
-	exports[SKID.HP_BASILICA] = [
-
+	SkillDescription[SKID.HP_BASILICA] = [
 		"Basilica",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Supportive ^000000",
@@ -5719,8 +5430,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Duration 40 Sec ^000000",
 	].join("\n");
 
-	exports[SKID.HP_MEDITATIO] = [
-
+	SkillDescription[SKID.HP_MEDITATIO] = [
 		"Meditatio",
 		"Max Level:^777777 10 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -5738,8 +5448,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 Maximum SP +10%, SP Rec +30%, +20% Heal ^000000",
 	].join("\n");
 
-	exports[SKID.HW_SOULDRAIN] = [
-
+	SkillDescription[SKID.HW_SOULDRAIN] = [
 		"Soul Drain",
 		"Max Level:^777777 10 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -5758,8 +5467,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 Maximum SP +20%, SP Drain 245% ^000000",
 	].join("\n");
 
-	exports[SKID.HW_MAGICCRASHER] = [
-
+	SkillDescription[SKID.HW_MAGICCRASHER] = [
 		"Magic Crasher",
 		"Max Level:^777777 1 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -5773,8 +5481,7 @@ define(["./SkillId"], function( SKID )
 		"This skills overall damage is affected by cards you have in your weapon, weapon element, size and element of the target and it might miss depending on your DEX. ^000000",
 	].join("\n");
 
-	exports[SKID.HW_MAGICPOWER] = [
-
+	SkillDescription[SKID.HW_MAGICPOWER] = [
 		"Amplify Magic Power",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Supportive ^000000",
@@ -5796,8 +5503,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 MATK +50% ^000000",
 	].join("\n");
 
-	exports[SKID.PA_PRESSURE] = [
-
+	SkillDescription[SKID.PA_PRESSURE] = [
 		"Pressure",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -5817,8 +5523,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Damage: 2000 HP, 40% SP ^000000",
 	].join("\n");
 
-	exports[SKID.PA_SACRIFICE] = [
-
+	SkillDescription[SKID.PA_SACRIFICE] = [
 		"Sacrifice",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Supportive ^000000",
@@ -5841,8 +5546,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Damage: 140% the amount of sacrificed HP ^000000",
 	].join("\n");
 
-	exports[SKID.PA_GOSPEL] = [
-
+	SkillDescription[SKID.PA_GOSPEL] = [
 		"Gospel",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Supportive, Area Effect ^000000",
@@ -5880,8 +5584,7 @@ define(["./SkillId"], function( SKID )
 		"?Immunity against status ailments",
 	].join("\n");
 
-	exports[SKID.CH_PALMSTRIKE] = [
-
+	SkillDescription[SKID.CH_PALMSTRIKE] = [
 		"Palm Push Strike",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -5899,8 +5602,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 ATK 700% ^000000",
 	].join("\n");
 
-	exports[SKID.CH_TIGERFIST] = [
-
+	SkillDescription[SKID.CH_TIGERFIST] = [
 		"Tiger Knuckle Fist",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -5919,8 +5621,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 ATK +540%, stun chance 60% ^000000",
 	].join("\n");
 
-	exports[SKID.CH_CHAINCRUSH] = [
-
+	SkillDescription[SKID.CH_CHAINCRUSH] = [
 		"Chain Crush Combo",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -5946,8 +5647,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 ATK 1400%, 5 Hits ^000000",
 	].join("\n");
 
-	exports[SKID.PF_HPCONVERSION] = [
-
+	SkillDescription[SKID.PF_HPCONVERSION] = [
 		"Health Conversion",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -5963,8 +5663,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 50% of the converted HP ^000000",
 	].join("\n");
 
-	exports[SKID.PF_SOULCHANGE] = [
-
+	SkillDescription[SKID.PF_SOULCHANGE] = [
 		"Soul Change",
 		"Max Level:^777777 1 ^000000",
 		"Type:^777777 Supportive ^000000",
@@ -5978,8 +5677,7 @@ define(["./SkillId"], function( SKID )
 		"You can't use this skill on a monster again that already had Soul Change. You can use this skill in Siege Mode (WoE). ^000000",
 	].join("\n");
 
-	exports[SKID.PF_SOULBURN] = [
-
+	SkillDescription[SKID.PF_SOULBURN] = [
 		"Soul Burn",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -5998,16 +5696,14 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 70% Success Rate, Damage=2x SP ^000000",
 	].join("\n");
 
-	exports[SKID.ASC_KATAR] = [
-
+	SkillDescription[SKID.ASC_KATAR] = [
 		"Advanced Katar Research",
 		"Max Level:^777777 5 ^000000",
 		"Type:^000099 Passive ^000000",
 		"Effect:^777777 Increases damage done with a Katar by 10%+2*LV%. ^000000",
 	].join("\n");
 
-	exports[SKID.ASC_EDP] = [
-
+	SkillDescription[SKID.ASC_EDP] = [
 		"Enchant Deadly Poison",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -6022,8 +5718,7 @@ define(["./SkillId"], function( SKID )
 		"Note that the element of the attack DOES NOT change to poison, so poison reducing effects (e.g. Armor slotted with Argiope Card) do not reduce the initial strike damage. ^000000",
 	].join("\n");
 
-	exports[SKID.ASC_BREAKER] = [
-
+	SkillDescription[SKID.ASC_BREAKER] = [
 		"Soul Breaker",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -6041,8 +5736,7 @@ define(["./SkillId"], function( SKID )
 		"The Element of the attack corresponds to your normal attack element. ^000000",
 	].join("\n");
 
-	exports[SKID.SN_SIGHT] = [
-
+	SkillDescription[SKID.SN_SIGHT] = [
 		"True Sight",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Supportive ^000000",
@@ -6064,8 +5758,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 +30 HIT | +20% DMG | +10 CRIT ^000000",
 	].join("\n");
 
-	exports[SKID.SN_FALCONASSAULT] = [
-
+	SkillDescription[SKID.SN_FALCONASSAULT] = [
 		"Falcon Assault",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -6081,8 +5774,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Damage +500% ^000000",
 	].join("\n");
 
-	exports[SKID.SN_SHARPSHOOTING] = [
-
+	SkillDescription[SKID.SN_SHARPSHOOTING] = [
 		"Sharp Shooting",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -6100,8 +5792,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 +20 CRIT, +250% ATK ^000000",
 	].join("\n");
 
-	exports[SKID.SN_WINDWALK] = [
-
+	SkillDescription[SKID.SN_WINDWALK] = [
 		"Wind Walk",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Supportive ^000000",
@@ -6123,8 +5814,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 +20% Walking Speed | +5 Flee Rate ^000000",
 	].join("\n");
 
-	exports[SKID.WS_MELTDOWN] = [
-
+	SkillDescription[SKID.WS_MELTDOWN] = [
 		"Melt Down",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Supportive ^000000",
@@ -6138,8 +5828,7 @@ define(["./SkillId"], function( SKID )
 		"The effect remains if the caster switches weapons or fights with bare fists. This skill does not affect Boss monsters and works with every weapon but it can be dispelled. ^000000",
 	].join("\n");
 
-	exports[SKID.WS_CREATECOIN] = [
-
+	SkillDescription[SKID.WS_CREATECOIN] = [
 		"Create Coin",
 		"Max Level:^777777 Unknown ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -6151,8 +5840,7 @@ define(["./SkillId"], function( SKID )
 		"^777777Create coins that give you random amounts of Zeny when you double click them. You can get many different coins depending on the item you use. ^000000",
 	].join("\n");
 
-	exports[SKID.WS_CREATENUGGET] = [
-
+	SkillDescription[SKID.WS_CREATENUGGET] = [
 		"Create Nugget",
 		"Max Level:^777777 Unknown ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -6164,8 +5852,7 @@ define(["./SkillId"], function( SKID )
 		"^777777Create a piece of gold, then combine it to create a nugget. This nugget will be used to create specific weapons or coins. ^000000",
 	].join("\n");
 
-	exports[SKID.WS_CARTBOOST] = [
-
+	SkillDescription[SKID.WS_CARTBOOST] = [
 		"Cart Boost",
 		"Max Level:^777777 1 ^000000",
 		"Type:^777777 Supportive ^000000",
@@ -6178,8 +5865,7 @@ define(["./SkillId"], function( SKID )
 		"It will not work at all if the effect is harmful (e.g. Curse, AGI Down). You need to have a cart in order to use this skill. ^000000",
 	].join("\n");
 
-	exports[SKID.WS_SYSTEMCREATE] = [
-
+	SkillDescription[SKID.WS_SYSTEMCREATE] = [
 		"Auto Attack System",
 		"Max Level:^777777 1 ^000000",
 		"Type:^777777 Supportive ^000000",
@@ -6192,8 +5878,7 @@ define(["./SkillId"], function( SKID )
 		"^777777Create up to 5 small towers that attack all enemies in range for you, towers have auto-detect skill. ^000000",
 	].join("\n");
 
-	exports[SKID.ST_CHASEWALK] = [
-
+	SkillDescription[SKID.ST_CHASEWALK] = [
 		"Chase Walk",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Supportive ^000000",
@@ -6215,8 +5900,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Walk Speed 90%, STR +16 ^000000",
 	].join("\n");
 
-	exports[SKID.ST_REJECTSWORD] = [
-
+	SkillDescription[SKID.ST_REJECTSWORD] = [
 		"Sword Reject",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Supportive ^000000",
@@ -6233,14 +5917,12 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 75% Chance of Reflection ^000000",
 	].join("\n");
 
-	exports[SKID.ST_STEALBACKPACK] = [
-
+	SkillDescription[SKID.ST_STEALBACKPACK] = [
 		"Steal Backpack",
 		"^ee0000This skill has been dropped by Gravity. ^000000",
 	].join("\n");
 
-	exports[SKID.CR_ALCHEMY] = [
-
+	SkillDescription[SKID.CR_ALCHEMY] = [
 		"Alchemy",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Supportive ^000000",
@@ -6252,8 +5934,7 @@ define(["./SkillId"], function( SKID )
 		"^777777You can create many items that are needed for the Pharmacy skill such as Empty Bottles, Empty Potion Bottles and Test Tubes. ^000000",
 	].join("\n");
 
-	exports[SKID.CR_SYNTHESISPOTION] = [
-
+	SkillDescription[SKID.CR_SYNTHESISPOTION] = [
 		"Synthesis Potion",
 		"Max Level:^777777 Unknown ^000000",
 		"Type:^777777 Supportive ^000000",
@@ -6267,8 +5948,7 @@ define(["./SkillId"], function( SKID )
 		"creatures to attack, they might have better attack rate, or have a new skill to use. ^000000",
 	].join("\n");
 
-	exports[SKID.CG_ARROWVULCAN] = [
-
+	SkillDescription[SKID.CG_ARROWVULCAN] = [
 		"Arrow Vulcan",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -6289,8 +5969,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 ATK 1200% ^000000",
 	].join("\n");
 
-	exports[SKID.CG_MOONLIT] = [
-
+	SkillDescription[SKID.CG_MOONLIT] = [
 		"Moonlit Water Mill",
 		"Max Level:^777777 5 ^000000",
 		"Type:^000099 Ensemble ^000000",
@@ -6310,8 +5989,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 40 Sec Duration | 70 SP, 9 SP every 10 sec ^000000",
 	].join("\n");
 
-	exports[SKID.CG_MARIONETTE] = [
-
+	SkillDescription[SKID.CG_MARIONETTE] = [
 		"Marionette Control",
 		"Max Level:^777777 1 ^000000",
 		"Type:^777777 Supportive ^000000",
@@ -6328,8 +6006,7 @@ define(["./SkillId"], function( SKID )
 		"While this skill is in effect, caster will lose 1000 max HP. ^000000",
 	].join("\n");
 
-	exports[SKID.LK_SPIRALPIERCE] = [
-
+	SkillDescription[SKID.LK_SPIRALPIERCE] = [
 		"Spiral Pierce",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -6350,8 +6027,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 350% ATK per attack ^000000",
 	].join("\n");
 
-	exports[SKID.LK_HEADCRUSH] = [
-
+	SkillDescription[SKID.LK_HEADCRUSH] = [
 		"Head Crush",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -6371,8 +6047,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 300% ATK ^000000",
 	].join("\n");
 
-	exports[SKID.LK_JOINTBEAT] = [
-
+	SkillDescription[SKID.LK_JOINTBEAT] = [
 		"Joint Beat",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -6402,8 +6077,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 150% ATK, inflict status 55%, 20 SP ^000000",
 	].join("\n");
 
-	exports[SKID.HW_NAPALMVULCAN] = [
-
+	SkillDescription[SKID.HW_NAPALMVULCAN] = [
 		"Napalm Vulcan",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -6419,8 +6093,7 @@ define(["./SkillId"], function( SKID )
 		"The damage for one target is 1*MATK per hit. ^000000",
 	].join("\n");
 
-	exports[SKID.CH_SOULCOLLECT] = [
-
+	SkillDescription[SKID.CH_SOULCOLLECT] = [
 		"Dangerous Soul Collect",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -6432,8 +6105,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Summons all 5 Spheres at one go. Spell CAN be interrupted. ^000000",
 	].join("\n");
 
-	exports[SKID.PF_MINDBREAKER] = [
-
+	SkillDescription[SKID.PF_MINDBREAKER] = [
 		"Mind Breaker",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -6450,8 +6122,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 MATK +100% MDEF -60% 80% success ^000000",
 	].join("\n");
 
-	exports[SKID.PF_MEMORIZE] = [
-
+	SkillDescription[SKID.PF_MEMORIZE] = [
 		"Memorize",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -6463,8 +6134,7 @@ define(["./SkillId"], function( SKID )
 		"Multiple Memorize casts do not stack, recasting resets the counter to 5. ^000000",
 	].join("\n");
 
-	exports[SKID.PF_FOGWALL] = [
-
+	SkillDescription[SKID.PF_FOGWALL] = [
 		"Wall of Fog",
 		"Max Level:^777777 1 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -6479,8 +6149,7 @@ define(["./SkillId"], function( SKID )
 		"If this skill is cast over Deluge, it will last for 40 seconds. You can cast this on top of monsters and you can not have more than 2 Wall of Fog active at any time. ^000000",
 	].join("\n");
 
-	exports[SKID.PF_SPIDERWEB] = [
-
+	SkillDescription[SKID.PF_SPIDERWEB] = [
 		"Spider Web",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -6495,8 +6164,7 @@ define(["./SkillId"], function( SKID )
 		"If target is hit by any fire elemental skill then the target will take 2x the normal damage but the spider web will be destroyed. You can only catch one enemy with each cast and you can not have more than 3 webs active at the same time. ^000000",
 	].join("\n");
 
-	exports[SKID.ASC_METEORASSAULT] = [
-
+	SkillDescription[SKID.ASC_METEORASSAULT] = [
 		"Meteor Assault",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -6519,8 +6187,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 440% ATK, 55% Chance ^000000",
 	].join("\n");
 
-	exports[SKID.ASC_CDP] = [
-
+	SkillDescription[SKID.ASC_CDP] = [
 		"Create Deadly Poison",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -6541,30 +6208,26 @@ define(["./SkillId"], function( SKID )
 		"- Empty Bottle (dropped by Goat, Muka, Roda Frog, Ant Egg, Peco Peco Egg, Drops, Poring, Plankton...) ^000000",
 	].join("\n");
 
-	exports[SKID.WE_BABY] = [
-
+	SkillDescription[SKID.WE_BABY] = [
 		"Mom, Dad, I love you!",
 		"Type:^777777 Support ^000000",
 		"Effect:^777777 Caster's parent characters will not lose any experience points when they die.",
 		"Caster consumes 10% of Maximum SP for each use. ^000000",
 	].join("\n");
 
-	exports[SKID.WE_CALLPARENT] = [
-
+	SkillDescription[SKID.WE_CALLPARENT] = [
 		"Mom, Dad, I miss you!",
 		"Type:^777777 Support ^000000",
 		"Effect:^777777 Child character summons parents to a spot next to where child is standing. ^000000",
 	].join("\n");
 
-	exports[SKID.WE_CALLBABY] = [
-
+	SkillDescription[SKID.WE_CALLBABY] = [
 		"Come to me, honey~",
 		"Type:^777777 Support ^000000",
 		"Effect:^777777 Parent character summons adopted child to a spot adjacent to parent's current location. ^000000",
 	].join("\n");
 
-	exports[SKID.TK_RUN] = [
-
+	SkillDescription[SKID.TK_RUN] = [
 		"Running",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Movement & Passive ^000000",
@@ -6579,8 +6242,7 @@ define(["./SkillId"], function( SKID )
 		"When you do not have any weapons equipped, the kicking skill damage will increase by +10 per level of this skill, for maximum of +100. ^000000",
 	].join("\n");
 
-	exports[SKID.TK_READYSTORM] = [
-
+	SkillDescription[SKID.TK_READYSTORM] = [
 		"Prepare Whirlwind Kick",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -6593,8 +6255,7 @@ define(["./SkillId"], function( SKID )
 		"When you leave this ON, there's 15% chance of doing the Whirlwind preparation stance when you hit the enemy with normal attack. It remains after death. ^000000",
 	].join("\n");
 
-	exports[SKID.TK_STORMKICK] = [
-
+	SkillDescription[SKID.TK_STORMKICK] = [
 		"Whirlwind Kick",
 		"Max Level:^777777 7 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -6615,8 +6276,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 7]^777777 300% ATK ^000000",
 	].join("\n");
 
-	exports[SKID.TK_READYDOWN] = [
-
+	SkillDescription[SKID.TK_READYDOWN] = [
 		"Prepare Axe Kick",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -6629,8 +6289,7 @@ define(["./SkillId"], function( SKID )
 		"When you leave this ON, there's 15% chance of doing the Axe Kick preparation stance when you hit the enemy with normal attack. It remains after death. ^000000",
 	].join("\n");
 
-	exports[SKID.TK_DOWNKICK] = [
-
+	SkillDescription[SKID.TK_DOWNKICK] = [
 		"Axe Kick",
 		"Max Level:^777777 7 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -6650,8 +6309,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 7]^777777 300% ATK ^000000",
 	].join("\n");
 
-	exports[SKID.TK_READYTURN] = [
-
+	SkillDescription[SKID.TK_READYTURN] = [
 		"Prepare Round Kick",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -6664,8 +6322,7 @@ define(["./SkillId"], function( SKID )
 		"When you leave this ON, there's 15% chance of doing the Round Kick preparation stance when you hit the enemy with normal attack. It remains after death. ^000000",
 	].join("\n");
 
-	exports[SKID.TK_TURNKICK] = [
-
+	SkillDescription[SKID.TK_TURNKICK] = [
 		"Round Kick",
 		"Max Level:^777777 7 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -6687,8 +6344,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 7]^777777 400% ATK ^000000",
 	].join("\n");
 
-	exports[SKID.TK_READYCOUNTER] = [
-
+	SkillDescription[SKID.TK_READYCOUNTER] = [
 		"Prepare Counter Kick",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -6702,8 +6358,7 @@ define(["./SkillId"], function( SKID )
 		"When you leave this ON, there's 20% chance of doing the Counter Kick preparation stance when you hit the enemy with normal attack. It remains after death. ^000000",
 	].join("\n");
 
-	exports[SKID.TK_COUNTER] = [
-
+	SkillDescription[SKID.TK_COUNTER] = [
 		"Counter Kick",
 		"Max Level:^777777 7 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -6723,8 +6378,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 7]^777777 400% ATK ^000000",
 	].join("\n");
 
-	exports[SKID.TK_DODGE] = [
-
+	SkillDescription[SKID.TK_DODGE] = [
 		"Break Fall",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -6738,8 +6392,7 @@ define(["./SkillId"], function( SKID )
 		"When you leave this ON, there's 20% chance of dodging an enemy ranged Physical or Magic attacks. It is not removed after death. ^000000",
 	].join("\n");
 
-	exports[SKID.TK_JUMPKICK] = [
-
+	SkillDescription[SKID.TK_JUMPKICK] = [
 		"Flying Side Kick",
 		"Max Level:^777777 7 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -6765,8 +6418,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 7]^777777 100% ATK ^000000",
 	].join("\n");
 
-	exports[SKID.TK_HPTIME] = [
-
+	SkillDescription[SKID.TK_HPTIME] = [
 		"Peaceful Rest",
 		"Max Level:^777777 10 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -6784,8 +6436,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 300 HP ^000000",
 	].join("\n");
 
-	exports[SKID.TK_SPTIME] = [
-
+	SkillDescription[SKID.TK_SPTIME] = [
 		"Enjoyable Rest",
 		"Max Level:^777777 10 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -6806,8 +6457,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 30 SP ^000000",
 	].join("\n");
 
-	exports[SKID.TK_POWER] = [
-
+	SkillDescription[SKID.TK_POWER] = [
 		"Fighting Chant",
 		"Max Level:^777777 5 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -6821,8 +6471,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 10% per person in party ^000000",
 	].join("\n");
 
-	exports[SKID.TK_SEVENWIND] = [
-
+	SkillDescription[SKID.TK_SEVENWIND] = [
 		"Warm Wind",
 		"Max Level:^777777 7 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -6841,8 +6490,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 7]^777777 Holy ^000000",
 	].join("\n");
 
-	exports[SKID.TK_HIGHJUMP] = [
-
+	SkillDescription[SKID.TK_HIGHJUMP] = [
 		"High Jump",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -6861,8 +6509,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 10 cell jump ^000000",
 	].join("\n");
 
-	exports[SKID.SG_FEEL] = [
-
+	SkillDescription[SKID.SG_FEEL] = [
 		"Feeling of the Sun, Moon and Stars",
 		"Blessing of the Sun (L1), Blessing of the Moon (L2), Blessing of the Stars (L3). ^000000",
 		"Max Level:^777777 3 ^000000",
@@ -6881,8 +6528,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 3]^777777 memorize as \"Place of the Stars\" ^000000",
 	].join("\n");
 
-	exports[SKID.SG_SUN_WARM] = [
-
+	SkillDescription[SKID.SG_SUN_WARM] = [
 		"Warmth of the Sun",
 		"Max Level:^777777 3 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -6900,8 +6546,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 3]^777777 lasts 60 sec ^000000",
 	].join("\n");
 
-	exports[SKID.SG_MOON_WARM] = [
-
+	SkillDescription[SKID.SG_MOON_WARM] = [
 		"Warmth of the Moon",
 		"Max Level:^777777 3 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -6919,8 +6564,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 3]^777777 lasts 60 sec ^000000",
 	].join("\n");
 
-	exports[SKID.SG_STAR_WARM] = [
-
+	SkillDescription[SKID.SG_STAR_WARM] = [
 		"Warmth of the Stars",
 		"Max Level:^777777 3 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -6938,8 +6582,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 3]^777777 lasts 60 sec ^000000",
 	].join("\n");
 
-	exports[SKID.SG_SUN_COMFORT] = [
-
+	SkillDescription[SKID.SG_SUN_COMFORT] = [
 		"Comfort of the Sun",
 		"Max Level:^777777 4 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -6956,8 +6599,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 4]^777777 320 sec ^000000",
 	].join("\n");
 
-	exports[SKID.SG_MOON_COMFORT] = [
-
+	SkillDescription[SKID.SG_MOON_COMFORT] = [
 		"Comfort of the Moon",
 		"Max Level:^777777 4 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -6974,8 +6616,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 4]^777777 320 sec ^000000",
 	].join("\n");
 
-	exports[SKID.SG_STAR_COMFORT] = [
-
+	SkillDescription[SKID.SG_STAR_COMFORT] = [
 		"Comfort of the Stars",
 		"Max Level:^777777 4 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -6992,8 +6633,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 4]^777777 320 sec ^000000",
 	].join("\n");
 
-	exports[SKID.SG_HATE] = [
-
+	SkillDescription[SKID.SG_HATE] = [
 		"Hatred of the Sun, Moon, and Stars",
 		"Max Level:^777777 3 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -7011,8 +6651,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 3]^777777 Mark as Target of the Stars. On mobs, it can only be used on Large size monsters that have a Maximum HP higher than 20,000. ^000000",
 	].join("\n");
 
-	exports[SKID.SG_SUN_ANGER] = [
-
+	SkillDescription[SKID.SG_SUN_ANGER] = [
 		"Anger of the Sun",
 		"Max Level:^777777 3 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -7022,8 +6661,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 3]^777777 +((BaseLV+LUK+DEX)/3)% ATK ^000000",
 	].join("\n");
 
-	exports[SKID.SG_MOON_ANGER] = [
-
+	SkillDescription[SKID.SG_MOON_ANGER] = [
 		"Anger of the Moon",
 		"Max Level:^777777 3 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -7033,8 +6671,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 3]^777777 +((BaseLV+LUK+DEX)/3)% ATK ^000000",
 	].join("\n");
 
-	exports[SKID.SG_STAR_ANGER] = [
-
+	SkillDescription[SKID.SG_STAR_ANGER] = [
 		"Anger of the Stars",
 		"Max Level:^777777 3 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -7044,8 +6681,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 3]^777777 +((BaseLV+LUK+DEX)/3)% ATK ^000000",
 	].join("\n");
 
-	exports[SKID.SG_SUN_BLESS] = [
-
+	SkillDescription[SKID.SG_SUN_BLESS] = [
 		"Blessing of the Sun",
 		"Max Level:^777777 5 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -7057,8 +6693,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 +50% EXP ^000000",
 	].join("\n");
 
-	exports[SKID.SG_MOON_BLESS] = [
-
+	SkillDescription[SKID.SG_MOON_BLESS] = [
 		"Blessing of the Moon",
 		"Max Level:^777777 5 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -7070,8 +6705,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 +50% EXP ^000000",
 	].join("\n");
 
-	exports[SKID.SG_STAR_BLESS] = [
-
+	SkillDescription[SKID.SG_STAR_BLESS] = [
 		"Blessing of the Stars",
 		"Max Level:^777777 5 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -7083,8 +6717,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 +100% EXP ^000000",
 	].join("\n");
 
-	exports[SKID.SG_DEVIL] = [
-
+	SkillDescription[SKID.SG_DEVIL] = [
 		"Demon of the Sun, Moon and Stars",
 		"Max Level:^777777 10 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -7102,8 +6735,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 +30% ASPD ^000000",
 	].join("\n");
 
-	exports[SKID.SG_FRIEND] = [
-
+	SkillDescription[SKID.SG_FRIEND] = [
 		"Friend of the Sun, Moon and Stars",
 		"Max Level:^777777 3 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -7115,8 +6747,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 3]^777777 +200%, base chance x 2 ^000000",
 	].join("\n");
 
-	exports[SKID.SG_KNOWLEDGE] = [
-
+	SkillDescription[SKID.SG_KNOWLEDGE] = [
 		"Knowledge of the Sun, Moon and Stars",
 		"Max Level:^777777 10 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -7134,8 +6765,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 +100% ^000000",
 	].join("\n");
 
-	exports[SKID.SG_FUSION] = [
-
+	SkillDescription[SKID.SG_FUSION] = [
 		"Union of the Sun, Moon and Stars",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -7149,8 +6779,7 @@ define(["./SkillId"], function( SKID )
 		"also if you attack a player when you only have 20% HP left, you will be killed instantly afterwards. ^000000",
 	].join("\n");
 
-	exports[SKID.SL_ALCHEMIST] = [
-
+	SkillDescription[SKID.SL_ALCHEMIST] = [
 		"Alchemist Spirit",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Support ^000000",
@@ -7168,8 +6797,7 @@ define(["./SkillId"], function( SKID )
 		"- If there is a TaeKwon in the party the Alchemist is further allowed to use Twilight Alchemy III. ^000000",
 	].join("\n");
 
-	exports[SKID.AM_BERSERKPITCHER] = [
-
+	SkillDescription[SKID.AM_BERSERKPITCHER] = [
 		"Berserk Pitcher",
 		"Max Level:^777777 1 ^000000",
 		"Type:^777777 Supportive ^000000",
@@ -7183,8 +6811,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Throws a Berserk Potion at the target, that takes effect ignoring class restrictions, but the target still needs to be BaseLV 85 or more. ^000000",
 	].join("\n");
 
-	exports[SKID.SL_MONK] = [
-
+	SkillDescription[SKID.SL_MONK] = [
 		"Monk Spirit",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Support ^000000",
@@ -7200,8 +6827,7 @@ define(["./SkillId"], function( SKID )
 		"- Allow SP regeneration in Critical Explosion state. ^000000",
 	].join("\n");
 
-	exports[SKID.SL_STAR] = [
-
+	SkillDescription[SKID.SL_STAR] = [
 		"Star Gladiator Spirit",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Support ^000000",
@@ -7214,8 +6840,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Soullinks to Star Gladiators, allowing the usage of the \"Union of the Sun, Moon and Stars\" skill. ^000000",
 	].join("\n");
 
-	exports[SKID.SL_SAGE] = [
-
+	SkillDescription[SKID.SL_SAGE] = [
 		"Sage Spirit",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Support ^000000",
@@ -7228,8 +6853,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Soullinks to Sages and Professors, allowing their Auto Spell Skill to always produce LV 10 Bolts if the Sage has learned that much in the Bolt Skill. ^000000",
 	].join("\n");
 
-	exports[SKID.SL_CRUSADER] = [
-
+	SkillDescription[SKID.SL_CRUSADER] = [
 		"Crusader Spirit",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Support ^000000",
@@ -7242,8 +6866,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Soullinks to Crusaders and Paladins, making their Shield Boomerang never miss, do double the damage, and halving its after cast delay. ^000000",
 	].join("\n");
 
-	exports[SKID.SL_SUPERNOVICE] = [
-
+	SkillDescription[SKID.SL_SUPERNOVICE] = [
 		"Super Novice Spirit",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Support ^000000",
@@ -7259,8 +6882,7 @@ define(["./SkillId"], function( SKID )
 		"- Super Novices above LV 96 will be temporarily able to equip LV 4 Daggers, 1H Swords, Axes, Maces, and Staffs. ^000000",
 	].join("\n");
 
-	exports[SKID.SL_KNIGHT] = [
-
+	SkillDescription[SKID.SL_KNIGHT] = [
 		"Knight Spirit",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Support ^000000",
@@ -7273,8 +6895,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Soullinks to Knights and Lord Knights, allowing those who have Two-Hand Quicken LV 10 to use One-Hand Quicken for the skill's duration. ^000000",
 	].join("\n");
 
-	exports[SKID.SL_WIZARD] = [
-
+	SkillDescription[SKID.SL_WIZARD] = [
 		"Wizard Spirit",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Support ^000000",
@@ -7288,8 +6909,7 @@ define(["./SkillId"], function( SKID )
 		"When the Wizard has a \"Crystal Fragment\" while under this skill's effect, the item will be used, and any spells that were reflected back to you via Kaite will simply disappear instead of hitting you. ^000000",
 	].join("\n");
 
-	exports[SKID.SL_PRIEST] = [
-
+	SkillDescription[SKID.SL_PRIEST] = [
 		"Priest Spirit",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Support ^000000",
@@ -7302,8 +6922,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Soullinks to Priests and High Priests, boosting the power of Holy Light by +400% but also increasing its SP Cost by +400% for the skill's duration. ^000000",
 	].join("\n");
 
-	exports[SKID.SL_BARDDANCER] = [
-
+	SkillDescription[SKID.SL_BARDDANCER] = [
 		"Bard and Dancer Spirits",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Support ^000000",
@@ -7323,8 +6942,7 @@ define(["./SkillId"], function( SKID )
 		"Linked means, if X skill is mastered, then Y skill can be used too while in \"Spirit\" mode. ^000000",
 	].join("\n");
 
-	exports[SKID.SL_ROGUE] = [
-
+	SkillDescription[SKID.SL_ROGUE] = [
 		"Rogue Spirit",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Support ^000000",
@@ -7340,8 +6958,7 @@ define(["./SkillId"], function( SKID )
 		"- STR bonus from Tunnel Drive will last 5 minutes and walking speed will also increase. ^000000",
 	].join("\n");
 
-	exports[SKID.SL_ASSASIN] = [
-
+	SkillDescription[SKID.SL_ASSASIN] = [
 		"Assassin Spirit",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Support ^000000",
@@ -7355,8 +6972,7 @@ define(["./SkillId"], function( SKID )
 		"However, the bonuses are reduced to +25% bonus damage and no Cool Down bonus when in Siege Mode (WoE) ^000000",
 	].join("\n");
 
-	exports[SKID.SL_BLACKSMITH] = [
-
+	SkillDescription[SKID.SL_BLACKSMITH] = [
 		"Blacksmith Spirit",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Support ^000000",
@@ -7369,8 +6985,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Soullinks to Blacksmiths and Whitesmiths, allowing them to use Full Adrenaline Rush if they have Adrenaline Rush LV5 for the skill's duration. ^000000",
 	].join("\n");
 
-	exports[SKID.BS_ADRENALINE2] = [
-
+	SkillDescription[SKID.BS_ADRENALINE2] = [
 		"Full Adrenaline Rush",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -7385,8 +7000,7 @@ define(["./SkillId"], function( SKID )
 		"Does not stack with other skills that directly increase ASPD. ^000000",
 	].join("\n");
 
-	exports[SKID.SL_HUNTER] = [
-
+	SkillDescription[SKID.SL_HUNTER] = [
 		"Hunter Spirit",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Support ^000000",
@@ -7401,8 +7015,7 @@ define(["./SkillId"], function( SKID )
 		"- If Double Strafing is LV 10, a new skill, Beast Strafing, will be available. ^000000",
 	].join("\n");
 
-	exports[SKID.SL_SOULLINKER] = [
-
+	SkillDescription[SKID.SL_SOULLINKER] = [
 		"Soul Linker Spirit",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Support ^000000",
@@ -7415,8 +7028,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Soullinks to other Soul Linkers (you can not link to yourself), allowing them to use \"Ka- Type\" skills on any other class, for the skill's duration. ^000000",
 	].join("\n");
 
-	exports[SKID.SL_KAIZEL] = [
-
+	SkillDescription[SKID.SL_KAIZEL] = [
 		"Kaizel",
 		"Max Level:^777777 7 ^000000",
 		"Type:^33cc00 Active ^000000^777777, Ka- Type ^000000",
@@ -7437,8 +7049,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 7]^777777 70% HP at res ^000000",
 	].join("\n");
 
-	exports[SKID.SL_KAAHI] = [
-
+	SkillDescription[SKID.SL_KAAHI] = [
 		"Kaahi",
 		"Max Level:^777777 7 ^000000",
 		"Type:^33cc00 Active ^000000^777777, Ka- Type ^000000",
@@ -7459,8 +7070,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 7]^777777 35 SP taken, 1400 HP healed ^000000",
 	].join("\n");
 
-	exports[SKID.SL_KAUPE] = [
-
+	SkillDescription[SKID.SL_KAUPE] = [
 		"Kaupe",
 		"Max Level:^777777 3 ^000000",
 		"Type:^33cc00 Active ^000000^777777, Ka- Type ^000000",
@@ -7477,8 +7087,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 3]^777777 100% evade chance ^000000",
 	].join("\n");
 
-	exports[SKID.SL_KAITE] = [
-
+	SkillDescription[SKID.SL_KAITE] = [
 		"Kaite",
 		"Max Level:^777777 7 ^000000",
 		"Type:^33cc00 Active ^000000^777777, Ka- Type ^000000",
@@ -7500,8 +7109,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 7]^777777 2 reflect ^000000",
 	].join("\n");
 
-	exports[SKID.SL_KAINA] = [
-
+	SkillDescription[SKID.SL_KAINA] = [
 		"Kaina",
 		"Max Level:^777777 7 ^000000",
 		"Type:^000099 Passive ^000000^777777, Ka- Type ^000000",
@@ -7516,8 +7124,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 7]^777777 +100% Enj.Rest +210 Maximum SP ^000000",
 	].join("\n");
 
-	exports[SKID.SL_STIN] = [
-
+	SkillDescription[SKID.SL_STIN] = [
 		"Estin",
 		"Max Level:^777777 7 ^000000",
 		"Type:^777777 Offensive ^000000^777777, Es- Type ^000000",
@@ -7539,8 +7146,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 7]^777777 70% MATK ^000000",
 	].join("\n");
 
-	exports[SKID.SL_STUN] = [
-
+	SkillDescription[SKID.SL_STUN] = [
 		"Estun",
 		"Max Level:^777777 7 ^000000",
 		"Type:^777777 Offensive ^000000^777777, Es- Type ^000000",
@@ -7562,8 +7168,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 7]^777777 35% MATK ^000000",
 	].join("\n");
 
-	exports[SKID.SL_SMA] = [
-
+	SkillDescription[SKID.SL_SMA] = [
 		"Esma",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive ^000000^777777, Es- Type ^000000",
@@ -7587,8 +7192,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 Damage: (40+BaseLV%) x 10 Missiles ^000000",
 	].join("\n");
 
-	exports[SKID.SL_SWOO] = [
-
+	SkillDescription[SKID.SL_SWOO] = [
 		"Eswoo",
 		"Max Level:^777777 7 ^000000",
 		"Type:^777777 Offensive ^000000^777777, Es- Type ^000000",
@@ -7603,8 +7207,7 @@ define(["./SkillId"], function( SKID )
 		"\"Es\" type magic can only be used on monsters. If it is used on a player character, nothing happens and the caster will be stunned for 0.5 sec (not reduced by VIT). ^000000",
 	].join("\n");
 
-	exports[SKID.SL_SKE] = [
-
+	SkillDescription[SKID.SL_SKE] = [
 		"Eske",
 		"Max Level:^777777 3 ^000000",
 		"Type:^777777 Offensive ^000000^777777, Es- Type ^000000",
@@ -7621,8 +7224,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 3]^777777 Lasts 30 sec ^000000",
 	].join("\n");
 
-	exports[SKID.SL_SKA] = [
-
+	SkillDescription[SKID.SL_SKA] = [
 		"Eska",
 		"Max Level:^777777 3 ^000000",
 		"Type:^777777 Offensive ^000000^777777, Es- Type ^000000",
@@ -7639,8 +7241,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 3]^777777 Lasts 30 sec ^000000",
 	].join("\n");
 
-	exports[SKID.ST_PRESERVE] = [
-
+	SkillDescription[SKID.ST_PRESERVE] = [
 		"Preserve",
 		"Max Level:^777777 1 ^000000",
 		"Type:^777777 Supportive ^000000",
@@ -7652,8 +7253,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Allows Stalker to not change the skill learned via Plagiarism even when hit by a different skill for duration of the skill. ^000000",
 	].join("\n");
 
-	exports[SKID.ST_FULLSTRIP] = [
-
+	SkillDescription[SKID.ST_FULLSTRIP] = [
 		"Full Strip",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -7671,8 +7271,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 15% Chance ^000000",
 	].join("\n");
 
-	exports[SKID.WS_WEAPONREFINE] = [
-
+	SkillDescription[SKID.WS_WEAPONREFINE] = [
 		"Weapon Refine",
 		"Max Level:^777777 10 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -7695,8 +7294,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 Up to +10 ^000000",
 	].join("\n");
 
-	exports[SKID.CR_SLIMPITCHER] = [
-
+	SkillDescription[SKID.CR_SLIMPITCHER] = [
 		"Slim Potion Pitcher",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Supportive, Level Selectable ^000000",
@@ -7721,8 +7319,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 +100% heal, pitches [White] ^000000",
 	].join("\n");
 
-	exports[SKID.CR_FULLPROTECTION] = [
-
+	SkillDescription[SKID.CR_FULLPROTECTION] = [
 		"Full Chemical Protection",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Supportive ^000000",
@@ -7740,8 +7337,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 600 sec ^000000",
 	].join("\n");
 
-	exports[SKID.PA_SHIELDCHAIN] = [
-
+	SkillDescription[SKID.PA_SHIELDCHAIN] = [
 		"Shield Chain",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -7759,8 +7355,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 150% ATK ^000000",
 	].join("\n");
 
-	exports[SKID.HP_MANARECHARGE] = [
-
+	SkillDescription[SKID.HP_MANARECHARGE] = [
 		"Mana Recharge",
 		"Max Level:^777777 5 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -7772,8 +7367,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 SP Cost for all skills -20% ^000000",
 	].join("\n");
 
-	exports[SKID.PF_DOUBLECASTING] = [
-
+	SkillDescription[SKID.PF_DOUBLECASTING] = [
 		"Double Casting",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -7790,8 +7384,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 80% Chance ^000000",
 	].join("\n");
 
-	exports[SKID.HW_GANBANTEIN] = [
-
+	SkillDescription[SKID.HW_GANBANTEIN] = [
 		"Ganbantein",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -7805,8 +7398,7 @@ define(["./SkillId"], function( SKID )
 		"This skill is not affected by skills or cards that remove gemstone casting requirements. Success chance is 80% and it will still consume a Gemstone if it fails. ^000000",
 	].join("\n");
 
-	exports[SKID.HW_GRAVITATION] = [
-
+	SkillDescription[SKID.HW_GRAVITATION] = [
 		"Gravitation Field",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -7827,8 +7419,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 1200 Dmg/Sec | -25% ASPD | 9 sec | 100 SP ^000000",
 	].join("\n");
 
-	exports[SKID.WS_CARTTERMINATION] = [
-
+	SkillDescription[SKID.WS_CARTTERMINATION] = [
 		"Cart Termination",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -7850,8 +7441,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 (Weight/6)% Attack | 1500Z spent | 50% Stun Chance ^000000",
 	].join("\n");
 
-	exports[SKID.WS_OVERTHRUSTMAX] = [
-
+	SkillDescription[SKID.WS_OVERTHRUSTMAX] = [
 		"Maximum Over Thrust",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -7868,8 +7458,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 200% ATK | 5000Z spent ^000000",
 	].join("\n");
 
-	exports[SKID.CG_LONGINGFREEDOM] = [
-
+	SkillDescription[SKID.CG_LONGINGFREEDOM] = [
 		"Longing for Freedom",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -7889,8 +7478,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 100% original Movement/ASPD ^000000",
 	].join("\n");
 
-	exports[SKID.CG_HERMODE] = [
-
+	SkillDescription[SKID.CG_HERMODE] = [
 		"Wand of Hermode",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -7909,8 +7497,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 30 Sec Duration | 60 SP ^000000",
 	].join("\n");
 
-	exports[SKID.CG_TAROTCARD] = [
-
+	SkillDescription[SKID.CG_TAROTCARD] = [
 		"Tarot Card of Fate",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -7955,8 +7542,7 @@ define(["./SkillId"], function( SKID )
 		"-Reduces ATK, MATK, HIT, Flee Rate, and DEF by 20% for 30 seconds. Opposite Side.",
 	].join("\n");
 
-	exports[SKID.CR_ACIDDEMONSTRATION] = [
-
+	SkillDescription[SKID.CR_ACIDDEMONSTRATION] = [
 		"Acid Demonstration",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -7981,8 +7567,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 10 Hits | 10% Chance to destroy weapon and armor ^000000",
 	].join("\n");
 
-	exports[SKID.CR_CULTIVATION] = [
-
+	SkillDescription[SKID.CR_CULTIVATION] = [
 		"Plant Cultivation",
 		"Max Level:^777777 2 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -7996,8 +7581,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 2]^777777 Summon Yellow, Red, White, Green, Blue, or Shining Plant | Uses 1 Stem ^000000",
 	].join("\n");
 
-	exports[SKID.TK_MISSION] = [
-
+	SkillDescription[SKID.TK_MISSION] = [
 		"TaeKwon Mission",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -8017,8 +7601,7 @@ define(["./SkillId"], function( SKID )
 		"Any LV 90+ TaeKwon Ranker players will have tripled Maximum HP and SP, and be able to use all of the TaeKwon skills. Check the TaeKwon Ranker Fame List by typing \"/taekwon\". ^000000",
 	].join("\n");
 
-	exports[SKID.SL_HIGH] = [
-
+	SkillDescription[SKID.SL_HIGH] = [
 		"Rebirth Spirit",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Support ^000000",
@@ -8032,8 +7615,7 @@ define(["./SkillId"], function( SKID )
 		"Bonuses last for the skill's duration. ^000000",
 	].join("\n");
 
-	exports[SKID.KN_ONEHAND] = [
-
+	SkillDescription[SKID.KN_ONEHAND] = [
 		"One-Hand Quicken",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -8046,8 +7628,7 @@ define(["./SkillId"], function( SKID )
 		"This skill only works with One-Hand Sword class weapons and the effect cancels when switching to any other type. ^000000",
 	].join("\n");
 
-	exports[SKID.AM_TWILIGHT1] = [
-
+	SkillDescription[SKID.AM_TWILIGHT1] = [
 		"Twilight Alchemy I",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -8060,8 +7641,7 @@ define(["./SkillId"], function( SKID )
 		"Check the ^0000ffPotion Creation Guide^777777 for the necessary ingredients. ^000000",
 	].join("\n");
 
-	exports[SKID.AM_TWILIGHT2] = [
-
+	SkillDescription[SKID.AM_TWILIGHT2] = [
 		"Twilight Alchemy II",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -8075,8 +7655,7 @@ define(["./SkillId"], function( SKID )
 		"Note: ^777777You need a Soul Linker and Super novice on your party to this skill to work. ^000000",
 	].join("\n");
 
-	exports[SKID.AM_TWILIGHT3] = [
-
+	SkillDescription[SKID.AM_TWILIGHT3] = [
 		"Twilight Alchemy III",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -8090,8 +7669,7 @@ define(["./SkillId"], function( SKID )
 		"Note: ^777777You need a Taekwon Boy on your party to this skill to work. ^000000",
 	].join("\n");
 
-	exports[SKID.HT_POWER] = [
-
+	SkillDescription[SKID.HT_POWER] = [
 		"Beast Strafing",
 		"Max Level:^777777 1 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -8105,8 +7683,7 @@ define(["./SkillId"], function( SKID )
 		"Only usable right after using Double Strafing, and its power is heavily affected by STR. ^000000",
 	].join("\n");
 
-	exports[SKID.GS_GLITTERING] = [
-
+	SkillDescription[SKID.GS_GLITTERING] = [
 		"Flip the Coin",
 		"Madness Canceller (L4), Adjustment (L4), Increasing Accuracy (L2). ^000000",
 		"Max Level:^777777 5 ^000000",
@@ -8121,8 +7698,7 @@ define(["./SkillId"], function( SKID )
 		"Each Coin gives +3 DMG, that never misses, in each normal attack. Each Coin also provide more damage to skills in a yet unknown ammount. Coins are lost on relog or death.. ^000000",
 	].join("\n");
 
-	exports[SKID.GS_FLING] = [
-
+	SkillDescription[SKID.GS_FLING] = [
 		"Fling",
 		"Max Level:^777777 1 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -8138,8 +7714,7 @@ define(["./SkillId"], function( SKID )
 		"You can not select how many Coins are used, all coins you have are taken, up to a maximum of 5. If you have none the skill fails. ^000000",
 	].join("\n");
 
-	exports[SKID.GS_TRIPLEACTION] = [
-
+	SkillDescription[SKID.GS_TRIPLEACTION] = [
 		"Triple Action",
 		"Max Level:^777777 1 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -8153,8 +7728,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Use a Coin and deal three hits. ^000000",
 	].join("\n");
 
-	exports[SKID.GS_BULLSEYE] = [
-
+	SkillDescription[SKID.GS_BULLSEYE] = [
 		"Bull's Eye",
 		"Max Level:^777777 1 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -8168,8 +7742,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 An outstanding shot. Causes 500% ATK damage and has a 0.1% chance to put the target in a coma state. Ignores weapon cards and only follow the bullets element. Works only against DemiHuman and Brute type monsters (probably including players) and not against Boss monsters. ^000000",
 	].join("\n");
 
-	exports[SKID.GS_MADNESSCANCEL] = [
-
+	SkillDescription[SKID.GS_MADNESSCANCEL] = [
 		"Madness Canceller",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -8182,8 +7755,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Increase your ATK by 100 and ASPD by 20%. You are unable to move while this effect lasts, and it can not be used together with Adjustment. ^000000",
 	].join("\n");
 
-	exports[SKID.GS_ADJUSTMENT] = [
-
+	SkillDescription[SKID.GS_ADJUSTMENT] = [
 		"Adjustment",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -8196,8 +7768,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Flee Rate +30 and all ranged Physical attacks do -20% damage, but your HIT is -30. Can not be used together with Madness Canceller. ^000000",
 	].join("\n");
 
-	exports[SKID.GS_INCREASING] = [
-
+	SkillDescription[SKID.GS_INCREASING] = [
 		"Increasing Accuracy",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -8210,8 +7781,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 HIT +20, DEX +4, AGI +4 for the skill's duration ^000000",
 	].join("\n");
 
-	exports[SKID.GS_MAGICALBULLET] = [
-
+	SkillDescription[SKID.GS_MAGICALBULLET] = [
 		"Magical Bullet",
 		"Max Level:^777777 1 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -8225,8 +7795,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Fire a magic bullet, thus not using ammo. The bullet's damage is calculated by DEX ATK + INT MATK, and its element is Ghost. ^000000",
 	].join("\n");
 
-	exports[SKID.GS_CRACKER] = [
-
+	SkillDescription[SKID.GS_CRACKER] = [
 		"Cracker",
 		"Max Level:^777777 1 ^000000",
 		"Type:^777777 Active ^000000",
@@ -8241,8 +7810,7 @@ define(["./SkillId"], function( SKID )
 		"Use 1 bullet and make a quick attack on the enemy, attempting to stun him/her. Stun chance increases the closer the enemy is to you. Makes NO damage, and the monster will not attack back if is not aggressive. ^000000",
 	].join("\n");
 
-	exports[SKID.GS_SINGLEACTION] = [
-
+	SkillDescription[SKID.GS_SINGLEACTION] = [
 		"Single Action",
 		"Max Level:^777777 10 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -8260,8 +7828,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 HIT +20, ASPD +5% ^000000",
 	].join("\n");
 
-	exports[SKID.GS_SNAKEEYE] = [
-
+	SkillDescription[SKID.GS_SNAKEEYE] = [
 		"Snake's Eye",
 		"Max Level:^777777 10 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -8279,8 +7846,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 HIT +10, Range +10 ^000000",
 	].join("\n");
 
-	exports[SKID.GS_CHAINACTION] = [
-
+	SkillDescription[SKID.GS_CHAINACTION] = [
 		"Chain Action",
 		"Max Level:^777777 10 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -8288,8 +7854,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 When using Revolvers there is a chance to shoot twice. The higher the SkillLV, the higher the chance of a Doubleshot happening (may follow Thief's Double Attack success probability progression). ^000000",
 	].join("\n");
 
-	exports[SKID.GS_TRACKING] = [
-
+	SkillDescription[SKID.GS_TRACKING] = [
 		"Tracking",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Active / Ranged Single Target Physical Attack ^000000",
@@ -8313,8 +7878,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 1200% ATK, Aim Time 3 sec ^000000",
 	].join("\n");
 
-	exports[SKID.GS_DISARM] = [
-
+	SkillDescription[SKID.GS_DISARM] = [
 		"Disarm",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -8329,8 +7893,7 @@ define(["./SkillId"], function( SKID )
 		"The higher the SkillLV, the higher the success chance. Does not work against Boss monsters. ^000000",
 	].join("\n");
 
-	exports[SKID.GS_PIERCINGSHOT] = [
-
+	SkillDescription[SKID.GS_PIERCINGSHOT] = [
 		"Piercing Shot",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -8349,8 +7912,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 200% ATK, Bleeding Chance 15% ^000000",
 	].join("\n");
 
-	exports[SKID.GS_RAPIDSHOWER] = [
-
+	SkillDescription[SKID.GS_RAPIDSHOWER] = [
 		"Rapid Shower",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -8374,8 +7936,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 1000% ATK ^000000",
 	].join("\n");
 
-	exports[SKID.GS_DESPERADO] = [
-
+	SkillDescription[SKID.GS_DESPERADO] = [
 		"Desperado",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -8399,8 +7960,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 550% ATK per hit ^000000",
 	].join("\n");
 
-	exports[SKID.GS_GATLINGFEVER] = [
-
+	SkillDescription[SKID.GS_GATLINGFEVER] = [
 		"Gatling Fever",
 		"Max Level:^777777 10 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -8423,8 +7983,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 Damage +120, ASPD +20%, Flee Rate -50 ^000000",
 	].join("\n");
 
-	exports[SKID.GS_DUST] = [
-
+	SkillDescription[SKID.GS_DUST] = [
 		"Dust",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -8448,8 +8007,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 600% ATK ^000000",
 	].join("\n");
 
-	exports[SKID.GS_FULLBUSTER] = [
-
+	SkillDescription[SKID.GS_FULLBUSTER] = [
 		"Full Buster",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -8474,8 +8032,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 1300% ATK, Blind Chance 10% ^000000",
 	].join("\n");
 
-	exports[SKID.GS_SPREADATTACK] = [
-
+	SkillDescription[SKID.GS_SPREADATTACK] = [
 		"Spread Attack",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -8499,8 +8056,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 280% ATK, Area 9x9 cells ^000000",
 	].join("\n");
 
-	exports[SKID.GS_GROUNDDRIFT] = [
-
+	SkillDescription[SKID.GS_GROUNDDRIFT] = [
 		"Ground Drift",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -8525,8 +8081,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 Damage +500, lasts 30 sec ^000000",
 	].join("\n");
 
-	exports[SKID.NJ_TOBIDOUGU] = [
-
+	SkillDescription[SKID.NJ_TOBIDOUGU] = [
 		"Throwing Mastery",
 		"Max Level:^777777 10 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -8544,8 +8099,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 ATK +30 ^000000",
 	].join("\n");
 
-	exports[SKID.NJ_SYURIKEN] = [
-
+	SkillDescription[SKID.NJ_SYURIKEN] = [
 		"Throw Shuriken",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -8570,8 +8124,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 Damage +40 ^000000",
 	].join("\n");
 
-	exports[SKID.NJ_KUNAI] = [
-
+	SkillDescription[SKID.NJ_KUNAI] = [
 		"Throw Kunai",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -8587,8 +8140,7 @@ define(["./SkillId"], function( SKID )
 		"The attack's property is affected by the type of Kunai thrown. ^000000",
 	].join("\n");
 
-	exports[SKID.NJ_HUUMA] = [
-
+	SkillDescription[SKID.NJ_HUUMA] = [
 		"Throw Huuma Shuriken",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -8607,8 +8159,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 900% Damage ^000000",
 	].join("\n");
 
-	exports[SKID.NJ_ZENYNAGE] = [
-
+	SkillDescription[SKID.NJ_ZENYNAGE] = [
 		"Throw Zeny",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -8633,8 +8184,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 5000~10000 Zeny ^000000",
 	].join("\n");
 
-	exports[SKID.NJ_TATAMIGAESHI] = [
-
+	SkillDescription[SKID.NJ_TATAMIGAESHI] = [
 		"Reverse Tatami",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -8654,8 +8204,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 3 cells range, 150% ATK ^000000",
 	].join("\n");
 
-	exports[SKID.NJ_KASUMIKIRI] = [
-
+	SkillDescription[SKID.NJ_KASUMIKIRI] = [
 		"Mist Slash",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -8680,8 +8229,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 200% ATK / 300 sec Hide Durration ^000000",
 	].join("\n");
 
-	exports[SKID.NJ_SHADOWJUMP] = [
-
+	SkillDescription[SKID.NJ_SHADOWJUMP] = [
 		"Shadow Jump",
 		"Max Level:^777777 5 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -8702,8 +8250,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 15 cells range ^000000",
 	].join("\n");
 
-	exports[SKID.NJ_KIRIKAGE] = [
-
+	SkillDescription[SKID.NJ_KIRIKAGE] = [
 		"Shadow Slash",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -8722,8 +8269,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 500% ATK / +50% Critical Rate ^000000",
 	].join("\n");
 
-	exports[SKID.NJ_UTSUSEMI] = [
-
+	SkillDescription[SKID.NJ_UTSUSEMI] = [
 		"Cast-off Ciceda Shell",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -8740,8 +8286,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 50 sec, 3 Attacks ^000000",
 	].join("\n");
 
-	exports[SKID.NJ_BUNSINJYUTSU] = [
-
+	SkillDescription[SKID.NJ_BUNSINJYUTSU] = [
 		"Illusionary Shadow",
 		"Max Level:^777777 10 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -8764,8 +8309,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 5 Attacks, 240 sec ^000000",
 	].join("\n");
 
-	exports[SKID.NJ_NINPOU] = [
-
+	SkillDescription[SKID.NJ_NINPOU] = [
 		"Ninpou Training",
 		"Max Level:^777777 10 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -8782,8 +8326,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 +30SP/10sec,items +20% ^000000",
 	].join("\n");
 
-	exports[SKID.NJ_KOUENKA] = [
-
+	SkillDescription[SKID.NJ_KOUENKA] = [
 		"Crimson Fire Blossom",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -8806,8 +8349,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 10 Hits, 900% MATK total ^000000",
 	].join("\n");
 
-	exports[SKID.NJ_KAENSIN] = [
-
+	SkillDescription[SKID.NJ_KAENSIN] = [
 		"Crimson Fire Formation",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -8831,8 +8373,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 9 Hits ^000000",
 	].join("\n");
 
-	exports[SKID.NJ_BAKUENRYU] = [
-
+	SkillDescription[SKID.NJ_BAKUENRYU] = [
 		"Dragon Fire Formation",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -8851,8 +8392,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 MATK +900% ^000000",
 	].join("\n");
 
-	exports[SKID.NJ_HYOUSENSOU] = [
-
+	SkillDescription[SKID.NJ_HYOUSENSOU] = [
 		"Lightning Spear of Ice",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -8865,8 +8405,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Summon 2+SkillLV ice spears to damage the enemy. Each ice spear does 70% MATK damage. ^000000",
 	].join("\n");
 
-	exports[SKID.NJ_SUITON] = [
-
+	SkillDescription[SKID.NJ_SUITON] = [
 		"Water Escape Technique",
 		"Max Level:^777777 10 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -8891,8 +8430,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 Area 9x9, 60 sec, AGI -8 ^000000",
 	].join("\n");
 
-	exports[SKID.NJ_HYOUSYOURAKU] = [
-
+	SkillDescription[SKID.NJ_HYOUSYOURAKU] = [
 		"Falling Ice Pillar",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -8911,8 +8449,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 +350% MATK, Freeze Chance 60% ^000000",
 	].join("\n");
 
-	exports[SKID.NJ_HUUJIN] = [
-
+	SkillDescription[SKID.NJ_HUUJIN] = [
 		"Wind Blade",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -8935,8 +8472,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 6 Hits ^000000",
 	].join("\n");
 
-	exports[SKID.NJ_RAIGEKISAI] = [
-
+	SkillDescription[SKID.NJ_RAIGEKISAI] = [
 		"Lightning Crash",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -8955,8 +8491,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 +360% MATK, 9x9 cells ^000000",
 	].join("\n");
 
-	exports[SKID.NJ_KAMAITACHI] = [
-
+	SkillDescription[SKID.NJ_KAMAITACHI] = [
 		"North Wind",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -8975,8 +8510,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 +600% MATK, Damage Range 9 cells ^000000",
 	].join("\n");
 
-	exports[SKID.NJ_NEN] = [
-
+	SkillDescription[SKID.NJ_NEN] = [
 		"Soul",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -8993,8 +8527,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 STR/INT +5, 90 sec ^000000",
 	].join("\n");
 
-	exports[SKID.NJ_ISSEN] = [
-
+	SkillDescription[SKID.NJ_ISSEN] = [
 		"Final Strike",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -9008,512 +8541,511 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Attack a single target using the rest of your HP to deal massive damage. The more HP you have when casting, the more damage will be done. After using this ability, your HP will be 1. ^000000",
 	].join("\n");
 
-	exports[SKID.MB_FIGHTING] = [
+	SkillDescription[SKID.MB_FIGHTING] = [
 
 	].join("\n");
 
-	exports[SKID.MB_NEUTRAL] = [
+	SkillDescription[SKID.MB_NEUTRAL] = [
 
 	].join("\n");
 
-	exports[SKID.MB_TAIMING_PUTI] = [
+	SkillDescription[SKID.MB_TAIMING_PUTI] = [
 
 	].join("\n");
 
-	exports[SKID.MB_WHITEPOTION] = [
+	SkillDescription[SKID.MB_WHITEPOTION] = [
 
 	].join("\n");
 
-	exports[SKID.MB_MENTAL] = [
+	SkillDescription[SKID.MB_MENTAL] = [
 
 	].join("\n");
 
-	exports[SKID.MB_CARDPITCHER] = [
+	SkillDescription[SKID.MB_CARDPITCHER] = [
 
 	].join("\n");
 
-	exports[SKID.MB_PETPITCHER] = [
+	SkillDescription[SKID.MB_PETPITCHER] = [
 
 	].join("\n");
 
-	exports[SKID.MB_BODYSTUDY] = [
+	SkillDescription[SKID.MB_BODYSTUDY] = [
 
 	].join("\n");
 
-	exports[SKID.MB_BODYALTER] = [
+	SkillDescription[SKID.MB_BODYALTER] = [
 
 	].join("\n");
 
-	exports[SKID.MB_PETMEMORY] = [
+	SkillDescription[SKID.MB_PETMEMORY] = [
 
 	].join("\n");
 
-	exports[SKID.MB_M_TELEPORT] = [
+	SkillDescription[SKID.MB_M_TELEPORT] = [
 
 	].join("\n");
 
-	exports[SKID.MB_B_GAIN] = [
+	SkillDescription[SKID.MB_B_GAIN] = [
 
 	].join("\n");
 
-	exports[SKID.MB_M_GAIN] = [
+	SkillDescription[SKID.MB_M_GAIN] = [
 
 	].join("\n");
 
-	exports[SKID.MB_MISSION] = [
+	SkillDescription[SKID.MB_MISSION] = [
 
 	].join("\n");
 
-	exports[SKID.MB_MUNAKKNOWLEDGE] = [
+	SkillDescription[SKID.MB_MUNAKKNOWLEDGE] = [
 
 	].join("\n");
 
-	exports[SKID.MB_MUNAKBALL] = [
+	SkillDescription[SKID.MB_MUNAKBALL] = [
 
 	].join("\n");
 
-	exports[SKID.MB_SCROLL] = [
+	SkillDescription[SKID.MB_SCROLL] = [
 
 	].join("\n");
 
-	exports[SKID.MB_B_GATHERING] = [
+	SkillDescription[SKID.MB_B_GATHERING] = [
 
 	].join("\n");
 
-	exports[SKID.MB_M_GATHERING] = [
+	SkillDescription[SKID.MB_M_GATHERING] = [
 
 	].join("\n");
 
-	exports[SKID.MB_B_EXCLUDE] = [
+	SkillDescription[SKID.MB_B_EXCLUDE] = [
 
 	].join("\n");
 
-	exports[SKID.MB_B_DRIFT] = [
+	SkillDescription[SKID.MB_B_DRIFT] = [
 
 	].join("\n");
 
-	exports[SKID.MB_B_WALLRUSH] = [
+	SkillDescription[SKID.MB_B_WALLRUSH] = [
 
 	].join("\n");
 
-	exports[SKID.MB_M_WALLRUSH] = [
+	SkillDescription[SKID.MB_M_WALLRUSH] = [
 
 	].join("\n");
 
-	exports[SKID.MB_B_WALLSHIFT] = [
+	SkillDescription[SKID.MB_B_WALLSHIFT] = [
 
 	].join("\n");
 
-	exports[SKID.MB_M_WALLCRASH] = [
+	SkillDescription[SKID.MB_M_WALLCRASH] = [
 
 	].join("\n");
 
-	exports[SKID.MB_M_REINCARNATION] = [
+	SkillDescription[SKID.MB_M_REINCARNATION] = [
 
 	].join("\n");
 
-	exports[SKID.MB_B_EQUIP] = [
+	SkillDescription[SKID.MB_B_EQUIP] = [
 
 	].join("\n");
 
-	exports[SKID.SL_DEATHKNIGHT] = [
+	SkillDescription[SKID.SL_DEATHKNIGHT] = [
 
 	].join("\n");
 
-	exports[SKID.SL_COLLECTOR] = [
+	SkillDescription[SKID.SL_COLLECTOR] = [
 
 	].join("\n");
 
-	exports[SKID.SL_NINJA] = [
+	SkillDescription[SKID.SL_NINJA] = [
 
 	].join("\n");
 
-	exports[SKID.SL_GUNNER] = [
+	SkillDescription[SKID.SL_GUNNER] = [
 
 	].join("\n");
 
-	exports[SKID.AM_TWILIGHT4] = [
+	SkillDescription[SKID.AM_TWILIGHT4] = [
 
 	].join("\n");
 
-	exports[SKID.DE_BERSERKAIZER] = [
+	SkillDescription[SKID.DE_BERSERKAIZER] = [
 
 	].join("\n");
 
-	exports[SKID.DA_DARKPOWER] = [
+	SkillDescription[SKID.DA_DARKPOWER] = [
 
 	].join("\n");
 
-	exports[SKID.DE_PASSIVE] = [
+	SkillDescription[SKID.DE_PASSIVE] = [
 
 	].join("\n");
 
-	exports[SKID.DE_PATTACK] = [
+	SkillDescription[SKID.DE_PATTACK] = [
 
 	].join("\n");
 
-	exports[SKID.DE_PSPEED] = [
+	SkillDescription[SKID.DE_PSPEED] = [
 
 	].join("\n");
 
-	exports[SKID.DE_PDEFENSE] = [
+	SkillDescription[SKID.DE_PDEFENSE] = [
 
 	].join("\n");
 
-	exports[SKID.DE_PCRITICAL] = [
+	SkillDescription[SKID.DE_PCRITICAL] = [
 
 	].join("\n");
 
-	exports[SKID.DE_PHP] = [
+	SkillDescription[SKID.DE_PHP] = [
 
 	].join("\n");
 
-	exports[SKID.DE_PSP] = [
+	SkillDescription[SKID.DE_PSP] = [
 
 	].join("\n");
 
-	exports[SKID.DE_RESET] = [
+	SkillDescription[SKID.DE_RESET] = [
 
 	].join("\n");
 
-	exports[SKID.DE_RANKING] = [
+	SkillDescription[SKID.DE_RANKING] = [
 
 	].join("\n");
 
-	exports[SKID.DE_PTRIPLE] = [
+	SkillDescription[SKID.DE_PTRIPLE] = [
 
 	].join("\n");
 
-	exports[SKID.DE_ENERGY] = [
+	SkillDescription[SKID.DE_ENERGY] = [
 
 	].join("\n");
 
-	exports[SKID.DE_NIGHTMARE] = [
+	SkillDescription[SKID.DE_NIGHTMARE] = [
 
 	].join("\n");
 
-	exports[SKID.DE_SLASH] = [
+	SkillDescription[SKID.DE_SLASH] = [
 
 	].join("\n");
 
-	exports[SKID.DE_COIL] = [
+	SkillDescription[SKID.DE_COIL] = [
 
 	].join("\n");
 
-	exports[SKID.DE_WAVE] = [
+	SkillDescription[SKID.DE_WAVE] = [
 
 	].join("\n");
 
-	exports[SKID.DE_REBIRTH] = [
+	SkillDescription[SKID.DE_REBIRTH] = [
 
 	].join("\n");
 
-	exports[SKID.DE_AURA] = [
+	SkillDescription[SKID.DE_AURA] = [
 
 	].join("\n");
 
-	exports[SKID.DE_FREEZER] = [
+	SkillDescription[SKID.DE_FREEZER] = [
 
 	].join("\n");
 
-	exports[SKID.DE_CHANGEATTACK] = [
+	SkillDescription[SKID.DE_CHANGEATTACK] = [
 
 	].join("\n");
 
-	exports[SKID.DE_PUNISH] = [
+	SkillDescription[SKID.DE_PUNISH] = [
 
 	].join("\n");
 
-	exports[SKID.DE_POISON] = [
+	SkillDescription[SKID.DE_POISON] = [
 
 	].join("\n");
 
-	exports[SKID.DE_INSTANT] = [
+	SkillDescription[SKID.DE_INSTANT] = [
 
 	].join("\n");
 
-	exports[SKID.DE_WARNING] = [
+	SkillDescription[SKID.DE_WARNING] = [
 
 	].join("\n");
 
-	exports[SKID.DE_RANKEDKNIFE] = [
+	SkillDescription[SKID.DE_RANKEDKNIFE] = [
 
 	].join("\n");
 
-	exports[SKID.DE_RANKEDGRADIUS] = [
+	SkillDescription[SKID.DE_RANKEDGRADIUS] = [
 
 	].join("\n");
 
-	exports[SKID.DE_GAUGE] = [
+	SkillDescription[SKID.DE_GAUGE] = [
 
 	].join("\n");
 
-	exports[SKID.DE_GTIME] = [
+	SkillDescription[SKID.DE_GTIME] = [
 
 	].join("\n");
 
-	exports[SKID.DE_GPAIN] = [
+	SkillDescription[SKID.DE_GPAIN] = [
 
 	].join("\n");
 
-	exports[SKID.DE_GSKILL] = [
+	SkillDescription[SKID.DE_GSKILL] = [
 
 	].join("\n");
 
-	exports[SKID.DE_GKILL] = [
+	SkillDescription[SKID.DE_GKILL] = [
 
 	].join("\n");
 
-	exports[SKID.DE_ACCEL] = [
+	SkillDescription[SKID.DE_ACCEL] = [
 
 	].join("\n");
 
-	exports[SKID.DE_BLOCKDOUBLE] = [
+	SkillDescription[SKID.DE_BLOCKDOUBLE] = [
 
 	].join("\n");
 
-	exports[SKID.DE_BLOCKMELEE] = [
+	SkillDescription[SKID.DE_BLOCKMELEE] = [
 
 	].join("\n");
 
-	exports[SKID.DE_BLOCKFAR] = [
+	SkillDescription[SKID.DE_BLOCKFAR] = [
 
 	].join("\n");
 
-	exports[SKID.DE_FRONTATTACK] = [
+	SkillDescription[SKID.DE_FRONTATTACK] = [
 
 	].join("\n");
 
-	exports[SKID.DE_DANGERATTACK] = [
+	SkillDescription[SKID.DE_DANGERATTACK] = [
 
 	].join("\n");
 
-	exports[SKID.DE_TWINATTACK] = [
+	SkillDescription[SKID.DE_TWINATTACK] = [
 
 	].join("\n");
 
-	exports[SKID.DE_WINDATTACK] = [
+	SkillDescription[SKID.DE_WINDATTACK] = [
 
 	].join("\n");
 
-	exports[SKID.DE_WATERATTACK] = [
+	SkillDescription[SKID.DE_WATERATTACK] = [
 
 	].join("\n");
 
-	exports[SKID.DA_ENERGY] = [
+	SkillDescription[SKID.DA_ENERGY] = [
 
 	].join("\n");
 
-	exports[SKID.DA_CLOUD] = [
+	SkillDescription[SKID.DA_CLOUD] = [
 
 	].join("\n");
 
-	exports[SKID.DA_FIRSTSLOT] = [
+	SkillDescription[SKID.DA_FIRSTSLOT] = [
 
 	].join("\n");
 
-	exports[SKID.DA_HEADDEF] = [
+	SkillDescription[SKID.DA_HEADDEF] = [
 
 	].join("\n");
 
-	exports[SKID.DA_SPACE] = [
+	SkillDescription[SKID.DA_SPACE] = [
 
 	].join("\n");
 
-	exports[SKID.DA_TRANSFORM] = [
+	SkillDescription[SKID.DA_TRANSFORM] = [
 
 	].join("\n");
 
-	exports[SKID.DA_EXPLOSION] = [
+	SkillDescription[SKID.DA_EXPLOSION] = [
 
 	].join("\n");
 
-	exports[SKID.DA_REWARD] = [
+	SkillDescription[SKID.DA_REWARD] = [
 
 	].join("\n");
 
-	exports[SKID.DA_CRUSH] = [
+	SkillDescription[SKID.DA_CRUSH] = [
 
 	].join("\n");
 
-	exports[SKID.DA_ITEMREBUILD] = [
+	SkillDescription[SKID.DA_ITEMREBUILD] = [
 
 	].join("\n");
 
-	exports[SKID.DA_ILLUSION] = [
+	SkillDescription[SKID.DA_ILLUSION] = [
 
 	].join("\n");
 
-	exports[SKID.DA_NUETRALIZE] = [
+	SkillDescription[SKID.DA_NUETRALIZE] = [
 
 	].join("\n");
 
-	exports[SKID.DA_RUNNER] = [
+	SkillDescription[SKID.DA_RUNNER] = [
 
 	].join("\n");
 
-	exports[SKID.DA_TRANSFER] = [
+	SkillDescription[SKID.DA_TRANSFER] = [
 
 	].join("\n");
 
-	exports[SKID.DA_WALL] = [
+	SkillDescription[SKID.DA_WALL] = [
 
 	].join("\n");
 
-	exports[SKID.DA_REVENGE] = [
+	SkillDescription[SKID.DA_REVENGE] = [
 
 	].join("\n");
 
-	exports[SKID.DA_EARPLUG] = [
+	SkillDescription[SKID.DA_EARPLUG] = [
 
 	].join("\n");
 
-	exports[SKID.DA_CONTRACT] = [
+	SkillDescription[SKID.DA_CONTRACT] = [
 
 	].join("\n");
 
-	exports[SKID.DA_BLACK] = [
+	SkillDescription[SKID.DA_BLACK] = [
 
 	].join("\n");
 
-	exports[SKID.DA_DREAM] = [
+	SkillDescription[SKID.DA_DREAM] = [
 
 	].join("\n");
 
-	exports[SKID.DA_MAGICCART] = [
+	SkillDescription[SKID.DA_MAGICCART] = [
 
 	].join("\n");
 
-	exports[SKID.DA_COPY] = [
+	SkillDescription[SKID.DA_COPY] = [
 
 	].join("\n");
 
-	exports[SKID.DA_CRYSTAL] = [
+	SkillDescription[SKID.DA_CRYSTAL] = [
 
 	].join("\n");
 
-	exports[SKID.DA_EXP] = [
+	SkillDescription[SKID.DA_EXP] = [
 
 	].join("\n");
 
-	exports[SKID.DA_CARTSWING] = [
+	SkillDescription[SKID.DA_CARTSWING] = [
 
 	].join("\n");
 
-	exports[SKID.DA_REBUILD] = [
+	SkillDescription[SKID.DA_REBUILD] = [
 
 	].join("\n");
 
-	exports[SKID.DA_JOBCHANGE] = [
+	SkillDescription[SKID.DA_JOBCHANGE] = [
 
 	].join("\n");
 
-	exports[SKID.DA_EDARKNESS] = [
+	SkillDescription[SKID.DA_EDARKNESS] = [
 
 	].join("\n");
 
-	exports[SKID.DA_EGUARDIAN] = [
+	SkillDescription[SKID.DA_EGUARDIAN] = [
 
 	].join("\n");
 
-	exports[SKID.DA_TIMEOUT] = [
+	SkillDescription[SKID.DA_TIMEOUT] = [
 
 	].join("\n");
 
-	exports[SKID.ALL_TIMEIN] = [
+	SkillDescription[SKID.ALL_TIMEIN] = [
 
 	].join("\n");
 
-	exports[SKID.DA_ZENYRANK] = [
+	SkillDescription[SKID.DA_ZENYRANK] = [
 
 	].join("\n");
 
-	exports[SKID.DA_ACCESSORYMIX] = [
+	SkillDescription[SKID.DA_ACCESSORYMIX] = [
 
 	].join("\n");
 
-	exports[SKID.NPC_EARTHQUAKE] = [
+	SkillDescription[SKID.NPC_EARTHQUAKE] = [
 
 	].join("\n");
 
-	exports[SKID.NPC_DRAGONFEAR] = [
+	SkillDescription[SKID.NPC_DRAGONFEAR] = [
 
 	].join("\n");
 
-	exports[SKID.NPC_PULSESTRIKE] = [
+	SkillDescription[SKID.NPC_PULSESTRIKE] = [
 
 	].join("\n");
 
-	exports[SKID.NPC_HELLJUDGEMENT] = [
+	SkillDescription[SKID.NPC_HELLJUDGEMENT] = [
 
 	].join("\n");
 
-	exports[SKID.NPC_WIDESILENCE] = [
+	SkillDescription[SKID.NPC_WIDESILENCE] = [
 
 	].join("\n");
 
-	exports[SKID.NPC_WIDEFREEZE] = [
+	SkillDescription[SKID.NPC_WIDEFREEZE] = [
 
 	].join("\n");
 
-	exports[SKID.NPC_WIDEBLEEDING] = [
+	SkillDescription[SKID.NPC_WIDEBLEEDING] = [
 
 	].join("\n");
 
-	exports[SKID.NPC_WIDESTONE] = [
+	SkillDescription[SKID.NPC_WIDESTONE] = [
 
 	].join("\n");
 
-	exports[SKID.NPC_WIDECONFUSE] = [
+	SkillDescription[SKID.NPC_WIDECONFUSE] = [
 
 	].join("\n");
 
-	exports[SKID.NPC_WIDESLEEP] = [
+	SkillDescription[SKID.NPC_WIDESLEEP] = [
 
 	].join("\n");
 
-	exports[SKID.NPC_EVILLAND] = [
+	SkillDescription[SKID.NPC_EVILLAND] = [
 
 	].join("\n");
 
-	exports[SKID.NPC_MAGICMIRROR] = [
+	SkillDescription[SKID.NPC_MAGICMIRROR] = [
 
 	].join("\n");
 
-	exports[SKID.NPC_SLOWCAST] = [
+	SkillDescription[SKID.NPC_SLOWCAST] = [
 
 	].join("\n");
 
-	exports[SKID.NPC_CRITICALWOUND] = [
+	SkillDescription[SKID.NPC_CRITICALWOUND] = [
 
 	].join("\n");
 
-	exports[SKID.NPC_STONESKIN] = [
+	SkillDescription[SKID.NPC_STONESKIN] = [
 
 	].join("\n");
 
-	exports[SKID.NPC_ANTIMAGIC] = [
+	SkillDescription[SKID.NPC_ANTIMAGIC] = [
 
 	].join("\n");
 
-	exports[SKID.NPC_WIDECURSE] = [
+	SkillDescription[SKID.NPC_WIDECURSE] = [
 
 	].join("\n");
 
-	exports[SKID.NPC_WIDESTUN] = [
+	SkillDescription[SKID.NPC_WIDESTUN] = [
 
 	].join("\n");
 
-	exports[SKID.NPC_VAMPIRE_GIFT] = [
+	SkillDescription[SKID.NPC_VAMPIRE_GIFT] = [
 
 	].join("\n");
 
-	exports[SKID.NPC_WIDESOULDRAIN] = [
+	SkillDescription[SKID.NPC_WIDESOULDRAIN] = [
 
 	].join("\n");
 
-	exports[SKID.ALL_INCCARRY] = [
-
+	SkillDescription[SKID.ALL_INCCARRY] = [
 		"Enlarge Weight Limit R",
 		"Max Level:^777777 10 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -9530,58 +9062,51 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 Enlarge Weight +2000 ^000000",
 	].join("\n");
 
-	exports[SKID.NPC_HELLPOWER] = [
+	SkillDescription[SKID.NPC_HELLPOWER] = [
 
 	].join("\n");
 
-	exports[SKID.NPC_ALLHEAL] = [
+	SkillDescription[SKID.NPC_ALLHEAL] = [
 
 	].join("\n");
 
-	exports[SKID.GM_SANDMAN] = [
-
+	SkillDescription[SKID.GM_SANDMAN] = [
 		"Lullaby",
 		"Type : ^777777 Active ^bb00bb('''')^000000",
 		"Effect : ^777777'''''' '''' '' '''' '''尡'' 'ҷ' '''''' '''''ð' ''' '' '''' '''''''·' ''''''.^000000",
 	].join("\n");
 
-	exports[SKID.ALL_CATCRY] = [
-
+	SkillDescription[SKID.ALL_CATCRY] = [
 		"Cat Cry",
 		"Effect : '''' : ^777777'㸦 'ѾƳ''' '''' '''''''' '''''Ҹ''' ''''.^000000",
 	].join("\n");
 
-	exports[SKID.ALL_PARTYFLEE] = [
-
+	SkillDescription[SKID.ALL_PARTYFLEE] = [
 		"Party Flee",
 		"Effect : ^777777''^000000\"",
 	].join("\n");
 
-	exports[SKID.ALL_ANGEL_PROTECT] = [
-
+	SkillDescription[SKID.ALL_ANGEL_PROTECT] = [
 		"Angel Protect",
 	].join("\n");
 
-	exports[SKID.ALL_DREAM_SUMMERNIGHT] = [
-
+	SkillDescription[SKID.ALL_DREAM_SUMMERNIGHT] = [
 		"Dream Summernight",
 		"Effect : ^777777'''''ϸ' '' '''' '''' '''' 'ٴ' '' '' '''''' ''''.^000000\"",
 	].join("\n");
 
-	exports[SKID.ALL_REVERSEORCISH] = [
+	SkillDescription[SKID.ALL_REVERSEORCISH] = [
 
 	].join("\n");
 
-	exports[SKID.ALL_WEWISH] = [
-
+	SkillDescription[SKID.ALL_WEWISH] = [
 		"We Wish",
 		"(Oh! Holy Night)",
 		"Effect:^777777 Sing along with the Singing Crystal's tune:",
 		"We wish you a Merry Christmas, and a Happy New Year! ^000000",
 	].join("\n");
 
-	exports[SKID.ALL_BUYING_STORE] = [
-
+	SkillDescription[SKID.ALL_BUYING_STORE] = [
 		"Buying Store",
 		"Type : Active",
 		"Target:^777777 Self ^000000",
@@ -9589,16 +9114,14 @@ define(["./SkillId"], function( SKID )
 		"Effect : ^777777Enables the ability to open a purchase stall to buy various kinds of items. Must have atleast 1 item you are buying.^000000",
 	].join("\n");
 
-	exports[SKID.ALL_GUARDIAN_RECALL] = [
-
+	SkillDescription[SKID.ALL_GUARDIAN_RECALL] = [
 		"Guardian Recall",
 		"Max Lv : 1",
 		"Type : ^777777Active^bb0000(Return)^000000",
 		"Description : ^777777Warps you to the Town of Mora. 3 seconds fixed-casting time. Skill cooldown is 5 minutes.^000000",
 	].join("\n");
 
-	exports[SKID.ALL_ODINS_POWER] = [
-
+	SkillDescription[SKID.ALL_ODINS_POWER] = [
 		"Odin's Power",
 		"Type:^777777 Active / Buff ^000000",
 		"Description : Temporarily increases Magical and Physical attack damage but lowers DEF and MDEF",
@@ -9607,8 +9130,7 @@ define(["./SkillId"], function( SKID )
 	].join("\n");
 
 
-	exports[SKID.KN_CHARGEATK] = [
-
+	SkillDescription[SKID.KN_CHARGEATK] = [
 		"Charge Attack",
 		"Max Level:^777777 1 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -9622,8 +9144,7 @@ define(["./SkillId"], function( SKID )
 		"Further the enemy is from you, higher your ATK will be, but also increase your casting time of this skill. ^000000",
 	].join("\n");
 
-	exports[SKID.CR_SHRINK] = [
-
+	SkillDescription[SKID.CR_SHRINK] = [
 		"Shrink",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -9636,16 +9157,14 @@ define(["./SkillId"], function( SKID )
 		"If you successfully defend using Auto Guard, there is a (5*Auto Guard LV)% chance to push the defended enemy 2 cells away. ^000000",
 	].join("\n");
 
-	exports[SKID.AS_SONICACCEL] = [
-
+	SkillDescription[SKID.AS_SONICACCEL] = [
 		"Sonic Acceleration",
 		"Max Level:^777777 1 ^000000",
 		"Type:^777777 Passive ^000000",
 		"Effect:^777777 Increases the Sonic Blow HIT by +50 and Damage by +10% ^000000",
 	].join("\n");
 
-	exports[SKID.AS_VENOMKNIFE] = [
-
+	SkillDescription[SKID.AS_VENOMKNIFE] = [
 		"Throw Venom Knife",
 		"Max Level:^777777 1 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -9658,8 +9177,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Throws a poisoned Dagger with a high chance of poisoning the target. This Skill requires you to have a Dagger equipped and uses up this item when executed. ^000000",
 	].join("\n");
 
-	exports[SKID.RG_CLOSECONFINE] = [
-
+	SkillDescription[SKID.RG_CLOSECONFINE] = [
 		"Close Confine",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -9673,8 +9191,7 @@ define(["./SkillId"], function( SKID )
 		"If either the victim or you die, or should any of them teleport away, this skill is cancelled. ^000000",
 	].join("\n");
 
-	exports[SKID.WZ_SIGHTBLASTER] = [
-
+	SkillDescription[SKID.WZ_SIGHTBLASTER] = [
 		"Sight Blaster",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -9688,8 +9205,7 @@ define(["./SkillId"], function( SKID )
 		"When an enemy steps next to you, he will be hit by a MATK Fire Element attack and pushed back. The Fireball disappears after hitting an enemy. ^000000",
 	].join("\n");
 
-	exports[SKID.SA_CREATECON] = [
-
+	SkillDescription[SKID.SA_CREATECON] = [
 		"Create Elemental Converter",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -9711,8 +9227,7 @@ define(["./SkillId"], function( SKID )
 		"3 Snail's Shell + 1 Blank Scroll ^000000",
 	].join("\n");
 
-	exports[SKID.SA_ELEMENTWATER] = [
-
+	SkillDescription[SKID.SA_ELEMENTWATER] = [
 		"Elemental Change (Water)",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -9725,8 +9240,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Change the target monster's elemental property to Water, uses up a Frost Elemental Converter. ^000000",
 	].join("\n");
 
-	exports[SKID.HT_PHANTASMIC] = [
-
+	SkillDescription[SKID.HT_PHANTASMIC] = [
 		"Phantasmic Arrow",
 		"Max Level:^777777 1 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -9739,8 +9253,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Launches an arrow of illusion from your bow. It has 150% ATK, and if it hits the enemy, it pushes them back 3 cells. You can use this skill even if you have no Arrows equipped. ^000000",
 	].join("\n");
 
-	exports[SKID.BA_PANGVOICE] = [
-
+	SkillDescription[SKID.BA_PANGVOICE] = [
 		"Pang Voice",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -9753,8 +9266,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 You scream out at a single target, causing the 'Confusion' status ailment. Does not work against Boss monsters. ^000000",
 	].join("\n");
 
-	exports[SKID.DC_WINKCHARM] = [
-
+	SkillDescription[SKID.DC_WINKCHARM] = [
 		"Wink of Charm",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -9770,16 +9282,14 @@ define(["./SkillId"], function( SKID )
 		"This skill only works on DemiHuman, Angel and Demon type monsters and, obviously, does not work against Boss monsters. ^000000",
 	].join("\n");
 
-	exports[SKID.BS_UNFAIRLYTRICK] = [
-
+	SkillDescription[SKID.BS_UNFAIRLYTRICK] = [
 		"Unfair Trick",
 		"Max Level:^777777 1 ^000000",
 		"Type:^777777 Passive ^000000",
 		"Effect:^777777 Reduces the Zeny cost of Mammonite by 10%. ^000000",
 	].join("\n");
 
-	exports[SKID.BS_GREED] = [
-
+	SkillDescription[SKID.BS_GREED] = [
 		"Greed",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -9794,8 +9304,7 @@ define(["./SkillId"], function( SKID )
 		"Do note this skill does not bypass the order of who gets an item first, so you cannot use this skill to snatch an item when another player has the first priority over the item dropped. ^000000",
 	].join("\n");
 
-	exports[SKID.PR_REDEMPTIO] = [
-
+	SkillDescription[SKID.PR_REDEMPTIO] = [
 		"Redemptio",
 		"Max Level:^777777 1 ^000000",
 		"Type:^777777 Supportive ^000000",
@@ -9811,8 +9320,7 @@ define(["./SkillId"], function( SKID )
 		"Editor's Note: I speculate the EXP loss to be (1-Resurrected Members)*0.01% ^000000",
 	].join("\n");
 
-	exports[SKID.MO_KITRANSLATION] = [
-
+	SkillDescription[SKID.MO_KITRANSLATION] = [
 		"Ki Translation",
 		"Max Level:^777777 1 ^000000",
 		"Type:^777777 Supportive ^000000",
@@ -9825,8 +9333,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Transfer one of your Spirit Spheres to another party member. Uses up 1 Spirit Sphere. ^000000",
 	].join("\n");
 
-	exports[SKID.MO_BALKYOUNG] = [
-
+	SkillDescription[SKID.MO_BALKYOUNG] = [
 		"Ki Explosion",
 		"Max Level:^777777 1 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -9841,8 +9348,7 @@ define(["./SkillId"], function( SKID )
 		"Drains a small amount of HP per use. ^000000",
 	].join("\n");
 
-	exports[SKID.SA_ELEMENTGROUND] = [
-
+	SkillDescription[SKID.SA_ELEMENTGROUND] = [
 		"Elemental Change (Earth)",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -9855,8 +9361,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Change the target monster's elemental property to Earth, uses up a Seismic Elemental Converter. ^000000",
 	].join("\n");
 
-	exports[SKID.SA_ELEMENTFIRE] = [
-
+	SkillDescription[SKID.SA_ELEMENTFIRE] = [
 		"Elemental Change (Fire)",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -9869,8 +9374,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Change the target monster's elemental property to Fire, uses up a Flame Elemental Converter. ^000000",
 	].join("\n");
 
-	exports[SKID.SA_ELEMENTWIND] = [
-
+	SkillDescription[SKID.SA_ELEMENTWIND] = [
 		"Elemental Change (Wind)",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -9883,8 +9387,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Change the target monster's elemental property to Wind, uses up a Lightning Elemental Converter. ^000000",
 	].join("\n");
 
-	exports[SKID.RK_ENCHANTBLADE] = [
-
+	SkillDescription[SKID.RK_ENCHANTBLADE] = [
 		"Enchant Blade",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Support ^000000",
@@ -9900,8 +9403,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 +200 MATK ^000000",
 	].join("\n");
 
-	exports[SKID.RK_SONICWAVE] = [
-
+	SkillDescription[SKID.RK_SONICWAVE] = [
 		"Sonic Wave",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -9918,8 +9420,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 1000% ATK ^000000",
 	].join("\n");
 
-	exports[SKID.RK_DEATHBOUND] = [
-
+	SkillDescription[SKID.RK_DEATHBOUND] = [
 		"Death Bound",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -9940,8 +9441,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 1050% ATK ^000000",
 	].join("\n");
 
-	exports[SKID.RK_HUNDREDSPEAR] = [
-
+	SkillDescription[SKID.RK_HUNDREDSPEAR] = [
 		"Hundred Spear",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -9961,8 +9461,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 1400% ATK / Spear Boomerang proc chance 40% ^000000",
 	].join("\n");
 
-	exports[SKID.RK_WINDCUTTER] = [
-
+	SkillDescription[SKID.RK_WINDCUTTER] = [
 		"Wind Cutter",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -9977,8 +9476,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 350% ATK ^000000",
 	].join("\n");
 
-	exports[SKID.RK_IGNITIONBREAK] = [
-
+	SkillDescription[SKID.RK_IGNITIONBREAK] = [
 		"Ignition Break",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -9994,8 +9492,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 1500%-1250%-1000% ATK ^000000",
 	].join("\n");
 
-	exports[SKID.RK_DRAGONTRAINING] = [
-
+	SkillDescription[SKID.RK_DRAGONTRAINING] = [
 		"Dragon Training",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Passive ^000000",
@@ -10007,8 +9504,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Normal Attack Speed, Max Weight +1500 ^000000",
 	].join("\n");
 
-	exports[SKID.RK_DRAGONBREATH] = [
-
+	SkillDescription[SKID.RK_DRAGONBREATH] = [
 		"Dragon Breath",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -10019,8 +9515,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Causes the dragon to breath incredibly hot fire, with a chance to cause burning which deals damage over time. The damage of dragon breath is dependant on the condition of the rider. ^000000",
 	].join("\n");
 
-	exports[SKID.RK_DRAGONHOWLING] = [
-
+	SkillDescription[SKID.RK_DRAGONHOWLING] = [
 		"Dragon Howling",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -10031,8 +9526,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 The dragon lets out a terrible howl, causing fear status to those within range. Howling however can negatively affect the performance of the dragon. ^000000",
 	].join("\n");
 
-	exports[SKID.RK_RUNEMASTERY] = [
-
+	SkillDescription[SKID.RK_RUNEMASTERY] = [
 		"Rune Mastery",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Passive ^000000",
@@ -10053,44 +9547,43 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 - ^000000",
 	].join("\n");
 
-	exports[SKID.RK_MILLENNIUMSHIELD] = [
+	SkillDescription[SKID.RK_MILLENNIUMSHIELD] = [
 
 	].join("\n");
 
-	exports[SKID.RK_CRUSHSTRIKE] = [
+	SkillDescription[SKID.RK_CRUSHSTRIKE] = [
 
 	].join("\n");
 
-	exports[SKID.RK_REFRESH] = [
+	SkillDescription[SKID.RK_REFRESH] = [
 
 	].join("\n");
 
-	exports[SKID.RK_GIANTGROWTH] = [
+	SkillDescription[SKID.RK_GIANTGROWTH] = [
 
 	].join("\n");
 
-	exports[SKID.RK_STONEHARDSKIN] = [
+	SkillDescription[SKID.RK_STONEHARDSKIN] = [
 
 	].join("\n");
 
-	exports[SKID.RK_VITALITYACTIVATION] = [
+	SkillDescription[SKID.RK_VITALITYACTIVATION] = [
 
 	].join("\n");
 
-	exports[SKID.RK_STORMBLAST] = [
+	SkillDescription[SKID.RK_STORMBLAST] = [
 
 	].join("\n");
 
-	exports[SKID.RK_FIGHTINGSPIRIT] = [
+	SkillDescription[SKID.RK_FIGHTINGSPIRIT] = [
 
 	].join("\n");
 
-	exports[SKID.RK_ABUNDANCE] = [
+	SkillDescription[SKID.RK_ABUNDANCE] = [
 
 	].join("\n");
 
-	exports[SKID.RK_PHANTOMTHRUST] = [
-
+	SkillDescription[SKID.RK_PHANTOMTHRUST] = [
 		"Phantom Thrust",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -10105,8 +9598,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Range 9 cells / 250% ATK ^000000",
 	].join("\n");
 
-	exports[SKID.GC_VENOMIMPRESS] = [
-
+	SkillDescription[SKID.GC_VENOMIMPRESS] = [
 		"Venom Impress",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -10122,8 +9614,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Poison Resistance -50% ^000000",
 	].join("\n");
 
-	exports[SKID.GC_CROSSIMPACT] = [
-
+	SkillDescription[SKID.GC_CROSSIMPACT] = [
 		"Cross Impact",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -10138,8 +9629,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 1400% ATK ^000000",
 	].join("\n");
 
-	exports[SKID.GC_DARKILLUSION] = [
-
+	SkillDescription[SKID.GC_DARKILLUSION] = [
 		"Dark Illusion",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -10155,8 +9645,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 100% ATK / Range 9 Cells ^000000",
 	].join("\n");
 
-	exports[SKID.GC_RESEARCHNEWPOISON] = [
-
+	SkillDescription[SKID.GC_RESEARCHNEWPOISON] = [
 		"Research New Poison",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -10176,8 +9665,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 80% Success Rate ^000000",
 	].join("\n");
 
-	exports[SKID.GC_CREATENEWPOISON] = [
-
+	SkillDescription[SKID.GC_CREATENEWPOISON] = [
 		"Create New Poison",
 		"Max Level:^777777 1 ^000000",
 		"Type:^777777 Active ^000000",
@@ -10186,8 +9674,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Creates a new poison. Presents a list of poisons you can make with your current items. ^000000",
 	].join("\n");
 
-	exports[SKID.GC_ANTIDOTE] = [
-
+	SkillDescription[SKID.GC_ANTIDOTE] = [
 		"Antidote",
 		"Max Level:^777777 1 ^000000",
 		"Type:^777777 Active ^000000",
@@ -10196,8 +9683,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Using 1 Antidote, cancels out the effects of a Guillotine Cross poison on a single target. ^000000",
 	].join("\n");
 
-	exports[SKID.GC_POISONINGWEAPON] = [
-
+	SkillDescription[SKID.GC_POISONINGWEAPON] = [
 		"Poisoning Weapon",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Active ^000000",
@@ -10214,8 +9700,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Poisoning Rate 12% ^000000",
 	].join("\n");
 
-	exports[SKID.GC_WEAPONBLOCKING] = [
-
+	SkillDescription[SKID.GC_WEAPONBLOCKING] = [
 		"Weapon Blocking",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Active / Buff ^000000",
@@ -10232,8 +9717,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Blocking Rate 20% ^000000",
 	].join("\n");
 
-	exports[SKID.GC_COUNTERSLASH] = [
-
+	SkillDescription[SKID.GC_COUNTERSLASH] = [
 		"Counter Slash",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Active / Buff ^000000",
@@ -10249,8 +9733,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 800% ATK ^000000",
 	].join("\n");
 
-	exports[SKID.GC_WEAPONCRUSH] = [
-
+	SkillDescription[SKID.GC_WEAPONCRUSH] = [
 		"Weapon Crush",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -10262,8 +9745,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 When successfully blocking an attack with Weapon Blocking, you can counter using Weapon Crush. When used it divests the attackers weapon. Increased skill level increases the success rate and duration. ^000000",
 	].join("\n");
 
-	exports[SKID.GC_VENOMPRESSURE] = [
-
+	SkillDescription[SKID.GC_VENOMPRESSURE] = [
 		"Venom Pressure",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Active / Buff ^000000",
@@ -10275,8 +9757,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 While your weapon is enchanted with Poisoning Weapon there's a very high chance to inflict the endowed poison on the target. When used, you lose the poisoning weapon status. ^000000"
 	].join("\n");
 
-	exports[SKID.GC_POISONSMOKE] = [
-
+	SkillDescription[SKID.GC_POISONSMOKE] = [
 		"Poison Smoke",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Active / Buff ^000000",
@@ -10292,8 +9773,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Duration 18 seconds. ^000000",
 	].join("\n");
 
-	exports[SKID.GC_CLOAKINGEXCEED] = [
-
+	SkillDescription[SKID.GC_CLOAKINGEXCEED] = [
 		"Cloaking Exceed",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Active ^000000",
@@ -10309,8 +9789,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Move Speed 140%, Number of Allowed Hit 3 ^000000",
 	].join("\n");
 
-	exports[SKID.GC_PHANTOMMENACE] = [
-
+	SkillDescription[SKID.GC_PHANTOMMENACE] = [
 		"Phantom Menace",
 		"Max Level:^777777 1 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -10320,8 +9799,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 The Guillotine Cross strikes from the shadows to hit all targets in a 7x7 area for 300% damage. Cancels hidden status on all targets that are hit. ^000000",
 	].join("\n");
 
-	exports[SKID.GC_HALLUCINATIONWALK] = [
-
+	SkillDescription[SKID.GC_HALLUCINATIONWALK] = [
 		"Hallucination Walk",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Active ^000000",
@@ -10338,8 +9816,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Evasion Rate +250, Magic Evasion 50% ^000000",
 	].join("\n");
 
-	exports[SKID.GC_ROLLINGCUTTER] = [
-
+	SkillDescription[SKID.GC_ROLLINGCUTTER] = [
 		"Rolling Cutter",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -10354,8 +9831,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 300% ATK / Range 5 x 5^000000",
 	].join("\n");
 
-	exports[SKID.GC_CROSSRIPPERSLASHER] = [
-
+	SkillDescription[SKID.GC_CROSSRIPPERSLASHER] = [
 		"Cross Ripper Slasher",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -10370,8 +9846,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 800% ATK / Range 13 cells ^000000",
 	].join("\n");
 
-	exports[SKID.AB_JUDEX] = [
-
+	SkillDescription[SKID.AB_JUDEX] = [
 		"Judex",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -10386,8 +9861,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 400% MATK ^000000",
 	].join("\n");
 
-	exports[SKID.AB_ANCILLA] = [
-
+	SkillDescription[SKID.AB_ANCILLA] = [
 		"Ancilla",
 		"Max Level:^777777 1 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -10398,8 +9872,7 @@ define(["./SkillId"], function( SKID )
 		"(Ancilla item recovers 15% of Max SP, Maximum of 3 can be held at a time.) ^000000",
 	].join("\n");
 
-	exports[SKID.AB_ADORAMUS] = [
-
+	SkillDescription[SKID.AB_ADORAMUS] = [
 		"Adoramus",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -10421,8 +9894,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 1200% ATK ^000000",
 	].join("\n");
 
-	exports[SKID.AB_CLEMENTIA] = [
-
+	SkillDescription[SKID.AB_CLEMENTIA] = [
 		"Clementia",
 		"Max Level:^777777 3 ^000000",
 		"Type:^777777 Support ^000000",
@@ -10435,8 +9907,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 3]^777777 15 Cells Around the Target / Duration 240 sec ^000000",
 	].join("\n");
 
-	exports[SKID.AB_CANTO] = [
-
+	SkillDescription[SKID.AB_CANTO] = [
 		"Canto Candidus",
 		"Max Level:^777777 3 ^000000",
 		"Type:^777777 Support ^000000",
@@ -10449,8 +9920,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 3]^777777 15 Cells Around the Target / Duration 240 sec ^000000",
 	].join("\n");
 
-	exports[SKID.AB_CHEAL] = [
-
+	SkillDescription[SKID.AB_CHEAL] = [
 		"Coluceo Heal",
 		"Max Level:^777777 3 ^000000",
 		"Type:^777777 Support ^000000",
@@ -10464,8 +9934,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 3]^777777 15 Cells Around the Target ^000000",
 	].join("\n");
 
-	exports[SKID.AB_EPICLESIS] = [
-
+	SkillDescription[SKID.AB_EPICLESIS] = [
 		"Epiclesis",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Summon ^000000",
@@ -10482,8 +9951,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Holy Tree Stats: MAX HP +25%, HP Regen 500/s, SP Regen 6/s ^000000",
 	].join("\n");
 
-	exports[SKID.AB_PRAEFATIO] = [
-
+	SkillDescription[SKID.AB_PRAEFATIO] = [
 		"Praefatio",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Support ^000000",
@@ -10504,8 +9972,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 Hit Blocked 16 ^000000",
 	].join("\n");
 
-	exports[SKID.AB_ORATIO] = [
-
+	SkillDescription[SKID.AB_ORATIO] = [
 		"Oratio",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -10526,8 +9993,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 Success Rates 90%, Holy Attribute Resistance Reduction 20% ^000000",
 	].join("\n");
 
-	exports[SKID.AB_LAUDAAGNUS] = [
-
+	SkillDescription[SKID.AB_LAUDAAGNUS] = [
 		"Lauda Agnus",
 		"Max Level:^777777 4 ^000000",
 		"Type:^777777 Support ^000000",
@@ -10543,8 +10009,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 4]^777777 Success Rates 80% ^000000",
 	].join("\n");
 
-	exports[SKID.AB_LAUDARAMUS] = [
-
+	SkillDescription[SKID.AB_LAUDARAMUS] = [
 		"Lauda Ramus",
 		"Max Level:^777777 4 ^000000",
 		"Type:^777777 Support ^000000",
@@ -10560,8 +10025,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 4]^777777 Success Rates 80% ^000000",
 	].join("\n");
 
-	exports[SKID.AB_EUCHARISTICA] = [
-
+	SkillDescription[SKID.AB_EUCHARISTICA] = [
 		"Eucharistica",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Passive ^000000",
@@ -10579,8 +10043,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 +10% ATK, +10% Resistance ^000000",
 	].join("\n");
 
-	exports[SKID.AB_RENOVATIO] = [
-
+	SkillDescription[SKID.AB_RENOVATIO] = [
 		"Renovatio",
 		"Max Level:^777777 1 ^000000",
 		"Type:^777777 Support ^000000",
@@ -10591,8 +10054,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Recovers 3% of max HP every 5 seconds. When used on undead monsters, it does high damage in proportion to the user's level. ^000000",
 	].join("\n");
 
-	exports[SKID.AB_HIGHNESSHEAL] = [
-
+	SkillDescription[SKID.AB_HIGHNESSHEAL] = [
 		"Higness Heal",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Support ^000000",
@@ -10608,8 +10070,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 4.0 Times ^000000",
 	].join("\n");
 
-	exports[SKID.AB_CLEARANCE] = [
-
+	SkillDescription[SKID.AB_CLEARANCE] = [
 		"Clearance",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Support / Offensive ^000000",
@@ -10625,8 +10086,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Success Rates 100% ^000000",
 	].join("\n");
 
-	exports[SKID.AB_EXPIATIO] = [
-
+	SkillDescription[SKID.AB_EXPIATIO] = [
 		"Expiatio",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Support ^000000",
@@ -10642,8 +10102,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Defense Bypassing 25% ^000000",
 	].join("\n");
 
-	exports[SKID.AB_DUPLELIGHT] = [
-
+	SkillDescription[SKID.AB_DUPLELIGHT] = [
 		"Duple Light",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Active ^000000",
@@ -10664,16 +10123,15 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 Holy Lights Stats: ATK 200%/ MATK 400% ^000000",
 	].join("\n");
 
-	exports[SKID.AB_DUPLELIGHT_MELEE] = [
+	SkillDescription[SKID.AB_DUPLELIGHT_MELEE] = [
 
 	].join("\n");
 
-	exports[SKID.AB_DUPLELIGHT_MAGIC] = [
+	SkillDescription[SKID.AB_DUPLELIGHT_MAGIC] = [
 
 	].join("\n");
 
-	exports[SKID.AB_SILENTIUM] = [
-
+	SkillDescription[SKID.AB_SILENTIUM] = [
 		"Silentium",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -10688,8 +10146,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 10 Cells Around You ^000000",
 	].join("\n");
 
-	exports[SKID.WL_WHITEIMPRISON] = [
-
+	SkillDescription[SKID.WL_WHITEIMPRISON] = [
 		"White Imprison",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Support / Offensive ^000000",
@@ -10705,8 +10162,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Success Rate 90% / Duration 18 seconds ^000000",
 	].join("\n");
 
-	exports[SKID.WL_SOULEXPANSION] = [
-
+	SkillDescription[SKID.WL_SOULEXPANSION] = [
 		"Soul Expansion",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -10722,8 +10178,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 900% MATK ^000000",
 	].join("\n");
 
-	exports[SKID.WL_FROSTMISTY] = [
-
+	SkillDescription[SKID.WL_FROSTMISTY] = [
 		"Frost Misty",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Debuff ^000000",
@@ -10740,8 +10195,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Success Rate 50%, 700% MATK ^000000",
 	].join("\n");
 
-	exports[SKID.WL_JACKFROST] = [
-
+	SkillDescription[SKID.WL_JACKFROST] = [
 		"Jack Frost",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -10756,8 +10210,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 1000% MATK^000000",
 	].join("\n");
 
-	exports[SKID.WL_MARSHOFABYSS] = [
-
+	SkillDescription[SKID.WL_MARSHOFABYSS] = [
 		"Marsh Of Abyss",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Debuff ^000000",
@@ -10773,8 +10226,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Move Speed -50% ^000000",
 	].join("\n");
 
-	exports[SKID.WL_RECOGNIZEDSPELL] = [
-
+	SkillDescription[SKID.WL_RECOGNIZEDSPELL] = [
 		"Recognized Spell",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Special Status ^000000",
@@ -10790,8 +10242,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Duration 60 sec ^000000",
 	].join("\n");
 
-	exports[SKID.WL_SIENNAEXECRATE] = [
-
+	SkillDescription[SKID.WL_SIENNAEXECRATE] = [
 		"Sienna Execrate",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -10806,8 +10257,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Success Rate 70%, Range 7x7 Cells ^000000",
 	].join("\n");
 
-	exports[SKID.WL_RADIUS] = [
-
+	SkillDescription[SKID.WL_RADIUS] = [
 		"Radius",
 		"Max Level:^777777 3 ^000000",
 		"Type:^777777 Passive ^000000",
@@ -10818,8 +10268,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 3]^777777 Casting Range +3 Cells, Casting Times -8% ^000000",
 	].join("\n");
 
-	exports[SKID.WL_STASIS] = [
-
+	SkillDescription[SKID.WL_STASIS] = [
 		"Stasis",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -10835,8 +10284,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Duration 60 sec / Range 27 x 27 Cells  ^000000",
 	].join("\n");
 
-	exports[SKID.WL_DRAINLIFE] = [
-
+	SkillDescription[SKID.WL_DRAINLIFE] = [
 		"Drain Life",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive / Support ^000000",
@@ -10852,8 +10300,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 1000% MATK / Drain 30% / Success Rate 95% ^000000",
 	].join("\n");
 
-	exports[SKID.WL_CRIMSONROCK] = [
-
+	SkillDescription[SKID.WL_CRIMSONROCK] = [
 		"Crimson Rock",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -10869,8 +10316,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 2800% MATK ^000000",
 	].join("\n");
 
-	exports[SKID.WL_HELLINFERNO] = [
-
+	SkillDescription[SKID.WL_HELLINFERNO] = [
 		"Hell Inferno",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -10886,8 +10332,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 1500% MATK (300% Fire, 1200% Shadow)^000000",
 	].join("\n");
 
-	exports[SKID.WL_COMET] = [
-
+	SkillDescription[SKID.WL_COMET] = [
 		"Comet",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -10903,8 +10348,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 3500% ~ 5000% MATK ^000000",
 	].join("\n");
 
-	exports[SKID.WL_CHAINLIGHTNING] = [
-
+	SkillDescription[SKID.WL_CHAINLIGHTNING] = [
 		"Chain Lightning",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -10921,8 +10365,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 1000% MATK / Hit 9 Times ^000000",
 	].join("\n");
 
-	exports[SKID.WL_EARTHSTRAIN] = [
-
+	SkillDescription[SKID.WL_EARTHSTRAIN] = [
 		"Earth Strain",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -10938,8 +10381,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 2500% MATK, Success Strip 50% ^000000",
 	].join("\n");
 
-	exports[SKID.WL_TETRAVORTEX] = [
-
+	SkillDescription[SKID.WL_TETRAVORTEX] = [
 		"Tetra Vortex",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -10956,8 +10398,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 3000% * 4 hits MATK ^000000",
 	].join("\n");
 
-	exports[SKID.WL_SUMMONFB] = [
-
+	SkillDescription[SKID.WL_SUMMONFB] = [
 		"Summon Fire Ball",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -10973,8 +10414,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 300% MATK, Max Ball 5 ^000000",
 	].join("\n");
 
-	exports[SKID.WL_SUMMONBL] = [
-
+	SkillDescription[SKID.WL_SUMMONBL] = [
 		"Summon Lightning Ball",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -10990,8 +10430,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 300% MATK, Max Ball 5 ^000000",
 	].join("\n");
 
-	exports[SKID.WL_SUMMONWB] = [
-
+	SkillDescription[SKID.WL_SUMMONWB] = [
 		"Summon Water Ball",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -11007,8 +10446,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 300% MATK, Max Ball 5 ^000000",
 	].join("\n");
 
-	exports[SKID.WL_SUMMONSTONE] = [
-
+	SkillDescription[SKID.WL_SUMMONSTONE] = [
 		"Summon Stone",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -11024,8 +10462,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 300% MATK, Max Ball 5 ^000000",
 	].join("\n");
 
-	exports[SKID.WL_RELEASE] = [
-
+	SkillDescription[SKID.WL_RELEASE] = [
 		"Release",
 		"Max Level:^777777 2 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -11038,8 +10475,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 2]^777777 Throws all remaining magic stones at the target. ^000000",
 	].join("\n");
 
-	exports[SKID.WL_READING_SB] = [
-
+	SkillDescription[SKID.WL_READING_SB] = [
 		"Reading Spellbook",
 		"Max Level:^777777 1 ^000000",
 		"Type:^777777 Active / Special ^000000",
@@ -11050,16 +10486,14 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Learning Magic Books by reading them previously and seal them up. Warlocks may use the skill Release to let out the sealed spells. Reading Magic Books that contain skills not learned does not work. ^000000",
 	].join("\n");
 
-	exports[SKID.WL_FREEZE_SP] = [
-
+	SkillDescription[SKID.WL_FREEZE_SP] = [
 		"Freezing Spell",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Passive ^000000",
 		"Effect:^777777 Increase the amount of spells and number of times that may be used. When the spells are frozen, SP depletes according to the amount of spells and number of times it's frozen. ^000000",
 	].join("\n");
 
-	exports[SKID.RA_ARROWSTORM] = [
-
+	SkillDescription[SKID.RA_ARROWSTORM] = [
 		"Arrow Storm",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -11080,8 +10514,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 1800% ATK / Area 11x11 cells  ^000000",
 	].join("\n");
 
-	exports[SKID.RA_FEARBREEZE] = [
-
+	SkillDescription[SKID.RA_FEARBREEZE] = [
 		"Fear Breeze",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Support ^000000",
@@ -11097,8 +10530,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Number of Attack +1~4, Success Rate 30% ^000000",
 	].join("\n");
 
-	exports[SKID.RA_RANGERMAIN] = [
-
+	SkillDescription[SKID.RA_RANGERMAIN] = [
 		"Ranger Main",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Passive ^000000",
@@ -11116,8 +10548,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 +50 ATK, +50 DEF ^000000",
 	].join("\n");
 
-	exports[SKID.RA_AIMEDBOLT] = [
-
+	SkillDescription[SKID.RA_AIMEDBOLT] = [
 		"Aimed Bolt",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -11138,8 +10569,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 1000% ATK, Hit 2 Small Size, 3 Medium Size, 4 Big Size ^000000",
 	].join("\n");
 
-	exports[SKID.RA_DETONATOR] = [
-
+	SkillDescription[SKID.RA_DETONATOR] = [
 		"Detonator",
 		"Max Level:^777777 1 ^000000",
 		"Type:^777777 Active ^000000",
@@ -11149,8 +10579,7 @@ define(["./SkillId"], function( SKID )
 		"However, you cannot detonate traps of another player. ^000000",
 	].join("\n");
 
-	exports[SKID.RA_ELECTRICSHOCKER] = [
-
+	SkillDescription[SKID.RA_ELECTRICSHOCKER] = [
 		"Electric Shocker",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -11166,8 +10595,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 SP Drain 25%/sec ^000000",
 	].join("\n");
 
-	exports[SKID.RA_CLUSTERBOMB] = [
-
+	SkillDescription[SKID.RA_CLUSTERBOMB] = [
 		"Cluster Bomb",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Active ^000000",
@@ -11184,8 +10612,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Damage Power +500% ^000000",
 	].join("\n");
 
-	exports[SKID.RA_WUGMASTERY] = [
-
+	SkillDescription[SKID.RA_WUGMASTERY] = [
 		"Warg Mastery",
 		"Max Level:^777777 1 ^000000",
 		"Type:^777777 Active ^000000",
@@ -11195,8 +10622,7 @@ define(["./SkillId"], function( SKID )
 		"Re-using the skill returns the Warg to the wild. ^000000",
 	].join("\n");
 
-	exports[SKID.RA_WUGRIDER] = [
-
+	SkillDescription[SKID.RA_WUGRIDER] = [
 		"Warg Rider",
 		"Max Level:^777777 3 ^000000",
 		"Type:^777777 Active ^000000",
@@ -11206,8 +10632,7 @@ define(["./SkillId"], function( SKID )
 		"While mounted a warg, you can't use any bow attacks or skills except for Traps and Warg exclusive skills. ^000000",
 	].join("\n");
 
-	exports[SKID.RA_WUGDASH] = [
-
+	SkillDescription[SKID.RA_WUGDASH] = [
 		"Warg Dash",
 		"Max Level:^777777 1 ^000000",
 		"Type:^777777 Active ^000000",
@@ -11217,8 +10642,7 @@ define(["./SkillId"], function( SKID )
 		"If you learn Warg Strike, you'll deal damage when running into the enemy. ^000000",
 	].join("\n");
 
-	exports[SKID.RA_WUGSTRIKE] = [
-
+	SkillDescription[SKID.RA_WUGSTRIKE] = [
 		"Warg Strike",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Active ^000000",
@@ -11233,8 +10657,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 +1000% ATK ^000000",
 	].join("\n");
 
-	exports[SKID.RA_WUGBITE] = [
-
+	SkillDescription[SKID.RA_WUGBITE] = [
 		"Warg Bite",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -11250,8 +10673,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 +1500% ATK / Duration 5 seconds + Tooth Of Warg Bonus ^000000",
 	].join("\n");
 
-	exports[SKID.RA_TOOTHOFWUG] = [
-
+	SkillDescription[SKID.RA_TOOTHOFWUG] = [
 		"Tooth Of Warg",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Passive ^000000",
@@ -11268,8 +10690,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 +300 ATK ^000000",
 	].join("\n");
 
-	exports[SKID.RA_SENSITIVEKEEN] = [
-
+	SkillDescription[SKID.RA_SENSITIVEKEEN] = [
 		"Sensitive Keen",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -11284,8 +10705,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 +350% ATK, Warg Bite Success 40% ^000000",
 	].join("\n");
 
-	exports[SKID.RA_CAMOUFLAGE] = [
-
+	SkillDescription[SKID.RA_CAMOUFLAGE] = [
 		"Camouflage",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Active ^000000",
@@ -11304,8 +10724,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 2 SP per Sec / 100% Move Speed ^000000",
 	].join("\n");
 
-	exports[SKID.RA_RESEARCHTRAP] = [
-
+	SkillDescription[SKID.RA_RESEARCHTRAP] = [
 		"Research Trap",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Passive ^000000",
@@ -11318,8 +10737,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Additional Damage +200, INT +5, MAX SP +300 ^000000",
 	].join("\n");
 
-	exports[SKID.RA_MAGENTATRAP] = [
-
+	SkillDescription[SKID.RA_MAGENTATRAP] = [
 		"Magenta Trap",
 		"Max Level:^777777 1 ^000000",
 		"Type:^777777 Active ^000000",
@@ -11329,8 +10747,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 A maximum of 1 trap can be placed at once. Permanently changes the monster that steps on this trap and any monster in a 5x5 area around this trap to Fire Element. Does not affect boss type monsters or players, and consumes 1 Red Blood and 1 Special Alloy Trap.000000",
 	].join("\n");
 
-	exports[SKID.RA_COBALTTRAP] = [
-
+	SkillDescription[SKID.RA_COBALTTRAP] = [
 		"Cobalt Trap",
 		"Max Level:^777777 1 ^000000",
 		"Type:^777777 Active ^000000",
@@ -11340,8 +10757,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 A maximum of 1 trap can be placed at once. Permanently changes the monster that steps on this trap and any monster in a 5x5 area around this trap to Water Element. Does not affect boss type monsters or players, and consumes 1 Crystal Blue and 1 Special Alloy Trap. 000000",
 	].join("\n");
 
-	exports[SKID.RA_MAIZETRAP] = [
-
+	SkillDescription[SKID.RA_MAIZETRAP] = [
 		"Maize Trap",
 		"Max Level:^777777 1 ^000000",
 		"Type:^777777 Active ^000000",
@@ -11351,8 +10767,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 A maximum of 1 trap can be placed at once. Permanently changes the monster that steps on this trap and any monster in a 5x5 area around this trap to Earth Element. Does not affect boss type monsters or players, and consumes 1 Green Live and 1 Special Alloy Trap.000000",
 	].join("\n");
 
-	exports[SKID.RA_VERDURETRAP] = [
-
+	SkillDescription[SKID.RA_VERDURETRAP] = [
 		"Verdure Trap",
 		"Max Level:^777777 1 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -11362,8 +10777,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 A maximum of 1 trap can be placed at once. Permanently changes the monster that steps on this trap and any monster in a 5x5 area around this trap to Wind Element. Does not affect boss type monsters or players, and consumes 1 Wind of Verdure and 1 Special Alloy Trap.000000",
 	].join("\n");
 
-	exports[SKID.RA_FIRINGTRAP] = [
-
+	SkillDescription[SKID.RA_FIRINGTRAP] = [
 		"Firing Trap",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -11380,8 +10794,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Success Rate 100% ^000000",
 	].join("\n");
 
-	exports[SKID.RA_ICEBOUNDTRAP] = [
-
+	SkillDescription[SKID.RA_ICEBOUNDTRAP] = [
 		"Ice Bound Trap",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -11397,8 +10810,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Success Rate 100% ^000000",
 	].join("\n");
 
-	exports[SKID.NC_MADOLICENCE] = [
-
+	SkillDescription[SKID.NC_MADOLICENCE] = [
 		"Magic Gear License",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Passive ^000000",
@@ -11410,8 +10822,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 +75 ATK, Normal Move Speed ^000000",
 	].join("\n");
 
-	exports[SKID.NC_BOOSTKNUCKLE] = [
-
+	SkillDescription[SKID.NC_BOOSTKNUCKLE] = [
 		"Boost Knuckle",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -11425,8 +10836,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 700% ATK ^000000",
 	].join("\n");
 
-	exports[SKID.NC_PILEBUNKER] = [
-
+	SkillDescription[SKID.NC_PILEBUNKER] = [
 		"Pile Bunker",
 		"Max Level:^777777 3 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -11439,8 +10849,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 3]^777777 Debuff chance 70% ^000000",
 	].join("\n");
 
-	exports[SKID.NC_VULCANARM] = [
-
+	SkillDescription[SKID.NC_VULCANARM] = [
 		"Vulcan Arm",
 		"Max Level:^777777 3 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -11453,8 +10862,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 3]^777777  Range 3 x 3 cells / 210% MATK ^000000",
 	].join("\n");
 
-	exports[SKID.NC_FLAMELAUNCHER] = [
-
+	SkillDescription[SKID.NC_FLAMELAUNCHER] = [
 		"Flame Launcher",
 		"Max Level:^777777 3 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -11467,8 +10875,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 3]^777777 1200% ATK / Burning Rate 50% ^000000",
 	].join("\n");
 
-	exports[SKID.NC_COLDSLOWER] = [
-
+	SkillDescription[SKID.NC_COLDSLOWER] = [
 		"Cold Slower",
 		"Max Level:^777777 3 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -11482,8 +10889,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 3]^777777 1200% ATK / Range 9 x 9 cells^000000",
 	].join("\n");
 
-	exports[SKID.NC_ARMSCANNON] = [
-
+	SkillDescription[SKID.NC_ARMSCANNON] = [
 		"Arms Cannon",
 		"Max Level:^777777 3 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -11504,8 +10910,7 @@ define(["./SkillId"], function( SKID )
 		"- Soul Cannon Ball = Attribute 'Spiritual (Ghost), ATK 120, Weight 1, Price 500z",
 	].join("\n");
 
-	exports[SKID.NC_ACCELERATION] = [
-
+	SkillDescription[SKID.NC_ACCELERATION] = [
 		"Acceleration",
 		"Max Level:^777777 3 ^000000",
 		"Type:^777777 Support ^000000",
@@ -11515,8 +10920,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Temporarily increases the movement speed of the Magic Gear. Requires the Magic Gear equipment Accelerator equipped and consumes 1 Magic Gear Fuel. ^000000",
 	].join("\n");
 
-	exports[SKID.NC_HOVERING] = [
-
+	SkillDescription[SKID.NC_HOVERING] = [
 		"Hovering",
 		"Max Level:^777777 1 ^000000",
 		"Type:^777777 Support ^000000",
@@ -11527,8 +10931,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 The magic gear hovers off the ground, allowing it to move over traps and ground targeted skills without effect. Slightly increases movement speed. Requires the magic gear equipment Hovering Booster equipped and consumes 1 Magic Gear Fuel. ^000000",
 	].join("\n");
 
-	exports[SKID.NC_F_SIDESLIDE] = [
-
+	SkillDescription[SKID.NC_F_SIDESLIDE] = [
 		"Front Side Slide",
 		"Max Level:^777777 1 ^000000",
 		"Type:^777777 Support ^000000",
@@ -11538,8 +10941,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 While hovering, rapidly moves forwards 7 cells. ^000000",
 	].join("\n");
 
-	exports[SKID.NC_B_SIDESLIDE] = [
-
+	SkillDescription[SKID.NC_B_SIDESLIDE] = [
 		"Back Side Slide",
 		"Max Level:^777777 1 ^000000",
 		"Type:^777777 Support ^000000",
@@ -11549,8 +10951,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 While hovering, rapidly moves back 7 cells. ^000000",
 	].join("\n");
 
-	exports[SKID.NC_MAINFRAME] = [
-
+	SkillDescription[SKID.NC_MAINFRAME] = [
 		"Mainframe Restructure",
 		"Max Level:^777777 4 ^000000",
 		"Type:^777777 Passive ^000000",
@@ -11561,8 +10962,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 4]^777777 +15 DEF, Overheat Limit +56 ^000000",
 	].join("\n");
 
-	exports[SKID.NC_SELFDESTRUCTION] = [
-
+	SkillDescription[SKID.NC_SELFDESTRUCTION] = [
 		"Self Destruction",
 		"Max Level:^777777 3 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -11574,8 +10974,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 3]^777777 Range 9x9 ^000000",
 	].join("\n");
 
-	exports[SKID.NC_SHAPESHIFT] = [
-
+	SkillDescription[SKID.NC_SHAPESHIFT] = [
 		"Shape Shift",
 		"Max Level:^777777 4 ^000000",
 		"Type:^777777 Support ^000000",
@@ -11590,8 +10989,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 4]^777777 Attribute Change Water / Consumes 3 Crystal Blue^000000",
 	].join("\n");
 
-	exports[SKID.NC_EMERGENCYCOOL] = [
-
+	SkillDescription[SKID.NC_EMERGENCYCOOL] = [
 		"Emergency Cool",
 		"Max Level:^777777 1 ^000000",
 		"Type:^777777 Support ^000000",
@@ -11601,8 +10999,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Rapidly cools the magic gear removing overheat status. Requires the magic gear equipment Cooling System equipped. ^000000",
 	].join("\n");
 
-	exports[SKID.NC_INFRAREDSCAN] = [
-
+	SkillDescription[SKID.NC_INFRAREDSCAN] = [
 		"Infrared Scan",
 		"Max Level:^777777 1 ^000000",
 		"Type:^777777 Support ^000000",
@@ -11612,8 +11009,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Detects all targets in a 15 x 15 targets around you and has a 50% chance to drop their evasion rate. ^000000",
 	].join("\n");
 
-	exports[SKID.NC_ANALYZE] = [
-
+	SkillDescription[SKID.NC_ANALYZE] = [
 		"Analyze",
 		"Max Level:^777777 3 ^000000",
 		"Type:^777777 Support ^000000",
@@ -11627,8 +11023,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 3]^777777 -42% DEF / MDEF ^000000",
 	].join("\n");
 
-	exports[SKID.NC_MAGNETICFIELD] = [
-
+	SkillDescription[SKID.NC_MAGNETICFIELD] = [
 		"Magnetic Field",
 		"Max Level:^777777 3 ^000000",
 		"Type:^777777 Support ^000000",
@@ -11644,8 +11039,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 3]^777777 Radius 7x7 ^000000",
 	].join("\n");
 
-	exports[SKID.NC_NEUTRALBARRIER] = [
-
+	SkillDescription[SKID.NC_NEUTRALBARRIER] = [
 		"Neutral Barrier",
 		"Max Level:^777777 3 ^000000",
 		"Type:^777777 Support ^000000",
@@ -11661,8 +11055,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 3]^777777 Radius 3x3, +25% DEF / MDEF ^000000",
 	].join("\n");
 
-	exports[SKID.NC_STEALTHFIELD] = [
-
+	SkillDescription[SKID.NC_STEALTHFIELD] = [
 		"Stealth Field",
 		"Max Level:^777777 3 ^000000",
 		"Type:^777777 Support ^000000",
@@ -11676,8 +11069,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 3]^777777 Radius 3x3 ^000000",
 	].join("\n");
 
-	exports[SKID.NC_REPAIR] = [
-
+	SkillDescription[SKID.NC_REPAIR] = [
 		"Repair",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Active / Support ^000000",
@@ -11692,8 +11084,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Recovery 18% HP ^000000",
 	].join("\n");
 
-	exports[SKID.NC_TRAININGAXE] = [
-
+	SkillDescription[SKID.NC_TRAININGAXE] = [
 		"Axe Training",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Passive ^000000",
@@ -11710,8 +11101,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 +50 ATK, Hit Rate +30 ^000000",
 	].join("\n");
 
-	exports[SKID.NC_RESEARCHFE] = [
-
+	SkillDescription[SKID.NC_RESEARCHFE] = [
 		"Research Fire / Earth",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Passive ^000000",
@@ -11723,8 +11113,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 +50 ATK, Resistance +50 ^000000",
 	].join("\n");
 
-	exports[SKID.NC_AXEBOOMERANG] = [
-
+	SkillDescription[SKID.NC_AXEBOOMERANG] = [
 		"Axe Boomerang",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -11740,8 +11129,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 500% ATK + Axe Weight / Range 9 cells ^000000",
 	].join("\n");
 
-	exports[SKID.NC_POWERSWING] = [
-
+	SkillDescription[SKID.NC_POWERSWING] = [
 		"Power Swing",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -11756,8 +11144,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 800% ATK ^000000",
 	].join("\n");
 
-	exports[SKID.NC_AXETORNADO] = [
-
+	SkillDescription[SKID.NC_AXETORNADO] = [
 		"Axe Tornado",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -11772,8 +11159,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 700% ATK / Range 7 x 7 cells / Consumes 100 HP  ^000000",
 	].join("\n");
 
-	exports[SKID.NC_SILVERSNIPER] = [
-
+	SkillDescription[SKID.NC_SILVERSNIPER] = [
 		"FAW - Silver Sniper",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Active / FAW Construction ^000000",
@@ -11787,8 +11173,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 +1000 MATK / Duration 60 seconds ^000000",
 	].join("\n");
 
-	exports[SKID.NC_MAGICDECOY] = [
-
+	SkillDescription[SKID.NC_MAGICDECOY] = [
 		"FAW - Magic Decoy",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Active / FAW Construction ^000000",
@@ -11801,8 +11186,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 +500 MATK / Duration 60 seconds ^000000",
 	].join("\n");
 
-	exports[SKID.NC_DISJOINT] = [
-
+	SkillDescription[SKID.NC_DISJOINT] = [
 		"FAW - Removal",
 		"Max Level:^777777 1 ^000000",
 		"Type:^777777 Active / FAW Construction ^000000",
@@ -11811,8 +11195,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Removes the target FAW. It can be used on other players FAW's. ^000000",
 	].join("\n");
 
-	exports[SKID.SC_FATALMENACE] = [
-
+	SkillDescription[SKID.SC_FATALMENACE] = [
 		"Fatal Menace",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Active / Attack ^000000",
@@ -11827,8 +11210,7 @@ define(["./SkillId"], function( SKID )
 		"[Level 5]^777777 Attack Power 600% / HIT -10 ^000000",
 	].join("\n");
 
-	exports[SKID.SC_REPRODUCE] = [
-
+	SkillDescription[SKID.SC_REPRODUCE] = [
 		"Reproduce",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Active ^000000",
@@ -11836,8 +11218,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Learn the last skill that was inflicted by an enemy. If the caster uses this skill one more time, then the skill effect disappears and caster can keep the newly acquired skill. Caster can learn only one skill and level learned depends on Reproduce's skill level. Reproduced skills uses twice the SP than normal.^000000",
 	].join("\n");
 
-	exports[SKID.SC_AUTOSHADOWSPELL] = [
-
+	SkillDescription[SKID.SC_AUTOSHADOWSPELL] = [
 		"Auto Shadow Spell",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Active ^000000",
@@ -11856,8 +11237,7 @@ define(["./SkillId"], function( SKID )
 		"[Level 10]^777777 Probability 15% / Skill Level 5 / Duration 300 sec ^000000",
 	].join("\n");
 
-	exports[SKID.SC_SHADOWFORM] = [
-
+	SkillDescription[SKID.SC_SHADOWFORM] = [
 		"Shadow Form",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Active / Debuff ^000000",
@@ -11873,8 +11253,7 @@ define(["./SkillId"], function( SKID )
 		"[Level 5] : ^777777 HIT 9 times /  6 SP per Sec / Duration 70 sec ^000000",
 	].join("\n");
 
-	exports[SKID.SC_TRIANGLESHOT] = [
-
+	SkillDescription[SKID.SC_TRIANGLESHOT] = [
 		"Triangle Slot",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Active ^000000",
@@ -11893,8 +11272,7 @@ define(["./SkillId"], function( SKID )
 		"[Level 10]^777777 Range 11 / Knock back 11% ^000000",
 	].join("\n");
 
-	exports[SKID.SC_BODYPAINT] = [
-
+	SkillDescription[SKID.SC_BODYPAINT] = [
 		"Body Painting",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Active / Debuff ^000000",
@@ -11907,8 +11285,7 @@ define(["./SkillId"], function( SKID )
 		"[Level 5]^777777 63% Blind / ASPD -25% / Duration 45 sec ^000000",
 	].join("\n");
 
-	exports[SKID.SC_INVISIBILITY] = [
-
+	SkillDescription[SKID.SC_INVISIBILITY] = [
 		"Invisibility",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Active / Buff ^000000",
@@ -11922,8 +11299,7 @@ define(["./SkillId"], function( SKID )
 		"[Level 5] : ^777777 Critical Rate +100% / None / SP Cost per sec 2% ^000000",
 	].join("\n");
 
-	exports[SKID.SC_DEADLYINFECT] = [
-
+	SkillDescription[SKID.SC_DEADLYINFECT] = [
 		"Deadly Infect",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Active / Buff ^000000",
@@ -11936,8 +11312,7 @@ define(["./SkillId"], function( SKID )
 		"[Level 5] : ^777777 Duration 30 sec / Infection Rate 80%^000000",
 	].join("\n");
 
-	exports[SKID.SC_ENERVATION] = [
-
+	SkillDescription[SKID.SC_ENERVATION] = [
 		"Masquerade - Enervation",
 		"Max Level:^777777 3 ^000000",
 		"Type:^777777 Active / Debuff ^000000",
@@ -11951,8 +11326,7 @@ define(["./SkillId"], function( SKID )
 		"[Level 3] : ^777777 ATK -50% / Duration 20 sec ^000000",
 	].join("\n");
 
-	exports[SKID.SC_GROOMY] = [
-
+	SkillDescription[SKID.SC_GROOMY] = [
 		"Masquerade - Gloomy",
 		"Max Level:^777777 3 ^000000",
 		"Type:^777777 Active / Debuff ^000000",
@@ -11966,8 +11340,7 @@ define(["./SkillId"], function( SKID )
 		"[Level 3] : ^777777 ASPD -50% / HIT -60% / Duration 20 sec ^000000",
 	].join("\n");
 
-	exports[SKID.SC_IGNORANCE] = [
-
+	SkillDescription[SKID.SC_IGNORANCE] = [
 		"Masquerade - Ignorance",
 		"Max Level:^777777 3 ^000000",
 		"Type:^777777 Active / Debuff ^000000",
@@ -11981,8 +11354,7 @@ define(["./SkillId"], function( SKID )
 		"[Level 3] : ^777777 SP Taken 300 / Duration 20 sec ^000000",
 	].join("\n");
 
-	exports[SKID.SC_LAZINESS] = [
-
+	SkillDescription[SKID.SC_LAZINESS] = [
 		"Masquerade - Laziness",
 		"Max Level:^777777 3 ^000000",
 		"Type:^777777 Active / Debuff ^000000",
@@ -11996,8 +11368,7 @@ define(["./SkillId"], function( SKID )
 		"[Level 3] : ^777777 FLEE -30% / Cast Time +40% / SP Consumption +30 / Duration 20 sec ^000000",
 	].join("\n");
 
-	exports[SKID.SC_UNLUCKY] = [
-
+	SkillDescription[SKID.SC_UNLUCKY] = [
 		"Masquerade - Unlucky",
 		"Max Level:^777777 3 ^000000",
 		"Type:^777777 Active / Debuff ^000000",
@@ -12012,8 +11383,7 @@ define(["./SkillId"], function( SKID )
 		"[Level 3] : ^777777 Max HP -30% / Zeny Consumption penalty 30 / Duration 20 sec ^000000",
 	].join("\n");
 
-	exports[SKID.SC_WEAKNESS] = [
-
+	SkillDescription[SKID.SC_WEAKNESS] = [
 		"Masquerade - Weakness",
 		"Max Level:^777777 3 ^000000",
 		"Type:^777777 Active / Debuff ^000000",
@@ -12027,8 +11397,7 @@ define(["./SkillId"], function( SKID )
 		"[Level 3]MHP -30% / Perfect Dodge -30 / Duration 20 sec ^000000",
 	].join("\n");
 
-	exports[SKID.SC_STRIPACCESSARY] = [
-
+	SkillDescription[SKID.SC_STRIPACCESSARY] = [
 		"Strip Accessory ",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Active / Debuff ^000000",
@@ -12043,8 +11412,7 @@ define(["./SkillId"], function( SKID )
 		"[Level 5]^777777 22% Succes / Duration 60 sec ^000000",
 	].join("\n");
 
-	exports[SKID.SC_MANHOLE] = [
-
+	SkillDescription[SKID.SC_MANHOLE] = [
 		"Man Hole",
 		"Max Level:^777777 3 ^000000",
 		"Type:^777777 Active / Ground ^000000",
@@ -12058,8 +11426,7 @@ define(["./SkillId"], function( SKID )
 		"[Level 3]^777777 Duration 12 sec ^000000",
 	].join("\n");
 
-	exports[SKID.SC_DIMENSIONDOOR] = [
-
+	SkillDescription[SKID.SC_DIMENSIONDOOR] = [
 		"Dimension Door",
 		"Max Level:^777777 3 ^000000",
 		"Type:^777777 Active / Ground ^000000",
@@ -12073,8 +11440,7 @@ define(["./SkillId"], function( SKID )
 		"[Level 3]^777777 Duration 15 sec ^000000",
 	].join("\n");
 
-	exports[SKID.SC_CHAOSPANIC] = [
-
+	SkillDescription[SKID.SC_CHAOSPANIC] = [
 		"Chaos Panic",
 		"Max Level:^777777 3 ^000000",
 		"Type:^777777 Active / Ground ^000000",
@@ -12088,8 +11454,7 @@ define(["./SkillId"], function( SKID )
 		"[Level 3]^777777 Duration 15 sec ^000000",
 	].join("\n");
 
-	exports[SKID.SC_MAELSTROM] = [
-
+	SkillDescription[SKID.SC_MAELSTROM] = [
 		"Maelstrom",
 		"Max Level:^777777 3 ^000000",
 		"Type:^777777 Active / Ground ^000000",
@@ -12103,8 +11468,7 @@ define(["./SkillId"], function( SKID )
 		"[Level 3]^777777 Duration 21 sec ^000000",
 	].join("\n");
 
-	exports[SKID.SC_BLOODYLUST] = [
-
+	SkillDescription[SKID.SC_BLOODYLUST] = [
 		"Bloody Lust",
 		"Max Level:^777777 3 ^000000",
 		"Type:^777777 Active / Ground ^000000",
@@ -12117,8 +11481,7 @@ define(["./SkillId"], function( SKID )
 		"[Level 3]^777777 Duration 21 sec ^000000",
 	].join("\n");
 
-	exports[SKID.SC_FEINTBOMB] = [
-
+	SkillDescription[SKID.SC_FEINTBOMB] = [
 		"Feint Bomb",
 		"Max Level:^777777 3 ^000000",
 		"Type:^777777 Active / Ground ^000000",
@@ -12133,8 +11496,7 @@ define(["./SkillId"], function( SKID )
 		"[Level 3]^777777 9 cells Backslide ^000000",
 	].join("\n");
 
-	exports[SKID.LG_CANNONSPEAR] = [
-
+	SkillDescription[SKID.LG_CANNONSPEAR] = [
 		"Cannon Spear",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Damage^000000",
@@ -12148,8 +11510,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 350% ATK^000000",
 	].join("\n");
 
-	exports[SKID.LG_BANISHINGPOINT] = [
-
+	SkillDescription[SKID.LG_BANISHINGPOINT] = [
 		"Banishing Point",
 		"Max Level:^777777 10^000000",
 		"Type:^777777 Active / Damage^000000",
@@ -12168,8 +11529,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 400% ATK^000000",
 	].join("\n");
 
-	exports[SKID.LG_TRAMPLE] = [
-
+	SkillDescription[SKID.LG_TRAMPLE] = [
 		"Trample",
 		"Max Level:^777777 3^000000",
 		"Type:^777777 Active / Special^000000",
@@ -12181,8 +11541,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 3]^777777 Success Rate 100%^000000",
 	].join("\n");
 
-	exports[SKID.LG_SHIELDPRESS] = [
-
+	SkillDescription[SKID.LG_SHIELDPRESS] = [
 		"Shield Press",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Damage^000000",
@@ -12196,8 +11555,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Stun Chance 90%^000000",
 	].join("\n");
 
-	exports[SKID.LG_REFLECTDAMAGE] = [
-
+	SkillDescription[SKID.LG_REFLECTDAMAGE] = [
 		"Reflect Damage",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Self Buff^000000",
@@ -12212,8 +11570,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Damage Reflect 40%^000000",
 	].join("\n");
 
-	exports[SKID.LG_PINPOINTATTACK] = [
-
+	SkillDescription[SKID.LG_PINPOINTATTACK] = [
 		"Pinpoint Attack",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Damage^000000",
@@ -12227,8 +11584,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 500% ATK, Break Weapon^000000",
 	].join("\n");
 
-	exports[SKID.LG_FORCEOFVANGUARD] = [
-
+	SkillDescription[SKID.LG_FORCEOFVANGUARD] = [
 		"Force of Vanguard",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Self Buff^000000",
@@ -12242,8 +11598,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Chance to get Rage 68%. Max Counter Rage Counters 15^000000",
 	].join("\n");
 
-	exports[SKID.LG_RAGEBURST] = [
-
+	SkillDescription[SKID.LG_RAGEBURST] = [
 		"Rage Burst",
 		"Max Level:^777777 1^000000",
 		"Type:^777777 Active / Attack^000000",
@@ -12252,8 +11607,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Uses all rage counters from Force of Vanguard to deal large damage to a single target. The damage is increased by the number of rage counters you have.^000000",
 	].join("\n");
 
-	exports[SKID.LG_SHIELDSPELL] = [
-
+	SkillDescription[SKID.LG_SHIELDSPELL] = [
 		"Shield Spell",
 		"Max Level:^777777 3^000000",
 		"Type:^777777 Active / Special^000000",
@@ -12265,8 +11619,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 3]^777777 Evokes magic based on shield upgrade level^000000",
 	].join("\n");
 
-	exports[SKID.LG_EXEEDBREAK] = [
-
+	SkillDescription[SKID.LG_EXEEDBREAK] = [
 		"Exceed Break",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Self Buff^000000",
@@ -12280,8 +11633,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 750% ATK, Movement Speed Decreased 10%^000000",
 	].join("\n");
 
-	exports[SKID.LG_OVERBRAND] = [
-
+	SkillDescription[SKID.LG_OVERBRAND] = [
 		"Over Brand",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Damage^000000",
@@ -12295,8 +11647,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 500% ATK, Brandish Damage 500%^000000",
 	].join("\n");
 
-	exports[SKID.LG_PRESTIGE] = [
-
+	SkillDescription[SKID.LG_PRESTIGE] = [
 		"Prestige",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Self Buff^000000",
@@ -12310,8 +11661,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Duration 90 sec^000000",
 	].join("\n");
 
-	exports[SKID.LG_BANDING] = [
-
+	SkillDescription[SKID.LG_BANDING] = [
 		"Banding",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Self Buff^000000",
@@ -12320,8 +11670,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 When Royal Guards in party have Banding activated, if you are close enough together, your attack increases, defense increases, and share HP. While the skill is active, it continually uses SP. Reusing the skill will cancel the skill. The number of party members increases the effectiveness of the skill.^000000",
 	].join("\n");
 
-	exports[SKID.LG_MOONSLASHER] = [
-
+	SkillDescription[SKID.LG_MOONSLASHER] = [
 		"Moon Slasher",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Damage^000000",
@@ -12335,8 +11684,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 250% ATK, Success Rate 72%^000000",
 	].join("\n");
 
-	exports[SKID.LG_RAYOFGENESIS] = [
-
+	SkillDescription[SKID.LG_RAYOFGENESIS] = [
 		"Ray of Genesis",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Damage^000000",
@@ -12350,8 +11698,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 800% ATK, 500% MATK, HP Cost 25%^000000",
 	].join("\n");
 
-	exports[SKID.LG_PIETY] = [
-
+	SkillDescription[SKID.LG_PIETY] = [
 		"Piety",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Buff^000000",
@@ -12365,8 +11712,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Duration 140 sec^000000",
 	].join("\n");
 
-	exports[SKID.LG_EARTHDRIVE] = [
-
+	SkillDescription[SKID.LG_EARTHDRIVE] = [
 		"Earth Drive",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Damage^000000",
@@ -12380,8 +11726,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 600% ATK, Effect Time 15 sec^000000",
 	].join("\n");
 
-	exports[SKID.LG_HESPERUSLIT] = [
-
+	SkillDescription[SKID.LG_HESPERUSLIT] = [
 		"Hesperus Lit",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Damage^000000",
@@ -12395,8 +11740,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 200% ATK^000000",
 	].join("\n");
 
-	exports[SKID.LG_INSPIRATION] = [
-
+	SkillDescription[SKID.LG_INSPIRATION] = [
 		"Inspiration",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Self Buff^000000",
@@ -12410,8 +11754,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Duration 90 sec^000000",
 	].join("\n");
 
-	exports[SKID.SR_DRAGONCOMBO] = [
-
+	SkillDescription[SKID.SR_DRAGONCOMBO] = [
 		"Dragon Combo (Twin Dragon)",
 		"Max Level:^777777 10^000000",
 		"Type:^777777 Active / Damage^000000",
@@ -12431,8 +11774,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 380% ATK, Stun Chance 11%^000000",
 	].join("\n");
 
-	exports[SKID.SR_SKYNETBLOW] = [
-
+	SkillDescription[SKID.SR_SKYNETBLOW] = [
 		"Sky Net Blow",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Damage^000000",
@@ -12445,8 +11787,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 400% ATK^000000",
 	].join("\n");
 
-	exports[SKID.SR_EARTHSHAKER] = [
-
+	SkillDescription[SKID.SR_EARTHSHAKER] = [
 		"Earth Shaker",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Damage^000000",
@@ -12461,8 +11802,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Normal/on hide target 300%/900% ATK^000000",
 	].join("\n");
 
-	exports[SKID.SR_FALLENEMPIRE] = [
-
+	SkillDescription[SKID.SR_FALLENEMPIRE] = [
 		"Fallen Empire",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Damage^000000",
@@ -12477,8 +11817,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 850% ATK, Immobility Time 2.5s^000000",
 	].join("\n");
 
-	exports[SKID.SR_TIGERCANNON] = [
-
+	SkillDescription[SKID.SR_TIGERCANNON] = [
 		"Tiger Cannon",
 		"Max Level:^777777 10^000000",
 		"Type:^777777 Active / Damage^000000",
@@ -12498,8 +11837,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 User's HP/SP Used 20%/10%^000000",
 	].join("\n");
 
-	exports[SKID.SR_RAMPAGEBLASTER] = [
-
+	SkillDescription[SKID.SR_RAMPAGEBLASTER] = [
 		"Rampage Blaster (Explosive Spirit Shot)",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Damage^000000",
@@ -12514,8 +11852,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 N?Spirit Spheres x 250% ATK^000000",
 	].join("\n");
 
-	exports[SKID.SR_CRESCENTELBOW] = [
-
+	SkillDescription[SKID.SR_CRESCENTELBOW] = [
 		"Crescent Elbow",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Counter^000000",
@@ -12529,8 +11866,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Activation chance 75% / Duration 7 seconds^000000",
 	].join("\n");
 
-	exports[SKID.SR_CURSEDCIRCLE] = [
-
+	SkillDescription[SKID.SR_CURSEDCIRCLE] = [
 		"Cursed Circle",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Special^000000",
@@ -12545,8 +11881,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Duration 9s^000000",
 	].join("\n");
 
-	exports[SKID.SR_LIGHTNINGWALK] = [
-
+	SkillDescription[SKID.SR_LIGHTNINGWALK] = [
 		"Lightning Walk",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active Toggle / Special^000000",
@@ -12561,8 +11896,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 HP Consumed 1%, SP Drain er second 1, Chance for activating 50%^000000",
 	].join("\n");
 
-	exports[SKID.SR_KNUCKLEARROW] = [
-
+	SkillDescription[SKID.SR_KNUCKLEARROW] = [
 		"Knuckle Arrow (Shura Body Bullet)",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Damage^000000",
@@ -12577,8 +11911,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 600% ATK, Knockback Damage 750% + Bonus^000000",
 	].join("\n");
 
-	exports[SKID.SR_WINDMILL] = [
-
+	SkillDescription[SKID.SR_WINDMILL] = [
 		"Windmill",
 		"Max Level:^777777 1^000000",
 		"Type:^777777 Active / Damage^000000",
@@ -12588,8 +11921,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 A low to the ground spinning kick that damages targets in a 5x5 area and forces them to use [/sit]. Will stun monsters for 1-4 seconds. Does not work on boss monsters.^000000",
 	].join("\n");
 
-	exports[SKID.SR_RAISINGDRAGON] = [
-
+	SkillDescription[SKID.SR_RAISINGDRAGON] = [
 		"Rising Dragon",
 		"Max Level:^777777 10^000000",
 		"Type:^777777 Active / Buff^000000",
@@ -12609,8 +11941,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 Max Spirit Spheres 15, Max HP/SP +12%, Duration 165sec^000000",
 	].join("\n");
 
-	exports[SKID.SR_ASSIMILATEPOWER] = [
-
+	SkillDescription[SKID.SR_ASSIMILATEPOWER] = [
 		"Assimilate Power",
 		"Max Level:^777777 1^000000",
 		"Type:^777777 Active / Special^000000",
@@ -12620,8 +11951,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Uses Absorb Spirit Spheres on all targets in a 5x5 area, recovering SP.^000000",
 	].join("\n");
 
-	exports[SKID.SR_POWERVELOCITY] = [
-
+	SkillDescription[SKID.SR_POWERVELOCITY] = [
 		"Power Velocity (All Spirit Injection)",
 		"Max Level:^777777 1^000000",
 		"Type:^777777 Active / Special^000000",
@@ -12631,16 +11961,14 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Transfers all of your spirit spheres to a designated target.^000000",
 	].join("\n");
 
-	exports[SKID.SR_GATEOFHELL] = [
-
+	SkillDescription[SKID.SR_GATEOFHELL] = [
 		"Gate of Hell (Rakshasa Phoenix Destruction Fist)",
 		"Max Level:^777777 10^000000",
 		"Type:^777777 Active / Damage^000000",
 		"Effect:^777777 Can only be used while in Fury state. Instantly strikes a target with countless blows. The more spirit spheres you have, and the lower the caster's HP, the more damage it does. The skill consumes certain amount of SP and all of your spirit spheres. Can be used after Fallen Empire, and when used this way the SP consumption is reduced by 10% and the damage slightly increased.^000000",
 	].join("\n");
 
-	exports[SKID.SR_GENTLETOUCH_QUIET] = [
-
+	SkillDescription[SKID.SR_GENTLETOUCH_QUIET] = [
 		"Gentle Touch - Quiet (Pressure Point: Silence)",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Damage / Debuff^000000",
@@ -12655,8 +11983,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Range 2, 500% ATK^000000",
 	].join("\n");
 
-	exports[SKID.SR_GENTLETOUCH_CURE] = [
-
+	SkillDescription[SKID.SR_GENTLETOUCH_CURE] = [
 		"Gentle Touch - Cure (Presure Point: Recovery)",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Recovery / Buff^000000",
@@ -12664,8 +11991,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Using special pressure point techniques, you recover a target's HP and cure them of various status ailments. Skill level increases the probability of success. The skill can recover Petrification / Frozen / Stun / Poison / Silence / Blind / Hallucination statuses. Using this skill you can also recover yourself from Petrification / Frozen / Stun statuses. Consumes spirit spheres based on skill level.^000000",
 	].join("\n");
 
-	exports[SKID.SR_GENTLETOUCH_ENERGYGAIN] = [
-
+	SkillDescription[SKID.SR_GENTLETOUCH_ENERGYGAIN] = [
 		"Gentle Touch - Energy Gain (Pressure Point: Energy Gain)",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Self Buff^000000",
@@ -12680,8 +12006,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 HP Cost 5%, Chance to get a spirit sphere 35% ^000000",
 	].join("\n");
 
-	exports[SKID.SR_GENTLETOUCH_CHANGE] = [
-
+	SkillDescription[SKID.SR_GENTLETOUCH_CHANGE] = [
 		"Gentle Touch - Change (Pressure Point: Change)",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Self Buff^000000",
@@ -12696,8 +12021,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 HP Cost 5% ^000000",
 	].join("\n");
 
-	exports[SKID.SR_GENTLETOUCH_REVITALIZE] = [
-
+	SkillDescription[SKID.SR_GENTLETOUCH_REVITALIZE] = [
 		"Gentle Touch - Revitalize (Pressure Point: Revitalize)",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Self Buff^000000",
@@ -12712,8 +12036,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Max HP 10%, Natural HP Recovery +200%^000000",
 	].join("\n");
 
-	exports[SKID.WA_SWING_DANCE] = [
-
+	SkillDescription[SKID.WA_SWING_DANCE] = [
 		"Swing Dance",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Buff^000000",
@@ -12728,8 +12051,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Movement Speed +20%, ASPD +20%^000000",
 	].join("\n");
 
-	exports[SKID.WA_SYMPHONY_OF_LOVER] = [
-
+	SkillDescription[SKID.WA_SYMPHONY_OF_LOVER] = [
 		"Symphony of Lover",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Buff^000000",
@@ -12744,8 +12066,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 100% MDEF^000000",
 	].join("\n");
 
-	exports[SKID.WA_MOONLIT_SERENADE] = [
-
+	SkillDescription[SKID.WA_MOONLIT_SERENADE] = [
 		"Moonlit Serenade",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Buff^000000",
@@ -12760,8 +12081,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 50% MATK^000000",
 	].join("\n");
 
-	exports[SKID.MI_RUSH_WINDMILL] = [
-
+	SkillDescription[SKID.MI_RUSH_WINDMILL] = [
 		"Windmill Rush Attack",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Buff^000000",
@@ -12776,8 +12096,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 50% ATK^000000",
 	].join("\n");
 
-	exports[SKID.MI_ECHOSONG] = [
-
+	SkillDescription[SKID.MI_ECHOSONG] = [
 		"Echo Song",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Buff^000000",
@@ -12790,8 +12109,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 50% DEF^000000",
 	].join("\n");
 
-	exports[SKID.MI_HARMONIZE] = [
-
+	SkillDescription[SKID.MI_HARMONIZE] = [
 		"Harmonize",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Buff^000000",
@@ -12803,8 +12121,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Fixed bonus for all stats 30^000000",
 	].join("\n");
 
-	exports[SKID.WM_LESSON] = [
-
+	SkillDescription[SKID.WM_LESSON] = [
 		"Lesson",
 		"Max Level:^777777 10^000000",
 		"Type:^777777 Passive^000000",
@@ -12821,8 +12138,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 Max SP +300^000000",
 	].join("\n");
 
-	exports[SKID.WM_METALICSOUND] = [
-
+	SkillDescription[SKID.WM_METALICSOUND] = [
 		"Metallic Sound",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Damage^000000",
@@ -12837,8 +12153,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 700% + Increased damage for Lesson^000000",
 	].join("\n");
 
-	exports[SKID.WM_REVERBERATION] = [
-
+	SkillDescription[SKID.WM_REVERBERATION] = [
 		"Reverberation",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Damage^000000",
@@ -12853,16 +12168,14 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 800% ATK, 600% MATK^000000",
 	].join("\n");
 
-	exports[SKID.WM_DOMINION_IMPULSE] = [
-
+	SkillDescription[SKID.WM_DOMINION_IMPULSE] = [
 		"Dominion Impulse",
 		"Max Level:^777777 1^000000",
 		"Type:^777777 Active / Special^000000",
 		"Effect:^777777 Activates any Reverberations active in a 11 x 11 area around you. This can trigger the reverberations of other players as well.^000000",
 	].join("\n");
 
-	exports[SKID.WM_SEVERE_RAINSTORM] = [
-
+	SkillDescription[SKID.WM_SEVERE_RAINSTORM] = [
 		"Severe Rainstorm",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Damage^000000",
@@ -12874,8 +12187,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Duration 3.0 seconds^000000",
 	].join("\n");
 
-	exports[SKID.WM_POEMOFNETHERWORLD] = [
-
+	SkillDescription[SKID.WM_POEMOFNETHERWORLD] = [
 		"Poem of the Netherworld",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Debuff^000000",
@@ -12888,8 +12200,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Effect Duration 16 sec, Sound Duration 17 sec^000000",
 	].join("\n");
 
-	exports[SKID.WM_VOICEOFSIREN] = [
-
+	SkillDescription[SKID.WM_VOICEOFSIREN] = [
 		"Voice of Siren",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Debuff^000000",
@@ -12904,8 +12215,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Success Rate 70%^000000",
 	].join("\n");
 
-	exports[SKID.WM_DEADHILLHERE] = [
-
+	SkillDescription[SKID.WM_DEADHILLHERE] = [
 		"Valley of Death",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Recovery^000000",
@@ -12920,8 +12230,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Success Rate 98%, Target's SP Consumption 20%^000000",
 	].join("\n");
 
-	exports[SKID.WM_LULLABY_DEEPSLEEP] = [
-
+	SkillDescription[SKID.WM_LULLABY_DEEPSLEEP] = [
 		"Deep Sleep Lullaby",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Debuff^000000",
@@ -12935,8 +12244,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Success Rate 98%, 21x21 cells^000000",
 	].join("\n");
 
-	exports[SKID.WM_SIRCLEOFNATURE] = [
-
+	SkillDescription[SKID.WM_SIRCLEOFNATURE] = [
 		"Circle of Nature's Sound",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Recovery^000000",
@@ -12951,8 +12259,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Consumes 6 SP/sec, Recovers 360 HP/sec^000000",
 	].join("\n");
 
-	exports[SKID.WM_RANDOMIZESPELL] = [
-
+	SkillDescription[SKID.WM_RANDOMIZESPELL] = [
 		"Improvised Song",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Special^000000",
@@ -12966,8 +12273,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Uses a random Level 9 magic skill^000000",
 	].join("\n");
 
-	exports[SKID.WM_GLOOMYDAY] = [
-
+	SkillDescription[SKID.WM_GLOOMYDAY] = [
 		"Gloomy Day",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Buff or Debuff^000000",
@@ -12979,8 +12285,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Evasion -45, ASPD -40%^000000",
 	].join("\n");
 
-	exports[SKID.WM_GREAT_ECHO] = [
-
+	SkillDescription[SKID.WM_GREAT_ECHO] = [
 		"Great Echo",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Damage / Chorus^000000",
@@ -12995,8 +12300,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 9x9 cells, 1400% ATK^000000",
 	].join("\n");
 
-	exports[SKID.WM_SONG_OF_MANA] = [
-
+	SkillDescription[SKID.WM_SONG_OF_MANA] = [
 		"Song of Mana",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Buff / Chorus^000000",
@@ -13006,8 +12310,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 A song which aids in the circulation of mana, recovering 10 sp every 3 seconds for all party members. The recovery amount is increased if there are more Wanderers/Minstrels in the party.^000000",
 	].join("\n");
 
-	exports[SKID.WM_DANCE_WITH_WUG] = [
-
+	SkillDescription[SKID.WM_DANCE_WITH_WUG] = [
 		"Dance With Warg",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Buff / Chorus^000000",
@@ -13017,8 +12320,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Sing a song with a fast tempo, increasing you and your parties attack speed silghtly, and reducing all cast time. The effect of this skill is improved as there are more Minstrels/Wanderers in party.^000000",
 	].join("\n");
 
-	exports[SKID.WM_SOUND_OF_DESTRUCTION] = [
-
+	SkillDescription[SKID.WM_SOUND_OF_DESTRUCTION] = [
 		"Sound of Destruction",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Unique / Chorus^000000",
@@ -13030,8 +12332,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 15 x 15 cells^000000",
 	].join("\n");
 
-	exports[SKID.WM_SATURDAY_NIGHT_FEVER] = [
-
+	SkillDescription[SKID.WM_SATURDAY_NIGHT_FEVER] = [
 		"Saturday Night Fever",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Unique / Chorus^000000",
@@ -13045,8 +12346,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Drains 6% HP/SP every 3 sec, ATK +500, DEF -60%, Evasion -90%^000000",
 	].join("\n");
 
-	exports[SKID.WM_LERADS_DEW] = [
-
+	SkillDescription[SKID.WM_LERADS_DEW] = [
 		"Lerad's Dew",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Buff / Chorus^000000",
@@ -13061,8 +12361,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Max HP +25%^000000",
 	].join("\n");
 
-	exports[SKID.WM_MELODYOFSINK] = [
-
+	SkillDescription[SKID.WM_MELODYOFSINK] = [
 		"Melody of Sink",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Buff / Chorus^000000",
@@ -13077,8 +12376,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 25% MATK, -25% ATK^000000",
 	].join("\n");
 
-	exports[SKID.WM_BEYOND_OF_WARCRY] = [
-
+	SkillDescription[SKID.WM_BEYOND_OF_WARCRY] = [
 		"Warcry of Beyond",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Buff / Chorus^000000",
@@ -13093,8 +12391,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 25% ATK, -25% MATK^000000",
 	].join("\n");
 
-	exports[SKID.WM_UNLIMITED_HUMMING_VOICE] = [
-
+	SkillDescription[SKID.WM_UNLIMITED_HUMMING_VOICE] = [
 		"Unlimited Humming Voice",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Buff / Chorus^000000",
@@ -13109,8 +12406,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Range 15 x 15 / Duration 180 seconds^000000",
 	].join("\n");
 
-	exports[SKID.SO_FIREWALK] = [
-
+	SkillDescription[SKID.SO_FIREWALK] = [
 		"Fire Walk",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Special / Damage^000000",
@@ -13125,8 +12421,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Up to 16 areas^000000",
 	].join("\n");
 
-	exports[SKID.SO_ELECTRICWALK] = [
-
+	SkillDescription[SKID.SO_ELECTRICWALK] = [
 		"Electric Walk",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Special / Damage^000000",
@@ -13141,8 +12436,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Up to 16 areas^000000",
 	].join("\n");
 
-	exports[SKID.SO_SPELLFIST] = [
-
+	SkillDescription[SKID.SO_SPELLFIST] = [
 		"Spell Fist",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Special / Damage^000000",
@@ -13157,8 +12451,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 6 hits^000000",
 	].join("\n");
 
-	exports[SKID.SO_EARTHGRAVE] = [
-
+	SkillDescription[SKID.SO_EARTHGRAVE] = [
 		"Earth Grave",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Damage^000000",
@@ -13172,8 +12465,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 9x9 cells^000000",
 	].join("\n");
 
-	exports[SKID.SO_DIAMONDDUST] = [
-
+	SkillDescription[SKID.SO_DIAMONDDUST] = [
 		"Diamond Dust",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Damage^000000",
@@ -13187,8 +12479,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 9x9 cells^000000",
 	].join("\n");
 
-	exports[SKID.SO_POISON_BUSTER] = [
-
+	SkillDescription[SKID.SO_POISON_BUSTER] = [
 		"Poison Buster",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Damage^000000",
@@ -13197,8 +12488,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Activates the poison within a target, causing the target to take large damage. When the skill is used it cancels poison status on the target. Has no effect on poison attribute monsters.^000000",
 	].join("\n");
 
-	exports[SKID.SO_PSYCHIC_WAVE] = [
-
+	SkillDescription[SKID.SO_PSYCHIC_WAVE] = [
 		"Psychic Wave",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Damage^000000",
@@ -13211,8 +12501,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 11x11 cells, 7 hits, SP Cost 78^000000",
 	].join("\n");
 
-	exports[SKID.SO_CLOUD_KILL] = [
-
+	SkillDescription[SKID.SO_CLOUD_KILL] = [
 		"Cloud Kill",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Damage^000000",
@@ -13226,8 +12515,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 SP Cost 78^000000",
 	].join("\n");
 
-	exports[SKID.SO_STRIKING] = [
-
+	SkillDescription[SKID.SO_STRIKING] = [
 		"Striking",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Buff^000000",
@@ -13242,8 +12530,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 ATK +300, Critical Rate +5^000000",
 	].join("\n");
 
-	exports[SKID.SO_WARMER] = [
-
+	SkillDescription[SKID.SO_WARMER] = [
 		"Warmer",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Damage^000000",
@@ -13253,8 +12540,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Cancels Freezing and Frozen status in 7x7 AoE and prevents Freezing and Frozen for a certain duration. Also heals the target(s) every second for some amount of hp.^000000",
 	].join("\n");
 
-	exports[SKID.SO_VACUUM_EXTREME] = [
-
+	SkillDescription[SKID.SO_VACUUM_EXTREME] = [
 		"Vacuum Extreme",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Special^000000",
@@ -13264,8 +12550,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Creates a vacuum at a target cell, that suspends all targets in a 7x7 area. Targets affected cannot move until the skill has ended.^000000",
 	].join("\n");
 
-	exports[SKID.SO_VARETYR_SPEAR] = [
-
+	SkillDescription[SKID.SO_VARETYR_SPEAR] = [
 		"Varetyr Spear",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Damage^000000",
@@ -13279,8 +12564,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 7x7 cells^000000",
 	].join("\n");
 
-	exports[SKID.SO_ARRULLO] = [
-
+	SkillDescription[SKID.SO_ARRULLO] = [
 		"Arrullo",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Special^000000",
@@ -13295,8 +12579,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 7x7 cells^000000",
 	].join("\n");
 
-	exports[SKID.SO_SUMMON_AGNI] = [
-
+	SkillDescription[SKID.SO_SUMMON_AGNI] = [
 		"Summon Agni",
 		"Max Level: ^777777 3^000000",
 		"Type:^777777 Active^000000",
@@ -13306,8 +12589,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 3]^777777 Duration 1200s / Every 10s drains 11 SP^000000",
 	].join("\n");
 
-	exports[SKID.SO_SUMMON_AQUA] = [
-
+	SkillDescription[SKID.SO_SUMMON_AQUA] = [
 		"Summon Aqua",
 		"Max Level: ^777777 3^000000",
 		"Type:^777777 Active^000000",
@@ -13317,8 +12599,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 3]^777777 Duration 1200s / Every 10s drains 11 SP^000000",
 	].join("\n");
 
-	exports[SKID.SO_SUMMON_VENTUS] = [
-
+	SkillDescription[SKID.SO_SUMMON_VENTUS] = [
 		"Summon Ventus",
 		"Max Level: ^777777 3^000000",
 		"Type:^777777 Active^000000",
@@ -13328,8 +12609,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 3]^777777 Duration 1200s / Every 10s drains 11 SP^000000",
 	].join("\n");
 
-	exports[SKID.SO_SUMMON_TERA] = [
-
+	SkillDescription[SKID.SO_SUMMON_TERA] = [
 		"Summon Tera",
 		"Max Level: ^777777 3^000000",
 		"Type:^777777 Active^000000",
@@ -13339,8 +12619,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 3]^777777 Duration 1200s / Every 10s drains 11 SP^000000",
 	].join("\n");
 	
-	exports[SKID.SO_EL_CONTROL] = [
-
+	SkillDescription[SKID.SO_EL_CONTROL] = [
 		"Spirit Control",
 		"Max Level: ^777777 4^000000",
 		"Type:^777777 Active^000000",
@@ -13351,16 +12630,14 @@ define(["./SkillId"], function( SKID )
 		"[LV 4]^777777 Cancles the currently Summoned Spirit^000000",
 	].join("\n");
 	
-	exports[SKID.SO_EL_ACTION] = [
-
+	SkillDescription[SKID.SO_EL_ACTION] = [
 		"Elemental Action",
 		"Max Level: ^777777 1^000000",
 		"Type:^777777 Active^000000",
 		"Effect:^777777 Instantly switches your spirit to offensive mode.^000000",
 	].join("\n");
 
-	exports[SKID.SO_EL_ANALYSIS] = [
-
+	SkillDescription[SKID.SO_EL_ANALYSIS] = [
 		"Four Spirit Analysis",
 		"Max Level: ^777777 2^000000",
 		"Type:^777777 Active^000000",
@@ -13369,8 +12646,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 2]^777777 Combines elemental stone ore into elemental stones. (10 Red Blood, Wind of Verdure, Crystal Blue or Yellow Live can be used to create Flame Heart, Rough Wind, Mystic Frozen, or Great Nature). Synthesis can fail, resulting in loss of items^000000",
 	].join("\n");
 
-	exports[SKID.SO_EL_SYMPATHY] = [
-
+	SkillDescription[SKID.SO_EL_SYMPATHY] = [
 		"Spirit Sympathy",
 		"Max Level: ^777777 5^000000",
 		"Type:^777777 Passive^000000",
@@ -13382,16 +12658,14 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 HP +25%, SP +25% / Attack + 125 / Summoning Cost -30%^000000",
 	].join("\n");
 
-	exports[SKID.SO_EL_CURE] = [
-
+	SkillDescription[SKID.SO_EL_CURE] = [
 		"Spirit Recovery",
 		"Max Level: ^777777 1^000000",
 		"Type:^777777 Active / Recovery^000000",
 		"Effect:^777777 Consumes your own HP and SP and uses it to recover the HP and SP of a spirit.^000000",
 	].join("\n");
 
-	exports[SKID.SO_FIRE_INSIGNIA] = [
-
+	SkillDescription[SKID.SO_FIRE_INSIGNIA] = [
 		"Fire Insignia",
 		"Max Level: ^777777 3^000000",
 		"Type:^777777 Active / Ground Magic^000000",
@@ -13401,8 +12675,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 3]^777777 Magic Attack Power + 50. When using fire attribute damage, damage + 25%^000000",
 	].join("\n");
 
-	exports[SKID.SO_WATER_INSIGNIA] = [
-
+	SkillDescription[SKID.SO_WATER_INSIGNIA] = [
 		"Water Insignia",
 		"Max Level: ^777777 3^000000",
 		"Type:^777777 Active / Ground Magic^000000",
@@ -13412,8 +12685,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 3]^777777 When casting water attribute magic, variable cast time -30%. When using water attribute magic, damage + 25%^000000",
 	].join("\n");
 
-	exports[SKID.SO_WIND_INSIGNIA] = [
-
+	SkillDescription[SKID.SO_WIND_INSIGNIA] = [
 		"Wind Insignia",
 		"Max Level: ^777777 3^000000",
 		"Type:^777777 Active / Ground Magic^000000",
@@ -13423,8 +12695,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 3]^777777 When casting wind attribute magic, skill delay time -50%. When using wind attribute magic, damage + 25%^000000",
 	].join("\n");
 
-	exports[SKID.SO_EARTH_INSIGNIA] = [
-
+	SkillDescription[SKID.SO_EARTH_INSIGNIA] = [
 		"Earth Insignia",
 		"Max Level: ^777777 3^000000",
 		"Type:^777777 Active / Ground Magic^000000",
@@ -13434,176 +12705,175 @@ define(["./SkillId"], function( SKID )
 		"[LV 3]^777777 Max SP + 50, MDEF + 50. When using earth attribute magic, damage + 25%^000000",
 	].join("\n");
 
-	exports[SKID.EL_AQUAPLAY] = [
+	SkillDescription[SKID.EL_AQUAPLAY] = [
 
 	].join("\n");
 
-	exports[SKID.EL_BLAST] = [
+	SkillDescription[SKID.EL_BLAST] = [
 
 	].join("\n");
 
-	exports[SKID.EL_CHILLY_AIR] = [
+	SkillDescription[SKID.EL_CHILLY_AIR] = [
 
 	].join("\n");
 
-	exports[SKID.EL_CIRCLE_OF_FIRE] = [
+	SkillDescription[SKID.EL_CIRCLE_OF_FIRE] = [
 
 	].join("\n");
 
-	exports[SKID.EL_COOLER] = [
+	SkillDescription[SKID.EL_COOLER] = [
 
 	].join("\n");
 
-	exports[SKID.EL_CURSED_SOIL] = [
+	SkillDescription[SKID.EL_CURSED_SOIL] = [
 
 	].join("\n");
 
-	exports[SKID.EL_FIRE_ARROW] = [
+	SkillDescription[SKID.EL_FIRE_ARROW] = [
 
 	].join("\n");
 
-	exports[SKID.EL_FIRE_BOMB] = [
+	SkillDescription[SKID.EL_FIRE_BOMB] = [
 
 	].join("\n");
 
-	exports[SKID.EL_FIRE_BOMB_ATK] = [
+	SkillDescription[SKID.EL_FIRE_BOMB_ATK] = [
 
 	].join("\n");
 
-	exports[SKID.EL_FIRE_CLOAK] = [
+	SkillDescription[SKID.EL_FIRE_CLOAK] = [
 
 	].join("\n");
 
-	exports[SKID.EL_FIRE_MANTLE] = [
+	SkillDescription[SKID.EL_FIRE_MANTLE] = [
 
 	].join("\n");
 
-	exports[SKID.EL_FIRE_WAVE] = [
+	SkillDescription[SKID.EL_FIRE_WAVE] = [
 
 	].join("\n");
 
-	exports[SKID.EL_FIRE_WAVE_ATK] = [
+	SkillDescription[SKID.EL_FIRE_WAVE_ATK] = [
 
 	].join("\n");
 
-	exports[SKID.EL_GUST] = [
+	SkillDescription[SKID.EL_GUST] = [
 
 	].join("\n");
 
-	exports[SKID.EL_HEATER] = [
+	SkillDescription[SKID.EL_HEATER] = [
 
 	].join("\n");
 
-	exports[SKID.EL_HURRICANE] = [
+	SkillDescription[SKID.EL_HURRICANE] = [
 
 	].join("\n");
 
-	exports[SKID.EL_HURRICANE_ATK] = [
+	SkillDescription[SKID.EL_HURRICANE_ATK] = [
 
 	].join("\n");
 
-	exports[SKID.EL_ICE_NEEDLE] = [
+	SkillDescription[SKID.EL_ICE_NEEDLE] = [
 
 	].join("\n");
 
-	exports[SKID.EL_PETROLOGY] = [
+	SkillDescription[SKID.EL_PETROLOGY] = [
 
 	].join("\n");
 
-	exports[SKID.EL_POWER_OF_GAIA] = [
+	SkillDescription[SKID.EL_POWER_OF_GAIA] = [
 
 	].join("\n");
 
-	exports[SKID.EL_PYROTECHNIC] = [
+	SkillDescription[SKID.EL_PYROTECHNIC] = [
 
 	].join("\n");
 
-	exports[SKID.EL_ROCK_CRUSHER] = [
+	SkillDescription[SKID.EL_ROCK_CRUSHER] = [
 
 	].join("\n");
 
-	exports[SKID.EL_ROCK_CRUSHER_ATK] = [
+	SkillDescription[SKID.EL_ROCK_CRUSHER_ATK] = [
 
 	].join("\n");
 
-	exports[SKID.EL_SOLID_SKIN] = [
+	SkillDescription[SKID.EL_SOLID_SKIN] = [
 
 	].join("\n");
 
-	exports[SKID.EL_STONE_HAMMER] = [
+	SkillDescription[SKID.EL_STONE_HAMMER] = [
 
 	].join("\n");
 
-	exports[SKID.EL_STONE_RAIN] = [
+	SkillDescription[SKID.EL_STONE_RAIN] = [
 
 	].join("\n");
 
-	exports[SKID.EL_STONE_SHIELD] = [
+	SkillDescription[SKID.EL_STONE_SHIELD] = [
 
 	].join("\n");
 
-	exports[SKID.EL_TIDAL_WEAPON] = [
+	SkillDescription[SKID.EL_TIDAL_WEAPON] = [
 
 	].join("\n");
 
-	exports[SKID.EL_TROPIC] = [
+	SkillDescription[SKID.EL_TROPIC] = [
 
 	].join("\n");
 
-	exports[SKID.EL_TYPOON_MIS] = [
+	SkillDescription[SKID.EL_TYPOON_MIS] = [
 
 	].join("\n");
 
-	exports[SKID.EL_TYPOON_MIS_ATK] = [
+	SkillDescription[SKID.EL_TYPOON_MIS_ATK] = [
 
 	].join("\n");
 
-	exports[SKID.EL_UPHEAVAL] = [
+	SkillDescription[SKID.EL_UPHEAVAL] = [
 
 	].join("\n");
 
-	exports[SKID.EL_WATER_BARRIER] = [
+	SkillDescription[SKID.EL_WATER_BARRIER] = [
 
 	].join("\n");
 
-	exports[SKID.EL_WATER_DROP] = [
+	SkillDescription[SKID.EL_WATER_DROP] = [
 
 	].join("\n");
 
-	exports[SKID.EL_WATER_SCREEN] = [
+	SkillDescription[SKID.EL_WATER_SCREEN] = [
 
 	].join("\n");
 
-	exports[SKID.EL_WATER_SCREW] = [
+	SkillDescription[SKID.EL_WATER_SCREW] = [
 
 	].join("\n");
 
-	exports[SKID.EL_WATER_SCREW_ATK] = [
+	SkillDescription[SKID.EL_WATER_SCREW_ATK] = [
 
 	].join("\n");
 
-	exports[SKID.EL_WILD_STORM] = [
+	SkillDescription[SKID.EL_WILD_STORM] = [
 
 	].join("\n");
 
-	exports[SKID.EL_WIND_CURTAIN] = [
+	SkillDescription[SKID.EL_WIND_CURTAIN] = [
 
 	].join("\n");
 
-	exports[SKID.EL_WIND_SLASH] = [
+	SkillDescription[SKID.EL_WIND_SLASH] = [
 
 	].join("\n");
 
-	exports[SKID.EL_WIND_STEP] = [
+	SkillDescription[SKID.EL_WIND_STEP] = [
 
 	].join("\n");
 
-	exports[SKID.EL_ZEPHYR] = [
+	SkillDescription[SKID.EL_ZEPHYR] = [
 
 	].join("\n");
 
-	exports[SKID.GN_TRAINING_SWORD] = [
-
+	SkillDescription[SKID.GN_TRAINING_SWORD] = [
 		"Sword Training",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Passive^000000",
@@ -13617,8 +12887,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 ATK +50, HIT +15^000000",
 	].join("\n");
 
-	exports[SKID.GN_REMODELING_CART] = [
-
+	SkillDescription[SKID.GN_REMODELING_CART] = [
 		"Cart Remodeling",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Passive^000000",
@@ -13632,8 +12901,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Weight +2500, Cart Skill HIT +20^000000",
 	].join("\n");
 
-	exports[SKID.GN_CART_TORNADO] = [
-
+	SkillDescription[SKID.GN_CART_TORNADO] = [
 		"Cart Tornado",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Damage^000000",
@@ -13647,8 +12915,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 350% ATK + Cart Remodeling Level^000000",
 	].join("\n");
 
-	exports[SKID.GN_CARTCANNON] = [
-
+	SkillDescription[SKID.GN_CARTCANNON] = [
 		"Cart Cannon",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Damage^000000",
@@ -13662,8 +12929,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 600% ATK + Cart Remodeling Level^000000",
 	].join("\n");
 
-	exports[SKID.GN_CARTBOOST] = [
-
+	SkillDescription[SKID.GN_CARTBOOST] = [
 		"Cart Boost",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Self Buff^000000",
@@ -13677,8 +12943,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Movement Speed +100%, ATK +50^000000",
 	].join("\n");
 
-	exports[SKID.GN_THORNS_TRAP] = [
-
+	SkillDescription[SKID.GN_THORNS_TRAP] = [
 		"Thorn Trap",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Special / Damage^000000",
@@ -13692,8 +12957,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Duration 18 sec^000000",
 	].join("\n");
 
-	exports[SKID.GN_BLOOD_SUCKER] = [
-
+	SkillDescription[SKID.GN_BLOOD_SUCKER] = [
 		"Blood Sucker",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Special / Damage^000000",
@@ -13707,8 +12971,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Duration 28 sec^000000",
 	].join("\n");
 
-	exports[SKID.GN_SPORE_EXPLOSION] = [
-
+	SkillDescription[SKID.GN_SPORE_EXPLOSION] = [
 		"Spore Explosion",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Special / Damage^000000",
@@ -13722,8 +12985,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Radius 11x11 cells, Detonates in 4 sec^000000",
 	].join("\n");
 
-	exports[SKID.GN_WALLOFTHORN] = [
-
+	SkillDescription[SKID.GN_WALLOFTHORN] = [
 		"Wall Of Thorns",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Special / Damage^000000",
@@ -13737,8 +12999,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Duration 14 sec^000000",
 	].join("\n");
 
-	exports[SKID.GN_CRAZYWEED] = [
-
+	SkillDescription[SKID.GN_CRAZYWEED] = [
 		"Crazy Weed",
 		"Max Level:^777777 10^000000",
 		"Type:^777777 Active / Damage^000000",
@@ -13758,8 +13019,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 1500% ATK, Up to 8^000000",
 	].join("\n");
 
-	exports[SKID.GN_DEMONIC_FIRE] = [
-
+	SkillDescription[SKID.GN_DEMONIC_FIRE] = [
 		"Demonic Fire",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Damage^000000",
@@ -13772,8 +13032,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 210% MATK, Duration 18 sec, Burning Chance 24%^000000",
 	].join("\n");
 
-	exports[SKID.GN_FIRE_EXPANSION] = [
-
+	SkillDescription[SKID.GN_FIRE_EXPANSION] = [
 		"Fire Expansion",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Special / Damage^000000",
@@ -13785,8 +13044,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 1 Acid Bottle, Demonic Fire becomes Acid Bomb / Uses the highest level learned of Acid Bomb^000000",
 	].join("\n");
 
-	exports[SKID.GN_HELLS_PLANT] = [
-
+	SkillDescription[SKID.GN_HELLS_PLANT] = [
 		"Hell's Plant",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Special / Damage^000000",
@@ -13801,8 +13059,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Max Summons 6, Bleeding chance 30%, Stun chance 70%^000000",
 	].join("\n");
 
-	exports[SKID.GN_MANDRAGORA] = [
-
+	SkillDescription[SKID.GN_MANDRAGORA] = [
 		"Howling of Mandragora",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Special / Damage^000000",
@@ -13819,24 +13076,21 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Range 15 x 15 / INT -20 / SP -50%^000000",
 	].join("\n");
 
-	exports[SKID.GN_SLINGITEM] = [
-
+	SkillDescription[SKID.GN_SLINGITEM] = [
 		"Sling Item",
 		"Max Level:^777777 1^000000",
 		"Type:^777777 Active^000000",
 		"Effect:^777777 Throws a fruit bomb or other items classified as Throwing type items. Max range is 11 cells.^000000",
 	].join("\n");
 
-	exports[SKID.GN_CHANGEMATERIAL] = [
-
+	SkillDescription[SKID.GN_CHANGEMATERIAL] = [
 		"Change Material",
 		"Max Level:^777777 1^000000",
 		"Type:^777777 Active^000000",
 		"Effect:^777777 Combines various items to make new items. However, you can't assume how to make something. If you don't know the item name and use the exact ingredients, the skill will fail. It's said that formulas for synthesized items are available somewhere in the world.^000000",
 	].join("\n");
 
-	exports[SKID.GN_MIX_COOKING] = [
-
+	SkillDescription[SKID.GN_MIX_COOKING] = [
 		"Mix Cooking",
 		"Max Level:^777777 2^000000",
 		"Type:^777777 Active^000000",
@@ -13851,8 +13105,7 @@ define(["./SkillId"], function( SKID )
 		"^000000-Black Mass: ^777777 Failure to create food.",
 	].join("\n");
 
-	exports[SKID.GN_MAKEBOMB] = [
-
+	SkillDescription[SKID.GN_MAKEBOMB] = [
 		"Create Bomb",
 		"Max Level:^777777 2^000000",
 		"Type:^777777 Active^000000",
@@ -13866,8 +13119,7 @@ define(["./SkillId"], function( SKID )
 		"^000000-Black Lump: ^777777 Failure to create bomb.",
 	].join("\n");
 
-	exports[SKID.GN_S_PHARMACY] = [
-
+	SkillDescription[SKID.GN_S_PHARMACY] = [
 		"Special Pharmacy",
 		"Max Level:^777777 10^000000",
 		"Type:^777777 Active^000000",
@@ -13888,8 +13140,7 @@ define(["./SkillId"], function( SKID )
 		"^000000-Increase SP Potion (Large):^777777 10 empty bottle, 10 royal jelly, 15 blue herb, sweet sauce",
 	].join("\n");
 
-	exports[SKID.AB_SECRAMENT] = [
-
+	SkillDescription[SKID.AB_SECRAMENT] = [
 		"Sacrament",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Support^000000",
@@ -13905,8 +13156,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Fixed Casting Time Decrease 50%^000000",
 	].join("\n");
 
-	exports[SKID.SR_HOWLINGOFLION] = [
-
+	SkillDescription[SKID.SR_HOWLINGOFLION] = [
 		"Howling of Lion",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Damage (Special)^000000",
@@ -13921,8 +13171,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 900% ATK, Radius 7 cells, Fear Chance 30%^000000",
 	].join("\n");
 
-	exports[SKID.SR_RIDEINLIGHTNING] = [
-
+	SkillDescription[SKID.SR_RIDEINLIGHTNING] = [
 		"Ride In Lightening (Lightening Shot)",
 		"Max Level:^777777 5^000000",
 		"Type:^777777 Active / Damage^000000",
@@ -13937,20 +13186,18 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Area of Effect 9x9 cells, Sphere Used 15^000000",
 	].join("\n");
 
-	exports[SKID.ALL_ODINS_RECALL] = [
+	SkillDescription[SKID.ALL_ODINS_RECALL] = [
 
 	].join("\n");
 
-	exports[SKID.RETURN_TO_ELDICASTES] = [
-
+	SkillDescription[SKID.RETURN_TO_ELDICASTES] = [
 		"Return To El Dicastes",
 		"Max Level:^777777 1^000000",
 		"Type:^777777 Active^000000",
 		"Effect:^777777 Warps you to the town of El Dicastes.^000000",
 	].join("\n");
 
-	exports[SKID.HLIF_HEAL] = [
-
+	SkillDescription[SKID.HLIF_HEAL] = [
 		"Touch of Heal",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -13963,8 +13210,7 @@ define(["./SkillId"], function( SKID )
 		"^00BB00Each cast requires 1 Condensed Red Potion. ^000000",
 	].join("\n");
 
-	exports[SKID.HLIF_AVOID] = [
-
+	SkillDescription[SKID.HLIF_AVOID] = [
 		"Emergency Avoid",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -13982,8 +13228,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 50% - 20 Sec ^000000",
 	].join("\n");
 
-	exports[SKID.HLIF_BRAIN] = [
-
+	SkillDescription[SKID.HLIF_BRAIN] = [
 		"Brain Surgery",
 		"Max Level:^777777 5 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -13996,8 +13241,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 5% / 15% / 10% ^000000",
 	].join("\n");
 
-	exports[SKID.HLIF_CHANGE] = [
-
+	SkillDescription[SKID.HLIF_CHANGE] = [
 		"Mental Change",
 		"Max Level:^777777 3 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -14012,8 +13256,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 3]^777777 300 sec/ 1200 sec ^000000",
 	].join("\n");
 
-	exports[SKID.HAMI_CASTLE] = [
-
+	SkillDescription[SKID.HAMI_CASTLE] = [
 		"Castling",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -14030,8 +13273,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 - 100% chance ^000000",
 	].join("\n");
 
-	exports[SKID.HAMI_DEFENCE] = [
-
+	SkillDescription[SKID.HAMI_DEFENCE] = [
 		"Defense",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -14048,8 +13290,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 +10 for 20 sec ^000000",
 	].join("\n");
 
-	exports[SKID.HAMI_SKIN] = [
-
+	SkillDescription[SKID.HAMI_SKIN] = [
 		"Adamantium Skin",
 		"Max Level:^777777 5 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -14062,8 +13303,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 + 10% / 25% / 20 ^000000",
 	].join("\n");
 
-	exports[SKID.HAMI_BLOODLUST] = [
-
+	SkillDescription[SKID.HAMI_BLOODLUST] = [
 		"Blood Lust",
 		"Max Level:^777777 3 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -14078,8 +13318,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 3]^777777 +150% ATK, 9% leech chance ^000000",
 	].join("\n");
 
-	exports[SKID.HFLI_MOON] = [
-
+	SkillDescription[SKID.HFLI_MOON] = [
 		"Moonlight",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -14097,8 +13336,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 - 3 - 660% ^000000",
 	].join("\n");
 
-	exports[SKID.HFLI_FLEET] = [
-
+	SkillDescription[SKID.HFLI_FLEET] = [
 		"Fleet Move",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -14116,8 +13354,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 - 15% - 130% - 40 sec / 120 sec ^000000",
 	].join("\n");
 
-	exports[SKID.HFLI_SPEED] = [
-
+	SkillDescription[SKID.HFLI_SPEED] = [
 		"Over Speed",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -14135,8 +13372,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5] - 60 - 40 sec / 120 sec ^000000",
 	].join("\n");
 
-	exports[SKID.HFLI_SBR44] = [
-
+	SkillDescription[SKID.HFLI_SBR44] = [
 		"S.B.R.44",
 		"Max Level:^777777 3 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -14152,8 +13388,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 3]^777777 300 * Intimacy Damage ^000000",
 	].join("\n");
 
-	exports[SKID.HVAN_CAPRICE] = [
-
+	SkillDescription[SKID.HVAN_CAPRICE] = [
 		"Caprice",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -14172,8 +13407,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 LV 5 Bolt ^000000",
 	].join("\n");
 
-	exports[SKID.HVAN_CHAOTIC] = [
-
+	SkillDescription[SKID.HVAN_CHAOTIC] = [
 		"Chaotic Benediction",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -14191,8 +13425,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Heal (1 ~ 5) - ^ff000033%^777777 / ^cc009934%^777777 / 33% ^000000",
 	].join("\n");
 
-	exports[SKID.HVAN_INSTRUCT] = [
-
+	SkillDescription[SKID.HVAN_INSTRUCT] = [
 		"Change Instruction",
 		"Max Level:^777777 5 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -14205,8 +13438,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 +5 INT/ +4 STR ^000000",
 	].join("\n");
 
-	exports[SKID.HVAN_EXPLOSION] = [
-
+	SkillDescription[SKID.HVAN_EXPLOSION] = [
 		"Bio Explosion",
 		"Max Level:^777777 3 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -14221,8 +13453,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 3]^777777 Explosion damage: Maximum HP*2 ^000000",
 	].join("\n");
 
-	exports[SKID.MS_BASH] = [
-
+	SkillDescription[SKID.MS_BASH] = [
 		"Bash",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive, Level Selectable ^000000",
@@ -14245,8 +13476,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 ATK 400%, +50% Accuracy ^000000",
 	].join("\n");
 
-	exports[SKID.MS_MAGNUM] = [
-
+	SkillDescription[SKID.MS_MAGNUM] = [
 		"Magnum Break",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -14271,8 +13501,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 ATK 300%, +100 HIT ^000000",
 	].join("\n");
 
-	exports[SKID.MS_BOWLINGBASH] = [
-
+	SkillDescription[SKID.MS_BOWLINGBASH] = [
 		"Bowling Bash",
 		"Type:^777777 Offensive ^000000",
 		"SP Cost:^777777 12 + SkillLV ^000000",
@@ -14294,8 +13523,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 500% Damage, Knock back 5 cell ^000000",
 	].join("\n");
 
-	exports[SKID.MS_PARRYING] = [
-
+	SkillDescription[SKID.MS_PARRYING] = [
 		"Parry",
 		"Max Level:^777777 10 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -14319,8 +13547,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 Block Chance 50%, 60 Sec ^000000",
 	].join("\n");
 
-	exports[SKID.MS_REFLECTSHIELD] = [
-
+	SkillDescription[SKID.MS_REFLECTSHIELD] = [
 		"Reflect Shield",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Support ^000000",
@@ -14342,8 +13569,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 40% ATK Returned ^000000",
 	].join("\n");
 
-	exports[SKID.MS_BERSERK] = [
-
+	SkillDescription[SKID.MS_BERSERK] = [
 		"Berserk",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -14358,8 +13584,7 @@ define(["./SkillId"], function( SKID )
 		"You do not regain HP and SP naturally for 5 minutes after the skill ends (you can be healed or use items though). The Skill cancels out if your HP drops to 100 or below. Can be used during Guild Siege. ^000000",
 	].join("\n");
 
-	exports[SKID.MA_DOUBLE] = [
-
+	SkillDescription[SKID.MA_DOUBLE] = [
 		"Double Strafing",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -14382,8 +13607,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 380% Damage ^000000",
 	].join("\n");
 
-	exports[SKID.MA_SHOWER] = [
-
+	SkillDescription[SKID.MA_SHOWER] = [
 		"Arrow shower",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Offensive, Level Selectable ^000000",
@@ -14407,8 +13631,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 250% Damage ^000000",
 	].join("\n");
 
-	exports[SKID.MA_SKIDTRAP] = [
-
+	SkillDescription[SKID.MA_SKIDTRAP] = [
 		"Skid Trap",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active, Trap ^000000",
@@ -14430,8 +13653,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Sliding Range 10 cells, Setting Time 60 secs ^000000",
 	].join("\n");
 
-	exports[SKID.MA_LANDMINE] = [
-
+	SkillDescription[SKID.MA_LANDMINE] = [
 		"Land Mine",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active, Trap ^000000",
@@ -14453,8 +13675,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 ATK 150%, Setting Time 40secs ^000000",
 	].join("\n");
 
-	exports[SKID.MA_SANDMAN] = [
-
+	SkillDescription[SKID.MA_SANDMAN] = [
 		"Sandman",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active, Trap ^000000",
@@ -14475,8 +13696,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Setting Time 30sec 90% Sleep Chance ^000000",
 	].join("\n");
 
-	exports[SKID.MA_FREEZINGTRAP] = [
-
+	SkillDescription[SKID.MA_FREEZINGTRAP] = [
 		"Freezing Trap",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active, Trap ^000000",
@@ -14498,8 +13718,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Setting Time 30secs ^000000",
 	].join("\n");
 
-	exports[SKID.MA_REMOVETRAP] = [
-
+	SkillDescription[SKID.MA_REMOVETRAP] = [
 		"Remove Trap",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -14512,8 +13731,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Turns one set trap back into a Trap item. You only get one trap even if you needed two for setting it. Can be used with an Ankle Snare that has already caught a target, but in this case you will not get a Trap item. Only works with your own traps. ^000000",
 	].join("\n");
 
-	exports[SKID.MA_CHARGEARROW] = [
-
+	SkillDescription[SKID.MA_CHARGEARROW] = [
 		"Charge Arrow",
 		"Max Level:^777777 1 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -14525,8 +13743,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Ranged attack at 150% ATK. The target is pushed back 6 cells. Only 1 arrow is consumed. ^000000",
 	].join("\n");
 
-	exports[SKID.MA_SHARPSHOOTING] = [
-
+	SkillDescription[SKID.MA_SHARPSHOOTING] = [
 		"Sharpshooting",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -14544,8 +13761,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 +20 CRIT, +250% ATK ^000000",
 	].join("\n");
 
-	exports[SKID.ML_PIERCE] = [
-
+	SkillDescription[SKID.ML_PIERCE] = [
 		"Pierce",
 		"Type:^777777 Offensive",
 		"SP Cost:^777777 7 ^000000",
@@ -14557,15 +13773,13 @@ define(["./SkillId"], function( SKID )
 		"[Big]^777777 3 Hits ^000000",
 	].join("\n");
 
-	exports[SKID.ML_BRANDISH] = [
-
+	SkillDescription[SKID.ML_BRANDISH] = [
 		"Brandish Spear",
 		"Target:^777777 1 Enemy ^000000",
 		"Effect:^777777 An area attack with an ATK of (100+20*SkillLV)%. ^000000",
 	].join("\n");
 
-	exports[SKID.ML_SPIRALPIERCE] = [
-
+	SkillDescription[SKID.ML_SPIRALPIERCE] = [
 		"Spiral Pierce",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -14585,8 +13799,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 350% ATK per attack ^000000",
 	].join("\n");
 
-	exports[SKID.ML_DEFENDER] = [
-
+	SkillDescription[SKID.ML_DEFENDER] = [
 		"Defender",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Support ^000000",
@@ -14605,8 +13818,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 -80% ATK, no ASPD reduction ^000000",
 	].join("\n");
 
-	exports[SKID.ML_AUTOGUARD] = [
-
+	SkillDescription[SKID.ML_AUTOGUARD] = [
 		"Auto Guard",
 		"Max Level:^777777 10 ^000000",
 		"Type:^777777 Supportive ^000000",
@@ -14628,8 +13840,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 30% Chance, 0.1 delay ^000000",
 	].join("\n");
 
-	exports[SKID.ML_DEVOTION] = [
-
+	SkillDescription[SKID.ML_DEVOTION] = [
 		"Devotion",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Support ^000000",
@@ -14651,8 +13862,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 90 sec, 5 Players ^000000",
 	].join("\n");
 
-	exports[SKID.MER_MAGNIFICAT] = [
-
+	SkillDescription[SKID.MER_MAGNIFICAT] = [
 		"Magnificat",
 		"Max Level:^777777 5 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -14670,8 +13880,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 Lasts 90 Seconds ^000000",
 	].join("\n");
 
-	exports[SKID.MER_QUICKEN] = [
-
+	SkillDescription[SKID.MER_QUICKEN] = [
 		"Weapon Quicken",
 		"Max Level:^777777 10 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -14693,8 +13902,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 Lasts 300Secs/50 SP ^000000",
 	].join("\n");
 
-	exports[SKID.MER_SIGHT] = [
-
+	SkillDescription[SKID.MER_SIGHT] = [
 		"Sight",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -14707,8 +13915,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Nullifies the Hide, Tunnel Drive and Cloaking effects within range. ^000000",
 	].join("\n");
 
-	exports[SKID.MER_CRASH] = [
-
+	SkillDescription[SKID.MER_CRASH] = [
 		"Crash",
 		"Max Level:^777777 5 ^000000",
 		"Type:^777777 Offensive ^000000",
@@ -14726,8 +13933,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5]^777777 150% ATK, 30% Stun ^000000",
 	].join("\n");
 
-	exports[SKID.MER_REGAIN] = [
-
+	SkillDescription[SKID.MER_REGAIN] = [
 		"Regain",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -14740,8 +13946,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Recovers the target from both sleep and stun status. ^000000",
 	].join("\n");
 
-	exports[SKID.MER_TENDER] = [
-
+	SkillDescription[SKID.MER_TENDER] = [
 		"Tender",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -14754,8 +13959,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Recovers the target from both freezing and stone status. ^000000",
 	].join("\n");
 
-	exports[SKID.MER_BENEDICTION] = [
-
+	SkillDescription[SKID.MER_BENEDICTION] = [
 		"Benediction",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -14768,8 +13972,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Recovers the target from both curse and blind status. ^000000",
 	].join("\n");
 
-	exports[SKID.MER_RECUPERATE] = [
-
+	SkillDescription[SKID.MER_RECUPERATE] = [
 		"Recuperate",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -14782,8 +13985,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Recovers the target from both poison and silence status. ^000000",
 	].join("\n");
 
-	exports[SKID.MER_MENTALCURE] = [
-
+	SkillDescription[SKID.MER_MENTALCURE] = [
 		"Mental Cure",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -14796,8 +13998,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Recovers the target from both hallucination and chaos status. ^000000",
 	].join("\n");
 
-	exports[SKID.MER_COMPRESS] = [
-
+	SkillDescription[SKID.MER_COMPRESS] = [
 		"Compress",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -14810,8 +14011,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Recovers the target from bleeding status. ^000000",
 	].join("\n");
 
-	exports[SKID.MER_PROVOKE] = [
-
+	SkillDescription[SKID.MER_PROVOKE] = [
 		"Provoke",
 		"Max Level:^777777 10 ^000000",
 		"Type:^33cc00 Active, Level Selectable ^000000",
@@ -14834,8 +14034,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 80% Success, Target Attack +32%, Defense -55% ^000000",
 	].join("\n");
 
-	exports[SKID.MER_AUTOBERSERK] = [
-
+	SkillDescription[SKID.MER_AUTOBERSERK] = [
 		"Auto Berserk",
 		"Max Level:^777777 1 ^000000",
 		"Type:^000099 Passive with activation ^000000",
@@ -14847,8 +14046,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 When your HP goes below 25%, you gain the effect of Provoke L10 on yourself. That means +32% ATK and -60% VIT DEF. The effect lasts until the character returns to more than 25% HP. The skill can be set to activate or not. The skill will even function after it has drained all your SP. ^000000",
 	].join("\n");
 
-	exports[SKID.MER_DECAGI] = [
-
+	SkillDescription[SKID.MER_DECAGI] = [
 		"Decrease agility",
 		"Max Level:^777777 10 ^000000",
 		"Type:^33cc00 Active, Level Selectable ^000000",
@@ -14873,8 +14071,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 -12 AGI, -45 SP, 120 sec ^000000",
 	].join("\n");
 
-	exports[SKID.MER_SCAPEGOAT] = [
-
+	SkillDescription[SKID.MER_SCAPEGOAT] = [
 		"Scapegoat",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -14886,8 +14083,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 The mercenary gives all of its remaining HP to the summoner and dies. Any excess HP is discarded. ^000000",
 	].join("\n");
 
-	exports[SKID.MER_LEXDIVINA] = [
-
+	SkillDescription[SKID.MER_LEXDIVINA] = [
 		"Lex Divina",
 		"Max Level:^777777 10 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -14911,8 +14107,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 Lasts 60 Seconds ^000000",
 	].join("\n");
 
-	exports[SKID.MER_ESTIMATION] = [
-
+	SkillDescription[SKID.MER_ESTIMATION] = [
 		"Monster Property",
 		"Max Level:^777777 1 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -14925,8 +14120,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Brings up a window with information about the targeted monster such as HP, element, level, etc at the time the spell is cast. Party members also see this window. ^000000",
 	].join("\n");
 
-	exports[SKID.MER_KYRIE] = [
-
+	SkillDescription[SKID.MER_KYRIE] = [
 		"Kyrie Eleison",
 		"Max Level:^777777 10 ^000000",
 		"Type:^33cc00 Active ^000000",
@@ -14951,8 +14145,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 30% of Maximum HP, 10 attacks ^000000",
 	].join("\n");
 
-	exports[SKID.MER_BLESSING] = [
-
+	SkillDescription[SKID.MER_BLESSING] = [
 		"Blessing",
 		"Skill Form: ^777777Supportive ^000000",
 		"Target: ^777777Player ^000000",
@@ -14961,8 +14154,7 @@ define(["./SkillId"], function( SKID )
 		"Curse and Stone Curse. ^000000",
 	].join("\n");
 
-	exports[SKID.MER_INCAGI] = [
-
+	SkillDescription[SKID.MER_INCAGI] = [
 		"Increase Agility",
 		"Max Level:^777777 10 ^000000",
 		"Type:^33cc00 Active, Level Selectable ^000000",
@@ -14988,8 +14180,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10]^777777 + 12 AGI ^000000",
 	].join("\n");
 
-	exports[SKID.GD_APPROVAL] = [
-
+	SkillDescription[SKID.GD_APPROVAL] = [
 		"Approval",
 		"Max Level:^777777 1 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -14998,8 +14189,7 @@ define(["./SkillId"], function( SKID )
 		"^ff0000Without this skill all attacks on the Emperium will miss!!^777777 To disband a guild use the command ^00ffff/breakguild \"guildname\". ^000000",
 	].join("\n");
 
-	exports[SKID.GD_KAFRACONTRACT] = [
-
+	SkillDescription[SKID.GD_KAFRACONTRACT] = [
 		"Kafra Contract",
 		"Max Level:^777777 1 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -15007,8 +14197,7 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Sign a contract with the Kafra Headquarter in Aldebaran. Through the contract the guild can hire a Kafra Employee for their castle who will provide warps and storage for the guild members. ^000000",
 	].join("\n");
 
-	exports[SKID.GD_GUARDRESEARCH] = [
-
+	SkillDescription[SKID.GD_GUARDRESEARCH] = [
 		"Guardian Research",
 		"Max Level:^777777 1 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -15016,16 +14205,14 @@ define(["./SkillId"], function( SKID )
 		"Effect:^777777 Study the Guardian technology. Allows the guild to hire Guardians for their territory. ^000000",
 	].join("\n");
 
-	exports[SKID.GD_GUARDUP] = [
-
+	SkillDescription[SKID.GD_GUARDUP] = [
 		"Build up the Guardian",
 		"Max Level:^777777 3 ^000000",
 		"Type:^000099 Passive ^000000",
 		"Effect:^777777 The guild Guardians gain bonuses to their Maximum HP, ATK and ASPD. ^000000",
 	].join("\n");
 
-	exports[SKID.GD_EXTENSION] = [
-
+	SkillDescription[SKID.GD_EXTENSION] = [
 		"Guild Extension",
 		"Max Level:^777777 10 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -15043,8 +14230,7 @@ define(["./SkillId"], function( SKID )
 		"[Level 10]^777777 +60 people ^000000",
 	].join("\n");
 
-	exports[SKID.GD_GLORYGUILD] = [
-
+	SkillDescription[SKID.GD_GLORYGUILD] = [
 		"Guild's Glory",
 		"Max Level:^777777 1 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -15056,40 +14242,35 @@ define(["./SkillId"], function( SKID )
 		"If you are the guild master, you must place the emblem inside the Emblem folder in the game directory (i.e. C:\\Program Files\\Gravity\\RO\\Emblem). ^000000",
 	].join("\n");
 
-	exports[SKID.GD_LEADERSHIP] = [
-
+	SkillDescription[SKID.GD_LEADERSHIP] = [
 		"Great Leadership",
 		"Max Level:^777777 5 ^000000",
 		"Type:^000099 Passive ^000000",
 		"Effect:^777777 All guild members in a 5x5 area around the Guild Leader will receive a +1*SkillLV STR bonus. Can only be used during guild sieges. ^000000",
 	].join("\n");
 
-	exports[SKID.GD_GLORYWOUNDS] = [
-
+	SkillDescription[SKID.GD_GLORYWOUNDS] = [
 		"Wounds of Glory",
 		"Max Level:^777777 5 ^000000",
 		"Type:^000099 Passive ^000000",
 		"Effect:^777777 All guild members in a 5x5 area around the Guild Leader will receive a +1*SkillLV VIT bonus. Can only be used during guild sieges. ^000000",
 	].join("\n");
 
-	exports[SKID.GD_SOULCOLD] = [
-
+	SkillDescription[SKID.GD_SOULCOLD] = [
 		"Soul of Cold",
 		"Max Level:^777777 5 ^000000",
 		"Type:^000099 Passive ^000000",
 		"Effect:^777777 All guild members in a 5x5 area around the Guild Leader will receive a +1*SkillLV AGI bonus. Can only be used during guild sieges. This skill is unconfirmed. ^000000",
 	].join("\n");
 
-	exports[SKID.GD_HAWKEYES] = [
-
+	SkillDescription[SKID.GD_HAWKEYES] = [
 		"Sharp Hawk Eyes",
 		"Max Level:^777777 5 ^000000",
 		"Type:^000099 Passive ^000000",
 		"Effect:^777777 All guild members in a 5x5 area around the Guild Leader will receive a +1*SkillLV DEX bonus. Can only be used during guild sieges. ^000000",
 	].join("\n");
 
-	exports[SKID.GD_BATTLEORDER] = [
-
+	SkillDescription[SKID.GD_BATTLEORDER] = [
 		"Battle Orders",
 		"Max Level:^777777 1 ^000000",
 		"Type:^777777 Support, Guild Master only ^000000",
@@ -15102,8 +14283,7 @@ define(["./SkillId"], function( SKID )
 		"This skill lasts for 1 minute, and caster must wait 5 minutes before using this skill again. Can only be used during guild sieges. ^000000",
 	].join("\n");
 
-	exports[SKID.GD_REGENERATION] = [
-
+	SkillDescription[SKID.GD_REGENERATION] = [
 		"Regeneration",
 		"Max Level:^777777 3 ^000000",
 		"Type:^777777 Support, Guild Master only ^000000",
@@ -15119,8 +14299,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 3]^777777 3x HP and SP regeneration rate ^000000",
 	].join("\n");
 
-	exports[SKID.GD_RESTORE] = [
-
+	SkillDescription[SKID.GD_RESTORE] = [
 		"Restore",
 		"Max Level:^777777 1 ^000000",
 		"Type:^777777 Support, Guild Master only ^000000",
@@ -15133,8 +14312,7 @@ define(["./SkillId"], function( SKID )
 		"Once used, caster must wait 5 minutes before using this skill again. Can only be used during guild sieges. ^000000",
 	].join("\n");
 
-	exports[SKID.GD_EMERGENCYCALL] = [
-
+	SkillDescription[SKID.GD_EMERGENCYCALL] = [
 		"Emergency Call",
 		"Max Level:^777777 1 ^000000",
 		"Type:^777777 Support, Guild Master only ^000000",
@@ -15147,20 +14325,18 @@ define(["./SkillId"], function( SKID )
 		"Once used, caster must wait 5 minutes before using this skill again. ^000000",
 	].join("\n");
 
-	exports[SKID.GD_DEVELOPMENT] = [
-
+	SkillDescription[SKID.GD_DEVELOPMENT] = [
 		"Emsolute Develop",
 		"Max Level:^777777 1 ^000000",
 		"Type:^000099 Passive ^000000",
 		"Effect:^777777 Gives 50% chance to get an additional, free economy point when investing into a castle's economy. ^000000",
 	].join("\n");
 
-	exports[SKID.GD_ITEMEMERGENCYCALL] = [
+	SkillDescription[SKID.GD_ITEMEMERGENCYCALL] = [
 
 	].join("\n");
 
-	exports[SKID.MH_SUMMON_LEGION] = [
-
+	SkillDescription[SKID.MH_SUMMON_LEGION] = [
 		"Summon Legion",
 		"Max Level:^777777 5 ^000000",
 		"Duration:^777777 10 + 10*SkillLV ^000000",
@@ -15174,8 +14350,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5] ^777777 Summons Luciola Vespa / Duration 60 seconds^000000",
 	].join("\n");
 
-	exports[SKID.MH_NEEDLE_OF_PARALYZE] = [
-
+	SkillDescription[SKID.MH_NEEDLE_OF_PARALYZE] = [
 		"Needle Of Paralyze",
 		"Max Level:^777777 5 ^000000",
 		"Effect : ^777777 Stings a target with a powerful numbing poison, which causes poison element damage and causes the paralysis status effect.",
@@ -15188,8 +14363,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5] ^777777 1200% ATK / Paralysis Chance 65% ^000000",
 	].join("\n");
 
-	exports[SKID.MH_POISON_MIST] = [
-
+	SkillDescription[SKID.MH_POISON_MIST] = [
 		"Poison Mist",
 		"Max Level:^777777 5 ^000000",
 		"Effect : ^777777 Disperses an arial toxin that affects all targets that enter. Deals poison element damage as well as causes blindness.",
@@ -15201,8 +14375,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5] ^777777 Blind Chance 60% / Duration 20 seconds^000000",
 	].join("\n");
 
-	exports[SKID.MH_PAIN_KILLER] = [
-
+	SkillDescription[SKID.MH_PAIN_KILLER] = [
 		"Pain Killer",
 		"Max Level:^777777 5 ^000000",
 		"Effect : ^777777 Injects a target with a mild paralytic toxin, which delays the effects of damage taken.",
@@ -15214,8 +14387,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5] ^777777 Duration 60 seconds^000000",
 	].join("\n");
 
-	exports[SKID.MH_LIGHT_OF_REGENE] = [
-
+	SkillDescription[SKID.MH_LIGHT_OF_REGENE] = [
 		"Light Of Regeneration",
 		"Max Level:^777777 5 ^000000",
 		"Effect : ^777777 For a certain amount of time, the homunculus shines the light of regeneration on the host.",
@@ -15229,8 +14401,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5] ^777777 Duration 600 seconds^000000",
 	].join("\n");
 
-	exports[SKID.MH_OVERED_BOOST] = [
-
+	SkillDescription[SKID.MH_OVERED_BOOST] = [
 		"Overed Boost",
 		"Max Level:^777777 5 ^000000",
 		"Effect : ^777777 Temporarially boosts the evasion and attack speed of the homunculus and the host to a fixed amount, but reduces defense by 1/2. ",
@@ -15243,8 +14414,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5] ^777777 Evasion 500 / ASPD 189 ^000000",
 	].join("\n");
 
-	exports[SKID.MH_ERASER_CUTTER] = [
-
+	SkillDescription[SKID.MH_ERASER_CUTTER] = [
 		"Eraser Cutter",
 		"Max Level:^777777 5 ^000000",
 		"SP Cost:^777777 20 + 5*SkillLV ^000000",
@@ -15257,8 +14427,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5] ^777777 1000% ATK / Wind Element Magic Damage ^000000",
 	].join("\n");
 
-	exports[SKID.MH_XENO_SLASHER] = [
-
+	SkillDescription[SKID.MH_XENO_SLASHER] = [
 		"Xeno Slasher",
 		"Max Level:^777777 5 ^000000",
 		"SP Cost:^777777 80 + 10*SkillLV ^000000",
@@ -15272,8 +14441,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5] ^777777 700% ATK / Wind Element Magic Damage / Area 9x9 Cells^000000",
 	].join("\n");
 
-	exports[SKID.MH_SILENT_BREEZE] = [
-
+	SkillDescription[SKID.MH_SILENT_BREEZE] = [
 		"Silent Breeze",
 		"Max Level:^777777 5 ^000000",
 		"Effect : ^777777  A quiet breeze. Recovers a target's HP and inflicts Silence on upon them, preventing all skill use.",
@@ -15286,8 +14454,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5] ^777777 Duration 21 seconds ^000000",
 	].join("\n");
 
-	exports[SKID.MH_STAHL_HORN] = [
-
+	SkillDescription[SKID.MH_STAHL_HORN] = [
 		"Stahl Horn",
 		"Max Level:^777777 5 ^000000",
 		"Effect : ^777777 Performs a dash attack at a target, dealing damage, stunning them, and knocking them back 3 cells. If active, Goldene Ferse will change Stahl Horn to deal Holy property damage.^000000",
@@ -15298,8 +14465,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5] ^777777 1000% ATK / Range 9 cells / 36% Stun chance ^000000",
 	].join("\n");
 
-	exports[SKID.MH_GOLDENE_FERSE] = [
-
+	SkillDescription[SKID.MH_GOLDENE_FERSE] = [
 		"Goldene Ferse",
 		"Max Level:^777777 5 ^000000",
 		"Effect : ^777777 Increases the homunculus's evasion and attack speed, and makes regular attacks holy attack by chance.",
@@ -15312,8 +14478,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5] ^777777 Evasion +60 / ASPD +26% / Holy Damage Chance 12% / Duration 90 seconds ^000000",
 	].join("\n");
 
-	exports[SKID.MH_STEINWAND] = [
-
+	SkillDescription[SKID.MH_STEINWAND] = [
 		"Stone Wall",
 		"Max Level:^777777 5 ^000000",
 		"Effect : ^777777 Casts the skill 'Safety Wall' directly under both the homunculus and master. ^000000",
@@ -15324,8 +14489,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5] ^777777 Duration 90 seconds ^000000",
 	].join("\n");
 
-	exports[SKID.MH_HEILIGE_STANGE] = [
-
+	SkillDescription[SKID.MH_HEILIGE_STANGE] = [
 		"Heilage Stange",
 		"Max Level:^777777 5 ^000000",
 		"ATK Type:^777777 Holy, Long Range, Magic attack ^000000",
@@ -15337,8 +14501,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5] ^777777 1750% ATK  / Area 5 x 5 cells ^000000",
 	].join("\n");
 
-	exports[SKID.MH_ANGRIFFS_MODUS] = [
-
+	SkillDescription[SKID.MH_ANGRIFFS_MODUS] = [
 		"Angriffs Modus",
 		"Max Level:^777777 5 ^000000",
 		"Effect : ^777777 Improves the homunculus's attack power for a period of time, but drastically reduces evasion and defense. ",
@@ -15350,16 +14513,14 @@ define(["./SkillId"], function( SKID )
 		"[LV 5] ^777777 +150 ATK  / -130 DEF / -140 Evasion / Duration 90 seconds^000000",
 	].join("\n");
 
-	exports[SKID.MH_STYLE_CHANGE] = [
-
+	SkillDescription[SKID.MH_STYLE_CHANGE] = [
 		"Style Change",
 		"Max Level:^777777 1 ^000000",
 		"Effect : ^777777 Switches your homunculus combat style between fighter and grappler.",
 		"While in fighter style, the homunculus will gain spirit spheres as it deals or receives damage. ^000000",
 	].join("\n");
 
-	exports[SKID.MH_SONIC_CRAW] = [
-
+	SkillDescription[SKID.MH_SONIC_CRAW] = [
 		"Sonic Claw",
 		"Max Level:^777777 5 ^000000",
 		"Effect : ^777777 Usable only in Fighter style. Deals a high speed claw attack to one target.",
@@ -15371,8 +14532,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5] ^777777 200% ATK ^000000",
 	].join("\n");
 
-	exports[SKID.MH_SILVERVEIN_RUSH] = [
-
+	SkillDescription[SKID.MH_SILVERVEIN_RUSH] = [
 		"Silver Bain Rush",
 		"Max Level:^777777 5 ^000000",
 		"Effect : ^777777 Usable only in Fighter style. The skill must be used directly after Sonic Claw.",
@@ -15385,8 +14545,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5] ^777777 750% ATK / 45% Stun Chance ^000000",
 	].join("\n");
 
-	exports[SKID.MH_MIDNIGHT_FRENZY] = [
-
+	SkillDescription[SKID.MH_MIDNIGHT_FRENZY] = [
 		"Midnight Frenzy",
 		"Max Level:^777777 5 ^000000",
 		"Effect : ^777777 Usable only after casting Silvervein Rush. Consumes 2 spirit spheres.",
@@ -15400,8 +14559,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5] ^777777 1500% ATK ^000000",
 	].join("\n");
 
-	exports[SKID.MH_TINDER_BREAKER] = [
-
+	SkillDescription[SKID.MH_TINDER_BREAKER] = [
 		"Tinder Breaker",
 		"Max Level:^777777 5 ^000000",
 		"Effect : ^777777 Approaches a target and holds them using a locking technique.",
@@ -15414,8 +14572,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5] ^777777 500% ATK ^000000",
 	].join("\n");
 
-	exports[SKID.MH_CBC] = [
-
+	SkillDescription[SKID.MH_CBC] = [
 		"Continual Break Combo",
 		"Max Level:^777777 5 ^000000",
 		"Effect : ^777777 Can only be used in combination with Tinder Breaker. Consumes 1 spirit spheres.",
@@ -15429,8 +14586,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5] ^777777 2000 Base damage  ^000000",
 	].join("\n");
 
-	exports[SKID.MH_EQC] = [
-
+	SkillDescription[SKID.MH_EQC] = [
 		"Eternal Quick Combo",
 		"Max Level:^777777 5 ^000000",
 		"Effect : ^777777 Can only be used in combination with C.B.C. Consumes 2 spirit spheres.",
@@ -15442,8 +14598,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5] ^777777 MHP -10% / ATK/DEF -25%  ^000000",
 	].join("\n");
 
-	exports[SKID.MH_MAGMA_FLOW] = [
-
+	SkillDescription[SKID.MH_MAGMA_FLOW] = [
 		"Magma Flow",
 		"Max Level:^777777 5 ^000000",
 		"Effect : ^777777 When the homunculus receives damage there's a chance for it to eject magma around it,",
@@ -15455,8 +14610,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5] ^777777 500% ATK / Area 5 x 5 Cells  / Success Rate 15%^000000",
 	].join("\n");
 
-	exports[SKID.MH_GRANITIC_ARMOR] = [
-
+	SkillDescription[SKID.MH_GRANITIC_ARMOR] = [
 		"Granitic Armor",
 		"Max Level:^777777 5 ^000000",
 		"Effect : ^777777 Aranges volcanic rock to create a form of hard armor.",
@@ -15469,8 +14623,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5] ^777777 10% Damage Reduction / 30% HP Reduction ^000000",
 	].join("\n");
 
-	exports[SKID.MH_LAVA_SLIDE] = [
-
+	SkillDescription[SKID.MH_LAVA_SLIDE] = [
 		"Lava Slide",
 		"Max Level:^777777 5 ^000000",
 		"Effect : ^777777  Causes a burst of lava which damages all targets an area.",
@@ -15482,8 +14635,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5] ^777777 50% Burning Chance ^000000",
 	].join("\n");
 
-	exports[SKID.MH_PYROCLASTIC] = [
-
+	SkillDescription[SKID.MH_PYROCLASTIC] = [
 		"Pyroclastic",
 		"Max Level:^777777 5 ^000000",
 		"Effect : ^777777 Converts both the homunculus' and Geneticist's weapons to Fire-element and increases ATK.",
@@ -15497,8 +14649,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5] ^777777 Duration 180 seconds ^000000",
 	].join("\n");
 
-	exports[SKID.MH_VOLCANIC_ASH] = [
-
+	SkillDescription[SKID.MH_VOLCANIC_ASH] = [
 		"Volcanic Ash",
 		"Max Level:^777777 5 ^000000",
 		"Effect : ^777777 Disperses volcanic ash into the air, causing volcanic ash status to all those struck.",
@@ -15512,8 +14663,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5] ^777777 Duration 40 seconds ^000000",
 	].join("\n");
 
-	exports[SKID.KO_YAMIKUMO] = [
-
+	SkillDescription[SKID.KO_YAMIKUMO] = [
 		"'Ͽ' ('''')",
 		"Max Level:^777777 1 ^000000",
 		"Effect : ^777777 Hide one's presence. Similar to Thief hide skill.",
@@ -15521,8 +14671,7 @@ define(["./SkillId"], function( SKID )
 		"Continuously drains a certain amount of SP while this state is active.^000000",
 	].join("\n");
 
-	exports[SKID.KO_RIGHT] = [
-
+	SkillDescription[SKID.KO_RIGHT] = [
 		"Right Hand Mastery",
 		"Max Level:^777777 5 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -15535,8 +14684,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5] ^777777 ATK 120% ^000000",
 	].join("\n");
 
-	exports[SKID.KO_LEFT] = [
-
+	SkillDescription[SKID.KO_LEFT] = [
 		"Left Hand Mastery",
 		"Max Level:^777777 5 ^000000",
 		"Type:^000099 Passive ^000000",
@@ -15548,8 +14696,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5] ^777777 ATK 100% ^000000",
 	].join("\n");
 
-	exports[SKID.KO_JYUMONJIKIRI] = [
-
+	SkillDescription[SKID.KO_JYUMONJIKIRI] = [
 		"Cross Strike",
 		"Max Level:^777777 5 ^000000",
 		"Effect : ^777777 ī'Էο' & '''''''' 'հ'(''̪) ''ų. '''' '''''' '''''''' '''' '''' '' 3 'ʰ' <'''' ''ó> '''°' 'ȴ'.",
@@ -15562,8 +14709,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5] ^777777 ATK 750% / Range 7 cells ^000000",
 	].join("\n");
 
-	exports[SKID.KO_SETSUDAN] = [
-
+	SkillDescription[SKID.KO_SETSUDAN] = [
 		"''ȥ '''' ('''' ''Ө)",
 		"Max Level:^777777 5 ^000000",
 		"Effect : ^777777 '''' ''ǥ'' 'ҿ︵Ŀ ''ų [''ȥ] '迭'' '''''' 'ް' '''' '''', '߰' '''''''' '߻''ϸ'",
@@ -15575,8 +14721,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5] ^777777 ATK 500% ^000000",
 	].join("\n");
 
-	exports[SKID.KO_BAKURETSU] = [
-
+	SkillDescription[SKID.KO_BAKURETSU] = [
 		"'''' '''''' (''ۡ'''')",
 		"Max Level:^777777 5 ^000000",
 		"Effect : ^777777 '''߷''' '''' '''''̸' '''', ȿ'' '''' '''' '''' '''''' '''ظ' 'ش'.",
@@ -15588,8 +14733,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5] ^777777 Range 11 cells / Range of Effect 3 x 3^000000",
 	].join("\n");
 
-	exports[SKID.KO_HAPPOKUNAI] = [
-
+	SkillDescription[SKID.KO_HAPPOKUNAI] = [
 		"'ȹ' '''''' (''۰'''')",
 		"Max Level:^777777 5 ^000000",
 		"Effect : ^777777 'ڽ''' '߽''''' '''' '''' '''' '''' '''''' '''''̷' '''''''' ''''''.",
@@ -15601,8 +14745,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5] ^777777 '''' 11 x 11 '' ^000000",
 	].join("\n");
 
-	exports[SKID.KO_MUCHANAGE] = [
-
+	SkillDescription[SKID.KO_MUCHANAGE] = [
 		"'''' '''''' ('''')",
 		"Max Level:^777777 10 ^000000",
 		"Effect : ^777777  '''' ''ų ['''' ''''''] '' 'Ŀ''' ''. 'ִ' 100,000 Zeny '' '''', '''' '''''' '''' '''''' '''''' '''''' '''' '''÷''' '''''''' '''' '' 'ִ'. '''' '''''Ϳ''Դ' '''''' '''ظ''' ''''''. ^000000",
@@ -15618,8 +14761,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 10] ^777777 Consumes 100,000 zeny / Damage 50,000 ~ 100,000^000000",
 	].join("\n");
 
-	exports[SKID.KO_HUUMARANKA] = [
-
+	SkillDescription[SKID.KO_HUUMARANKA] = [
 		"ǳ'''''''' ''ȭ (''ت'''''' - '''')",
 		"Max Level:^777777 5 ^000000",
 		"Effect : ^777777 ǳ'''''''''' '''' 7 x 7 '' '''' '''' '''' '''''' '''''''' ''''''.",
@@ -15631,8 +14773,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5] ^777777 ATK 750 % / Range 13 cells ^000000",
 	].join("\n");
 
-	exports[SKID.KO_MAKIBISHI] = [
-
+	SkillDescription[SKID.KO_MAKIBISHI] = [
 		"''Ű'''' ('''''' 'Ѹ''')",
 		"Max Level:^777777 5 ^000000",
 		"Effect : ^777777 '''''''''' ħ'' '޸' '''''' '''' '''''̸' 'ڽ' 'ֺ''' 'ٴڿ' 'ѷ', '̰''' '''' '''' 'Ͻ''''''' '̵''Ҵ''̳' '''' '''·' ''''''. ",
@@ -15644,8 +14785,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5] ^777777 '''''' 'Ҹ' '''' 7 ''  ^000000",
 	].join("\n");
 
-	exports[SKID.KO_MEIKYOUSISUI] = [
-
+	SkillDescription[SKID.KO_MEIKYOUSISUI] = [
 		"'''''''' ((٥'''''')",
 		"Max Level:^777777 5 ^000000",
 		"Effect : ^777777 10 'ʰ' '''''' '''''Ͽ' HP, SP '' '''' 'ӵ''' ȸ'''Ѵ'. ''ų '''' '߿''' '''''' '̵''Ұ' '''°' 'ȴ'. ",
@@ -15657,8 +14797,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5] ^777777 Recovers HP by 10% / SP by 5% per second ^000000",
 	].join("\n");
 
-	exports[SKID.KO_ZANZOU] = [
-
+	SkillDescription[SKID.KO_ZANZOU] = [
 		"ȯ'' - 'ܻ' ('''' - '''')",
 		"Max Level:^777777 5 ^000000",
 		"Effect : ^777777 ȯ'''' 'ڽŰ' 'Ȱ''' 'н''' '''''' ''''. '''''' '' 'н''' '''''' HP'' '''''', HP'' 0 '' 'Ǹ' 'Ҹ''Ѵ'.",
@@ -15670,8 +14809,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5] ^777777 Clone HP 18000 ^000000",
 	].join("\n");
 
-	exports[SKID.KO_KYOUGAKU] = [
-
+	SkillDescription[SKID.KO_KYOUGAKU] = [
 		"ȯ'' - '''' (''''- '''')",
 		"Max Level:^777777 5 ^000000",
 		"Effect : ^777777 '''' 1 ü'''' ȯ'''' 'ɾ', '''''' '''' '''''' '''Ͻ'Ű'' '''''' '''''ͷ' 'ٲ''' 'Ѵ'.",
@@ -15684,8 +14822,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5] ^777777 Reduce all stats by 10 ~ 15 ^000000",
 	].join("\n");
 
-	exports[SKID.KO_JYUSATSU] = [
-
+	SkillDescription[SKID.KO_JYUSATSU] = [
 		"ȯ'' - 'ֻ' (''''- ''߯)",
 		"Max Level:^777777 5 ^000000",
 		"Effect : ^777777 '''' 1 ü'''' ȯ'''' 'ɾ', '''''' HP'' '''ҽ'Ű'' '''ָ' 'Ǵ'.",
@@ -15693,22 +14830,19 @@ define(["./SkillId"], function( SKID )
 		"'''뿡'Ը' '''''Ǹ'. '''''Ϳ''Դ' '''''''' 'ʴ´'.^000000",
 	].join("\n");
 
-	exports[SKID.KO_GENWAKU] = [
-
+	SkillDescription[SKID.KO_GENWAKU] = [
 		"ȯ'' - ȯȤ ('''' - '''')",
 		"Max Level:^777777 5 ^000000",
 		"Effect : ^777777 ''ǥ '''''' 'ڽ''' ''ġ'' '''' 'ٲ۴'. '''''' '' '''''' '''' Ȯ'''' '''''̻' [ȥ'']'' '''' '''' 'ִ'.^000000",
 	].join("\n");
 
-	exports[SKID.KO_IZAYOI] = [
-
+	SkillDescription[SKID.KO_IZAYOI] = [
 		"'' ''''''°'' '' ('''''')",
 		"Max Level:^777777 5 ^000000",
 		"Effect : ^777777 ''ų '''' '' '''ڰ' '''''ϴ' '''' ''ų'' '''' ĳ'''''' '''''''', '''' ĳ'''' 'ð''' '''''''' 'پ''''',  MATK '' ''''ġ '''''Ѵ'.^000000",
 	].join("\n");
 
-	exports[SKID.KO_KAHU_ENTEN] = [
-
+	SkillDescription[SKID.KO_KAHU_ENTEN] = [
 		"ȭ'' : ''õ (''ݬ : '''')",
 		"Max Level:^777777 1^000000",
 		"Effect : ^777777  '''' '''''' '̿''' '''' '''⸦ ''ȯ'Ͽ' ȭ'Ӽ' 'ι''' '''ݷ''' ''''''Ų''.",
@@ -15716,8 +14850,7 @@ define(["./SkillId"], function( SKID )
 		"''ų '''' '' '''' '''' 1 '''' 'Ҹ''Ѵ'.^000000",
 	].join("\n");
 
-	exports[SKID.KO_HYOUHU_HUBUKI] = [
-
+	SkillDescription[SKID.KO_HYOUHU_HUBUKI] = [
 		"'''' : '뼳 (޼ݬ : '''')",
 		"Max Level:^777777 1^000000",
 		"Effect : ^777777 '''''' '''''' '̿''' '''' '''⸦ ''ȯ'Ͽ' '''Ӽ' 'ι''' '''ݷ''' ''''''Ų''.",
@@ -15725,8 +14858,7 @@ define(["./SkillId"], function( SKID )
 		"''ų '''' '' '''''' '''' 1 '''' 'Ҹ''Ѵ'.^000000",
 	].join("\n");
 
-	exports[SKID.KO_KAZEHU_SEIRAN] = [
-
+	SkillDescription[SKID.KO_KAZEHU_SEIRAN] = [
 		"ǳ'' : û'' (''ݬ : ''չ)",
 		"Max Level:^777777 1^000000",
 		"Effect : ^777777 'ٶ''' '''''' '̿''' 'ٶ''' '''⸦ ''ȯ'Ͽ' ǳ'Ӽ' 'ι''' '''ݷ''' ''''''Ų''.",
@@ -15734,8 +14866,7 @@ define(["./SkillId"], function( SKID )
 		"''ų '''' '' 'ٶ''' '''' 1 '''' 'Ҹ''Ѵ'.^000000",
 	].join("\n");
 
-	exports[SKID.KO_DOHU_KOUKAI] = [
-
+	SkillDescription[SKID.KO_DOHU_KOUKAI] = [
 		"'''' : '''' (''ݬ : ˧'')",
 		"Max Level:^777777 1^000000",
 		"Effect : ^777777 '''' '''''''' '''' '''⸦ ''ȯ'Ͽ' '''''''' '''ݷ°' '''''''' ''''''Ų''.",
@@ -15743,15 +14874,13 @@ define(["./SkillId"], function( SKID )
 		"''ų '''' '' '''' '''' 1 '''' 'Ҹ''Ѵ'.^000000",
 	].join("\n");
 
-	exports[SKID.KO_KAIHOU] = [
-
+	SkillDescription[SKID.KO_KAIHOU] = [
 		"Technique Kaihou",
 		"Max Level:^777777 1^000000",
 		"Effect : ^777777 '''' 1 ü'''' '''''' 'ִ' '''''' '''' 'ع''Ͽ' '''''''' ''''''. '''''' 'Ӽ''' ''ȯ'' '''''' 'Ӽ''' ''''''.^000000",
 	].join("\n");
 
-	exports[SKID.KO_ZENKAI] = [
-
+	SkillDescription[SKID.KO_ZENKAI] = [
 		"'''' ''''",
 		"Max Level:^777777 1^000000",
 		"Effect : ^777777 '''''' 'ִ' '''''' '''' '''鿡 '''''Ͽ' 'پ''' ȿ'''' '߻'''Ű'' ''''('''') '' '''''''.",
@@ -15761,8 +14890,7 @@ define(["./SkillId"], function( SKID )
 		"^FD6202 '''Ӽ' '''' - '''' '''' '''' '''''' ''ȭ / '' '' 'ϳ''' '''''̻''' 'Ǵ'. '''' '''''' '''Ⱑ '''Ӽ''' '''', '''ݷ' '' '''''Ѵ'. ^000000",
 	].join("\n");
 
-	exports[SKID.KG_KAGEHUMI] = [
-
+	SkillDescription[SKID.KG_KAGEHUMI] = [
 		"'׸''' ''''",
 		"Max Level:^777777 5^000000",
 		"Effect : ^777777  Ư'' '''' ''ų'' '''''ϰ' 'ִ' '''''' '''''''' 'Ͻ''''''' '''߰' 'ϸ', 'ش' ''ų'' '''''' ''''''Ų''.^000000",
@@ -15773,8 +14901,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5] ^777777 Range 13 x 13 cells ^000000",
 	].join("\n");
 
-	exports[SKID.KG_KYOMU] = [
-
+	SkillDescription[SKID.KG_KYOMU] = [
 		"'㹫'' '׸'''",
 		"Max Level:^777777 5^000000",
 		"Effect : ^777777 '''''ð' '''' '''''' '''''' 'ִ' 'ݻ''ɷ''' ''ȿȭ'Ѵ'.",
@@ -15786,8 +14913,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5] ^777777 Duration 30 seconds ^000000",
 	].join("\n");
 
-	exports[SKID.KG_KAGEMUSYA] = [
-
+	SkillDescription[SKID.KG_KAGEMUSYA] = [
 		"'׸''' ''''",
 		"Max Level:^777777 5^000000",
 		"Effect : ^777777 '''' 1 ü'''' '''''ð' '''' [''ų : '''' ''''] 'ɷ''' 'ο''Ѵ'.",
@@ -15799,8 +14925,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5] ^777777 Duration 180 seconds ^000000",
 	].join("\n");
 
-	exports[SKID.OB_ZANGETSU] = [
-
+	SkillDescription[SKID.OB_ZANGETSU] = [
 		"'ϱ׷''' 'ʽ´'",
 		"Max Level:^777777 5^000000",
 		"Effect : ^777777  '''''' '''' HP, SP ''ġ'' '''' '''''' MATK '' ATK '' ''ȭ ''Ų''. ^000000",
@@ -15811,8 +14936,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5] ^777777 Duration 120 seconds ^000000",
 	].join("\n");
 
-	exports[SKID.OB_AKAITSUKI] = [
-
+	SkillDescription[SKID.OB_AKAITSUKI] = [
 		"'ұ''' '''' '޺'",
 		"Max Level:^777777 5^000000",
 		"Effect : ^777777   '' ȿ'''' 'ɸ' '''''' Ư'' HP ȸ'' ''ų'' '޾''' '', '''''' HP ȸ'' '''' '''''''' 'Ե''' 'Ѵ'.",
@@ -15824,8 +14948,7 @@ define(["./SkillId"], function( SKID )
 		"[LV 5] ^777777 Duration 30 seconds ^000000",
 	].join("\n");
 
-	exports[SKID.OB_OBOROGENSOU] = [
-
+	SkillDescription[SKID.OB_OBOROGENSOU] = [
 		"'帰 '޺''' ȯ''",
 		"Max Level:^777777 5^000000",
 		"Effect : ^777777 '''' 1 ü'' '''' HP, SP ''ġ'' '''',  HP'' SP '' '''''''' '''' Ȥ'' '''ҽ'Ų''.",
@@ -15837,40 +14960,35 @@ define(["./SkillId"], function( SKID )
 		"[LV 5] ^777777 Duration 30 seconds ^000000",
 	].join("\n");
 
-	exports[SKID.ECLAGE_RECALL] = [
-
+	SkillDescription[SKID.ECLAGE_RECALL] = [
 		"Return to Eclage",
 		"Effect: ^777777 Teleport to Eclage. Fixed casting time 3 seconds / 5 minutes cooldown after use.^000000",
 	].join("\n");
 
-	exports[SKID.ECL_SNOWFLIP] = [
-
+	SkillDescription[SKID.ECL_SNOWFLIP] = [
 		"Snow Flip",
 		"^777777 ''''''ó'' 'Ͼ''' '''''' '''' 'ø' '''' ''''. '''''' 'ɸ''''' '𸣴' ''''. ^000000",
 		"^777777 When used burning, bleeding, deep sleep and sleep are treated. ^000000",
 	].join("\n");
 
-	exports[SKID.ECL_PEONYMAMY] = [
-
+	SkillDescription[SKID.ECL_PEONYMAMY] = [
 		"'''''ϸ'''",
 		"^777777 '''' ǰó'' '''''' 'µ''' '''' ''ȫ'''' '''''' ''''. ^000000",
 		"^777777 '''' '' '''', 'õ', '''''' ġ'''Ѵ'. ^000000",
 	].join("\n");
 
-	exports[SKID.ECL_SADAGUI] = [
-
+	SkillDescription[SKID.ECL_SADAGUI] = [
 		"'''ٱ'",
 		"^777777 '''''' 'ڷ' '''̸''ø' 'Ӹ''' '''''' '''' '''''' '''' '''' ''''''. '''''' '''ۿ뵵 'ִ' ''. ^000000",
 		"^777777 '''' '' '''', '''', ȥ'', ȯ'''' ġ'''Ѵ'. ^000000",
 	].join("\n");
 
-	exports[SKID.ECL_SEQUOIADUST] = [
-
+	SkillDescription[SKID.ECL_SEQUOIADUST] = [
 		"Sequoia Dust",
 		"^777777 '''''' '''''' 'ٿ' 'پ''ִ' '''' 'ν''''''''' '''Ƽ' '''''''' '''' ''ȭ 'ɷ''' '''''Ѵ'. ^000000",
 		"^777777 '''' '' ''ȭ, '''', '''', '', ''ø'' '''', '''''' ''Ű'''' ġ'''Ѵ'. ^000000",
 	].join("\n");
 
 
-	return exports;
+	return SkillDescription;
 });

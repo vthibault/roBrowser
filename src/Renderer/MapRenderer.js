@@ -285,6 +285,7 @@ define(function( require )
 	function onMapComplete( success, error )
 	{
 		var worldResource = this.currentMap.replace(/\.gat$/i, '.rsw');
+		var mapInfo       = DB.getMap(worldResource);
 
 		// Problem during loading ?
 		if (!success) {
@@ -293,15 +294,15 @@ define(function( require )
 		}
 
 		// Play BGM
-		BGM.play( DB.mp3[worldResource] || '01.mp3' );
+		BGM.play(mapInfo.mp3 || '01.mp3');
 
 		// Apply fog to map
-		this.fog.exist = !!DB.fog[worldResource];
+		this.fog.exist = !!(mapInfo && mapInfo.fog);
 		if (this.fog.exist) {
-			this.fog.near   = DB.fog[worldResource].near * 240;
-			this.fog.far    = DB.fog[worldResource].far  * 240;
-			this.fog.factor = DB.fog[worldResource].factor;
-			this.fog.color.set( DB.fog[worldResource].color );
+			this.fog.near   = mapInfo.fog.near * 240;
+			this.fog.far    = mapInfo.fog.far  * 240;
+			this.fog.factor = mapInfo.fog.factor;
+			this.fog.color.set( mapInfo.fog.color );
 		}
 
 		// Initialize renderers

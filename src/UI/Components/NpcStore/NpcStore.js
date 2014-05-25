@@ -17,6 +17,7 @@ define(function(require)
 	 */
 	var jQuery       = require('Utils/jquery');
 	var DB           = require('DB/DBManager');
+	var ItemType     = require('DB/Items/ItemType');
 	var Client       = require('Core/Client');
 	var Preferences  = require('Core/Preferences');
 	var Session      = require('Engine/SessionStorage');
@@ -507,10 +508,10 @@ define(function(require)
 
 		item        = isAdding ? _input[index] : _output[index];
 		isStackable = (
-			item.type !== Inventory.ITEM.WEAPON &&
-			item.type !== Inventory.ITEM.EQUIP  &&
-			item.type !== Inventory.ITEM.PETEGG &&
-			item.type !== Inventory.ITEM.PETEQUIP
+			item.type !== ItemType.WEAPON &&
+			item.type !== ItemType.EQUIP  &&
+			item.type !== ItemType.PETEGG &&
+			item.type !== ItemType.PETEQUIP
 		);
 
 		if (isAdding) {

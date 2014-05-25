@@ -59,13 +59,13 @@ function(
 				return;
 
 			case 'effect':
-				this.addText( DB.msgstringtable[23 + MapPreferences.effect], this.TYPE.INFO );
+				this.addText( DB.getMessage(23 + MapPreferences.effect), this.TYPE.INFO );
 				MapPreferences.effect = !MapPreferences.effect;
 				MapPreferences.save();
 				return;
 
 			case 'mineffect':
-				this.addText( DB.msgstringtable[687 + MapPreferences.mineffect], this.TYPE.INFO );
+				this.addText( DB.getMessage(687 + MapPreferences.mineffect), this.TYPE.INFO );
 				MapPreferences.mineffect = !MapPreferences.mineffect;
 				MapPreferences.save();
 				return;

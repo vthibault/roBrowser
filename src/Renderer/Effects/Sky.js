@@ -17,7 +17,7 @@ define(function( require )
 	 * Load dependencies
 	 */
 	var WebGL          = require('Utils/WebGL');
-	var DB             = require('DB/DBManager');
+	var WeatherTable   = require('DB/Effects/WeatherEffect');
 	var Client         = require('Core/Client');
 	var Session        = require('Engine/SessionStorage');
 	var SpriteRenderer = require('Renderer/SpriteRenderer');
@@ -66,15 +66,15 @@ define(function( require )
 		var i;
 
 		// Not found on weather, black sky, no cloud.
-		if (!DB.weather.sky[mapname]) {
+		if (!WeatherTable.sky[mapname]) {
 			gl.clearColor( 0.0, 0.0, 0.0, 1.0);
 			_display = false;
 			return;
 		}
 
 		// Save color
-		_color   = DB.weather.sky[mapname].cloudColor;
-		color    = DB.weather.sky[mapname].skyColor;
+		_color   = WeatherTable.sky[mapname].cloudColor;
+		color    = WeatherTable.sky[mapname].skyColor;
 		_display = true;
 
 		gl.clearColor( color[0], color[1], color[2], color[3]);

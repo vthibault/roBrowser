@@ -16,8 +16,9 @@ define(function( require )
 	/**
 	 * Load dependencies
 	 */
-	var SkillId       = require('DB/SkillId');
-	var SkillInfo     = require('DB/SkillInfo');
+	var SkillId       = require('DB/Skills/SkillConst');
+	var SkillInfo     = require('DB/Skills/SkillInfo');
+	var StatusConst   = require('DB/Status/StatusConst');
 	var Emotions      = require('DB/Emotions');
 	var Session       = require('Engine/SessionStorage');
 	var Network       = require('Network/NetworkManager');
@@ -785,7 +786,7 @@ define(function( require )
 
 		// TODO: add other status
 		switch (pkt.index) {
-			case 184: // SI_CLAIRVOYANCE
+			case StatusConst.CLAIRVOYANCE:
 				if (entity === Session.Entity) {
 					Session.intravision = pkt.state;
 					EntityManager.forEach(function(entity){
@@ -794,7 +795,7 @@ define(function( require )
 				}
 				break;
 
-			case 673: // SI_ON_PUSH_CART
+			case StatusConst.ON_PUSH_CART:
 				if (entity === Session.Entity) {
 					Session.hasCart = pkt.state;
 				}

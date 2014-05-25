@@ -7,7 +7,8 @@
  *
  * @author Vincent Thibault
  */
-define(['Core/Client', 'DB/DBManager', 'DB/ShadowTable', 'DB/MountTable', './EntityAction'], function( Client, DB, ShadowTable, MountTable, EntityAction )
+define(['Core/Client', 'DB/DBManager', 'DB/Monsters/ShadowTable', 'DB/Jobs/MountTable', './EntityAction'],
+function(     Client,      DB,                      ShadowTable,           MountTable,     EntityAction)
 {
 	'use strict';
 

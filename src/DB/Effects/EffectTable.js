@@ -1,5 +1,5 @@
 /**
- * DB/EffectList.js
+ * DB/Effects/EffectTable.js
  *
  * List effects
  * TODO: complete the list, add informations about sound.

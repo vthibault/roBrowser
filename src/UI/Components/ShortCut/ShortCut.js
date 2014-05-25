@@ -16,7 +16,8 @@ define(function(require)
 	 * Dependencies
 	 */
 	var DB                   = require('DB/DBManager');
-	var SkillInfo            = require('DB/SkillInfo');
+	var ItemType             = require('DB/Items/ItemType');
+	var SkillInfo            = require('DB/Skills/SkillInfo');
 	var jQuery               = require('Utils/jquery');
 	var Client               = require('Core/Client');
 	var Preferences          = require('Core/Preferences');
@@ -281,7 +282,7 @@ define(function(require)
 		else {
 			var item = DB.getItemInfo(ID);
 			file     = item.identifiedResourceName;
-			name     = item.identifiedDisplayName;
+			name     = DB.getItemName(item);
 			var it   = Inventory.getItemById(ID);
 
 			// Do not display items not int inventory
@@ -290,7 +291,7 @@ define(function(require)
 			}
 
 			// If equipment, do not display count
-			else if (it.type === Inventory.ITEM.WEAPON || it.type === Inventory.ITEM.EQUIP) {
+			else if (it.type === ItemType.WEAPON || it.type === ItemType.EQUIP) {
 				count = 1;
 			}
 
