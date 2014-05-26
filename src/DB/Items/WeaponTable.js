@@ -8,7 +8,7 @@
  * @author Vincent Thibault
  */
 
-define(['./WeaponType'], function( WeaponType )
+define(["./WeaponType"], function( WeaponType )
 {
 	"use strict";
 
@@ -17,35 +17,35 @@ define(['./WeaponType'], function( WeaponType )
 
 
 	WeaponName[WeaponType.NONE]                  = "";
-	WeaponName[WeaponType.SHORTSWORD]            = "_´Ü°Ë";
-	WeaponName[WeaponType.SWORD]                 = "_°Ë";
-	WeaponName[WeaponType.TWOHANDSWORD]          = "_°Ë";
-	WeaponName[WeaponType.SPEAR]                 = "_Ã¢";
-	WeaponName[WeaponType.TWOHANDSPEAR]          = "_Ã¢";
-	WeaponName[WeaponType.AXE]                   = "_µµ³¢";
-	WeaponName[WeaponType.TWOHANDAXE]            = "_µµ³¢";
-	WeaponName[WeaponType.MACE]                  = "_Å¬·´";
-	WeaponName[WeaponType.TWOHANDMACE]           = "_Å¬·´";
-	WeaponName[WeaponType.ROD]                   = "_·Ôµå";
-	WeaponName[WeaponType.BOW]                   = "_È°";
-	WeaponName[WeaponType.KNUKLE]                = "_³ÊÅ¬";
-	WeaponName[WeaponType.INSTRUMENT]            = "_¾Ç±â";
-	WeaponName[WeaponType.WHIP]                  = "_Ã¤Âï";
-	WeaponName[WeaponType.BOOK]                  = "_Ã¥";
-	WeaponName[WeaponType.CATARRH]               = "_Ä«Å¸¸£_Ä«Å¸¸£";
-	WeaponName[WeaponType.GUN_HANDGUN]           = "_±ÇÃÑ";
-	WeaponName[WeaponType.GUN_RIFLE]             = "_±â°üÃÑ";
-	WeaponName[WeaponType.GUN_GATLING]           = "_±â°üÃÑ";
-	WeaponName[WeaponType.GUN_SHOTGUN]           = "_±â°üÃÑ";
-	WeaponName[WeaponType.GUN_GRANADE]           = "_±â°üÃÑ";
-	WeaponName[WeaponType.SYURIKEN]              = "_¼ö¸®°Ë";
-	WeaponName[WeaponType.TWOHANDROD]            = "_·Ôµå";
-	WeaponName[WeaponType.SHORTSWORD_SHORTSWORD] = "_´Ü°Ë_´Ü°Ë";
-	WeaponName[WeaponType.SWORD_SWORD]           = "_°Ë_°Ë";
-	WeaponName[WeaponType.AXE_AXE]               = "_µµ³¢_µµ³¢";
-	WeaponName[WeaponType.SHORTSWORD_SWORD]      = "_´Ü°Ë_°Ë";
-	WeaponName[WeaponType.SHORTSWORD_AXE]        = "_´Ü°Ë_µµ³¢";
-	WeaponName[WeaponType.SWORD_AXE]             = "_°Ë_µµ³¢";
+	WeaponName[WeaponType.SHORTSWORD]            = "_\xb4\xdc\xb0\xcb";
+	WeaponName[WeaponType.SWORD]                 = "_\xb0\xcb";
+	WeaponName[WeaponType.TWOHANDSWORD]          = "_\xb0\xcb";
+	WeaponName[WeaponType.SPEAR]                 = "_\xc3\xa2";
+	WeaponName[WeaponType.TWOHANDSPEAR]          = "_\xc3\xa2";
+	WeaponName[WeaponType.AXE]                   = "_\xb5\xb5\xb3\xa2";
+	WeaponName[WeaponType.TWOHANDAXE]            = "_\xb5\xb5\xb3\xa2";
+	WeaponName[WeaponType.MACE]                  = "_\xc5\xac\xb7\xb4";
+	WeaponName[WeaponType.TWOHANDMACE]           = "_\xc5\xac\xb7\xb4";
+	WeaponName[WeaponType.ROD]                   = "_\xb7\xd4\xb5\xe5";
+	WeaponName[WeaponType.BOW]                   = "_\xc8\xb0";
+	WeaponName[WeaponType.KNUKLE]                = "_\xb3\xca\xc5\xac";
+	WeaponName[WeaponType.INSTRUMENT]            = "_\xbe\xc7\xb1\xe2";
+	WeaponName[WeaponType.WHIP]                  = "_\xc3\xa4\xc2\xef";
+	WeaponName[WeaponType.BOOK]                  = "_\xc3\xa5";
+	WeaponName[WeaponType.CATARRH]               = "_\xc4\xab\xc5\xb8\xb8\xa3\x5f\xc4\xab\xc5\xb8\xb8\xa3";
+	WeaponName[WeaponType.GUN_HANDGUN]           = "_\xb1\xc7\xc3\xd1";
+	WeaponName[WeaponType.GUN_RIFLE]             = "_\xb1\xe2\xb0\xfc\xc3\xd1";
+	WeaponName[WeaponType.GUN_GATLING]           = "_\xb1\xe2\xb0\xfc\xc3\xd1";
+	WeaponName[WeaponType.GUN_SHOTGUN]           = "_\xb1\xe2\xb0\xfc\xc3\xd1";
+	WeaponName[WeaponType.GUN_GRANADE]           = "_\xb1\xe2\xb0\xfc\xc3\xd1";
+	WeaponName[WeaponType.SYURIKEN]              = "_\xbc\xf6\xb8\xae\xb0\xcb";
+	WeaponName[WeaponType.TWOHANDROD]            = "_\xb7\xd4\xb5\xe5";
+	WeaponName[WeaponType.SHORTSWORD_SHORTSWORD] = "_\xb4\xdc\xb0\xcb\x5f\xb4\xdc\xb0\xcb";
+	WeaponName[WeaponType.SWORD_SWORD]           = "_\xb0\xcb\x5f\xb0\xcb";
+	WeaponName[WeaponType.AXE_AXE]               = "_\xb5\xb5\xb3\xa2\x5f\xb5\xb5\xb3\xa2";
+	WeaponName[WeaponType.SHORTSWORD_SWORD]      = "_\xb4\xdc\xb0\xcb\x5f\xb0\xcb";
+	WeaponName[WeaponType.SHORTSWORD_AXE]        = "_\xb4\xdc\xb0\xcb\x5f\xb5\xb5\xb3\xa2";
+	WeaponName[WeaponType.SWORD_AXE]             = "_\xb0\xcb\x5f\xb5\xb5\xb3\xa2";
 
 
 	return WeaponName;

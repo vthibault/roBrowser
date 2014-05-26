@@ -19,12 +19,12 @@ define(function(require)
 	var Client           = require('Core/Client');
 	var TextEncoding     = require('Vendors/text-encoding');
 	var ClassTable       = require('./Jobs/JobNameTable');
-	var ClassPalTable    = require('./Jobs/JobPalNameTable');
-	var JobInherit       = require('./Jobs/JobInherit'); // TODO
 	var WeaponAction     = require('./Jobs/WeaponAction');
+	var WeaponJobTable   = require('./Jobs/WeaponJobTable');
 	var MonsterTable     = require('./Monsters/MonsterTable');
 	var PetIllustration  = require('./Pets/PetIllustration');
 	var PetAction        = require('./Pets/PetAction');
+	var ItemTable        = require('./Items/ItemTable');
 	var HatTable         = require('./Items/HatTable');
 	var ShieldTable      = require('./Items/ShieldTable');
 	var WeaponTable      = require('./Items/WeaponTable');
@@ -49,12 +49,6 @@ define(function(require)
 	 * struct { string name; string mp3; object fog }
 	 */
 	var MapTable = {};
-
-
-	/**
-	 * @var {Array} ItemTable
-	 */
-	var ItemTable = {};
 
 
 	/**
@@ -100,20 +94,13 @@ define(function(require)
 		console.log('Loading DB files...');
 
 		// Loading TXT Tables
-		loadTable( 'data/mp3nametable.txt',               2, function(index, key, val){   (MapTable[key] || (MapTable[key] = {})).mp3                           = val;                     }, onLoad());
-		loadTable( 'data/mapnametable.txt',               2, function(index, key, val){   (MapTable[key] || (MapTable[key] = {})).name                          = val;                     }, onLoad());
-		loadTable( 'data/msgstringtable.txt',             1, function(index, val){         MsgStringTable[index]                                                = val;                     }, onLoad());
-		loadTable( 'data/resnametable.txt',               2, function(index, key, val){    DB.mapalias[key]                                                     = val;                     }, onLoad());
-		loadTable( 'data/idnum2itemdesctable.txt',        2, function(index, key, val){   (ItemTable[key] || (ItemTable[key] = {})).identifiedDescriptionName   = val;                     }, onLoad());
-		loadTable( 'data/idnum2itemdisplaynametable.txt', 2, function(index, key, val){   (ItemTable[key] || (ItemTable[key] = {})).identifiedDisplayName       = val.replace(/\_/g, ' '); }, onLoad());
-		loadTable( 'data/idnum2itemresnametable.txt',     2, function(index, key, val){   (ItemTable[key] || (ItemTable[key] = {})).identifiedResourceName      = val;                     }, onLoad());
-		loadTable( 'data/num2itemdesctable.txt',          2, function(index, key, val){   (ItemTable[key] || (ItemTable[key] = {})).unidentifiedDescriptionName = val;                     }, onLoad());
-		loadTable( 'data/num2itemdisplaynametable.txt',   2, function(index, key, val){   (ItemTable[key] || (ItemTable[key] = {})).unidentifiedDisplayName     = val.replace(/\_/g, ' '); }, onLoad());
-		loadTable( 'data/num2itemresnametable.txt',       2, function(index, key, val){   (ItemTable[key] || (ItemTable[key] = {})).unidentifiedResourceName    = val;                     }, onLoad());
-		loadTable( 'data/num2cardillustnametable.txt',    2, function(index, key, val){   (ItemTable[key] || (ItemTable[key] = {})).illustResourcesName         = val;                     }, onLoad());
-		loadTable( 'data/cardprefixnametable.txt',        2, function(index, key, val){   (ItemTable[key] || (ItemTable[key] = {})).prefixNameTable             = val;                     }, onLoad());
-		loadTable( 'data/itemslotcounttable.txt',         2, function(index, key, val){   (ItemTable[key] || (ItemTable[key] = {})).slotCount                   = parseInt(val, 10);       }, onLoad());
-		loadTable( 'data/fogparametertable.txt',          5, parseFogEntry,                                                                                                                   onLoad());
+		loadTable( 'data/mp3nametable.txt',               2, function(index, key, val){   (MapTable[key] || (MapTable[key] = {})).mp3                   = val;               }, onLoad());
+		loadTable( 'data/mapnametable.txt',               2, function(index, key, val){   (MapTable[key] || (MapTable[key] = {})).name                  = val;               }, onLoad());
+		loadTable( 'data/msgstringtable.txt',             1, function(index, val){         MsgStringTable[index]                                        = val;               }, onLoad());
+		loadTable( 'data/resnametable.txt',               2, function(index, key, val){    DB.mapalias[key]                                             = val;               }, onLoad());
+		loadTable( 'data/num2cardillustnametable.txt',    2, function(index, key, val){   (ItemTable[key] || (ItemTable[key] = {})).illustResourcesName = val;               }, onLoad());
+		loadTable( 'data/cardprefixnametable.txt',        2, function(index, key, val){   (ItemTable[key] || (ItemTable[key] = {})).prefixNameTable     = val;               }, onLoad());
+		loadTable( 'data/fogparametertable.txt',          5, parseFogEntry,                                                                                                     onLoad());
 	};
 
 
@@ -179,29 +166,6 @@ define(function(require)
 		};
 	}
 
-
-	/**
-	 * Check in an array for a value, loop in jobInherit if not found
-	 *
-	 * @param {number} job id
-	 * @param {array} look up table
-	 *
-	 * @return {number} job id
-	 */
-	function inheritSearch( job, lookUp)
-	{
-		while (!(job in lookUp)) {
-			if (!(job in JobInherit)) {
-				return -1;
-			}
-
-			job = JobInherit[job];
-		}
-
-		return job;
-	}
-
-
 	/**
 	 * @return {string} path to body sprite/action
 	 * @param {number} id entity
@@ -212,13 +176,7 @@ define(function(require)
 	{
 		// PC
 		if (id < 45) {
-
-			id = inheritSearch(id, ClassTable);
-			if (id === -1) {
-				return null;
-			}
-
-			return 'data/sprite/\xc0\xce\xb0\xa3\xc1\xb7/\xb8\xf6\xc5\xeb/' + SexTable[sex] + '/' + ClassTable[id] + '_' + SexTable[sex];
+			return 'data/sprite/\xc0\xce\xb0\xa3\xc1\xb7/\xb8\xf6\xc5\xeb/' + SexTable[sex] + '/' + (ClassTable[id] || ClassTable[0]) + '_' + SexTable[sex];
 		}
 
 		// TODO: Warp STR file
@@ -271,11 +229,11 @@ define(function(require)
 	 */
 	DB.getBodyPalPath = function getBodyPalettePath( id, pal, sex )
 	{
-		if (id === 0 || !(id in ClassPalTable)) {
+		if (id === 0 || !(id in ClassTable)) {
 			return null;
 		}
 
-		return 'data/palette/\xb8\xf6/' + ClassPalTable[id] + '_' + SexTable[sex] + '_' + pal + '.pal';
+		return 'data/palette/\xb8\xf6/' + ClassTable[id] + '_' + SexTable[sex] + '_' + pal + '.pal';
 	};
 
 
@@ -353,12 +311,9 @@ define(function(require)
 			return null;
 		}
 
-		id = inheritSearch(id, ClassTable);
-		if (id === -1) {
-			return null;
-		}
+		var baseClass = WeaponJobTable[job] || WeaponJobTable[0];
 
-		return 'data/sprite/\xb9\xe6\xc6\xd0/' + ClassTable[job] + '/' + ClassTable[id] + '_' + SexTable[sex] + '_' + ( ShieldTable[id] || ShieldTable[1] );
+		return 'data/sprite/\xb9\xe6\xc6\xd0/' + baseClass + '/' + baseClass + '_' + SexTable[sex] + '_' + ( ShieldTable[id] || ShieldTable[1] );
 	};
 
 
@@ -370,11 +325,13 @@ define(function(require)
 	 */
 	DB.getWeaponPath = function getWeaponPath( id, job, sex )
 	{
-		if (id === 0 || !(job in ClassTable)) {
+		if (id === 0) {
 			return null;
 		}
 
-		return 'data/sprite/\xc0\xce\xb0\xa3\xc1\xb7/' + ClassTable[job] + '/' + ClassTable[job] + '_' + SexTable[sex] + ( WeaponTable[id] || ('_' + id) ) ;
+		var baseClass = WeaponJobTable[job] || WeaponJobTable[0];
+
+		return 'data/sprite/\xc0\xce\xb0\xa3\xc1\xb7/' + baseClass + '/' + baseClass + '_' + SexTable[sex] + ( WeaponTable[id] || ('_' + id) ) ;
 	};
 
 
@@ -498,12 +455,12 @@ define(function(require)
 	 */
 	DB.getItemInfo = function getItemInfo( itemid )
 	{
-		var item = ItemTable[itemid] || ItemTable[512];
+		var item = ItemTable[itemid] || ItemTable[500]; // 500: hardcoded "unknown item"
 
 		if (!item._decoded) {
-			item.identifiedDescriptionName   = TextEncoding.decodeString(item.identifiedDescriptionName);
+			item.identifiedDescriptionName   = TextEncoding.decodeString(item.identifiedDescriptionName.join('\n'));
 			item.identifiedDisplayName       = TextEncoding.decodeString(item.identifiedDisplayName);
-			item.unidentifiedDescriptionName = TextEncoding.decodeString(item.unidentifiedDescriptionName);
+			item.unidentifiedDescriptionName = TextEncoding.decodeString(item.unidentifiedDescriptionName.join('\n'));
 			item.unidentifiedDisplayName     = TextEncoding.decodeString(item.unidentifiedDisplayName);
 			item.prefixNameTable             = TextEncoding.decodeString(item.prefixNameTable || '');
 			item._decoded                    = true;

@@ -8,7 +8,7 @@
  * @author Vincent Thibault
  */
 
-define(['./JobConst'], function( JobId )
+define(["./JobConst"], function( JobId )
 {
 	"use strict";
 
@@ -24,7 +24,7 @@ define(['./JobConst'], function( JobId )
 	JobNameTable[JobId.MERCHANT]         = "\xBB\xF3\xC0\xCE";
 	JobNameTable[JobId.THIEF]            = "\xB5\xB5\xB5\xCF";
 
-	JobNameTable[JobId.KNIGHT]           = "\xB1\xE2\xBB\xE7"
+	JobNameTable[JobId.KNIGHT]           = "\xB1\xE2\xBB\xE7";
 	JobNameTable[JobId.PRIEST]           = "\xC7\xC1\xB8\xAE\xBD\xBA\xC6\xAE";
 	JobNameTable[JobId.WIZARD]           = "\xC0\xA7\xC0\xFA\xB5\xE5";
 	JobNameTable[JobId.BLACKSMITH]       = "\xC1\xA6\xC3\xB6\xB0\xF8";
@@ -47,7 +47,7 @@ define(['./JobConst'], function( JobId )
 	JobNameTable[JobId.TAEKWON]          = "±Ç¼º";
 	JobNameTable[JobId.STAR]             = "ÅÂ±Ç¼Ò³â";
 	JobNameTable[JobId.STAR2]            = "±Ç¼ºÀ¶ÇÕ";
-	JobNameTable[JobId.LINKER]           = "¼Ò¿ï¸µÄ¿",
+	JobNameTable[JobId.LINKER]           = "¼Ò¿ï¸µÄ¿";
 
 	JobNameTable[JobId.MARRIED]          = "\xB0\xE1\xC8\xA5";
 	JobNameTable[JobId.XMAS]             = "\xBB\xEA\xC5\xB8";
@@ -83,7 +83,6 @@ define(['./JobConst'], function( JobId )
 	JobNameTable[JobId.GENETIC]          = "\xC1\xA6\xB3\xD7\xB8\xAF";
 	JobNameTable[JobId.SHADOW_CHASER]    = "\xBD\xA6\xB5\xB5\xBF\xEC\xC3\xBC\xC0\xCC\xBC\xAD";
 
-
 	JobNameTable[JobId.RUNE_KNIGHT2]     = "\xB7\xE9\xB3\xAA\xC0\xCC\xC6\xAE\xBB\xDA\xB6\xEC";
 	JobNameTable[JobId.ROYAL_GUARD2]     = "\xB1\xD7\xB8\xAE\xC6\xF9\xB0\xA1\xB5\xE5";
 	JobNameTable[JobId.WOLF_RANGER]      = "\xB7\xB9\xC0\xCE\xC1\xAE\xB4\xC1\xB4\xEB";
@@ -93,6 +92,56 @@ define(['./JobConst'], function( JobId )
 	//SUPERNOVICE2_B : 4191,
 	//KAGEROU : 4211,
 	//OBORO : 4212,
+
+	function duplicateEntry(origin) {
+		var value = JobNameTable[origin];
+		var i, count = arguments.length;
+
+		for (i = 1; i < count; ++i) {
+			JobNameTable[arguments[i]] = value;
+		}
+	}
+
+	// Inherit
+	duplicateEntry(JobId.NOVICE,           JobId.NOVICE_H,           JobId.NOVICE_B);
+	duplicateEntry(JobId.SWORDMAN,         JobId.SWORDMAN_H,         JobId.SWORDMAN_B);
+	duplicateEntry(JobId.MAGICIAN,         JobId.MAGICIAN_H,         JobId.MAGICIAN_B);
+	duplicateEntry(JobId.ARCHER,           JobId.ARCHER_H,           JobId.ARCHER_B);
+	duplicateEntry(JobId.ACOLYTE,          JobId.ACOLYTE_H,          JobId.ACOLYTE_B);
+	duplicateEntry(JobId.MERCHANT,         JobId.MERCHANT_H,         JobId.MERCHANT_B);
+	duplicateEntry(JobId.THIEF,            JobId.THIEF_H,            JobId.THIEF_B);
+
+	duplicateEntry(JobId.KNIGHT,           JobId.KNIGHT_B);
+	duplicateEntry(JobId.KNIGHT2,          JobId.KNIGHT2_B);
+	duplicateEntry(JobId.PRIEST,           JobId.PRIEST_B);
+	duplicateEntry(JobId.WIZARD,           JobId.WIZARD_B);
+	duplicateEntry(JobId.BLACKSMITH,       JobId.BLACKSMITH_B);
+	duplicateEntry(JobId.HUNTER,           JobId.HUNTER_B);
+	duplicateEntry(JobId.ASSASSIN,         JobId.ASSASSIN_B);
+	duplicateEntry(JobId.CRUSADER,         JobId.CRUSADER_B);
+	duplicateEntry(JobId.CRUSADER2,        JobId.CRUSADER2_B);
+	duplicateEntry(JobId.MONK,             JobId.MONK_B);
+	duplicateEntry(JobId.SAGE,             JobId.SAGE_B);
+	duplicateEntry(JobId.ROGUE,            JobId.ROGUE_B);
+	duplicateEntry(JobId.ALCHEMIST,        JobId.ALCHEMIST_B);
+	duplicateEntry(JobId.BARD,             JobId.BARD_B);
+	duplicateEntry(JobId.DANCER,           JobId.DANCER_B);
+
+	duplicateEntry(JobId.RUNE_KNIGHT,      JobId.RUNE_KNIGHT_H,      JobId.RUNE_KNIGHT_B);
+	duplicateEntry(JobId.RUNE_KNIGHT2,     JobId.RUNE_KNIGHT2_H,     JobId.RUNE_KNIGHT2_B);
+	duplicateEntry(JobId.WARLOCK,          JobId.WARLOCK_H,          JobId.WARLOCK_B);
+	duplicateEntry(JobId.RANGER,           JobId.RANGER_H,           JobId.RANGER_B);
+	duplicateEntry(JobId.ARCHBISHOP,       JobId.ARCHBISHOP_H,       JobId.ARCHBISHOP_B);
+	duplicateEntry(JobId.MECHANIC,         JobId.MECHANIC_H,         JobId.MECHANIC_B);
+	duplicateEntry(JobId.GUILLOTINE_CROSS, JobId.GUILLOTINE_CROSS_H, JobId.GUILLOTINE_CROSS_B);
+	duplicateEntry(JobId.ROYAL_GUARD,      JobId.ROYAL_GUARD_H,      JobId.ROYAL_GUARD_B);
+	duplicateEntry(JobId.ROYAL_GUARD2,     JobId.ROYAL_GUARD2_H,     JobId.ROYAL_GUARD2_B);
+	duplicateEntry(JobId.SORCERER,         JobId.SORCERER_H,         JobId.SORCERER_B);
+	duplicateEntry(JobId.MINSTREL,         JobId.MINSTREL_H,         JobId.MINSTREL_B);
+	duplicateEntry(JobId.WANDERER,         JobId.WANDERER_H,         JobId.WANDERER_B);
+	duplicateEntry(JobId.SURA,             JobId.SURA_H,             JobId.SURA_B);
+	duplicateEntry(JobId.GENETIC,          JobId.GENETIC_H,          JobId.GENETIC_B);
+	duplicateEntry(JobId.SHADOW_CHASER,    JobId.SHADOW_CHASER_H,    JobId.SHADOW_CHASER_B);
 
 	return JobNameTable;
 });

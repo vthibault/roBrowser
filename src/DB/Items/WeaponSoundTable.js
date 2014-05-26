@@ -8,7 +8,7 @@
  * @author Vincent Thibault
  */
 
-define(['./WeaponType'], function( WeaponType )
+define(["./WeaponType"], function( WeaponType )
 {
 	"use strict";
 
@@ -32,13 +32,13 @@ define(['./WeaponType'], function( WeaponType )
 	WeaponSound[WeaponType.WHIP]                  = "_hit_mace.wav";
 	WeaponSound[WeaponType.BOOK]                  = "_hit_mace.wav";
 	WeaponSound[WeaponType.CATARRH]               = "_hit_mace.wav";
-	WeaponSound[WeaponType.GUN_HANDGUN]   = "_hit_±ÇÃÑ.wav";
-	WeaponSound[WeaponType.GUN_RIFLE]     = "_hit_¶óÀÌÇÃ.wav";
-	WeaponSound[WeaponType.GUN_GATLING]   = "_hit_mace.wav";
-	WeaponSound[WeaponType.GUN_SHOTGUN]   = "_hit_mace.wav";
-	WeaponSound[WeaponType.GUN_GRANADE]   = "_hit_mace.wav";
-	WeaponSound[WeaponType.SYURIKEN]      = "_hit_mace.wav";
-	WeaponSound[WeaponType.TWOHANDROD]    = "_hit_rod.wav";
+	WeaponSound[WeaponType.GUN_HANDGUN]           = "_hit_±ÇÃÑ.wav";
+	WeaponSound[WeaponType.GUN_RIFLE]             = "_hit_¶óÀÌÇÃ.wav";
+	WeaponSound[WeaponType.GUN_GATLING]           = "_hit_mace.wav";
+	WeaponSound[WeaponType.GUN_SHOTGUN]           = "_hit_mace.wav";
+	WeaponSound[WeaponType.GUN_GRANADE]           = "_hit_mace.wav";
+	WeaponSound[WeaponType.SYURIKEN]              = "_hit_mace.wav";
+	WeaponSound[WeaponType.TWOHANDROD]            = "_hit_rod.wav";
 	WeaponSound[WeaponType.SHORTSWORD_SHORTSWORD] = "_hit_mace.wav";
 	WeaponSound[WeaponType.SWORD_SWORD]           = "_hit_mace.wav";
 	WeaponSound[WeaponType.AXE_AXE]               = "_hit_mace.wav";
@@ -47,5 +47,5 @@ define(['./WeaponType'], function( WeaponType )
 	WeaponSound[WeaponType.SWORD_AXE]             = "_hit_mace.wav";
 
 
-	return WeaponSound
+	return WeaponSound;
 });

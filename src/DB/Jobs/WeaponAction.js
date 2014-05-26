@@ -122,7 +122,7 @@ define(['./JobConst', 'DB/Items/WeaponType'], function( JobId, WeaponType )
 		this[ WeaponType.TWOHANDSPEAR ] = 2;
 	};
 
-	WeaponAction[JobId.PRIEsT] = new function(){
+	WeaponAction[JobId.PRIEST] = new function(){
 		this[ WeaponType.NONE ]        = 0;
 		this[ WeaponType.ROD  ]        = 1;
 		this[ WeaponType.TWOHANDROD ]  = 1;
@@ -285,6 +285,40 @@ define(['./JobConst', 'DB/Items/WeaponType'], function( JobId, WeaponType )
 		this[ WeaponType.TWOHANDMACE ]  = 2;
 		this[ WeaponType.SWORD      ]   = 2;
 	}];
+
+
+	function duplicateEntry(origin) {
+		var value = WeaponAction[origin];
+		var i, count = arguments.length;
+
+		for (i = 1; i < count; ++i) {
+			WeaponAction[arguments[i]] = value;
+		}
+	}
+
+	// Inherit
+	duplicateEntry(JobId.NOVICE,     JobId.NOVICE_H,     JobId.NOVICE_B);
+	duplicateEntry(JobId.SWORDMAN,   JobId.SWORDMAN_H,   JobId.SWORDMAN_B);
+	duplicateEntry(JobId.MAGICIAN,   JobId.MAGICIAN_H,   JobId.MAGICIAN_B);
+	duplicateEntry(JobId.ARCHER,     JobId.ARCHER_H,     JobId.ARCHER_B);
+	duplicateEntry(JobId.ACOLYTE,    JobId.ACOLYTE_H,    JobId.ACOLYTE_B);
+	duplicateEntry(JobId.MERCHANT,   JobId.MERCHANT_H,   JobId.MERCHANT_B);
+	duplicateEntry(JobId.THIEF,      JobId.THIEF_H,      JobId.THIEF_B);
+	duplicateEntry(JobId.KNIGHT,     JobId.KNIGHT_B);
+	duplicateEntry(JobId.KNIGHT2,    JobId.KNIGHT2_B);
+	duplicateEntry(JobId.PRIEST,     JobId.PRIEST_B);
+	duplicateEntry(JobId.WIZARD,     JobId.WIZARD_B);
+	duplicateEntry(JobId.BLACKSMITH, JobId.BLACKSMITH_B);
+	duplicateEntry(JobId.HUNTER,     JobId.HUNTER_B);
+	duplicateEntry(JobId.ASSASSIN,   JobId.ASSASSIN_B);
+	duplicateEntry(JobId.CRUSADER,   JobId.CRUSADER_B);
+	duplicateEntry(JobId.CRUSADER2,  JobId.CRUSADER2_B);
+	duplicateEntry(JobId.MONK,       JobId.MONK_B);
+	duplicateEntry(JobId.SAGE,       JobId.SAGE_B);
+	duplicateEntry(JobId.ROGUE,      JobId.ROGUE_B);
+	duplicateEntry(JobId.ALCHEMIST,  JobId.ALCHEMIST_B);
+	duplicateEntry(JobId.BARD,       JobId.BARD_B);
+	duplicateEntry(JobId.DANCER,     JobId.DANCER_B);
 
 
 	/**
