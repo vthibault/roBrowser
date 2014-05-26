@@ -20,6 +20,7 @@ define(function( require )
 	var PACKET        = require('Network/PacketStructure');
 	var ChatBox       = require('UI/Components/ChatBox/ChatBox');
 	var MiniMap       = require('UI/Components/MiniMap/MiniMap');
+	var Guild 	      = require('UI/Components/Guild/Guild');
 
 
 	/**
@@ -49,6 +50,13 @@ define(function( require )
 		}
 	}
 
+	/**
+	 * Process Guild info response
+	 */
+	function onGuildInfoAnswer( pkt ) 
+	{
+		console.log(pkt);
+	}
 
 	/**
 	 * Initialize
@@ -57,5 +65,6 @@ define(function( require )
 	{
 		Network.hookPacket( PACKET.ZC.GUILD_CHAT,                onMemberTalk );
 		Network.hookPacket( PACKET.ZC.NOTIFY_POSITION_TO_GUILDM, onMemberMove );
+		Network.hookPacket( PACKET.ZC.GUILD_INFO2,				 onGuildInfoAnswer );
 	};
 });
