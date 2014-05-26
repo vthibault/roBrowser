@@ -36,7 +36,7 @@ define( ['Core/Preferences', 'Controls/KeyEventHandler'], function( Preferences,
 	defaultKey[ KEYS.J ]   = { component:'PetInformations', cmd:'TOGGLE', alt:true };
 	defaultKey[ KEYS.S ]   = { component:'SkillList',       cmd:'TOGGLE', alt:true };
 	defaultKey[ KEYS.C ]   = { component:'ChatRoomCreate',  cmd:'TOGGLE', alt:true };
-	defaultKey[ KEYS.G ]   = { component:'Guild',  			cmd:'TOGGLE', alt:true };
+	defaultKey[ KEYS.G ]   = { component:'Guild',           cmd:'TOGGLE', alt:true };
 
 
 	/**

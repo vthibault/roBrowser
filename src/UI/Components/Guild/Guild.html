@@ -20,7 +20,19 @@
 
 		<div id="tabs_content_container">
 		    <div id="tab1" class="tab_content" style="display: block;">
-		        <p>Info</p>
+		        <table class="basic_info">
+		        	<tr><td>Guild Name : <span id="guildname"></span> </td> <td></td> <td>EXP : <span id="exp"></span></td></tr>
+					<tr><td>Guild Level : <span id="level"></span> </td>	<td></td> <td></td></tr>
+					<tr><td>Guild Master : <span id="masterName"></span> </td>	<td></td> <td>Emblem </td></tr>
+					<tr><td>Guildsmen : <span id="userNum"></span> / <span id="maxUserNum"></span> <span class="gmon" data-background="basic_interface/grp_online.bmp"></span> <span id="gmonline"></span> </td>	<td></td> <td>Tax Point : <span id="point"></span></td></tr>
+					<tr><td>Average Level of Guildsmen : <span id="userAverageLevel"></span> </td>	<td></td> <td></td></tr>
+					<tr><td>Territory : <span id="manageLand"></span> </td>	<td></td> <td></td></tr>
+
+					<tr><td></td>	<td></td> <td>Alliances</td></tr>
+					<tr><td celspan="2">Tendency</td>	<td></td> <td celspan="6"><div id="alliances" class="info_block"></div></td></tr>
+					<tr><td></td>	<td></td> <td>Antagonists</td></tr>
+					<tr><td></td>	<td></td> <td celspan="6"><div id="antagonists" class="info_block"></div></td></tr>
+		        </table>
 		    </div>
 		    <div id="tab2" class="tab_content">
 		        <p>Guilmen</p>
@@ -38,5 +50,6 @@
 		        <p>Guild notice</p>
 		    </div>
 		</div>
+		<div class="footer" data-background="basic_interface/btnbar_mid2.bmp"></div>
 	</div>
 </div>

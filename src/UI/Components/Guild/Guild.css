@@ -1,34 +1,19 @@
-#Guild { position:absolute; top:100px; left:100px; font-size:12px; background-color: #b5b5b5}
+#Guild { position:absolute; top:100px; left:100px; font-size:12px; background-color: #b5b5b5 }
 
 #Guild .titlebar { width:100%; height:17px; background-color:white; background-repeat:repeat-x; border-radius:3px 3px 0px 0px; }
 #Guild .titlebar .base { width:11px; height:11px; border:none; background-color:transparent; background-repeat:no-repeat; vertical-align:middle; }
-#Guild .titlebar .text { text-shadow:1px 1px white; vertical-align:-2px; 
- /* chrome bug */ display: inline-block; width: 32px; height:13px; }
-
+#Guild .titlebar .text { text-shadow:1px 1px white; vertical-align:-2px; /* chrome bug */ display: inline-block; width: 32px; height:13px; }
 #Guild .titlebar .left { margin-left:3px; float:left; }
-#Guild .titlebar .right { float:right; margin-right:3px;}
+#Guild .titlebar .right { float:right; margin-right:3px; }
 #Guild .titlebar .clear { clear:both; }
+#Guild .footer { display:block;width:100%; height:27px; background-repeat:repeat-x; background-color:transparent; position:relative; border-right:1px solid #ccc; }
 
+#tabs_container { border-bottom: 1px solid #ccc;}
 
-#tabs_container {
-    border-bottom: 1px solid #ccc;
-}
+#tabs { list-style: none; padding: 0px; margin: 0px; height: 23px;}
+#tabs li { display: inline-block; height: 23px; float:left; margin-left: 2px; }
 
-#tabs {
-    list-style: none;
-    padding: 0px;
-    margin: 0px;
-    height: 23px;
-    /*font: 10px arial;*/
-}
-#tabs li {
-    display: inline-block;
-    height: 23px;
-    float:left;
-    margin-left: 2px;
-}
-#tabs li a {
-    padding: 6px 0px 0px 0px;
+#tabs li a { padding: 6px 0px 0px 0px;
     text-indent: 2px;
     text-decoration: none;
     background-color: #cecece;
@@ -43,33 +28,12 @@
     border: 0px;
     outline: none;
 }
-/*#tabs li a:hover {
-    background-color: #dddddd;
-    padding: 4px 6px;
-}*/
-#tabs li.active {
-	background-color: #fff;
-    border-bottom: 1px solid #fff;
-    margin: 0px;
-}
-#tabs li.active a {
-	background-color: #fff;
-    border-bottom: 1px solid #fff;
-}
-/*#tabs li.active a:hover {
-    background-color: #eeeeee;
-    padding: 4px 6px 5px 6px;
-    border-bottom: none;
-}*/
 
+#tabs li.active { background-color: #fff; border-bottom: 1px solid #fff; margin: 0px; }
+#tabs li.active a { background-color: #fff; border-bottom: 1px solid #fff; }
  
-#tabs_content_container {
-    /*border: 1px solid #ccc;*/
-    border-top: none;
-    padding: 10px;
-    width: 392px;
-    background-color: #ffffff;
-}
-.tab_content {
-    display: none;
-}
+#tabs_content_container { border-top: none; padding: 10px; width: 392px; background-color: #ffffff; }
+.tab_content { display: none; }
+.basic_info { font-size: 99%;}
+.gmon {height: 15px; width: 15px; display:inline-block;}
+.info_block {height: 50px; width: 275%; display:inline-block;background-color: #cecece;}

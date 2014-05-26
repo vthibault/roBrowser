@@ -44,7 +44,7 @@ define(function( require )
 	var StatusIcons      = require('UI/Components/StatusIcons/StatusIcons');
 	var ChatRoomCreate   = require('UI/Components/ChatRoomCreate/ChatRoomCreate');
 	var SkillList        = require('UI/Components/SkillList/SkillList');
-	var Guild 			 = require('UI/Components/Guild/Guild');
+	var Guild            = require('UI/Components/Guild/Guild');
 
 
 	/**
@@ -192,7 +192,7 @@ define(function( require )
 		Escape.onReturnSavePointRequest = onReturnSavePointRequest;
 		Escape.onResurectionRequest     = onResurectionRequest;
 		ChatBox.onRequestTalk           = onRequestTalk;
-		Guild.onGuildInfoRequest		= onGuildInfoRequest;
+		Guild.onGuildInfoRequest        = onGuildInfoRequest;
 
 		// Fix http://forum.robrowser.com/?topic=32177.0
 		onMapChange({
@@ -441,7 +441,7 @@ define(function( require )
 	/**
 	 * Request guild info
 	 */
-	function onGuildInfoRequest(type) {
+	function onGuildInfoRequest( type ) {
 		var pkt;
 		pkt = new PACKET.CZ.REQ_GUILD_MENU();
 		pkt.Type = type;

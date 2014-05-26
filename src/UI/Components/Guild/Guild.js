@@ -33,26 +33,27 @@ define(function(require)
 	Guild.init = function init()
  	{
  		var ui = this.ui;
+
+ 		// This should manage with preferences
+ 		this.ui.hide();
+
+ 		// Close button
+ 		ui.find('.titlebar .close').click(function(){
+			Guild.ui.hide();
+			return false;
+		});
+
+ 		// Guild gui Tabs
  		ui.find("#tabs li").click(function(){
- 			 //  First remove class "active" from currently active tab
 	        ui.find("#tabs li").removeClass('active');
-	 
-	        //  Now add class "active" to the selected/clicked tab
-	        jQuery(this).addClass("active");
-	 
-	        //  Hide all tab content
+	 	    jQuery(this).addClass("active");
 	        ui.find(".tab_content").hide();
-	 
-	        //  Here we get the href value of the selected tab
 	        var selected_tab = jQuery(this).find("a").attr("href");
-	 
-	        //  Show the selected tab content
 	        jQuery (selected_tab).fadeIn();
-	 
-	        //  At the end, we add return false so that the click on the link is not executed
+
 	        return false;
  		});
- 		//this.ui.find('.close').click(this.remove.bind(this));
+
  		this.draggable();
  	};
 
@@ -66,6 +67,8 @@ define(function(require)
 		SKILLS:      3,
 	};
 
+	Guild.members = {};
+
 
 	/**
 	 * Process shortcut
@@ -74,21 +77,61 @@ define(function(require)
 	 */
 	Guild.onShortCut = function onShurtCut( key )
 	{
-		Guild.onGuildInfoRequest(Guild.INFO.BASIC);
-		Guild.onGuildInfoRequest(Guild.INFO.MEMBERS);
-		console.log(this);
+		requestGuildInfo();
+		
 		switch (key.cmd) {
 			case 'TOGGLE':
-				this.ui.toggle();
-				if (this.ui.is(':visible')) {
-					this.ui[0].parentNode.appendChild(this.ui[0]);
-				}
-				else { // Fix Mouse.intersect bug
-					this.ui.trigger('mouseleave');
-				}
+					Guild.onToggle();
 				break;
 		}
 	};
+
+	function requestGuildInfo() 
+	{
+		Guild.onGuildInfoRequest(Guild.INFO.BASIC);
+		Guild.onGuildInfoRequest(Guild.INFO.MEMBERS);
+	}
+
+	Guild.onToggle = function onToggle () {
+		this.ui.toggle();
+		if (this.ui.is(':visible')) {
+			this.ui[0].parentNode.appendChild(this.ui[0]);
+		}
+		else { // Fix Mouse.intersect bug
+			this.ui.trigger('mouseleave');
+		}
+	}
+
+	Guild.updateBasicInfo = function updateBasicInfo( data ) 
+	{
+		for(var i in data) 
+			this.ui.find("#"+i).html(data[i]);
+	}
+
+
+	Guild.addSubMembers = function addSubMembers( data ) 
+	{
+		Guild.members = data;
+
+		//Need to refresh online users when message arrive
+		Guild.updateOnlineMembers();
+	}
+
+
+	/**
+	 * Refresh Online count on Basic info
+	 */
+	Guild.updateOnlineMembers = function updateOnlineMembers() 
+	{
+		var online = 0;
+
+		for(var member in Guild.members)
+			online += Guild.members[member].CurrentState;
+
+		this.ui.find("#gmonline").html(online);
+	}
+
+
 
 	/**
 	 * When Requesting Guild Information Screen.
