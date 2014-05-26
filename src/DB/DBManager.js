@@ -369,6 +369,13 @@ define(function(require)
 				return id;
 			}
 
+			// Based on view id
+			if (id in ItemTable) {
+				if (ItemTable[id].ClassNum) {
+					return ItemTable[id].ClassNum;
+				}
+			}
+
 			// Weapon ID starting at 1100
 			if (id <  1100) {
 				return WeaponType.NONE;

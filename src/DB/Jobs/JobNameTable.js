@@ -44,10 +44,10 @@ define(["./JobConst"], function( JobId )
 	JobNameTable[JobId.SUPERNOVICE]      = "\xBD\xB4\xC6\xDB\xB3\xEB\xBA\xF1\xBD\xBA";
 	JobNameTable[JobId.GUNSLINGER]       = "\xB0\xC7\xB3\xCA";
 	JobNameTable[JobId.NINJA]            = "\xB4\xD1\xC0\xDA";
-	JobNameTable[JobId.TAEKWON]          = "±Ç¼º";
-	JobNameTable[JobId.STAR]             = "ÅÂ±Ç¼Ò³â";
-	JobNameTable[JobId.STAR2]            = "±Ç¼ºÀ¶ÇÕ";
-	JobNameTable[JobId.LINKER]           = "¼Ò¿ï¸µÄ¿";
+	JobNameTable[JobId.TAEKWON]          = "\xc5\xc2\xb1\xc7\xbc\xd2\xb3\xe2";
+	JobNameTable[JobId.STAR]             = "\xb1\xc7\xbc\xba";
+	JobNameTable[JobId.STAR2]            = "\xb1\xc7\xbc\xba\xc0\xb6\xc7\xd5";
+	JobNameTable[JobId.LINKER]           = "\xbc\xd2\xbf\xef\xb8\xb5\xc4\xbf";
 
 	JobNameTable[JobId.MARRIED]          = "\xB0\xE1\xC8\xA5";
 	JobNameTable[JobId.XMAS]             = "\xBB\xEA\xC5\xB8";

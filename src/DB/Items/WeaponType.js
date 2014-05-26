@@ -30,7 +30,7 @@ define(function()
 		INSTRUMENT:            13,
 		WHIP:                  14,
 		BOOK:                  15,
-		CATARRH:               16,
+		KATAR:                 16,
 		GUN_HANDGUN:           17,
 		GUN_RIFLE:             18,
 		GUN_GATLING:           19,

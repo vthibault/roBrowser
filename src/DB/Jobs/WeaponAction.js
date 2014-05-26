@@ -14,17 +14,6 @@ define(['./JobConst', 'DB/Items/WeaponType'], function( JobId, WeaponType )
 	"use strict";
 
 
-/*
-	TODO:
-		24: gunslinger
-		25: ninja
-		4046: taekwon
-		4047: star gladiator
-		4048: star gladiator (fly)
-		4049: soul linker
-		2nd job, 3rd job
-*/
-
 	var WeaponAction = {};
 
 
@@ -164,6 +153,7 @@ define(['./JobConst', 'DB/Items/WeaponType'], function( JobId, WeaponType )
 
 	WeaponAction[JobId.ASSASSIN] = new function(){
 		this[ WeaponType.NONE ]                  = 0;
+		this[ WeaponType.SWORD ]                 = 1;
 		this[ WeaponType.SHORTSWORD ]            = 1;
 		this[ WeaponType.SHORTSWORD_SHORTSWORD ] = 1;
 		this[ WeaponType.SWORD_SWORD ]           = 1;
@@ -227,8 +217,8 @@ define(['./JobConst', 'DB/Items/WeaponType'], function( JobId, WeaponType )
 
 	WeaponAction[JobId.ALCHEMIST] = new function(){
 		this[ WeaponType.NONE ]         = 0; 
-		this[ WeaponType.TWOHANDSWORD ] = 1;
 		this[ WeaponType.SHORTSWORD ]   = 1;
+		this[ WeaponType.TWOHANDSWORD ] = 2;
 		this[ WeaponType.SWORD ]        = 2;
 		this[ WeaponType.AXE ]          = 2;
 		this[ WeaponType.TWOHANDAXE ]   = 2;
@@ -238,7 +228,7 @@ define(['./JobConst', 'DB/Items/WeaponType'], function( JobId, WeaponType )
 
 	WeaponAction[JobId.BARD] = new function(){
 		this[ WeaponType.NONE ]         = 0;
-		this[ WeaponType.SHORTSWORD ]   = 0;
+		this[ WeaponType.SHORTSWORD ]   = 1;
 		this[ WeaponType.INSTRUMENT ]   = 1;
 		this[ WeaponType.BOW ]          = 2;
 	};
@@ -271,7 +261,7 @@ define(['./JobConst', 'DB/Items/WeaponType'], function( JobId, WeaponType )
 		this[ WeaponType.TWOHANDAXE ]   = 1;
 		this[ WeaponType.MACE ]         = 1;
 		this[ WeaponType.TWOHANDMACE ]  = 1;
-		this[ WeaponType.SWORD      ]   = 1;
+		this[ WeaponType.SWORD ]        = 1;
 		this[ WeaponType.SHORTSWORD ]   = 2;
 	} , new function(){
 		//male
@@ -283,7 +273,38 @@ define(['./JobConst', 'DB/Items/WeaponType'], function( JobId, WeaponType )
 		this[ WeaponType.TWOHANDAXE ]   = 2;
 		this[ WeaponType.MACE ]         = 2;
 		this[ WeaponType.TWOHANDMACE ]  = 2;
-		this[ WeaponType.SWORD      ]   = 2;
+		this[ WeaponType.SWORD ]        = 2;
+	}];
+
+	WeaponAction[JobId.NINJA] = new function(){
+		this[ WeaponType.NONE ]         = 0;
+		this[ WeaponType.SHORTSWORD ]   = 1;
+		this[ WeaponType.SYURIKEN ]     = 2;
+	};
+
+	WeaponAction[JobId.GUNSLINGER] = new function(){
+		// I don't get when 0 is used ? seems like a grenade launcher.
+		this[ WeaponType.NONE ]         = 1;
+		this[ WeaponType.GUN_HANDGUN ]  = 1;
+		this[ WeaponType.GUN_SHOTGUN ]  = 1;
+		this[ WeaponType.GUN_GATLING ]  = 2;
+		this[ WeaponType.GUN_RIFLE ]    = 2;
+		this[ WeaponType.GUN_GRANADE ]  = 2;
+	};
+
+	// I don't get where the weapon sprites are located.
+	WeaponAction[JobId.LINKER] = [new function(){
+		// female
+		this[ WeaponType.NONE ]         = 0;
+		this[ WeaponType.SHORTSWORD ]   = 1;
+		this[ WeaponType.ROD ]          = 2;
+		this[ WeaponType.TWOHANDROD ]   = 2;
+	}, new function(){
+		// male
+		this[ WeaponType.NONE ]         = 0;
+		this[ WeaponType.ROD ]          = 1;
+		this[ WeaponType.TWOHANDROD ]   = 1;
+		this[ WeaponType.SHORTSWORD ]   = 2;
 	}];
 
 
@@ -296,6 +317,7 @@ define(['./JobConst', 'DB/Items/WeaponType'], function( JobId, WeaponType )
 		}
 	}
 
+
 	// Inherit
 	duplicateEntry(JobId.NOVICE,     JobId.NOVICE_H,     JobId.NOVICE_B);
 	duplicateEntry(JobId.SWORDMAN,   JobId.SWORDMAN_H,   JobId.SWORDMAN_B);
@@ -304,22 +326,23 @@ define(['./JobConst', 'DB/Items/WeaponType'], function( JobId, WeaponType )
 	duplicateEntry(JobId.ACOLYTE,    JobId.ACOLYTE_H,    JobId.ACOLYTE_B);
 	duplicateEntry(JobId.MERCHANT,   JobId.MERCHANT_H,   JobId.MERCHANT_B);
 	duplicateEntry(JobId.THIEF,      JobId.THIEF_H,      JobId.THIEF_B);
-	duplicateEntry(JobId.KNIGHT,     JobId.KNIGHT_B);
-	duplicateEntry(JobId.KNIGHT2,    JobId.KNIGHT2_B);
-	duplicateEntry(JobId.PRIEST,     JobId.PRIEST_B);
-	duplicateEntry(JobId.WIZARD,     JobId.WIZARD_B);
-	duplicateEntry(JobId.BLACKSMITH, JobId.BLACKSMITH_B);
-	duplicateEntry(JobId.HUNTER,     JobId.HUNTER_B);
-	duplicateEntry(JobId.ASSASSIN,   JobId.ASSASSIN_B);
-	duplicateEntry(JobId.CRUSADER,   JobId.CRUSADER_B);
-	duplicateEntry(JobId.CRUSADER2,  JobId.CRUSADER2_B);
-	duplicateEntry(JobId.MONK,       JobId.MONK_B);
-	duplicateEntry(JobId.SAGE,       JobId.SAGE_B);
-	duplicateEntry(JobId.ROGUE,      JobId.ROGUE_B);
-	duplicateEntry(JobId.ALCHEMIST,  JobId.ALCHEMIST_B);
-	duplicateEntry(JobId.BARD,       JobId.BARD_B);
-	duplicateEntry(JobId.DANCER,     JobId.DANCER_B);
+	duplicateEntry(JobId.KNIGHT,     JobId.KNIGHT_B,     JobId.KNIGHT_H,     JobId.RUNE_KNIGHT,      JobId.RUNE_KNIGHT_H,      JobId.RUNE_KNIGHT_B);
+	duplicateEntry(JobId.PRIEST,     JobId.PRIEST_B,     JobId.PRIEST_H,     JobId.ARCHBISHOP,       JobId.ARCHBISHOP_H,       JobId.ARCHBISHOP_B);
+	duplicateEntry(JobId.WIZARD,     JobId.WIZARD_B,     JobId.WIZARD_H,     JobId.WARLOCK,          JobId.WARLOCK_H,          JobId.WARLOCK_B);
+	duplicateEntry(JobId.BLACKSMITH, JobId.BLACKSMITH_B, JobId.BLACKSMITH_H, JobId.MECHANIC,         JobId.MECHANIC_H,         JobId.MECHANIC_B);
+	duplicateEntry(JobId.HUNTER,     JobId.HUNTER_B,     JobId.HUNTER_H,     JobId.RANGER,           JobId.RANGER_H,           JobId.RANGER_B);
+	duplicateEntry(JobId.ASSASSIN,   JobId.ASSASSIN_B,   JobId.ASSASSIN_H,   JobId.GUILLOTINE_CROSS, JobId.GUILLOTINE_CROSS_H, JobId.GUILLOTINE_CROSS_B);
+	duplicateEntry(JobId.CRUSADER,   JobId.CRUSADER_B,   JobId.CRUSADER_H,   JobId.ROYAL_GUARD,      JobId.ROYAL_GUARD_H,      JobId.ROYAL_GUARD_B);
+	duplicateEntry(JobId.MONK,       JobId.MONK_B,       JobId.MONK_H,       JobId.SURA,             JobId.SURA_H,             JobId.SURA_B);
+	duplicateEntry(JobId.SAGE,       JobId.SAGE_B,       JobId.SAGE_H,       JobId.SORCERER,         JobId.SORCERER_H,         JobId.SORCERER_B);
+	duplicateEntry(JobId.ROGUE,      JobId.ROGUE_B,      JobId.ROGUE_H,      JobId.SHADOW_CHASER,    JobId.SHADOW_CHASER_H,    JobId.SHADOW_CHASER_B);
+	duplicateEntry(JobId.ALCHEMIST,  JobId.ALCHEMIST_B,  JobId.ALCHEMIST_H,  JobId.GENETIC,          JobId.GENETIC_H,          JobId.GENETIC_B);
+	duplicateEntry(JobId.BARD,       JobId.BARD_B,       JobId.BARD_H,       JobId.MINSTREL,         JobId.MINSTREL_H,         JobId.MINSTREL_B);
+	duplicateEntry(JobId.DANCER,     JobId.DANCER_B,     JobId.DANCER_H,     JobId.WANDERER,         JobId.WANDERER_H,         JobId.WANDERER_B);
 
+	// Not sure, need to fix entity.costume first.
+	//duplicateEntry(JobId.KNIGHT2,    JobId.KNIGHT2_B);
+	//duplicateEntry(JobId.CRUSADER2,  JobId.CRUSADER2_B);
 
 	/**
 	 * Exports
