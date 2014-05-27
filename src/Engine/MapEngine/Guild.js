@@ -73,6 +73,6 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.NOTIFY_POSITION_TO_GUILDM, onMemberMove );
 		Network.hookPacket( PACKET.ZC.GUILD_INFO2,               onGuildInfoAnswer );
 		Network.hookPacket( PACKET.ZC.MEMBERMGR_INFO,            onGuildInfoAnswer );
-		Network.hookPacket( PACKET.ZC.POSITION_ID_NAME_INFO,            onGuildInfoAnswer );
+		Network.hookPacket( PACKET.ZC.POSITION_ID_NAME_INFO,     onGuildInfoAnswer );
 	};
 });

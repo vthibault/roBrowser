@@ -69,6 +69,8 @@ define(function(require)
 
 	Guild.members = {};
 
+	Guild.exp = 0;
+
 
 	/**
 	 * Process shortcut
@@ -106,6 +108,10 @@ define(function(require)
 	{
 		for(var i in data) 
 			this.ui.find("#"+i).html(data[i]);
+
+		//Maybe Not the best place to get experience
+		console.log(data.exp);
+		Guild.exp = data.exp;
 	}
 
 
@@ -115,6 +121,9 @@ define(function(require)
 
 		//Need to refresh online users when message arrive
 		Guild.updateOnlineMembers();
+
+		//This for update meber list
+		Guild.updateMemberList();
 	}
 
 
@@ -129,6 +138,26 @@ define(function(require)
 			online += Guild.members[member].CurrentState;
 
 		this.ui.find("#gmonline").html(online);
+	}
+
+	Guild.updateMemberList = function updateMemberList() {
+		this.ui.find(".guild_members tbody").html("");
+		for(var member in Guild.members) {
+			var row = jQuery( document.createElement('tr') );
+			row.append("<td>"+Guild.members[member].CharName+"</td>");
+			row.append("<td>"+Guild.members[member].GPositionID+"</td>");
+			row.append("<td>"+Guild.members[member].Job+"</td>");
+			row.append("<td>"+Guild.members[member].Level+"</td>");
+			row.append("<td>"+Guild.members[member].Memo+"</td>");
+			var gexp = parseInt(Guild.exp);
+			var mexp = parseInt(Guild.members[member].MemberExp);
+			var devotion = (gexp) ? ( mexp /  gexp) * 100 : 0;
+			row.append("<td>"+devotion+"%</td>"); 
+			row.append("<td>"+Guild.members[member].MemberExp+"</td>");
+			this.ui.find(".guild_members tbody").append(row);;
+		}
+			
+		
 	}
 
 
