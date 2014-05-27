@@ -21,6 +21,7 @@ define(function(require)
 	var ClassTable       = require('./Jobs/JobNameTable');
 	var WeaponAction     = require('./Jobs/WeaponAction');
 	var WeaponJobTable   = require('./Jobs/WeaponJobTable');
+	var BabyTable        = require('./Jobs/BabyTable');
 	var MonsterTable     = require('./Monsters/MonsterTable');
 	var PetIllustration  = require('./Pets/PetIllustration');
 	var PetAction        = require('./Pets/PetAction');
@@ -600,6 +601,19 @@ define(function(require)
 
 		return TextEncoding.decodeString(MapTable[map].name);
 	};
+
+
+	/**
+	 * Is character id a baby ?
+	 *
+	 * @param {number} job id
+	 * @return {boolean} is baby
+	 */
+	DB.isBaby = function isBaby( jobid )
+	{
+		return BabyTable.indexOf(jobid) > -1;
+	};
+
 
 	/**
 	 * Export

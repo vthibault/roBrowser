@@ -101,6 +101,9 @@ function(     Client,      DB,                      ShadowTable,           Mount
 			job = this.costume;
 		}
 
+		// Resize character
+		this.xSize = this.ySize = DB.isBaby(job) ? 4 : 5;
+
 
 		this.files.shadow.size = job in ShadowTable ? ShadowTable[job] : 1.0;
 		path                   = this.isAdmin ? DB.getAdminPath(this._sex) : DB.getBodyPath( job, this._sex );

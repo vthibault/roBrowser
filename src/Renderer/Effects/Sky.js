@@ -181,8 +181,8 @@ define(function( require )
 		SpriteRenderer.color.set(_color);
 		SpriteRenderer.shadow        = 1.0;
 		SpriteRenderer.angle         = 0;
-		SpriteRenderer.size[0]       = 15;
-		SpriteRenderer.size[1]       = 15;
+		SpriteRenderer.size[0]       = 500;
+		SpriteRenderer.size[1]       = 500;
 		SpriteRenderer.offset[0]     = 0;
 		SpriteRenderer.offset[1]     = 0;
 		SpriteRenderer.image.palette = null;

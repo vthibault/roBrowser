@@ -244,6 +244,18 @@ function(      WebGL,         glMatrix,      Camera )
 
 
 	/**
+	 * @var {number} width unity
+	 */
+	SpriteRenderer.xSize = 5;
+
+
+	/**
+	 * @var {number} height unity
+	 */
+	SpriteRenderer.ySize = 5;
+
+
+	/**
 	 * @var {WebGLProgram}
 	 */
 	var _program = null;
@@ -322,6 +334,18 @@ function(      WebGL,         glMatrix,      Camera )
 
 
 	/**
+	 * @var {Float32Array[2]} sprite size
+	 */
+	var _size = new Float32Array(2);
+
+
+	/**
+	 * @var {Float32Array[2]} sprite offset position
+	 */
+	var _offset = new Float32Array(2);
+
+
+	/**
 	 * Initialize SpriteRenderer Renderer
 	 *
 	 * @param {object} gl context
@@ -391,6 +415,8 @@ function(      WebGL,         glMatrix,      Camera )
 
 		// Binding 3D context
 		this.render = RenderCanvas3D;
+		this.xSize  = 5;
+		this.ySize  = 5;
 
 		_gl = gl;
 		_groupId++;
@@ -425,7 +451,10 @@ function(      WebGL,         glMatrix,      Camera )
 		_ctx        = ctx;
 		_pos[0]     = x;
 		_pos[1]     = y;
+
 		this.render = RenderCanvas2D;
+		this.xSize  = 5;
+		this.ySize  = 5;
 	};
 
 
@@ -479,9 +508,14 @@ function(      WebGL,         glMatrix,      Camera )
 			gl.uniformMatrix4fv( uniform.uSpriteRendererAngle, false, _matrix );
 		}
 
+		_offset[0] = this.offset[0] / 175.0 * this.xSize;
+		_offset[1] = this.offset[1] / 175.0 * this.ySize - 0.5;
+		_size[0]   = this.size[0]   / 175.0 * this.xSize;
+		_size[1]   = this.size[1]   / 175.0 * this.ySize;
+
 		gl.uniform4fv( uniform.uSpriteRendererColor,  this.color );
-		gl.uniform2fv( uniform.uSpriteRendererSize,   this.size );
-		gl.uniform2fv( uniform.uSpriteRendererOffset, this.offset );
+		gl.uniform2fv( uniform.uSpriteRendererSize,   _size );
+		gl.uniform2fv( uniform.uSpriteRendererOffset, _offset );
 
 		// Avoid binding the new texture 150 times if it's the same.
 		if (_groupId !== _lastGroupId || _texture !== this.image.texture) {
@@ -519,26 +553,24 @@ function(      WebGL,         glMatrix,      Camera )
 
 			scale_x  = 1.0;
 			scale_y  = 1.0;
-			_x       = _pos[0] + this.offset[0] * 35;
-			_y       = _pos[1] + this.offset[1] * 35;
+			_x       = _pos[0] + this.offset[0];
+			_y       = _pos[1] + this.offset[1] - 0.5 * 35; // middle of cell
 			pal      = this.palette;
 			frame    = this.sprite;
 			width    = frame.width;
 			height   = frame.height;
 
-			// Divide by 35 in the entity renderer
-			this.size[0] *= 35;
-			this.size[1] *= 35;
+			_size.set(this.size);
 
 			// Mirror feature
-			if (this.size[0] < 0) {
+			if (_size[0] < 0) {
 				scale_x      *= -1;
-				this.size[0] *= -1;
+				_size[0] *= -1;
 			}
 
-			if (this.size[1] < 0) {
+			if (_size[1] < 0) {
 				scale_y      *= -1;
-				this.size[1] *= -1;
+				_size[1] *= -1;
 			}
 
 			// Resize canvas from memory
@@ -591,10 +623,10 @@ function(      WebGL,         glMatrix,      Camera )
 			_ctx.scale( scale_x, scale_y );
 			_ctx.drawImage(
 				 canvas,
-				 0,                  0,
-				 width,              height,
-				-this.size[0] >> 1, -this.size[1] >> 1,
-				 width,              height
+				 0,              0,
+				 width,          height,
+				-_size[0] >> 1, -_size[1] >> 1,
+				 width,          height
 			);
 			_ctx.restore();
 		};

@@ -351,8 +351,8 @@ function(
 				SpriteRenderer.position[2] = damage.entity.position[2] + 3.5 + perc * 7;
 			}
 
-			SpriteRenderer.size[0] = (damage.width  * size) / 35;
-			SpriteRenderer.size[1] = (damage.height * size) / 35;
+			SpriteRenderer.size[0] = damage.width  * size;
+			SpriteRenderer.size[1] = damage.height * size;
 			damage.color[3]        = 1.0 - perc;
 
 			SpriteRenderer.color.set( damage.color );
