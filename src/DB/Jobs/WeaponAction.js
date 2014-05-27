@@ -327,12 +327,14 @@ define(['./JobConst', 'DB/Items/WeaponType'], function( JobId, WeaponType )
 	duplicateEntry(JobId.MERCHANT,   JobId.MERCHANT_H,   JobId.MERCHANT_B);
 	duplicateEntry(JobId.THIEF,      JobId.THIEF_H,      JobId.THIEF_B);
 	duplicateEntry(JobId.KNIGHT,     JobId.KNIGHT_B,     JobId.KNIGHT_H,     JobId.RUNE_KNIGHT,      JobId.RUNE_KNIGHT_H,      JobId.RUNE_KNIGHT_B);
+	duplicateEntry(JobId.KNIGHT2,    JobId.KNIGHT2_B,    JobId.KNIGHT2_H,    JobId.RUNE_KNIGHT2,     JobId.RUNE_KNIGHT2_H,     JobId.RUNE_KNIGHT2_B);
 	duplicateEntry(JobId.PRIEST,     JobId.PRIEST_B,     JobId.PRIEST_H,     JobId.ARCHBISHOP,       JobId.ARCHBISHOP_H,       JobId.ARCHBISHOP_B);
 	duplicateEntry(JobId.WIZARD,     JobId.WIZARD_B,     JobId.WIZARD_H,     JobId.WARLOCK,          JobId.WARLOCK_H,          JobId.WARLOCK_B);
 	duplicateEntry(JobId.BLACKSMITH, JobId.BLACKSMITH_B, JobId.BLACKSMITH_H, JobId.MECHANIC,         JobId.MECHANIC_H,         JobId.MECHANIC_B);
 	duplicateEntry(JobId.HUNTER,     JobId.HUNTER_B,     JobId.HUNTER_H,     JobId.RANGER,           JobId.RANGER_H,           JobId.RANGER_B);
 	duplicateEntry(JobId.ASSASSIN,   JobId.ASSASSIN_B,   JobId.ASSASSIN_H,   JobId.GUILLOTINE_CROSS, JobId.GUILLOTINE_CROSS_H, JobId.GUILLOTINE_CROSS_B);
 	duplicateEntry(JobId.CRUSADER,   JobId.CRUSADER_B,   JobId.CRUSADER_H,   JobId.ROYAL_GUARD,      JobId.ROYAL_GUARD_H,      JobId.ROYAL_GUARD_B);
+	duplicateEntry(JobId.CRUSADER2,  JobId.CRUSADER2_B,  JobId.CRUSADER2_H,  JobId.ROYAL_GUARD2,     JobId.ROYAL_GUARD2_H,     JobId.ROYAL_GUARD2_B);
 	duplicateEntry(JobId.MONK,       JobId.MONK_B,       JobId.MONK_H,       JobId.SURA,             JobId.SURA_H,             JobId.SURA_B);
 	duplicateEntry(JobId.SAGE,       JobId.SAGE_B,       JobId.SAGE_H,       JobId.SORCERER,         JobId.SORCERER_H,         JobId.SORCERER_B);
 	duplicateEntry(JobId.ROGUE,      JobId.ROGUE_B,      JobId.ROGUE_H,      JobId.SHADOW_CHASER,    JobId.SHADOW_CHASER_H,    JobId.SHADOW_CHASER_B);
@@ -340,9 +342,6 @@ define(['./JobConst', 'DB/Items/WeaponType'], function( JobId, WeaponType )
 	duplicateEntry(JobId.BARD,       JobId.BARD_B,       JobId.BARD_H,       JobId.MINSTREL,         JobId.MINSTREL_H,         JobId.MINSTREL_B);
 	duplicateEntry(JobId.DANCER,     JobId.DANCER_B,     JobId.DANCER_H,     JobId.WANDERER,         JobId.WANDERER_H,         JobId.WANDERER_B);
 
-	// Not sure, need to fix entity.costume first.
-	//duplicateEntry(JobId.KNIGHT2,    JobId.KNIGHT2_B);
-	//duplicateEntry(JobId.CRUSADER2,  JobId.CRUSADER2_B);
 
 	/**
 	 * Exports

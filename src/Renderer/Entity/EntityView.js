@@ -171,7 +171,7 @@ function(     Client,      DB,                      ShadowTable,           Mount
 			return;
 		}
 
-		this.files.body.pal = DB.getBodyPalPath( this._job, this._bodypalette, this._sex);
+		this.files.body.pal = DB.getBodyPalPath( this.job, this._bodypalette, this._sex);
 	}
 
 
@@ -249,7 +249,7 @@ function(     Client,      DB,                      ShadowTable,           Mount
 			switch (type) {
 				case 'weapon':
 				case 'shield':
-					path  = DB[func]( val, this._job, this._sex );
+					path  = DB[func]( val, this.job, this._sex );
 					break;
 
 				default:
@@ -288,7 +288,7 @@ function(     Client,      DB,                      ShadowTable,           Mount
 				function(){
 					if (fallback && !final) {
 						_val = DB[fallback](val);
-						path = DB[func]( _val, _this._job, _this._sex );
+						path = DB[func]( _val, _this.job, _this._sex );
 						if (path) {
 							LoadView( path, true );
 						}
@@ -318,7 +318,7 @@ function(     Client,      DB,                      ShadowTable,           Mount
 		});
 
 		Object.defineProperty(this, 'job', {
-			get: function(){ return this._job },
+			get: function(){ return this.costume || this._job },
 			set: UpdateBody
 		});
 
