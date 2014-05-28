@@ -18,6 +18,9 @@ define(function(require)
 	var jQuery             = require('Utils/jquery');
 	var Client             = require('Core/Client');
 	var Preferences        = require('Core/Preferences');
+	var Entity             = require('Renderer/Entity/Entity');
+	var SpriteRenderer     = require('Renderer/SpriteRenderer');
+	var Camera             = require('Renderer/Camera');
 	var Renderer           = require('Renderer/Renderer');
 	var Mouse              = require('Controls/MouseEventHandler');
 	var UIManager          = require('UI/UIManager');
@@ -67,7 +70,45 @@ define(function(require)
 		SKILLS:      3,
 	};
 
-	Guild.members = {};
+	/**
+	 * Guild Members List
+	 */
+	Guild.members = new Array();
+
+	/**
+	 * Guild Member Object.
+	 */
+	Guild.member = function( member ) {
+		this._entity = new Entity();
+		this._entity._head        = member.HeadType;
+		this._entity._headpalette = member.HeadPalette;
+		this._entity._sex         = member.Sex;
+		this._entity.objecttype   = Entity.TYPE_PC;
+		this._entity.files.shadow.spr = null;
+
+		var canvas = document.createElement('canvas');
+			canvas.width  = 30;
+			canvas.height = 30;
+
+		this._ctx = canvas.getContext('2d');
+		SpriteRenderer.bind2DContext(this._ctx, 15,45);
+		this._ctx.clearRect(0, 0, this._ctx.canvas.width, this._ctx.canvas.height);
+
+		Camera.direction = 4;
+		this._entity.set(this);
+		this._entity.renderEntity();
+
+		var gexp = parseInt(Guild.exp);
+		var mexp = parseInt(member.MemberExp);
+
+		this.CharName = member.CharName;
+		this.GPositionID = member.GPositionID;
+		this.Job = member.Job;
+		this.Level = member.Level;
+		this.Memo = member.Memo;
+		this.Devotion = (gexp) ? ( mexp /  gexp) * 100 : 0;
+		this.MemberExp = member.MemberExp;
+	}
 
 	Guild.exp = 0;
 
@@ -110,19 +151,22 @@ define(function(require)
 			this.ui.find("#"+i).html(data[i]);
 
 		//Maybe Not the best place to get experience
-		console.log(data.exp);
 		Guild.exp = data.exp;
 	}
 
 
 	Guild.addSubMembers = function addSubMembers( data ) 
 	{
-		Guild.members = data;
+		Guild.members = new Array();
+
+		for(var member in data)
+			Guild.members.push(new Guild.member(data[member]));
+			
 
 		//Need to refresh online users when message arrive
-		Guild.updateOnlineMembers();
+		//Guild.updateOnlineMembers();
 
-		//This for update meber list
+		//This to update meber list
 		Guild.updateMemberList();
 	}
 
@@ -138,26 +182,22 @@ define(function(require)
 			online += Guild.members[member].CurrentState;
 
 		this.ui.find("#gmonline").html(online);
-	}
+	}	
 
-	Guild.updateMemberList = function updateMemberList() {
+	Guild.updateMemberList = function updateMemberList() 
+	{
 		this.ui.find(".guild_members tbody").html("");
-		for(var member in Guild.members) {
+		for(var i = 0; i < Guild.members.length; i++) {
 			var row = jQuery( document.createElement('tr') );
-			row.append("<td>"+Guild.members[member].CharName+"</td>");
-			row.append("<td>"+Guild.members[member].GPositionID+"</td>");
-			row.append("<td>"+Guild.members[member].Job+"</td>");
-			row.append("<td>"+Guild.members[member].Level+"</td>");
-			row.append("<td>"+Guild.members[member].Memo+"</td>");
-			var gexp = parseInt(Guild.exp);
-			var mexp = parseInt(Guild.members[member].MemberExp);
-			var devotion = (gexp) ? ( mexp /  gexp) * 100 : 0;
-			row.append("<td>"+devotion+"%</td>"); 
-			row.append("<td>"+Guild.members[member].MemberExp+"</td>");
-			this.ui.find(".guild_members tbody").append(row);;
+			for(var prop in Guild.members[i])
+				if(!prop.match(/_/g)) // Only Public props
+					row.append("<td>"+Guild.members[i][prop]+"</td>");
+
+			// Apend guild member head to the first <<TD>> only			
+			row.find("td").eq(0).prepend(jQuery(Guild.members[i]._ctx.canvas).addClass("member_avatar"));
+
+			this.ui.find(".guild_members tbody").append(row);
 		}
-			
-		
 	}
 
 

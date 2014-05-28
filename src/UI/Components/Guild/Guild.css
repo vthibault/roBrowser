@@ -40,5 +40,6 @@
 .tdspan {width:55px}
 
 .guild_members { border: 1px solid #c2c2c2; border-collapse:collapse;width: 95%; }
-.guild_members td { padding:5px 5px 5px 2px; border: 1px solid #c2c2c2; }
+.guild_members td { padding:2px 0px 0px 5px; border: 1px solid #c2c2c2; vertical-align: top;text-align: left;}
+.member_avatar { float:left; margin-right: 3px;}
 .guild_members th { padding: 2px 5px 15px 2px;text-align: left; font-weight:normal; border: 1px solid #c2c2c2; }
