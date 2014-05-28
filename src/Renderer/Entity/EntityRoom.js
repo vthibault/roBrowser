@@ -62,36 +62,19 @@ function(       glMatrix,            Renderer,        Client,      DB,          
 	{
 		var self = this;
 
-		this.node = EntityRoom.clone('EntityRoom', true);
-		this.node.init = function init()
-		{
-			var filename;
+		function init() {
+			var filename = 'chat_open';
 
 			switch (type) {
-				case Room.Type.SELL_SHOP:
-					filename = 'buyingshop';
-					break;
-
-				case Room.Type.BUY_SHOP:
-					filename = 'shop';
-					break;
-
-				case Room.Type.PRIVATE_CHAT:
-					filename = 'chat_close';
-					break;
-
-				default:
-				case Room.Type.PUBLIC_CHAT:
-					filename = 'chat_open';
-					break;
+				case Room.Type.PUBLIC_CHAT:  filename = 'chat_open';   break;
+				case Room.Type.SELL_SHOP:    filename = 'buyingshop';  break;
+				case Room.Type.BUY_SHOP:     filename = 'shop';        break;
+				case Room.Type.PRIVATE_CHAT: filename = 'chat_close';  break;
 			}
 
-			self.type = type;
-			self.id   = id;
-
-			if (clickable) {
-				self.node.onEnter = self.owner.onRoomEnter.bind(self.owner);
-			}
+			self.type         = type;
+			self.id           = id;
+			self.node.onEnter = clickable ? self.owner.onRoomEnter.bind(self.owner) : null;
 
 			Client.loadFile( DB.INTERFACE_PATH + filename + '.bmp', function(url){
 				self.display = true;
@@ -100,8 +83,16 @@ function(       glMatrix,            Renderer,        Client,      DB,          
 					self.node.setTitle( title, url );
 				}
 			});
-		};
+		}
 
+		// Already exist
+		if (this.node) {
+			init();
+			return;
+		}
+
+		this.node      = EntityRoom.clone('EntityRoom', true);
+		this.node.init = init;
 		this.node.append();
 	};
 

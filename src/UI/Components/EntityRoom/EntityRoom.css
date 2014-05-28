@@ -13,12 +13,16 @@
 	width:100%;
 	text-align:left;
 	padding:0px;
-	padding-left:28px;
 	border-radius:5px;
 	border:1px solid #c1c6c2;
 	background-color:transparent;
 	background-repeat:no-repeat;
 	white-space:nowrap;
+	overflow:hidden;
+}
+
+.EntityRoom .title {
+	margin-left:23px;
 }
 
 .EntityRoom .overlay {
