@@ -27,7 +27,7 @@ function(   DB,            EntityManager,            Entity,        Client )
 	function add( gid, itemid, identify, count, x, y, z )
 	{
 		var it     = DB.getItemInfo(itemid);
-		var path   = DB.getItemPath(itemid);
+		var path   = DB.getItemPath(itemid, identify);
 		var entity = new Entity();
 		var name   = identify ? it.identifiedDisplayName : it.unidentifiedDisplayName;
 
