@@ -14,6 +14,7 @@ define([
 	'Utils/jquery',
 	'DB/DBManager',
 	'Audio/SoundManager',
+	'Audio/BGM',
 	'Engine/SessionStorage',
 	'Engine/MapEngine',
 	'Network/NetworkManager',
@@ -31,6 +32,7 @@ define([
 	jQuery,
 	DB,
 	Sound,
+	BGM,
 	Session,
 	MapEngine,
 	Network,
@@ -65,6 +67,8 @@ define([
 	 */
 	function init( server )
 	{
+		BGM.play('01.mp3');
+
 		// Storing variable
 		_server = server;
 

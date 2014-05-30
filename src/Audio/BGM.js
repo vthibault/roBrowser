@@ -94,6 +94,10 @@ function( require,         jQuery,        Client,         Preferences )
 	 */
 	BGM.play = function play( filename )
 	{
+		if (BGM.filename === filename) {
+			return;
+		}
+
 		// Just if flash is loaded, load the file.
 		if ((this.useHTML5 || this.position !== null) && Preferences.BGM.play) {
 
@@ -139,6 +143,8 @@ function( require,         jQuery,        Client,         Preferences )
 	 */
 	BGM.stop = function stop()
 	{
+		BGM.filename = null;
+
 		if (BGM.useHTML5) {
 			BGM.audio.pause();
 		}
