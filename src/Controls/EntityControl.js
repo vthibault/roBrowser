@@ -54,7 +54,7 @@ define( [
 			case Entity.TYPE_ELEM:
 			case Entity.TYPE_HOM:
 				// TODO: Check for pvp flag ?
-				if (KEYS.SHIFT === false && Preferences.noshift === false)  {
+				if ((KEYS.SHIFT === false && Preferences.noshift === false) || this === Session.Entity)  {
 					if (!Camera.action.active ) {
 						Cursor.setType( Cursor.ACTION.DEFAULT );
 					}
