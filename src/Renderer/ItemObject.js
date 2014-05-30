@@ -44,6 +44,8 @@ function(   DB,            EntityManager,            Entity,        Client )
 		entity.files.body.spr = path + '.spr';
 		entity.files.body.act = path + '.act';
 
+		entity.files.shadow.size = 0.25;
+
 		EntityManager.add(entity);
 	}
 

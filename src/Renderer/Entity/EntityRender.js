@@ -230,16 +230,7 @@ define( function( require )
 				SpriteRenderer.position[1] = this.position[1];
 				SpriteRenderer.position[2] = Altitude.getCellHeight(this.position[0], this.position[1]);
 
-				// Item shadow is smaller
-				// TODO: find a better way
-				if (this.objecttype === Entity.TYPE_ITEM) {
-					this.xSize = this.ySize = 2;
-					renderElement( this, this.files.shadow, 'shadow', _position, false );
-					this.xSize = this.ySize = 5;
-				}
-				else {
-					renderElement( this, this.files.shadow, 'shadow', _position, false );
-				}
+				renderElement( this, this.files.shadow, 'shadow', _position, false );
 			}
 
 			SpriteRenderer.position.set(this.position);
