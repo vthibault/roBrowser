@@ -280,24 +280,25 @@ define(function(require)
 			name = SkillInfo[ID].SkillName;
 		}
 		else {
-			var item = DB.getItemInfo(ID);
-			file     = item.identifiedResourceName;
-			name     = DB.getItemName(item);
-			var it   = Inventory.getItemById(ID);
+			var item = Inventory.getItemById(ID);
 
-			// Do not display items not int inventory
-			if (!it) {
+			// Do not display items not in inventory
+			if (!item) {
 				return;
 			}
 
+			var it = DB.getItemInfo(ID);
+			file   = item.IsIdentified ? it.identifiedResourceName : it.unidentifiedResourceName;
+			name   = DB.getItemName(item);
+
 			// If equipment, do not display count
-			else if (it.type === ItemType.WEAPON || it.type === ItemType.EQUIP) {
+			if (item.type === ItemType.WEAPON || item.type === ItemType.EQUIP) {
 				count = 1;
 			}
 
 			// Get item count
 			else {
-				count = it.count;
+				count = item.count;
 			}
 
 			// Do not display item if there is none in the inventory
