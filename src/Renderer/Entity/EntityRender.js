@@ -126,6 +126,7 @@ define( function( require )
 		var size   = glMatrix.vec2.create();
 		var vector = vec4.create();
 		var out    = vec4.create();
+		var minSize;
 
 		return function calculateBoundingRect( entity, matrix )
 		{
@@ -177,19 +178,17 @@ define( function( require )
 			entity.boundingRect.y2 = size[1] - Math.round(size[1] * (out[1] * z));
 
 
-			// Don't resize item
-			if (entity.objecttype !== entity.constructor.TYPE_ITEM) {
+			minSize = entity.objecttype === entity.constructor.TYPE_ITEM ? 30 : 90;
 
-				// Minimum picking size is 45x45 (official client feature)
-				if (entity.boundingRect.x2 - entity.boundingRect.x1 < 90) {
-					entity.boundingRect.x1 = (entity.boundingRect.x1 + entity.boundingRect.x2) * 0.5 - 45;
-					entity.boundingRect.x2 = (entity.boundingRect.x1 + entity.boundingRect.x2) * 0.5 + 45;
-				}
+			// Minimum picking size is 45x45 (official client feature)
+			if (entity.boundingRect.x2 - entity.boundingRect.x1 < minSize) {
+				entity.boundingRect.x1 = (entity.boundingRect.x1 + entity.boundingRect.x2) * 0.5 - minSize * 0.5;
+				entity.boundingRect.x2 = (entity.boundingRect.x1 + entity.boundingRect.x2) * 0.5 + minSize * 0.5;
+			}
 
-				if (entity.boundingRect.y2 - entity.boundingRect.y1 < 90) {
-					entity.boundingRect.y1 = (entity.boundingRect.y1 + entity.boundingRect.y2) * 0.5 - 45;
-					entity.boundingRect.y2 = (entity.boundingRect.y1 + entity.boundingRect.y2) * 0.5 + 45;
-				}
+			if (entity.boundingRect.y2 - entity.boundingRect.y1 < minSize) {
+				entity.boundingRect.y1 = (entity.boundingRect.y1 + entity.boundingRect.y2) * 0.5 - minSize * 0.5;
+				entity.boundingRect.y2 = (entity.boundingRect.y1 + entity.boundingRect.y2) * 0.5 + minSize * 0.5;
 			}
 		};
 	}();
