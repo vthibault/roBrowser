@@ -39,7 +39,12 @@
 .info_block {height: 50px; width: 275%; margin-bottom: 5px; display:inline-block;background-color: #cecece;}
 .tdspan {width:55px}
 
-.guild_members { border: 1px solid #c2c2c2; border-collapse:collapse;width: 95%; }
-.guild_members td { padding:2px 0px 0px 5px; border: 1px solid #c2c2c2; vertical-align: top;text-align: left;}
+.guild_members { border: 1px solid #c2c2c2; border-collapse:collapse;width: 95%; margin-bottom: 10px; }
+
+/* Column fixed widhts as the real client */
+.guild_members td { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width: 10px;}
+
+.guild_members .member_online { padding:2px 0px 0px 5px; border-right: 0px; background-color: #e7ffe7; vertical-align: top;text-align: left; }
+.guild_members .member_offline { padding:2px 0px 0px 5px; border: 1px solid #c2c2c2; vertical-align: top;text-align: left;}
 .member_avatar { float:left; margin-right: 3px;}
 .guild_members th { padding: 2px 5px 15px 2px;text-align: left; font-weight:normal; border: 1px solid #c2c2c2; }

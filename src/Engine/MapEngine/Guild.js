@@ -55,12 +55,14 @@ define(function( require )
 	 */
 	function onGuildInfoAnswer( pkt ) 
 	{
-		console.log(pkt);
 		if(pkt instanceof PACKET.ZC.GUILD_INFO2)
 			Guild.updateBasicInfo(pkt);
 
 		if(pkt instanceof PACKET.ZC.MEMBERMGR_INFO) 
-			Guild.addSubMembers(pkt.memberInfo);
+			Guild.updateMembers(pkt.memberInfo);
+
+		if(pkt instanceof PACKET.ZC.POSITION_ID_NAME_INFO) 
+			Guild.updatePositions(pkt);
 
 	}
 

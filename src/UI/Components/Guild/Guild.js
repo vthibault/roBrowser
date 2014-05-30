@@ -75,6 +75,8 @@ define(function(require)
 	 */
 	Guild.members = new Array();
 
+	Guild.positions = {};
+
 	/**
 	 * Guild Member Object.
 	 */
@@ -87,26 +89,34 @@ define(function(require)
 		this._entity.files.shadow.spr = null;
 
 		var canvas = document.createElement('canvas');
-			canvas.width  = 30;
-			canvas.height = 30;
+		canvas.width  = 30;
+		canvas.height = 30;
+
 
 		this._ctx = canvas.getContext('2d');
-		SpriteRenderer.bind2DContext(this._ctx, 15,45);
-		this._ctx.clearRect(0, 0, this._ctx.canvas.width, this._ctx.canvas.height);
 
-		Camera.direction = 4;
-		this._entity.set(this);
-		this._entity.renderEntity();
+		// Only render images if is online
+		if(member.CurrentState) {
+			SpriteRenderer.bind2DContext(this._ctx, 15,45);
+			this._ctx.clearRect(0, 0, this._ctx.canvas.width, this._ctx.canvas.height);
+
+			Camera.direction = 4;
+			this._entity.set(this);
+			this._entity.renderEntity();
+		}
+		
 
 		var gexp = parseInt(Guild.exp);
 		var mexp = parseInt(member.MemberExp);
 
+		this._online = member.CurrentState;
 		this.CharName = member.CharName;
-		this.GPositionID = member.GPositionID;
-		this.Job = member.Job;
+		this.Position = Guild.positions[member.GPositionID];
+		this.Job = DB.mobname[member.Job] || '';
 		this.Level = member.Level;
 		this.Memo = member.Memo;
 		this.Devotion = (gexp) ? ( mexp /  gexp) * 100 : 0;
+		this.Devotion = this.Devotion+" %";
 		this.MemberExp = member.MemberExp;
 	}
 
@@ -155,7 +165,7 @@ define(function(require)
 	}
 
 
-	Guild.addSubMembers = function addSubMembers( data ) 
+	Guild.updateMembers = function updateMembers( data ) 
 	{
 		Guild.members = new Array();
 
@@ -168,6 +178,15 @@ define(function(require)
 
 		//This to update meber list
 		Guild.updateMemberList();
+	}
+
+	Guild.updatePositions = function updatePositions( data )
+	{
+		for(var i=0; i < data.memberList.length; i++) {
+			var id  = data.memberList[i].positionID;
+			var pos = data.memberList[i].posName;
+			Guild.positions[id] = pos;
+		}
 	}
 
 
@@ -193,10 +212,31 @@ define(function(require)
 				if(!prop.match(/_/g)) // Only Public props
 					row.append("<td>"+Guild.members[i][prop]+"</td>");
 
+			
+			var cssState = (Guild.members[i]._online) ? 'member_online' : 'member_offline';
+
+			row.find("td").each(function() {
+				var td = jQuery(this);
+				td.addClass(cssState);
+			});
+
 			// Apend guild member head to the first <<TD>> only			
 			row.find("td").eq(0).prepend(jQuery(Guild.members[i]._ctx.canvas).addClass("member_avatar"));
 
 			this.ui.find(".guild_members tbody").append(row);
+		}
+
+		// Original Guild Screen have a 5 blank default rows...it will simulate that
+		var rowNum = 5 - Guild.members.length;
+
+		while(rowNum) {
+			var row = jQuery( document.createElement('tr') );
+			for(var i=0;i < 7/*Total Col size*/;i++ )
+				row.append("<td style='border: 1px solid #c2c2c2;'></td>").addClass("member_offline");
+
+			row.find("td").eq(0).prepend(jQuery("<canvas width=30 height=30 />").addClass("member_avatar"));
+			this.ui.find(".guild_members tbody").append(row);
+			rowNum -= 1;
 		}
 	}
 
