@@ -45,9 +45,7 @@ define(function(require)
 	 */
 	GraphicsOption.init = function Init()
 	{
-		this.ui.find('.close').click(function(){
-			this.ui.hide();
-		}.bind(this));
+		this.ui.find('.close').click(this.remove.bind(this));
 
 		//Avoid drag and drop in input elements
 		this.ui.find('input, select').mousedown(function(event){
