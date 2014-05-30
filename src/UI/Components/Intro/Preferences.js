@@ -27,8 +27,12 @@ define(['Core/Context', 'Core/Preferences', 'Preferences/Audio', 'Preferences/Gr
 	 *
 	 * @param {jQuery} ui
 	 */
-	function Load( ui )
+	function load( ui )
 	{
+		if (Graphics.screensize === "full" && !Context.isFullScreen()) {
+			Graphics.screensize = "800x600";
+		}
+
 		ui.find('.screensize').val( Graphics.screensize );
 		ui.find('.quality').val( Graphics.quality ).trigger('change');
 
@@ -77,7 +81,7 @@ define(['Core/Context', 'Core/Preferences', 'Preferences/Audio', 'Preferences/Gr
 	 *
 	 * @param {jQuery} ui
 	 */
-	function Save( ui )
+	function save( ui )
 	{
 		Graphics.screensize    = ui.find('.screensize').val();
 		Graphics.quality       = ui.find('.quality').val();
@@ -127,7 +131,7 @@ define(['Core/Context', 'Core/Preferences', 'Preferences/Audio', 'Preferences/Gr
 		var isFullScreen = Context.isFullScreen();
 
 		// Full Screen support
-		if (_preferences.screensize === 'full') {
+		if (Graphics.screensize === 'full') {
 			if (!isFullScreen) {
 				Context.requestFullScreen();
 			}
@@ -172,7 +176,7 @@ define(['Core/Context', 'Core/Preferences', 'Preferences/Audio', 'Preferences/Gr
 	 * Export
 	 */
 	return {
-		save: Save,
-		load: Load
+		save: save,
+		load: load
 	};
 });

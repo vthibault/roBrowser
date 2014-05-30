@@ -91,6 +91,8 @@ define(function(require)
 		// Settings page
 		ui.find('.btn_settings')
 			.mousedown(function(){
+				Preferences.load( ui );
+
 				ui.find('.overlay.settings')
 					.show()
 					.animate({opacity:1}, 200);
@@ -258,7 +260,6 @@ define(function(require)
 
 		// Initialize window and particle
 		Particle.init( 100, this.ui.find('canvas')[0] );
-		Preferences.load( this.ui );
 	};
 
 
