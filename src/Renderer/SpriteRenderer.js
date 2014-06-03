@@ -47,6 +47,7 @@ function(      WebGL,         glMatrix,      Camera )
 			"vec3 X = uViewModelMat[0].xyz;",
 			"vec3 Y = uViewModelMat[1].xyz;",
 
+			// Start billboard
 			"vec2 offset = vec2(uSpriteRendererSize.x * aPosition.x, uSpriteRendererSize.y * aPosition.y);",
 			"offset      = (uSpriteRendererAngle * vec4(offset, 0.0, 1.0)).xy;",
 			"offset.x   += uSpriteRendererOffset.x;",
@@ -54,25 +55,29 @@ function(      WebGL,         glMatrix,      Camera )
 
 			"vec3 SpritePosition = vec3( uSpriteRendererPosition.x + 0.5, -uSpriteRendererPosition.z, uSpriteRendererPosition.y + 0.5);",
 			"vec3 WorldPosition  = SpritePosition + (offset.x * X) + (offset.y * Y);",
-			"vec4 Position = uModelViewMat * vec4(WorldPosition, 1.0);",
+			"gl_Position         = uProjectionMat * uModelViewMat * vec4(WorldPosition, 1.0);",
 
-			"gl_Position = uProjectionMat * Position;",
-
-			// - center of x axis
-			// - offset y + 0.25 (avoid sprite collision at the bottom with the ground)
-			"vec3 pos = SpritePosition + (uSpriteRendererSize.y * aPosition.y - uSpriteRendererOffset.y - 0.25) * Y;",
-
-			// Project to vertical axis
-			"vec3 unit = normalize(CameraPosition-pos);",
+			// Project to vertical plane
+			"vec3 pos  = SpritePosition + (offset.y * Y);", // center X
+			"vec3 unit = normalize(CameraPosition - pos);",
 			"vec3 up   = vec3(0.0, 0.0, 1.0);",
 
-			"float dotNumerator   = dot((SpritePosition - pos), up);",
+			"float dotNumerator   = dot(SpritePosition - pos, up);",
 			"float dotDenominator = dot(unit, up);",
 
-			"if (dotDenominator != 0.0) {",
-				"float length  = dotNumerator / dotDenominator;",
-				"vec4 clip     = uProjectionMat * uModelViewMat * vec4(pos + unit * length, 1.0);",
+			// TODO: there is something wrong when dotDenominator is
+			// in the range [-0.1,+0.1]. I don't know really what's going on but it really
+			// need to be fixed.
+			// This bug occured when :
+			// - Camera.angleFinal[0] near 270
+			// - Camera.angleFinal[1] around 90 or around -90
+			"if (abs(dotDenominator) > 0.1) {",
+				"float len = dotNumerator / dotDenominator;",
+				"vec4 clip = uProjectionMat * uModelViewMat * vec4(pos + (unit * len) + (offset.x * X), 1.0);",
 				"gl_Position.z = clip.z * gl_Position.w / clip.w;",
+
+				// If you need to debug it, uncomment the line following, it will show the official client sprite distortion :
+				//"gl_Position   = clip;",
 			"}",
 
 			// custom sprite depth
