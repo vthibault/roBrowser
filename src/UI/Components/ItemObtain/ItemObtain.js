@@ -95,14 +95,14 @@ define(function(require)
 		var resource = identify ? it.identifiedResourceName : it.unidentifiedResourceName;
 
 		this.ui.find('.content').html(
-			'<img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" width="24" height="24" /> ' +
+			'<img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" class="'+ itemid +'" width="24" height="24" /> ' +
 			display + ' ' + DB.getMessage(696).replace('%d', amount)
 		);
 
 		this.ui.css('left', ( Renderer.width - (this.ui.width()) ) >> 1 );
 
 		Client.loadFile( DB.INTERFACE_PATH + 'item/' + resource + '.bmp', (function(url){
-			this.ui.find('img').attr('src', url);
+			this.ui.find('img.' + itemid).attr('src', url);
 		}).bind(this));
 
 		// Start tomer
