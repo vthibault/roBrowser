@@ -96,7 +96,7 @@ define(function( require )
 	 */
 	function onEntityStopMove( pkt )
 	{
-		var entity = EntityManager.get(pkt.GID);
+		var entity = EntityManager.get(pkt.AID);
 		if (entity) {
 
 			if (Math.abs(entity.position[0] - pkt.xPos) > 1.0 ||
