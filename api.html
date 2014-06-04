@@ -36,7 +36,7 @@
 					else {
 						var app     = document.createElement('script');
 						app.type    = 'text/javascript';
-						app.src     = 'build/' + event.data.application + '.js?' + ROConfig.version;
+						app.src     = event.data.application + '.js?' + ROConfig.version;
 						document.getElementsByTagName('head')[0].appendChild(app);
 						event.source.postMessage('ready', '*' );
 					}

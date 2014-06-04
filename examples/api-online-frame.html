@@ -13,7 +13,21 @@
 					remoteClient:  "http://grf.robrowser.com/",
 					width:          800,
 					height:         600,
-					development:    true
+					development:    false,
+					servers: [{
+						display:     "Demo Server",
+						desc:        "roBrowser's demo server",
+						address:     "5.135.190.4",
+						port:        7000,
+						version:     25,
+						langtype:    12,
+						packetver:   20131223,
+						packetKeys:  true,
+						socketProxy: "ws://5.135.190.4:443/",
+						adminList:   [2000000]
+					}],
+					skipServerList:  true,
+					skipIntro:       false,
 				};
 				var RO = new ROBrowser(ROConfig);
 				RO.start();
