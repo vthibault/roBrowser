@@ -718,14 +718,14 @@ define(function( require )
 		if (pkt.delayTime) {
 			Sound.play('effect/ef_beginspell.wav');
 			srcEntity.cast.set( pkt.delayTime );
-		}
 
-		srcEntity.setAction({
-			action: srcEntity.ACTION.SKILL,
-			frame:  0,
-			repeat: false,
-			play:   false
-		});
+			srcEntity.setAction({
+				action: srcEntity.ACTION.SKILL,
+				frame:  0,
+				repeat: false,
+				play:   false
+			});
+		}
 
 		// Only mob to don't display skill name ?
 		if (srcEntity.objecttype !== Entity.TYPE_MOB) {
