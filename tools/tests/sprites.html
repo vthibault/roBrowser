@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+	<body></body>
+	<script type="text/javascript" src="../../src/Vendors/require.js"></script>
+	<script type="text/javascript">
+require({
+	baseUrl: '../../src/',
+	paths: {
+		text:   "Vendors/text.require",
+		jquery: "Vendors/jquery-1.9.1"
+	}
+}, ['../tools/tests/FileTester', 'Loaders/Sprite'], function( FileTester, Sprite )
+{
+	var ft = new FileTester("spr",function(data){
+		var spr = new Sprite(data);
+		spr.compile();
+	});
+
+	ft.start();
+});
+	</script>
+</html>
