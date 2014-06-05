@@ -1,12 +1,10 @@
 importScripts('r.js?' + Date.now());
 
-
 // Load min.require.js
 var xhr = new XMLHttpRequest();
 xhr.open('GET', 'require.js?' + Date.now(), false);
 xhr.send();
 var requirejslib = xhr.responseText;
-
 
 // Logging informations
 function logging(text) {

@@ -58,9 +58,5 @@
 		for (i = 0; i < count; ++i) {
 			elements[i].addEventListener('mousedown', compile, false);
 		}
-
-		/*document.getElementById('build').addEventListener('click', function(){
-			thread.postMessage({ type:'build', app:document.getElementById('appname').value });
-		}, false);*/
 	}, false)
 })();

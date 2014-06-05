@@ -71,7 +71,7 @@ h2 {
 	margin: 0px auto;
 	text-align:center;
 	position: relative;
-	top:-300px;
+	top:-350px;
 	z-index:10;
 }
 #result:not(.hide) {
