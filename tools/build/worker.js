@@ -75,7 +75,7 @@ function buildApp(appName) {
 
 		// Output
 		out: outputApp(appName),
-	}, onerror);
+	});
 }
 
 // Receving data
