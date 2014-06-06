@@ -88,6 +88,7 @@ function(       glMatrix,            Renderer,        Client,      DB,          
 		// Already exist
 		if (this.node) {
 			init();
+			this.node.append();
 			return;
 		}
 
