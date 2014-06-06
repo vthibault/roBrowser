@@ -9,12 +9,15 @@ body.drag {
 	border-radius: 30px;
 }
 
+h2 {
+	margin-bottom: 60px;
+}
+
 .container {
 	text-align:center;
 	font-family:Arial;
 	font-size:14px;
 	font-weight:bold;
-	color:#999;
 }
 
 select {
@@ -33,6 +36,7 @@ select {
 }
 
 .group {
+	color:#999;
 	display: inline-block;
 	margin:2%;
 	text-align:center;
@@ -51,7 +55,7 @@ select {
 	background-position:center center;
 }
 
-.group.removing {
+.removing {
 	opacity:0;
 }
 
@@ -68,11 +72,11 @@ select {
 	margin:0;
 }
 
-.group, .group .box {
+* {
 	transition:all 0.5s ease-out;
 }
 
-.convert {
+button {
 	margin-top: 20px;
 	width: 200px;
 	height: 40px;

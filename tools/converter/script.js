@@ -213,6 +213,9 @@
 		// Remove comments
 		content = lua_remove_comments(content);
 
+		// Some failed escaped string on lua
+		content = content.replace(/\\\\\\/g, '\\');
+
 		// Remove variable container
 		content = content.replace(/^([^\{]+)\{/, '');
 
@@ -467,16 +470,22 @@
 			'});'
 		].join('\n');
 
-		var size  = content.length;
-		var uint8 = new Uint8Array(size);
-		var i;
+		var blob = new Blob([content], { type: 'application/javascript' });
 
-		for (i = 0; i < size; ++i) {
-			uint8[i] = content.charCodeAt(i) & 0xff;
-		}
+		var convert = document.querySelector('.convert').parentNode;
+		convert.className = 'removing';
 
-		var blob = new Blob([uint8.buffer], { type: 'application/download' });
-		location.href = URL.createObjectURL(blob);
+		var save   = document.querySelector('.save');
+
+		save.parentNode.className = '';
+		save.parentNode.firstChild.textContent = 'Save this file in DB/' + path; 
+
+		save.href     = window.URL.createObjectURL(blob);
+		save.download = path.replace(/.*\//,'');
+		save.onclick  = function() {
+			save.parentNode.className = 'removing';
+			convert.className = '';
+		};
 	}
 
 	/**
