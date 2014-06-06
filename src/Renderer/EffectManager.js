@@ -47,6 +47,12 @@ define(function( require )
 
 
 	/**
+	 * @var {number} used to differenciate constructors
+	 */
+	var _uniqueId = 1;
+
+
+	/**
 	 * Initialize effects manager
 	 */
 	EffectManager.init = function init(gl)
@@ -64,7 +70,7 @@ define(function( require )
 	 */
 	EffectManager.add = function add(effect, uid, persistent)
 	{
-		var name   = effect.constructor.name;
+		var name = (effect.constructor._uid || (effect.constructor._uid = (_uniqueId++)));
 
 		if (!(name in _list)) {
 			_list[name] = [];

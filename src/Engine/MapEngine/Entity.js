@@ -837,63 +837,63 @@ define(function( require )
 	{
 		var entity;
 
-		switch (pkt.constructor.name) {
-			case 'PACKET_ZC_STORE_ENTRY':
-				entity = EntityManager.get( pkt.makerAID );
-				if (entity) {
-					entity.room.create(
-						pkt.storeName,
-						pkt.makerAID,
-						entity.room.constructor.Type.BUY_SHOP,
-						true
-					);
+		if (pkt instanceof PACKET.ZC.STORE_ENTRY) {
+			entity = EntityManager.get( pkt.makerAID );
+			if (entity) {
+				entity.room.create(
+					pkt.storeName,
+					pkt.makerAID,
+					entity.room.constructor.Type.BUY_SHOP,
+					true
+				);
+			}
+			return;
+		}
+
+		if (pkt instanceof PACKET.ZC.BUYING_STORE_ENTRY) {
+			entity = EntityManager.get( pkt.makerAID );
+			if (entity) {
+				entity.room.create(
+					pkt.storeName,
+					pkt.makerAID,
+					entity.room.constructor.Type.SELL_SHOP,
+					true
+				);
+			}
+			return;
+		}
+
+		if (pkt instanceof PACKET.ZC.ROOM_NEWENTRY) {
+			entity = EntityManager.get( pkt.AID );
+			if (entity) {
+
+				var type  = entity.room.constructor.Type.PUBLIC_CHAT;
+				var title = pkt.title + '('+ pkt.curcount +'/'+ pkt.maxcount +')';
+
+				switch (pkt.type) {
+					case 0: // password
+						type = entity.room.constructor.Type.PRIVATE_CHAT;
+						break;
+
+					case 1: break; // public
+					case 2: break; // arena (npc waiting room)
+
+					case 3: // PK zone - non clickable ???
+						title = pkt.title; // no user limit
+						break;
 				}
-				break;
-
-			case 'PACKET_ZC_BUYING_STORE_ENTRY':
-				entity = EntityManager.get( pkt.makerAID );
-				if (entity) {
-					entity.room.create(
-						pkt.storeName,
-						pkt.makerAID,
-						entity.room.constructor.Type.SELL_SHOP,
-						true
-					);
-				}
-				break;
-
-			case 'PACKET_ZC_ROOM_NEWENTRY':
-				entity = EntityManager.get( pkt.AID );
-				if (entity) {
-
-					var type  = entity.room.constructor.Type.PUBLIC_CHAT;
-					var title = pkt.title + '('+ pkt.curcount +'/'+ pkt.maxcount +')';
-
-					switch (pkt.type) {
-						case 0: // password
-							type = entity.room.constructor.Type.PRIVATE_CHAT;
-							break;
-
-						case 1: break; // public
-						case 2: break; // arena (npc waiting room)
-
-						case 3: // PK zone - non clickable ???
-							title = pkt.title; // no user limit
-							break;
-					}
 					
-					entity.room.title = pkt.title;
-					entity.room.limit = pkt.maxcount;
-					entity.room.count = pkt.curcount;
+				entity.room.title = pkt.title;
+				entity.room.limit = pkt.maxcount;
+				entity.room.count = pkt.curcount;
 
-					entity.room.create(
-						title,
-						pkt.roomID,
-						type,
-						true
-					);
-				}
-				break;
+				entity.room.create(
+					title,
+					pkt.roomID,
+					type,
+					true
+				);
+			};
 		}
 	}
 

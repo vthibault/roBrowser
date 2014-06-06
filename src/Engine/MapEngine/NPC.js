@@ -123,21 +123,8 @@ define(function( require )
 	 */
 	function onInputAppear( pkt )
 	{
-		var type;
+		var type = pkt instanceof PACKET.ZC.OPEN_EDITDLGSTR ? 'text' : 'number';
 		var id = pkt.NAID;
-
-		InputBox.append();
-
-		switch (pkt.constructor.name) {
-			case 'PACKET_ZC_OPEN_EDITDLGSTR':
-				type = 'text';
-				break;
-
-			default:
-			case 'PACKET_ZC_OPEN_EDITDLG':
-				type = 'number';
-				break;
-		}
 
 		InputBox.onAppend = function OnAppend()
 		{
@@ -165,6 +152,8 @@ define(function( require )
 			pkt.NAID = id;
 			Network.sendPacket(pkt);
 		};
+
+		InputBox.append();
 	}
 
 
