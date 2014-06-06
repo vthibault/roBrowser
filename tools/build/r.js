@@ -23660,6 +23660,10 @@ define('requirePatch', [ 'env!env/file', 'pragma', 'parse', 'lang', 'logger', 'c
                                         throw new Error('Parse error using esprima ' +
                                                         'for file: ' + url + '\n' + e1);
                                     }
+                                }, function(){
+                                    if (context.config.error) {
+                                        context.config.error('Can\'t load script: "' + url + '"...');
+                                    }
                                 }).then(function () {
                                     if (hasProp(context.plugins, moduleName)) {
                                         //This is a loader plugin, check to see if it has a build extension,

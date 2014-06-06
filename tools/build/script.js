@@ -12,6 +12,11 @@
 				status.textContent = event.data.message;
 				break;
 
+			case 'error':
+				alert(event.data.message);
+				location.reload();
+				break;
+
 			case 'result':
 				loading.className = 'hide';
 				result.className  = '';

@@ -7,11 +7,19 @@ xhr.send();
 var requirejslib = xhr.responseText;
 
 // Logging informations
-function logging(text) {
+function onlog(text) {
 	postMessage({
 		type:   'status',
 		message: text
 	});
+}
+
+// Urg an error...
+function onerror(text) {
+	postMessage({
+		type:   'error',
+		message: text
+	})
 }
 
 // Output the generated script in the box
@@ -60,11 +68,14 @@ function buildApp(appName) {
 		},
 
 		// Logs
-		log: logging,
+		log: onlog,
+
+		// Errors
+		error: onerror,
 
 		// Output
 		out: outputApp(appName),
-	});
+	}, onerror);
 }
 
 // Receving data
