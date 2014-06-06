@@ -72,7 +72,7 @@
 			return eval(code);
 		}
 		catch(e) {
-			debugger;
+			return null;
 		}
 	}
 
@@ -105,11 +105,11 @@
 	 *
 	 * @param {string} content to load
 	 */
-	function txt_parse( content )
+	function txt_parse( file )
 	{
 		// Remove comments
-		content  = content.replace(/\r\n/g,'\n');
-		content  = ('\n' + content).replace(/\n(\/\/[^\n]+)/g, '');
+		var content  = file.content.replace(/\r\n/g, '\n');
+		content      = ('\n' + content).replace(/\n(\/\/[^\n]+)/g, '');
 
 		var elements = content.split('#');
 		var i, count = elements.length;
@@ -118,14 +118,16 @@
 
 		for (i = 0; i + 1 < count; i+= 2) {
 			key = elements[i].replace(/^\s+|\s+$/g, '');
-/*
+
 			// Not sure does client skip empty key ?
 			if (!key.length) {
-				debugger;
-				--i;
-				continue;
+				alert('Malformed text file, empty key found in "'+ file.name +'"' +
+					  ', after item id: ' + elements[i-2].replace(/^\s+|\s+$/g, '') + '.\n' +
+					  'Skipping rest of file...'
+				);
+				return output;
 			}
-*/
+
 			output[key] = to_ascii(elements[i+1].replace(/^\s+|\s+$/g, ''));
 		}
 
@@ -172,24 +174,27 @@
 	 * @param {regex} keys regex
 	 * @param {regex} keys value
 	 */
-	function lua_parse_keyval(key_content, val_content, key_reg, val_reg)
+	function lua_parse_keyval(keyFile, valFile, key_reg, val_reg)
 	{
+		var content, m;
 		var keys   = {};
 		var output = {};
-		var m;
-
-		key_content = lua_remove_comments(key_content);
-		val_content = lua_remove_comments(val_content);
 
 		// Parse keys
-		while (m = key_reg.exec(key_content)) {
+		content = lua_remove_comments(keyFile.content);
+		while (m = key_reg.exec(content)) {
 			keys[m[1]] = m[4];
 		}
 
 		// Parse vals
-		while (m = val_reg.exec(val_content)) {
+		content = lua_remove_comments(valFile.content);
+		while (m = val_reg.exec(content)) {
 			if (!(m[1] in keys)) {
-				alert("Can't find index " + m[1]);
+				alert('Can\'t find index "' + m[1] + '" ' +
+					  'from file "' + valFile.name + '" ' +
+					  'in file "' + keyFile.name + '".\n' +
+					  'Skipping...'
+					 );
 				continue;
 			}
 			output[keys[m[1]]] = to_ascii(m[4]);
@@ -220,10 +225,9 @@
 		// Convert parameters
 		content = content.replace(/(\s+)(\w+)\s+?=\s+?/g, '$1"$2": ');
 
-
 		// Encode special characters
-		content = content.replace(/identifiedResourceName": "([^"]+)"/g, function(a,b){
-			return 'identifiedResourceName": "' + to_ascii(b) + '"';
+		content = content.replace(/identifiedResourceName":(\s+)?"([^"]+)"/g, function(a,b,c){
+			return 'identifiedResourceName": "' + to_ascii(c).replace(/\\/g,'\\\\') + '"';
 		});
 
 		// Remove un-needed coma
@@ -361,7 +365,7 @@
 				}
 			}
 			if (!found) {
-				alert('Missing file ' + files[i]);
+				alert('Missing file "' + files[i] + '"...');
 			}
 		}
 
@@ -397,24 +401,30 @@
 		var output;
 		switch (from.value) {
 			case 'txt':
+				// Just for items
 				output = {};
-				merge(txt_parse(out[0].content), output, 'identifiedDescriptionName');
-				merge(txt_parse(out[1].content), output, 'identifiedDisplayName');
-				merge(txt_parse(out[2].content), output, 'identifiedResourceName');
-				merge(txt_parse(out[3].content), output, 'unidentifiedDescriptionName');
-				merge(txt_parse(out[4].content), output, 'unidentifiedDisplayName');
-				merge(txt_parse(out[5].content), output, 'unidentifiedResourceName');
-				merge(txt_parse(out[6].content), output, 'slotCount');
+				merge(txt_parse(out[0]), output, 'identifiedDescriptionName');
+				merge(txt_parse(out[1]), output, 'identifiedDisplayName');
+				merge(txt_parse(out[2]), output, 'identifiedResourceName');
+				merge(txt_parse(out[3]), output, 'unidentifiedDescriptionName');
+				merge(txt_parse(out[4]), output, 'unidentifiedDisplayName');
+				merge(txt_parse(out[5]), output, 'unidentifiedResourceName');
+				merge(txt_parse(out[6]), output, 'slotCount');
 				break;
 
 			case 'lua':
 				// easy
 				if (info.lua_key) {
-					output = lua_parse_keyval(out[0].content, out[1].content, info.lua_key, info.lua_val);
+					output = lua_parse_keyval(out[0], out[1], info.lua_key, info.lua_val);
 				}
 				// difficult
 				else {
 					output = lua_parse_glob(out[0].content);
+				}
+
+				if (!output) {
+					alert('Sorry, something bad happened while converting lua files... Exiting.');
+					return;
 				}
 				break;
 
