@@ -108,13 +108,25 @@
 	function txt_parse( content )
 	{
 		// Remove comments
-		var content  = ('\n' + content).replace(/\n(\/\/[^\n]+)/g, '');
+		content  = content.replace(/\r\n/g,'\n');
+		content  = ('\n' + content).replace(/\n(\/\/[^\n]+)/g, '');
+
 		var elements = content.split('#');
 		var i, count = elements.length;
 		var output = {};
+		var key;
 
-		for (i = 0; i < count; i+= 2) {
-			output[elements[i].replace(/^\s+|\s+$/g, '')] = to_ascii(elements[i+1].replace(/^\s+|\s+$/g, ''));
+		for (i = 0; i + 1 < count; i+= 2) {
+			key = elements[i].replace(/^\s+|\s+$/g, '');
+/*
+			// Not sure does client skip empty key ?
+			if (!key.length) {
+				debugger;
+				--i;
+				continue;
+			}
+*/
+			output[key] = to_ascii(elements[i+1].replace(/^\s+|\s+$/g, ''));
 		}
 
 		return output;
@@ -363,8 +375,21 @@
 			var keys = Object.keys(from);
 			var i, count = keys.length;
 
-			for (i = 0; i < count; ++i) {
-				(to[ keys[i] ] || (to[ keys[i] ] = {}))[method] = from[keys[i]];
+			// Description have to be an array
+			if (method.match(/DescriptionName/i)) {
+				for (i = 0; i < count; ++i) {
+					(to[ keys[i] ] || (to[ keys[i] ] = {}))[method] = from[keys[i]].split('\n');
+				}
+			}
+			else if (method.match(/slotCount/i)) {
+				for (i = 0; i < count; ++i) {
+					(to[ keys[i] ] || (to[ keys[i] ] = {}))[method] = +from[keys[i]];
+				}
+			}
+			else {
+				for (i = 0; i < count; ++i) {
+					(to[ keys[i] ] || (to[ keys[i] ] = {}))[method] = from[keys[i]];
+				}
 			}
 		}
 
@@ -373,13 +398,13 @@
 		switch (from.value) {
 			case 'txt':
 				output = {};
-				merge(lua_parse_glob(out[0].content), output, 'identifiedDescriptionName');
-				merge(lua_parse_glob(out[1].content), output, 'identifiedDisplayName');
-				merge(lua_parse_glob(out[2].content), output, 'identifiedResourceName');
-				merge(lua_parse_glob(out[3].content), output, 'unidentifiedDescriptionName');
-				merge(lua_parse_glob(out[4].content), output, 'unidentifiedDisplayName');
-				merge(lua_parse_glob(out[5].content), output, 'unidentifiedResourceName');
-				merge(lua_parse_glob(out[6].content), output, 'slotCount');
+				merge(txt_parse(out[0].content), output, 'identifiedDescriptionName');
+				merge(txt_parse(out[1].content), output, 'identifiedDisplayName');
+				merge(txt_parse(out[2].content), output, 'identifiedResourceName');
+				merge(txt_parse(out[3].content), output, 'unidentifiedDescriptionName');
+				merge(txt_parse(out[4].content), output, 'unidentifiedDisplayName');
+				merge(txt_parse(out[5].content), output, 'unidentifiedResourceName');
+				merge(txt_parse(out[6].content), output, 'slotCount');
 				break;
 
 			case 'lua':
@@ -415,7 +440,7 @@
 	{
 		var content = [
 			'/**',
-			'* DB/' + path + '.js',
+			'* DB/' + path,
 			'*',
 			'* This file is part of ROBrowser, Ragnarok Online in the Web Browser (http://www.robrowser.com/).',
 			'*',
