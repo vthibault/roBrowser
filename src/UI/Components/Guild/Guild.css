@@ -33,13 +33,13 @@
 #tabs li.active a { background-color: #fff; border-bottom: 1px solid #fff; }
  
 #tabs_content_container { border-top: none; padding: 8px 0px 0px 5px; width: 406px; background-color: #ffffff; }
-.tab_content { display: none; }
+.tab_content { display: none; padding-bottom: 10px;}
 .basic_info { font-size: 96%;border-collapse:collapse;}
 .gmon {height: 15px; width: 15px; display:inline-block; position: relative;top: 1px}
 .info_block {height: 50px; width: 275%; margin-bottom: 5px; display:inline-block;background-color: #cecece;}
 .tdspan {width:55px}
 
-.guild_members { border: 1px solid #c2c2c2; border-collapse:collapse;width: 95%; margin-bottom: 10px; }
+.guild_members { border: 1px solid #c2c2c2; border-collapse:collapse;width: 95%;}
 
 /* Column fixed widhts as the real client */
 .guild_members td { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width: 10px;}
