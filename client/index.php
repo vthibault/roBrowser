@@ -8,20 +8,6 @@
 	$CONFIGS = require_once('configs.php');
 
 
-	// To set the header as 200 OK
-	function set_http_ok()
-	{
-		if (function_exists('http_response_code')) {
-			http_response_code(200);
-			return;
-		}
-	
-		$protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');
-		header('Status: 200 OK'); // fast cgi
-		header($protocol . ' 200 OK');
-	}
-
-
 	// Apply configs
 	if ($CONFIGS['DEBUG']) {
 		Debug::enable();
@@ -44,7 +30,7 @@
 	 * If you are not using them, you can comment this block
 	 */
 	if (isset($_POST['filter']) && is_string($_POST['filter'])) {
-		set_http_ok();
+		header('Status: 200 OK', true, 200);
 		header('Content-type: text/plain');
 
 		if (!$CONFIGS['CLIENT_ENABLESEARCH']) {
@@ -96,7 +82,7 @@
 	}
 
 
-	set_http_ok();
+	header('Status: 200 OK', true, 200);
 	header("Cache-Control: max-age=2592000, public");
 	header("Expires: Sat, 31 Jan 2015 05:00:00 GMT");
 
