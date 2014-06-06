@@ -461,21 +461,39 @@ define(function(require)
 	 * @param {number} item id
 	 * @return {object} item
 	 */
-	DB.getItemInfo = function getItemInfo( itemid )
+	DB.getItemInfo = function getItemInfoClosure()
 	{
-		var item = ItemTable[itemid] || ItemTable[500]; // 500: hardcoded "unknown item"
+		var unknownItem = {
+			unidentifiedDisplayName: "Unknown Item",
+			unidentifiedResourceName: "\xbb\xe7\xb0\xfa",
+			unidentifiedDescriptionName: [
+				"...",
+			],
+			identifiedDisplayName: "Unknown Item",
+			identifiedResourceName: "\xbb\xe7\xb0\xfa",
+			identifiedDescriptionName: [
+				"...",
+			],
+			slotCount: 0,
+			ClassNum: 0
+		};
 
-		if (!item._decoded) {
-			item.identifiedDescriptionName   = TextEncoding.decodeString(item.identifiedDescriptionName.join('\n'));
-			item.identifiedDisplayName       = TextEncoding.decodeString(item.identifiedDisplayName);
-			item.unidentifiedDescriptionName = TextEncoding.decodeString(item.unidentifiedDescriptionName.join('\n'));
-			item.unidentifiedDisplayName     = TextEncoding.decodeString(item.unidentifiedDisplayName);
-			item.prefixNameTable             = TextEncoding.decodeString(item.prefixNameTable || '');
-			item._decoded                    = true;
-		}
+		return function getItemInfo( itemid )
+		{
+			var item = ItemTable[itemid] || unknownItem;
 
-		return item;
-	};
+			if (!item._decoded) {
+				item.identifiedDescriptionName   = TextEncoding.decodeString(item.identifiedDescriptionName.join('\n'));
+				item.identifiedDisplayName       = TextEncoding.decodeString(item.identifiedDisplayName);
+				item.unidentifiedDescriptionName = TextEncoding.decodeString(item.unidentifiedDescriptionName.join('\n'));
+				item.unidentifiedDisplayName     = TextEncoding.decodeString(item.unidentifiedDisplayName);
+				item.prefixNameTable             = TextEncoding.decodeString(item.prefixNameTable || '');
+				item._decoded                    = true;
+			}
+
+			return item;
+		};
+	}();
 
 
 	/**
