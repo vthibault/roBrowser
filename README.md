@@ -1,12 +1,18 @@
 ![logo](http://www.robrowser.com/logo.png)
 
 
+* [Demo](http://demo.robrowser.com/)
+* [roBrowser website](http://www.robrowser.com/)
+* [roBrowser forum](http://forum.robrowser.com/)
+* [GIT Repository URL](https://github.com/vthibault/roBrowser/)
+* IRC Channel: *irc.rizon.net* / Channel: *#roBrowser*
+
+
 Table of Contents
 -----------------
 * 1 What is roBrowser?
 * 2 Prerequisites
 * 3 Installation
-* 4 Helpful Links
 
 1. What is roBrowser?
 ---------------------
@@ -25,16 +31,8 @@ If you don't run roBrowser as a Chrome App and don't set a WebSocketProxy server
 This section is a very brief set of installation instructions and subject to changes.
 
 * 1 [Download roBrowser](https://github.com/vthibault/roBrowser/archive/master.zip) and extract it.
-* 2 [Compile scripts](https://github.com/vthibault/roBrowser/tree/master/build) to reduce loading time.
-* 3 Installing the [remote client](https://github.com/vthibault/roBrowser/tree/master/client) and set the parameter *remoteClient* to your server
-* 4 Installing the [websocket proxy](https://github.com/herenow/wsProxy/blob/master/README.md) and set the parameter *socketProxy* to your proxy server url
-* 5 Configure roBrowser - [documentation](http://www.robrowser.com/getting-started#API) or some [demos](https://github.com/vthibault/roBrowser/tree/master/demos)
-
-4. Helpful Links
-----------------
-
-* [roBrowser website](http://www.robrowser.com/)
-* [roBrowser forum](http://forum.robrowser.com/)
-* [GIT Repository URL](https://github.com/vthibault/roBrowser/)
-* [Demo](http://demo.robrowser.com/)
-* IRC Channel: *irc.rizon.net* / Channel: *#roBrowser*
+* 2 [Convert DB](https://github.com/vthibault/roBrowser/tree/master/tools/converter/) to get custom content to roBrowser.
+* 3 [Compile scripts](https://github.com/vthibault/roBrowser/tree/master/tools/build/) to reduce loading time.
+* 4 Installing the [remote client](https://github.com/vthibault/roBrowser/tree/master/client) and set the parameter *remoteClient* to your server
+* 5 Installing the [websocket proxy](https://github.com/herenow/wsProxy/blob/master/README.md) and set the parameter *socketProxy* to your proxy server url
+* 6 Configure roBrowser - [documentation](http://www.robrowser.com/getting-started#API) or some [demos](https://github.com/vthibault/roBrowser/tree/master/examples)
