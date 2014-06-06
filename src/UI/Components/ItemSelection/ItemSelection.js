@@ -78,7 +78,7 @@ define(function(require)
 		for (i = 0, count = list.length; i < count; ++i) {
 			if (isSkill) {
 				continue;
-				//	var SkillInfo = require('DB/SkillInfo');
+				//	var SkillInfo = require('DB/Skills/SkillInfo');
 				//file = SkillInfo[ID].Name;
 				//name = SkillInfo[ID].SkillName;
 			}

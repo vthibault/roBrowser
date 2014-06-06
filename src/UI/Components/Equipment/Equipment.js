@@ -16,7 +16,8 @@ define(function(require)
 	 * Dependencies
 	 */
 	var DB                 = require('DB/DBManager');
-	var StatusConst        = require('DB/StatusConst');
+	var StatusConst        = require('DB/Status/StatusState');
+	var EquipLocation      = require('DB/Items/EquipmentLocation');
 	var jQuery             = require('Utils/jquery');
 	var Client             = require('Core/Client');
 	var Preferences        = require('Core/Preferences');
@@ -36,24 +37,6 @@ define(function(require)
 	 * Create Component
 	 */
 	var Equipment = new UIComponent( 'Equipment', htmlText, cssText );
-
-
-	/**
-	 * Location constants
-	 */
-	Equipment.LOCATION = {
-		HEAD_BOTTOM: 1 << 0,
-		WEAPON:      1 << 1,
-		GARMENT:     1 << 2,
-		ACCESSORY1:  1 << 3,
-		ARMOR:       1 << 4,
-		SHIELD:      1 << 5,
-		SHOES:       1 << 6,
-		ACCESSORY2:  1 << 7,
-		HEAD_TOP:    1 << 8,
-		HEAD_MID:    1 << 9,
-		AMMO:        1 << 15
-	};
 
 
 	/**
@@ -187,11 +170,7 @@ define(function(require)
 				// Display box
 				overlay.show();
 				overlay.css({top: pos.top-22, left:pos.left-22});
-				overlay.html(
-					( item.RefiningLevel ? '+' + item.RefiningLevel + ' ' : '') +
-					( item.IsIdentified ? it.identifiedDisplayName : it.unidentifiedDisplayName ) +
-					( it.slotCount ? ' [' + it.slotCount + ']' : '')
-				);
+				overlay.html(DB.getItemName(item));
 			})
 
 			// Stop title feature
@@ -333,12 +312,10 @@ define(function(require)
 			}
 		}
 
-		var name  = ( item.RefiningLevel ? '+' + item.RefiningLevel + ' ' : '') + it.identifiedDisplayName;
-
 		this.ui.find(getSelectorFromLocation(location)).html(
 			'<div class="item" data-index="'+ item.index +'">' +
 				'<button></button>' +
-				'<span>' + name + '</span>' +
+				'<span>' + DB.getItemName(item) + '</span>' +
 			'</div>'
 		);
 
@@ -487,17 +464,17 @@ define(function(require)
 	{
 		var selector = [];
 
-		if (location & Equipment.LOCATION.HEAD_TOP)    selector.push('.head_top');
-		if (location & Equipment.LOCATION.HEAD_MID)    selector.push('.head_mid');
-		if (location & Equipment.LOCATION.HEAD_BOTTOM) selector.push('.head_bottom');
-		if (location & Equipment.LOCATION.ARMOR)       selector.push('.armor');
-		if (location & Equipment.LOCATION.WEAPON)      selector.push('.weapon');
-		if (location & Equipment.LOCATION.SHIELD)      selector.push('.shield');
-		if (location & Equipment.LOCATION.GARMENT)     selector.push('.garment');
-		if (location & Equipment.LOCATION.SHOES)       selector.push('.shoes');
-		if (location & Equipment.LOCATION.ACCESSORY1)  selector.push('.accessory1');
-		if (location & Equipment.LOCATION.ACCESSORY2)  selector.push('.accessory2');
-		if (location & Equipment.LOCATION.AMMO)        selector.push('.ammo');
+		if (location & EquipLocation.HEAD_TOP)    selector.push('.head_top');
+		if (location & EquipLocation.HEAD_MID)    selector.push('.head_mid');
+		if (location & EquipLocation.HEAD_BOTTOM) selector.push('.head_bottom');
+		if (location & EquipLocation.ARMOR)       selector.push('.armor');
+		if (location & EquipLocation.WEAPON)      selector.push('.weapon');
+		if (location & EquipLocation.SHIELD)      selector.push('.shield');
+		if (location & EquipLocation.GARMENT)     selector.push('.garment');
+		if (location & EquipLocation.SHOES)       selector.push('.shoes');
+		if (location & EquipLocation.ACCESSORY1)  selector.push('.accessory1');
+		if (location & EquipLocation.ACCESSORY2)  selector.push('.accessory2');
+		if (location & EquipLocation.AMMO)        selector.push('.ammo');
 
 		return selector.join(', ');
 	}

@@ -16,6 +16,7 @@ define(function(require)
 	 * Dependencies
 	 */
 	var DB                 = require('DB/DBManager');
+	var MonsterTable       = require('DB/Monsters/MonsterTable');
 	var Client             = require('Core/Client');
 	var Preferences        = require('Core/Preferences');
 	var Renderer           = require('Renderer/Renderer');
@@ -268,7 +269,7 @@ define(function(require)
 				break;
 
 			case 'job':
-				this.ui.find('.job_value').text(DB.mobname[val1]);
+				this.ui.find('.job_value').text(MonsterTable[val1]);
 				break;
 
 			case 'bexp':

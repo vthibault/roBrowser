@@ -124,12 +124,7 @@ define(function(require)
 				// Display box
 				overlay.show();
 				overlay.css({top: pos.top-10, left:pos.left+35});
-				overlay.html(
-					( item.RefiningLevel ? '+' + item.RefiningLevel + ' ' : '') +
-					( item.IsIdentified ? it.identifiedDisplayName : it.unidentifiedDisplayName ) +
-					( it.slotCount ? ' [' + it.slotCount + ']' : '') +
-					' ' + ( item.count || 1 ) + ' ea'
-				);
+				overlay.html(DB.getItemName(item) + ' ' + ( item.count || 1 ) + ' ea');
 
 				if (item.IsIdentified) {
 					overlay.removeClass('grey');
@@ -331,7 +326,7 @@ define(function(require)
 				'<div class="item" data-index="' + item.index +'" draggable="true">' +
 					'<div class="icon"></div>' +
 					'<div class="amount">'+ (item.count ? '<span class="count">' + item.count + '</span>' + ' ' : '') + '</div>' +
-					'<span class="name">' + ( item.RefiningLevel ? '+' + item.RefiningLevel + ' ' : '') + ( item.IsIdentified ? it.identifiedDisplayName : it.unidentifiedDisplayName ) + '</span>' +
+					'<span class="name">' + DB.getItemName(item) + '</span>' +
 				'</div>'
 			);
 

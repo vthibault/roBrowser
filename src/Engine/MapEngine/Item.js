@@ -17,6 +17,7 @@ define(function( require )
 	 * Load dependencies
 	 */
 	var DB            = require('DB/DBManager');
+	var EquipLocation = require('DB/Items/EquipmentLocation');
 	var Network       = require('Network/NetworkManager');
 	var PACKET        = require('Network/PacketStructure');
 	var ItemObject    = require('Renderer/ItemObject');
@@ -145,16 +146,16 @@ define(function( require )
 					ChatBox.TYPE.ERROR
 				);
 
-				if (!(pkt.wearLocation & Equipment.LOCATION.AMMO)) {
+				if (!(pkt.wearLocation & EquipLocation.AMMO)) {
 					Inventory.addItem(item);
 				}
 			}
 
-			if (pkt.wearLocation & Equipment.LOCATION.HEAD_TOP)    Session.Entity.accessory2 = 0;
-			if (pkt.wearLocation & Equipment.LOCATION.HEAD_MID)    Session.Entity.accessory3 = 0;
-			if (pkt.wearLocation & Equipment.LOCATION.HEAD_BOTTOM) Session.Entity.accessory  = 0;
-			if (pkt.wearLocation & Equipment.LOCATION.WEAPON)      Session.Entity.weapon     = 0;
-			if (pkt.wearLocation & Equipment.LOCATION.SHIELD)      Session.Entity.shield     = 0;
+			if (pkt.wearLocation & EquipLocation.HEAD_TOP)    Session.Entity.accessory2 = 0;
+			if (pkt.wearLocation & EquipLocation.HEAD_MID)    Session.Entity.accessory3 = 0;
+			if (pkt.wearLocation & EquipLocation.HEAD_BOTTOM) Session.Entity.accessory  = 0;
+			if (pkt.wearLocation & EquipLocation.WEAPON)      Session.Entity.weapon     = 0;
+			if (pkt.wearLocation & EquipLocation.SHIELD)      Session.Entity.shield     = 0;
 		}
 	}
 
@@ -176,11 +177,11 @@ define(function( require )
 			);
 
 			// Display
-			if (pkt.wearLocation & Equipment.LOCATION.HEAD_TOP)    Session.Entity.accessory2 = pkt.viewid;
-			if (pkt.wearLocation & Equipment.LOCATION.HEAD_MID)    Session.Entity.accessory3 = pkt.viewid;
-			if (pkt.wearLocation & Equipment.LOCATION.HEAD_BOTTOM) Session.Entity.accessory  = pkt.viewid;
-			if (pkt.wearLocation & Equipment.LOCATION.WEAPON)      Session.Entity.weapon     = pkt.viewid;
-			if (pkt.wearLocation & Equipment.LOCATION.SHIELD)      Session.Entity.shield     = pkt.viewid;
+			if (pkt.wearLocation & EquipLocation.HEAD_TOP)    Session.Entity.accessory2 = pkt.viewid;
+			if (pkt.wearLocation & EquipLocation.HEAD_MID)    Session.Entity.accessory3 = pkt.viewid;
+			if (pkt.wearLocation & EquipLocation.HEAD_BOTTOM) Session.Entity.accessory  = pkt.viewid;
+			if (pkt.wearLocation & EquipLocation.WEAPON)      Session.Entity.weapon     = pkt.viewid;
+			if (pkt.wearLocation & EquipLocation.SHIELD)      Session.Entity.shield     = pkt.viewid;
 		}
 
 		// Fail to equip
@@ -233,7 +234,7 @@ define(function( require )
 	function onArrowEquipped( pkt )
 	{
 		var item = Inventory.getItemByIndex( pkt.index );
-		Equipment.equip( item, Equipment.LOCATION.AMMO);
+		Equipment.equip( item, EquipLocation.AMMO);
 	}
 
 

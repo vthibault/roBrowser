@@ -131,8 +131,8 @@ define( function( require )
 		return function calculateBoundingRect( entity, matrix )
 		{
 			var z;
-			var xFactor = 1 / (7 * entity.xSize);
-			var yFactor = 1 / (7 * entity.ySize);
+			var xFactor = 1 / 175.0 * entity.xSize;
+			var yFactor = 1 / 175.0 * entity.ySize;
 
 			// No body ? Default picking (sprite 110 for example)
 			if (entity.boundingRect.x1 === Infinity ||
@@ -229,16 +229,7 @@ define( function( require )
 				SpriteRenderer.position[1] = this.position[1];
 				SpriteRenderer.position[2] = Altitude.getCellHeight(this.position[0], this.position[1]);
 
-				// Item shadow is smaller
-				// TODO: find a better way
-				if (this.objecttype === Entity.TYPE_ITEM) {
-					this.xSize = this.ySize = 10;
-					renderElement( this, this.files.shadow, 'shadow', _position, false );
-					this.xSize = this.ySize = 5;
-				}
-				else {
-					renderElement( this, this.files.shadow, 'shadow', _position, false );
-				}
+				renderElement( this, this.files.shadow, 'shadow', _position, false );
 			}
 
 			SpriteRenderer.position.set(this.position);
@@ -504,14 +495,6 @@ define( function( require )
 			width = -width;
 		}
 
-		// Re-positionning image
-		// The sprite in world should be a factor of 35 (not sure)
-		var x = ( layer.pos[0] + pos[0] ) / ( this.xSize * 7 );
-		var y = ( layer.pos[1] + pos[1] ) / ( this.ySize * 7 ) - 0.5; // in the middle of the cell: -0.5
-		width  /= ( this.xSize * 7 );
-		height /= ( this.ySize * 7 );
-
-
 		// copy color
 		SpriteRenderer.color[0] = layer.color[0] * this.effectColor[0];
 		SpriteRenderer.color[1] = layer.color[1] * this.effectColor[1];
@@ -526,8 +509,10 @@ define( function( require )
 		// Store shader info
 		SpriteRenderer.size[0]       = width;
 		SpriteRenderer.size[1]       = height;
-		SpriteRenderer.offset[0]     = x;
-		SpriteRenderer.offset[1]     = y;
+		SpriteRenderer.offset[0]     = layer.pos[0] + pos[0];
+		SpriteRenderer.offset[1]     = layer.pos[1] + pos[1];
+		SpriteRenderer.xSize         = this.xSize;
+		SpriteRenderer.ySize         = this.ySize;
 		SpriteRenderer.image.texture = spr.frames[ index ].texture;
 
 		// Draw Sprite

@@ -17,6 +17,7 @@ define(function(require)
 	 */
 	var jQuery             = require('Utils/jquery');
 	var DB                 = require('DB/DBManager');
+	var ItemType           = require('DB/Items/ItemType');
 	var Client             = require('Core/Client');
 	var KEYS               = require('Controls/KeyEventHandler');
 	var CardIllustration   = require('UI/Components/CardIllustration/CardIllustration');
@@ -113,7 +114,7 @@ define(function(require)
 		ui.find('.description').text( item.IsIdentified ? it.identifiedDescriptionName : it.unidentifiedDescriptionName );
 
 		// Add view button (for cards)
-		if (item.type === 6) { // TODO: remove all hardcoded values
+		if (item.type === ItemType.CARD) {
 			ui.find('.view').show();
 		}
 		else {
@@ -134,9 +135,9 @@ define(function(require)
 				cardList.parent().hide();
 				break;
 
-			case 4: // weapon
-			case 5: // equip
-			case 7: // pet egg
+			case ItemType.WEAPON:
+			case ItemType.EQUIP:
+			case ItemType.PETEGG:
 				var slotCount = it.slotCount || 0;
 				var i;
 

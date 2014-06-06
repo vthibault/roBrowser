@@ -15,8 +15,8 @@ define(function( require )
 	/**
 	 * Load dependencies
 	 */
-	var StatusConst = require('DB/StatusConst');
-	var MountTable  = require('DB/MountTable');
+	var StatusConst = require('DB/Status/StatusState');
+	var MountTable  = require('DB/Jobs/MountTable');
 	var Session     = require('Engine/SessionStorage');
 
 

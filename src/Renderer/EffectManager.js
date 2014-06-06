@@ -15,9 +15,9 @@ define(function( require )
 	/**
 	 * Load dependencies
 	 */
-	var EffectDB      = require('DB/EffectList');
-	var SkillEffect   = require('DB/SkillEffectList');
-	var SkillUnit     = require('DB/SkillUnit');
+	var EffectDB      = require('DB/Effects/EffectTable');
+	var SkillEffect   = require('DB/Skills/SkillEffect');
+	var SkillUnit     = require('DB/Skills/SkillUnit');
 	var Cylinder      = require('Renderer/Effects/Cylinder');
 	var StrEffect     = require('Renderer/Effects/StrEffect');
 	var Entity        = require('Renderer/Entity/Entity');

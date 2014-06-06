@@ -7,8 +7,8 @@
  *
  * @author Vincent Thibault
  */
-define(['Utils/WebGL', 'Utils/Texture', 'Utils/gl-matrix', 'DB/SkillId', 'Core/Client'],
-function(      WebGL,         Texture,          glMatrix,      SkillId,        Client) {
+define(['Utils/WebGL', 'Utils/Texture', 'Utils/gl-matrix', 'DB/Skills/SkillConst', 'Core/Client'],
+function(      WebGL,         Texture,          glMatrix,             SkillId,           Client) {
 
 	'use strict';
 

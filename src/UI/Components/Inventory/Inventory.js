@@ -16,6 +16,7 @@ define(function(require)
 	 * Dependencies
 	 */
 	var DB                 = require('DB/DBManager');
+	var ItemType           = require('DB/Items/ItemType');
 	var jQuery             = require('Utils/jquery');
 	var Client             = require('Core/Client');
 	var Preferences        = require('Core/Preferences');
@@ -35,24 +36,6 @@ define(function(require)
 	 * Create Component
 	 */
 	var Inventory = new UIComponent( 'Inventory', htmlText, cssText );
-
-
-	/**
-	 * Item type constants
-	 */
-	Inventory.ITEM = {
-		HEALING:       0,
-		USABLE:        2,
-		ETC:           3,
-		WEAPON:        4,
-		EQUIP:         5,
-		CARD:          6,
-		PETEGG:        7,
-		PETEQUIP:      8,
-		AMMO:         10,
-		USABLE_SKILL: 11,
-		USABLE_UNK:   18
-	};
 
 
 	/**
@@ -143,11 +126,7 @@ define(function(require)
 				// Display box
 				overlay.show();
 				overlay.css({top: pos.top, left:pos.left+35});
-				overlay.html(
-					( item.RefiningLevel ? '+' + item.RefiningLevel + ' ' : '') +
-					( item.IsIdentified ? it.identifiedDisplayName : it.unidentifiedDisplayName ) +
-					( it.slotCount ? ' [' + it.slotCount + ']' : '') +
-					' ' + ( item.count || 1 ) + ' ea'
+				overlay.html( DB.getItemName(item) + ' ' + ( item.count || 1 ) + ' ea'
 				);
 
 				if (item.IsIdentified) {
@@ -583,30 +562,30 @@ define(function(require)
 		var tab;
 
 		switch (item.type) {
-			case Inventory.ITEM.HEALING:
-			case Inventory.ITEM.USABLE:
-			case Inventory.ITEM.USABLE_SKILL:
-			case Inventory.ITEM.USABLE_UNK:
+			case ItemType.HEALING:
+			case ItemType.USABLE:
+			case ItemType.USABLE_SKILL:
+			case ItemType.USABLE_UNK:
 				tab = Inventory.TAB.USABLE;
 				break;
 
-			case Inventory.ITEM.WEAPON:
-			case Inventory.ITEM.EQUIP:
-			case Inventory.ITEM.PETEGG:
-			case Inventory.ITEM.PETEQUIP:
+			case ItemType.WEAPON:
+			case ItemType.EQUIP:
+			case ItemType.PETEGG:
+			case ItemType.PETEQUIP:
 				tab = Inventory.TAB.EQUIP;
 				break;
 
 			default:
-			case Inventory.ITEM.ETC:
-			case Inventory.ITEM.CARD:
-			case Inventory.ITEM.AMMO:
+			case ItemType.ETC:
+			case ItemType.CARD:
+			case ItemType.AMMO:
 				tab = Inventory.TAB.ETC;
 				break;
 		}
 
 		// Equip item (if not arrow)
-		if (item.WearState && item.type !== Inventory.ITEM.AMMO && item.type !== Inventory.ITEM.CARD) {
+		if (item.WearState && item.type !== ItemType.AMMO && item.type !== ItemType.CARD) {
 			Equipment.equip(item);
 			return false;
 		}
@@ -723,25 +702,25 @@ define(function(require)
 		switch (item.type) {
 
 			// Usable item
-			case Inventory.ITEM.HEALING:
-			case Inventory.ITEM.USABLE:
-			case Inventory.ITEM.USABLE_UNK:
+			case ItemType.HEALING:
+			case ItemType.USABLE:
+			case ItemType.USABLE_UNK:
 				Inventory.onUseItem( item.index );
 				break;
 
 			// Use card
-			case Inventory.ITEM.CARD:
+			case ItemType.CARD:
 				Inventory.onUseCard( item.index );
 				break;
 
-			case Inventory.ITEM.USABLE_SKILL:
+			case ItemType.USABLE_SKILL:
 				break;
 
 			// Equip item
-			case Inventory.ITEM.WEAPON:
-			case Inventory.ITEM.EQUIP:
-			case Inventory.ITEM.PETEQUIP:
-			case Inventory.ITEM.AMMO:
+			case ItemType.WEAPON:
+			case ItemType.EQUIP:
+			case ItemType.PETEQUIP:
+			case ItemType.AMMO:
 				if (item.IsIdentified && !item.IsDamaged) {
 					Inventory.onEquipItem( item.index, item.location );
 				}

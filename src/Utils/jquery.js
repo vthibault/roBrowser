@@ -40,7 +40,7 @@ define( ['jquery', 'DB/DBManager'], function( jQuery, DB )
 			// Hiding hack ^nItemID^502
 			reg = /\^nItemID\^(\d+)/g;
 			while ((result = reg.exec(txt))) {
-				txt = txt.replace( result[0], DB.itemList[ result[1] ] ? DB.itemList[ result[1] ].identifiedDisplayName : 'Unknown Item' );
+				txt = txt.replace( result[0], DB.getItemInfo(result[1]).identifiedDisplayName );
 			}
 
 			// Line feed feature

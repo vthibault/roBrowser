@@ -7,8 +7,8 @@
  *
  * @author Vincent Thibault
  */
-define(['Utils/WebGL', 'Utils/gl-matrix', 'DB/SkillId', 'Core/Client', 'Renderer/Map/Altitude'],
-function(      WebGL,         glMatrix,       SkillId,        Client,                Altitude) {
+define(['Utils/WebGL', 'Utils/gl-matrix', 'DB/Skills/SkillConst', 'Core/Client', 'Renderer/Map/Altitude'],
+function(      WebGL,         glMatrix,              SkillId,           Client,                Altitude) {
 
 	'use strict';
 

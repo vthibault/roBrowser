@@ -7,7 +7,8 @@
  *
  * @author Vincent Thibault
  */
-define(['Core/Client', 'DB/DBManager', 'DB/ShadowTable', 'DB/MountTable', './EntityAction'], function( Client, DB, ShadowTable, MountTable, EntityAction )
+define(['Core/Client', 'DB/DBManager', 'DB/Monsters/ShadowTable', 'DB/Jobs/MountTable', './EntityAction'],
+function(     Client,      DB,                      ShadowTable,           MountTable,     EntityAction)
 {
 	'use strict';
 
@@ -100,6 +101,9 @@ define(['Core/Client', 'DB/DBManager', 'DB/ShadowTable', 'DB/MountTable', './Ent
 			job = this.costume;
 		}
 
+		// Resize character
+		this.xSize = this.ySize = DB.isBaby(job) ? 4 : 5;
+
 
 		this.files.shadow.size = job in ShadowTable ? ShadowTable[job] : 1.0;
 		path                   = this.isAdmin ? DB.getAdminPath(this._sex) : DB.getBodyPath( job, this._sex );
@@ -170,7 +174,7 @@ define(['Core/Client', 'DB/DBManager', 'DB/ShadowTable', 'DB/MountTable', './Ent
 			return;
 		}
 
-		this.files.body.pal = DB.getBodyPalPath( this._job, this._bodypalette, this._sex);
+		this.files.body.pal = DB.getBodyPalPath( this.job, this._bodypalette, this._sex);
 	}
 
 
@@ -248,7 +252,7 @@ define(['Core/Client', 'DB/DBManager', 'DB/ShadowTable', 'DB/MountTable', './Ent
 			switch (type) {
 				case 'weapon':
 				case 'shield':
-					path  = DB[func]( val, this._job, this._sex );
+					path  = DB[func]( val, this.job, this._sex );
 					break;
 
 				default:
@@ -287,7 +291,7 @@ define(['Core/Client', 'DB/DBManager', 'DB/ShadowTable', 'DB/MountTable', './Ent
 				function(){
 					if (fallback && !final) {
 						_val = DB[fallback](val);
-						path = DB[func]( _val, _this._job, _this._sex );
+						path = DB[func]( _val, _this.job, _this._sex );
 						if (path) {
 							LoadView( path, true );
 						}
@@ -317,7 +321,7 @@ define(['Core/Client', 'DB/DBManager', 'DB/ShadowTable', 'DB/MountTable', './Ent
 		});
 
 		Object.defineProperty(this, 'job', {
-			get: function(){ return this._job },
+			get: function(){ return this.costume || this._job },
 			set: UpdateBody
 		});
 

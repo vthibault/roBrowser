@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+	<body></body>
+	<script type="text/javascript" src="../../src/Vendors/require.js"></script>
+	<script type="text/javascript">
+require({
+	baseUrl: '../../src/',
+	paths: {
+		text:   "Vendors/text.require",
+		jquery: "Vendors/jquery-1.9.1"
+	}
+}, ['../tools/tests/FileTester', 'Loaders/Targa'], function( FileTester, Targa )
+{
+	var ft = new FileTester("tga",function(data){
+		var tga = new Targa();
+		tga.load( new Uint8Array(data) );
+		tga.getCanvas();
+	});
+
+	ft.start();
+});
+	</script>
+</html>

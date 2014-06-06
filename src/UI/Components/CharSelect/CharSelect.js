@@ -16,6 +16,7 @@ define(function(require)
 	 * Dependencies
 	 */
 	var DB                 = require('DB/DBManager');
+	var MonsterTable       = require('DB/Monsters/MonsterTable');
 	var Preferences        = require('Core/Preferences');
 	var KEYS               = require('Controls/KeyEventHandler');
 	var Renderer           = require('Renderer/Renderer');
@@ -429,7 +430,7 @@ define(function(require)
 
 		var info = _slots[_index];
 		$charinfo.find('.name').text( info.name );
-		$charinfo.find('.job').text( DB.mobname[info.job] || '' );
+		$charinfo.find('.job').text( MonsterTable[info.job] || '' );
 		$charinfo.find('.lvl').text( info.level );
 		$charinfo.find('.exp').text( info.exp );
 		$charinfo.find('.hp').text( info.hp );

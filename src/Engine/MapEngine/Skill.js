@@ -17,7 +17,7 @@ define(function( require )
 	 * Load dependencies
 	 */
 	var DB                   = require('DB/DBManager');
-	var SkillId              = require('DB/SkillId');
+	var SkillId              = require('DB/Skills/SkillConst');
 	var Session              = require('Engine/SessionStorage');
 	var Network              = require('Network/NetworkManager');
 	var PACKET               = require('Network/PacketStructure');

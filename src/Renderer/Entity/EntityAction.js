@@ -151,14 +151,14 @@ define(['Renderer/Renderer', 'DB/DBManager'], function( Renderer, DB )
 			case Entity.TYPE_NPC:
 				this.ACTION.IDLE   = 0;
 				// For those NPC that move with unitwalk scriptcommand
-				this.ACTION.WALK     = 1;
+				this.ACTION.WALK   = 1;
 				break;
 
 			// When you see a warp with /effect, it's 3 times bigger.
 			// TODO: put it somewhere else
 			case Entity.TYPE_WARP:
-				this.xSize       = 5 / 3;
-				this.ySize       = 5 / 3;
+				this.xSize       = 20;
+				this.ySize       = 20;
 				break;
 
 			// Homunculus

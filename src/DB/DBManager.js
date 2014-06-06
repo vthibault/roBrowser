@@ -8,10 +8,29 @@
  * @author Vincent Thibault
  */
 
-define( ['Core/Client', 'Vendors/text-encoding', './ClassTable', './ClassPalTable', './MonsterTable', './PetInfo', './HatTable', './WeaponTable', './WeaponAction', './ShieldTable', './Weather' ],
-function(      Client,           TextEncoding,      ClassTable,     ClassPalTable,     MonsterTable,     PetInfo,     HatTable,     WeaponTable,     WeaponAction,     ShieldTable,     Weather)
+define(function(require)
 {
 	'use strict';
+
+
+	/**
+	 * Dependencies
+	 */
+	var Client           = require('Core/Client');
+	var TextEncoding     = require('Vendors/text-encoding');
+	var ClassTable       = require('./Jobs/JobNameTable');
+	var WeaponAction     = require('./Jobs/WeaponAction');
+	var WeaponJobTable   = require('./Jobs/WeaponJobTable');
+	var BabyTable        = require('./Jobs/BabyTable');
+	var MonsterTable     = require('./Monsters/MonsterTable');
+	var PetIllustration  = require('./Pets/PetIllustration');
+	var PetAction        = require('./Pets/PetAction');
+	var ItemTable        = require('./Items/ItemTable');
+	var HatTable         = require('./Items/HatTable');
+	var ShieldTable      = require('./Items/ShieldTable');
+	var WeaponTable      = require('./Items/WeaponTable');
+	var WeaponType       = require('./Items/WeaponType');
+	var WeaponSoundTable = require('./Items/WeaponSoundTable');
 
 
 	/**
@@ -21,30 +40,32 @@ function(      Client,           TextEncoding,      ClassTable,     ClassPalTabl
 
 
 	/**
-	 * DB Tables
+	 * @var {Array} message string
 	 */
-	DB.mp3            = {};
-	DB.msgstringtable = [];
-	DB.fog            = {};
-	DB.mapalias       = {};
-	DB.mobname        = MonsterTable;
-	DB.mapname        = {};
-	DB.weather        = Weather;
-	DB.itemList       = {};
-
-
-	// Lua
-	DB.AccNameTable   = {};
-
-	/**
-	 * Callback once DB files are loaded
-	 * @return {function} callback
-	 */
-	DB.onReady = null;
+	var MsgStringTable = [];
 
 
 	/**
-	 * String we need to store somewhere, boring to copy paste each time...
+	 * @var {Array} map table
+	 * struct { string name; string mp3; object fog }
+	 */
+	var MapTable = {};
+
+
+	/**
+	 * @var {Array} ASCII sex
+	 */
+	var SexTable = [ '\xbf\xa9', '\xb3\xb2' ];
+
+
+	/**
+	 * @var {Array} map alias TODO: transfer it to the thread.
+	 */
+	DB.mapalias = {};
+
+
+	/**
+	 * @var {string} interface path
 	 */
 	DB.INTERFACE_PATH = 'data/texture/\xc0\xaf\xc0\xfa\xc0\xce\xc5\xcd\xc6\xe4\xc0\xcc\xbd\xba/';
 
@@ -52,7 +73,7 @@ function(      Client,           TextEncoding,      ClassTable,     ClassPalTabl
 	/**
 	 * Initialize DB
 	 */
-	DB.init = function Init()
+	DB.init = function init()
 	{
 		// Callback
 		var index = 0, count = 0;
@@ -71,47 +92,16 @@ function(      Client,           TextEncoding,      ClassTable,     ClassPalTabl
 			};
 		}
 
-
 		console.log('Loading DB files...');
 
 		// Loading TXT Tables
-		DB.loadTable( 'data/mp3nametable.txt',               2, function(index, key, val){    DB.mp3[key]                                                              = val;                     }, onLoad());
-		DB.loadTable( 'data/mapnametable.txt',               2, function(index, key, val){    DB.mapname[key]                                                          = val;                     }, onLoad());
-		DB.loadTable( 'data/msgstringtable.txt',             1, function(index, val){         DB.msgstringtable[index]                                                 = val;                     }, onLoad());
-		DB.loadTable( 'data/resnametable.txt',               2, function(index, key, val){    DB.mapalias[key]                                                         = val;                     }, onLoad());
-		DB.loadTable( 'data/idnum2itemdesctable.txt',        2, function(index, key, val){   (DB.itemList[key] || (DB.itemList[key] = {})).identifiedDescriptionName   = val;                     }, onLoad());
-		DB.loadTable( 'data/idnum2itemdisplaynametable.txt', 2, function(index, key, val){   (DB.itemList[key] || (DB.itemList[key] = {})).identifiedDisplayName       = val.replace(/\_/g, ' '); }, onLoad());
-		DB.loadTable( 'data/idnum2itemresnametable.txt',     2, function(index, key, val){   (DB.itemList[key] || (DB.itemList[key] = {})).identifiedResourceName      = val;                     }, onLoad());
-		DB.loadTable( 'data/num2itemdesctable.txt',          2, function(index, key, val){   (DB.itemList[key] || (DB.itemList[key] = {})).unidentifiedDescriptionName = val;                     }, onLoad());
-		DB.loadTable( 'data/num2itemdisplaynametable.txt',   2, function(index, key, val){   (DB.itemList[key] || (DB.itemList[key] = {})).unidentifiedDisplayName     = val.replace(/\_/g, ' '); }, onLoad());
-		DB.loadTable( 'data/num2itemresnametable.txt',       2, function(index, key, val){   (DB.itemList[key] || (DB.itemList[key] = {})).unidentifiedResourceName    = val;                     }, onLoad());
-		DB.loadTable( 'data/num2cardillustnametable.txt',    2, function(index, key, val){   (DB.itemList[key] || (DB.itemList[key] = {})).illustResourcesName         = val;                     }, onLoad());
-		DB.loadTable( 'data/itemslotcounttable.txt',         2, function(index, key, val){   (DB.itemList[key] || (DB.itemList[key] = {})).slotCount                   = parseInt(val, 10);       }, onLoad());
-		DB.loadTable( 'data/fogparametertable.txt',          5, function(index, mapname, near, far, color, factor) {
-			var int_color = parseInt(color,16);
-			DB.fog[mapname] = {
-				near:   parseFloat(near),
-				far:    parseFloat(far),
-				color:  [
-					(255 & (int_color >> 16)) / 255.0,
-					(255 & (int_color >>  8)) / 255.0,
-					(255 & (int_color >>  0)) / 255.0
-				],
-				factor: parseFloat(factor)
-			};
-		}, onLoad());
-
-
-		// Loading LuaByte Tables
-		DB.loadLuaByteTable('data/lua files/admin/pcidentity.lub',      onLoad());
-		DB.loadLuaByteTable('data/lua files/admin/pcjobname.lub',       onLoad());
-		DB.loadLuaByteTable('data/lua files/admin/pcjobnamegender.lub', onLoad());
-		DB.loadLuaByteTable('data/lua files/datainfo/accessoryid.lub',  onLoad());
-		DB.loadLuaByteTable('data/lua files/datainfo/accname.lub',      onLoad());
-		DB.loadLuaByteTable('data/lua files/datainfo/npcidentity.lub',  onLoad());
-		DB.loadLuaByteTable('data/lua files/datainfo/jobname.lub',      onLoad());
-		DB.loadLuaByteTable('data/lua files/datainfo/petinfo.lub',      onLoad());
-		DB.loadLuaByteTable('data/lua files/datainfo/weapontable.lub',  onLoad());
+		loadTable( 'data/mp3nametable.txt',               2, function(index, key, val){   (MapTable[key] || (MapTable[key] = {})).mp3                   = val;               }, onLoad());
+		loadTable( 'data/mapnametable.txt',               2, function(index, key, val){   (MapTable[key] || (MapTable[key] = {})).name                  = val;               }, onLoad());
+		loadTable( 'data/msgstringtable.txt',             1, function(index, val){         MsgStringTable[index]                                        = val;               }, onLoad());
+		loadTable( 'data/resnametable.txt',               2, function(index, key, val){    DB.mapalias[key]                                             = val;               }, onLoad());
+		loadTable( 'data/num2cardillustnametable.txt',    2, function(index, key, val){   (ItemTable[key] || (ItemTable[key] = {})).illustResourcesName = val;               }, onLoad());
+		loadTable( 'data/cardprefixnametable.txt',        2, function(index, key, val){   (ItemTable[key] || (ItemTable[key] = {})).prefixNameTable     = val;               }, onLoad());
+		loadTable( 'data/fogparametertable.txt',          5, parseFogEntry,                                                                                                     onLoad());
 	};
 
 
@@ -123,13 +113,13 @@ function(      Client,           TextEncoding,      ClassTable,     ClassPalTabl
 	 * @param {function} callback to call for each group
 	 * @param {function} onEnd to run once the file is loaded
 	 */
-	DB.loadTable = function LoadTable( filename, size, callback, onEnd )
+	function loadTable( filename, size, callback, onEnd )
 	{
 		Client.loadFile( filename, function(data) {
 			console.log('Loading file "'+ filename +'"...');
 
 			// Remove commented lines
-			var content  = ('\n' + data).replace(/\n\s?\/\/[^\n]+\n/g, '');
+			var content  = ('\n' + data).replace(/\n(\/\/[^\n]+)/g, '');
 			var elements = content.split('#');
 			var i, count = elements.length;
 			var args     = new Array(size+1);
@@ -142,40 +132,40 @@ function(      Client,           TextEncoding,      ClassTable,     ClassPalTabl
 					args[i%size] = i;
 				}
 
-				args[(i%size)+1] = elements[i].replace(/^\s+|\s+$/g, '');
+				args[(i%size)+1] = elements[i].replace(/^\s+|\s+$/g, ''); // trim
 			}
 
 			onEnd();
 		}, onEnd );
-	};
+	}
 
 
 	/**
-	 * Load LuaByte Table
+	 * Fog entry parser
 	 *
-	 * @param {string} filename to load
-	 * @param {function} onEnd to run once the file is executed
-	 * @return {function} generic
+	 * @param {number} index
+	 * @param {mixed} key
+	 * @param {string} near
+	 * @param {string} far
+	 * @param {string} color
+	 * @param {string} factor
 	 */
-	DB.loadLuaByteTable = function loadLuaByteTable( filename, onEnd )
+	function parseFogEntry(index, key, near, far, color, factor)
 	{
-		Client.loadFile( filename, function(js) {
-			console.log('Loading file "'+ filename +'"...');
-			// TODO: fix Lub decoder
-			try {
-				eval(js);
-			}
-			catch(e){}
-			onEnd();
-		}, onEnd );
-	};
+		var int_color = parseInt(color,16);
+		var map       = (MapTable[key] || (MapTable[key] = {}));
 
-
-	/**
-	 * ASCII sex
-	 */
-	DB.SEX = [ '\xbf\xa9', '\xb3\xb2' ];
-
+		map.fog = {
+			near:   parseFloat(near),
+			far:    parseFloat(far),
+			color:  [
+				(255 & (int_color >> 16)) / 255.0,
+				(255 & (int_color >>  8)) / 255.0,
+				(255 & (int_color >>  0)) / 255.0
+			],
+			factor: parseFloat(factor)
+		};
+	}
 
 	/**
 	 * @return {string} path to body sprite/action
@@ -183,20 +173,20 @@ function(      Client,           TextEncoding,      ClassTable,     ClassPalTabl
 	 * @param {boolean} sex
 	 * @return {string}
 	 */
-	DB.getBodyPath = function GetBodyPath( id, sex )
+	DB.getBodyPath = function getBodyPath( id, sex )
 	{
 		// PC
 		if (id < 45) {
-			return 'data/sprite/\xc0\xce\xb0\xa3\xc1\xb7/\xb8\xf6\xc5\xeb/' + DB.SEX[sex] + '/' + ( ClassTable[id] || ClassTable[0] ) + '_' + DB.SEX[sex];
+			return 'data/sprite/\xc0\xce\xb0\xa3\xc1\xb7/\xb8\xf6\xc5\xeb/' + SexTable[sex] + '/' + (ClassTable[id] || ClassTable[0]) + '_' + SexTable[sex];
 		}
 
 		// TODO: Warp STR file
-		if (id == 45) {
+		if (id === 45) {
 			return null;
 		}
 
 		// Not visible sprite
-		if (id === 111) {
+		if (id === 111 || id === 139) {
 			return null;
 		}
 
@@ -212,7 +202,7 @@ function(      Client,           TextEncoding,      ClassTable,     ClassPalTabl
 
 		// PC
 		if (id < 6000) {
-			return 'data/sprite/\xc0\xce\xb0\xa3\xc1\xb7/\xb8\xf6\xc5\xeb/' + DB.SEX[sex] + '/' + ( ClassTable[id] || ClassTable[0] ) + '_' + DB.SEX[sex];
+			return 'data/sprite/\xc0\xce\xb0\xa3\xc1\xb7/\xb8\xf6\xc5\xeb/' + SexTable[sex] + '/' + ( ClassTable[id] || ClassTable[0] ) + '_' + SexTable[sex];
 		}
 
 		// Homunculus
@@ -228,7 +218,7 @@ function(      Client,           TextEncoding,      ClassTable,     ClassPalTabl
 	 */
 	DB.getAdminPath = function getAdminPath(sex)
 	{
-		return 'data/sprite/\xc0\xce\xb0\xa3\xc1\xb7/\xb8\xf6\xc5\xeb/' + DB.SEX[sex] + '/\xbf\xee\xbf\xb5\xc0\xda_' + DB.SEX[sex];
+		return 'data/sprite/\xc0\xce\xb0\xa3\xc1\xb7/\xb8\xf6\xc5\xeb/' + SexTable[sex] + '/\xbf\xee\xbf\xb5\xc0\xda_' + SexTable[sex];
 	};
 
 
@@ -238,13 +228,13 @@ function(      Client,           TextEncoding,      ClassTable,     ClassPalTabl
 	 * @param {number} pal
 	 * @param {boolean} sex
 	 */
-	DB.getBodyPalPath = function GetBodyPalettePath( id, pal, sex )
+	DB.getBodyPalPath = function getBodyPalettePath( id, pal, sex )
 	{
-		if (id === 0 || !(id in ClassPalTable)) {
+		if (id === 0 || !(id in ClassTable)) {
 			return null;
 		}
 
-		return 'data/palette/\xb8\xf6/' + ClassPalTable[id] + '_' + DB.SEX[sex] + '_' + pal + '.pal';
+		return 'data/palette/\xb8\xf6/' + ClassTable[id] + '_' + SexTable[sex] + '_' + pal + '.pal';
 	};
 
 
@@ -253,9 +243,9 @@ function(      Client,           TextEncoding,      ClassTable,     ClassPalTabl
 	 * @param {number} id hair style
 	 * @param {boolean} sex
 	 */
-	DB.getHeadPath = function GetHeadPath( id, sex )
+	DB.getHeadPath = function getHeadPath( id, sex )
 	{
-		return 'data/sprite/\xc0\xce\xb0\xa3\xc1\xb7/\xb8\xd3\xb8\xae\xc5\xeb/' + DB.SEX[sex] + '/' + id + '_' + DB.SEX[sex];
+		return 'data/sprite/\xc0\xce\xb0\xa3\xc1\xb7/\xb8\xd3\xb8\xae\xc5\xeb/' + SexTable[sex] + '/' + id + '_' + SexTable[sex];
 	};
 
 
@@ -265,9 +255,9 @@ function(      Client,           TextEncoding,      ClassTable,     ClassPalTabl
 	 * @param {number} pal id
 	 * @param {boolean} sex
 	 */
-	DB.getHeadPalPath = function GetHeadPalPath( id, pal, sex )
+	DB.getHeadPalPath = function getHeadPalPath( id, pal, sex )
 	{
-		return 'data/palette/\xb8\xd3\xb8\xae/\xb8\xd3\xb8\xae' + id + '_' + DB.SEX[sex] + '_' + pal + '.pal';
+		return 'data/palette/\xb8\xd3\xb8\xae/\xb8\xd3\xb8\xae' + id + '_' + SexTable[sex] + '_' + pal + '.pal';
 	};
 
 
@@ -276,12 +266,13 @@ function(      Client,           TextEncoding,      ClassTable,     ClassPalTabl
 	 * @param {number} id hair style
 	 * @param {boolean} sex
 	 */
-	DB.getHatPath = function GetHatPath( id, sex )
+	DB.getHatPath = function getHatPath( id, sex )
 	{
-		if (id === 0 || (!(id in HatTable) && !(id in DB.AccNameTable))) {
+		if (id === 0 || !(id in HatTable)) {
 			return null;
 		}
-		return 'data/sprite/\xbe\xc7\xbc\xbc\xbb\xe7\xb8\xae/' + DB.SEX[sex] + '/' + DB.SEX[sex] + ( DB.AccNameTable[id] || HatTable[id] );
+
+		return 'data/sprite/\xbe\xc7\xbc\xbc\xbb\xe7\xb8\xae/' + SexTable[sex] + '/' + SexTable[sex] + HatTable[id];
 	};
 
 
@@ -289,13 +280,13 @@ function(      Client,           TextEncoding,      ClassTable,     ClassPalTabl
 	 * @return {string} Path to pets equipements
 	 * @param {number} id (pets)
 	 */
-	DB.getPetEquipPath = function GetPetEquipPath( id )
+	DB.getPetEquipPath = function getPetEquipPath( id )
 	{
-		if (id === 0 || !(id in PetInfo.EquipAct)) {
+		if (id === 0 || !(id in PetAction)) {
 			return null;
 		}
 
-		return 'data/sprite/' + PetInfo.EquipAct[id];
+		return 'data/sprite/' + PetAction[id];
 	};
 
 
@@ -303,9 +294,9 @@ function(      Client,           TextEncoding,      ClassTable,     ClassPalTabl
 	 * @return {string} Path to pets equipements
 	 * @param {number} id (pets)
 	 */
-	DB.getPetIllustPath = function GetPetIllustPath( id )
+	DB.getPetIllustPath = function getPetIllustPath( id )
 	{
-		return 'data/texture/' + (PetInfo.IllustPath[id] || PetInfo.IllustPath[1002]);
+		return 'data/texture/' + (PetIllustration[id] || PetIllustration[1002]);
 	};
 
 
@@ -315,12 +306,15 @@ function(      Client,           TextEncoding,      ClassTable,     ClassPalTabl
 	 * @param {number} job class
 	 * @param {boolean} sex
 	 */
-	DB.getShieldPath = function GetShieldPath( id, job, sex )
+	DB.getShieldPath = function getShieldPath( id, job, sex )
 	{
-		if (id === 0 || !(job in ClassTable)) {
+		if (id === 0) {
 			return null;
 		}
-		return 'data/sprite/\xb9\xe6\xc6\xd0/' + ClassTable[job] + '/' + ClassTable[job] + '_' + DB.SEX[sex] + '_' + ( ShieldTable[id] || ShieldTable[1] );
+
+		var baseClass = WeaponJobTable[job] || WeaponJobTable[0];
+
+		return 'data/sprite/\xb9\xe6\xc6\xd0/' + baseClass + '/' + baseClass + '_' + SexTable[sex] + '_' + ( ShieldTable[id] || ShieldTable[1] );
 	};
 
 
@@ -330,13 +324,15 @@ function(      Client,           TextEncoding,      ClassTable,     ClassPalTabl
 	 * @param {number} job class
 	 * @param {boolean} sex
 	 */
-	DB.getWeaponPath = function GetWeaponPath( id, job, sex )
+	DB.getWeaponPath = function getWeaponPath( id, job, sex )
 	{
-		if (id === 0 || !(job in ClassTable)) {
+		if (id === 0) {
 			return null;
 		}
 
-		return 'data/sprite/\xc0\xce\xb0\xa3\xc1\xb7/' + ClassTable[job] + '/' + ClassTable[job] + '_' + DB.SEX[sex] + ( WeaponTable.WeaponNameTable[id] || ('_' + id) ) ;
+		var baseClass = WeaponJobTable[job] || WeaponJobTable[0];
+
+		return 'data/sprite/\xc0\xce\xb0\xa3\xc1\xb7/' + baseClass + '/' + baseClass + '_' + SexTable[sex] + ( WeaponTable[id] || ('_' + id) ) ;
 	};
 
 
@@ -344,16 +340,16 @@ function(      Client,           TextEncoding,      ClassTable,     ClassPalTabl
 	 * @return {string} Path to eapon sound
 	 * @param {number} weapon id
 	 */
-	DB.getWeaponSound = function GetWeaponSound( id )
+	DB.getWeaponSound = function getWeaponSound( id )
 	{
 		var type = DB.getWeaponViewID(id);
 
 		// TODO: implement basejob
-		if (type === 0) {
+		if (type === WeaponType.NONE) {
 			// return '_' + ( basejob ) + '_attack.wav';
 		}
 
-		return WeaponTable.WeaponHitWaveNameTable[type];
+		return WeaponSoundTable[type];
 	};
 
 
@@ -361,59 +357,77 @@ function(      Client,           TextEncoding,      ClassTable,     ClassPalTabl
 	 * @return {number} weapon viewid
 	 * @param {number} id weapon
 	 */
-	DB.getWeaponViewID = function GetWeaponViewID(id)
+	DB.getWeaponViewID = function getWeaponViewIdClosure()
 	{
-		// Already weapon type.
-		if (id < 32)    return id;
+		var gunGatling = [13157, 13158, 13159, 13172, 13177];
+		var gunShotGun = [13154, 13155, 13156, 13167, 13168, 13169, 13173, 13178];
+		var gunGranade = [13160, 13161, 13162, 13174, 13179];
 
-		// Weapon  ID starting at 1100
-		if (id <  1100) return  0;
+		return function getWeaponViewID(id)
+		{
+			// Already weapon type.
+			if (id < WeaponType.MAX) {
+				return id;
+			}
 
-		// Specific weapon range inside other range (wtf gravity ?)
-		if (id >= 1116 && id <= 1118) return  3;  // Katana
-		if (id >= 1314 && id <= 1315) return  7;  // 2 axe
-		if (id >= 1410 && id <= 1412) return  5;  // 2 spear
-		if (id >= 1472 && id <= 1473) return 10;  // 2 rod
-		if (id === 1599 ) return  8;  // angra manyu 
-		if ((id >= 13157 && id <= 13159) || id === 13172 || id === 13177) return 19; // gatling gun
-		if ((id >= 13154 && id <= 13156) || id === 13167 || id === 13168 || id === 13169 || id === 13173 || id === 13178) return 20; // rifle
-		if ((id >= 13160 && id <= 13162) || id === 13174 || id === 13179) return 21;
+			// Based on view id
+			if (id in ItemTable) {
+				if (ItemTable[id].ClassNum) {
+					return ItemTable[id].ClassNum;
+				}
+			}
 
-		// Ranges
-		if (id <  1150) return  2; // 1100-1149 -> 1 sword
-		if (id <  1200) return  3; // 1150-1199 -> 2 sword
-		if (id <  1250) return  1; // 1200-1249 ->   dagger
-		if (id <  1300) return 16; // 1250-1299 ->   katar
-		if (id <  1350) return  6; // 1300-1349 -> 1 axe
-		if (id <  1400) return  7; // 1314-1399 -> 2 axe
-		if (id <  1450) return  4; // 1400-1449 -> 1 spear
-		if (id <  1500) return  5; // 1450-1499 -> 2 spear
-		if (id <  1550) return  8; // 1500-1549 ->   mace
-		if (id <  1600) return 15; // 1550-1599 ->   book
-		if (id <  1650) return 10; // 1600-1649 ->   rod
-		if (id <  1700) return  0;
-		if (id <  1750) return 11; // 1700-1749 ->   bow
-		if (id <  1800) return  0;
-		if (id <  1850) return 12; // 1800-1849 ->   knuckle
-		if (id <  1900) return  0;
-		if (id <  1950) return 13; // 1900-1949 ->   instrument
-		if (id <  2000) return 14; // 1950-1999 ->   whip
-		if (id <  2050) return 23; // 2000-2049 -> 2 rod
-		if (id < 13000) return 0;
-		if (id < 13050) return  1; // 13000-13050 -> dagger
-		if (id < 13100) return  0;
-		if (id < 13150) return 17; // 13100-13149 -> revolver
-		if (id < 13200) return 18; // 13150-13199 -> rifle
-		if (id < 13300) return  0;
-		if (id < 13350) return 22; // 13300-13349 -> shurikens
-		if (id < 13400) return  0;
-		if (id < 13450) return  2; // 13400-13449 -> sword
-		if (id < 18100) return  0;
-		if (id < 18150) return 11; // 18100-18149 -> bow
+			// Weapon ID starting at 1100
+			if (id <  1100) {
+				return WeaponType.NONE;
+			}
 
-		// Not found ?
-		return 0;
-	};
+			// Specific weapon range inside other range (wtf gravity ?)
+			if (id >= 1116 && id <= 1118)    return WeaponType.TWOHANDSWORD;
+			if (id >= 1314 && id <= 1315)    return WeaponType.TWOHANDAXE;
+			if (id >= 1410 && id <= 1412)    return WeaponType.TWOHANDSPEAR;
+			if (id >= 1472 && id <= 1473)    return WeaponType.ROD;
+			if (id === 1599)                 return WeaponType.MACE;
+			if (gunGatling.indexOf(id) > -1) return WeaponType.GUN_GATLING;
+			if (gunShotGun.indexOf(id) > -1) return WeaponType.GUN_SHOTGUN;
+			if (gunGranade.indexOf(id) > -1) return WeaponType.GUN_GRANADE;
+
+			// Ranges
+			return (
+				id <  1150 ? WeaponType.SWORD        :
+			    id <  1200 ? WeaponType.TWOHANDSWORD :
+			    id <  1250 ? WeaponType.SHORTSWORD   :
+			    id <  1300 ? WeaponType.CATARRH      :
+			    id <  1350 ? WeaponType.AXE          :
+			    id <  1400 ? WeaponType.TWOHANDAXE   :
+			    id <  1450 ? WeaponType.SPEAR        :
+			    id <  1500 ? WeaponType.TWOHANDSPEAR :
+			    id <  1550 ? WeaponType.MACE         :
+			    id <  1600 ? WeaponType.BOOK         :
+			    id <  1650 ? WeaponType.ROD          :
+			    id <  1700 ? WeaponType.NONE         :
+			    id <  1750 ? WeaponType.BOW          :
+			    id <  1800 ? WeaponType.NONE         :
+			    id <  1850 ? WeaponType.KNUKLE       :
+			    id <  1900 ? WeaponType.NONE         :
+			    id <  1950 ? WeaponType.INSTRUMENT   :
+			    id <  2000 ? WeaponType.WHIP         :
+			    id <  2050 ? WeaponType.TWOHANDROD   :
+			    id < 13000 ? WeaponType.NONE         :
+			    id < 13050 ? WeaponType.SHORTSWORD   :
+			    id < 13100 ? WeaponType.NONE         :
+			    id < 13150 ? WeaponType.GUN_HANDGUN  :
+			    id < 13200 ? WeaponType.GUN_RIFLE    :
+			    id < 13300 ? WeaponType.NONE         :
+			    id < 13350 ? WeaponType.SYURIKEN     :
+			    id < 13400 ? WeaponType.NONE         :
+			    id < 13450 ? WeaponType.SWORD        :
+			    id < 18100 ? WeaponType.NONE         :
+			    id < 18150 ? WeaponType.BOW          :
+			                 WeaponType.NONE
+			);
+		};
+	}();
 
 
 	/**
@@ -422,7 +436,7 @@ function(      Client,           TextEncoding,      ClassTable,     ClassPalTabl
 	 * @param {number} job
 	 * @param {number} sex
 	 */
-	DB.getWeaponAction = function GetWeaponAction( id, job, sex )
+	DB.getWeaponAction = function getWeaponAction( id, job, sex )
 	{
 		var type = DB.getWeaponViewID(id);
 
@@ -443,31 +457,120 @@ function(      Client,           TextEncoding,      ClassTable,     ClassPalTabl
 
 	/**
 	 * Get back informations from id
+	 *
 	 * @param {number} item id
+	 * @return {object} item
 	 */
-	DB.getItemInfo = function GetItemInfo( itemid )
+	DB.getItemInfo = function getItemInfoClosure()
 	{
-		var item = DB.itemList[itemid] || DB.itemList[512];
+		var unknownItem = {
+			unidentifiedDisplayName: "Unknown Item",
+			unidentifiedResourceName: "\xbb\xe7\xb0\xfa",
+			unidentifiedDescriptionName: [
+				"...",
+			],
+			identifiedDisplayName: "Unknown Item",
+			identifiedResourceName: "\xbb\xe7\xb0\xfa",
+			identifiedDescriptionName: [
+				"...",
+			],
+			slotCount: 0,
+			ClassNum: 0
+		};
 
-		if (!item._decoded) {
-			item.identifiedDescriptionName   = TextEncoding.decodeString(item.identifiedDescriptionName);
-			item.identifiedDisplayName       = TextEncoding.decodeString(item.identifiedDisplayName);
-			item.unidentifiedDescriptionName = TextEncoding.decodeString(item.unidentifiedDescriptionName);
-			item.unidentifiedDisplayName     = TextEncoding.decodeString(item.unidentifiedDisplayName);
-			item._decoded                    = true;
-		}
+		return function getItemInfo( itemid )
+		{
+			var item = ItemTable[itemid] || unknownItem;
 
-		return item;
-	};
+			if (!item._decoded) {
+				item.identifiedDescriptionName   = TextEncoding.decodeString(item.identifiedDescriptionName.join('\n'));
+				item.identifiedDisplayName       = TextEncoding.decodeString(item.identifiedDisplayName);
+				item.unidentifiedDescriptionName = TextEncoding.decodeString(item.unidentifiedDescriptionName.join('\n'));
+				item.unidentifiedDisplayName     = TextEncoding.decodeString(item.unidentifiedDisplayName);
+				item.prefixNameTable             = TextEncoding.decodeString(item.prefixNameTable || '');
+				item._decoded                    = true;
+			}
+
+			return item;
+		};
+	}();
 
 
 	/**
 	 * Get back item path
+	 *
+	 * @param {number} item id
+	 * @param {boolean} is identify
+	 * @return {string} path
 	 */
-	DB.getItemPath = function GetItemPath( itemid, identify )
+	DB.getItemPath = function getItemPath( itemid, identify )
 	{
-		var it   = DB.getItemInfo( itemid );
+		var it = DB.getItemInfo( itemid );
 		return 'data/sprite/\xbe\xc6\xc0\xcc\xc5\xdb/' + ( identify ? it.identifiedResourceName : it.unidentifiedResourceName );
+	};
+
+
+	/**
+	 * Get full item name
+	 *
+	 * @param {object} item
+	 * @return {string} item full name
+	 */
+	DB.getItemName = function getItemName( item )
+	{
+		var it = DB.getItemInfo( item.ITID );
+		var str = '';
+
+		if (item.RefiningLevel) {
+			str = '+' + item.RefiningLevel + ' ';
+		}
+
+		if (item.slot) {
+			switch (item.slot.card1) {
+				case 0x00FF: // FORGE
+				case 0x00FE: // CREATE
+				case 0xFF00: // PET
+					break;
+
+				// Show card prefix
+				default:
+					var list  = ['', 'double ', 'triple ', 'quadruple '];
+					var count = [0, 0, 0, 0];
+					var name, prefix = [];
+					var i, j = 0, pos;
+
+					for (i = 1; i <= 4; ++i) {
+						if (!item.slot['card'+i]) {
+							break;
+						}
+
+						name = DB.getItemInfo(item.slot['card'+i]).prefixNameTable;
+						if (name) {
+							pos = prefix.indexOf(name);
+							if (pos > -1) {
+								count[pos]++;
+								continue;
+							}
+							prefix[j] = name;
+							count[j]++;
+							j++;
+						}
+					}
+
+					for (i = 0; i < j; ++i) {
+						str += list[count[i]-1] + prefix[i] + ' ';
+					}
+			}
+		}
+
+
+		str += item.IsIdentified ? it.identifiedDisplayName : it.unidentifiedDisplayName;
+
+		if (it.slotCount) {
+			str += ' [' + it.slotCount + ']';
+		}
+
+		return str;
 	};
 
 
@@ -476,14 +579,27 @@ function(      Client,           TextEncoding,      ClassTable,     ClassPalTabl
 	 *
 	 * @param {number} message id
 	 * @param {string} optional string to show if the text isn't defined
+	 * @return {string} message
 	 */
 	DB.getMessage = function getMessage(id, defaultText)
 	{
-		if (!(id in DB.msgstringtable)) {
+		if (!(id in MsgStringTable)) {
 			return defaultText !== undefined ? defaultText : 'NO MSG ' + id;
 		}
 
-		return TextEncoding.decodeString( DB.msgstringtable[id] );
+		return TextEncoding.decodeString( MsgStringTable[id] );
+	};
+
+
+	/**
+	 * @param {string} filename
+	 * @return {object}
+	 */
+	DB.getMap = function getMap( mapname )
+	{
+		var map = mapname.replace('.gat','.rsw');
+
+		return MapTable[map] || null;
 	};
 
 
@@ -491,18 +607,31 @@ function(      Client,           TextEncoding,      ClassTable,     ClassPalTabl
 	 * Get a message from msgstringtable
 	 *
 	 * @param {string} mapname
+	 * @return {string} map location
 	 */
 	DB.getMapName = function getMapName( mapname )
 	{
-		var name;
 		var map = mapname.replace('.gat','.rsw');
 
-		if (!(map in DB.mapname)) {
+		if (!(map in MapTable) || !MapTable[map].name) {
 			return DB.getMessage(187);
 		}
 
-		return TextEncoding.decodeString(DB.mapname[map]);
+		return TextEncoding.decodeString(MapTable[map].name);
 	};
+
+
+	/**
+	 * Is character id a baby ?
+	 *
+	 * @param {number} job id
+	 * @return {boolean} is baby
+	 */
+	DB.isBaby = function isBaby( jobid )
+	{
+		return BabyTable.indexOf(jobid) > -1;
+	};
+
 
 	/**
 	 * Export

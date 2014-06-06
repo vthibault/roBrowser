@@ -16,7 +16,7 @@ define(function(require)
 	 * Dependencies
 	 */
 	var DB                   = require('DB/DBManager');
-	var SkillInfo            = require('DB/SkillInfo');
+	var SkillInfo            = require('DB/Skills/SkillInfo');
 	var jQuery               = require('Utils/jquery');
 	var Client               = require('Core/Client');
 	var Preferences          = require('Core/Preferences');

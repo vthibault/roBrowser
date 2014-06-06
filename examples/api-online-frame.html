@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>ROBrowser's App from http://www.robrowser.com</title>
+		<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+		<script type="text/javascript" src="../api.js"></script>
+		<script type="text/javascript">
+			function initialize() {
+				var ROConfig = {
+					target:        document.getElementById("robrowser"),
+					type:          ROBrowser.TYPE.FRAME,
+					application:   ROBrowser.APP.ONLINE,
+					remoteClient:  "http://grf.robrowser.com/",
+					width:          800,
+					height:         600,
+					development:    false,
+					servers: [{
+						display:     "Demo Server",
+						desc:        "roBrowser's demo server",
+						address:     "5.135.190.4",
+						port:        7000,
+						version:     25,
+						langtype:    12,
+						packetver:   20131223,
+						packetKeys:  true,
+						socketProxy: "ws://5.135.190.4:443/",
+						adminList:   [2000000]
+					}],
+					skipServerList:  true,
+					skipIntro:       false,
+				};
+				var RO = new ROBrowser(ROConfig);
+				RO.start();
+			}
+			window.addEventListener("load", initialize, false);
+		</script>
+	</head>
+	<body>
+		<h1>Ragnarok Online in the browser </h1>
+		<div id="robrowser">Initializing roBrowser...</div>
+	</body>
+</html>

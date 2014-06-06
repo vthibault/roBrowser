@@ -8,8 +8,8 @@
  * @author Vincent Thibault
  */
 
-define(  ['Loaders/GameFile', 'Loaders/LuaByte', 'Loaders/World', 'Loaders/Ground', 'Loaders/Altitude', 'Loaders/Model', 'Loaders/Sprite', 'Loaders/Action', 'Loaders/Str', 'Core/FileSystem'],
-function(          GameFile,           LuaByte,           World,           Ground,           Altitude,           Model,           Sprite,           Action,           Str,        FileSystem )
+define(  ['Loaders/GameFile', 'Loaders/World', 'Loaders/Ground', 'Loaders/Altitude', 'Loaders/Model', 'Loaders/Sprite', 'Loaders/Action', 'Loaders/Str', 'Core/FileSystem'],
+function(          GameFile,           World,           Ground,           Altitude,           Model,           Sprite,           Action,           Str,        FileSystem )
 {
 	'use strict';
 
@@ -381,10 +381,6 @@ function(          GameFile,           LuaByte,           World,           Groun
 
 					case 'act':
 						result = new Action(buffer).compile();
-						break;
-
-					case 'lub':
-						result = new LuaByte(buffer).reverse();
 						break;
 
 					case 'str':
