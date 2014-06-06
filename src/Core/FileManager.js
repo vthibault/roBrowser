@@ -149,6 +149,7 @@ function(          GameFile,           LuaByte,           World,           Groun
 			var req    = new XMLHttpRequest();
 			req.open('POST', this.remoteClient, false);
 			req.setRequestHeader('Content-type','application/x-www-form-urlencoded');
+			req.setRequestHeader('X-Application', 'roBrowser');
 			req.overrideMimeType('text/plain; charset=ISO-8859-1');
 			req.send('filter=' + encodeURIComponent(regex.source));
 			return req.responseText.split('\n');
@@ -249,6 +250,7 @@ function(          GameFile,           LuaByte,           World,           Groun
 
 		var xhr = new XMLHttpRequest();
 		xhr.open('GET', this.remoteClient + filename, true);
+		xhr.setRequestHeader('X-Application', 'roBrowser');
 		xhr.responseType = 'arraybuffer';
 		xhr.onload = function(){
 			if (xhr.status == 200) {

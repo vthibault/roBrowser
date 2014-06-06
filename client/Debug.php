@@ -76,7 +76,7 @@ final class Debug
 			echo '<h1>Debug Trace</h1>';
 			echo implode('', self::$messages);
 
-			echo '<p><em>Once configured successfully, be sure to set "DEBUG" to false in configs.php else roBrowser will fail to use it.</em></p>';
+			echo '<p><em>Make sure to turn off the debug mode in configs.php once successfully configured.</em></p>';
 		}
 
 		exit();
