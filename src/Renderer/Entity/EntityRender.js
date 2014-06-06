@@ -257,17 +257,19 @@ define( function( require )
 				// Draw Head
 				renderElement( this, this.files.head, 'head', _position, false);
 
-				// Draw Hats
+				// Hat Bottom
 				if (this.accessory > 0) {
 					renderElement( this, this.files.accessory, 'head', _position, false);
 				}
-	
-				if (this.accessory2 > 0 && this.accessory2 !== this.accessory) {
-					renderElement( this, this.files.accessory2, 'head', _position, false);
-				}
 
+				// Hat Middle
 				if (this.accessory3 > 0 && this.accessory3 !== this.accessory2 && this.accessory3 !== this.accessory) {
 					renderElement( this, this.files.accessory3, 'head', _position, false);
+				}
+
+				// Hat Top
+				if (this.accessory2 > 0 && this.accessory2 !== this.accessory) {
+					renderElement( this, this.files.accessory2, 'head', _position, false);
 				}
 
 				// Draw Others elements
