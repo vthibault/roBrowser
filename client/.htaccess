@@ -24,6 +24,7 @@ ErrorDocument 404 /client/index.php
 
 <IfModule mod_headers.c>
 	Header set Access-Control-Allow-Origin "*"
+	Header set Access-Control-Allow-Headers "X-Application"
 </IfModule>
 
 Options +FollowSymlinks -MultiViews
