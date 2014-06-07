@@ -130,8 +130,9 @@ define(function()
 	Socket.prototype.__onReceive = function onReceive( readInfo )
 	{
 		if (readInfo) {
+			// resultCode value: http://src.chromium.org/svn/trunk/src/net/base/net_error_list.h
 			if (readInfo.resultCode < 0) {
-				this.close();
+				this.__onClose();
 				return;
 			}
 
