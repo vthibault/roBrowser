@@ -107,13 +107,13 @@ function(       Session,                   Entity,     SpriteRenderer,          
 	 */
 	function free()
 	{
-		var count = _list.length;
+		var i, count = _list.length;
 
-		while (count--) {
-			_list[0].clean();
-			delete _list[0];   // better to clean directly ?
-			_list.splice(0,1); // Don't erase the first one.
+		for (i = 0; i < count; ++i) {
+			_list[i].clean();
 		}
+
+		_list.length = 0;
 	}
 
 

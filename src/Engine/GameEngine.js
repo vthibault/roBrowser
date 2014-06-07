@@ -21,6 +21,7 @@ define([
 	'Engine/LoginEngine',
 	'Network/NetworkManager',
 	'Renderer/Renderer',
+	'Renderer/MapRenderer',
 	'UI/UIManager',
 	'UI/CursorManager',
 	'UI/Scrollbar',
@@ -40,6 +41,7 @@ function(
 	LoginEngine,
 	Network,
 	Renderer,
+	MapRenderer,
 	UIManager,
 	Cursor,
 	Scrollbar,
@@ -194,6 +196,7 @@ function(
 			}
 
 			Renderer.stop();
+			MapRenderer.free();
 		});
 
 		// Hooking WinList
