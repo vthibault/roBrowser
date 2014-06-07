@@ -85,7 +85,7 @@ define(["./JobConst"], function( JobId )
 
 	JobNameTable[JobId.RUNE_KNIGHT2]     = "\xB7\xE9\xB3\xAA\xC0\xCC\xC6\xAE\xBB\xDA\xB6\xEC";
 	JobNameTable[JobId.ROYAL_GUARD2]     = "\xB1\xD7\xB8\xAE\xC6\xF9\xB0\xA1\xB5\xE5";
-	JobNameTable[JobId.WOLF_RANGER]      = "\xB7\xB9\xC0\xCE\xC1\xAE\xB4\xC1\xB4\xEB";
+	JobNameTable[JobId.RANGER2]          = "\xB7\xB9\xC0\xCE\xC1\xAE\xB4\xC1\xB4\xEB";
 	JobNameTable[JobId.MECHANIC2]        = "\xB8\xB6\xB5\xB5\xB1\xE2\xBE\xEE";
 
 	//SUPERNOVICE2 : 4190,
@@ -131,6 +131,7 @@ define(["./JobConst"], function( JobId )
 	duplicateEntry(JobId.RUNE_KNIGHT2,     JobId.RUNE_KNIGHT2_H,     JobId.RUNE_KNIGHT2_B);
 	duplicateEntry(JobId.WARLOCK,          JobId.WARLOCK_H,          JobId.WARLOCK_B);
 	duplicateEntry(JobId.RANGER,           JobId.RANGER_H,           JobId.RANGER_B);
+	duplicateEntry(JobId.RANGER2,          JobId.RANGER2_H,          JobId.RANGER2_B);
 	duplicateEntry(JobId.ARCHBISHOP,       JobId.ARCHBISHOP_H,       JobId.ARCHBISHOP_B);
 	duplicateEntry(JobId.MECHANIC,         JobId.MECHANIC_H,         JobId.MECHANIC_B);
 	duplicateEntry(JobId.GUILLOTINE_CROSS, JobId.GUILLOTINE_CROSS_H, JobId.GUILLOTINE_CROSS_B);
