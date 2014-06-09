@@ -87,7 +87,8 @@ define( ['Core/FileManager'], function( FileManager )
 
 			// Continue the queue
 			if (this.list.length) {
-				if ((++this.constructor.count) % 100 === 0) {
+				// To fix "too much recursion" on Firefox
+				if ((++Loader.count) % 50 === 0) {
 					setTimeout( this._next.bind(this), 4);
 				}
 				else {
