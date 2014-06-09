@@ -13,9 +13,7 @@
 
 #Equipment .panel { background-color:white; }
 #Equipment .content { display:inline-block; width:280px; height:130px; border-spacing:0; }
-#Equipment .col1, #Equipment .col3  { width:115px; height:24px; background-color:transparent; background-repeat:no-repeat; background-position-y:9px; }
-#Equipment .col1 { background-position-x:3px; }
-#Equipment .col3 { background-position-x:81px; }
+#Equipment .col1, #Equipment .col3  { width:115px; height:24px; background-color:transparent; background-repeat:no-repeat; }
 
 #Equipment .overlay { position:absolute; display:none; white-space:nowrap; z-index:900; height:13px; padding:5px; background:rgba(0,0,0,0.7); color:white; text-shadow:1px 1px black;}
 
