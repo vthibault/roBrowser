@@ -329,7 +329,7 @@ define(function( require )
 		92: [{
 			type: 'STR',
 			file: 'meteor%d',
-			wav:  'effect/priest_meteor',
+			wav:  'effect/wizard_meteor',
 			rand: [1, 4],
 			attachedEntity: false
 		}],
