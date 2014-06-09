@@ -97,6 +97,10 @@ function(      FileManager,        FileSystem,           MapLoader )
 				FileSystem.init( msg.data.files, msg.data.save );
 				break;
 
+			// Files alias
+			case 'CLIENT_FILES_ALIAS':
+				FileManager.filesAlias = msg.data;
+				break;
 
 			// Get a file from client/grf
 			case 'GET_FILE':

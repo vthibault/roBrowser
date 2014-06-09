@@ -134,8 +134,8 @@ function(
 			});
 		});
 
-		// Loading clientinfo
 		q.add(function(){
+			Thread.send('CLIENT_FILES_ALIAS', DB.mapalias );
 			loadClientInfo(q.next);
 		});
 

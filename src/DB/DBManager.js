@@ -59,7 +59,7 @@ define(function(require)
 
 
 	/**
-	 * @var {Array} map alias TODO: transfer it to the thread.
+	 * @var {Array} file alias list
 	 */
 	DB.mapalias = {};
 

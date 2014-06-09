@@ -35,6 +35,13 @@ function(          GameFile,           World,           Ground,           Altitu
 
 
 	/**
+	 * Files alias
+	 * @var {object}
+	 */
+	FileManager.filesAlias = {};
+
+
+	/**
 	 * Initialize file manager with a list of files
 	 *
 	 * @param {mixed} grf list

@@ -126,7 +126,11 @@ define(function(require)
 	{
 		_map.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';
 
-		Client.loadFile( DB.INTERFACE_PATH + 'map/' + mapname.replace(/\..*/,'.bmp'), function(dataURI){
+		var path = DB.INTERFACE_PATH.replace('data/texture/', '') + 'map/' + mapname.replace(/\..*/,'.bmp');
+		path     = path.replace(/\//g, '\\'); // normalize path separator
+		path     = DB.mapalias[path] || path;
+
+		Client.loadFile( 'data/texture/' + path, function(dataURI){
 			_map.src = dataURI;
 		});
 	};

@@ -122,9 +122,6 @@ define(function( require )
 
 			// Parse the filename (ugly RO)
 			var filename = mapname.replace(/\.gat$/i, '.rsw');
-			if (filename in DB.mapalias) {
-				filename = DB.mapalias[filename];
-			}
 
 			Background.setLoading(function() {
 				// Hooking Thread
