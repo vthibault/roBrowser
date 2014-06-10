@@ -132,7 +132,7 @@ define(function(require)
 			case 'int2':
 			case 'dex2':
 			case 'luk2':
-				str = val < 0 ? '- ' + (-val) : val > 0 ? '+ ' + val : '';
+				str = val < 0 ? '- ' + (-val) : val > 0 ? '+' + val : '';
 				this.ui.find('.bonus .'+ type.replace('2','')).text( str );
 				break;
 
