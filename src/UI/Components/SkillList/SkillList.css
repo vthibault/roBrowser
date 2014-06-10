@@ -1,12 +1,12 @@
 #SkillList { position:absolute; top:100px; left:100px; border-radius:5px; background:white; line-height:18px; letter-spacing:0px; border:1px solid #c1c6c2; }
 #SkillList .border { border:1px solid #c1c6c2; margin:1px; border-radius:5px; }
 
-#SkillList .titlebar { height:18px; background-color:white; background-repeat:repeat-x; background-position-y: -1px; border-radius:3px 3px 0px 0px; }
+#SkillList .titlebar { height:18px; background-color:white; background-repeat:repeat-x; background-position: 0 -1px; border-radius:3px 3px 0px 0px; }
 #SkillList .titlebar .base { width:11px; height:11px; border:none; background-color:transparent; background-repeat:no-repeat; vertical-align:middle; }
 #SkillList .titlebar .text { text-shadow:1px 1px white; vertical-align:-2px; white-space:nowrap;
  /* chrome bug */ display: inline-block; width: 60px; height:13px; }
 
-#SkillList .titlebar .left { margin-left:3px; float:left; }
+#SkillList .titlebar .left { margin-left:3px; float:left; height: 18px; }
 #SkillList .titlebar .right { float:right; margin-right:3px;}
 #SkillList .titlebar .clear { clear:both; }
 
