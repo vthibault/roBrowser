@@ -1,19 +1,15 @@
 # -----------------------------------------
-# How to setup rewrite rule :
+# Example for the url http://myroserver.com/client/
+# > ErrorDocument 404 /client/index.php
 #
-# ex: myroserver.com/client/
-# ErrorDocument 404 /client/index.php
+# Example for the url http://myroserver.com/low/client/
+# > ErrorDocument 404 /low/client/index.php
 #
-# ex : myroserver.com/low/client/
-# ErrorDocument 404 /low/client/index.php
-#
-# ex : client.myroserver.com/
-# ErrorDocument 404 /index.php
+# Example for the url http://client.myroserver.com/
+# > ErrorDocument 404 /index.php
 # -----------------------------------------
-
-
-# Setup the rule
 ErrorDocument 404 /client/index.php
+
 
 # Uncomment the line below if it does not cause error
 #Options -Indexes
