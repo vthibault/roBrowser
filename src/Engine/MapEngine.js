@@ -138,6 +138,7 @@ define(function( require )
 		require('./MapEngine/ChatRoom').call();
 		require('./MapEngine/Pet').call();
 		require('./MapEngine/Store').call();
+		require('./MapEngine/Trade').call();
 	}
 
 
