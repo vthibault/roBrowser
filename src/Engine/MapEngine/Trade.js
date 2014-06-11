@@ -62,15 +62,13 @@ define(function( require )
 			};
 		}
 
-		var text    = '(' + pkt.name + ') ' + DB.getMessage(93) + ('level' in pkt ? '\n' + 'Lv. ' + pkt.level : '');
+		var text    = '(' + pkt.name + ') ' + DB.getMessage(93);
 		Trade.title = pkt.name;
 
-		if ('level' in pkt) {
-			Trade.title += '  Lv' + pkt.level;
-		}
-
-		if ('GID' in pkt) {
-			Trade.title += ' (' + TradeGIDEncoding(pkt.GID) +')';
+		if ('level' in pkt && 'GID' in pkt) {
+			var uid      = TradeGIDEncoding(pkt.GID);
+			Trade.title += '  Lv' + pkt.level + ' (' + uid +')';
+			text        += '\nPN: ' + uid + ' \xa0 Lv.' + pkt.level;
 		}
 
 		UIManager.showPromptBox( text, 'ok', 'cancel', answer(3), answer(4));

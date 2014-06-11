@@ -88,12 +88,15 @@ define(function(require)
 			.on('mouseover', '.item', function(){
 				var idx  = parseInt( this.getAttribute('data-index'), 10);
 				var item = this.parentNode.className.match(/send/i) ? _send[idx] : _recv[idx];
-				var pos  = jQuery(this).position();
+				var $e   = jQuery(this);
+				var pos  = $e.parent().position();
+				pos.left += $e.position().left;
+				pos.top  += $e.position().top;
 
 				// Display box
 				overlay.show();
-				overlay.css({top: pos.top-10, left:pos.left+35});
-				overlay.html(DB.getItemName(item) + ' ' + ( item.count || 1 ) + ' ea');
+				overlay.css({top: pos.top+5, left:pos.left+30});
+				overlay.html(DB.getItemName(item));
 
 				if (item.IsIdentified) {
 					overlay.removeClass('grey');
@@ -143,6 +146,7 @@ define(function(require)
 	{
 		// Clean up (interface)
 		this.onRemove();
+		this.ui.find('.titlebar .title').text(this.title);
 
 		this.ui.css({
 			top:  (Renderer.height - this.ui.height()) / 2,
@@ -160,6 +164,7 @@ define(function(require)
 		_recv.length = 0;
 		_send.length = 0;
 
+		this.ui.find('.overlay').hide();
 		this.ui.find('.ok.disabled, .trade.enabled').hide();
 		this.ui.find('.ok.enabled, .trade.disabled').show();
 		this.ui.find('.box').removeClass('disabled').empty();
@@ -188,7 +193,7 @@ define(function(require)
 			return;
 		}
 
-		var item    = Inventory.removeItem(index, _tmpCount[index]);
+		var item    = jQuery.extend({}, Inventory.removeItem(index, _tmpCount[index]));
 		var it      = DB.getItemInfo( item.ITID );
 		var idx     = _send.push(item) - 1;
 		var box     = this.ui.find('.box.send');
