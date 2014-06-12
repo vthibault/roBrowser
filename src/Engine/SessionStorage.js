@@ -31,5 +31,7 @@ define(function()
 		moveTarget:  null,
 
 		zeny:        0,
+
+		petId:       0
 	};
 });

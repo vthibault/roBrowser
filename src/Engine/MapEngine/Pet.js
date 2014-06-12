@@ -20,7 +20,9 @@ define(function( require )
 	var Network              = require('Network/NetworkManager');
 	var PACKET               = require('Network/PacketStructure');
 	var Client               = require('Core/Client');
+	var Session              = require('Engine/SessionStorage');
 	var EntityManager        = require('Renderer/EntityManager');
+	var UIManager            = require('UI/UIManager');
 	var SlotMachine          = require('UI/Components/SlotMachine/SlotMachine');
 	var SkillTargetSelection = require('UI/Components/SkillTargetSelection/SkillTargetSelection');
 	var ItemSelection        = require('UI/Components/ItemSelection/ItemSelection');
@@ -129,7 +131,8 @@ define(function( require )
 		}
 
 		switch (pkt.type) {
-			case 0: /// pre-init
+			case 0: // know what our pet is
+				Session.petId = pkt.GID; // should we delete it later ?
 				break;
 
 			case 1:
@@ -210,9 +213,12 @@ define(function( require )
 	 */
 	PetInformations.reqPetFeed = function reqPetFeed()
 	{
-		var pkt  = new PACKET.CZ.COMMAND_PET();
-		pkt.cSub = 1;
-		Network.sendPacket(pkt);
+		// Are you sure you want to feed your pet ?
+		UIManager.showPromptBox(DB.getMessage(601), 'ok', 'cancel', function(){
+			var pkt  = new PACKET.CZ.COMMAND_PET();
+			pkt.cSub = 1;
+			Network.sendPacket(pkt);
+		});
 	};
 
 
@@ -249,7 +255,6 @@ define(function( require )
 		pkt.cSub = 4;
 		Network.sendPacket(pkt);
 	};
-
 
 
 
