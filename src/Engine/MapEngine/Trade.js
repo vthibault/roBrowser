@@ -65,9 +65,7 @@ define(function( require )
 		Trade.title = pkt.name;
 
 		if ('level' in pkt && 'GID' in pkt) {
-			var uid      = TradeGIDEncoding(pkt.GID);
-			Trade.title += '  Lv' + pkt.level + ' (' + uid +')';
-			text        += '\nPN: ' + uid + ' \xa0 Lv.' + pkt.level;
+			text        += '\nPN: ' + TradeGIDEncoding(pkt.GID)+ '\xa0\xa0\xa0\xa0\xa0Lv.' + pkt.level;
 		}
 
 		UIManager.showPromptBox( text, 'ok', 'cancel', answer(3), answer(4));
@@ -95,6 +93,9 @@ define(function( require )
 				break;
 
 			case 3:
+				if ('level' in pkt && 'GID' in pkt) {
+					Trade.title +='  Lv' + pkt.level + ' (' + TradeGIDEncoding(pkt.GID) +')';
+				}
 				Trade.append();
 				break;
 
@@ -234,10 +235,12 @@ define(function( require )
 	 *
 	 * @param {number} GID
 	 */
-	Trade.reqExchange = function requestExhange( GID ) {
+	Trade.reqExchange = function requestExhange( GID, name ) {
 		var pkt = new PACKET.CZ.REQ_EXCHANGE_ITEM();
 		pkt.AID = GID;
 		Network.sendPacket(pkt);
+
+		Trade.title = name;
 	};
 
 
