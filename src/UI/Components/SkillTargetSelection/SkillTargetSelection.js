@@ -120,8 +120,8 @@ define(function(require)
 		events.unshift( events.pop() );
 
 		// Execute before *request move* / *request attack*
-		jQuery(Renderer.canvas).one('mousedown.targetselection', intersectEntity);
-		events = jQuery._data(Renderer.canvas, 'events').mousedown;
+		jQuery(window).one('mousedown.targetselection', intersectEntity);
+		events = jQuery._data(window, 'events').mousedown;
 		events.unshift( events.pop() );
 	};
 
@@ -146,7 +146,7 @@ define(function(require)
 	 */
 	SkillTargetSelection.onRemove = function onRemove()
 	{
-		jQuery(Renderer.canvas).off('mousedown.targetselection');
+		jQuery(window).off('mousedown.targetselection');
 
 		Cursor.blockMagnetism = false;
 		Cursor.freeze         = false;
