@@ -7,34 +7,33 @@
  *
  * @author Vincent Thibault
  */
-define([
-	'Utils/jquery',
-	'DB/DBManager',
-	'UI/CursorManager',
-	'UI/Components/Inventory/Inventory',
-	'UI/Components/InputBox/InputBox',
-	'UI/Components/ChatBox/ChatBox',
-	'UI/Components/Equipment/Equipment',
-	'Controls/KeyEventHandler', 'Controls/MouseEventHandler', 'Controls/ScreenShot',
-	'Renderer/Renderer', 'Renderer/Camera', 'Renderer/EntityManager',
-	'Engine/SessionStorage',
-	'Preferences/Controls'
-],
-function(
-	jQuery,
-	DB,
-	Cursor,
-	Inventory,
-	InputBox,
-	ChatBox,
-	Equipment,
-	KEYS, Mouse, ScreenShot,
-	Renderer, Camera, EntityManager,
-	Session,
-	Preferences
-)
+define(function( require )
 {
 	'use strict';
+
+
+	// Load dependencies
+	var jQuery        = require('Utils/jquery');
+	var DB            = require('DB/DBManager');
+	var Cursor        = require('UI/CursorManager');
+	var Inventory     = require('UI/Components/Inventory/Inventory');
+	var InputBox      = require('UI/Components/InputBox/InputBox');
+	var ChatBox       = require('UI/Components/ChatBox/ChatBox');
+	var Equipment     = require('UI/Components/Equipment/Equipment');
+	var KEYS          = require('Controls/KeyEventHandler');
+	var Mouse         = require('Controls/MouseEventHandler');
+	var ScreenShot    = require('Controls/ScreenShot');
+	var Renderer      = require('Renderer/Renderer');
+	var Camera        = require('Renderer/Camera');
+	var EntityManager = require('Renderer/EntityManager');
+	var Session       = require('Engine/SessionStorage');
+	var Preferences   = require('Preferences/Controls');
+
+
+	/**
+	 * @var {int16[2]} screen position
+	 */
+	var _rightClickPosition = new Int16Array(2);
 
 
 	/**
@@ -89,6 +88,9 @@ function(
 
 			// Right Click
 			case 3:
+				_rightClickPosition[0] = Mouse.screen.x;
+				_rightClickPosition[1] = Mouse.screen.y;
+
 				Cursor.setType( Cursor.ACTION.ROTATE );
 				Camera.rotate( true );
 				break;
@@ -101,6 +103,8 @@ function(
 	 */
 	function OnMouseUp( event )
 	{
+		var entity;
+
 		// Not rendering yet
 		if (!Mouse.intersect) {
 			return;
@@ -111,7 +115,7 @@ function(
 			// Left click
 			case 1:
 				// Remove entity picking ?
-				var entity = EntityManager.getFocusEntity();
+				entity = EntityManager.getFocusEntity();
 
 				if (entity) {
 					entity.onMouseUp();
@@ -131,6 +135,16 @@ function(
 			case 3:
 				Cursor.setType( Cursor.ACTION.DEFAULT );
 				Camera.rotate( false );
+
+				// Seems like it's how the official client handle the contextmenu
+				// Just check for the same position on mousedown and mouseup
+				if (_rightClickPosition[0] === Mouse.screen.x && _rightClickPosition[1] === Mouse.screen.y) {
+					entity = EntityManager.getOverEntity();
+
+					if (entity && entity !== Session.Entity) {
+						entity.onContextMenu();
+					}
+				}
 				break;
 		}
 	}

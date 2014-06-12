@@ -1,0 +1,24 @@
+#ContextMenu {
+	position:absolute;
+	background-color:white;
+	border-radius:5px;
+	padding:2px;
+}
+
+#ContextMenu hr {
+	background-color:#cecece;
+	height:1px;
+	border:none;
+	margin: 2px;
+}
+
+#ContextMenu div {
+	font-size:12px;
+	color:black;
+	white-space:nowrap;
+	padding:1px;
+}
+
+#ContextMenu div:hover {
+	background-color:#739cef;
+}

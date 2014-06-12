@@ -7,25 +7,28 @@
  *
  * @author Vincent Thibault
  */
-define( [
-	'Utils/gl-matrix', 'Utils/PathFinding',
-	'Controls/KeyEventHandler', 'Controls/MouseEventHandler',
-	'Renderer/Camera', 'Engine/SessionStorage',
-	'Network/PacketStructure', 'Network/NetworkManager',
-	'UI/CursorManager', 'UI/Components/InputBox/InputBox',
-	'Preferences/Controls',
-	'UI/Components/ChatRoom/ChatRoom'
-], function(
-	glMatrix, PathFinding,
-	KEYS, Mouse,
-	Camera, Session,
-	PACKET, Network,
-	Cursor, InputBox,
-	Preferences,
-	ChatRoom
-)
+define(function( require )
 {
 	'use strict';
+
+
+	// Load dependencies
+	var glMatrix    = require('Utils/gl-matrix');
+	var PathFinding = require('Utils/PathFinding');
+	var DB          = require('DB/DBManager');
+	var KEYS        = require('Controls/KeyEventHandler');
+	var Mouse       = require('Controls/MouseEventHandler');
+	var Preferences = require('Preferences/Controls');
+	var Camera      = require('Renderer/Camera');
+	var Session     = require('Engine/SessionStorage');
+	var PACKET      = require('Network/PacketStructure');
+	var Network     = require('Network/NetworkManager');
+	var Cursor      = require('UI/CursorManager');
+	var InputBox    = require('UI/Components/InputBox/InputBox');
+	var ChatRoom    = require('UI/Components/ChatRoom/ChatRoom');
+	var ContextMenu = require('UI/Components/ContextMenu/ContextMenu');
+	var Pet         = require('UI/Components/PetInformations/PetInformations');
+	var Trade       = require('UI/Components/Trade/Trade');
 
 
 	/**
@@ -39,7 +42,7 @@ define( [
 	/*
 	 * When mouse is over
 	 */
-	function OnMouseOver()
+	function onMouseOver()
 	{
 		var Entity = this.constructor;
 
@@ -110,7 +113,7 @@ define( [
 	/**
 	 * When mouse is not over yet
 	 */
-	function OnMouseOut()
+	function onMouseOut()
 	{
 		if (!Camera.action.active) {
 			Cursor.setType( Cursor.ACTION.DEFAULT );
@@ -130,7 +133,7 @@ define( [
 	 * When clicking on an Entity
 	 *
 	 */
-	function OnMouseDown()
+	function onMouseDown()
 	{
 		var Entity = this.constructor;
 		var pkt;
@@ -190,15 +193,64 @@ define( [
 	/**
 	 * Stop clicking on an entity
 	 */
-	function OnMouseUp()
+	function onMouseUp()
 	{
+	}
+
+
+	/**
+	 * When clicking on an Entity
+	 *
+	 */
+	function onContextMenu()
+	{
+		var Entity = this.constructor;
+		var entity = this;
+
+		switch (this.objecttype) {
+			case Entity.TYPE_PET:
+				if (Session.petId === this.GID) {
+					ContextMenu.append();
+					ContextMenu.addElement( DB.getMessage(596), Pet.ui.show.bind(Pet.ui)); // check pet status
+					ContextMenu.addElement( DB.getMessage(592), Pet.reqPetFeed);           // Feed pet
+					ContextMenu.addElement( DB.getMessage(593), Pet.reqPetAction);         // performance
+					ContextMenu.addElement( DB.getMessage(595), Pet.reqUnEquipPet);        // unequip accessory
+					ContextMenu.addElement( DB.getMessage(594), Pet.reqBackToEgg);         // return to egg shell
+				}
+				break;
+
+			case Entity.TYPE_PC:
+				/// TODO: complete it : 
+				/// - check for party leader action (invite)
+				/// - check for guild leader action (invite, ally, ...)
+				/// - check for admin action (kick, mute, ...)
+
+				ContextMenu.append();
+				//ContextMenu.addElement( DB.getMessage(1362), checkPlayerEquipment);
+
+				// Trade option
+				ContextMenu.addElement( DB.getMessage(87).replace('%s', this.display.name), function(){
+					Trade.reqExchange(entity.GID, entity.display.name);
+				});
+				//ContextMenu.nextGroup();
+				//ContextMenu.addElement( DB.getMessage(360), openPrivateMessageWindow);
+				//ContextMenu.addElement( DB.getMessage(358), sendFriendInvitation);
+				//ContextMenu.nextGroup();
+				//ContextMenu.addElement( DB.getMessage(315), blockUserPrivateMessage);
+				break;
+
+			case Entity.TYPE_HOM:
+				break;
+		}
+
+		return false;
 	}
 
 
 	/**
 	 * Focus the entity
 	 */
-	function OnFocus()
+	function onFocus()
 	{
 		var Entity = this.constructor;
 		var main   = Session.Entity;
@@ -273,7 +325,7 @@ define( [
 	/**
 	 * Lost focus on entity
 	 */
-	function OnFocusEnd()
+	function onFocusEnd()
 	{
 		var Entity = this.constructor;
 
@@ -299,7 +351,7 @@ define( [
 	/**
 	 * Open entity room (chat room, shop, ...)
 	 */
-	function OnRoomEnter()
+	function onRoomEnter()
 	{
 		var pkt;
 		var Room = this.room.constructor;
@@ -359,12 +411,13 @@ define( [
 	 */
 	return function Init()
 	{
-		this.onMouseOver = OnMouseOver;
-		this.onMouseOut  = OnMouseOut;
-		this.onMouseDown = OnMouseDown;
-		this.onMouseUp   = OnMouseUp;
-		this.onFocus     = OnFocus;
-		this.onFocusEnd  = OnFocusEnd;
-		this.onRoomEnter = OnRoomEnter;
+		this.onMouseOver   = onMouseOver;
+		this.onMouseOut    = onMouseOut;
+		this.onMouseDown   = onMouseDown;
+		this.onMouseUp     = onMouseUp;
+		this.onFocus       = onFocus;
+		this.onFocusEnd    = onFocusEnd;
+		this.onRoomEnter   = onRoomEnter;
+		this.onContextMenu = onContextMenu;
 	};
 });
