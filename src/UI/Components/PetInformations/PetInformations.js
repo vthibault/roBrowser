@@ -71,9 +71,7 @@ define(function(require)
 		ui.find('.command').change(function(){
 			switch (this.value) {
 				case 'feed':
-					UIManager.showPromptBox( DB.getMessage(601), 'ok', 'cancel', function(){
-						PetInformations.reqPetFeed();
-					}, null);
+					PetInformations.reqPetFeed();
 					break;
 
 				case 'action':
