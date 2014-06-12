@@ -229,9 +229,11 @@ define(function( require )
 		ItemSelection.setList(pkt.ITIDList);
 		ItemSelection.setTitle(DB.getMessage(521));
 		ItemSelection.onIndexSelected = function(index) {
-			var pkt   = new PACKET.CZ.REQ_ITEMIDENTIFY();
-			pkt.index = index;
-			Network.sendPacket(pkt);
+			if (index >= 0) {
+				var pkt   = new PACKET.CZ.REQ_ITEMIDENTIFY();
+				pkt.index = index;
+				Network.sendPacket(pkt);
+			}
 		};
 	}
 
@@ -266,6 +268,30 @@ define(function( require )
 				ChatBox.addText( DB.getMessage(492), ChatBox.TYPE.ERROR);
 				break;
 		}
+	}
+
+
+	/**
+	 * Get a list of skills to use for auto-spell
+	 *
+	 * @param {object} pkt - PACKET.ZC.AUTOSPELLLIST
+	 */
+	function onAutoSpellList( pkt )
+	{
+		if (!pkt.SKID.length) {
+			return;
+		}
+
+		ItemSelection.append();
+		ItemSelection.setList(pkt.SKID, true);
+		ItemSelection.setTitle(DB.getMessage(697));
+		ItemSelection.onIndexSelected = function(index) {
+			if (index >= 0) {
+				var pkt   = new PACKET.CZ.SELECTAUTOSPELL();
+				pkt.SKID  = index;
+				Network.sendPacket(pkt);
+			}
+		};
 	}
 
 
@@ -361,5 +387,6 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.AUTORUN_SKILL,        onAutoCastSkill );
 		Network.hookPacket( PACKET.ZC.ITEMIDENTIFY_LIST,    onIdentifyList );
 		Network.hookPacket( PACKET.ZC.ACK_ITEMIDENTIFY,     onIdentifyResult );
+		Network.hookPacket( PACKET.ZC.AUTOSPELLLIST,        onAutoSpellList );
 	};
 });

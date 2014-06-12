@@ -16,6 +16,7 @@ define(function(require)
 	 * Dependencies
 	 */
 	var DB          = require('DB/DBManager');
+	var SkillInfo   = require('DB/Skills/SkillInfo');
 	var Client      = require('Core/Client');
 	var Renderer    = require('Renderer/Renderer');
 	var UIManager   = require('UI/UIManager');
@@ -77,10 +78,9 @@ define(function(require)
 
 		for (i = 0, count = list.length; i < count; ++i) {
 			if (isSkill) {
-				continue;
-				//	var SkillInfo = require('DB/Skills/SkillInfo');
-				//file = SkillInfo[ID].Name;
-				//name = SkillInfo[ID].SkillName;
+				item = SkillInfo[list[i]];
+				file = item.Name;
+				name = item.SkillName;
 			}
 			else {
 				item = Inventory.getItemByIndex(list[i]);
