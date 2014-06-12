@@ -1,8 +1,7 @@
 /**
  * Engine/MapEngine/Trade.js
  *
- * Manage Trade packets
- * TODO: PACKET.CZ.REQ_EXCHANGE_ITEM
+ * Manage Trade packets and UI
  *
  * This file is part of ROBrowser, Ragnarok Online in the Web Browser (http://www.robrowser.com/).
  *
