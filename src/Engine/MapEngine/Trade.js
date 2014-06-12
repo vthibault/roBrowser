@@ -231,6 +231,18 @@ define(function( require )
 
 
 	/**
+	 * Request to start a deal with another player
+	 *
+	 * @param {number} GID
+	 */
+	Trade.reqExchange = function requestExhange( GID ) {
+		var pkt = new PACKET.CZ.REQ_EXCHANGE_ITEM();
+		pkt.AID = GID;
+		Network.sendPacket(pkt);
+	};
+
+
+	/**
 	 * Initialize
 	 */
 	return function MainEngine()
