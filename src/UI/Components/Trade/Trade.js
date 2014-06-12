@@ -80,6 +80,12 @@ define(function(require)
 			return false;
 		});
 
+		// Avoid drag and drop on input
+		this.ui.find('.zeny.send').mousedown(function(event){
+			event.stopImmediatePropagation();
+			this.select();
+		});
+
 		var overlay = this.ui.find('.overlay');
 
 		this.ui.find('.box')
@@ -189,7 +195,7 @@ define(function(require)
 
 		// ZENY
 		if (index === 0) {
-			this.ui.find('.zeny.send').val(_tmpCount[index]);
+			this.ui.find('.zeny.send').val(prettifyZeny(_tmpCount[index]));
 			return;
 		}
 
@@ -222,7 +228,7 @@ define(function(require)
 	{
 		// ZENY
 		if (item.ITID === 0) {
-			this.ui.find('.zeny.recv').text(item.count);
+			this.ui.find('.zeny.recv').text(prettifyZeny(item.count));
 			return;
 		}
 
@@ -243,6 +249,29 @@ define(function(require)
 		}.bind(this));
 	};
 
+
+	/**
+	 * Prettify number (15000 -> 15,000)
+	 *
+	 * @param {number}
+	 * @return {string}
+	 */
+	function prettifyZeny( value )
+	{
+		var num = String(value);
+		var i = 0, len = num.length;
+		var out = '';
+
+		while (i < len) {
+			out = num[len-i-1] + out;
+			if ((i+1) % 3 === 0 && i+1 !== len) {
+				out = ',' + out;
+			}
+			++i;
+		}
+
+		return out;
+	}
 
 	/**
 	 * Request to add an item to the trade UI
