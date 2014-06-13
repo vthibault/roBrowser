@@ -525,20 +525,6 @@ define(function( require )
 			return;
 		}
 
-		srcEntity.setAction({
-			action: srcEntity.ACTION.SKILL,
-			frame:  0,
-			repeat: false,
-			play:   true,
-			next: {
-				action: srcEntity.ACTION.IDLE,
-				frame: 0,
-				repeat: true,
-				play: true,
-				next: false
-			}
-		});
-
 		// Only mob to don't display skill name ?
 		if (srcEntity.objecttype !== Entity.TYPE_MOB) {
 			srcEntity.dialog.set(
@@ -572,24 +558,6 @@ define(function( require )
 	 */
 	function onSkillAppear( pkt )
 	{
-		var srcEntity = EntityManager.get(pkt.creatorAID);
-
-		if (srcEntity) {
-			srcEntity.setAction({
-				action: srcEntity.ACTION.SKILL,
-				frame:  0,
-				repeat: false,
-				play:   true,
-				next: {
-					action: srcEntity.ACTION.READYFIGHT,
-					frame:  0,
-					repeat: true,
-					play:   true,
-					next:  false
-				}
-			});
-		}
-
 		EffectManager.spamSkillZone( pkt.job, pkt.xPos, pkt.yPos, pkt.AID );
 	}
 
@@ -620,19 +588,6 @@ define(function( require )
 			pkt.attackMT = Math.max(   1, pkt.attackMT );
 			srcEntity.attack_speed = pkt.attackMT;
 
-			srcEntity.setAction({
-				action: srcEntity.ACTION.SKILL,
-				frame:  0,
-				repeat: false,
-				play:   true,
-				next: {
-					action: srcEntity.ACTION.READYFIGHT,
-					frame:  0,
-					repeat: true,
-					play:   true,
-					next:  false
-				}
-			});
 
 			if (srcEntity.objecttype !== Entity.TYPE_MOB) {
 				srcEntity.dialog.set( ( (SkillInfo[pkt.SKID] && SkillInfo[pkt.SKID].SkillName ) || 'Unknown Skill' ) + ' !!' );
@@ -786,6 +741,8 @@ define(function( require )
 
 		// TODO: add other status
 		switch (pkt.index) {
+
+			// Maya purple card
 			case StatusConst.CLAIRVOYANCE:
 				if (entity === Session.Entity) {
 					Session.intravision = pkt.state;
@@ -795,11 +752,28 @@ define(function( require )
 				}
 				break;
 
+			// Show cart (in future)
 			case StatusConst.ON_PUSH_CART:
 				if (entity === Session.Entity) {
 					Session.hasCart = pkt.state;
 				}
-			default:
+
+			// Cast a skill, TODO: add progressbar in shortcut
+			case StatusConst.POSTDELAY:
+				entity.setAction({
+					action: entity.ACTION.SKILL,
+					frame:  0,
+					repeat: false,
+					play:   true,
+					next: {
+						action: entity.ACTION.READYFIGHT,
+						frame:  0,
+						repeat: true,
+						play:   true,
+						next:   false
+					}
+				});
+				break;
 		}
 
 		// Modify icon

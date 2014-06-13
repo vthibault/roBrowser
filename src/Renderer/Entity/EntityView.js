@@ -111,7 +111,7 @@ function(     Client,      DB,                      ShadowTable,           Mount
 
 		// Define Object type based on its id
 		if (this.objecttype === Entity.TYPE_UNKNOWN) {
-			this.objecttype = (
+			var objecttype = (
 				job < 45   ? Entity.TYPE_PC   :
 				job < 46   ? Entity.TYPE_WARP :
 				job < 1000 ? Entity.TYPE_NPC  :
@@ -120,9 +120,13 @@ function(     Client,      DB,                      ShadowTable,           Mount
 				job < 7000 ? Entity.TYPE_HOM  :
 				             Entity.TYPE_MERC
 			);
-		}
 
-		EntityAction.call(this);
+			// Clean up action frames
+			if (objecttype !== this.objecttype) {
+				this.objecttype = objecttype;
+				EntityAction.call(this);
+			}
+		}
 
 		// Invisible sprites
 		if (job === 111 || job === 139 || job === 45) {
