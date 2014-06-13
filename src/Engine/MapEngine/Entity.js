@@ -757,6 +757,7 @@ define(function( require )
 				if (entity === Session.Entity) {
 					Session.hasCart = pkt.state;
 				}
+				break;
 
 			// Cast a skill, TODO: add progressbar in shortcut
 			case StatusConst.POSTDELAY:
