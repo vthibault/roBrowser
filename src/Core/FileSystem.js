@@ -115,10 +115,11 @@ define(function()
 	{
 		var i, count;
 		var list = new Array(files.length);
+		var backslash = /\\\\/g;
 
 		for (i = 0, count = files.length; i < count; ++i) {
 			list[i]       = files[i].file;
-			list[i]._path = files[i].path.replace(/^[^\/]+\//,'');
+			list[i]._path = files[i].path.replace(backslash, '/');
 		}
 
 		return list;
@@ -256,14 +257,14 @@ define(function()
 	{
 		var cache = {}, keys;
 		var i = 0, count = _files.length;
-		var path;
+		var path, filename = /\/?[^\/]+$/;
 
 		// Extract directory from each file path
 		for (; i < count; ++i) {
 			path = _files[i]._path.split('/').slice(0,-1).join('/');
 			while (!(path in cache) && path.length) {
 				cache[path] = true;
-				path        = path.replace(/\/?[^\/]+$/,'');
+				path        = path.replace(filename,'');
 			}
 		}
 

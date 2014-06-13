@@ -353,6 +353,23 @@ define(function(require)
 
 		// input[type="file"]
 		if ('files' in this) {
+
+			// In wekit we select the folder, not files.
+			// we have to rewrite the relativePath to remove the main folder from it
+			if (this.files.length) {
+				var token = 'webkitRelativePath' in this.files[0] ? 'webkitRelativePath' :
+				                  'relativePath' in this.files[0] ?       'relativePath' :
+				                                                           null;
+				if (token) {
+					var i, count = this.files.length;
+					var baseFolder = /^[^(\/|\\)]+(\/|\\)/;
+
+					for (i = 0; i < count; ++i) {
+						this.files[i].fullPath = this.files[i][token].replace(baseFolder, '');
+					}
+				}
+			}
+
 			processing(this.files);
 			return false;
 		}
