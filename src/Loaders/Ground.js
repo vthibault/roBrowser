@@ -52,7 +52,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 		this.height   = this.fp.readULong();
 		this.zoom     = this.fp.readFloat();
 
-		this.textures = this.parseTextures();
+		this.parseTextures();
 		this.lightmap = this.parseLightmaps();
 
 		this.tiles    = this.parseTiles();
@@ -62,23 +62,33 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 
 	/**
 	 * Loading textures
-	 *
-	 * @return string[] textures
 	 */
 	GND.prototype.parseTextures = function parseTextures()
 	{
-		var i, count, length;
-		var textures;
+		var i, j, pos, count, length;
+		var textures, indexes;
+		var texture;
 
 		count    = this.fp.readULong();
 		length   = this.fp.readULong();
-		textures = new Array(count);
+		indexes  = new Array(count);
+		textures = [];
 
-		for (i = 0 ; i < count; ++i) {
-			textures[i] = this.fp.readBinaryString(length);
+		for (i = 0, j = 0; i < count; ++i) {
+			texture     = this.fp.readBinaryString(length);
+			pos         = textures.indexOf(texture);
+
+			if (pos === -1) {
+				textures[j] = texture;
+				pos = j;
+				j++;
+			}
+
+			indexes[i] = pos;
 		}
 
-		return textures;
+		this.textures       = textures;
+		this.textureIndexes = indexes;
 	};
 
 
@@ -163,7 +173,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 			tiles[i] = {
 				u1: fp.readFloat(),  u2: fp.readFloat(),  u3: fp.readFloat(),  u4: fp.readFloat(),
 				v1: fp.readFloat(),  v2: fp.readFloat(),  v3: fp.readFloat(),  v4: fp.readFloat(),
-				texture: fp.readShort(),
+				texture: this.textureIndexes[fp.readShort()],
 				light:   fp.readShort(),
 				color:  [
 					fp.readUByte(),
