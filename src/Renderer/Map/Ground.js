@@ -480,7 +480,7 @@ function(      WebGL,         Texture,   Preferences )
 			return 1.0;
 		}
 
-		var _x, _y;
+		var _x, _y, factor = 0;
 
 		// Player is at cell center
 		x += 0.5;
@@ -494,9 +494,15 @@ function(      WebGL,         Texture,   Preferences )
 		_x += Math.min( ( x & 1 ? 4 : 0) + Math.floor( (x % 1) * 4 ), 6);
 		_y += Math.min( ( y & 1 ? 4 : 0) + Math.floor( (y % 1) * 4 ), 6);
 
+		// Smooth shadowmap
+		for (y = -3; y < 3; ++y) {
+			for (x = -3; x < 3; ++x) {
+				factor += _shadowMap[ (_x+x) + (_y+y) * _width * 8];
+			}
+		}
 
-		// Get back shadow value
-		return _shadowMap[_x + _y * _width * 8] / 255.0;
+		// Get back value
+		return factor / (6*6) / 255;
 	}
 
 
