@@ -291,7 +291,7 @@ define(function( require )
 		}
 
 		// Play BGM
-		BGM.play(mapInfo.mp3 || '01.mp3');
+		BGM.play((mapInfo && mapInfo.mp3) || '01.mp3');
 
 		// Apply fog to map
 		this.fog.exist = !!(mapInfo && mapInfo.fog);
