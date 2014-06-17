@@ -9,8 +9,8 @@
  * @author Vincent Thibault
  */
 
-define([ 'require', 'Core/Context', 'Utils/BinaryReader',   './PacketVerManager', './PacketVersions', './PacketRegister', './PacketGuess', './PacketCrypt', './SocketHelpers/ChromeSocket', './SocketHelpers/JavaSocket', './SocketHelpers/WebSocket'],
-function( require,        Context,         BinaryReader,       PACKETVER,            PacketVersions,     PacketRegister,     PacketGuess,     PacketCrypt,                   ChromeSocket,                   JavaSocket,                   WebSocket)
+define([ 'require', 'Core/Configs', 'Core/Context', 'Utils/BinaryReader',   './PacketVerManager', './PacketVersions', './PacketRegister', './PacketGuess', './PacketCrypt', './SocketHelpers/ChromeSocket', './SocketHelpers/JavaSocket', './SocketHelpers/WebSocket'],
+function( require,        Configs,        Context,         BinaryReader,       PACKETVER,            PacketVersions,     PacketRegister,     PacketGuess,     PacketCrypt,                   ChromeSocket,                   JavaSocket,                   WebSocket)
 {
 	'use strict';
 
@@ -72,7 +72,7 @@ function( require,        Context,         BinaryReader,       PACKETVER,       
 	function connect( host, port, callback, isZone)
 	{
 		var socket, Socket;
-		var proxy = ROConfig.socketProxy || null;
+		var proxy = Configs.get('socketProxy', null);
 
 		// Native socket
 		if (Context.Is.APP) {
@@ -80,7 +80,7 @@ function( require,        Context,         BinaryReader,       PACKETVER,       
 		}
 
 		// Web Socket with proxy
-		else if (ROConfig.socketProxy) {
+		else if (proxy) {
 			Socket = WebSocket;
 		}
 	

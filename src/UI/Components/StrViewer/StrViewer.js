@@ -80,7 +80,7 @@ define(function(require)
 		Client.init([]);
 
 		// Initialize the dropdown
-		if (!ROConfig.API) {
+		if (!Configs.get('API')) {
 			initDropDown( this.ui.find('select').get(0) );
 		}
 		else {

@@ -16,6 +16,7 @@ define(function(require)
 	 * Load dependencies
 	 */
 	var glMatrix           = require('Utils/gl-matrix');
+	var Configs            = require('Core/Configs');
 	var Client             = require('Core/Client');
 	var Model              = require('Loaders/Model');
 	var Renderer           = require('Renderer/Renderer');
@@ -106,7 +107,7 @@ define(function(require)
 		Renderer.show();
 
 		// Initialize the dropdown
-		if (!ROConfig.API) {
+		if (!Configs.get('API')) {
 			initDropDown( this.ui.find('select').get(0) );
 		}
 		else {

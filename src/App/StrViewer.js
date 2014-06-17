@@ -29,8 +29,8 @@ require({
 		jquery: 'Vendors/jquery-1.9.1'
 	}
 },
-   ['Core/Thread', 'Core/Context', 'Core/Client', 'UI/Components/StrViewer/StrViewer'],
-function( Thread,        Context,        Client,                           StrViewer ) {
+   ['Core/Configs', 'Core/Thread', 'Core/Context', 'Core/Client', 'UI/Components/StrViewer/StrViewer'],
+function( Configs,        Thread,        Context,        Client,                           StrViewer ) {
 	'use strict';
 
 	function onAPIMessage( event ) {
@@ -58,7 +58,7 @@ function( Thread,        Context,        Client,                           StrVi
 	}
 
 	// Resources sharing
-	if (ROConfig.API) {
+	if (Configs.get('API')) {
 		window.addEventListener('message', onAPIMessage, false);
 		return;
 	}

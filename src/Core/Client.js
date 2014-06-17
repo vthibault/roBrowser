@@ -9,8 +9,8 @@
  * @author Vincent Thibault
  */
 
-define( [ 'Utils/Executable',  'Network/PacketVerManager',  './Thread',  './MemoryManager', 'Utils/Texture', 'Utils/WebGL'],
-function(        Executable,                  PACKETVER,       Thread,      Memory,                Texture,         WebGL)
+define( [ 'Core/Configs', 'Utils/Executable',  'Network/PacketVerManager',  './Thread',  './MemoryManager', 'Utils/Texture', 'Utils/WebGL'],
+function(       Configs,         Executable,                  PACKETVER,       Thread,      Memory,                Texture,         WebGL)
 {
 	'use strict';
 
@@ -24,8 +24,8 @@ function(        Executable,                  PACKETVER,       Thread,      Memo
 	function init( files )
 	{
 		var i, count;
-
-		window.ROConfig = window.ROConfig || {};
+		var packetver    = Configs.get('packetver');
+		var remoteClient = Configs.get('remoteClient');
 
 		function OnDate(date){
 			// Avoid errors
@@ -36,7 +36,7 @@ function(        Executable,                  PACKETVER,       Thread,      Memo
 		}
 
 		// Find executable and set the packetver
-		if (!ROConfig.packetver || String(ROConfig.packetver).match(/^(executable|auto)$/i)) {
+		if (!packetver || String(packetver).match(/^(executable|auto)$/i)) {
 			for (i = 0, count = files.length; i < count; ++i) {
 				if (Executable.isROExec(files[i])) {
 					Executable.getDate(files[i], OnDate);
@@ -44,14 +44,14 @@ function(        Executable,                  PACKETVER,       Thread,      Memo
 				}
 			}
 		}
-		else if (typeof ROConfig.packetver === 'number') {
-			PACKETVER.min = ROConfig.packetver;
-			PACKETVER.max = ROConfig.packetver;
+		else if (typeof packetver === 'number') {
+			PACKETVER.min = packetver;
+			PACKETVER.max = packetver;
 		}
 
 		// GRF Host config
-		if (ROConfig.remoteClient) {
-			Thread.send( 'SET_HOST', ROConfig.remoteClient );
+		if (remoteClient) {
+			Thread.send( 'SET_HOST', remoteClient);
 		}
 
 		// Save full client
@@ -136,9 +136,9 @@ function(        Executable,                  PACKETVER,       Thread,      Memo
 
 		// Initialize client files (load GRF, etc).
 		Thread.send( 'CLIENT_INIT', {
-			files:   list,
-			grfList: ROConfig.grfList || 'DATA.INI',
-			save:    !!ROConfig.saveFiles
+			files:     list,
+			grfList:   Configs.get('grfList') || 'DATA.INI',
+			save:    !!Configs.get('saveFiles')
 		}, Client.onFilesLoaded );
 	}
 

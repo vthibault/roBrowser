@@ -17,7 +17,7 @@
  * @author Vincent Thibault
  */
 
-define(function()
+define(['Core/Configs'], function( Configs )
 {
 	"use strict";
 
@@ -130,40 +130,44 @@ define(function()
 	 */
 	function Init()
 	{
+		var packetKeys;
+
 		_available = false;
+		packetKeys = Configs.get('packetKeys');
 
-		if (ROConfig.packetKeys) {
+		if (!packetKeys) {
+			return;
+		}
 
-			// Custom keys
-			if (ROConfig.packetKeys instanceof Array) {
-				_available = true;
-				_keys.set(ROConfig.packetKeys);
+		// Custom keys
+		if (packetKeys instanceof Array) {
+			_available = true;
+			_keys.set(packetKeys);
+		}
+
+		else {
+			var date, key;
+
+			// Define a date or use the defined packetver ?
+			if (typeof packetKeys === "number") {
+				date = packetKeys;
 			}
-
 			else {
-				var date, key;
-
-				// Define a date or use the defined packetver ?
-				if (typeof ROConfig.packetKeys === "number") {
-					date = ROConfig.packetKeys;
-				}
-				else {
-					date = ROConfig.packetver;
-				}
-
-				// Get the available keys
-				for (key in KeysTable) {
-					if (date >= key) {
-						_available = true;
-						_keys.set(KeysTable[key]);
-					}
-				}
-
+				date = Configs.get('packetver');
 			}
 
-			if (_available) {
-				console.log( "%c[PACKETCRYPT] Encrypt sent packets using keys", "color:#007000", _keys );
+			// Get the available keys
+			for (key in KeysTable) {
+				if (date >= key) {
+					_available = true;
+					_keys.set(KeysTable[key]);
+				}
 			}
+
+		}
+
+		if (_available) {
+			console.log( "%c[PACKETCRYPT] Encrypt sent packets using keys", "color:#007000", _keys );
 		}
 	}
 

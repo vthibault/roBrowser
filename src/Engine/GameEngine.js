@@ -15,6 +15,7 @@ define([
 	'Audio/SoundManager',
 	'Audio/BGM',
 	'DB/DBManager',
+	'Core/Configs',
 	'Core/Client',
 	'Core/Thread',
 	'Core/Context',
@@ -35,6 +36,7 @@ function(
 	Sound,
 	BGM,
 	DB,
+	Configs,
 	Client,
 	Thread,
 	Context,
@@ -97,7 +99,7 @@ function(
 		// Start Intro, wait the user to add files
 		q.add(function(){
 			Client.onFilesLoaded = function(count){
-				if (!ROConfig.remoteClient && !count) {
+				if (!Configs.get('remoteClient') && !count) {
 					if (!Context.Is.APP) {
 						alert( 'No client to initialize roBrowser');
 					}
@@ -111,7 +113,7 @@ function(
 				q._next();
 			};
 
-			if (ROConfig.skipIntro) {
+			if (Configs.get('skipIntro')) {
 				Client.init([]);
 				return;
 			}
@@ -182,7 +184,7 @@ function(
 			}
 
 			// Just 1 server, skip the WinList
-			else if (count === 1 && ROConfig.skipServerList) {
+			else if (count === 1 && Configs.get('skipServerList')) {
 				LoginEngine.onExitRequest = reload;
 				LoginEngine.init( _servers[0] );
 			}
@@ -240,16 +242,16 @@ function(
 	 */
 	function loadClientInfo( callback )
 	{
+		var servers     = Configs.get('servers', 'data/clientinfo.xml');
 		_servers.length = 0;
-		ROConfig.servers = ROConfig.servers || 'data/clientinfo.xml';
 
-		if (ROConfig.servers instanceof Array) {
-			_servers = ROConfig.servers;
+		if (servers instanceof Array) {
+			_servers = servers;
 			callback();
 			return;
 		}
 
-		Client.loadFile( ROConfig.servers, function(xml)
+		Client.loadFile( servers, function(xml)
 		{
 			// $.parseXML() don't parse buggy xml (and a lot of clientinfo.xml are not properly write)...
 			xml = xml.replace(/^.*<\?xml/, '<?xml');

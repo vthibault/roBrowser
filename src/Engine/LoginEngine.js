@@ -14,6 +14,7 @@ define([
 	'Vendors/text-encoding',
 	'DB/DBManager',
 	'Audio/SoundManager',
+	'Core/Configs',
 	'Core/Thread',
 	'Engine/SessionStorage',
 	'Engine/CharEngine',
@@ -31,6 +32,7 @@ function(
 	TextEncoding,
 	DB,
 	Sound,
+	Configs,
 	Thread,
 	Session,
 	CharEngine,
@@ -83,6 +85,7 @@ function(
 	{
 		var charset, disableKorean;
 
+		Configs.setServer(server);
 		UIManager.removeComponents();
 		Session.LangType = 'langtype' in server ? parseInt(server.langtype, 10) : 1; // default to SERVICETYPE_AMERICA
 
@@ -92,9 +95,7 @@ function(
 		/// - http://siriuswhite.de/rodoc/codepage.html
 		switch (Session.LangType) {
 			case 0x00: // SERVICETYPE_KOREA
-				disableKorean = 'disableKorean' in server ? !!server.disableKorean : !!ROConfig.disableKorean;
-
-				if (disableKorean) {
+				if (Configs.get('disableKorean')) {
 					charset = 'windows-1252';
 					break;
 				}
@@ -158,46 +159,35 @@ function(
 		_server = server;
 
 		// Add support for "packetver" definition in Server listing
-		if ('packetver' in server && server.packetver !== '') {
-			ROConfig.packetver = String(server.packetver);
+		var packetver    = String(Configs.get('packetver'));
+		var remoteClient = Configs.get('remoteClient');
+		var autoLogin    = Configs.get('autoLogin');
 
-			if (ROConfig.packetver.match(/^\d+$/)) {
-				PACKETVER.set( parseInt(ROConfig.packetver, 10) );
+		// Server packetver
+		if (packetver) {
+			if (packetver.match(/^\d+$/)) {
+				PACKETVER.set( parseInt(packetver, 10) );
 			}
-			else if (ROConfig.packetver.match(/auto/i)) {
+			else if (packetver.match(/auto/i)) {
 				PACKETVER.set( 0, Infinity);
 			}
-			// executable already used
-		}
-
-		// Add support for "packetkeys" definition in server definition
-		if ('packetKeys' in server && server.packetKeys !== '') {
-			ROConfig.packetKeys = server.packetKeys;
 		}
 
 		// Add support for remote client in server definition
-		if ('remoteClient' in server && server.remoteClient !== '') {
-			ROConfig.remoteClient = server.remoteClient;
-			Thread.send( 'SET_HOST', ROConfig.remoteClient );
+		if (remoteClient) {
+			Thread.send( 'SET_HOST', remoteClient);
 		}
-
-		// Add support for "socketProxy" in server definition
-		if ('socketProxy' in server && server.socketProxy !== '') {
-			ROConfig.socketProxy = server.socketProxy;
-		}
-
 
 		// GMs account list from server
 		Session.AdminList = server.adminList || [];
-
 
 		// Hooking win_login
 		WinLogin.onConnectionRequest = onConnectionRequest;
 		WinLogin.onExitRequest       = onExitRequest;
 
 		// Autologin features
-		if (ROConfig.autoLogin && ROConfig.autoLogin.length === 2) {
-			onConnectionRequest.apply( null, ROConfig.autoLogin);
+		if (autoLogin instanceof Array && autoLogin[0] && autoLogin[1]) {
+			onConnectionRequest.apply( null, autoLogin);
 		}
 		else {
 			WinLogin.append();
@@ -250,8 +240,30 @@ function(
 				return;
 			}
 
-			// Success, try to connect
-			var pkt        = new PACKET.CA.LOGIN();
+			var pkt;
+			var hash = Configs.get('clientHash');
+
+			// Client hash config
+			if (hash) {
+				// Convert hexadecimal hash to binary
+				if (/^[a-f0-9]+$/i.test(hash)) {
+					var str = '';
+					var i, count = hash.length;
+
+					for (i = 0; i < count; i += 2) {
+						str += String.fromCharCode(parseInt(hash.substr(i,2),16));
+					}
+
+					hash = str;
+				}
+
+				pkt           = new PACKET.CA.EXE_HASHCHECK();
+				pkt.HashValue = hash;
+				Network.sendPacket(pkt);
+			}
+
+			// Try to connect
+			pkt            = new PACKET.CA.LOGIN();
 			pkt.ID         = username;
 			pkt.Passwd     = password;
 			pkt.Version    = parseInt(_server.version, 10);
@@ -313,7 +325,7 @@ function(
 		}
 
 		// No choice, connect directly to the server
-		if (count === 1 && ROConfig.skipServerList) {
+		if (count === 1 && Configs.get('skipServerList')) {
 			WinLoading.append();
 			CharEngine.onExitRequest = reload;
 			CharEngine.init(_charServers[0]);
