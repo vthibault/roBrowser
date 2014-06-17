@@ -31,7 +31,7 @@ define(function()
 	 */
 	(function init(configs)
 	{
-		if (typeof configs !== "object") {
+		if (typeof configs !== 'object') {
 			return;
 		}
 

@@ -29,6 +29,7 @@ define(function(require)
 	var Equipment          = require('UI/Components/Equipment/Equipment');
 	var htmlText           = require('text!./Inventory.html');
 	var cssText            = require('text!./Inventory.css');
+	var getModule          = require;
 
 
 
@@ -120,7 +121,6 @@ define(function(require)
 				}
 
 				// Get back data
-				var it   = DB.getItemInfo( item.ITID );
 				var pos  = jQuery(this).position();
 
 				// Display box
@@ -475,7 +475,7 @@ define(function(require)
 			InputBox.setType('number', false, item.count);
 			InputBox.onSubmitRequest = function OnSubmitRequest( count ) {
 				InputBox.remove();
-				require('UI/Components/Storage/Storage').reqRemoveItem(
+				getModule('UI/Components/Storage/Storage').reqRemoveItem(
 					item.index,
 					parseInt(count, 10 )
 				);
@@ -484,7 +484,7 @@ define(function(require)
 
 		// Only one, don't have to specify
 		else {
-			require('UI/Components/Storage/Storage').reqRemoveItem( item.index, 1 );
+			getModule('UI/Components/Storage/Storage').reqRemoveItem( item.index, 1 );
 		}
 
 		return false;

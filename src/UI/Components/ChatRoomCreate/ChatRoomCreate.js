@@ -22,7 +22,6 @@ define(function(require)
 	var Preferences = require('Core/Preferences');
 	var UIManager   = require('UI/UIManager');
 	var UIComponent = require('UI/UIComponent');
-	var ChatRoom    = require('UI/Components/ChatRoom/ChatRoom');
 	var htmlText    = require('text!./ChatRoomCreate.html');
 	var cssText     = require('text!./ChatRoomCreate.css');
 
@@ -186,7 +185,7 @@ define(function(require)
 					this.ui[0].parentNode.appendChild(this.ui[0]);
 				}
 				break;
- 		}
+		}
 	};
 
 

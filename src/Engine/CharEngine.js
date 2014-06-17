@@ -9,45 +9,27 @@
  * @author Vincent Thibault
  */
 
-define([
-	'require',
-	'Utils/jquery',
-	'DB/DBManager',
-	'Audio/SoundManager',
-	'Audio/BGM',
-	'Engine/SessionStorage',
-	'Engine/MapEngine',
-	'Network/NetworkManager',
-	'Network/PacketStructure',
-	'Network/PacketVerManager',
-	'Renderer/Renderer',
-	'UI/UIManager',
-	'UI/Background',
-	'UI/Components/CharSelect/CharSelect',
-	'UI/Components/CharCreate/CharCreate',
-	'UI/Components/WinPopup/WinPopup',
-	'UI/Components/InputBox/InputBox'
-], function(
-	require,
-	jQuery,
-	DB,
-	Sound,
-	BGM,
-	Session,
-	MapEngine,
-	Network,
-	PACKET,
-	PACKETVER,
-	Renderer,
-	UIManager,
-	Background,
-	CharSelect,
-	CharCreate,
-	WinPopup,
-	InputBox
-)
+define(function( require )
 {
 	'use strict';
+
+
+	// Load modules
+	var jQuery     = require('Utils/jquery');
+	var DB         = require('DB/DBManager');
+	var Sound      = require('Audio/SoundManager');
+	var BGM        = require('Audio/BGM');
+	var Session    = require('Engine/SessionStorage');
+	var MapEngine  = require('Engine/MapEngine');
+	var Network    = require('Network/NetworkManager');
+	var PACKET     = require('Network/PacketStructure');
+	var PACKETVER  = require('Network/PacketVerManager');
+	var UIManager  = require('UI/UIManager');
+	var Background = require('UI/Background');
+	var CharSelect = require('UI/Components/CharSelect/CharSelect');
+	var CharCreate = require('UI/Components/CharCreate/CharCreate');
+	var InputBox   = require('UI/Components/InputBox/InputBox');
+	var getModule  = require;
 
 
 	/**
@@ -128,7 +110,7 @@ define([
 	 */
 	function onExitRequest()
 	{
-		require('Engine/LoginEngine').reload();
+		getModule('Engine/LoginEngine').reload();
 	}
 
 

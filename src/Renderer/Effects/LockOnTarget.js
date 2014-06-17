@@ -7,10 +7,16 @@
  *
  * @author Vincent Thibault
  */
-define(['Utils/WebGL', 'Utils/Texture', 'Utils/gl-matrix', 'DB/Skills/SkillConst', 'Core/Client'],
-function(      WebGL,         Texture,          glMatrix,             SkillId,           Client) {
+define(function( require ) {
 
 	'use strict';
+
+
+	// Load dependencies
+	var WebGL    = require('Utils/WebGL');
+	var Texture  = require('Utils/Texture');
+	var glMatrix = require('Utils/gl-matrix');
+	var Client   = require('Core/Client');
 
 
 	/**

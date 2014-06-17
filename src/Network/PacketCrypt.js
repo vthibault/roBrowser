@@ -19,7 +19,7 @@
 
 define(['Core/Configs'], function( Configs )
 {
-	"use strict";
+	'use strict';
 
 
 	/**
@@ -111,7 +111,7 @@ define(['Core/Configs'], function( Configs )
 	// Check for support and kick out Safari bug
 	if (Math.imul && Math.imul(0xffffffff, 5) === -5) {
 		imul = Math.imul;
-	} 
+	}
 	else {
 		imul = function imul(a, b) {
 			var ah = (a >>> 16) & 0xffff;
@@ -149,7 +149,7 @@ define(['Core/Configs'], function( Configs )
 			var date, key;
 
 			// Define a date or use the defined packetver ?
-			if (typeof packetKeys === "number") {
+			if (typeof packetKeys === 'number') {
 				date = packetKeys;
 			}
 			else {
@@ -167,7 +167,7 @@ define(['Core/Configs'], function( Configs )
 		}
 
 		if (_available) {
-			console.log( "%c[PACKETCRYPT] Encrypt sent packets using keys", "color:#007000", _keys );
+			console.log( '%c[PACKETCRYPT] Encrypt sent packets using keys', 'color:#007000', _keys );
 		}
 	}
 

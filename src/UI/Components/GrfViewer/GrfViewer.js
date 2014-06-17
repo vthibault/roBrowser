@@ -412,8 +412,7 @@ define(function(require)
 		}
 
 		var i, count;
-		var type, attr;
-		var reg = /(.*\\)/;
+		var type, reg = /(.*\\)/;
 
 		i     = 0;
 		count = list.length;

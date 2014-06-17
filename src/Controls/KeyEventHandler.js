@@ -192,9 +192,9 @@ define( ['Utils/jquery'], function( jQuery )
 	Object.defineProperty(KEYS, 'getKeyIdString', {
 		writable:   false,
 		enumerable: false,
-		value: function getKeyIdString( keyId ){
+		value: function getKeyIdString( shortcut ){
 			var str = [];
-			var tmp = this.toReadableKey(parseInt(keys[i], 10));
+			var tmp = this.toReadableKey(parseInt(shortcut.key, 10));
 
 			if (shortcut.alt) {
 				str.push('ALT');

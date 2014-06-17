@@ -16,18 +16,17 @@ define(function( require )
 	var jQuery        = require('Utils/jquery');
 	var DB            = require('DB/DBManager');
 	var Cursor        = require('UI/CursorManager');
-	var Inventory     = require('UI/Components/Inventory/Inventory');
 	var InputBox      = require('UI/Components/InputBox/InputBox');
 	var ChatBox       = require('UI/Components/ChatBox/ChatBox');
 	var Equipment     = require('UI/Components/Equipment/Equipment');
-	var KEYS          = require('Controls/KeyEventHandler');
 	var Mouse         = require('Controls/MouseEventHandler');
-	var ScreenShot    = require('Controls/ScreenShot');
 	var Renderer      = require('Renderer/Renderer');
 	var Camera        = require('Renderer/Camera');
 	var EntityManager = require('Renderer/EntityManager');
 	var Session       = require('Engine/SessionStorage');
 	var Preferences   = require('Preferences/Controls');
+
+	require('Controls/ScreenShot');
 
 
 	/**

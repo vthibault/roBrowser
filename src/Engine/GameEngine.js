@@ -9,50 +9,31 @@
  * @author Vincent Thibault
  */
 
-define([
-	'Utils/jquery',
-	'Utils/Queue',
-	'Audio/SoundManager',
-	'Audio/BGM',
-	'DB/DBManager',
-	'Core/Configs',
-	'Core/Client',
-	'Core/Thread',
-	'Core/Context',
-	'Engine/LoginEngine',
-	'Network/NetworkManager',
-	'Renderer/Renderer',
-	'Renderer/MapRenderer',
-	'UI/UIManager',
-	'UI/CursorManager',
-	'UI/Scrollbar',
-	'UI/Background',
-	'UI/Components/Intro/Intro',
-	'UI/Components/WinList/WinList'
-],
-function(
-	jQuery,
-	Queue,
-	Sound,
-	BGM,
-	DB,
-	Configs,
-	Client,
-	Thread,
-	Context,
-	LoginEngine,
-	Network,
-	Renderer,
-	MapRenderer,
-	UIManager,
-	Cursor,
-	Scrollbar,
-	Background,
-	Intro,
-	WinList
-)
+define(function( require )
 {
 	'use strict';
+
+
+	// Load dependencies
+	var jQuery      = require('Utils/jquery');
+	var Queue       = require('Utils/Queue');
+	var Sound       = require('Audio/SoundManager');
+	var BGM         = require('Audio/BGM');
+	var DB          = require('DB/DBManager');
+	var Configs     = require('Core/Configs');
+	var Client      = require('Core/Client');
+	var Thread      = require('Core/Thread');
+	var Context     = require('Core/Context');
+	var LoginEngine = require('Engine/LoginEngine');
+	var Network     = require('Network/NetworkManager');
+	var Renderer    = require('Renderer/Renderer');
+	var MapRenderer = require('Renderer/MapRenderer');
+	var UIManager   = require('UI/UIManager');
+	var Cursor      = require('UI/CursorManager');
+	var Scrollbar   = require('UI/Scrollbar');
+	var Background  = require('UI/Background');
+	var Intro       = require('UI/Components/Intro/Intro');
+	var WinList     = require('UI/Components/WinList/WinList');
 
 
 	/**

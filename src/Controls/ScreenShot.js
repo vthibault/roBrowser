@@ -9,13 +9,12 @@
  */
 define(function(require)
 {
-	"use strict";
+	'use strict';
 	
 	
 	/**
 	 * Dependencies
 	 */
-	var DB            = require('DB/DBManager');
 	var Client        = require('Core/Client');
 	var jQuery        = require('Utils/jquery');
 	var html2canvas   = require('Utils/html2canvas');

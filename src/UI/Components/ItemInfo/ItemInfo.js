@@ -141,7 +141,7 @@ define(function(require)
 				var slotCount = it.slotCount || 0;
 				var i;
 
-				cardList.parent().show()
+				cardList.parent().show();
 				cardList.empty();
 
 				for (i = 0; i < 4; ++i) {

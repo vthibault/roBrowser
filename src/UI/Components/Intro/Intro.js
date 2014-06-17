@@ -360,7 +360,7 @@ define(function(require)
 				                  'relativePath' in this.files[0] ?       'relativePath' :
 				                                                           null;
 				if (token) {
-					var i, count = this.files.length;
+					count = this.files.length;
 					var baseFolder = /^[^(\/|\\)]+(\/|\\)/;
 
 					for (i = 0; i < count; ++i) {

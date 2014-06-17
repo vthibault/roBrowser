@@ -7,10 +7,19 @@
  *
  * @author Vincent Thibault
  */
-define( ['text!./Common.css', 'Utils/jquery', './CursorManager', 'DB/DBManager', 'Core/Client', 'Controls/MouseEventHandler'],
-function(        CommonCSS,          jQuery,     Cursor,             DB,               Client,            Mouse )
+define(function( require )
 {
 	'use strict';
+
+
+	// Load dependencies
+	var CommonCSS = require('text!./Common.css');
+	var jQuery    = require('Utils/jquery');
+	var Cursor    = require('./CursorManager');
+	var DB        = require('DB/DBManager');
+	var Client    = require('Core/Client');
+	var Mouse     = require('Controls/MouseEventHandler');
+	var getModule = require;
 
 
 	/**
@@ -57,8 +66,8 @@ function(        CommonCSS,          jQuery,     Cursor,             DB,        
 		// Add style to view
 		if (this._cssText) {
 			// Avoid adding css each time the same component is created
-			if (_style.text().indexOf("\n\n/** " + this.name + " **/\n") === -1) {
-				_style.append("\n\n/** " + this.name + " **/\n" + this._cssText);
+			if (_style.text().indexOf('\n\n/** ' + this.name + ' **/\n') === -1) {
+				_style.append('\n\n/** ' + this.name + ' **/\n' + this._cssText);
 			}
 			jQuery('body').append(this.ui);
 		}
@@ -215,7 +224,7 @@ function(        CommonCSS,          jQuery,     Cursor,             DB,        
 
 			if(_intersect) {
 				Mouse.intersect = true;
-				require('Renderer/EntityManager').setOverEntity(null);
+				getModule('Renderer/EntityManager').setOverEntity(null);
 			}
 		});
 

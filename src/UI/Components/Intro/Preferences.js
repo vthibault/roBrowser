@@ -30,8 +30,8 @@ function(     Configs,        Context,        Preferences,               Audio, 
 	 */
 	function load( ui )
 	{
-		if (Graphics.screensize === "full" && !Context.isFullScreen()) {
-			Graphics.screensize = "800x600";
+		if (Graphics.screensize === 'full' && !Context.isFullScreen()) {
+			Graphics.screensize = '800x600';
 		}
 
 		ui.find('.screensize').val( Graphics.screensize );

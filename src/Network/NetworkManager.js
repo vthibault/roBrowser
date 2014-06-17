@@ -9,10 +9,24 @@
  * @author Vincent Thibault
  */
 
-define([ 'require', 'Core/Configs', 'Core/Context', 'Utils/BinaryReader',   './PacketVerManager', './PacketVersions', './PacketRegister', './PacketGuess', './PacketCrypt', './SocketHelpers/ChromeSocket', './SocketHelpers/JavaSocket', './SocketHelpers/WebSocket'],
-function( require,        Configs,        Context,         BinaryReader,       PACKETVER,            PacketVersions,     PacketRegister,     PacketGuess,     PacketCrypt,                   ChromeSocket,                   JavaSocket,                   WebSocket)
+define(function( require )
 {
 	'use strict';
+
+
+	// Load dependencies
+	var Configs        = require('Core/Configs');
+	var Context        = require('Core/Context');
+	var BinaryReader   = require('Utils/BinaryReader');
+	var PACKETVER      = require('./PacketVerManager');
+	var PacketVersions = require('./PacketVersions');
+	var PacketRegister = require('./PacketRegister');
+	var PacketGuess    = require('./PacketGuess');
+	var PacketCrypt    = require('./PacketCrypt');
+	var ChromeSocket   = require('./SocketHelpers/ChromeSocket');
+	var JavaSocket     = require('./SocketHelpers/JavaSocket');
+	var WebSocket      = require('./SocketHelpers/WebSocket');
+	var getModule      = require;
 
 
 	/**
@@ -341,7 +355,7 @@ function( require,        Configs,        Context,         BinaryReader,       P
 				clearInterval(_socket.ping);
 			}
 
-			require('UI/UIManager').showErrorBox('Disconnected from Server.');
+			getModule('UI/UIManager').showErrorBox('Disconnected from Server.');
 		}
 
 		if (idx !== -1) {

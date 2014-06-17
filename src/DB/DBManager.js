@@ -464,15 +464,15 @@ define(function(require)
 	DB.getItemInfo = function getItemInfoClosure()
 	{
 		var unknownItem = {
-			unidentifiedDisplayName: "Unknown Item",
-			unidentifiedResourceName: "\xbb\xe7\xb0\xfa",
+			unidentifiedDisplayName: 'Unknown Item',
+			unidentifiedResourceName: '\xbb\xe7\xb0\xfa',
 			unidentifiedDescriptionName: [
-				"...",
+				'...',
 			],
-			identifiedDisplayName: "Unknown Item",
-			identifiedResourceName: "\xbb\xe7\xb0\xfa",
+			identifiedDisplayName: 'Unknown Item',
+			identifiedResourceName: '\xbb\xe7\xb0\xfa',
 			identifiedDescriptionName: [
-				"...",
+				'...',
 			],
 			slotCount: 0,
 			ClassNum: 0

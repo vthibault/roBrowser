@@ -24,6 +24,7 @@ define(function( require )
 	var Mouse         = require('Controls/MouseEventHandler');
 	var Camera        = require('Renderer/Camera');
 	var mat4          = glMatrix.mat4;
+	var getModule     = require;
 
 
 	/**
@@ -194,8 +195,7 @@ define(function( require )
 		 * we just cause a big circular dependencies resulting as having Renderer variable as null in
 		 * UI/UIManager.
 		 */
-		var require_fix = require;
-		require_fix('UI/UIManager').fixResizeOverflow( this.width, this.height );
+		getModule('UI/UIManager').fixResizeOverflow( this.width, this.height );
 	};
 
 

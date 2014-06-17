@@ -9,10 +9,20 @@
  * @author Vincent Thibault
  */
 
-define( [ 'Core/Configs', 'Utils/Executable',  'Network/PacketVerManager',  './Thread',  './MemoryManager', 'Utils/Texture', 'Utils/WebGL'],
-function(       Configs,         Executable,                  PACKETVER,       Thread,      Memory,                Texture,         WebGL)
+define(function( require )
 {
 	'use strict';
+
+
+	// Load dependencies
+	var Executable    = require('Utils/Executable');
+	var Texture       = require('Utils/Texture');
+	var WebGL         = require('Utils/WebGL');
+	var Configs       = require('./Configs');
+	var Thread        = require('./Thread');
+	var Memory        = require('./MemoryManager');
+	var PACKETVER     = require('Network/PacketVerManager');
+	var getModule     = require;
 
 
 	/**
@@ -221,8 +231,8 @@ function(       Configs,         Executable,                  PACKETVER,       T
 		function callback(data, error, input)
 		{
 			var i, count, j, size;
-			var gl, frames, texture, textures, layers, palette;
-			var precision, size;
+			var gl, frames, texture, layers, palette;
+			var precision;
 
 			if (data && !error) {
 				switch (input.filename.substr(-3)){
@@ -235,7 +245,7 @@ function(       Configs,         Executable,                  PACKETVER,       T
 
 					// Load str textures
 					case 'str':
-						gl     = require('Renderer/Renderer').getContext();
+						gl     = getModule('Renderer/Renderer').getContext();
 						layers = data.layers;
 
 						for (i = 0; i < data.layernum; ++i) {
@@ -256,7 +266,7 @@ function(       Configs,         Executable,                  PACKETVER,       T
 						return;
 
 					case 'spr':
-						gl     = require('Renderer/Renderer').getContext();
+						gl     = getModule('Renderer/Renderer').getContext();
 						frames = data.frames;
 						count  = frames.length;
 
@@ -287,7 +297,7 @@ function(       Configs,         Executable,                  PACKETVER,       T
 
 					// Build palette
 					case 'pal':
-						gl      = require('Renderer/Renderer').getContext();
+						gl      = getModule('Renderer/Renderer').getContext();
 						texture = gl.createTexture();
 						palette = new Uint8Array(data);
 

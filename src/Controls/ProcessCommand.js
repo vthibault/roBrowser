@@ -7,23 +7,24 @@
  *
  * @author Vincent Thibault
  */
-define([
-	'require',
-	'DB/DBManager',            'DB/Emotions',
-	'Audio/BGM',               'Audio/SoundManager',
-	'Engine/SessionStorage',
-	'Network/PacketStructure', 'Network/NetworkManager',
-	'Preferences/Controls',    'Preferences/Audio',       'Preferences/Map',    'Preferences/Camera'
-],
-function(
-	require,
-	DB,                  Emotions,
-	BGM,                 Sound,
-	Session,
-	PACKET,              Network,
-	ControlPreferences,  AudioPreferences,  MapPreferences,  CameraPreferences
-) {
+define(function( require )
+{
 	'use strict';
+
+
+	// Load dependencies
+	var DB                 = require('DB/DBManager');
+	var Emotions           = require('DB/Emotions');
+	var BGM                = require('Audio/BGM');
+	var Sound              = require('Audio/SoundManager');
+	var Session            = require('Engine/SessionStorage');
+	var PACKET             = require('Network/PacketStructure');
+	var Network            = require('Network/NetworkManager');
+	var ControlPreferences = require('Preferences/Controls');
+	var AudioPreferences   = require('Preferences/Audio');
+	var MapPreferences     = require('Preferences/Map');
+	var CameraPreferences  = require('Preferences/Camera');
+	var getModule          = require;
 
 
 	/**
@@ -144,7 +145,7 @@ function(
 				return;
 
 			case 'where':
-				var currentMap = require('Renderer/MapRenderer').currentMap;
+				var currentMap = getModule('Renderer/MapRenderer').currentMap;
 				this.addText(
 					DB.getMapName(currentMap) + '(' + currentMap + ') : ' + Math.floor(Session.Entity.position[0]) + ', ' + Math.floor(Session.Entity.position[1]),
 					this.TYPE.INFO
@@ -158,11 +159,11 @@ function(
 				return;
 
 			case 'chat':
-				require('UI/Components/ChatRoomCreate/ChatRoomCreate').show();
+				getModule('UI/Components/ChatRoomCreate/ChatRoomCreate').show();
 				return;
 
 			case 'q':
-				require('UI/Components/ChatRoom/ChatRoom').remove();
+				getModule('UI/Components/ChatRoom/ChatRoom').remove();
 				return;
 		}
 

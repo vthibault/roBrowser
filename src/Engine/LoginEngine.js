@@ -9,44 +9,28 @@
  * @author Vincent Thibault
  */
 
-define([
-	'require',
-	'Vendors/text-encoding',
-	'DB/DBManager',
-	'Audio/SoundManager',
-	'Core/Configs',
-	'Core/Thread',
-	'Engine/SessionStorage',
-	'Engine/CharEngine',
-	'Network/NetworkManager',
-	'Network/PacketStructure',
-	'Network/PacketVerManager',
-	'Renderer/Renderer',
-	'UI/UIManager',
-	'UI/Components/WinList/WinList',
-	'UI/Components/WinLogin/WinLogin',
-	'UI/Components/WinPopup/WinPopup'
-],
-function(
-	require,
-	TextEncoding,
-	DB,
-	Sound,
-	Configs,
-	Thread,
-	Session,
-	CharEngine,
-	Network,
-	PACKET,
-	PACKETVER,
-	Renderer,
-	UIManager,
-	WinList,
-	WinLogin,
-	WinPopup
-)
+define(function( require )
 {
 	'use strict';
+
+
+	// Load dependencies
+	var TextEncoding = require('Vendors/text-encoding');
+	var DB           = require('DB/DBManager');
+	var Sound        = require('Audio/SoundManager');
+	var Configs      = require('Core/Configs');
+	var Thread       = require('Core/Thread');
+	var Session      = require('Engine/SessionStorage');
+	var CharEngine   = require('Engine/CharEngine');
+	var Network      = require('Network/NetworkManager');
+	var PACKET       = require('Network/PacketStructure');
+	var PACKETVER    = require('Network/PacketVerManager');
+	var Renderer     = require('Renderer/Renderer');
+	var UIManager    = require('UI/UIManager');
+	var WinList      = require('UI/Components/WinList/WinList');
+	var WinPopup     = require('UI/Components/WinPopup/WinPopup');
+	var WinLogin     = require('UI/Components/WinLogin/WinLogin');
+	var getModule    = require;
 
 
 	/**
@@ -83,7 +67,7 @@ function(
 	 */
 	function init( server )
 	{
-		var charset, disableKorean;
+		var charset;
 
 		Configs.setServer(server);
 		UIManager.removeComponents();
@@ -278,7 +262,7 @@ function(
 	 */
 	function onExitRequest()
 	{
-		require('Engine/GameEngine').reload();
+		getModule('Engine/GameEngine').reload();
 	}
 
 
