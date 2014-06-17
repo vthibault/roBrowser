@@ -15,6 +15,7 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
+	var Configs          = require('Core/Configs');
 	var Context          = require('Core/Context');
 	var Preferences      = require('Core/Preferences');
 	var GraphicsSettings = require('Preferences/Graphics');
@@ -56,7 +57,7 @@ define(function(require)
 			GraphicsSettings.quality = parseInt(this.value, 10);
 			GraphicsSettings.save();
 
-			ROConfig.quality = GraphicsSettings.quality;
+			Configs.set('quality', GraphicsSettings.quality);
 			Renderer.resize();
 		});
 

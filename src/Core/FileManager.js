@@ -8,10 +8,21 @@
  * @author Vincent Thibault
  */
 
-define(  ['Loaders/GameFile', 'Loaders/World', 'Loaders/Ground', 'Loaders/Altitude', 'Loaders/Model', 'Loaders/Sprite', 'Loaders/Action', 'Loaders/Str', 'Core/FileSystem'],
-function(          GameFile,           World,           Ground,           Altitude,           Model,           Sprite,           Action,           Str,        FileSystem )
+define(function( require )
 {
 	'use strict';
+
+
+	// Load dependencies
+	var GameFile   = require('Loaders/GameFile');
+	var World      = require('Loaders/World');
+	var Ground     = require('Loaders/Ground');
+	var Altitude   = require('Loaders/Altitude');
+	var Model      = require('Loaders/Model');
+	var Sprite     = require('Loaders/Sprite');
+	var Action     = require('Loaders/Action');
+	var Str        = require('Loaders/Str');
+	var FileSystem = require('Core/FileSystem');
 
 
 	/**
@@ -204,15 +215,15 @@ function(          GameFile,           World,           Ground,           Altitu
 				var reader = new FileReader();
 				reader.onloadend = function onLoad(event){
 					callback( event.target.result );
-				}
+				};
 				reader.readAsArrayBuffer(file);
 			},
 
 			// Not found, fetching files
 			function onNotFound() {
 				var i, count;
-				var path, file;
 				var fileList;
+				var path;
 
 				path     = filename.replace( /\//g, '\\');
 				fileList = FileManager.gameFiles;

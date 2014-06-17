@@ -9,10 +9,24 @@
  * @author Vincent Thibault
  */
 
-define([ 'require', 'Core/Context', 'Utils/BinaryReader',   './PacketVerManager', './PacketVersions', './PacketRegister', './PacketGuess', './PacketCrypt', './SocketHelpers/ChromeSocket', './SocketHelpers/JavaSocket', './SocketHelpers/WebSocket'],
-function( require,        Context,         BinaryReader,       PACKETVER,            PacketVersions,     PacketRegister,     PacketGuess,     PacketCrypt,                   ChromeSocket,                   JavaSocket,                   WebSocket)
+define(function( require )
 {
 	'use strict';
+
+
+	// Load dependencies
+	var Configs        = require('Core/Configs');
+	var Context        = require('Core/Context');
+	var BinaryReader   = require('Utils/BinaryReader');
+	var PACKETVER      = require('./PacketVerManager');
+	var PacketVersions = require('./PacketVersions');
+	var PacketRegister = require('./PacketRegister');
+	var PacketGuess    = require('./PacketGuess');
+	var PacketCrypt    = require('./PacketCrypt');
+	var ChromeSocket   = require('./SocketHelpers/ChromeSocket');
+	var JavaSocket     = require('./SocketHelpers/JavaSocket');
+	var WebSocket      = require('./SocketHelpers/WebSocket');
+	var getModule      = require;
 
 
 	/**
@@ -72,7 +86,7 @@ function( require,        Context,         BinaryReader,       PACKETVER,       
 	function connect( host, port, callback, isZone)
 	{
 		var socket, Socket;
-		var proxy = ROConfig.socketProxy || null;
+		var proxy = Configs.get('socketProxy', null);
 
 		// Native socket
 		if (Context.Is.APP) {
@@ -80,7 +94,7 @@ function( require,        Context,         BinaryReader,       PACKETVER,       
 		}
 
 		// Web Socket with proxy
-		else if (ROConfig.socketProxy) {
+		else if (proxy) {
 			Socket = WebSocket;
 		}
 	
@@ -341,7 +355,7 @@ function( require,        Context,         BinaryReader,       PACKETVER,       
 				clearInterval(_socket.ping);
 			}
 
-			require('UI/UIManager').showErrorBox('Disconnected from Server.');
+			getModule('UI/UIManager').showErrorBox('Disconnected from Server.');
 		}
 
 		if (idx !== -1) {

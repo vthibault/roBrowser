@@ -165,7 +165,7 @@ define(function(require)
 				_preferences.save();
 				this.ui.css('height', _preferences.size * 34 );
 				break;
- 		}
+		}
 	};
 
 

@@ -50,7 +50,7 @@ define(function()
 
 			// Remove duplicated key
 			if (this.uniqueKey) {
-				var pos = this.list.indexOf(message);
+				pos = this.list.indexOf(message);
 				if (pos > -1) {
 					this.list.splice( pos, 1);
 					count--;

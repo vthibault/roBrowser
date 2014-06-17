@@ -8,10 +8,19 @@
  * @author Vincent Thibault
  */
 
-define([ 'require', 'Utils/jquery', 'Core/Client', 'Core/MemoryManager', 'Preferences/Graphics', 'Loaders/Sprite', 'Loaders/Action'],
-function( require,         jQuery,        Client,        MemoryManager,               Graphics,           Sprite,           Action )
+define(function( require )
 {
 	'use strict';
+
+
+	// Load dependencies
+	var jQuery        = require('Utils/jquery');
+	var Client        = require('Core/Client');
+	var MemoryManager = require('Core/MemoryManager');
+	var Graphics      = require('Preferences/Graphics');
+	var Sprite        = require('Loaders/Sprite');
+	var Action        = require('Loaders/Action');
+	var getModule     = require;
 
 
 	/**
@@ -166,10 +175,10 @@ function( require,         jQuery,        Client,        MemoryManager,         
 
 		});
 
-		EntityManager  = require('Renderer/EntityManager');
-		Entity         = require('Renderer/Entity/Entity');
-		SpriteRenderer = require('Renderer/SpriteRenderer');
-		Mouse          = require('Controls/MouseEventHandler');
+		EntityManager  = getModule('Renderer/EntityManager');
+		Entity         = getModule('Renderer/Entity/Entity');
+		SpriteRenderer = getModule('Renderer/SpriteRenderer');
+		Mouse          = getModule('Controls/MouseEventHandler');
 	};
 
 

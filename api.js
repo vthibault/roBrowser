@@ -108,6 +108,12 @@
 
 
 	/**
+	 * @var {string} client hash to send to server
+	 */
+	ROBrowser.prototype.clientHash = null;
+
+
+	/**
 	 * @var {constant} application name (see: ROBrowser.APP.* )
 	 *
 	 * Known applications:
@@ -337,6 +343,7 @@
 			skipIntro:      this.skipIntro,
 			autoLogin:      this.autoLogin,
 			version:        this.version,
+			clientHash:     this.clientHash,
 		}, '*');
 	}
 

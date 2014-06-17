@@ -7,10 +7,17 @@
  *
  * @author Vincent Thibault
  */
-define(['Utils/gl-matrix', 'Renderer/Renderer', 'Core/Client', 'DB/DBManager', 'UI/Components/EntityRoom/EntityRoom' ],
-function(       glMatrix,            Renderer,        Client,      DB,                                   EntityRoom)
+define(function( require )
 {
 	'use strict';
+
+
+	// Load dependencies
+	var glMatrix   = require('Utils/gl-matrix');
+	var Renderer   = require('Renderer/Renderer');
+	var Client     = require('Core/Client');
+	var DB         = require('DB/DBManager');
+	var EntityRoom = require('UI/Components/EntityRoom/EntityRoom');
 
 
 	/**

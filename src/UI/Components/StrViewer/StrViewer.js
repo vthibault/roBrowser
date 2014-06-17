@@ -17,6 +17,7 @@ define(function(require)
 	 */
 	var glMatrix           = require('Utils/gl-matrix');
 	var Client             = require('Core/Client');
+	var Configs            = require('Core/Configs');
 	var Renderer           = require('Renderer/Renderer');
 	var EffectManager      = require('Renderer/EffectManager');
 	var StrEffect          = require('Renderer/Effects/StrEffect');
@@ -80,7 +81,7 @@ define(function(require)
 		Client.init([]);
 
 		// Initialize the dropdown
-		if (!ROConfig.API) {
+		if (!Configs.get('API')) {
 			initDropDown( this.ui.find('select').get(0) );
 		}
 		else {

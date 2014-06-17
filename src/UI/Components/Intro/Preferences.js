@@ -6,7 +6,8 @@
  * @author Vincent Thibault
  */
 
-define(['Core/Context', 'Core/Preferences', 'Preferences/Audio', 'Preferences/Graphics'], function( Context, Preferences, Audio, Graphics )
+define(['Core/Configs', 'Core/Context', 'Core/Preferences', 'Preferences/Audio', 'Preferences/Graphics'],
+function(     Configs,        Context,        Preferences,               Audio,               Graphics )
 {
 	'use strict';
 
@@ -29,8 +30,8 @@ define(['Core/Context', 'Core/Preferences', 'Preferences/Audio', 'Preferences/Gr
 	 */
 	function load( ui )
 	{
-		if (Graphics.screensize === "full" && !Context.isFullScreen()) {
-			Graphics.screensize = "800x600";
+		if (Graphics.screensize === 'full' && !Context.isFullScreen()) {
+			Graphics.screensize = '800x600';
 		}
 
 		ui.find('.screensize').val( Graphics.screensize );
@@ -45,10 +46,10 @@ define(['Core/Context', 'Core/Preferences', 'Preferences/Audio', 'Preferences/Gr
 		ui.find('.soundvol').val( Audio.Sound.volume * 100 ).trigger('change');
 
 		if (!window.requestFileSystem && !window.webkitRequestFileSystem) {
+			Configs.set('saveFiles', false);
 			ui.find('.save').attr('disabled', 'disabled');
 		}
-
-		else if (ROConfig.hasOwnProperty('saveFiles') && ROConfig.saveFiles === false) {
+		else if (!Configs.get('saveFiles')) {
 			ui.find('.save').attr('disabled', 'disabled');
 		}
 		else {
@@ -92,7 +93,7 @@ define(['Core/Context', 'Core/Preferences', 'Preferences/Audio', 'Preferences/Gr
 		var i, count = $servers.find('tr').length;
 		var $server;
 
-		if (ROConfig.serverEditMode) {
+		if (Configs.get('_serverEditMode')) {
 			_preferences.serverdef  = ui.find('.serverdef:checked').val();
 			_preferences.serverfile = ui.find('.clientinfo').val();
 			_preferences.serverlist = [];
@@ -154,21 +155,17 @@ define(['Core/Context', 'Core/Preferences', 'Preferences/Audio', 'Preferences/Gr
 			}
 		}
 
-		if (ROConfig.serverEditMode) {
-			// Bind data
+		if (Configs.get('_serverEditMode')) {
 			if (_preferences.serverdef === 'serverlist') {
-				ROConfig.servers = _preferences.serverlist;
+				Configs.set('servers', _preferences.serverlist );
 			}
 			else {
-				ROConfig.servers = 'data/' + _preferences.serverfile;
+				Configs.set('servers', 'data/' + _preferences.serverfile );
 			}
 		}
 
-		if (!ROConfig.hasOwnProperty('saveFiles') || ROConfig.saveFiles === true) {
-			ROConfig.saveFiles = _preferences.saveFiles;
-		}
-
-		ROConfig.quality = Graphics.quality;
+		Configs.set('saveFiles', _preferences.saveFiles);
+		Configs.set('quality',   Graphics.quality);
 	}
 
 

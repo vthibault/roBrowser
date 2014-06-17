@@ -145,7 +145,7 @@ define(function( require )
 
 			case 3: /// 3 = accessory ID
 				if (pkt.data) {
-					path = DB.getPetEquipPath(pkt.data)
+					path = DB.getPetEquipPath(pkt.data);
 				}
 
 				if (!path && entity.files.body.spr) {

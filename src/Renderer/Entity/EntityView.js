@@ -7,10 +7,17 @@
  *
  * @author Vincent Thibault
  */
-define(['Core/Client', 'DB/DBManager', 'DB/Monsters/ShadowTable', 'DB/Jobs/MountTable', './EntityAction'],
-function(     Client,      DB,                      ShadowTable,           MountTable,     EntityAction)
+define(function( require )
 {
 	'use strict';
+
+
+	// Load dependencies
+	var Client       = require('Core/Client');
+	var DB           = require('DB/DBManager');
+	var ShadowTable  = require('DB/Monsters/ShadowTable');
+	var MountTable   = require('DB/Jobs/MountTable');
+	var EntityAction = require('./EntityAction');
 
 
 	/**

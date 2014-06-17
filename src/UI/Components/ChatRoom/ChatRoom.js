@@ -26,6 +26,7 @@ define(function(require)
 	var UIComponent  = require('UI/UIComponent');
 	var htmlText     = require('text!./ChatRoom.html');
 	var cssText      = require('text!./ChatRoom.css');
+	var getModule    = require;
 
 
 	/**
@@ -186,7 +187,7 @@ define(function(require)
 
 		// Process commands
 		if (message[0] === '/') {
-			require('Controls/ProcessCommand').call( ChatBox, message.substr(1) );
+			getModule('Controls/ProcessCommand').call( ChatBox, message.substr(1) );
 			ui.find('.send input[name=message]').val('');
 			return true;
 		}

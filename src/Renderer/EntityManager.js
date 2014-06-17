@@ -7,10 +7,17 @@
  *
  * @author Vincent Thibault
  */
-define(['Engine/SessionStorage', './Entity/Entity', './SpriteRenderer', 'Controls/MouseEventHandler', 'Controls/KeyEventHandler'],
-function(       Session,                   Entity,     SpriteRenderer,            Mouse,                        KEYS )
+define(function( require )
 {
 	'use strict';
+
+
+	// Load dependencies
+	var Session        = require('Engine/SessionStorage');
+	var Entity         = require('./Entity/Entity');
+	var SpriteRenderer = require('./SpriteRenderer');
+	var Mouse          = require('Controls/MouseEventHandler');
+	var KEYS           = require('Controls/KeyEventHandler');
 
 
 	var _list = [];

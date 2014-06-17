@@ -12,7 +12,8 @@
 
 define(['Vendors/text-encoding'], function(TextEncoding)
 {
-	"use strict";
+	'use strict';
+
 
 	/**
 	 * Extend DataView to add position

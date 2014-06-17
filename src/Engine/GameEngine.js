@@ -9,48 +9,31 @@
  * @author Vincent Thibault
  */
 
-define([
-	'Utils/jquery',
-	'Utils/Queue',
-	'Audio/SoundManager',
-	'Audio/BGM',
-	'DB/DBManager',
-	'Core/Client',
-	'Core/Thread',
-	'Core/Context',
-	'Engine/LoginEngine',
-	'Network/NetworkManager',
-	'Renderer/Renderer',
-	'Renderer/MapRenderer',
-	'UI/UIManager',
-	'UI/CursorManager',
-	'UI/Scrollbar',
-	'UI/Background',
-	'UI/Components/Intro/Intro',
-	'UI/Components/WinList/WinList'
-],
-function(
-	jQuery,
-	Queue,
-	Sound,
-	BGM,
-	DB,
-	Client,
-	Thread,
-	Context,
-	LoginEngine,
-	Network,
-	Renderer,
-	MapRenderer,
-	UIManager,
-	Cursor,
-	Scrollbar,
-	Background,
-	Intro,
-	WinList
-)
+define(function( require )
 {
 	'use strict';
+
+
+	// Load dependencies
+	var jQuery      = require('Utils/jquery');
+	var Queue       = require('Utils/Queue');
+	var Sound       = require('Audio/SoundManager');
+	var BGM         = require('Audio/BGM');
+	var DB          = require('DB/DBManager');
+	var Configs     = require('Core/Configs');
+	var Client      = require('Core/Client');
+	var Thread      = require('Core/Thread');
+	var Context     = require('Core/Context');
+	var LoginEngine = require('Engine/LoginEngine');
+	var Network     = require('Network/NetworkManager');
+	var Renderer    = require('Renderer/Renderer');
+	var MapRenderer = require('Renderer/MapRenderer');
+	var UIManager   = require('UI/UIManager');
+	var Cursor      = require('UI/CursorManager');
+	var Scrollbar   = require('UI/Scrollbar');
+	var Background  = require('UI/Background');
+	var Intro       = require('UI/Components/Intro/Intro');
+	var WinList     = require('UI/Components/WinList/WinList');
 
 
 	/**
@@ -97,7 +80,7 @@ function(
 		// Start Intro, wait the user to add files
 		q.add(function(){
 			Client.onFilesLoaded = function(count){
-				if (!ROConfig.remoteClient && !count) {
+				if (!Configs.get('remoteClient') && !count) {
 					if (!Context.Is.APP) {
 						alert( 'No client to initialize roBrowser');
 					}
@@ -111,7 +94,7 @@ function(
 				q._next();
 			};
 
-			if (ROConfig.skipIntro) {
+			if (Configs.get('skipIntro')) {
 				Client.init([]);
 				return;
 			}
@@ -182,7 +165,7 @@ function(
 			}
 
 			// Just 1 server, skip the WinList
-			else if (count === 1 && ROConfig.skipServerList) {
+			else if (count === 1 && Configs.get('skipServerList')) {
 				LoginEngine.onExitRequest = reload;
 				LoginEngine.init( _servers[0] );
 			}
@@ -240,16 +223,16 @@ function(
 	 */
 	function loadClientInfo( callback )
 	{
+		var servers     = Configs.get('servers', 'data/clientinfo.xml');
 		_servers.length = 0;
-		ROConfig.servers = ROConfig.servers || 'data/clientinfo.xml';
 
-		if (ROConfig.servers instanceof Array) {
-			_servers = ROConfig.servers;
+		if (servers instanceof Array) {
+			_servers = servers;
 			callback();
 			return;
 		}
 
-		Client.loadFile( ROConfig.servers, function(xml)
+		Client.loadFile( servers, function(xml)
 		{
 			// $.parseXML() don't parse buggy xml (and a lot of clientinfo.xml are not properly write)...
 			xml = xml.replace(/^.*<\?xml/, '<?xml');

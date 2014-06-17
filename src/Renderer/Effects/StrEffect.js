@@ -60,8 +60,8 @@ define(['Utils/WebGL', 'Utils/gl-matrix', 'Core/Client'], function( WebGL, glMat
 
 			// Calculate position base on angle and sprite offset/size
 			'vec4 position = uSpriteAngle * vec4( aPosition.x * pixelRatio, -aPosition.y * pixelRatio, 0.0, 1.0 );',
-			"position.x   += uSpriteOffset.x * pixelRatio;",
-			"position.y   -= uSpriteOffset.y * pixelRatio + 0.5;",
+			'position.x   += uSpriteOffset.x * pixelRatio;',
+			'position.y   -= uSpriteOffset.y * pixelRatio + 0.5;',
 
 			// Project to camera plane
 			'gl_Position    = uProjectionMat * Project(uModelViewMat, uSpritePosition) * position;',
@@ -353,7 +353,7 @@ define(['Utils/WebGL', 'Utils/gl-matrix', 'Core/Client'], function( WebGL, glMat
 
 			result.color.set(from.color);
 			result.pos.set(from.pos);
-			result.uv.set(from.uv)
+			result.uv.set(from.uv);
 			result.xy.set(from.xy);
 
 			return true;

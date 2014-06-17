@@ -7,10 +7,16 @@
  *
  * @author Vincent Thibault
  */
-define( ['require', 'Utils/jquery', './UIComponent', 'Controls/KeyEventHandler', 'Renderer/Renderer' ],
-function( require,         jQuery,     UIComponent,            KEYS,                       Renderer )
+define(function( require )
 {
 	'use strict';
+
+	// Load dependencies
+	var jQuery      = require('Utils/jquery');
+	var UIComponent = require('./UIComponent');
+	var KEYS        = require('Controls/KeyEventHandler');
+	var Renderer    = require('Renderer/Renderer');
+	var getModule   = require;
 
 
 	/**
@@ -136,7 +142,7 @@ function( require,         jQuery,     UIComponent,            KEYS,            
 				case KEYS.ESCAPE:
 					overlay.remove();
 					this.remove();
-					require('Engine/GameEngine').reload();
+					getModule('Engine/GameEngine').reload();
 			}
 		};
 

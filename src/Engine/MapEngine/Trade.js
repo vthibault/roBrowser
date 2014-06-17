@@ -30,7 +30,7 @@ define(function( require )
 	 * @param {number} GID
 	 * @param {string} randrom string
 	 */
-	function TradeGIDEncoding(GID)
+	function tradeGIDEncoding(GID)
 	{
 		var table = 'ROHUTNASEW';
 		var str, out;
@@ -65,7 +65,7 @@ define(function( require )
 		Trade.title = pkt.name;
 
 		if ('level' in pkt && 'GID' in pkt) {
-			text        += '\nPN: ' + TradeGIDEncoding(pkt.GID)+ '\xa0\xa0\xa0\xa0\xa0Lv.' + pkt.level;
+			text        += '\nPN: ' + tradeGIDEncoding(pkt.GID)+ '\xa0\xa0\xa0\xa0\xa0Lv.' + pkt.level;
 		}
 
 		UIManager.showPromptBox( text, 'ok', 'cancel', answer(3), answer(4));
@@ -94,7 +94,7 @@ define(function( require )
 
 			case 3:
 				if ('level' in pkt && 'GID' in pkt) {
-					Trade.title +='  Lv' + pkt.level + ' (' + TradeGIDEncoding(pkt.GID) +')';
+					Trade.title +='  Lv' + pkt.level + ' (' + tradeGIDEncoding(pkt.GID) +')';
 				}
 				Trade.append();
 				break;

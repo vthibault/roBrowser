@@ -8,19 +8,18 @@
  *
  * @author Vincent Thibault
  */
-define([
-	'Utils/WebGL', 'Core/Client',
-	'Loaders/Sprite',
-	'Renderer/Renderer', 'Renderer/SpriteRenderer',
-	'Preferences/Map'],
-function(
-	WebGL, Client,
-	Sprite,
-	Renderer, SpriteRenderer,
-	MapPreferences
-)
+define(function( require )
 {
 	'use strict';
+
+
+	// Load dependencies
+	var WebGL          = require('Utils/WebGL');
+	var Client         = require('Core/Client');
+	var Sprite         = require('Loaders/Sprite');
+	var Renderer       = require('Renderer/Renderer');
+	var SpriteRenderer = require('Renderer/SpriteRenderer');
+	var MapPreferences  = require('Preferences/Map');
 
 
 	/**

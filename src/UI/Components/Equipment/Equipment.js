@@ -159,7 +159,6 @@ define(function(require)
 
 				// Get back data
 				var overlay = Equipment.ui.find('.overlay');
-				var it      = DB.getItemInfo( item.ITID );
 				var pos     = jQuery(this).position();
 
 				// Possible jquery error
@@ -304,11 +303,11 @@ define(function(require)
 		_list[item.index] = item;
 
 		if (arguments.length === 1) {
-			if ('location' in item) {
-				location = item.location;
-			}
-			else if ('WearState' in item) {
+			if ('WearState' in item) {
 				location = item.WearState;
+			}
+			else if ('location' in item) {
+				location = item.location;
 			}
 		}
 

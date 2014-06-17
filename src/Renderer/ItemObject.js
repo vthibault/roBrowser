@@ -7,8 +7,8 @@
  *
  * @author Vincent Thibault
  */
-define(['DB/DBManager', './EntityManager', './Entity/Entity', 'Core/Client'],
-function(   DB,            EntityManager,            Entity,        Client )
+define(['DB/DBManager', './EntityManager', './Entity/Entity'],
+function(   DB,            EntityManager,            Entity)
 {
 	'use strict';
 

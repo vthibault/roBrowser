@@ -118,7 +118,6 @@ define(function(require)
 
 				// Get back data
 				var item = _list[i];
-				var it   = DB.getItemInfo( item.ITID );
 				var pos  = jQuery(this).position();
 
 				// Display box
@@ -151,6 +150,8 @@ define(function(require)
 				var url = this.firstChild.style.backgroundImage.match(/\(([^\)]+)/)[1];
 				url     = url = url.replace(/^\"/, '').replace(/\"$/, ''); // Firefox bug
 				img.src = url;
+
+				event.originalEvent.dataTransfer.setDragImage( img, 12, 12 );
 
 				var index   = parseInt(this.getAttribute('data-index'), 10);
 				var i       = getItemIndexById(index);

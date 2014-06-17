@@ -177,5 +177,5 @@ define(['Renderer/Renderer', 'DB/DBManager'], function( Renderer, DB )
 			case Entity.TYPE_ELEM:
 				break;
 		}
-	}
+	};
 });

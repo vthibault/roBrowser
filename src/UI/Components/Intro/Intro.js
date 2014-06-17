@@ -22,6 +22,7 @@ define(function(require)
 	var htmlText    = require('text!./Intro.html');
 	var cssText     = require('text!./Intro.css');
 	var Context     = require('Core/Context');
+	var Configs     = require('Core/Configs');
 	var Particle    = require('./Particle');
 	var Preferences = require('./Preferences');
 	var FileSystem  = require('./FileSystem');
@@ -64,10 +65,8 @@ define(function(require)
 	 */
 	Intro.init = function init()
 	{
-		window.ROConfig = window.ROConfig || {};
-
-		if (!ROConfig.servers) {
-			ROConfig.serverEditMode = true;
+		if (!Configs.get('servers')) {
+			Configs.set('_serverEditMode', true);
 		}
 
 		var ui = this.ui;
@@ -153,7 +152,7 @@ define(function(require)
 			});
 
 		// Not allow to edit server list
-		if (!ROConfig.serverEditMode) {
+		if (!Configs.get('_serverEditMode')) {
 			ui.find('.serveredit').hide();
 		}
 		
@@ -361,7 +360,7 @@ define(function(require)
 				                  'relativePath' in this.files[0] ?       'relativePath' :
 				                                                           null;
 				if (token) {
-					var i, count = this.files.length;
+					count = this.files.length;
 					var baseFolder = /^[^(\/|\\)]+(\/|\\)/;
 
 					for (i = 0; i < count; ++i) {

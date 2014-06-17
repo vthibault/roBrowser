@@ -7,10 +7,17 @@
  *
  * @author Vincent Thibault
  */
-define(['Utils/WebGL', 'Utils/gl-matrix', 'DB/Skills/SkillConst', 'Core/Client', 'Renderer/Map/Altitude'],
-function(      WebGL,         glMatrix,              SkillId,           Client,                Altitude) {
+define(function( require ) {
 
 	'use strict';
+
+
+	// Load dependencies
+	var WebGL    = require('Utils/WebGL');
+	var glMatrix = require('Utils/gl-matrix');
+	var SkillId  = require('DB/Skills/SkillConst');
+	var Client   = require('Core/Client');
+	var Altitude = require('Renderer/Map/Altitude');
 
 
 	/**
