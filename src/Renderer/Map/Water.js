@@ -84,19 +84,20 @@ define( ['Utils/WebGL'], function( WebGL )
 		'uniform mat4 uModelViewMat;',
 		'uniform mat4 uProjectionMat;',
 
-		'uniform float uTick;',
 		'uniform float uWaveHeight;',
+		'uniform float uWavePitch;',
+		'uniform float uWaterOffset;',
 
 		'const float PI = 3.14159265358979323846264;',
 
 		'void main(void) {',
-			'float HeightX = sin( PI * (aPosition.x * 0.1 + uTick) );',
-			'float HeightY = cos( PI * (aPosition.y * 0.1 + uTick) );',
-			'float Height  = HeightX * HeightY * uWaveHeight;',
+			'float x       = mod( aPosition.x, 2.0);',
+			'float y       = mod( aPosition.z, 2.0);',
+			'float diff    = x < 1.0 ? y < 1.0 ? 1.0 : -1.0 : 0.0;',
+			'float Height  = sin((PI / 180.0) * (uWaterOffset + 0.5 * uWavePitch * (aPosition.x + aPosition.z + diff))) * uWaveHeight;',
 
-			'gl_Position = uProjectionMat * uModelViewMat * vec4( aPosition.x, aPosition.y + Height, aPosition.z, 1.0) ;',
-
-			'vTextureCoord   = aTextureCoord;',
+			'gl_Position   = uProjectionMat * uModelViewMat * vec4( aPosition.x, aPosition.y + Height, aPosition.z, 1.0);',
+			'vTextureCoord = aTextureCoord;',
 		'}'
 	].join('\n');
 
@@ -121,9 +122,7 @@ define( ['Utils/WebGL'], function( WebGL )
 		'uniform float uOpacity;',
 
 		'void main(void) {',
-			'vec4 Texture    = vec4( texture2D( uDiffuse, vTextureCoord).rgb, uOpacity);',
-			'vec4 LightColor = vec4( uLightAmbient * uLightOpacity + uLightDiffuse, 1.0);',
-			'gl_FragColor    = Texture * clamp(LightColor, 0.0, 1.0);',
+			'gl_FragColor = vec4( texture2D( uDiffuse, vTextureCoord).rgb, uOpacity);',
 
 			'if (uFogUse) {',
 				'float depth     = gl_FragCoord.z / gl_FragCoord.w;',
@@ -198,17 +197,13 @@ define( ['Utils/WebGL'], function( WebGL )
 
 		var uniform   = _program.uniform;
 		var attribute = _program.attribute;
+		var frame     = tick / (1000/60); // 60fps
 
 		gl.useProgram( _program );
 
 		// Bind matrix
 		gl.uniformMatrix4fv( uniform.uModelViewMat,  false, modelView );
 		gl.uniformMatrix4fv( uniform.uProjectionMat, false, projection );
-
-		// Bind light
-		gl.uniform1f(  uniform.uLightOpacity,   light.opacity );
-		gl.uniform3fv( uniform.uLightAmbient,   light.ambient );
-		gl.uniform3fv( uniform.uLightDiffuse,   light.diffuse );
 
 		// Fog settings
 		gl.uniform1i(  uniform.uFogUse,   fog.use && fog.exist );
@@ -230,15 +225,14 @@ define( ['Utils/WebGL'], function( WebGL )
 		gl.activeTexture( gl.TEXTURE0 );
 		gl.uniform1i( uniform.uDiffuse, 0 );
 
-		// TODO: find how water animation/speed works
-
 		// Water infos
-		gl.uniform1f( uniform.uTick,        tick % 1000 / 1000 );
 		gl.uniform1f( uniform.uWaveHeight,  _waveHeight );
 		gl.uniform1f( uniform.uOpacity,     _waterOpacity );
+		gl.uniform1f( uniform.uWavePitch,   _wavePitch );
+		gl.uniform1f( uniform.uWaterOffset, frame * _waveSpeed % 360 - 180);
 
 		// Send mesh
-		gl.bindTexture( gl.TEXTURE_2D, _textures[ tick / (1000/32*_animSpeed) % 32 | 0 ] );
+		gl.bindTexture( gl.TEXTURE_2D, _textures[ frame / _animSpeed % 32 | 0 ] );
 		gl.drawArrays(  gl.TRIANGLES,  0, _vertCount );
 	
 		// Is it needed ?
