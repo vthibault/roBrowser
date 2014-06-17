@@ -67,6 +67,11 @@ define( ['Core/FileManager'], function( FileManager )
 	 */
 	Loader.prototype._next = function next()
 	{
+		// Possible problem with setTimeout
+		if (!this.list.length) {
+			return;
+		}
+
 		var filename = this.list.shift();
 		FileManager.load( filename, function(data) {
 
