@@ -21,6 +21,7 @@ define(function( require )
 	var DB               = require('DB/DBManager');
 	var SoundManager     = require('Audio/SoundManager');
 	var BGM              = require('Audio/BGM');
+	var Events           = require('Core/Events');
 	var Session          = require('Engine/SessionStorage');
 	var Network          = require('Network/NetworkManager');
 	var PACKET           = require('Network/PacketStructure');
@@ -464,7 +465,7 @@ define(function( require )
 	 */
 	function onMouseDown()
 	{
-		clearTimeout(_walkTimer);
+		Events.clearTimeout(_walkTimer);
 
 		// If siting, update direction
 		if (Session.Entity.action === Session.Entity.ACTION.SIT /*|| KEYS.SHIFT see: http://forum.robrowser.com/index.php?topic=32240#msg32446 */) {
@@ -486,7 +487,7 @@ define(function( require )
 	 */
 	function onMouseUp()
 	{
-		clearTimeout(_walkTimer);
+		Events.clearTimeout(_walkTimer);
 	}
 
 
@@ -508,8 +509,8 @@ define(function( require )
 			Network.sendPacket(pkt);
 		}
 
-		clearTimeout(_walkTimer);
-		_walkTimer    =  setTimeout( onWalkRequest, 500);
+		Events.clearTimeout(_walkTimer);
+		_walkTimer    =  Events.setTimeout( onWalkRequest, 500);
 		_walkLastTick = +Renderer.tick;
 	}
 

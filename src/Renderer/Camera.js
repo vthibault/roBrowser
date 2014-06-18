@@ -16,6 +16,7 @@ define(function( require )
 	 */
 	var KEYS        = require('Controls/KeyEventHandler');
 	var Mouse       = require('Controls/MouseEventHandler');
+	var Events      = require('Core/Events');
 	var Preferences = require('Preferences/Camera');
 	var glMatrix    = require('Utils/gl-matrix');
 	var mat4        = glMatrix.mat4;
@@ -177,7 +178,8 @@ define(function( require )
 		return function saving() {
 			// Save camera settings after 3 seconds
 			if (!_pending) {
-				setTimeout( save, 3000);
+				Events.setTimeout( save, 3000);
+				_pending = true;
 			}
 		};
 	}();

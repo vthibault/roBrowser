@@ -18,6 +18,7 @@ define(function( require )
 	var EffectDB      = require('DB/Effects/EffectTable');
 	var SkillEffect   = require('DB/Skills/SkillEffect');
 	var SkillUnit     = require('DB/Skills/SkillUnit');
+	var Events        = require('Core/Events');
 	var Cylinder      = require('Renderer/Effects/Cylinder');
 	var StrEffect     = require('Renderer/Effects/StrEffect');
 	var Entity        = require('Renderer/Entity/Entity');
@@ -349,7 +350,9 @@ define(function( require )
 
 		// Play sound
 		if (effect.wav) {
-			Sound.play(effect.wav + '.wav');
+			Events.setTimeout(function(){
+				Sound.play(effect.wav + '.wav');
+			}, tick - Renderer.tick);
 		}
 
 		// Start effect
@@ -388,7 +391,9 @@ define(function( require )
 
 		// Play sound
 		if (effect.wav) {
-			Sound.play(effect.wav + '.wav');
+			Events.setTimeout(function(){
+				Sound.play(effect.wav + '.wav');
+			}, tick - Renderer.tick);
 		}
 
 		// Sprite effect

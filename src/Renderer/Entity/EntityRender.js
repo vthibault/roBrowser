@@ -285,7 +285,6 @@ define( function( require )
 	 */
 	var renderElement = function renderElementClosure()
 	{
-		var _result   = new Array(2);
 		var _position = new Int32Array(2);
 
 		return function renderElement( entity, files, type, position, is_main )
@@ -311,18 +310,16 @@ define( function( require )
 			var action = act.actions[
 				(( entity.action * 8 ) +                         // Action
 				( Camera.direction + entity.direction + 8 ) % 8  // Direction
-				) % act.actions.length ];                      // Avoid overflow on action (ex: if there is just one action)
+				) % act.actions.length ];                        // Avoid overflow on action (ex: if there is just one action)
 
 			// Find animation
-			calcAnimation( entity, entity.action, action, type, Renderer.tick - entity.animation.tick, _result );
-			var animation_id = _result[0];
-			var sound_delay  = _result[1];
+			var animation_id = calcAnimation( entity, entity.action, action, type, Renderer.tick - entity.animation.tick);
 			var animation    = action.animations[animation_id];
 			var layers       = animation.layers;
 
 			// Play sound
 			if (animation.sound > -1) {
-				entity.soundPlay( act.sounds[animation.sound], sound_delay );
+				entity.sound.play( act.sounds[animation.sound], entity.action, animation_id );
 			}
 
 			_position[0] = 0;
@@ -350,13 +347,11 @@ define( function( require )
 	/**
 	 * Calculate animations
 	 */
-	function calcAnimation( entity, ACTION, action, type, time_passed, out )
+	function calcAnimation( entity, ACTION, action, type, time_passed )
 	{
 		// Fix for shadow
 		if (type === 'shadow') {
-			out[0] = 0;
-			out[1] = 0;
-			return;
+			return 0;
 		}
 
 		// To avoid look up
@@ -365,6 +360,8 @@ define( function( require )
 		var delay             = action.delay + 0;
 		var Entity            = entity.constructor;
 		var headDir           = 0;
+		var animation         = entity.animation;
+		var anim;
 
 		// Delay on walk
 		// TODO: search how works the delay on walk and aspd.
@@ -385,54 +382,52 @@ define( function( require )
 			headDir           = entity.headDir + 0;
 		}
 
-
-		// Animation stuff
-		var anim, animation = entity.animation;
-
 		// Get rid of doridori
 		if (type === 'body' && entity.objecttype === Entity.TYPE_PC && ( ACTION === entity.ACTION.IDLE || ACTION === entity.ACTION.SIT )) {
-			anim = entity.headDir;
+			return entity.headDir;
 		}
 
 		// Don't play, so stop at the current frame.
-		else if (animation.play === false) {
-			anim  = Math.min(animation.frame, animations_length-1);
-			delay = Infinity;
+		if (animation.play === false) {
+			return Math.min(animation.frame, animations_length-1);
 		}
 
 		// Repeatable
-		else if (animation.repeat) {
-			anim = (
-				Math.floor( time_passed / delay )  // animation based on time (with floor hack)
-				% animations_count                 // avoid overflow, it's repeatable
-				+ animations_count * headDir       // get rid of doridori
-				+ animation.frame                  // don't forget the previous frame
-			) % animations_length ;                // repeatable.
+		if (animation.repeat) {
+			anim = Math.floor( time_passed / delay );
+
+			// repeat
+			if (anim >= animations_count) {
+				if (entity.sound._animCounter !== Math.floor(anim/animations_count)) {
+					entity.sound.free();
+					entity.sound._animCounter = Math.floor(anim/animations_count);
+				}
+				anim %= animations_count;
+			}
+
+			anim += animations_count * headDir; // get rid of doridori
+			anim += animation.frame;            // don't forget the previous frame
+			anim %= animations_length;          // avoid overflow
+
+			return anim;
 		}
 
 		// No repeat
-		else {
-			anim = (
-				Math.min( time_passed / delay | 0, animations_count || animations_count -1 )  // Avoid an error if animation = 0, search for -1 :(
-				+ animations_count * headDir // get rid of doridori
-				+ animation.frame            // previous frame
-			);
+		anim = (
+			Math.min( time_passed / delay | 0, animations_count || animations_count -1 )  // Avoid an error if animation = 0, search for -1 :(
+			+ animations_count * headDir // get rid of doridori
+			+ animation.frame            // previous frame
+		);
 
-			if (type === 'body' && anim >= animations_length - 1) {
-				animation.frame = anim = animations_length - 1;
-				animation.play  = false;
-				if (animation.next) {
-					entity.setAction( animation.next );
-				}
+		if (type === 'body' && anim >= animations_length - 1) {
+			animation.frame = anim = animations_length - 1;
+			animation.play  = false;
+			if (animation.next) {
+				entity.setAction( animation.next );
 			}
-
-			anim  = Math.min( anim, animations_count-1 );
-			delay = Infinity;
 		}
 
-		// Export
-		out[0] = anim;
-		out[1] = delay;
+		return Math.min( anim, animations_count-1 );
 	}
 
 

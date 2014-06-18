@@ -279,7 +279,7 @@ define(function( require )
 
 				// Load weapon sound
 				if (type === 'weapon') {
-					this.weapon_sound = DB.getWeaponSound( val );
+					this.sound.attackFile = DB.getWeaponSound( val );
 				}
 
 				return;
@@ -294,7 +294,7 @@ define(function( require )
 
 					// Load weapon sound
 					if (type === 'weapon') {
-						_this.weapon_sound = DB.getWeaponSound( _val );
+						_this.attackFile = DB.getWeaponSound( _val );
 					}
 				},
 

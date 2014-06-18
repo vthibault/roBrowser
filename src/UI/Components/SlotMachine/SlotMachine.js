@@ -20,6 +20,7 @@ define(function(require)
 	var UIManager      = require('UI/UIManager');
 	var UIComponent    = require('UI/UIComponent');
 	var Client         = require('Core/Client');
+	var Events         = require('Core/Events');
 	var Renderer       = require('Renderer/Renderer');
 	var Entity         = require('Renderer/Entity/Entity');
 	var SpriteRenderer = require('Renderer/SpriteRenderer');
@@ -189,7 +190,7 @@ define(function(require)
 
 					if (anim >= max) {
 						Renderer.stop(rendering);
-						setTimeout(function(){
+						Events.setTimeout(function(){
 							SlotMachine.remove();
 						}, 500);
 					}

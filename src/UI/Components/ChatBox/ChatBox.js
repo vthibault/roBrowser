@@ -19,6 +19,7 @@ define(function(require)
 	var jQuery             = require('Utils/jquery');
 	var Renderer           = require('Renderer/Renderer');
 	var Client             = require('Core/Client');
+	var Events             = require('Core/Events');
 	var KEYS               = require('Controls/KeyEventHandler');
 	var BattleMode         = require('Controls/BattleMode');
 	var History            = require('./History');
@@ -125,7 +126,7 @@ define(function(require)
 		});
 
 		this.ui.find('.input .message').blur(function(){
-			setTimeout(function(){
+			Events.setTimeout(function(){
 				if (!document.activeElement.tagName.match(/input|select|textarea/i)) {
 					this.focus();
 				}
@@ -224,7 +225,7 @@ define(function(require)
 
 		// Hacky, need to wait the browser to add text in the input
 		// If there is no change, send the shortcut.
-		setTimeout(function(){
+		Events.setTimeout(function(){
 			// Nothing rendered, can process the shortcut
 			if (messageBox.val() === text) {
 				BattleMode.process(keyId);

@@ -7,7 +7,7 @@
  *
  * @author Vincent Thibault
  */
-define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
+define(['Utils/gl-matrix', 'Core/Events', 'Renderer/Renderer'], function( glMatrix, Events, Renderer )
 {
 	'use strict';
 
@@ -121,11 +121,11 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 
 		// Remove or rewrite canvas
 		if (this.timeout) {
-			clearTimeout(this.timeout);
+			Events.clearTimeout(this.timeout);
 		}
 
 		// Remove next 5 secs.
-		this.timeout = setTimeout(function(){
+		this.timeout = Events.setTimeout(function(){
 			this.timeout = null;
 			this.remove();
 		}.bind(this), 5000 );
@@ -139,7 +139,7 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 	{
 		// Clean timeout
 		if (this.timeout) {
-			clearTimeout(this.timeout);
+			Events.clearTimeout(this.timeout);
 			this.timeout = null;
 		}
 

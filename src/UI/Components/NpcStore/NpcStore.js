@@ -20,6 +20,7 @@ define(function(require)
 	var ItemType     = require('DB/Items/ItemType');
 	var Client       = require('Core/Client');
 	var Preferences  = require('Core/Preferences');
+	var Events       = require('Core/Events');
 	var Session      = require('Engine/SessionStorage');
 	var Mouse        = require('Controls/MouseEventHandler');
 	var KEYS         = require('Controls/KeyEventHandler');
@@ -655,7 +656,7 @@ define(function(require)
 			NpcStore.ui.find('.item.selected').removeClass('selected');
 			jQuery(this).addClass('selected');
 
-			setTimeout( stopDragDrop, 4);
+			Events.setTimeout( stopDragDrop, 4);
 			event.stopImmediatePropagation();
 		};
 	}();

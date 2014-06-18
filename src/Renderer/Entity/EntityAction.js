@@ -93,6 +93,9 @@ define(['Renderer/Renderer', 'DB/DBManager'], function( Renderer, DB )
 			anim.play   = typeof option.play !== 'undefined' ? option.play : true;
 			anim.next   = option.next   || false;
 			anim.save   = false;
+
+			// Reset sounds
+			this.sound.free();
 		}
 	}
 

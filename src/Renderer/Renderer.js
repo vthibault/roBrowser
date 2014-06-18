@@ -19,6 +19,7 @@ define(function( require )
 	var jQuery        = require('Utils/jquery');
 	var glMatrix      = require('Utils/gl-matrix');
 	var Configs       = require('Core/Configs');
+	var Events        = require('Core/Events');
 	var Background    = require('UI/Background');
 	var Cursor        = require('UI/CursorManager');
 	var Mouse         = require('Controls/MouseEventHandler');
@@ -153,8 +154,8 @@ define(function( require )
 	 */
 	Renderer.onResize = function onResize()
 	{
-		clearTimeout( this.resizeTimeOut );
-		this.resizeTimeOut = setTimeout( this.resize.bind(this), 500 );
+		Events.clearTimeout( this.resizeTimeOut );
+		this.resizeTimeOut = Events.setTimeout( this.resize.bind(this), 500 );
 	};
 
 
@@ -211,6 +212,9 @@ define(function( require )
 	Renderer._render = function render()
 	{
 		_requestAnimationFrame( this._render.bind(this), this.canvas );
+
+		// Execute events
+		Events.process( this.tick );
 
 		this.tick = Date.now();
 		var i, count;

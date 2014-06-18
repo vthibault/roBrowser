@@ -18,6 +18,7 @@ define(function( require )
 	var Cursor    = require('./CursorManager');
 	var DB        = require('DB/DBManager');
 	var Client    = require('Core/Client');
+	var Events    = require('Core/Events');
 	var Mouse     = require('Controls/MouseEventHandler');
 	var getModule = require;
 
@@ -118,7 +119,7 @@ define(function( require )
 			this.__loaded = true;
 
 			// Hack to fix async preferences on Chrome App...
-			setTimeout( this.append.bind(this), 10 );
+			Events.setTimeout( this.append.bind(this), 10 );
 			return;
 		}
 
@@ -254,7 +255,32 @@ define(function( require )
 
 			// Start the loop
 			container.stop();
-			drag = setInterval( function() {
+			drag = Events.setTimeout( dragging, 15);
+
+			// Stop the drag (need to focus on window to avoid possible errors...)
+			jQuery(window).on('mouseup.dragdrop', function(event){
+				// Only on left click
+				if (event.which !== 1 && !event.isTrigger) {
+					return;
+				}
+
+				// Get back zIndex, push the element to the end to be over others components
+				if (updateDepth) {
+					Events.setTimeout(function(){
+						element.css('zIndex', 50);
+						if (element[0].parentNode) {
+							element[0].parentNode.appendChild(element[0]);
+						}
+					}, 1);
+				}
+
+				container.stop().animate({ opacity:1.0 }, 500 );
+				Events.clearTimeout(drag);
+				jQuery(window).off('mouseup.dragdrop');
+			});
+
+			// Process dragging
+			function dragging() {
 				var x_      = Mouse.screen.x + x;
 				var y_      = Mouse.screen.y + y;
 				var opacity = parseFloat(container.css('opacity')||1) - 0.02;
@@ -276,30 +302,8 @@ define(function( require )
 				}
 
 				container.css({ top: y_, left: x_, opacity: Math.max(opacity,0.7) });
-			}, 30 );
-
-			// Stop the drag (need to focus on window to avoid possible errors...)
-			jQuery(window).on('mouseup.dragdrop', function(event){
-				// Only on left click
-				if (event.which !== 1 && !event.isTrigger) {
-					return;
-				}
-
-				// Get back zIndex, push the element to the end to be over others components
-				if (updateDepth) {
-					setTimeout(function(){
-						element.css('zIndex', 50);
-						if (element[0].parentNode) {
-							element[0].parentNode.appendChild(element[0]);
-						}
-					}, 1);
-				}
-
-				container.stop().animate({ opacity:1.0 }, 500 );
-				clearInterval(drag);
-
-				jQuery(window).off('mouseup.dragdrop');
-			});
+				drag = Events.setTimeout( dragging, 15);
+			}
 		});
 	
 		return this;

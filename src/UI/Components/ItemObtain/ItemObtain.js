@@ -17,6 +17,7 @@ define(function(require)
 	 */
 	var DB                 = require('DB/DBManager');
 	var Client             = require('Core/Client');
+	var Events             = require('Core/Events');
 	var Renderer           = require('Renderer/Renderer');
 	var UIManager          = require('UI/UIManager');
 	var UIComponent        = require('UI/UIComponent');
@@ -66,7 +67,7 @@ define(function(require)
 	ItemObtain.onRemove = function onRemove()
 	{
 		if (_timer) {
-			clearTimeout(_timer);
+			Events.clearTimeout(_timer);
 			_timer = 0;
 		}
 	};
@@ -107,10 +108,10 @@ define(function(require)
 
 		// Start tomer
 		if (_timer) {
-			clearTimeout(_timer);
+			Events.clearTimeout(_timer);
 		}
 
-		_timer = setTimeout( this.timeEnd.bind(this), _life );
+		_timer = Events.setTimeout( this.timeEnd.bind(this), _life );
 	};
 
 

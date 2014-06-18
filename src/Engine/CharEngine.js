@@ -17,6 +17,7 @@ define(function( require )
 	// Load modules
 	var jQuery     = require('Utils/jquery');
 	var DB         = require('DB/DBManager');
+	var Events     = require('Core/Events');
 	var Sound      = require('Audio/SoundManager');
 	var BGM        = require('Audio/BGM');
 	var Session    = require('Engine/SessionStorage');
@@ -205,7 +206,7 @@ define(function( require )
 			InputBox.remove();
 			_ui_box.remove();
 			_overlay.detach();
-			clearTimeout(_TimeOut);
+			Events.clearTimeout(_TimeOut);
 			onDeleteAnswer({ ErrorCode: -2});
 		}
 
@@ -279,7 +280,7 @@ define(function( require )
 			_ctx.fillStyle = 'rgb(255,255,0)';
 			_ctx.fillText( percent + '%' ,  ( _width - _ctx.measureText( percent+'%').width ) * 0.5 , 12  );
 
-			_TimeOut = setTimeout( render, 30);
+			_TimeOut = Events.setTimeout( render, 30);
 		}
 	}
 
