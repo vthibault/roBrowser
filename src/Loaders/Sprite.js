@@ -349,10 +349,12 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 			}
 
 			output[i] = {
-				type:   frame.type,
-				width:  gl_width,
-				height: gl_height,
-				data:   out
+				type:           frame.type,
+				width:          gl_width,
+				height:         gl_height,
+				originalWidth:  width,
+				originalHeight: height,
+				data:           out
 			};
 		}
 

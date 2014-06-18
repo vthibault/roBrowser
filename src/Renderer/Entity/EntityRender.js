@@ -178,9 +178,9 @@ define( function( require )
 			entity.boundingRect.y2 = size[1] - Math.round(size[1] * (out[1] * z));
 
 
-			minSize = entity.objecttype === entity.constructor.TYPE_ITEM ? 30 : 90;
+			// Minimum picking size is
+			minSize = entity.objecttype === entity.constructor.TYPE_ITEM ? 30 : 60;
 
-			// Minimum picking size is 45x45 (official client feature)
 			if (entity.boundingRect.x2 - entity.boundingRect.x1 < minSize) {
 				entity.boundingRect.x1 = (entity.boundingRect.x1 + entity.boundingRect.x2) * 0.5 - minSize * 0.5;
 				entity.boundingRect.x2 = (entity.boundingRect.x1 + entity.boundingRect.x2) * 0.5 + minSize * 0.5;
@@ -466,8 +466,9 @@ define( function( require )
 			index += spr.old_rgba_index;
 		}
 
-		var width   = spr.frames[ index ].width;
-		var height  = spr.frames[ index ].height;
+		var frame  = spr.frames[ index ];
+		var width  = frame.width;
+		var height = frame.height;
 
 		// Apply the scale
 		width  *= layer.scale[0] * size;
@@ -476,14 +477,14 @@ define( function( require )
 
 		// Get the entity bounding rect
 		if (isbody) {
-			this.boundingRect.x1 = Math.min( this.boundingRect.x1,  (layer.pos[0] + pos[0]) - width /2 );
-			this.boundingRect.y1 = Math.max( this.boundingRect.y1, -(layer.pos[1] + pos[1]) + height/2 );
-			this.boundingRect.x2 = Math.max( this.boundingRect.x2,  (layer.pos[0] + pos[0]) + width /2 );
-			this.boundingRect.y2 = Math.min( this.boundingRect.y2, -(layer.pos[1] + pos[1]) - height/2 );
-		}
+			var w = (frame.originalWidth  * layer.scale[0] * size) / 2;
+			var h = (frame.originalHeight * layer.scale[1] * size) / 2;
 
-		// Image rotation
-		SpriteRenderer.angle = layer.angle;
+			this.boundingRect.x1 = Math.min( this.boundingRect.x1,  (layer.pos[0] + pos[0]) - w );
+			this.boundingRect.y1 = Math.max( this.boundingRect.y1, -(layer.pos[1] + pos[1]) + h );
+			this.boundingRect.x2 = Math.max( this.boundingRect.x2,  (layer.pos[0] + pos[0]) + w );
+			this.boundingRect.y2 = Math.min( this.boundingRect.y2, -(layer.pos[1] + pos[1]) - h );
+		}
 
 		// Image inverted
 		if (layer.is_mirror) {
@@ -502,13 +503,14 @@ define( function( require )
 		}
 
 		// Store shader info
+		SpriteRenderer.angle         = layer.angle;
 		SpriteRenderer.size[0]       = width;
 		SpriteRenderer.size[1]       = height;
 		SpriteRenderer.offset[0]     = layer.pos[0] + pos[0];
 		SpriteRenderer.offset[1]     = layer.pos[1] + pos[1];
 		SpriteRenderer.xSize         = this.xSize;
 		SpriteRenderer.ySize         = this.ySize;
-		SpriteRenderer.image.texture = spr.frames[ index ].texture;
+		SpriteRenderer.image.texture = frame.texture;
 
 		// Draw Sprite
 		SpriteRenderer.render();
