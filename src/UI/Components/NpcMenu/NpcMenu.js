@@ -56,9 +56,15 @@ define(function(require)
 		});
 
 		this.draggable();
+		
+		this.ui.find('.content')
 
-		// Scroll feature should block at each line
-		this.ui.find('.content').on('mousewheel DOMMouseScroll', onScroll);
+			// Scroll feature should block at each line
+			.on('mousewheel DOMMouseScroll', onScroll)
+
+			// Manage indexes
+			.on('mousedown', 'div', selectIndex)
+			.on('dblclick',  'div', validate )
 	};
 
 
@@ -67,7 +73,6 @@ define(function(require)
 	 */
 	NpcMenu.onRemove = function onRemove()
 	{
-		this.ui.find('.content div').unbind();
 		this.ui.find('.content').empty();
 	};
 
@@ -138,7 +143,7 @@ define(function(require)
 	NpcMenu.setMenu = function SetMenu( menu, gid )
 	{
 		var content, list;
-		var i, count;
+		var i, j, count;
 
 		content  = this.ui.find('.content');
 		list     = menu.split(':');
@@ -147,19 +152,15 @@ define(function(require)
 
 		content.empty();
 
-		for (i = 0, count = list.length; i < count; ++i) {
+		for (i = 0, j = 0, count = list.length; i < count; ++i) {
 			// Don't display empty menu
 			if (list[i].length) {
 				jQuery('<div/>')
 					.text(list[i])
-					.data('index', i)
+					.data('index', j++)
 					.appendTo(content);
 			}
 		}
-
-		content.find('div')
-			.mousedown(selectIndex)
-			.dblclick(validate);
 
 		content.find('div:first')
 			.addClass('selected');
@@ -189,9 +190,12 @@ define(function(require)
 	 */
 	function selectIndex()
 	{
+		var $this = jQuery(this);
+
 		NpcMenu.ui.find('.content div').removeClass('selected');
-		_index = parseInt(jQuery(this).data('index'), 10);
-		NpcMenu.ui.find('.content div:eq('+ _index +')').addClass('selected');
+		$this.addClass('selected');
+
+		_index = parseInt($this.data('index'), 10);
 	}
 
 
