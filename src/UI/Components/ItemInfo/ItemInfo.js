@@ -145,7 +145,7 @@ define(function(require)
 				cardList.empty();
 
 				for (i = 0; i < 4; ++i) {
-					addCard(cardList, item.slot['card' + (i+1)], i, slotCount);
+					addCard(cardList, (item.slot && item.slot['card' + (i+1)]) || 0, i, slotCount);
 				}
 				break;
 		}

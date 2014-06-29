@@ -247,10 +247,11 @@ define(function(require)
 
 			case NpcStore.Type.BUY:
 				for (i = 0, count = items.length; i < count; ++i) {
-					items[i].index = i;
-					items[i].count = items[i].count || Infinity;
-					out            = jQuery.extend({}, items[i]);
-					out.count      = 0;
+					items[i].index        = i;
+					items[i].count        = items[i].count || Infinity;
+					items[i].IsIdentified = true;
+					out                   = jQuery.extend({}, items[i]);
+					out.count             = 0;
 
 					addItem( content, items[i]);
 
