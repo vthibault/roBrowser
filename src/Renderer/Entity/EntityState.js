@@ -15,6 +15,7 @@ define(function( require )
 	/**
 	 * Load dependencies
 	 */
+	var Sound       = require('Audio/SoundManager');
 	var StatusConst = require('DB/Status/StatusState');
 	var MountTable  = require('DB/Jobs/MountTable');
 	var Session     = require('Engine/SessionStorage');
@@ -66,6 +67,7 @@ define(function( require )
 				break;
 
 			case StatusConst.BodyState.FREEZE:
+				Sound.play('_frozen_explosion.wav');
 				this.attachments.add({
 					frame:     1,
 					uid:       'status-freeze',
@@ -128,6 +130,7 @@ define(function( require )
 				break;
 
 			case StatusConst.BodyState.STUN:
+				Sound.play('_stun.wav');
 				this.attachments.add({
 					repeat:    true,
 					frame:     0,
@@ -164,6 +167,7 @@ define(function( require )
 
 			// Do not attach multiple times.
 			if (!(this._healthState & StatusConst.HealthState.CURSE)) {
+				Sound.play('_curse.wav');
 				this.attachments.add({
 					repeat:    true,
 					uid:       'status-curse',
@@ -183,9 +187,19 @@ define(function( require )
 
 		// Poison
 		if (value & StatusConst.HealthState.POISON) {
+			if (!(this._healthState & StatusConst.HealthState.POISON)) {
+				Sound.play('_poison.wav');
+			}
 			this._healthStateColor[0] *= 0.9;
 			this._healthStateColor[1] *= 0.4;
 			this._healthStateColor[2] *= 0.8;
+		}
+
+		// Blind
+		if (value & StatusConst.HealthState.BLIND) {
+			if (!(this._healthState & StatusConst.HealthState.BLIND)) {
+				Sound.play('_blind.wav');
+			}
 		}
 
 		this._healthState = value;
