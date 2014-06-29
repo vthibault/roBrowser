@@ -29,15 +29,16 @@ require( {
 		jquery: 'Vendors/jquery-1.9.1'
 	}
 },
-	['Engine/GameEngine'],
-	function( GameEngine ){
+	['Engine/GameEngine', 'Core/Context'],
+	function( GameEngine, Context) {
 		'use strict';
 
 		GameEngine.init();
+
+		if (!Context.Is.APP) {
+			window.onbeforeunload = function() {
+				return 'Are you sure to exit roBrowser ?';
+			};
+		}
 	}
 );
-
-// Avoid user from mistakenly leave roBrowser
-window.onbeforeunload = function() {
-	return 'roBrowser';
-};
