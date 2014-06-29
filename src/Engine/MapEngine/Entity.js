@@ -496,8 +496,23 @@ define(function( require )
 				}
 				break;
 
-			case 1: entity.head        = pkt.value; break;
-			case 2: entity.weapon      = pkt.value; break;
+			case 1:
+				entity.head = pkt.value;
+				break;
+
+			case 2:
+				// In packet PACKET.ZC.SPRITE_CHANGE2, weapon and shield values are
+				// stored in a long value (uint16 and uint16 in uint32)
+				// source: https://github.com/rathena/rathena/blob/master/src/map/clif.c#L3162
+				if (pkt instanceof PACKET.ZC.SPRITE_CHANGE2) {
+					entity.shield = pkt.value >> 16;
+					entity.weapon = pkt.value & 0x00FFFF;
+				}
+				else {
+					entity.weapon = pkt.value;
+				}
+				break;
+
 			case 3: entity.accessory   = pkt.value; break;
 			case 4: entity.accessory2  = pkt.value; break;
 			case 5: entity.accessory3  = pkt.value; break;
