@@ -93,7 +93,7 @@ define(function( require )
 		}
 
 		ItemObtain.append();
-		ItemObtain.set( pkt.ITID, pkt.IsIdentified, pkt.count );
+		ItemObtain.set(pkt);
 
 		var it = DB.getItemInfo( pkt.ITID );
 		ChatBox.addText(
@@ -317,6 +317,30 @@ define(function( require )
 
 
 	/**
+	 * Get the result of a refine action
+	 *
+	 * @param {object} pkt - PACKET.ZC.ACK_ITEMREFINING
+	 */
+	function onRefineResult( pkt )
+	{
+		var item = Inventory.removeItem( pkt.itemIndex, 1);
+		if (item) {
+			item.RefiningLevel = pkt.RefiningLevel;
+			Inventory.addItem(item);
+		}
+
+		// TODO: effect ?
+		switch (pkt.result) {
+			case 0: // success
+			case 1: // failure
+			case 2: // downgrade
+		}
+
+		debugger;
+	}
+
+
+	/**
 	 * Initialize
 	 */
 	return function ItemEngine()
@@ -351,5 +375,6 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.EQUIP_ARROW,            onArrowEquipped );
 		Network.hookPacket( PACKET.ZC.ITEMCOMPOSITION_LIST,   onItemCompositionList );
 		Network.hookPacket( PACKET.ZC.ACK_ITEMCOMPOSITION,    onItemCompositionResult );
+		Network.hookPacket( PACKET.ZC.ACK_ITEMREFINING,       onRefineResult);
 	};
 });

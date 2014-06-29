@@ -85,25 +85,23 @@ define(function(require)
 	/**
 	 * Add item informations
 	 *
-	 * @param {number} itemid
-	 * @param {boolean} identify
-	 * @param {number} amount
+	 * @param {object} item
 	 */
-	ItemObtain.set = function set( itemid, identify, amount )
+	ItemObtain.set = function set( item )
 	{
-		var it       = DB.getItemInfo( itemid );
-		var display  = identify ? it.identifiedDisplayName  : it.unidentifiedDisplayName;
-		var resource = identify ? it.identifiedResourceName : it.unidentifiedResourceName;
+		var it       = DB.getItemInfo(item.ITID);
+		var display  = DB.getItemName(item);
+		var resource = item.IsIdentified ? it.identifiedResourceName : it.unidentifiedResourceName;
 
 		this.ui.find('.content').html(
-			'<img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" class="'+ itemid +'" width="24" height="24" /> ' +
-			display + ' ' + DB.getMessage(696).replace('%d', amount)
+			'<img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" class="'+ item.ITID +'" width="24" height="24" /> ' +
+			display + ' ' + DB.getMessage(696).replace('%d', item.count || 1)
 		);
 
 		this.ui.css('left', ( Renderer.width - (this.ui.width()) ) >> 1 );
 
 		Client.loadFile( DB.INTERFACE_PATH + 'item/' + resource + '.bmp', (function(url){
-			this.ui.find('img.' + itemid).attr('src', url);
+			this.ui.find('img.' + item.ITID).attr('src', url);
 		}).bind(this));
 
 		// Start tomer

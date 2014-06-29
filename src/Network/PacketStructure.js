@@ -2614,7 +2614,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 
 			if (ver[2] === 15) {
 				pkt.view.setUint16( pos +  2, this.TargetItemInfo.ITID,          true );
-				pkt.view.setUint8(  pos +  4, this.TargetItemInfo.refiningLevel, true );
+				pkt.view.setUint8(  pos +  4, this.TargetItemInfo.RefiningLevel, true );
 				pkt.view.setUint16( pos +  5, this.TargetItemInfo.slot.card1,    true );
 				pkt.view.setUint16( pos +  7, this.TargetItemInfo.slot.card1,    true );
 				pkt.view.setUint16( pos +  9, this.TargetItemInfo.slot.card1,    true );
@@ -5602,7 +5602,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 		this.ITID          = fp.readUShort();
 		this.IsIdentified  = fp.readUChar();
 		this.IsDamaged     = fp.readUChar();
-		this.refiningLevel = fp.readUChar();
+		this.RefiningLevel = fp.readUChar();
 		this.slot          = {};
 		this.slot.card1 = fp.readUShort();
 		this.slot.card2 = fp.readUShort();
@@ -6074,7 +6074,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 		this.ITID          = fp.readUShort();
 		this.IsIdentified  = fp.readUChar();
 		this.IsDamaged     = fp.readUChar();
-		this.refiningLevel = fp.readUChar();
+		this.RefiningLevel = fp.readUChar();
 		this.slot          = {};
 		this.slot.card1 = fp.readUShort();
 		this.slot.card2 = fp.readUShort();
@@ -6133,7 +6133,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 		this.ITID          = fp.readUShort();
 		this.IsIdentified  = fp.readUChar();
 		this.IsDamaged     = fp.readUChar();
-		this.refiningLevel = fp.readUChar();
+		this.RefiningLevel = fp.readUChar();
 		this.slot          = {};
 		this.slot.card1 = fp.readUShort();
 		this.slot.card2 = fp.readUShort();
@@ -6506,7 +6506,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 		this.ITID          = fp.readUShort();
 		this.IsIdentified  = fp.readUChar();
 		this.IsDamaged     = fp.readUChar();
-		this.refiningLevel = fp.readUChar();
+		this.RefiningLevel = fp.readUChar();
 		this.slot          = {};
 		this.slot.card1 = fp.readUShort();
 		this.slot.card2 = fp.readUShort();
@@ -6573,7 +6573,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 				out[i].ITID          = fp.readUShort();
 				out[i].IsIdentified  = fp.readUChar();
 				out[i].IsDamaged     = fp.readUChar();
-				out[i].refiningLevel = fp.readUChar();
+				out[i].RefiningLevel = fp.readUChar();
 				out[i].slot          = {};
 				out[i].slot.card1 = fp.readUShort();
 				out[i].slot.card2 = fp.readUShort();
@@ -6609,7 +6609,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 				out[i].ITID          = fp.readUShort();
 				out[i].IsIdentified  = fp.readUChar();
 				out[i].IsDamaged     = fp.readUChar();
-				out[i].refiningLevel = fp.readUChar();
+				out[i].RefiningLevel = fp.readUChar();
 				out[i].slot          = {};
 				out[i].slot.card1 = fp.readUShort();
 				out[i].slot.card2 = fp.readUShort();
@@ -7179,7 +7179,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 	PACKET.ZC.ACK_ITEMREFINING = function PACKET_ZC_ACK_ITEMREFINING(fp, end) {
 		this.result        = fp.readShort();
 		this.itemIndex     = fp.readShort();
-		this.refiningLevel = fp.readShort();
+		this.RefiningLevel = fp.readShort();
 	};
 	PACKET.ZC.ACK_ITEMREFINING.size = 8;
 
@@ -7530,7 +7530,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 		this.type          = fp.readUChar();
 		this.IsIdentified  = fp.readUChar();
 		this.IsDamaged     = fp.readUChar();
-		this.refiningLevel = fp.readUChar();
+		this.RefiningLevel = fp.readUChar();
 		this.slot          = {};
 		this.slot.card1 = fp.readUShort();
 		this.slot.card2 = fp.readUShort();
@@ -7548,7 +7548,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 		this.type          = fp.readUChar();
 		this.IsIdentified  = fp.readUChar();
 		this.IsDamaged     = fp.readUChar();
-		this.refiningLevel = fp.readUChar();
+		this.RefiningLevel = fp.readUChar();
 		this.slot          = {};
 		this.slot.card1 = fp.readUShort();
 		this.slot.card2 = fp.readUShort();
@@ -8017,7 +8017,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 				out[i] = {};
 				out[i].index         = fp.readShort();
 				out[i].ITID          = fp.readUShort();
-				out[i].refiningLevel = fp.readUChar();
+				out[i].RefiningLevel = fp.readUChar();
 				out[i].slot          = {};
 				out[i].slot.card1 = fp.readUShort();
 				out[i].slot.card2 = fp.readUShort();
@@ -8284,7 +8284,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 				out[i] = {};
 				out[i].index         = fp.readShort();
 				out[i].ITID          = fp.readUShort();
-				out[i].refiningLevel = fp.readUChar();
+				out[i].RefiningLevel = fp.readUChar();
 				out[i].slot          = {};
 				out[i].slot.card1 = fp.readUShort();
 				out[i].slot.card2 = fp.readUShort();
@@ -8546,7 +8546,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 		this.Type          = fp.readUShort();
 		this.IsIdentified  = fp.readUChar();
 		this.IsDamaged     = fp.readUChar();
-		this.refiningLevel = fp.readUChar();
+		this.RefiningLevel = fp.readUChar();
 		this.slot          = {};
 		this.slot.card1 = fp.readUShort();
 		this.slot.card2 = fp.readUShort();
@@ -8603,7 +8603,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 				out[i].count         = fp.readShort();
 				out[i].IsIdentified  = fp.readUChar();
 				out[i].IsDamaged     = fp.readUChar();
-				out[i].refiningLevel = fp.readUChar();
+				out[i].RefiningLevel = fp.readUChar();
 				out[i].slot          = {};
 				out[i].slot.card1 = fp.readUShort();
 				out[i].slot.card2 = fp.readUShort();
@@ -9108,7 +9108,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 		this.ITID           = fp.readUShort();
 		this.IsIdentified   = fp.readUChar();
 		this.IsDamaged      = fp.readUChar();
-		this.refiningLevel  = fp.readUChar();
+		this.RefiningLevel  = fp.readUChar();
 		this.slot           = {};
 		this.slot.card1 = fp.readUShort();
 		this.slot.card2 = fp.readUShort();
@@ -9350,7 +9350,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 		this.ITID          = fp.readUShort();
 		this.IsIdentified  = fp.readUChar();
 		this.IsDamaged     = fp.readUChar();
-		this.refiningLevel = fp.readUChar();
+		this.RefiningLevel = fp.readUChar();
 		this.slot          = {};
 		this.slot.card1 = fp.readUShort();
 		this.slot.card2 = fp.readUShort();
@@ -9582,7 +9582,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 		this.ITID            = fp.readUShort();
 		this.IsIdentified    = fp.readUChar();
 		this.IsDamaged       = fp.readUChar();
-		this.refiningLevel   = fp.readUChar();
+		this.RefiningLevel   = fp.readUChar();
 		this.slot            = {};
 		this.slot.card1 = fp.readUShort();
 		this.slot.card2 = fp.readUShort();
@@ -10482,7 +10482,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 				out[i].ITID          = fp.readUShort();
 				out[i].IsIdentified  = fp.readUChar();
 				out[i].IsDamaged     = fp.readUChar();
-				out[i].refiningLevel = fp.readUChar();
+				out[i].RefiningLevel = fp.readUChar();
 				out[i].slot          = {};
 				out[i].slot.card1 = fp.readUShort();
 				out[i].slot.card2 = fp.readUShort();
@@ -10597,7 +10597,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 		this.count         = fp.readLong();
 		this.IsIdentified  = fp.readUChar();
 		this.IsDamaged     = fp.readUChar();
-		this.refiningLevel = fp.readUChar();
+		this.RefiningLevel = fp.readUChar();
 		this.slot          = {};
 		this.slot.card1 = fp.readUShort();
 		this.slot.card2 = fp.readUShort();
@@ -10822,7 +10822,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 				out[i].ItemType      = fp.readUChar();
 				out[i].price         = fp.readLong();
 				out[i].count         = fp.readUShort();
-				out[i].refiningLevel = fp.readUChar();
+				out[i].RefiningLevel = fp.readUChar();
 				out[i].card1         = fp.readUShort();
 				out[i].card2         = fp.readUShort();
 				out[i].card3         = fp.readUShort();
@@ -11265,7 +11265,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 		this.ITID            = fp.readUShort();
 		this.IsIdentified    = fp.readUChar();
 		this.IsDamaged       = fp.readUChar();
-		this.refiningLevel   = fp.readUChar();
+		this.RefiningLevel   = fp.readUChar();
 		this.slot            = {};
 		this.slot.card1      = fp.readUShort();
 		this.slot.card2      = fp.readUShort();
