@@ -521,12 +521,8 @@ define(function( require )
 		var srcEntity = EntityManager.get(pkt.srcAID);
 		var dstEntity = EntityManager.get(pkt.targetAID);
 
-		if (!srcEntity) {
-			return;
-		}
-
 		// Only mob to don't display skill name ?
-		if (srcEntity.objecttype !== Entity.TYPE_MOB) {
+		if (srcEntity && srcEntity.objecttype !== Entity.TYPE_MOB) {
 			srcEntity.dialog.set(
 				( (SkillInfo[pkt.SKID] && SkillInfo[pkt.SKID].SkillName ) || 'Unknown Skill' ) + ' !!',
 				'white'
@@ -534,7 +530,7 @@ define(function( require )
 		}
 
 		if (dstEntity) {
-			if (dstEntity !== srcEntity) {
+			if (srcEntity && dstEntity !== srcEntity) {
 				srcEntity.lookTo( dstEntity.position[0], dstEntity.position[1] );
 			}
 
