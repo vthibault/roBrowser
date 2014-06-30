@@ -22,6 +22,8 @@ define(function( require )
 	var Network        = require('Network/NetworkManager');
 	var PACKET         = require('Network/PacketStructure');
 	var EntityManager  = require('Renderer/EntityManager');
+	var Renderer       = require('Renderer/Renderer');
+	var Damage         = require('Renderer/Effects/Damage');
 	var ChatBox        = require('UI/Components/ChatBox/ChatBox');
 	var ChatRoom       = require('UI/Components/ChatRoom/ChatRoom');
 	var BasicInfo      = require('UI/Components/BasicInfo/BasicInfo');
@@ -534,6 +536,25 @@ define(function( require )
 
 
 	/**
+	 * Recovery of a status
+	 *
+	 * @param {object} pkt - PACKET.ZC.RECOVERY
+	 */
+	function onRecovery( pkt )
+	{
+		switch (pkt.varID) {
+			case StatusProperty.HP:
+				Damage.add( pkt.amount, Session.Entity, Renderer.tick, Damage.TYPE.HEAL );
+				break;
+
+			case StatusProperty.SP:
+				Damage.add( pkt.amount, Session.Entity, Renderer.tick, Damage.TYPE.HEAL | Damage.TYPE.SP );
+				break;
+		}
+	}
+
+
+	/**
 	 * Initialize
 	 */
 	return function MainEngine()
@@ -555,5 +576,6 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.CONFIG,                      onConfigUpdate );
 		Network.hookPacket( PACKET.ZC.ACTION_FAILURE,              onActionFailure );
 		Network.hookPacket( PACKET.ZC.MSG,                         onMessage );
+		Network.hookPacket( PACKET.ZC.RECOVERY,                    onRecovery );
 	};
 });

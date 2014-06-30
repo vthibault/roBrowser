@@ -550,7 +550,7 @@ define(function( require )
 			}
 
 			// Don't know why Gravity did this...
-			if (pkt.SKID === SkillId.AL_HEAL) {
+			if (pkt.SKID === SkillId.AL_HEAL || pkt.SKID === SkillId.AB_HIGHNESSHEAL) {
 				Damage.add( pkt.level, dstEntity, Renderer.tick, Damage.TYPE.HEAL );
 			}
 			else {

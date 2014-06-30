@@ -47,7 +47,8 @@ define(function( require )
 		DAMAGE:      1 << 2,
 		ENEMY:       1 << 3,
 		COMBO:       1 << 4,
-		COMBO_FINAL: 1 << 5
+		COMBO_FINAL: 1 << 5,
+		SP:          1 << 6
 	};
 
 
@@ -160,8 +161,12 @@ define(function( require )
 		obj.start    = tick;
 		obj.entity   = entity;
 
-		// Heal
-		if (obj.type & Damage.TYPE.HEAL) {
+		if (obj.type & Damage.TYPE.SP) {
+			obj.color[0] = 0.13;
+			obj.color[1] = 0.19;
+			obj.color[2] = 0.75;
+		}
+		else if (obj.type & Damage.TYPE.HEAL) {
 			// green
 			obj.color[1] = 1.0;
 		}
