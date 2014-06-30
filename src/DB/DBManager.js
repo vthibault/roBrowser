@@ -534,7 +534,7 @@ define(function(require)
 
 				// Show card prefix
 				default:
-					var list  = ['', 'double ', 'triple ', 'quadruple '];
+					var list  = ['', 'Double ', 'Triple ', 'Quadruple '];
 					var count = [0, 0, 0, 0];
 					var name, prefix = [];
 					var i, j = 0, pos;
