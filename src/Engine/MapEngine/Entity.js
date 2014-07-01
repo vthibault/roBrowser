@@ -549,12 +549,11 @@ define(function( require )
 				srcEntity.lookTo( dstEntity.position[0], dstEntity.position[1] );
 			}
 
-			// Don't know why Gravity did this...
-			if (pkt.SKID === SkillId.AL_HEAL || pkt.SKID === SkillId.AB_HIGHNESSHEAL) {
+			// In healing skill, the level parameter stored the healed value
+			if (pkt.SKID === SkillId.AL_HEAL ||
+			    pkt.SKID === SkillId.AB_HIGHNESSHEAL ||
+			    pkt.SKID === SkillId.AB_CHEAL) {
 				Damage.add( pkt.level, dstEntity, Renderer.tick, Damage.TYPE.HEAL );
-			}
-			else {
-				// skill_lvl = heal.
 			}
 
 			EffectManager.spamSkill( pkt.SKID, pkt.targetAID );

@@ -543,12 +543,27 @@ define(function( require )
 	function onRecovery( pkt )
 	{
 		switch (pkt.varID) {
+
 			case StatusProperty.HP:
 				Damage.add( pkt.amount, Session.Entity, Renderer.tick, Damage.TYPE.HEAL );
+
+				Session.Entity.life.hp += pkt.amount;
+				Session.Entity.life.update();
+
+				if (Session.Entity.life.hp_max > -1) {
+					BasicInfo.update('hp', Session.Entity.life.hp, Session.Entity.life.hp_max);
+				}
 				break;
 
 			case StatusProperty.SP:
 				Damage.add( pkt.amount, Session.Entity, Renderer.tick, Damage.TYPE.HEAL | Damage.TYPE.SP );
+
+				Session.Entity.life.sp += pkt.amount;
+				Session.Entity.life.update();
+
+				if (Session.Entity.life.sp_max > -1) {
+					BasicInfo.update('sp', Session.Entity.life.sp, Session.Entity.life.sp_max);
+				}
 				break;
 		}
 	}
