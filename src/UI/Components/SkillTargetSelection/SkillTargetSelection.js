@@ -23,6 +23,7 @@ define(function(require)
 	var Renderer      = require('Renderer/Renderer');
 	var Entity        = require('Renderer/Entity/Entity');
 	var EntityManager = require('Renderer/EntityManager');
+	var Session       = require('Engine/SessionStorage');
 	var Controls      = require('Preferences/Controls');
 	var UIManager     = require('UI/UIManager');
 	var UIComponent   = require('UI/UIComponent');
@@ -52,7 +53,7 @@ define(function(require)
 	/**
 	 * @var {number} target type (see constants)
 	 */
-	var _target = 0;
+	var _flag = 0;
 
 
 	/**
@@ -171,14 +172,14 @@ define(function(require)
 	 */
 	SkillTargetSelection.set = function set( skill, target, description )
 	{
-		_target = target;
+		_flag = target;
 		_skill  = skill;
 
-		if (!_target) {
+		if (!_flag) {
 			return;
 		}
 
-		if (_target & (SkillTargetSelection.TYPE.PLACE|SkillTargetSelection.TYPE.TRAP)) {
+		if (_flag & (SkillTargetSelection.TYPE.PLACE|SkillTargetSelection.TYPE.TRAP)) {
 			Cursor.blockMagnetism = true;
 		}
 
@@ -228,44 +229,64 @@ define(function(require)
 	{
 		SkillTargetSelection.remove();
 
+		// Only left click
 		if (event.which !== 1) {
 			return true;
 		}
 
-		if (_target & (SkillTargetSelection.TYPE.PLACE|SkillTargetSelection.TYPE.TRAP)) {
+		event.stopImmediatePropagation();
+
+		// Zone skill
+		if (_flag & (SkillTargetSelection.TYPE.PLACE|SkillTargetSelection.TYPE.TRAP)) {
 			SkillTargetSelection.onUseSkillToPos(_skill.SKID, _skill.level, Mouse.world.x, Mouse.world.y);
-			event.stopImmediatePropagation();
 			return false;
 		}
 
+		// Get entity
 		var entity = EntityManager.getOverEntity();
 		var target = 0;
 
-		if (entity) {
-			switch (entity.objecttype) {
-				case Entity.TYPE_MOB:
-					target = SkillTargetSelection.TYPE.ENEMY | SkillTargetSelection.TYPE.PET;
-					break;
-
-				case Entity.TYPE_PC:
-					target = SkillTargetSelection.TYPE.FRIEND;
-					break;
-
-				default:
-					break;
-			}
-
-			if (target & _target || KEYS.SHIFT || Controls.noshift) {
-				if (_target === SkillTargetSelection.TYPE.PET) {
-					SkillTargetSelection.onPetSelected(entity.GID);
-				}
-				else {
-					SkillTargetSelection.onUseSkillToId(_skill.SKID, _skill.level, entity.GID);
-				}
-			}
+		if (!entity) {
+			return false;
 		}
 
-		event.stopImmediatePropagation();
+		// Get target type
+		switch (entity.objecttype) {
+			case Entity.TYPE_MOB:
+				target = SkillTargetSelection.TYPE.ENEMY | SkillTargetSelection.TYPE.PET;
+				break;
+
+			case Entity.TYPE_PC:
+			case Entity.TYPE_HOM:
+			case Entity.TYPE_MERC:
+			case Entity.TYPE_ELEM:
+				target = SkillTargetSelection.TYPE.FRIEND;
+				break;
+
+			// Can't use skill on this type
+			// (warp, npc, items, effects...)
+			default:
+				return false;
+		}
+
+		// This skill can't be casted on this type
+		if (!(target & _flag) && !KEYS.SHIFT && !Controls.noshift) {
+			return false;
+		}
+
+		// Pet capture
+		if (_flag === SkillTargetSelection.TYPE.PET) {
+			SkillTargetSelection.onPetSelected(entity.GID);
+			return false;
+		}
+
+		// Can't cast evil skill on your self
+		if ((_flag & SkillTargetSelection.TYPE.ENEMY) && entity === Session.Entity) {
+			return false;
+		}
+
+		// Cast skill
+		SkillTargetSelection.onUseSkillToId(_skill.SKID, _skill.level, entity.GID);
 		return false;
 	}
 
