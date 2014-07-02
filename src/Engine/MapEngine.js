@@ -30,6 +30,7 @@ define(function( require )
 	var MapRenderer      = require('Renderer/MapRenderer');
 	var EntityManager    = require('Renderer/EntityManager');
 	var Entity           = require('Renderer/Entity/Entity');
+	var Altitude         = require('Renderer/Map/Altitude');
 	var Mouse            = require('Controls/MouseEventHandler');
 	var KEYS             = require('Controls/KeyEventHandler');
 	var UIManager        = require('UI/UIManager');
@@ -504,16 +505,84 @@ define(function( require )
 			return;
 		}
 
-		if (Mouse.world.x > -1 && Mouse.world.y > -1) {
+		var isWalkable   = (Mouse.world.x > -1 && Mouse.world.y > -1);
+		var isCurrentPos = (Math.round(Session.Entity.position[0]) === Mouse.world.x &&
+		                    Math.round(Session.Entity.position[1]) === Mouse.world.y);
+
+		if (isWalkable && !isCurrentPos) {
 			var pkt = new PACKET.CZ.REQUEST_MOVE();
-			pkt.dest[0] = Mouse.world.x;
-			pkt.dest[1] = Mouse.world.y;
+
+			if (!checkFreeCell(Mouse.world.x, Mouse.world.y, 1, pkt.dest)) {
+				pkt.dest[0] = Mouse.world.x;
+				pkt.dest[1] = Mouse.world.y;
+			}
+
 			Network.sendPacket(pkt);
 		}
 
 		Events.clearTimeout(_walkTimer);
 		_walkTimer    =  Events.setTimeout( onWalkRequest, 500);
 		_walkLastTick = +Renderer.tick;
+	}
+
+
+	/**
+	 * Search free cells around a position
+	 *
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} range
+	 * @param {array} out
+	 */
+	function checkFreeCell(x, y, range, out)
+	{
+		var _x, _y, r;
+		var d_x = Session.Entity.position[0] < x ? -1 : 1;
+		var d_y = Session.Entity.position[1] < y ? -1 : 1;
+
+		// Search possible positions
+		for (r = 0; r <= range; ++r) {
+			for (_x = -r; _x <= r; ++_x) {
+				for (_y = -r; _y <= r; ++_y) {
+					if (isFreeCell(x + _x * d_x, y + _y * d_y)) {
+						out[0] = x + _x * d_x;
+						out[1] = y + _y * d_y;
+						return true;
+					}
+				}
+			}
+		}
+
+		return false;
+	}
+
+
+	/**
+	 * Does a cell is free (walkable, and no entity on)
+	 *
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {returns} is free
+	 */
+	function isFreeCell(x, y)
+	{
+		if (!(Altitude.getCellType(x, y) & Altitude.TYPE.WALKABLE)) {
+			return false;
+		}
+
+		var free = true;
+
+		EntityManager.forEach(function(entity){
+			if (Math.round(entity.position[0]) === x &&
+			    Math.round(entity.position[1]) === y) {
+				free = false;
+				return false;
+			}
+
+			return true;
+		});
+
+		return free;
 	}
 
 
