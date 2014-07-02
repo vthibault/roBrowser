@@ -135,6 +135,9 @@ define(function( require )
 			return;
 		}
 
+		// Can't render floating points
+		damage = Math.floor(damage);
+
 		var PADDING = 2;
 		var i, count, start_x, start_y;
 		var frame;
