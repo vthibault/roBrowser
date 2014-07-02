@@ -324,7 +324,7 @@ function(      WebGL,         glMatrix,      Camera )
 	/**
 	 * @var {Uint16Array} position in 2D canvas 
 	 */
-	var _pos = new Uint16Array(2);
+	var _pos = new Int16Array(2);
 
 
 	/**
@@ -564,12 +564,12 @@ function(      WebGL,         glMatrix,      Camera )
 
 			// Mirror feature
 			if (_size[0] < 0) {
-				scale_x      *= -1;
+				scale_x  *= -1;
 				_size[0] *= -1;
 			}
 
 			if (_size[1] < 0) {
-				scale_y      *= -1;
+				scale_y  *= -1;
 				_size[1] *= -1;
 			}
 
@@ -626,7 +626,7 @@ function(      WebGL,         glMatrix,      Camera )
 				 0,              0,
 				 width,          height,
 				-_size[0] >> 1, -_size[1] >> 1,
-				 width,          height
+				 _size[0] |  0,  _size[1] |  0
 			);
 			_ctx.restore();
 		};

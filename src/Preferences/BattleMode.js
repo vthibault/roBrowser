@@ -30,16 +30,17 @@ define( ['Core/Preferences', 'Controls/KeyEventHandler'], function( Preferences,
 	defaultKey[ KEYS.F12 ] = { component:'ShortCut',        cmd:'EXTEND'   };
 
 	// UI
-	defaultKey[ KEYS.V ]   = { component:'BasicInfo',       cmd:'EXTEND', alt:true };
-	defaultKey[ KEYS.Q ]   = { component:'Equipment',       cmd:'TOGGLE', alt:true };
+	defaultKey[ KEYS.C ]   = { component:'ChatRoomCreate',  cmd:'TOGGLE', alt:true };
 	defaultKey[ KEYS.E ]   = { component:'Inventory',       cmd:'TOGGLE', alt:true };
 	defaultKey[ KEYS.J ]   = { component:'PetInformations', cmd:'TOGGLE', alt:true };
+	defaultKey[ KEYS.L ]   = { component:'Emoticons',       cmd:'TOGGLE', alt:true };
+	defaultKey[ KEYS.Q ]   = { component:'Equipment',       cmd:'TOGGLE', alt:true };
 	defaultKey[ KEYS.S ]   = { component:'SkillList',       cmd:'TOGGLE', alt:true };
-	defaultKey[ KEYS.C ]   = { component:'ChatRoomCreate',  cmd:'TOGGLE', alt:true };
+	defaultKey[ KEYS.V ]   = { component:'BasicInfo',       cmd:'EXTEND', alt:true };
 
 
 	/**
 	 * Export
 	 */
-	return Preferences.get( 'BattleMode', defaultKey, 1.2 );
+	return Preferences.get( 'BattleMode', defaultKey, 1.3 );
 });
