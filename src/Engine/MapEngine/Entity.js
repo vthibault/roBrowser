@@ -978,5 +978,6 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.FASTMOVE,                     onEntityFastMove);
 		Network.hookPacket( PACKET.ZC.RESURRECTION,                 onEntityResurect);
 		Network.hookPacket( PACKET.ZC.EMOTION,                      onEntityEmotion);
+		Network.hookPacket( PACKET.ZC.NOTIFY_MONSTER_HP,            onEntityLifeUpdate);
 	};
 });

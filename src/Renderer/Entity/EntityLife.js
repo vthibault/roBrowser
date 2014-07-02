@@ -34,6 +34,7 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 		this.ctx     = this.canvas.getContext('2d');
 		this.canvas.style.position = 'absolute';
 		this.canvas.style.zIndex   = 1;
+		this.entity  = null;
 	}
 
 
@@ -66,6 +67,7 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 	Life.prototype.update = function update()
 	{
 		var width  = 60, height =  5;
+		var Entity = this.entity.constructor;
 
 		// Don't display it, if negatives values.
 		if (this.hp < 0 || this.hp_max < 0) {
@@ -90,14 +92,20 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 
 		// border
 		ctx.fillStyle = '#10189c';
-		ctx.fillRect( 0, 0, width, height ) ;
+		ctx.fillRect( 0, 0, width, height );
 
 		// empty
 		ctx.fillStyle = '#424242';
 		ctx.fillRect( 1, 1, width-2, height-2 );
 	
 		// Display HP
-		ctx.fillStyle = ( hp_per < 0.25 ) ? '#FF0000' : '#10ef21' ;
+		if (this.entity.objecttype === Entity.TYPE_MOB) {
+			ctx.fillStyle = ( hp_per < 0.25 ) ? '#FFFF00' : '#FF00E7';
+		}
+		else {
+			ctx.fillStyle = ( hp_per < 0.25 ) ? '#FF0000' : '#10ef21';
+		}
+
 		ctx.fillRect( 1, 1, Math.round( (width-2) * hp_per ), 3 );
 
 		// Display SP
@@ -153,6 +161,7 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 	 */
 	return function Init()
 	{
-		this.life = new Life();
+		this.life        = new Life();
+		this.life.entity = this;
 	};
 });
