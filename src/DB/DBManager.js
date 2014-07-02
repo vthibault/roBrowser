@@ -483,9 +483,9 @@ define(function(require)
 			var item = ItemTable[itemid] || unknownItem;
 
 			if (!item._decoded) {
-				item.identifiedDescriptionName   = TextEncoding.decodeString(item.identifiedDescriptionName.join('\n'));
+				item.identifiedDescriptionName   = item.identifiedDescriptionName   ? TextEncoding.decodeString(item.identifiedDescriptionName.join('\n'))   : '';
+				item.unidentifiedDescriptionName = item.unidentifiedDescriptionName ? TextEncoding.decodeString(item.unidentifiedDescriptionName.join('\n')) : '';
 				item.identifiedDisplayName       = TextEncoding.decodeString(item.identifiedDisplayName);
-				item.unidentifiedDescriptionName = TextEncoding.decodeString(item.unidentifiedDescriptionName.join('\n'));
 				item.unidentifiedDisplayName     = TextEncoding.decodeString(item.unidentifiedDisplayName);
 				item.prefixNameTable             = TextEncoding.decodeString(item.prefixNameTable || '');
 				item._decoded                    = true;
