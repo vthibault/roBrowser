@@ -105,15 +105,16 @@ define(function(require)
 		);
 
 		this.ui.find('.content')
-			.on('click',     'canvas', onSelectEmoticon)
-			.on('mousedown', 'canvas', onStopPropagation);
+			.on('dblclick',  'canvas', onPlayEmoticon)
+			.on('mousedown', 'canvas', onSelectEmoticon);
 
 		this.ui.find('.prev').addClass('disabled');
-		this.ui.find('.close').mousedown(onClose);
-		this.ui.find('.prev').mousedown(onStopPropagation).click(movePage(-1));
-		this.ui.find('.next').mousedown(onStopPropagation).click(movePage(+1));
+		this.ui.find('.close').mousedown(onStopPropagation).click(onClose);
+		this.ui.find('.prev').click(movePage(-1));
+		this.ui.find('.next').click(movePage(+1));
 
-		this.draggable();
+		this.ui.mousedown(onStopPropagation);
+		this.draggable(this.ui.find('.titlebar'));
 	};
 
 
@@ -245,6 +246,22 @@ define(function(require)
 		if (cmd && !ChatBox.ui.find('.battlemode').is(':visible')) {
 			ChatBox.ui.find('.input .message').val('/' + cmd).select();
 		}
+
+		event.stopImmediatePropagation();
+		return false;
+	}
+
+
+	/**
+	 * Do an emoticon
+	 */
+	function onPlayEmoticon( event )
+	{
+		var idx = this.getAttribute('data-index');
+		var cmd = EmoticonsDB.names[idx];
+
+		ChatBox.ui.find('.input .message').val('/' + cmd);
+		ChatBox.submit();
 
 		event.stopImmediatePropagation();
 		return false;
