@@ -67,6 +67,7 @@ define(["./JobConst"], function( JobId )
 	JobNameTable[JobId.ALCHEMIST_H]      = "\xC5\xA9\xB8\xAE\xBF\xA1\xC0\xCC\xC5\xCD";
 	JobNameTable[JobId.BARD_H]           = "\xC5\xAC\xB6\xF3\xBF\xEE";
 	JobNameTable[JobId.DANCER_H]         = "\xC1\xFD\xBD\xC3";
+	JobNameTable[JobId.CRUSADER2_H]      = "\xC6\xE4\xC4\xDA\xC6\xC8\xB6\xF3\xB5\xF2";
 
 	JobNameTable[JobId.RUNE_KNIGHT]      = "\xB7\xE9\xB3\xAA\xC0\xCC\xC6\xAE";
 	JobNameTable[JobId.WARLOCK]          = "\xBF\xF6\xB7\xCF";
