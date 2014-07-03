@@ -224,7 +224,7 @@ define(function(require)
 
 		// Clean equipments
 		_list = {};
-		this.ui.find('.col1, .col3').empty();
+		this.ui.find('.col1, .col3, .ammo').empty();
 
 		// Save preferences
 		_preferences.show   =  this.ui.is(':visible');
