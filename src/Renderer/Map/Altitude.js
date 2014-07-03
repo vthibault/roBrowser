@@ -152,10 +152,15 @@ function(       glMatrix,          PathFinding,            Mouse )
 
 		var index, x1, x2;
 
+		// Should be at the middle of the cell
+		x     += 0.5;
+		y     += 0.5;
+
 		index  = (Math.floor(x) + Math.floor(y) * Altitude.width) * 5;
 
-		x      = x % 1;
-		y      = y % 1;
+		x     %= 1.0;
+		y     %= 1.0;
+
 		x1     = _cells[index+0] + (_cells[index+1]-_cells[index+0]) * x;
 		x2     = _cells[index+2] + (_cells[index+3]-_cells[index+2]) * x;
 
