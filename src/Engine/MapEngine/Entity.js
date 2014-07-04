@@ -602,6 +602,20 @@ define(function( require )
 			if (srcEntity.objecttype !== Entity.TYPE_MOB) {
 				srcEntity.dialog.set( ( (SkillInfo[pkt.SKID] && SkillInfo[pkt.SKID].SkillName ) || 'Unknown Skill' ) + ' !!' );
 			}
+
+			srcEntity.setAction({
+				action: srcEntity.ACTION.SKILL,
+				frame:  0,
+				repeat: false,
+				play:   true,
+				next: {
+					action: srcEntity.ACTION.READYFIGHT,
+					frame:  0,
+					repeat: true,
+					play:   true,
+					next:   false
+				}
+			});
 		}
 
 		if (dstEntity) {
