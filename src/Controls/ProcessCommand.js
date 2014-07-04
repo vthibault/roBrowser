@@ -158,6 +158,11 @@ define(function( require )
 				Network.sendPacket(pkt);
 				return;
 
+			case 'memo':
+				pkt = new PACKET.CZ.REMEMBER_WARPPOINT();
+				Network.sendPacket(pkt);
+				return;
+
 			case 'chat':
 				getModule('UI/Components/ChatRoomCreate/ChatRoomCreate').show();
 				return;

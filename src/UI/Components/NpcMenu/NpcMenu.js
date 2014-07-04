@@ -47,8 +47,8 @@ define(function(require)
 	 */
 	NpcMenu.init = function init()
 	{
-		this.ui.find('.ok').click(validate);
-		this.ui.find('.cancel').click(cancel);
+		this.ui.find('.ok').click(validate.bind(this));
+		this.ui.find('.cancel').click(cancel.bind(this));
 
 		this.ui.css({
 			top: Math.max(376, Renderer.height/2 + 76 ),
@@ -56,15 +56,20 @@ define(function(require)
 		});
 
 		this.draggable();
-		
+
+		var self = this;
 		this.ui.find('.content')
 
 			// Scroll feature should block at each line
 			.on('mousewheel DOMMouseScroll', onScroll)
 
 			// Manage indexes
-			.on('mousedown', 'div', selectIndex)
-			.on('dblclick',  'div', validate )
+			.on('mousedown', 'div', function(event) {
+				selectIndex.call(self, jQuery(this));
+				event.stopImmediatePropagation();
+				return false;
+			})
+			.on('dblclick',  'div', validate.bind(this))
 	};
 
 
@@ -88,11 +93,11 @@ define(function(require)
 		switch (event.which) {
 
 			case KEYS.ENTER:
-				validate();
+				validate.call(this);
 				break;
 
 			case KEYS.ESCAPE:
-				cancel();
+				cancel.call(this);
 				break;
 
 			case KEYS.UP:
@@ -172,7 +177,7 @@ define(function(require)
 	 */
 	function validate()
 	{
-		NpcMenu.onSelectMenu( _ownerID, _index + 1 );
+		this.onSelectMenu( _ownerID, _index + 1 );
 	}
 
 
@@ -181,18 +186,16 @@ define(function(require)
 	 */
 	function cancel()
 	{
-		NpcMenu.onSelectMenu( _ownerID, 255 );
+		this.onSelectMenu( _ownerID, 255 );
 	}
 
 
 	/**
 	 * Select an index, change background color
 	 */
-	function selectIndex()
+	function selectIndex($this)
 	{
-		var $this = jQuery(this);
-
-		NpcMenu.ui.find('.content div').removeClass('selected');
+		this.ui.find('.content div').removeClass('selected');
 		$this.addClass('selected');
 
 		_index = parseInt($this.data('index'), 10);

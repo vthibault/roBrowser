@@ -29,6 +29,7 @@ define(function( require )
 	var SkillTargetSelection = require('UI/Components/SkillTargetSelection/SkillTargetSelection');
 	var ItemSelection        = require('UI/Components/ItemSelection/ItemSelection');
 	var Inventory            = require('UI/Components/Inventory/Inventory');
+	var NpcMenu              = require('UI/Components/NpcMenu/NpcMenu');
 
 
 	/**
@@ -296,6 +297,84 @@ define(function( require )
 
 
 	/**
+	 * Manage menu to select zone to warp on
+	 *
+	 * @param {object} pkt - PACKET.ZC.WARPLIST
+	 */
+	function onTeleportList( pkt )
+	{
+		// Clone NPC box
+		var WarpList = NpcMenu.clone('WarpList', true);
+
+		// Once selected
+		WarpList.onSelectMenu = function(skillid, index) {
+			WarpList.remove();
+
+			var _pkt     = new PACKET.CZ.SELECT_WARPPOINT();
+			_pkt.SKID    = skillid;
+			_pkt.mapName = pkt.mapName[index-1] || 'cancel';
+			Network.sendPacket(_pkt);
+		};
+
+		WarpList.onAppend = function() {
+			var i, count;
+			var mapNames = [];
+
+			for (i = 0, count = pkt.mapName.length; i < count; ++i) {
+				mapNames[i] = DB.getMapName(pkt.mapName[i], pkt.mapName[i]);
+			}
+
+			WarpList.setMenu(mapNames.join(':') + ':Cancel', pkt.SKID);
+			WarpList.ui.find('.title').text(DB.getMessage(213));
+		};
+
+		WarpList.append();
+	}
+
+
+	/**
+	 * Get error message from teleportation skill
+	 *
+	 * @param {object} pkt - PACKET.ZC.NOTIFY_MAPINFO
+	 */
+	function onTeleportResult( pkt )
+	{
+		switch (pkt.type) {
+			case 0: //Unable to Teleport in this area
+				ChatBox.addText( DB.getMessage(500), ChatBox.TYPE.ERROR);
+				break;
+
+			case 1: //Saved point cannot be memorized.
+				ChatBox.addText( DB.getMessage(501), ChatBox.TYPE.ERROR);
+				break;
+		}
+	}
+
+
+	/**
+	 * Result of /memo command
+	 *
+	 * @param {object} pkt - PACKET.ZC.ACK_REMEMBER_WARPPOINT
+	 */
+	function onMemoResult( pkt )
+	{
+		switch (pkt.errorCode) {
+			case 0: // Saved location as a Memo Point for Warp skill.
+				ChatBox.addText( DB.getMessage(217), ChatBox.TYPE.BLUE);
+				break;
+
+			case 1: // Skill Level is not high enough.
+				ChatBox.addText( DB.getMessage(214), ChatBox.TYPE.ERROR);
+				break;
+
+			case 2: // You haven't learned Warp.
+				ChatBox.addText( DB.getMessage(216), ChatBox.TYPE.ERROR);
+				break;
+		}
+	}
+
+
+	/**
 	 * Send back informations from server
 	 * The user want to modify the shortcut
 	 *
@@ -374,19 +453,22 @@ define(function( require )
 	 */
 	return function SkillEngine()
 	{
-		Network.hookPacket( PACKET.ZC.SKILLINFO_LIST,       onSkillList );
-		Network.hookPacket( PACKET.ZC.SKILLINFO_UPDATE,     onSkillUpdate );
-		Network.hookPacket( PACKET.ZC.ADD_SKILL,            onSkillAdded );
-		Network.hookPacket( PACKET.ZC.SHORTCUT_KEY_LIST,    onShortCutList );
-		Network.hookPacket( PACKET.ZC.SHORTCUT_KEY_LIST_V2, onShortCutList );
-		Network.hookPacket( PACKET.ZC.ACK_TOUSESKILL,       onSkillResult );
-		Network.hookPacket( PACKET.ZC.NOTIFY_EFFECT,        onSpecialEffect );
-		Network.hookPacket( PACKET.ZC.NOTIFY_EFFECT2,       onEffect );
-		Network.hookPacket( PACKET.ZC.NOTIFY_EFFECT3,       onEffect );
-		Network.hookPacket( PACKET.ZC.NOTIFY_GROUNDSKILL,   onSkillToGround );
-		Network.hookPacket( PACKET.ZC.AUTORUN_SKILL,        onAutoCastSkill );
-		Network.hookPacket( PACKET.ZC.ITEMIDENTIFY_LIST,    onIdentifyList );
-		Network.hookPacket( PACKET.ZC.ACK_ITEMIDENTIFY,     onIdentifyResult );
-		Network.hookPacket( PACKET.ZC.AUTOSPELLLIST,        onAutoSpellList );
+		Network.hookPacket( PACKET.ZC.SKILLINFO_LIST,         onSkillList );
+		Network.hookPacket( PACKET.ZC.SKILLINFO_UPDATE,       onSkillUpdate );
+		Network.hookPacket( PACKET.ZC.ADD_SKILL,              onSkillAdded );
+		Network.hookPacket( PACKET.ZC.SHORTCUT_KEY_LIST,      onShortCutList );
+		Network.hookPacket( PACKET.ZC.SHORTCUT_KEY_LIST_V2,   onShortCutList );
+		Network.hookPacket( PACKET.ZC.ACK_TOUSESKILL,         onSkillResult );
+		Network.hookPacket( PACKET.ZC.NOTIFY_EFFECT,          onSpecialEffect );
+		Network.hookPacket( PACKET.ZC.NOTIFY_EFFECT2,         onEffect );
+		Network.hookPacket( PACKET.ZC.NOTIFY_EFFECT3,         onEffect );
+		Network.hookPacket( PACKET.ZC.NOTIFY_GROUNDSKILL,     onSkillToGround );
+		Network.hookPacket( PACKET.ZC.AUTORUN_SKILL,          onAutoCastSkill );
+		Network.hookPacket( PACKET.ZC.ITEMIDENTIFY_LIST,      onIdentifyList );
+		Network.hookPacket( PACKET.ZC.ACK_ITEMIDENTIFY,       onIdentifyResult );
+		Network.hookPacket( PACKET.ZC.AUTOSPELLLIST,          onAutoSpellList );
+		Network.hookPacket( PACKET.ZC.WARPLIST,               onTeleportList );
+		Network.hookPacket( PACKET.ZC.NOTIFY_MAPINFO,         onTeleportResult );
+		Network.hookPacket( PACKET.ZC.ACK_REMEMBER_WARPPOINT, onMemoResult );
 	};
 });

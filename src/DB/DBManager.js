@@ -607,14 +607,15 @@ define(function(require)
 	 * Get a message from msgstringtable
 	 *
 	 * @param {string} mapname
+	 * @param {string} default name if not found
 	 * @return {string} map location
 	 */
-	DB.getMapName = function getMapName( mapname )
+	DB.getMapName = function getMapName( mapname, defaultName )
 	{
 		var map = mapname.replace('.gat','.rsw');
 
 		if (!(map in MapTable) || !MapTable[map].name) {
-			return DB.getMessage(187);
+			return (typeof defaultName === 'undefined' ? DB.getMessage(187) : defaultName);
 		}
 
 		return TextEncoding.decodeString(MapTable[map].name);
