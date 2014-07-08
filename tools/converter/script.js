@@ -69,7 +69,7 @@
 	 */
 	function sandboxEval(code) {
 		try {
-			return eval(code);
+			return new Function('return ' + code + ';')();
 		}
 		catch(e) {
 			return null;
@@ -153,7 +153,7 @@
 		}
 
 		// temp replace in quote...
-		content = content.replace(/"(\w+)?--[^"]+/g, function(a){
+		content = content.replace(/"([^"]+)?--[^"]+/g, function(a){
 			return a.replace(/-/g, '\\\\x2d');
 		});
 
