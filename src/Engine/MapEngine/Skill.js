@@ -18,9 +18,11 @@ define(function( require )
 	 */
 	var DB                   = require('DB/DBManager');
 	var SkillId              = require('DB/Skills/SkillConst');
+	var PathFinding          = require('Utils/PathFinding');
 	var Session              = require('Engine/SessionStorage');
 	var Network              = require('Network/NetworkManager');
 	var PACKET               = require('Network/PacketStructure');
+	var EntityManager        = require('Renderer/EntityManager');
 	var EffectManager        = require('Renderer/EffectManager');
 	var Altitude             = require('Renderer/Map/Altitude');
 	var ShortCut             = require('UI/Components/ShortCut/ShortCut');
@@ -418,11 +420,52 @@ define(function( require )
 	 */
 	SkillWindow.onUseSkill = SkillTargetSelection.onUseSkillToId  = function onUseSkill( id, level, targetID)
 	{
-		var pkt = new PACKET.CZ.USE_SKILL();
+		var entity, skill, target, pkt, out;
+		var count, range;
+
+		entity = Session.Entity;
+		target = EntityManager.get(targetID) || entity;
+		skill  = SkillWindow.getSkillById(id);
+		out    = [];
+
+		if (skill) {
+			range = skill.attackRange;
+		}
+		else {
+			range = entity.attack_range;
+		}
+
+		count = PathFinding.searchLong(
+			entity.position[0] | 0, entity.position[1] | 0,
+			target.position[0] | 0, target.position[1] | 0,
+			range,
+			out,
+			Altitude.TYPE.WALKABLE
+		);
+
+		// Can't attack to this point
+		if (!count) {
+			return;
+		}
+
+		pkt               = new PACKET.CZ.USE_SKILL();
 		pkt.SKID          = id;
 		pkt.selectedLevel = level;
 		pkt.targetID      = targetID || Session.Entity.GID;
 
+		// In range
+		if (count < 2 || target === entity) {
+			Network.sendPacket(pkt);
+			return;
+		}
+
+		// Save the packet
+		Session.moveAction = pkt;
+
+		// Move to position
+		pkt         = new PACKET.CZ.REQUEST_MOVE();
+		pkt.dest[0] = out[ count - 1 ][0];
+		pkt.dest[1] = out[ count - 1 ][1];
 		Network.sendPacket(pkt);
 	};
 
@@ -438,12 +481,51 @@ define(function( require )
 	 */
 	SkillTargetSelection.onUseSkillToPos = function onUseSkillToPos(id, level, x, y)
 	{
-		var pkt = new PACKET.CZ.USE_SKILL_TOGROUND();
+		var pos, entity, pkt, out, skill;
+		var count, range;
+
+		entity = Session.Entity;
+		pos    = entity.position;
+		skill  = SkillWindow.getSkillById(id);
+		out    = [];
+
+		if (skill) {
+			range = skill.attackRange;
+		}
+		else {
+			range = entity.attack_range;
+		}
+
+		count = PathFinding.searchLong(
+			pos[0] | 0, pos[1] | 0,
+			x      | 0, y      | 0,
+			range,
+			out,
+			Altitude.TYPE.WALKABLE
+		);
+
+		// Can't attack to this point
+		if (!count) {
+			return;
+		}
+
+		pkt               = new PACKET.CZ.USE_SKILL_TOGROUND();
 		pkt.SKID          = id;
 		pkt.selectedLevel = level;
 		pkt.xPos          = x;
 		pkt.yPos          = y;
 
+		// In range
+		if (count < 2) {
+			Network.sendPacket(pkt);
+			return;
+		}
+
+		// Save the packet and move to the position
+		Session.moveAction = pkt;
+		pkt                = new PACKET.CZ.REQUEST_MOVE();
+		pkt.dest[0]        = out[ count - 1 ][0];
+		pkt.dest[1]        = out[ count - 1 ][1];
 		Network.sendPacket(pkt);
 	};
 

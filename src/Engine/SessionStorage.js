@@ -28,7 +28,8 @@ define(function()
 		AdminList:   [],
 
 		intravision: false,
-		moveTarget:  null,
+
+		moveAction:  null,
 
 		zeny:        0,
 

@@ -50,7 +50,7 @@ define(function( require )
 	 */
 	function OnMouseDown( event )
 	{
-		Session.moveTarget = null;
+		Session.moveAction = null;
 
 		if (!Mouse.intersect) {
 			return;

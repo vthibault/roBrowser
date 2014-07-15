@@ -592,30 +592,10 @@ define(function( require )
 	function onWalkEnd()
 	{
 		// No action to do ?
-		if (!Session.moveTarget) {
-			return;
-		}
+		if (Session.moveAction) {
+			Network.sendPacket(Session.moveAction);
 
-		var pkt, entity = Session.moveTarget;
-
-		Session.moveTarget = null;
-
-		// Not in scene anymore.
-		if (!EntityManager.get(entity.GID)) {
-			return;
-		}
-
-		switch (entity.objecttype) {
-			case Entity.TYPE_MOB:
-			case Entity.TYPE_PC:
-				entity.onFocus();
-				break;
-
-			case Entity.TYPE_ITEM:
-				pkt       = new PACKET.CZ.ITEM_PICKUP();
-				pkt.ITAID = entity.GID;
-				Network.sendPacket(pkt);
-				break;
+			Session.moveAction = null;
 		}
 	}
 

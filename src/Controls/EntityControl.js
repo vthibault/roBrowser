@@ -145,23 +145,23 @@ define(function( require )
 			case Entity.TYPE_ITEM:
 				Cursor.setType( Cursor.ACTION.PICK, true, 2 );
 
+				pkt       = new PACKET.CZ.ITEM_PICKUP();
+				pkt.ITAID = this.GID;
+
 				// Too far, walking to it
 				if (vec2.distance(Session.Entity.position, this.position) > 2) {
+					Session.moveAction = pkt;
+
 					pkt         = new PACKET.CZ.REQUEST_MOVE();
 					pkt.dest[0] = Mouse.world.x;
 					pkt.dest[1] = Mouse.world.y;
 					Network.sendPacket(pkt);
 
-					Session.moveTarget = this;
 					return true;
 				}
 
-				Session.Entity.lookTo( this.position[0], this.position[1] );
-
-				pkt       = new PACKET.CZ.ITEM_PICKUP();
-				pkt.ITAID = this.GID;
 				Network.sendPacket(pkt);
-
+				Session.Entity.lookTo( this.position[0], this.position[1] );
 				return true;
 
 			case Entity.TYPE_NPC:
@@ -295,27 +295,24 @@ define(function( require )
 					return true;
 				}
 
-				// in range
+				pkt           = new PACKET.CZ.REQUEST_ACT();
+				pkt.action    = 7;
+				pkt.targetGID = this.GID;
+
+				// in range send packet
 				if (count <= main.attack_range) {
-					pkt           = new PACKET.CZ.REQUEST_ACT();
-					pkt.action    = 7;
-					pkt.targetGID = this.GID;
 					Network.sendPacket(pkt);
-				}
-
-				// Move to entity
-				else {
-					var _pkt     = new PACKET.CZ.REQUEST_MOVE();
-					_pkt.dest[0] = out[ count - 1 ][0];
-					_pkt.dest[1] = out[ count - 1 ][1];
-					Network.sendPacket(_pkt);
-
-					Session.moveTarget = this;
 					return true;
 				}
 
+				// Move to entity
+				Session.moveAction = pkt;
 
-			return true;
+				pkt         = new PACKET.CZ.REQUEST_MOVE();
+				pkt.dest[0] = out[ count - 1 ][0];
+				pkt.dest[1] = out[ count - 1 ][1];
+				Network.sendPacket(pkt);
+				return true;
 		}
 
 		return false;
