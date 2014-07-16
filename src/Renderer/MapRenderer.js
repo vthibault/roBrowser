@@ -34,6 +34,7 @@ define(function( require )
 	var Water          = require('Renderer/Map/Water');
 	var Models         = require('Renderer/Map/Models');
 	var Sounds         = require('Renderer/Map/Sounds');
+	var Effects        = require('Renderer/Map/Effects');
 	var SpriteRenderer = require('Renderer/SpriteRenderer');
 	var EffectManager  = require('Renderer/EffectManager');
 	var Sky            = require('Renderer/Effects/Sky');
@@ -165,6 +166,7 @@ define(function( require )
 		EntityManager.free();
 		GridSelector.free( gl );
 		Sounds.free();
+		Effects.free();
 		Ground.free( gl );
 		Water.free( gl );
 		Models.free( gl );
@@ -249,10 +251,13 @@ define(function( require )
 			this.effects[i].pos[0] += data.width - 0.5;
 			this.effects[i].pos[1]  = this.effects[i].pos[2] + data.height - 0.5;
 			this.effects[i].pos[2]  = tmp;
+			this.effects[i].tick    = 0;
 
-			//TODO: add effect object
-			//EffectManager.spam( this.effects[i].id, -1, this.effects[i].pos, 0, this.effects[i].delay);
+			Effects.add(this.effects[i]);
 		}
+
+		this.effects.length = 0;
+		this.sounds.length  = 0;
 	}
 
 
@@ -354,6 +359,9 @@ define(function( require )
 		modelView  = Camera.modelView;
 		projection = Camera.projection;
 		normalMat  = Camera.normalMat;
+
+		// Spam map effects
+		//Effects.spam( Session.Entity.position, tick);
 
 		Ground.render(gl, modelView, projection, normalMat, fog, light );
 		Models.render(gl, modelView, projection, normalMat, fog, light );
