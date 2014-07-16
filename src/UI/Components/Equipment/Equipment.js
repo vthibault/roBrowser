@@ -70,10 +70,29 @@ define(function(require)
 
 
 	/**
+	 * @var {jQuery} button that appeared when level up
+	 */
+	var _btnLevelUp;
+
+
+	/**
 	 * Initialize UI
 	 */
 	Equipment.init = function init()
 	{
+		// Get button to open skill when level up
+		_btnLevelUp = jQuery('#lvlup_base').detach();
+		_btnLevelUp.click(function(){
+			_btnLevelUp.detach();
+
+			if (!Equipment.ui.is(':visible')) {
+				Renderer.render(renderCharacter);
+			}
+
+			Equipment.ui.show();
+			Equipment.ui.parent().append(Equipment.ui);
+		});
+
 		_ctx  = this.ui.find('canvas')[0].getContext('2d');
 
 		// Append WinStats to content (hacked)
@@ -219,6 +238,8 @@ define(function(require)
 	 */
 	Equipment.onRemove = function onRemove()
 	{
+		_btnLevelUp.detach();
+
 		// Stop rendering
 		Renderer.stop(renderCharacter);
 
@@ -340,6 +361,16 @@ define(function(require)
 
 		return item;
 	};
+
+
+	/**
+	 * Add the button when leveling up
+	 */
+	Equipment.onLevelUp = function onLevelUp()
+	{
+		_btnLevelUp.appendTo('body');
+	};
+
 
 
 	/**

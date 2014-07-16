@@ -59,13 +59,19 @@ define(function(require)
 	/**
 	 * @var {jQuery} level up button reference
 	 */
-	var _levelupBtn;
+	var _btnIncSkill;
 
 
 	/**
 	 * @var {number} skill points
 	 */
 	var _points = 0;
+
+
+	/**
+	 * @var {jQuery} button that appeared when level up
+	 */
+	var _btnLevelUp;
 
 
 	/**
@@ -87,14 +93,21 @@ define(function(require)
 		});
 
 		// Get level up button
-		_levelupBtn = this.ui.find('.btn.levelup').detach();
-		_levelupBtn.click(function(){
+		_btnIncSkill = this.ui.find('.btn.levelup').detach();
+		_btnIncSkill.click(function(){
 			var index = this.parentNode.parentNode.getAttribute('data-index');
 			SkillList.onIncreaseSkill(
 				parseInt(index, 10)
 			);
 		});
 
+		// Get button to open skill when level up
+		_btnLevelUp = jQuery('#lvlup_job').detach();
+		_btnLevelUp.click(function(){
+			_btnLevelUp.detach();
+			SkillList.ui.show();
+			SkillList.ui.parent().append(SkillList.ui);
+		});
 
 		this.ui
 
@@ -199,6 +212,8 @@ define(function(require)
 	 */
 	SkillList.onRemove = function onRemove()
 	{
+		_btnLevelUp.detach();
+
 		// Save preferences
 		_preferences.show   =  this.ui.is(':visible');
 		_preferences.y      =  parseInt(this.ui.css('top'), 10);
@@ -269,7 +284,7 @@ define(function(require)
 
 
 		var sk        = SkillInfo[ skill.SKID ];
-		var levelup   = _levelupBtn.clone(true);
+		var levelup   = _btnIncSkill.clone(true);
 		var className = !skill.level ? 'disabled' : skill.type ? 'active' : 'passive';
 		var element   = jQuery(
 			'<tr class="skill id' + skill.SKID + ' ' + className + '" data-index="'+ skill.SKID +'" draggable="true">' +
@@ -426,6 +441,15 @@ define(function(require)
 				this.ui.find('.skill.id' + _list[i].SKID + ' .levelup').hide();
 			}
 		}
+	};
+
+
+	/**
+	 * Add the button when leveling up
+	 */
+	SkillList.onLevelUp = function onLevelUp()
+	{
+		_btnLevelUp.appendTo('body');
 	};
 
 

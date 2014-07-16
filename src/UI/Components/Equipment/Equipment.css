@@ -36,3 +36,5 @@
 #Equipment .footer .right { float:right; text-align:right; margin-right:5px; margin-top:3px; }
 #Equipment .footer .view_status { width:9px; height:14px; border:none; background-color:transparent; background-repeat:no-repeat; }
 #Equipment .footer .show_equip { width:10px; height:12px; border:none; background-color:transparent; background-repeat:no-repeat; }
+
+#lvlup_base { z-index:51; position:absolute; left:0px; bottom:0px; width:43px; height:43px; border:none; background-color:transparent; background-repeat:no-repeat; }

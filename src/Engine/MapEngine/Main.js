@@ -275,6 +275,7 @@ define(function( require )
 
 			case StatusProperty.CLEVEL:
 				BasicInfo.update('blvl', amount);
+				Equipment.onLevelUp();
 				break;
 
 			case StatusProperty.SKPOINT:
@@ -421,6 +422,7 @@ define(function( require )
 
 			case StatusProperty.JOBLEVEL:
 				BasicInfo.update('jlvl', amount);
+				SkillList.onLevelUp();
 				break;
 
 			default:
