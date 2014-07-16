@@ -44,6 +44,7 @@ define( function( require )
 		require('./EntityRoom').call(this);
 		require('./EntityState').call(this);
 		require('./EntityAttachments').call(this);
+		require('./EntityAnimations').call(this);
 
 		this.boundingRect = { x1:0, y1:0, x2:0, y2:0 };
 		this.matrix       = mat4.create();
@@ -265,6 +266,7 @@ define( function( require )
 		this.cast.clean();
 		this.room.clean();
 		this.attachments.remove('lockon');
+		this.animations.free();
 
 		// Remove
 		this.remove_tick  = 0;

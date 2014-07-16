@@ -32,13 +32,8 @@ define( function( require )
 	 */
 	function render( modelView, projection )
 	{
-		// Item falling
-		if (this.objecttype === this.constructor.TYPE_ITEM) {
-			this.position[2] = Math.max(
-				Altitude.getCellHeight( this.position[0], this.position[1] ),
-				this.position[2] - 0.4
-			);
-		}
+		// Process action
+		this.animations.process();
 
 		// Move character if walking
 		if (this.action === this.ACTION.WALK) {

@@ -156,8 +156,16 @@ define(function( require )
 
 		60: [{
 			type: 'FUNC',
-			func: require('Renderer/Effects/LockOnTarget'),
-			attachedEntity: false
+			attachedEntity: true,
+			func: function(entity, tick) {
+				var LockOnTarget = require('Renderer/Effects/LockOnTarget');
+
+				this.add(new LockOnTarget(
+					entity,
+					tick,
+					tick + 10000
+				), entity.GID);
+			},
 		}],
 
 
@@ -1136,6 +1144,60 @@ define(function( require )
 			type: 'STR',
 			file: '»ç¶÷È¿°ú',
 			attachedEntity: true
+		}],
+
+
+		420: [{
+			type: 'FUNC',
+			attachedEntity: true,
+			func: function EffectSmallTransition(entity) {
+				var xSize = entity.xSize;
+				var ySize = entity.ySize;
+
+				entity.animations.add(function(tick){
+					entity.xSize = xSize + (2.5 - xSize) * (Math.min(tick, 300) / 300);
+					entity.ySize = ySize + (2.5 - ySize) * (Math.min(tick, 300) / 300);
+
+					return (tick > 300);
+				});
+			}
+		}],
+
+
+		421: [{
+			type: 'FUNC',
+			attachedEntity: true,
+			func: function EffectSmall(entity) {
+				entity.xSize = 2.5;
+				entity.ySize = 2.5;
+			}
+		}],
+
+
+		422: [{
+			type: 'FUNC',
+			attachedEntity: true,
+			func: function EffectBigTransition(entity) {
+				var xSize = entity.xSize;
+				var ySize = entity.ySize;
+
+				entity.animations.add(function(tick){
+					entity.xSize = xSize + (7.5 - xSize) * (Math.min(tick, 300) / 300);
+					entity.ySize = ySize + (7.5 - ySize) * (Math.min(tick, 300) / 300);
+
+					return (tick > 300);
+				});
+			}
+		}],
+
+
+		423: [{
+			type: 'FUNC',
+			attachedEntity: true,
+			func: function EffectBig(entity) {
+				entity.xSize = 7.5;
+				entity.ySize = 7.5;
+			}
 		}],
 
 

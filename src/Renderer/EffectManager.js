@@ -318,6 +318,19 @@ define(function( require )
 			case 'CYLINDER':
 				EffectManager.add(new Cylinder( position, effect.topSize, effect.bottomSize, effect.height, effect.textureName, tick), AID);
 				break;
+
+			case 'FUNC':
+				if (effect.func) {
+					if (effect.attachedEntity) {
+						if (entity) {
+							effect.func.call(this, entity, tick);
+						}
+					}
+					else {
+						effect.func.call(this, position, tick);
+					}
+				}
+				break;
 		}
 	};
 
