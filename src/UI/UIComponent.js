@@ -55,6 +55,12 @@ define(function( require )
 
 
 	/**
+	 * @var {boolean} is Component active ?
+	 */
+	UIComponent.prototype.__active = false;
+
+
+	/**
 	 * Prepare the component to be used
 	 */
 	UIComponent.prototype.prepare = function prepare()
@@ -86,6 +92,8 @@ define(function( require )
 		if (this._htmlText) {
 			this.ui.detach();
 		}
+
+		this.__loaded = true;
 	};
 
 
@@ -94,6 +102,8 @@ define(function( require )
 	 */
 	UIComponent.prototype.remove = function remove()
 	{
+		this.__active = false;
+
 		if (this.__loaded && this.ui.parent().length) {
 			if (this.onRemove) {
 				this.onRemove();
@@ -114,12 +124,18 @@ define(function( require )
 	 */
 	UIComponent.prototype.append = function append()
 	{
+		this.__active = true;
+
 		if (!this.__loaded) {
 			this.prepare();
-			this.__loaded = true;
 
 			// Hack to fix async preferences on Chrome App...
-			Events.setTimeout( this.append.bind(this), 10 );
+			// Check if we still want to display it.
+			Events.setTimeout(function(){
+				if (this.__active) {
+					this.append();
+				}
+			}.bind(this), 10 );
 			return;
 		}
 
