@@ -11103,6 +11103,14 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 	PACKET.ZC.MSG_STATE_CHANGE3.size = 24;
 
 
+	// 0x908
+	PACKET.ZC.ITEM_FAVORITE = function PACKET_ZC_ITEM_FAVORITE(fp, end) {
+		this.index    = fp.readUShort();
+		this.favorite = fp.readUChar();
+	};
+	PACKET.ZC.ITEM_FAVORITE.size = 5;
+
+
 	// 0x90f
 	PACKET.ZC.NOTIFY_STANDENTRY7 = function PACKET_ZC_NOTIFY_STANDENTRY7(fp, end) {
 		this.objecttype   = fp.readUChar();
