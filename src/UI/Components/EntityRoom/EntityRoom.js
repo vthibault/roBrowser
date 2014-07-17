@@ -37,6 +37,12 @@ define(function(require)
 				this.onEnter();
 			}
 		}.bind(this));
+
+		// Avoid player to move to the cell
+		this.ui.mousedown(function(){
+			return false;
+		});
+
 		this.ui.css('zIndex', 45);
 	};
 
