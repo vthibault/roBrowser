@@ -34,7 +34,7 @@
 			xray: [ "visionary_tab.txt "],
 			lua:  [ "accessoryid.lua", "accname.lua"],
 			lua_key: /ACCESSORY_([a-zA-Z0-9_-]+)(\s+)?=(\s+)?(\d+),?/g,
-			lua_val: /\[ACCESSORY_IDs\.ACCESSORY_([a-zA-Z0-9_-]+)\](\s+)?=(\s+)?"_([^"]+)",?/g
+			lua_val: /\[ACCESSORY_IDs\.ACCESSORY_([a-zA-Z0-9_-]+)\](\s+)?=(\s+)?"([^"]+)",?/g
 		},
 
 		MonsterTable: {
