@@ -20,6 +20,7 @@ define(function( require )
 	var SkillInfo     = require('DB/Skills/SkillInfo');
 	var StatusConst   = require('DB/Status/StatusConst');
 	var Emotions      = require('DB/Emotions');
+	var Events        = require('Core/Events');
 	var Session       = require('Engine/SessionStorage');
 	var Network       = require('Network/NetworkManager');
 	var PACKET        = require('Network/PacketStructure');
@@ -622,43 +623,47 @@ define(function( require )
 			var target = pkt.damage ? dstEntity : srcEntity;
 			var i;
 
-			if (pkt.damage) {
-				dstEntity.setAction({
-					action: dstEntity.ACTION.HURT,
-					frame:  0,
-					repeat: false,
-					play:   true,
-					next: {
-						action: dstEntity.ACTION.READYFIGHT,
-						frame:  0,
-						repeat: true,
-						play:   true,
-						next:   false
-					}
-				});
+			if (pkt.damage && target) {
 
-				// Combo
-				if (target) {
-					for (i = 0; i<pkt.count; ++i) {
-						EffectManager.spamSkillHit( pkt.SKID, dstEntity.GID, Renderer.tick + pkt.attackMT + (200 * i));
+				var addDamage = function(i) {
+					return function addDamageClosure() {
+						var isAlive = dstEntity.action !== dstEntity.ACTION.DIE;
+						var isCombo = target.objecttype !== Entity.TYPE_PC && pkt.count > 1;
 
-						Damage.add(
-							Math.floor( pkt.damage / pkt.count ),
-							target,
-							Renderer.tick + pkt.attackMT + ( 200 * i )
-						);
+						EffectManager.spamSkillHit( pkt.SKID, dstEntity.GID, Renderer.tick);
+						Damage.add( pkt.damage / pkt.count, target, Renderer.tick);
 
 						// Only display combo if the target is not entity and
 						// there are multiple attacks
-						if (target.objecttype !== Entity.TYPE_PC && pkt.count > 1) {
+						if (isCombo) {
 							Damage.add(
-								Math.floor( pkt.damage / pkt.count * (i+1) ),
+								pkt.damage / pkt.count * (i+1),
 								target,
-								Renderer.tick + pkt.attackMT + ( 200 * i ), //TOFIX: why 200 ?
+								Renderer.tick, 
 								Damage.TYPE.COMBO | ( (i+1) === pkt.count ? Damage.TYPE.COMBO_FINAL : 0 )
 							);
 						}
-					}
+
+						if (isAlive) {
+							dstEntity.setAction({
+								action: dstEntity.ACTION.HURT,
+								frame:  0,
+								repeat: false,
+								play:   true,
+								next: {
+									action: dstEntity.ACTION.READYFIGHT,
+									frame:  0,
+									repeat: true,
+									play:   true,
+									next:   false
+								}
+							});
+						}
+					};
+				};
+
+				for (i = 0; i < pkt.count; ++i) {
+					Events.setTimeout( addDamage(i), pkt.attackMT + (200 * i)); //TOFIX: why 200 ?
 				}
 			}
 		}
