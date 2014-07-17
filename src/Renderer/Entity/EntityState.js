@@ -81,6 +81,10 @@ define(function( require )
 				});
 				break;
 
+			case StatusConst.BodyState.STONE:
+				this.animation.play = true;
+				break;
+
 			case StatusConst.BodyState.STUN:
 				this.attachments.remove('status-stun');
 				break;
@@ -92,6 +96,7 @@ define(function( require )
 				this._bodyStateColor[0] = 0.1;
 				this._bodyStateColor[1] = 0.1;
 				this._bodyStateColor[2] = 0.1;
+				this.animation.play     = false;
 				break;
 
 			case StatusConst.BodyState.STONEWAIT:
