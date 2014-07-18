@@ -429,7 +429,7 @@ define(function( require )
 		out    = [];
 
 		if (skill) {
-			range = skill.attackRange;
+			range = skill.attackRange + 1;
 		}
 		else {
 			range = entity.attack_range;
@@ -490,7 +490,7 @@ define(function( require )
 		out    = [];
 
 		if (skill) {
-			range = skill.attackRange;
+			range = skill.attackRange + 1;
 		}
 		else {
 			range = entity.attack_range;
