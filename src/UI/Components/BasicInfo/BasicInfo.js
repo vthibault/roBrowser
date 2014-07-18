@@ -90,7 +90,7 @@ define(function(require)
 					break;
 
 				case 'skill':
-					SkillList.ui.toggle();
+					SkillList.toggle();
 					break;
 
 				case 'option':

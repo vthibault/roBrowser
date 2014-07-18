@@ -225,6 +225,20 @@ define(function(require)
 
 
 	/**
+	 * Show/Hide UI
+	 */
+	SkillList.toggle = function toggle()
+	{
+		this.ui.toggle();
+
+		if (this.ui.is(':visible')) {
+			this.ui[0].parentNode.appendChild(this.ui[0]);
+			_btnLevelUp.detach();
+		}
+	};
+
+
+	/**
 	 * Process shortcut
 	 *
 	 * @param {object} key
@@ -233,12 +247,7 @@ define(function(require)
 	{
 		switch (key.cmd) {
 			case 'TOGGLE':
-				this.ui.toggle();
-
-				// Fix zIndex
-				if (this.ui.is(':visible')) {
-					this.ui[0].parentNode.appendChild(this.ui[0]);
-				}
+				this.toggle();
 				break;
 		}
 	};

@@ -266,9 +266,14 @@ define(function(require)
 
 		if (this.ui.is(':visible')) {
 			Renderer.render(renderCharacter);
+			_btnLevelUp.detach();
+			this.ui[0].parentNode.appendChild(this.ui[0]);
 		}
 		else {
 			Renderer.stop(renderCharacter);
+
+			// Fix Mouse.intersect bug
+			this.ui.trigger('mouseleave');
 		}
 	};
 
@@ -282,17 +287,7 @@ define(function(require)
 	{
 		switch (key.cmd) {
 			case 'TOGGLE':
-				this.ui.toggle();
-				if (this.ui.is(':visible')) {
-					Renderer.render(renderCharacter);
-					this.ui[0].parentNode.appendChild(this.ui[0]);
-				}
-				else {
-					Renderer.stop(renderCharacter);
-
-					// Fix Mouse.intersect bug
-					this.ui.trigger('mouseleave');
-				}
+				this.toggle();
 				break;
 		}
 	};
