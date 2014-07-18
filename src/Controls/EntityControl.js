@@ -286,7 +286,7 @@ define(function( require )
 				var count = PathFinding.search(
 					main.position[0] | 0, main.position[1] | 0,
 					this.position[0] | 0, this.position[1] | 0,
-					main.attack_range,
+					main.attack_range + 1,
 					out
 				);
 
@@ -300,7 +300,7 @@ define(function( require )
 				pkt.targetGID = this.GID;
 
 				// in range send packet
-				if (count <= main.attack_range) {
+				if (count < 2) {
 					Network.sendPacket(pkt);
 					return true;
 				}
