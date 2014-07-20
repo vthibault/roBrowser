@@ -43,7 +43,7 @@
 			txt:  [],
 			xray: ["monstrosity_tab.txt"],
 			lua:  ["npcidentity.lua", "jobname.lua"],
-			lua_key: /\["JT_([^"]+)"\](\s+)?\=(\s+)?(\d+),?/g,
+			lua_key: /JT_(\w+)(.+)?\=(\s+)?(\d+),?/g,
 			lua_val: /\[jobtbl\.JT_([^\]]+)\](\s+)?=(\s+)?"([^"]+)",?/g
 		}
 	};
