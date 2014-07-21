@@ -225,7 +225,7 @@ define(function(require)
 	/**
 	 * Exit window
 	 */
-	function onClose()
+	function onClose( event )
 	{
 		Emoticons.ui.hide();
 
