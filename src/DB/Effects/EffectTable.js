@@ -303,7 +303,7 @@ define(function( require )
 		88: [{
 			type: 'STR',
 			file: 'suffragium',
-			wav:  'effect/priest_suffrahium',
+			wav:  'effect/priest_suffragium',
 			min:  'suffragium_min',
 			attachedEntity: true
 		}],
