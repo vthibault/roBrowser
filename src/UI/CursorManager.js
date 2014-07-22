@@ -354,6 +354,12 @@ define(function( require )
 
 		animation = action.animations[anim];
 
+		// Issue #61 - Not able to reproduce
+		// If someone got more informations...
+		if (!animation) {
+			return;
+		}
+
 		// Cursor magnetism
 		if (Cursor.magnetism && !Cursor.blockMagnetism) {
 			var entity = EntityManager.getOverEntity();
