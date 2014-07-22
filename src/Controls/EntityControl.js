@@ -16,6 +16,7 @@ define(function( require )
 	var glMatrix    = require('Utils/gl-matrix');
 	var PathFinding = require('Utils/PathFinding');
 	var DB          = require('DB/DBManager');
+	var MsgStringIDs = require('DB/MsgStringIds');
 	var KEYS        = require('Controls/KeyEventHandler');
 	var Mouse       = require('Controls/MouseEventHandler');
 	var Preferences = require('Preferences/Controls');
@@ -211,11 +212,11 @@ define(function( require )
 			case Entity.TYPE_PET:
 				if (Session.petId === this.GID) {
 					ContextMenu.append();
-					ContextMenu.addElement( DB.getMessage(596), Pet.ui.show.bind(Pet.ui)); // check pet status
-					ContextMenu.addElement( DB.getMessage(592), Pet.reqPetFeed);           // Feed pet
-					ContextMenu.addElement( DB.getMessage(593), Pet.reqPetAction);         // performance
-					ContextMenu.addElement( DB.getMessage(595), Pet.reqUnEquipPet);        // unequip accessory
-					ContextMenu.addElement( DB.getMessage(594), Pet.reqBackToEgg);         // return to egg shell
+					ContextMenu.addElement( DB.getMessage(MsgStringIDs.MSI_PET_SHOWINFO), Pet.ui.show.bind(Pet.ui)); // check pet status
+					ContextMenu.addElement( DB.getMessage(MsgStringIDs.MSI_PET_FEEDING), Pet.reqPetFeed);           // Feed pet
+					ContextMenu.addElement( DB.getMessage(MsgStringIDs.MSI_PET_PERFORMANCE), Pet.reqPetAction);         // performance
+					ContextMenu.addElement( DB.getMessage(MsgStringIDs.MSI_PET_ACC_OFF), Pet.reqUnEquipPet);        // unequip accessory
+					ContextMenu.addElement( DB.getMessage(MsgStringIDs.MSI_PET_RETURN_EGG), Pet.reqBackToEgg);         // return to egg shell
 				}
 				break;
 
@@ -226,17 +227,17 @@ define(function( require )
 				/// - check for admin action (kick, mute, ...)
 
 				ContextMenu.append();
-				//ContextMenu.addElement( DB.getMessage(1362), checkPlayerEquipment);
+				//ContextMenu.addElement( DB.getMessage(MsgStringIDs.MSI_OTHERUSER_EQUIPED_ITEM), checkPlayerEquipment);
 
 				// Trade option
-				ContextMenu.addElement( DB.getMessage(87).replace('%s', this.display.name), function(){
+				ContextMenu.addElement( DB.getMessage(MsgStringIDs.MSI_REQ_DEAL_WITH).replace('%s', this.display.name), function(){
 					Trade.reqExchange(entity.GID, entity.display.name);
 				});
 				//ContextMenu.nextGroup();
-				//ContextMenu.addElement( DB.getMessage(360), openPrivateMessageWindow);
-				//ContextMenu.addElement( DB.getMessage(358), sendFriendInvitation);
+				//ContextMenu.addElement( DB.getMessage(MsgStringIDs.MSI_OPEN_1ON1_WINDOW), openPrivateMessageWindow);
+				//ContextMenu.addElement( DB.getMessage(MsgStringIDs.MSI_ADD_TO_FRIEND_CHAR_LIST), sendFriendInvitation);
 				//ContextMenu.nextGroup();
-				//ContextMenu.addElement( DB.getMessage(315), blockUserPrivateMessage);
+				//ContextMenu.addElement( DB.getMessage(MsgStringIDs.MSI_REQ_EX_LIST), blockUserPrivateMessage);
 				break;
 
 			case Entity.TYPE_HOM:

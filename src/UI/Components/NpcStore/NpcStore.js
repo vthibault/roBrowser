@@ -17,6 +17,7 @@ define(function(require)
 	 */
 	var jQuery       = require('Utils/jquery');
 	var DB           = require('DB/DBManager');
+	var MsgStringIDs = require('DB/MsgStringIds');
 	var ItemType     = require('DB/Items/ItemType');
 	var Client       = require('Core/Client');
 	var Preferences  = require('Core/Preferences');
@@ -454,7 +455,7 @@ define(function(require)
 				// You don't have enough zeny
 				if (_type === NpcStore.Type.BUY) {
 					if (NpcStore.calculateCost() + _input[index].discountprice * count > Session.zeny) {
-						ChatBox.addText( DB.getMessage(55), ChatBox.TYPE.ERROR);
+						ChatBox.addText( DB.getMessage(MsgStringIDs.MSI_INSUFFICIENT_MONEY), ChatBox.TYPE.ERROR);
 						return;
 					}
 				}

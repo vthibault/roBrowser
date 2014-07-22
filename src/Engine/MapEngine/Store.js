@@ -16,6 +16,7 @@ define(function( require )
 	 * Load dependencies
 	 */
 	var DB            = require('DB/DBManager');
+	var MsgStringIDs = require('DB/MsgStringIds');
 	var Network       = require('Network/NetworkManager');
 	var PACKET        = require('Network/PacketStructure');
 	var NpcStore      = require('UI/Components/NpcStore/NpcStore');
@@ -61,14 +62,14 @@ define(function( require )
 		NpcStore.remove();
 
 		switch (pkt.result) {
-			case 0:  ChatBox.addText( DB.getMessage(54),   ChatBox.TYPE.BLUE);  break; // success
-			case 1:  ChatBox.addText( DB.getMessage(55),   ChatBox.TYPE.ERROR); break; // zeny
-			case 2:  ChatBox.addText( DB.getMessage(56),   ChatBox.TYPE.ERROR); break; // overweight
-			case 4:  ChatBox.addText( DB.getMessage(230),  ChatBox.TYPE.ERROR); break; // out of stock
-			case 5:  ChatBox.addText( DB.getMessage(281),  ChatBox.TYPE.ERROR); break; // trade
+			case 0:  ChatBox.addText( DB.getMessage(MsgStringIDs.MSI_DEAL_SECCESS),   ChatBox.TYPE.BLUE);  break; // success
+			case 1:  ChatBox.addText( DB.getMessage(MsgStringIDs.MSI_INSUFFICIENT_MONEY),   ChatBox.TYPE.ERROR); break; // zeny
+			case 2:  ChatBox.addText( DB.getMessage(MsgStringIDs.MSI_OVER_WEIGHT),   ChatBox.TYPE.ERROR); break; // overweight
+			case 4:  ChatBox.addText( DB.getMessage(MsgStringIDs.MSI_INSUFFICIENT_STOCK),  ChatBox.TYPE.ERROR); break; // out of stock
+			case 5:  ChatBox.addText( DB.getMessage(MsgStringIDs.MSI_FAIL_BUY_ITEM_ITEM_EXCHANGING),  ChatBox.TYPE.ERROR); break; // trade
 			// case 6: 6 = Because the store information was incorrect the item was not purchased.
-			case 7:  ChatBox.addText( DB.getMessage(1797), ChatBox.TYPE.ERROR); break; // no sale information
-			default: ChatBox.addText( DB.getMessage(57),   ChatBox.TYPE.ERROR); break; // deal failed
+			case 7:  ChatBox.addText( DB.getMessage(MsgStringIDs.MSI_FAIL_OPEN_STORE), ChatBox.TYPE.ERROR); break; // no sale information
+			default: ChatBox.addText( DB.getMessage(MsgStringIDs.MSI_DEAL_FAIL),   ChatBox.TYPE.ERROR); break; // deal failed
 		}
 	}
 
@@ -113,12 +114,12 @@ define(function( require )
 
 		// success
 		if (pkt.result === 0) {
-			ChatBox.addText( DB.getMessage(54), ChatBox.TYPE.BLUE);
+			ChatBox.addText( DB.getMessage(MsgStringIDs.MSI_DEAL_SECCESS), ChatBox.TYPE.BLUE);
 		}
 
 		// Fail
 		else {
-			ChatBox.addText( DB.getMessage(57), ChatBox.TYPE.ERROR);
+			ChatBox.addText( DB.getMessage(MsgStringIDs.MSI_DEAL_FAIL), ChatBox.TYPE.ERROR);
 		}
 	}
 

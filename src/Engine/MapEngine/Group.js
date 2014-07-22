@@ -17,6 +17,7 @@ define(function( require )
 	 * Load dependencies
 	 */
 	var DB            = require('DB/DBManager');
+	var MsgStringIDs = require('DB/MsgStringIds');
 	var Network       = require('Network/NetworkManager');
 	var PACKET        = require('Network/PacketStructure');
 	var EntityManager = require('Renderer/EntityManager');
@@ -83,9 +84,9 @@ define(function( require )
 	 */
 	function onPartyOption( pkt )
 	{
-		ChatBox.addText( DB.getMessage(291) + '  - ' + DB.getMessage(292) + '  : ' + DB.getMessage(287 + pkt.expOption ), ChatBox.TYPE.INFO );
-		ChatBox.addText( DB.getMessage(291) + '  - ' + DB.getMessage(293) + '  : ' + DB.getMessage(289 + pkt.ItemPickupRule), ChatBox.TYPE.INFO );
-		ChatBox.addText( DB.getMessage(291) + '  - ' + DB.getMessage(738) + '  : ' + DB.getMessage(287 + pkt.ItemDivisionRule), ChatBox.TYPE.INFO );
+		ChatBox.addText( DB.getMessage(MsgStringIDs.MSI_PARTYSETTING) + '  - ' + DB.getMessage(MsgStringIDs.MSI_HOWEXPDIV) + '  : ' + DB.getMessage(MsgStringIDs.MSI_EXPDIV1 + pkt.expOption ), ChatBox.TYPE.INFO );
+		ChatBox.addText( DB.getMessage(MsgStringIDs.MSI_PARTYSETTING) + '  - ' + DB.getMessage(MsgStringIDs.MSI_HOWITEMCOLLECT) + '  : ' + DB.getMessage(MsgStringIDs.MSI_ITEMCOLLECT1 + pkt.ItemPickupRule), ChatBox.TYPE.INFO );
+		ChatBox.addText( DB.getMessage(MsgStringIDs.MSI_PARTYSETTING) + '  - ' + DB.getMessage(MsgStringIDs.MSI_HOWITEMDIV) + '  : ' + DB.getMessage(MsgStringIDs.MSI_EXPDIV1 + pkt.ItemDivisionRule), ChatBox.TYPE.INFO );
 	}
 
 
@@ -96,7 +97,7 @@ define(function( require )
 	 */
 	function onPartyConfig( pkt )
 	{
-		ChatBox.addText( DB.getMessage(pkt.bRefuseJoinMsg ? 1325 : 1326), ChatBox.TYPE.INFO );
+	    ChatBox.addText(DB.getMessage(pkt.bRefuseJoinMsg ? MsgStringIDs.MSI_INVITE_PARTY_REFUSE : MsgStringIDs.MSI_INVITE_PARTY_ACCEPT), ChatBox.TYPE.INFO);
 	}
 
 
@@ -118,7 +119,7 @@ define(function( require )
 			};
 		}
 
-		UIManager.showPromptBox( pkt.groupName + DB.getMessage(94), 'ok', 'cancel', onAnswer(1), onAnswer(0) );
+		UIManager.showPromptBox( pkt.groupName + DB.getMessage(MsgStringIDs.MSI_SUGGEST_JOIN_PARTY), 'ok', 'cancel', onAnswer(1), onAnswer(0) );
 	}
 
 
@@ -132,21 +133,21 @@ define(function( require )
 		var id = 1, color = ChatBox.TYPE.ERROR;
 
 		switch (pkt.answer) {
-			case 0: id = 80;  break;
-			case 1: id = 81;  break;
+			case 0: id = MsgStringIDs.MSI_CHARACTER_IS_ALREADY_IN_PARTY;  break;
+			case 1: id = MsgStringIDs.MSI_CHARACTER_REJECT_JOIN;  break;
 
 			case 2:
-				id = 82;
+			    id = MsgStringIDs.MSI_CHARACTER_ACCEPT_JOIN;
 				color = ChatBox.TYPE.BLUE;
 				break;
 
-			case 3: id = 83;   break;
-			case 4: id = 608;  break;
-			case 5: id = 1324; break;
+			case 3: id = MsgStringIDs.MSI_TOO_MANY_PEOPLE_IN_PARTY;   break;
+			case 4: id = MsgStringIDs.MSI_ALREADY_SAME_AID_JOINED;  break;
+			case 5: id = MsgStringIDs.MSI_JOINMSG_REFUSE; break;
 			// no 6 ?
-			case 7: id = 71;   break;
-			case 8: id = 1388; break;
-			case 9: id = 1871; break;
+			case 7: id = MsgStringIDs.MSI_CHARACTER_IS_NOT_EXIST;   break;
+			case 8: id = MsgStringIDs.MSI_NOPARTY2; break;
+			case 9: id = MsgStringIDs.MSI_PREVENT_PARTY_JOIN; break;
 		}
 
 		ChatBox.addText( DB.getMessage(id).replace('%s', pkt.characterName), ChatBox.TYPE.INFO);

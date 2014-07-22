@@ -16,6 +16,7 @@ define(function(require)
 	 * Dependencies
 	 */
 	var DB                   = require('DB/DBManager');
+	var MsgStringIDs = require('DB/MsgStringIds');
 	var Client               = require('Core/Client');
 	var Preferences          = require('Core/Preferences');
 	var Renderer             = require('Renderer/Renderer');
@@ -158,7 +159,7 @@ define(function(require)
 		this.setHunger(info.nFullness);
 		this.setIntimacy(info.nRelationship);
 
-		this.ui.find('.accessory').text(DB.getMessage(info.ITID ? 598 : 600));
+		this.ui.find('.accessory').text(DB.getMessage(info.ITID ? MsgStringIDs.MSI_ITEM_EQUIPED : MsgStringIDs.MSI_ITEM_UNEQUIPED));
 
 		Client.loadFile( DB.getPetIllustPath(info.job), function(data){
 			this.ui.find('.content').css('backgroundImage', 'url('+ data +')');
@@ -181,11 +182,11 @@ define(function(require)
 	PetInformations.setIntimacy = function setIntimacy(val)
 	{
 		this.ui.find('.intimacy').text(DB.getMessage(
-			val < 100 ? 672 :
-			val < 250 ? 673 :
-			val < 600 ? 669 :
-			val < 900 ? 674 :
-			675
+			val < 100 ? MsgStringIDs.MSI_VERY_AWKWARD :
+			val < 250 ? MsgStringIDs.MSI_AWKWARD :
+			val < 600 ? MsgStringIDs.MSI_NORMAL :
+			val < 900 ? MsgStringIDs.MSI_FRIENDLY :
+			MsgStringIDs.MSI_VERY_FRIENDLY
 		));
 	};
 
@@ -198,11 +199,11 @@ define(function(require)
 	PetInformations.setHunger = function setHunger(val)
 	{
 		this.ui.find('.hunger').text(DB.getMessage(
-			val < 10 ? 667 :
-			val < 25 ? 668 :
-			val < 75 ? 669 :
-			val < 90 ? 670 :
-			671
+			val < 10 ? MsgStringIDs.MSI_VERY_HUNGRY :
+			val < 25 ? MsgStringIDs.MSI_HUNGRY :
+			val < 75 ? MsgStringIDs.MSI_NORMAL :
+			val < 90 ? MsgStringIDs.MSI_REPLETE :
+			MsgStringIDs.MSI_VERY_REPLETE
 		));
 	};
 

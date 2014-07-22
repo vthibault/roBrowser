@@ -18,6 +18,7 @@ define(function( require )
 	 */
 	var jQuery        = require('Utils/jquery');
 	var DB            = require('DB/DBManager');
+	var MsgStringIDs = require('DB/MsgStringIds');
 	var Sound         = require('Audio/SoundManager');
 	var BGM           = require('Audio/BGM');
 	var Client        = require('Core/Client');
@@ -169,7 +170,7 @@ define(function( require )
 		WinDeal.init = function Init()
 		{
 			this.draggable();
-			this.ui.find('.text').text( DB.getMessage(92) );
+			this.ui.find('.text').text( DB.getMessage(MsgStringIDs.MSI_SELECT_DEAL_TYPE) );
 
 			this.ui.css({
 				top:  (Renderer.height) / 1.5,

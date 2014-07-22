@@ -16,6 +16,7 @@ define(function( require )
 	 * Load dependencies
 	 */
 	var DB              = require('DB/DBManager');
+	var MsgStringIDs = require('DB/MsgStringIds');
 	var Network			= require('Network/NetworkManager');
 	var PACKET			= require('Network/PacketStructure');
 	var EntityManager   = require('Renderer/EntityManager');
@@ -114,17 +115,17 @@ define(function( require )
 				ChatRoom.owner   = Session.Entity.display.name;
 				ChatRoom.append();
 
-				ChatBox.addText( DB.getMessage(64), ChatBox.TYPE.BLUE );
+				ChatBox.addText( DB.getMessage(MsgStringIDs.MSI_ROOM_IS_MADE), ChatBox.TYPE.BLUE );
 				break;
 
 			// Room limit exceeded
 			case 1:
-				ChatBox.addText( DB.getMessage(65), ChatBox.TYPE.ERROR );
+				ChatBox.addText( DB.getMessage(MsgStringIDs.MSI_TOO_MANY_ROOM), ChatBox.TYPE.ERROR );
 				break;
 
 			// Same room already exists
 			case 2:
-				ChatBox.addText( DB.getMessage(66), ChatBox.TYPE.ERROR );
+				ChatBox.addText( DB.getMessage(MsgStringIDs.MSI_SAME_ROOM_TITLE), ChatBox.TYPE.ERROR );
 				break;
 		}
 	}
@@ -147,7 +148,7 @@ define(function( require )
 		switch (pkt.result) {
 			// full
 			case 0:
-				ChatBox.addText( DB.getMessage(65), ChatBox.TYPE.ERROR );
+				ChatBox.addText( DB.getMessage(MsgStringIDs.MSI_TOO_MANY_ROOM), ChatBox.TYPE.ERROR );
 				break;
 
 			// TODO:
@@ -173,7 +174,7 @@ define(function( require )
 		ChatRoom.members.push( pkt.name );
 
 		ChatRoom.updateChat();
-		ChatRoom.message(DB.getMessage(179).replace('%s', pkt.name), 'join');
+		ChatRoom.message(DB.getMessage(MsgStringIDs.MSI_USERGETINTHEROOM).replace('%s', pkt.name), 'join');
 	}
 
 
@@ -211,12 +212,12 @@ define(function( require )
 
 		// Leave the room
 		if (pkt.type === 0) {
-			ChatRoom.message(DB.getMessage(180).replace('%s', pkt.name), 'leave');
+			ChatRoom.message(DB.getMessage(MsgStringIDs.MSI_USERGETOUTOFTHEROOM).replace('%s', pkt.name), 'leave');
 		}
 
 		// Kick out of the room
 		else {
-			ChatRoom.message(DB.getMessage(181).replace('%s', pkt.name), 'leave');
+			ChatRoom.message(DB.getMessage(MsgStringIDs.MSI_USERGETOUTOFTHEROOMBYFORCE).replace('%s', pkt.name), 'leave');
 		}
 	}
 

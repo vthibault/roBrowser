@@ -17,6 +17,7 @@ define(function( require )
 	// Load dependencies
 	var TextEncoding = require('Vendors/text-encoding');
 	var DB           = require('DB/DBManager');
+	var MsgStringIDs = require('DB/MsgStringIds');
 	var Sound        = require('Audio/SoundManager');
 	var Configs      = require('Core/Configs');
 	var Thread       = require('Core/Thread');
@@ -39,7 +40,7 @@ define(function( require )
 	var WinLoading = WinPopup.clone('WinLoading');
 	WinLoading.init = function(){
 		this.ui.css({ top: (Renderer.height - 120) / 1.5, left: (Renderer.width - 280) / 2.0 });
-		this.ui.find('.text').text( DB.getMessage(121) );
+		this.ui.find('.text').text( DB.getMessage(MsgStringIDs.MSI_PLEASE_BE_PATIENT) );
 	};
 	UIManager.addComponent(WinLoading);
 
@@ -220,7 +221,7 @@ define(function( require )
 		Network.connect( _server.address, _server.port, function( success ) {
 			// Fail to connect...
 			if ( !success ) {
-				UIManager.showErrorBox(DB.getMessage(1));
+				UIManager.showErrorBox(DB.getMessage(MsgStringIDs.MSI_SERVER_CONNECTION_FAILED));
 				return;
 			}
 
@@ -303,9 +304,9 @@ define(function( require )
 		var i, count = _charServers.length;
 		var list     = new Array(count);
 		for (i = 0; i < count; ++i) {
-			list[i]  =  _charServers[i].property ? DB.getMessage(482) + ' ' : '';
+			list[i]  =  _charServers[i].property ? DB.getMessage(MsgStringIDs.MSI_SERVER_PROPERTY_NEW) + ' ' : '';
 			list[i] +=  _charServers[i].name;
-			list[i] +=  _charServers[i].state    ? DB.getMessage(484) : ' ' + DB.getMessage(483).replace('%d', _charServers[i].usercount);
+			list[i] +=  _charServers[i].state    ? DB.getMessage(MsgStringIDs.MSI_SERVER_INSPECTING) : ' ' + DB.getMessage(MsgStringIDs.MSI_SERVER_USER_COUNT).replace('%d', _charServers[i].usercount);
 		}
 
 		// No choice, connect directly to the server
@@ -346,28 +347,28 @@ define(function( require )
 	{
 		var error = 9;
 		switch (pkt.ErrorCode) {
-			case   0: error =    6; break; // Unregistered ID
-			case   1: error =    7; break; // Incorrect Password
-			case   2: error =    8; break; // This ID is expired
-			case   3: error =    3; break; // Rejected from Server
-			case   4: error =  266; break; // Checked: 'Login is currently unavailable. Please try again shortly.'- 2br
-			case   5: error =  310; break; // Your Game's EXE file is not the latest version
-			case   6: error =  449; break; // Your are Prohibited to log in until %s
-			case   7: error =  264; break; // Server is jammed due to over populated
-			case   8: error =  681; break; // Checked: 'This account can't connect the Sakray server.'
-			case   9: error =  703; break; // 9 = MSI_REFUSE_BAN_BY_DBA
-			case  10: error =  704; break; // 10 = MSI_REFUSE_EMAIL_NOT_CONFIRMED
-			case  11: error =  705; break; // 11 = MSI_REFUSE_BAN_BY_GM
-			case  12: error =  706; break; // 12 = MSI_REFUSE_TEMP_BAN_FOR_DBWORK
-			case  13: error =  707; break; // 13 = MSI_REFUSE_SELF_LOCK
-			case  14: error =  708; break; // 14 = MSI_REFUSE_NOT_PERMITTED_GROUP
-			case  15: error =  709; break; // 15 = MSI_REFUSE_NOT_PERMITTED_GROUP
-			case  99: error =  368; break; // 99 = This ID has been totally erased
-			case 100: error =  809; break; // 100 = Login information remains at %s
-			case 101: error =  810; break; // 101 = Account has been locked for a hacking investigation. Please contact the GM Team for more information
-			case 102: error =  811; break; // 102 = This account has been temporarily prohibited from login due to a bug-related investigation
-			case 103: error =  859; break; // 103 = This character is being deleted. Login is temporarily unavailable for the time being
-			case 104: error =  860; break; // 104 = This character is being deleted. Login is temporarily unavailable for the time being
+			case   0: error =    MsgStringIDs.MSI_INCORRECT_USERID; break; // Unregistered ID
+			case   1: error =    MsgStringIDs.MSI_INCORRECT_PASSWORD; break; // Incorrect Password
+			case   2: error =    MsgStringIDs.MSI_ID_EXPIRED; break; // This ID is expired
+			case   3: error =    MsgStringIDs.MSI_BANNED; break; // Rejected from Server
+			case   4: error =    MsgStringIDs.MSI_ID_EMAIL_CONFIRM_NEEDED; break; // Checked: 'Login is currently unavailable. Please try again shortly.'- 2br
+			case   5: error =    MsgStringIDs.MSI_INVALID_VERSION; break; // Your Game's EXE file is not the latest version
+			case   6: error =    MsgStringIDs.MSI_LOGIN_REFUSE_BLOCKED_UNTIL; break; // Your are Prohibited to log in until %s
+			case   7: error =    MsgStringIDs.MSI_PC_OVERFLOW; break; // Server is jammed due to over populated
+			case   8: error =    MsgStringIDs.MSI_REFUSE_NONSAKRAY_ID_BLOCKED; break; // Checked: 'This account can't connect the Sakray server.'
+			case   9: error =    MsgStringIDs.MSI_REFUSE_BAN_BY_DBA; break; // 9 = MSI_REFUSE_BAN_BY_DBA
+			case  10: error =    MsgStringIDs.MSI_REFUSE_EMAIL_NOT_CONFIRMED; break; // 10 = MSI_REFUSE_EMAIL_NOT_CONFIRMED
+			case  11: error =    MsgStringIDs.MSI_REFUSE_BAN_BY_GM; break; // 11 = MSI_REFUSE_BAN_BY_GM
+			case  12: error =    MsgStringIDs.MSI_REFUSE_TEMP_BAN_FOR_DBWORK; break; // 12 = MSI_REFUSE_TEMP_BAN_FOR_DBWORK
+			case  13: error =    MsgStringIDs.MSI_REFUSE_SELF_LOCK; break; // 13 = MSI_REFUSE_SELF_LOCK
+			case  14: error =    MsgStringIDs.MSI_REFUSE_NOT_PERMITTED_GROUP; break; // 14 = MSI_REFUSE_NOT_PERMITTED_GROUP
+			case  15: error =    MsgStringIDs.MSI_REFUSE_WAIT_FOR_SAKRAY_ACTIVE; break; // 15 = MSI_REFUSE_WAIT_FOR_SAKRAY_ACTIVE
+			case  99: error =    MsgStringIDs.MSI_DELETED_ACCOUNT; break; // 99 = This ID has been totally erased
+			case 100: error =    MsgStringIDs.MSI_ALREADY_CONNECT; break; // 100 = Login information remains at %s
+			case 101: error =    MsgStringIDs.MSI_HACKING_INVESTIGATION; break; // 101 = Account has been locked for a hacking investigation. Please contact the GM Team for more information
+			case 102: error =    MsgStringIDs.MSI_BUG_INVESTIGATION; break; // 102 = This account has been temporarily prohibited from login due to a bug-related investigation
+			case 103: error =    MsgStringIDs.MSI_DELETING_CHAR; break; // 103 = This character is being deleted. Login is temporarily unavailable for the time being
+			case 104: error =    MsgStringIDs.MSI_DELETING_SPOUSE_CHAR; break; // 104 = This character is being deleted. Login is temporarily unavailable for the time being
 		}
 
 		UIManager.showMessageBox(
@@ -394,19 +395,19 @@ define(function( require )
 
 		switch (pkt.ErrorCode) {
 			default:
-			case 0:   msg_id =    3; break; // Server closed
-			case 1:   msg_id =    4; break; // Server closed
-			case 2:   msg_id =    5; break; // Someone has already logged in with this id
-			case 3:   msg_id =    9; break; // Sync error ?
-			case 4:   msg_id =  439; break; // Server is jammed due to overpopulation.
-			case 5:   msg_id =  305; break; // You are underaged and cannot join this server.
-			case 6:   msg_id =  764; break; // Trial players can't connect Pay to Play Server. (761)
-			case 8:   msg_id =  440; break; // Server still recognizes your last login
-			case 9:   msg_id =  529; break; // IP capacity of this Internet Cafe is full. Would you like to pay the personal base?
-			case 10:  msg_id =  530; break; // You are out of available paid playing time. Game will be shut down automatically. (528)
-			case 15:  msg_id =  579; break; // You have been forced to disconnect by the Game Master Team
-			case 101: msg_id =  810; break; // Account has been locked for a hacking investigation.
-			case 102: msg_id = 1179; break; // More than 10 connections sharing the same IP have logged into the game for an hour. (1176)
+				case 0:   msg_id =    MsgStringIDs.MSI_BANNED; break; // Server closed
+				case 1:   msg_id =    MsgStringIDs.MSI_SERVER_OFF; break; // Server closed
+				case 2:   msg_id =    MsgStringIDs.MSI_DOUBLE_LOGIN_PROHIBITED; break; // Someone has already logged in with this id
+				case 3:   msg_id =    MsgStringIDs.MSI_ACCESS_DENIED; break; // Sync error ?
+				case 4:   msg_id =    MsgStringIDs.MSI_ACCOUNT_BUSY; break; // Server is jammed due to overpopulation.
+				case 5:   msg_id =    MsgStringIDs.MSI_UNDER_AGE; break; // You are underaged and cannot join this server.
+				case 6:   msg_id =    MsgStringIDs.MSI_CANT_CONNECT_TO_PAY_SERVER; break; // Trial players can't connect Pay to Play Server. (761)
+				case 8:   msg_id =    MsgStringIDs.MSI_INFORMATION_REMAINED; break; // Server still recognizes your last login
+				case 9:   msg_id =    MsgStringIDs.MSI_BAN_IP_OVERFLOW; break; // IP capacity of this Internet Cafe is full. Would you like to pay the personal base?
+				case 10:  msg_id =    MsgStringIDs.MSI_BAN_PAY_OUT; break; // You are out of available paid playing time. Game will be shut down automatically. (528)
+				case 15:  msg_id =    MsgStringIDs.MSI_BAN_OP_FORCE; break; // You have been forced to disconnect by the Game Master Team
+				case 101: msg_id =    MsgStringIDs.MSI_HACKING_INVESTIGATION; break; // Account has been locked for a hacking investigation.
+				case 102: msg_id =    MsgStringIDs.MSI_BAN_PC_IP_COUNT; break; // More than 10 connections sharing the same IP have logged into the game for an hour. (1176)
 		}
 
 		UIManager.showErrorBox( DB.getMessage(msg_id) );

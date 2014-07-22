@@ -16,6 +16,7 @@ define(function( require )
 	 * Load dependencies
 	 */
 	var DB        = require('DB/DBManager');
+	var MsgStringIDs = require('DB/MsgStringIds');
 	var Network   = require('Network/NetworkManager');
 	var PACKET    = require('Network/PacketStructure');
 	var Trade     = require('UI/Components/Trade/Trade');
@@ -61,7 +62,7 @@ define(function( require )
 			};
 		}
 
-		var text    = '(' + pkt.name + ') ' + DB.getMessage(93);
+		var text    = '(' + pkt.name + ') ' + DB.getMessage(MsgStringIDs.MSI_SUGGEST_DEAL);
 		Trade.title = pkt.name;
 
 		if ('level' in pkt && 'GID' in pkt) {
@@ -80,16 +81,16 @@ define(function( require )
 	{
 		switch (pkt.result) {
 			case 0: // Char is too far
-				ChatBox.addText( DB.getMessage(70), ChatBox.TYPE.ERROR);
+				ChatBox.addText( DB.getMessage(MsgStringIDs.MSI_TOO_FAR_TO_DEAL), ChatBox.TYPE.ERROR);
 				break;
 
 
 			case 1: // Character does not exist
-				ChatBox.addText( DB.getMessage(71), ChatBox.TYPE.ERROR);
+				ChatBox.addText( DB.getMessage(MsgStringIDs.MSI_CHARACTER_IS_NOT_EXIST), ChatBox.TYPE.ERROR);
 				break;
 
 			case 2: // In another deal
-				ChatBox.addText( DB.getMessage(72), ChatBox.TYPE.ERROR);
+				ChatBox.addText( DB.getMessage(MsgStringIDs.MSI_CHARACTER_IS_DEALING), ChatBox.TYPE.ERROR);
 				break;
 
 			case 3:
@@ -100,7 +101,7 @@ define(function( require )
 				break;
 
 			case 4: // Cancel
-				ChatBox.addText( DB.getMessage(74), ChatBox.TYPE.ERROR);
+				ChatBox.addText( DB.getMessage(MsgStringIDs.MSI_DEAL_IS_CANCELED), ChatBox.TYPE.ERROR);
 				break;
 
 			case 5: // AFK ?
@@ -134,11 +135,11 @@ define(function( require )
 	{
 		switch (pkt.result) {
 			case 1: // overweight
-				ChatBox.addText( DB.getMessage(73), ChatBox.TYPE.ERROR);
+				ChatBox.addText( DB.getMessage(MsgStringIDs.MSI_CHARACTER_IS_OVER_WEIGHT), ChatBox.TYPE.ERROR);
 				break;
 
 			case 2: // trade canceled
-				ChatBox.addText( DB.getMessage(74), ChatBox.TYPE.ERROR);
+				ChatBox.addText( DB.getMessage(MsgStringIDs.MSI_DEAL_IS_CANCELED), ChatBox.TYPE.ERROR);
 				break;
 		}
 
@@ -174,7 +175,7 @@ define(function( require )
 	 */
 	function onTradeCancel( pkt )
 	{
-		ChatBox.addText( DB.getMessage(74), ChatBox.TYPE.ERROR);
+		ChatBox.addText( DB.getMessage(MsgStringIDs.MSI_DEAL_IS_CANCELED), ChatBox.TYPE.ERROR);
 		Trade.remove();
 	}
 
@@ -219,13 +220,13 @@ define(function( require )
 	{
 		// Fail
 		if (pkt.result === 1) {
-			ChatBox.addText( DB.getMessage(76), ChatBox.TYPE.ERROR);
+			ChatBox.addText( DB.getMessage(MsgStringIDs.MSI_DEAL_FAILED), ChatBox.TYPE.ERROR);
 			Trade.remove();
 			return;
 		}
 
 		//TODO: Give items...
-		ChatBox.addText( DB.getMessage(75), ChatBox.TYPE.BLUE);
+		ChatBox.addText( DB.getMessage(MsgStringIDs.MSI_DEAL_SUCCESS), ChatBox.TYPE.BLUE);
 		Trade.remove();
 	}
 

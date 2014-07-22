@@ -24,6 +24,7 @@ define(function(require)
 	var BabyTable        = require('./Jobs/BabyTable');
 	var HairIndexTable   = require('./Jobs/HairIndexTable');
 	var MonsterTable     = require('./Monsters/MonsterTable');
+	var MsgStringIDs = require('./MsgStringIds');
 	var PetIllustration  = require('./Pets/PetIllustration');
 	var PetAction        = require('./Pets/PetAction');
 	var ItemTable        = require('./Items/ItemTable');
@@ -616,7 +617,7 @@ define(function(require)
 		var map = mapname.replace('.gat','.rsw');
 
 		if (!(map in MapTable) || !MapTable[map].name) {
-			return (typeof defaultName === 'undefined' ? DB.getMessage(187) : defaultName);
+			return (typeof defaultName === 'undefined' ? DB.getMessage(MsgStringIDs.MSI_NOWHERE) : defaultName);
 		}
 
 		return TextEncoding.decodeString(MapTable[map].name);

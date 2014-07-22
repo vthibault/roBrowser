@@ -17,6 +17,7 @@ define(function( require )
 	// Load modules
 	var jQuery     = require('Utils/jquery');
 	var DB         = require('DB/DBManager');
+	var MsgStringIDs = require('DB/MsgStringIds');
 	var Events     = require('Core/Events');
 	var Sound      = require('Audio/SoundManager');
 	var BGM        = require('Audio/BGM');
@@ -60,7 +61,7 @@ define(function( require )
 
 			// Fail to connect...
 			if (!success) {
-				UIManager.showErrorBox( DB.getMessage(1) );
+				UIManager.showErrorBox( DB.getMessage(MsgStringIDs.MSI_SERVER_CONNECTION_FAILED) );
 				return;
 			}
 
@@ -155,7 +156,7 @@ define(function( require )
 
 		switch (pkt.ErrorCode) {
 			default:
-			case 0: msg_id = 3; break;
+		    	case 0: msg_id = MsgStringIDs.MSI_BANNED; break;
 			// other types ?
 		}
 
@@ -171,7 +172,7 @@ define(function( require )
 	function onMapUnavailable( pkt )
 	{
 		// no map server avaiable
-		UIManager.showMessageBox( DB.getMessage(1811), null, function(){
+		UIManager.showMessageBox( DB.getMessage(MsgStringIDs.MSI_NOT_EXIST_ENTRYMAP), null, function(){
 			UIManager.getComponent('WinLoading').remove();
 			CharSelect.append();
 		});
@@ -220,7 +221,7 @@ define(function( require )
 		}
 
 		// Display prompt message
-		_ui_box  = UIManager.showPromptBox( DB.getMessage(19), 'ok', 'cancel', onOk, onCancel);
+		_ui_box  = UIManager.showPromptBox( DB.getMessage(MsgStringIDs.MSI_DELETE_CHARACTER), 'ok', 'cancel', onOk, onCancel);
 		_overlay = jQuery('<div/>').addClass('win_popup_overlay').appendTo('body');
 
 		// Submit the mail
@@ -230,7 +231,7 @@ define(function( require )
 			_ui_box.remove();
 
 			// Stop rendering...
-			_ui_box = UIManager.showMessageBox( DB.getMessage(296).replace('%d',10), 'cancel', function(){
+			_ui_box = UIManager.showMessageBox( DB.getMessage(MsgStringIDs.MSI_CHARARATER_DELETE_COUNT).replace('%d',10), 'cancel', function(){
 				_render = false;
 				onCancel();
 			});
@@ -267,7 +268,7 @@ define(function( require )
 			}
 
 			// Update text
-			_ui_box.ui.find('.text').text( DB.getMessage(296).replace('%d', Math.round(10-percent/10) ) );
+			_ui_box.ui.find('.text').text( DB.getMessage(MsgStringIDs.MSI_CHARARATER_DELETE_COUNT).replace('%d', Math.round(10-percent/10) ) );
 
 			// Update progressbar
 			_ctx.clearRect(0, 0, _width, _height);
@@ -379,12 +380,12 @@ define(function( require )
 		var msg_id;
 
 		switch (pkt.ErrorCode) {
-			case 0x00: msg_id =   10;  break; // 'Charname already exists'
-			case 0x01: msg_id =  298;  break; // 'You are underaged'
-			case 0x02: msg_id = 1272;  break; // 'Symbols in Character Names are forbidden'
-			case 0x03: msg_id = 1355;  break; // 'You are not elegible to open the Character Slot.'
+			case 0x00: msg_id =   MsgStringIDs.MSI_CHARACTER_NAME_ALREADY_EXISTS;  break; // 'Charname already exists'
+			case 0x01: msg_id =  MsgStringIDs.MSI_LIMIT_AGE;  break; // 'You are underaged'
+			case 0x02: msg_id = MsgStringIDs.MSI_LIMIT_CHAR_DELETE;  break; // 'Symbols in Character Names are forbidden'
+			case 0x03: msg_id = MsgStringIDs.MSI_FR_ERR_MKCHAR_INVALID_SLOT;  break; // 'You are not elegible to open the Character Slot.'
 			default:
-			case 0xFF: msg_id =   11;  break; // 'Char creation denied'
+		    	case 0xFF: msg_id = MsgStringIDs.MSI_CHARACTER_CREATION_DENIED; break; // 'Char creation denied'
 		}
 
 		UIManager.showMessageBox( DB.getMessage(msg_id), 'ok' );

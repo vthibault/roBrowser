@@ -6965,7 +6965,7 @@ define( ['Utils/BinaryWriter', './PacketVerManager'], function( BinaryWriter, PA
 			for ( i=0; i<count; ++i ) {
 				out[i] = {};
 				out[i].positionID = fp.readLong();
-				out[i].posName    = fp.readPos();
+				out[i].posName    = fp.readString(24);
 			}
 			return out;
 		})();

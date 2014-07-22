@@ -19,6 +19,7 @@ define(function(require)
 	var Renderer           = require('Renderer/Renderer');
 	var KEYS               = require('Controls/KeyEventHandler');
 	var DB                 = require('DB/DBManager');
+	var MsgStringIDs = require('DB/MsgStringIds');
 	var UIManager          = require('UI/UIManager');
 	var UIComponent        = require('UI/UIComponent');
 	var htmlText           = require('text!./InputBox.html');
@@ -125,7 +126,7 @@ define(function(require)
 		switch (type) {
 			case 'number':
 				this.ui.addClass('number');
-				this.ui.find('.text').text( DB.getMessage(1259) );
+				this.ui.find('.text').text( DB.getMessage(MsgStringIDs.MSI_INPUT_NUMBER) );
 				this.ui.find('input').attr('type', 'text');
 				defaultVal = defaultVal || 0;
 				break;
@@ -144,7 +145,7 @@ define(function(require)
 
 			case 'mail':
 				this.ui.removeClass('number');
-				this.ui.find('.text').text( DB.getMessage(300) );
+				this.ui.find('.text').text( DB.getMessage(MsgStringIDs.MSI_ENTER_EMAIL_TOOLTIP) );
 				this.ui.find('input').attr('type', 'password');
 				break;
 		}

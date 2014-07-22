@@ -7,8 +7,8 @@
  *
  * @author Vincent Thibault
  */
-define(['DB/DBManager', './EntityManager', './Entity/Entity', 'Renderer/Map/Altitude'],
-function(   DB,            EntityManager,            Entity,                Altitude)
+define(['DB/DBManager', 'DB/MsgStringIds', './EntityManager', './Entity/Entity', 'Renderer/Map/Altitude'],
+function (DB, MsgStringIDs, EntityManager, Entity, Altitude)
 {
 	'use strict';
 
@@ -38,7 +38,7 @@ function(   DB,            EntityManager,            Entity,                Alti
 		entity.position[2]  = z;
 
 		entity.display.load = entity.display.TYPE.COMPLETE;
-		entity.display.name = DB.getMessage(183).replace('%s', name).replace('%d', count);
+		entity.display.name = DB.getMessage(MsgStringIDs.MSI_EA2).replace('%s', name).replace('%d', count);
 		entity.display.update('#FFEF94');
 
 		entity.files.body.spr = path + '.spr';

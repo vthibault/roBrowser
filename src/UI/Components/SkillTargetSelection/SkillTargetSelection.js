@@ -16,6 +16,7 @@ define(function(require)
 	 * Dependencies
 	 */
 	var DB            = require('DB/DBManager');
+	var MsgStringIDs = require('DB/MsgStringIds');
 	var SkillInfo     = require('DB/Skills/SkillInfo');
 	var KEYS          = require('Controls/KeyEventHandler');
 	var Mouse         = require('Controls/MouseEventHandler');
@@ -94,7 +95,7 @@ define(function(require)
 		_description.style.borderRadius = '3px';
 		_description.style.border       = '1px solid #555';
 
-		render( DB.getMessage(234), _description);
+		render( DB.getMessage(MsgStringIDs.MSI_SELECTTARGET), _description);
 
 		this.ui = jQuery('<div id ="SkillTargetSelection"/>'); // just to not break things
 		this.ui.append();

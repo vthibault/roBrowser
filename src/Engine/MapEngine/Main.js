@@ -17,6 +17,7 @@ define(function( require )
 	 * Load dependencies
 	 */
 	var DB             = require('DB/DBManager');
+	var MsgStringIDs = require('DB/MsgStringIds');
 	var StatusProperty = require('DB/Status/StatusProperty');
 	var Session        = require('Engine/SessionStorage');
 	var Network        = require('Network/NetworkManager');
@@ -471,7 +472,7 @@ define(function( require )
 	 */
 	function onPlayerCountAnswer( pkt )
 	{
-		ChatBox.addText( DB.getMessage(178).replace('%d', pkt.count), ChatBox.TYPE.INFO );
+		ChatBox.addText( DB.getMessage(MsgStringIDs.MSI_NUMPEOPLE).replace('%d', pkt.count), ChatBox.TYPE.INFO );
 	}
 
 
@@ -488,7 +489,7 @@ define(function( require )
 			case 0:
 				Equipment.setEquipConfig( pkt.Value );
 				ChatBox.addText(
-					DB.getMessage(1358 + (pkt.Value ? 1 : 0) ),
+					DB.getMessage(MsgStringIDs.MSI_OPEN_EQUIPEDITEM_REFUSE + (pkt.Value ? 1 : 0) ),
 					ChatBox.TYPE.INFO
 				);
 				break;
@@ -507,20 +508,20 @@ define(function( require )
 	{
 		switch (pkt.errorCode) {
 			case 0: // Please equip the proper amnution first
-				ChatBox.addText( DB.getMessage(242), ChatBox.TYPE.ERROR );
+				ChatBox.addText( DB.getMessage(MsgStringIDs.MSI_ERR_ATTACK_ARROW), ChatBox.TYPE.ERROR );
 				break;
 
 			case 1:  // You can't Attack or use Skills because your Weight Limit has been exceeded.
-				ChatBox.addText( DB.getMessage(243), ChatBox.TYPE.ERROR );
+				ChatBox.addText( DB.getMessage(MsgStringIDs.MSI_ERR_ATTACK_WEIGHT), ChatBox.TYPE.ERROR );
 				break;
 
 			case 2: // You can't use Skills because Weight Limit has been exceeded.
-				ChatBox.addText( DB.getMessage(244), ChatBox.TYPE.ERROR );
+				ChatBox.addText( DB.getMessage(MsgStringIDs.MSI_ERR_SKILL_WEIGHT), ChatBox.TYPE.ERROR );
 				break;
 
 			case 3: // Ammunition has been equipped.
 				// TODO: check the class - assassin: 1040 | gunslinger: 1175 | default: 245
-				ChatBox.addText( DB.getMessage(245), ChatBox.TYPE.BLUE );
+				ChatBox.addText( DB.getMessage(MsgStringIDs.MSI_MSG_ARROW_EQUIPMENT_SUCCESS), ChatBox.TYPE.BLUE );
 				break;
 		}
 	}
@@ -569,6 +570,11 @@ define(function( require )
 				break;
 		}
 	}
+	
+	function onFormatstringMsg( pkt )
+	{
+		ChatBox.addText( DB.getMessage(pkt.msg).replace('%s', pkt.value));
+	}
 
 
 	/**
@@ -593,6 +599,7 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.CONFIG,                      onConfigUpdate );
 		Network.hookPacket( PACKET.ZC.ACTION_FAILURE,              onActionFailure );
 		Network.hookPacket( PACKET.ZC.MSG,                         onMessage );
+		Network.hookPacket( PACKET.ZC.FORMATSTRING_MSG,    				 onFormatstringMsg );
 		Network.hookPacket( PACKET.ZC.RECOVERY,                    onRecovery );
 	};
 });

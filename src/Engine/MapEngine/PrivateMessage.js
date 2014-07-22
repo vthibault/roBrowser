@@ -17,6 +17,7 @@ define(function( require )
 	 * Load dependencies
 	 */
 	var DB            = require('DB/DBManager');
+	var MsgStringIDs = require('DB/MsgStringIds');
 	var Network       = require('Network/NetworkManager');
 	var PACKET        = require('Network/PacketStructure');
 	var ChatBox       = require('UI/Components/ChatBox/ChatBox');
@@ -48,7 +49,7 @@ define(function( require )
 			ChatBox.addText( '(To '+ user +') : ' + msg, ChatBox.TYPE.PRIVATE );
 		}
 		else {
-			ChatBox.addText( '('+ user +') : ' + DB.getMessage(147 + pkt.result),  ChatBox.TYPE.PRIVATE );
+			ChatBox.addText( '('+ user +') : ' + DB.getMessage(MsgStringIDs.MSI_YOU_THROW_MVPITEM + pkt.result),  ChatBox.TYPE.PRIVATE );
 		}
 	
 		ChatBox.PrivateMessageStorage.nick = '';

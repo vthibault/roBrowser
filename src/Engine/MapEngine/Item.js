@@ -17,6 +17,7 @@ define(function( require )
 	 * Load dependencies
 	 */
 	var DB            = require('DB/DBManager');
+	var MsgStringIDs = require('DB/MsgStringIds');
 	var EquipLocation = require('DB/Items/EquipmentLocation');
 	var Network       = require('Network/NetworkManager');
 	var PACKET        = require('Network/PacketStructure');
@@ -88,7 +89,7 @@ define(function( require )
 	{
 		// Fail
 		if (pkt.result === 6) {
-			ChatBox.addText( DB.getMessage(53), ChatBox.TYPE.ERROR );
+			ChatBox.addText( DB.getMessage(MsgStringIDs.MSI_CANT_GET_ITEM), ChatBox.TYPE.ERROR );
 			return;
 		}
 
@@ -97,7 +98,7 @@ define(function( require )
 
 		var it = DB.getItemInfo( pkt.ITID );
 		ChatBox.addText(
-			DB.getMessage(153).replace('%s', pkt.IsIdentified ? it.identifiedDisplayName : it.unidentifiedDisplayName ).replace('%d', pkt.count ),
+			DB.getMessage(MsgStringIDs.MSI_GET_ITEM).replace('%s', pkt.IsIdentified ? it.identifiedDisplayName : it.unidentifiedDisplayName ).replace('%d', pkt.count ),
 			ChatBox.TYPE.BLUE
 		);
 
@@ -121,7 +122,7 @@ define(function( require )
 	 *
 	 * @param {object} pkt - PACKET.ZC.ITEM_THROW_ACK
 	 */
-	function onIventoryRemoveItem( pkt )
+	function onInventoryRemoveItem( pkt )
 	{
 		Inventory.removeItem( pkt.Index, pkt.count || pkt.Count || 0);
 	}
@@ -142,7 +143,7 @@ define(function( require )
 
 				var it = DB.getItemInfo( item.ITID );
 				ChatBox.addText(
-					it.identifiedDisplayName + ' ' + DB.getMessage(171),
+					it.identifiedDisplayName + ' ' + DB.getMessage(MsgStringIDs.MSI_ITEM_IS_REMOVED),
 					ChatBox.TYPE.ERROR
 				);
 
@@ -172,7 +173,7 @@ define(function( require )
 			var it   = DB.getItemInfo( item.ITID );
 			Equipment.equip( item, pkt.wearLocation );
 			ChatBox.addText(
-				it.identifiedDisplayName + ' ' + DB.getMessage(170),
+				it.identifiedDisplayName + ' ' + DB.getMessage(MsgStringIDs.MSI_ITEM_IS_EQUIPED),
 				ChatBox.TYPE.BLUE
 			);
 
@@ -187,7 +188,7 @@ define(function( require )
 		// Fail to equip
 		else {
 			ChatBox.addText(
-				DB.getMessage(372),
+				DB.getMessage(MsgStringIDs.MSI_CAN_NOT_EQUIP_ITEM),
 				ChatBox.TYPE.ERROR
 			);
 		}
@@ -220,7 +221,7 @@ define(function( require )
 	{
 		Equipment.setEquipConfig( pkt.bOpenEquipmentWin );
 		ChatBox.addText(
-			DB.getMessage(1358 + (pkt.bOpenEquipmentWin ? 1 : 0) ),
+			DB.getMessage(MsgStringIDs.MSI_OPEN_EQUIPEDITEM_REFUSE + (pkt.bOpenEquipmentWin ? 1 : 0) ),
 			ChatBox.TYPE.INFO
 		);
 	}
@@ -273,7 +274,7 @@ define(function( require )
 
 		ItemSelection.append();
 		ItemSelection.setList(pkt.ITIDList);
-		ItemSelection.setTitle(DB.getMessage(522) + '(' + DB.getItemInfo(card.ITID).identifiedDisplayName + ')');
+		ItemSelection.setTitle(DB.getMessage(MsgStringIDs.MSI_ITEM_COMPOUNDING) + '(' + DB.getItemInfo(card.ITID).identifiedDisplayName + ')');
 		ItemSelection.onIndexSelected = function(index) {
 			if (index >= 0) {
 				var pkt        = new PACKET.CZ.REQ_ITEMCOMPOSITION();
@@ -353,7 +354,7 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.ITEM_PICKUP_ACK2,       onItemPickAnswer );
 		Network.hookPacket( PACKET.ZC.ITEM_PICKUP_ACK3,       onItemPickAnswer );
 		Network.hookPacket( PACKET.ZC.ITEM_PICKUP_ACK5,       onItemPickAnswer );
-		Network.hookPacket( PACKET.ZC.ITEM_THROW_ACK,         onIventoryRemoveItem );
+		Network.hookPacket( PACKET.ZC.ITEM_THROW_ACK,         onInventoryRemoveItem );
 		Network.hookPacket( PACKET.ZC.NORMAL_ITEMLIST,        onInventorySetList );
 		Network.hookPacket( PACKET.ZC.NORMAL_ITEMLIST2,       onInventorySetList );
 		Network.hookPacket( PACKET.ZC.NORMAL_ITEMLIST3,       onInventorySetList );
@@ -368,7 +369,7 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.REQ_WEAR_EQUIP_ACK,     onItemEquip );
 		Network.hookPacket( PACKET.ZC.REQ_WEAR_EQUIP_ACK2,    onItemEquip );
 		Network.hookPacket( PACKET.ZC.ACK_WEAR_EQUIP_V5,      onItemEquip );
-		Network.hookPacket( PACKET.ZC.DELETE_ITEM_FROM_BODY,  onIventoryRemoveItem );
+		Network.hookPacket( PACKET.ZC.DELETE_ITEM_FROM_BODY,  onInventoryRemoveItem );
 		Network.hookPacket( PACKET.ZC.USE_ITEM_ACK,           onItemUseAnswer );
 		Network.hookPacket( PACKET.ZC.USE_ITEM_ACK2,          onItemUseAnswer );
 		Network.hookPacket( PACKET.ZC.CONFIG_NOTIFY,          onConfigEquip );

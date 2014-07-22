@@ -14,6 +14,7 @@ define(function( require )
 
 	// Load dependencies
 	var DB                 = require('DB/DBManager');
+	var MsgStringIDs = require('DB/MsgStringIds');
 	var Emotions           = require('DB/Emotions');
 	var BGM                = require('Audio/BGM');
 	var Sound              = require('Audio/SoundManager');
@@ -32,12 +33,13 @@ define(function( require )
 	 */
 	return function processCommand( text ){
 		var pkt;
-		var cmd = text.split(' ')[0];
+		var args = text.split(' ');
+		var cmd = args[0];
 
 		switch (cmd) {
 
 			case 'sound':
-				this.addText( DB.getMessage(27 + AudioPreferences.Sound.play), this.TYPE.INFO );
+				this.addText( DB.getMessage(MsgStringIDs.MSI_SOUND_ON + AudioPreferences.Sound.play), this.TYPE.INFO );
 				AudioPreferences.Sound.play = !AudioPreferences.Sound.play;
 				AudioPreferences.save();
 
@@ -47,7 +49,7 @@ define(function( require )
 				return;
 
 			case 'bgm':
-				this.addText( DB.getMessage(31 + AudioPreferences.BGM.play), this.TYPE.INFO );
+				this.addText( DB.getMessage(MsgStringIDs.MSI_BGM_ON + AudioPreferences.BGM.play), this.TYPE.INFO );
 				AudioPreferences.BGM.play = !AudioPreferences.BGM.play;
 				AudioPreferences.save();
 
@@ -60,25 +62,25 @@ define(function( require )
 				return;
 
 			case 'effect':
-				this.addText( DB.getMessage(23 + MapPreferences.effect), this.TYPE.INFO );
+			    	this.addText( DB.getMessage(MsgStringIDs.MSI_EFFECT_ON + MapPreferences.effect), this.TYPE.INFO );
 				MapPreferences.effect = !MapPreferences.effect;
 				MapPreferences.save();
 				return;
 
 			case 'mineffect':
-				this.addText( DB.getMessage(687 + MapPreferences.mineffect), this.TYPE.INFO );
+			    	this.addText( DB.getMessage(MsgStringIDs.MSI_MINEFFECT_ON + MapPreferences.mineffect), this.TYPE.INFO );
 				MapPreferences.mineffect = !MapPreferences.mineffect;
 				MapPreferences.save();
 				return;
 
 			case 'miss':
-				this.addText( DB.getMessage(317 + MapPreferences.miss), this.TYPE.INFO );
+				this.addText( DB.getMessage(MsgStringIDs.MSI_MISS_EFFECT_ON + MapPreferences.miss), this.TYPE.INFO );
 				MapPreferences.miss = !MapPreferences.miss;
 				MapPreferences.save();
 				return;
 
 			case 'camera':
-				this.addText( DB.getMessage(319 + CameraPreferences.smooth), this.TYPE.INFO );
+				this.addText( DB.getMessage(MsgStringIDs.MSI_FIXED_CAMERA_ON + CameraPreferences.smooth), this.TYPE.INFO );
 				CameraPreferences.smooth = !CameraPreferences.smooth;
 				CameraPreferences.save();
 				return;
@@ -96,14 +98,14 @@ define(function( require )
 
 			case 'noctrl':
 			case 'nc':
-				this.addText( DB.getMessage(717 + ControlPreferences.noctrl), this.TYPE.INFO );
+				this.addText( DB.getMessage(MsgStringIDs.MSI_NOCTRL_ON + ControlPreferences.noctrl), this.TYPE.INFO );
 				ControlPreferences.noctrl = !ControlPreferences.noctrl;
 				ControlPreferences.save();
 				return;
 
 			case 'noshift':
 			case 'ns':
-				this.addText( DB.getMessage(701 + ControlPreferences.noshift), this.TYPE.INFO );
+				this.addText( DB.getMessage(MsgStringIDs.MSI_NOSHIFT_ON + ControlPreferences.noshift), this.TYPE.INFO );
 				ControlPreferences.noshift = !ControlPreferences.noshift;
 				ControlPreferences.save();
 				return;
@@ -152,6 +154,56 @@ define(function( require )
 				);
 				return;
 
+			case 'guild':
+				// todo: fix not using args[1], could be "guild name"
+				pkt = new PACKET.CZ.REQ_MAKE_GUILD();
+				pkt.GID = Session.GID;
+				pkt.GName = args[1];
+				Network.sendPacket(pkt);
+				return;
+
+			case 'hide':
+				pkt = new PACKET.CZ.CHANGE_EFFECTSTATE();
+				pkt.EffectState = 0x40;
+				Network.sendPacket(pkt);
+				return;
+
+			case 'summer':
+				pkt = new PACKET.CZ.CHANGE_EFFECTSTATE();
+				pkt.EffectState = 0x40000;
+				Network.sendPacket(pkt);
+				return;
+
+			case 'santa':
+				pkt = new PACKET.CZ.CHANGE_EFFECTSTATE();
+				pkt.EffectState = 0x10000;
+				Network.sendPacket(pkt);
+				return;
+
+			case 'mm':
+			case 'mapmove':
+				pkt = new PACKET.CZ.MOVETO_MAP();
+				if (args[1] === null) {
+					return;
+				} else {
+					pkt.mapName = args[1];
+				}
+				
+				if (args[2] !== null && args[3] !== null) {
+					pkt.xPos = parseInt(args[2], 0);
+					pkt.yPos = parseInt(args[3], 0);
+				}
+				
+				Network.sendPacket(pkt);
+				return;
+
+			case 'item':
+			case 'monster':
+				pkt = new PACKET.CZ.ITEM_CREATE();
+				pkt.itemName = args[1];
+				Network.sendPacket(pkt);
+				return;
+
 			case 'who':
 			case 'w':
 				pkt = new PACKET.CZ.REQ_USER_COUNT();
@@ -196,6 +248,6 @@ define(function( require )
 		}
 
 		// Command not found
-		this.addText( DB.getMessage(95), this.TYPE.INFO );
+		this.addText( DB.getMessage(MsgStringIDs.MSI_INVALID_COMMAND), this.TYPE.INFO );
 	};
 });

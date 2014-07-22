@@ -17,6 +17,7 @@ define(function( require )
 	 * Load dependencies
 	 */
 	var DB                   = require('DB/DBManager');
+	var MsgStringIDs = require('DB/MsgStringIds');
 	var SkillId              = require('DB/Skills/SkillConst');
 	var PathFinding          = require('Utils/PathFinding');
 	var Session              = require('Engine/SessionStorage');
@@ -142,17 +143,17 @@ define(function( require )
 
 		else {
 			switch (pkt.cause) {
-				case 1:  error = 202; break;
-				case 2:  error = 203; break;
-				case 3:  error = 808; break;
-				case 4:  error = 219; break;
-				case 5:  error = 233; break;
-				case 6:  error = 239; break;
-				case 7:  error = 246; break;
-				case 8:  error = 247; break;
-				case 9:  error = 580; break;
-				case 10: error = 285; break;
-				case 83: error = 661; break;
+				case 1: error = MsgStringIDs.MSI_USESKILL_FAIL_SP_INSUFFICIENT; break;
+				case 2:  error = MsgStringIDs.MSI_USESKILL_FAIL_HP_INSUFFICIENT; break;
+				case 3:  error = MsgStringIDs.MSI_NOT_ENOUGH_SOURCE; break;
+				case 4:  error = MsgStringIDs.MSI_SKILLINTERVAL; break;
+				case 5:  error = MsgStringIDs.MSI_SKILL_FAIL_MONEY; break;
+				case 6:  error = MsgStringIDs.MSI_USESKILL_FAIL_NOT_SUITABLE_WEAPON; break;
+				case 7:  error = MsgStringIDs.MSI_NEED_REDJAMSTONE; break;
+				case 8:  error = MsgStringIDs.MSI_NEED_BLUEJAMSTONE; break;
+				case 9:  error = MsgStringIDs.MSI_USESKILL_FAIL_WEIGHTOVER; break;
+				case 10: error = MsgStringIDs.MSI_USESKILL_FAIL; break;
+				case 83: error = MsgStringIDs.MSI_CANT_MAKE_CHAT_ROOM; break;
 			}
 		}
 
@@ -230,7 +231,7 @@ define(function( require )
 
 		ItemSelection.append();
 		ItemSelection.setList(pkt.ITIDList);
-		ItemSelection.setTitle(DB.getMessage(521));
+		ItemSelection.setTitle(DB.getMessage(MsgStringIDs.MSI_ITEM_IDENTIFY));
 		ItemSelection.onIndexSelected = function(index) {
 			if (index >= 0) {
 				var pkt   = new PACKET.CZ.REQ_ITEMIDENTIFY();
@@ -255,7 +256,7 @@ define(function( require )
 
 		switch (pkt.result) {
 			case 0: // success
-				ChatBox.addText( DB.getMessage(491), ChatBox.TYPE.BLUE);
+				ChatBox.addText( DB.getMessage(MsgStringIDs.MSI_ITEM_IDENTIFY_SUCCEESS), ChatBox.TYPE.BLUE);
 
 				// Remove old item
 				var item = Inventory.removeItem(pkt.index, 1);
@@ -268,7 +269,7 @@ define(function( require )
 				break;
 
 			case 1: // Fail
-				ChatBox.addText( DB.getMessage(492), ChatBox.TYPE.ERROR);
+				ChatBox.addText( DB.getMessage(MsgStringIDs.MSI_ITEM_IDENTIFY_FAIL), ChatBox.TYPE.ERROR);
 				break;
 		}
 	}
@@ -287,7 +288,7 @@ define(function( require )
 
 		ItemSelection.append();
 		ItemSelection.setList(pkt.SKID, true);
-		ItemSelection.setTitle(DB.getMessage(697));
+		ItemSelection.setTitle(DB.getMessage(MsgStringIDs.MSI_SPELL_LIST));
 		ItemSelection.onIndexSelected = function(index) {
 			if (index >= 0) {
 				var pkt   = new PACKET.CZ.SELECTAUTOSPELL();
@@ -327,7 +328,7 @@ define(function( require )
 			}
 
 			WarpList.setMenu(mapNames.join(':') + ':Cancel', pkt.SKID);
-			WarpList.ui.find('.title').text(DB.getMessage(213));
+			WarpList.ui.find('.title').text(DB.getMessage(MsgStringIDs.MSI_SELECTWHERETOWARP));
 		};
 
 		WarpList.append();
@@ -343,11 +344,11 @@ define(function( require )
 	{
 		switch (pkt.type) {
 			case 0: //Unable to Teleport in this area
-				ChatBox.addText( DB.getMessage(500), ChatBox.TYPE.ERROR);
+				ChatBox.addText( DB.getMessage(MsgStringIDs.MSI_IMPOSSIBLE_TELEPORT_AREA), ChatBox.TYPE.ERROR);
 				break;
 
 			case 1: //Saved point cannot be memorized.
-				ChatBox.addText( DB.getMessage(501), ChatBox.TYPE.ERROR);
+				ChatBox.addText( DB.getMessage(MsgStringIDs.MSI_POSSIBLE_TELEPORT_AREA), ChatBox.TYPE.ERROR);
 				break;
 		}
 	}
@@ -362,15 +363,15 @@ define(function( require )
 	{
 		switch (pkt.errorCode) {
 			case 0: // Saved location as a Memo Point for Warp skill.
-				ChatBox.addText( DB.getMessage(217), ChatBox.TYPE.BLUE);
+				ChatBox.addText( DB.getMessage(MsgStringIDs.MSI_WARPPOINTSTORED), ChatBox.TYPE.BLUE);
 				break;
 
 			case 1: // Skill Level is not high enough.
-				ChatBox.addText( DB.getMessage(214), ChatBox.TYPE.ERROR);
+				ChatBox.addText( DB.getMessage(MsgStringIDs.MSI_NOTENOUGHSKILLLEVEL), ChatBox.TYPE.ERROR);
 				break;
 
 			case 2: // You haven't learned Warp.
-				ChatBox.addText( DB.getMessage(216), ChatBox.TYPE.ERROR);
+				ChatBox.addText( DB.getMessage(MsgStringIDs.MSI_NOWARPSKILL), ChatBox.TYPE.ERROR);
 				break;
 		}
 	}

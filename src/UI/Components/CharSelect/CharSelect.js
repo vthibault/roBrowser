@@ -16,6 +16,7 @@ define(function(require)
 	 * Dependencies
 	 */
 	var DB                 = require('DB/DBManager');
+	var MsgStringIDs = require('DB/MsgStringIds');
 	var MonsterTable       = require('DB/Monsters/MonsterTable');
 	var Preferences        = require('Core/Preferences');
 	var KEYS               = require('Controls/KeyEventHandler');
@@ -271,7 +272,7 @@ define(function(require)
 
 			default: // Others error ?
 			case  0: // Incorrect adress email
-				UIManager.showMessageBox( DB.getMessage(301), 'ok' );
+				UIManager.showMessageBox( DB.getMessage(MsgStringIDs.MSI_CANNOT_DELETE_CHARACTER_EMAIL), 'ok' );
 				break;
 		}
 	};
@@ -337,7 +338,7 @@ define(function(require)
 	 */
 	function cancel()
 	{
-		UIManager.showPromptBox( DB.getMessage(17), 'ok', 'cancel', function(){
+		UIManager.showPromptBox( DB.getMessage(MsgStringIDs.MSI_DO_YOU_REALLY_WANT_TO_QUIT), 'ok', 'cancel', function(){
 			CharSelect.onExitRequest();
 		}, null);
 	}

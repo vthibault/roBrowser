@@ -14,6 +14,7 @@ define(function(require)
 	 * Dependencies
 	 */
 	var DB           = require('DB/DBManager');
+	var MsgStringIDs = require('DB/MsgStringIds');
 	var jQuery       = require('Utils/jquery');
 	var Client       = require('Core/Client');
 	var Session      = require('Engine/SessionStorage');
@@ -283,13 +284,13 @@ define(function(require)
 	{
 		// You cannot overlap items on a window
 		if (index in _tmpCount) {
-			ChatBox.addText( DB.getMessage(51), ChatBox.TYPE.ERROR);
+			ChatBox.addText( DB.getMessage(MsgStringIDs.MSI_CAN_DRAG_ITEM_OLNY_ONETIME), ChatBox.TYPE.ERROR);
 			return;
 		}
 
 		// You cannot trade more than 10 types of items per trade.
 		if (_send.length >= 10) {
-			ChatBox.addText( DB.getMessage(297), ChatBox.TYPE.ERROR);
+			ChatBox.addText( DB.getMessage(MsgStringIDs.MSI_MAXEXCHANGE_IS_10_KIND), ChatBox.TYPE.ERROR);
 			return;
 		}
 

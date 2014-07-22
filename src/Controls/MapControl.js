@@ -15,6 +15,7 @@ define(function( require )
 	// Load dependencies
 	var jQuery        = require('Utils/jquery');
 	var DB            = require('DB/DBManager');
+	var MsgStringIDs = require('DB/MsgStringIds');
 	var Cursor        = require('UI/CursorManager');
 	var InputBox      = require('UI/Components/InputBox/InputBox');
 	var ChatBox       = require('UI/Components/ChatBox/ChatBox');
@@ -204,7 +205,7 @@ define(function( require )
 			// Can't drop an item on map if Equipment window is open
 			if (Equipment.ui.is(':visible')) {
 				ChatBox.addText(
-					DB.getMessage(189),
+					DB.getMessage(MsgStringIDs.MSI_CLOSEEQUIPWND),
 					ChatBox.TYPE.ERROR
 				);
 				return;
