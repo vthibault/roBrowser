@@ -272,7 +272,9 @@ define(function(require)
 	ChatBox.processBattleMode = function processBattleMode( keyId )
 	{
 		// Direct process
-		if (this.ui.find('.battlemode').is(':visible') || KEYS.ALT || KEYS.SHIFT || KEYS.ctrl) {
+		if (this.ui.find('.battlemode').is(':visible') ||
+			KEYS.ALT || KEYS.SHIFT || KEYS.CTRL ||
+			(keyId >= KEYS.F1 && keyId <= KEYS.F24)) {
 			return BattleMode.process(keyId);
 		}
 
