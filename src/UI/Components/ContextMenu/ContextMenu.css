@@ -17,6 +17,7 @@
 	color:black;
 	white-space:nowrap;
 	padding:1px;
+	height:14px;
 }
 
 #ContextMenu div:hover {

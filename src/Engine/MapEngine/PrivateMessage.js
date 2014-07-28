@@ -30,6 +30,7 @@ define(function( require )
 	function onPrivateMessage( pkt )
 	{
 		ChatBox.addText('(From '+ pkt.sender +') : ' + pkt.msg.replace(/\|\d{2}/, ''), ChatBox.TYPE.PRIVATE );
+		ChatBox.saveNickName(pkt.sender);
 	}
 
 

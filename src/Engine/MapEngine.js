@@ -414,29 +414,47 @@ define(function( require )
 	 *
 	 * @param {string} user
 	 * @param {string} text
+	 * @param {number} target
 	 */
-	function onRequestTalk( user, text )
+	function onRequestTalk( user, text, target )
 	{
 		var pkt;
+		var flag_party = text[0] === '%' || KEYS.CTRL;
+		var flag_guild = text[0] === '$' || KEYS.ALT;
 
+		text = text.replace(/^(\$|\%)/, '');
+
+		// Private messages
 		if (user.length) {
 			pkt          = new PACKET.CZ.WHISPER();
 			pkt.receiver = user;
 			pkt.msg      = text;
-		}
-		else if (text[0] === '%') {
-			pkt     = new PACKET.CZ.REQUEST_CHAT_PARTY();
-			pkt.msg = Session.Entity.display.name + ' : ' + text.substr(1);
-		}
-		else if (text[0] === '$') {
-			pkt     = new PACKET.CZ.GUILD_CHAT();
-			pkt.msg = Session.Entity.display.name + ' : ' + text.substr(1);
-		}
-		else {
-			pkt     = new PACKET.CZ.REQUEST_CHAT();
-			pkt.msg = Session.Entity.display.name + ' : ' + text;
+			Network.sendPacket(pkt);
+			return;
 		}
 
+		// Set off/on flags
+		if (flag_party) {
+			target = (target & ~ChatBox.TYPE.PARTY) | (~target & ChatBox.TYPE.PARTY);
+		}
+
+		if (flag_guild) {
+			target = (target & ~ChatBox.TYPE.GUILD) | (~target & ChatBox.TYPE.GUILD);
+		}
+
+		// Get packet
+		if (target & ChatBox.TYPE.PARTY) {
+			pkt = new PACKET.CZ.REQUEST_CHAT_PARTY();
+		}
+		else if (target & ChatBox.TYPE.GUILD) {
+			pkt = new PACKET.CZ.GUILD_CHAT();
+		}
+		else {
+			pkt = new PACKET.CZ.REQUEST_CHAT();
+		}
+
+		// send packet
+		pkt.msg = Session.Entity.display.name + ' : ' + text;
 		Network.sendPacket(pkt);
 	}
 

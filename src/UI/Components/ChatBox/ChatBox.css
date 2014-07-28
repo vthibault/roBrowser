@@ -125,6 +125,8 @@
 	width:460px;
 	padding-left:5px;
 }
+#chatbox .input .message.party { color:#840084; }
+#chatbox .input .message.guild { color:#008484; }
 
 #chatbox .input .filter,
 #chatbox .input .size {

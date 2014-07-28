@@ -25,6 +25,7 @@ define(function(require)
 	var History            = require('./History');
 	var UIManager          = require('UI/UIManager');
 	var UIComponent        = require('UI/UIComponent');
+	var ContextMenu        = require('UI/Components/ContextMenu/ContextMenu');
 	var htmlText           = require('text!./ChatBox.html');
 	var cssText            = require('text!./ChatBox.css');
 	var ProcessCommand     = require('Controls/ProcessCommand');
@@ -84,6 +85,12 @@ define(function(require)
 
 
 	/**
+	 * @var {number} target message ?
+	 */
+	var _sendTo = ChatBox.TYPE.PUBLIC;
+
+
+	/**
 	 * Storage to cache the private messages
 	 * Ugly system used by official client, can lead to errors
 	 */
@@ -139,6 +146,55 @@ define(function(require)
 			this.select();
 		}).blur(function(){
 			this.type = 'button';
+		});
+
+		// Private message selection
+		this.ui.find('.input .list').click(function(){
+			var $this = this;
+			var names = _historyNickName.list;
+			var i, count = names.length;
+			var pos = jQuery(this).offset();
+
+			if (!count) {
+				ChatBox.addText( DB.getMessage(192), ChatBox.TYPE.ERROR);
+				return;
+			}
+
+			ContextMenu.remove();
+			ContextMenu.append();
+
+			for (i = 0; i < count; ++i) {
+				ContextMenu.addElement(names[i], onPrivateMessageUserSelection(names[i]));
+			}
+
+			ContextMenu.addElement('', onPrivateMessageUserSelection(''));
+			ContextMenu.ui.css({
+				top:  pos.top - ContextMenu.ui.height() - 5,
+				left: pos.left - ContextMenu.ui.width() - 5
+			});
+		}).mousedown(function(event){
+			event.stopImmediatePropagation();
+			return false;
+		});
+
+		// Send message to...
+		this.ui.find('.input .filter').click(function(){
+			var pos = jQuery(this).offset();
+
+			ContextMenu.remove();
+			ContextMenu.append();
+
+			ContextMenu.addElement(DB.getMessage(85),  onChangeTargetMessage(ChatBox.TYPE.PUBLIC));
+			ContextMenu.addElement(DB.getMessage(86),  onChangeTargetMessage(ChatBox.TYPE.PARTY));
+			ContextMenu.addElement(DB.getMessage(437), onChangeTargetMessage(ChatBox.TYPE.GUILD));
+
+			ContextMenu.ui.css({
+				top:  pos.top - ContextMenu.ui.height() - 5,
+				left: pos.left - ContextMenu.ui.width() + 25
+			});
+		}).mousedown(function(event){
+			event.stopImmediatePropagation();
+			return false;
 		});
 
 		// Change size
@@ -368,7 +424,7 @@ define(function(require)
 			return;
 		}
 
-		this.onRequestTalk( user, text );
+		this.onRequestTalk( user, text, _sendTo );
 	};
 
 
@@ -492,6 +548,17 @@ define(function(require)
 
 
 	/**
+	 * Save user name to nick name history
+	 *
+	 * @param {string} nick name
+	 */
+	ChatBox.saveNickName = function saveNickName( pseudo )
+	{
+		_historyNickName.push(pseudo);
+	};
+
+
+	/**
 	 * Update scroll by block (14px)
 	 */
 	function onScroll( event )
@@ -510,6 +577,46 @@ define(function(require)
 
 		this.scrollTop = Math.floor(this.scrollTop/14) * 14 - (delta * 14);
 		return false;
+	}
+
+
+	/**
+	 * Change private message nick name
+	 *
+	 * @param {string} nick name
+	 * @return {function} callback closure
+	 */
+	function onPrivateMessageUserSelection(name)
+	{
+		return function onPrivateMessageUserSelectionClosure()
+		{
+			ChatBox.ui.find('.input .username').val(name);
+		};
+	}
+
+
+	/**
+	 * Change target of global chat (party, guild)
+	 *
+	 * @param {number} type constant
+	 */
+	function onChangeTargetMessage(type)
+	{
+		return function onChangeTargetMessageClosure()
+		{
+			var $input = ChatBox.ui.find('.input .message');
+
+			$input.removeClass('guild party');
+
+			if (type & ChatBox.TYPE.PARTY) {
+				$input.addClass('party');
+			}
+			else if (type & ChatBox.TYPE.GUILD) {
+				$input.addClass('guild');
+			}
+
+			_sendTo = type;
+		};
 	}
 
 

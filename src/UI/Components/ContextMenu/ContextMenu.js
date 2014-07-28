@@ -115,6 +115,10 @@ define(function(require)
 	};
 
 
+	// Prepare the context menu to avoid problem
+	ContextMenu.prepare();
+
+
 	/**
 	 * Create component and export it
 	 */
