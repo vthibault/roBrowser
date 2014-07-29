@@ -35,6 +35,12 @@ define(function(require)
 
 
 	/**
+	 * Mouse can cross this UI
+	 */
+	MiniMap.mouseMode = UIComponent.MouseMode.CROSS;
+
+
+	/**
 	 * @var {Preferences}
 	 */
 	var _preferences = Preferences.get('MiniMap', {

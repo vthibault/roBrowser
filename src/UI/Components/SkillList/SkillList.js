@@ -107,6 +107,9 @@ define(function(require)
 			_btnLevelUp.detach();
 			SkillList.ui.show();
 			SkillList.ui.parent().append(SkillList.ui);
+		}).mousedown(function(event){
+			event.stopImmediatePropagation();
+			return false;
 		});
 
 		this.ui
@@ -185,7 +188,7 @@ define(function(require)
 				delete window._OBJ_DRAG_;
 			});
 
-		this.draggable();
+		this.draggable(this.ui.find('.titlebar'));
 	};
 
 

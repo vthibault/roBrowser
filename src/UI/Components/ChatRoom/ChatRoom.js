@@ -102,7 +102,7 @@ define(function(require)
 			event.stopImmediatePropagation();
 		});
 
-		this.draggable();
+		this.draggable(this.ui.find('.titlebar'));
 	};
 
 

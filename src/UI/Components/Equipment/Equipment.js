@@ -80,6 +80,8 @@ define(function(require)
 	 */
 	Equipment.init = function init()
 	{
+		this.draggable(this.ui.find('.titlebar'));
+
 		// Get button to open skill when level up
 		_btnLevelUp = jQuery('#lvlup_base').detach();
 		_btnLevelUp.click(function(){
@@ -91,6 +93,9 @@ define(function(require)
 
 			Equipment.ui.show();
 			Equipment.ui.parent().append(Equipment.ui);
+		}).mousedown(function(event){
+			event.stopImmediatePropagation();
+			return false;
 		});
 
 		_ctx  = this.ui.find('canvas')[0].getContext('2d');
@@ -99,8 +104,6 @@ define(function(require)
 		WinStats.prepare();
 		WinStats.__loaded = true;
 		this.ui.find('.status_component').append(WinStats.ui);
-
-		this.draggable();
 
 		// Don't activate drag drop when clicking on buttons
 		this.ui.find('.titlebar .base').mousedown(function( event ){
@@ -380,7 +383,7 @@ define(function(require)
 		status.toggle();
 
 		Client.loadFile( DB.INTERFACE_PATH + 'basic_interface/view' + state + '.bmp', function(data){
-			self.style.backgroundImage = 'url(' + data + ')';
+			self.css('backgroundImage', 'url(' + data + ')');
 		});
 
 		return false;

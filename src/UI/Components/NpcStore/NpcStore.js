@@ -129,8 +129,8 @@ define(function(require)
 			});
 
 		// Hacky drag drop
-		this.draggable.call({ui: InputWindow  });
-		this.draggable.call({ui: OutputWindow });
+		this.draggable.call({ui: InputWindow },  InputWindow.find('.titlebar'));
+		this.draggable.call({ui: OutputWindow }, OutputWindow.find('.titlebar'));
 	};
 
 

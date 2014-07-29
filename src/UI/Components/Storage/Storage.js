@@ -99,6 +99,17 @@ define(function(require)
 			return false;
 		});
 
+		Client.loadFile( DB.INTERFACE_PATH + 'basic_interface/tab_itm_ex_0'+ (_preferences.tab+1) +'.bmp', function(data){
+			Storage.ui.find('.tabs').css('backgroundImage', 'url("' + data + '")');
+		});
+
+		// Resize, position
+		resizeHeight(_preferences.height);
+		this.ui.css({
+			top:  Math.min( Math.max( 0, _preferences.y), Renderer.height - this.ui.height()),
+			left: Math.min( Math.max( 0, _preferences.x), Renderer.width  - this.ui.width())
+		});
+
 		var overlay = this.ui.find('.overlay');
 
 		this.ui.find('.container .content')
@@ -198,25 +209,7 @@ define(function(require)
 				return false;
 			});
 
-		this.draggable();
-	};
-
-
-	/**
-	 * Apply preferences once append to body
-	 */
-	Storage.onAppend = function onAppend()
-	{
-		Client.loadFile( DB.INTERFACE_PATH + 'basic_interface/tab_itm_ex_0'+ (_preferences.tab+1) +'.bmp', function(data){
-			Storage.ui.find('.tabs').css('backgroundImage', 'url("' + data + '")');
-		});
-
-		resizeHeight(_preferences.height);
-
-		this.ui.css({
-			top:  Math.min( Math.max( 0, _preferences.y), Renderer.height - this.ui.height()),
-			left: Math.min( Math.max( 0, _preferences.x), Renderer.width  - this.ui.width())
-		});
+		this.draggable(this.ui.find('.titlebar'));
 	};
 
 

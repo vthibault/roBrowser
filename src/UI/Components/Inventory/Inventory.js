@@ -219,7 +219,7 @@ define(function(require)
 				return false;
 			});
 
-		this.draggable();
+		this.draggable(this.ui.find('.titlebar'));
 	};
 
 

@@ -49,6 +49,22 @@ define(function( require )
 
 
 	/**
+	 * @var {enum} Mouse mode
+	 */
+	UIComponent.MouseMode = {
+		CROSS:  0, // cross the ui and intersect with scene
+		STOP:   1, // don't intersect the scene if mouse over the ui
+		FREEZE: 2  // don't intersect the scene if ui is alive in scene (TODO)
+	};
+
+
+	/**
+	 * @var {number} mouse behavior
+	 */
+	UIComponent.prototype.mouseMode = UIComponent.MouseMode.STOP;
+
+
+	/**
 	 * @var {boolean} is Component ready ?
 	 */
 	UIComponent.prototype.__loaded = false;
@@ -87,6 +103,36 @@ define(function( require )
 		// Initialize
 		if (this.init) {
 			this.init();
+		}
+
+		// If the ui don't allow to be crossed by mouse to intersect the scene then
+		// _enter variable is here to fix a recurrent bug in mouseenter and mouseleave
+		// when mouseenter can be triggered multiples time
+		if (this.mouseMode === UIComponent.MouseMode.STOP) {
+			var _intersect, _enter = 0;
+			var element = this.__mouseStopBlock || this.ui;
+
+			element.mouseenter(function(){
+				if (_enter === 0) {
+					_intersect = Mouse.intersect;
+					_enter++;
+					if (_intersect) {
+						Mouse.intersect = false;
+						Cursor.setType( Cursor.ACTION.DEFAULT );
+					}
+				}
+			});
+
+			element.mouseleave(function(){
+				if (_enter > 0) {
+					_enter--;
+				}
+
+				if(_intersect) {
+					Mouse.intersect = true;
+					getModule('Renderer/EntityManager').setOverEntity(null);
+				}
+			});
 		}
 
 		if (this._htmlText) {
@@ -213,40 +259,14 @@ define(function( require )
 	UIComponent.prototype.draggable = function draggable( element )
 	{
 		var container = this.ui;
-		var _intersect, _enter = 0;
 
 		// Global variable
 		if (!element) {
 			element = this.ui;
 		}
 
-		// Draggable elements stop the mouse to intersect with the scene
-		// _enter variable is here to fix a recurrent bug in mouseenter and mouseleave
-		// when mouseenter can be triggered multiples time
-		element.mouseenter(function(){
-			if (_enter === 0) {
-				_intersect = Mouse.intersect;
-				_enter++;
-				if (_intersect) {
-					Mouse.intersect = false;
-					Cursor.setType( Cursor.ACTION.DEFAULT );
-				}
-			}
-		});
-
-		element.mouseleave(function(){
-			if (_enter > 0) {
-				_enter--;
-			}
-
-			if(_intersect) {
-				Mouse.intersect = true;
-				getModule('Renderer/EntityManager').setOverEntity(null);
-			}
-		});
-
 		// Drag drop stuff
-		element.mousedown( function(event) {
+		element.mousedown(function(event) {
 
 			// Only on left click
 			if (event.which !== 1) {
@@ -254,14 +274,14 @@ define(function( require )
 			}
 
 			var x, y, width, height, drag;
-			var updateDepth = element.css('zIndex') == 50;
+			var updateDepth = container.css('zIndex') == 50;
 
 			// Don't propagate event.
 			event.stopImmediatePropagation();
 
 			// Set element over others components
 			if (updateDepth) {
-				element.css('zIndex', 51);
+				container.css('zIndex', 51);
 			}
 
 			x = container.position().left - Mouse.screen.x;
@@ -283,9 +303,9 @@ define(function( require )
 				// Get back zIndex, push the element to the end to be over others components
 				if (updateDepth) {
 					Events.setTimeout(function(){
-						element.css('zIndex', 50);
-						if (element[0].parentNode) {
-							element[0].parentNode.appendChild(element[0]);
+						container.css('zIndex', 50);
+						if (container[0].parentNode) {
+							container[0].parentNode.appendChild(container[0]);
 						}
 					}, 1);
 				}
