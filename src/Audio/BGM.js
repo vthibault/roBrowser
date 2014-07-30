@@ -114,6 +114,11 @@ function( require,         jQuery,        Client,        Configs,   Preferences 
 			return;
 		}
 
+		// Remove the "BGM/" part
+		if (filename.match(/bgm/i)) {
+			filename = filename.match(/\w+\.mp3/i).toString();
+		}
+
 		// If it's the same file, check if it's already playing
 		if (this.filename === filename) {
 			if ((!this.useHTML5 && this.isPlaying == 'true') ||
@@ -121,24 +126,22 @@ function( require,         jQuery,        Client,        Configs,   Preferences 
 					return;
 			}
 		}
+		else {
+			this.filename = filename;
+		}
 
 		// Just if flash is loaded, load the file.
 		if ((this.useHTML5 || this.position !== null) && Preferences.BGM.play) {
 
-			if (filename.match(/bgm/i)) {
-				filename = filename.match(/\w+\.mp3/i).toString();
-			}
-
+			// Replace extension to play another file (ogg for example).
 			if (this.useHTML5) {
-				filename = filename.replace(/mp3$/i, BGM.extension);
+				filename = filename.replace(/mp3$/i, this.extension);
 			}
 
 			Client.loadFile( 'BGM/' + filename, function(url) {
 				BGM.load(url);
 			});
 		}
-
-		BGM.filename = filename;
 	};
 
 

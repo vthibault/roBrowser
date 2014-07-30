@@ -340,20 +340,21 @@
 	function WaitForInitialization()
 	{
 		this._APP.postMessage({
-			application:    this.application,
-			servers:        this.servers,
-			grfList:        this.grfList,
-			remoteClient:   this.remoteClient,
-			packetver:      this.packetver,
-			development:    this.development,
-			api:            this.api,
-			socketProxy:    this.socketProxy,
-			packetKeys:     this.packetKeys,
-			skipServerList: this.skipServerList,
-			skipIntro:      this.skipIntro,
-			autoLogin:      this.autoLogin,
-			version:        this.version,
-			clientHash:     this.clientHash,
+			application:      this.application,
+			servers:          this.servers,
+			grfList:          this.grfList,
+			remoteClient:     this.remoteClient,
+			packetver:        this.packetver,
+			development:      this.development,
+			api:              this.api,
+			socketProxy:      this.socketProxy,
+			packetKeys:       this.packetKeys,
+			skipServerList:   this.skipServerList,
+			skipIntro:        this.skipIntro,
+			autoLogin:        this.autoLogin,
+			version:          this.version,
+			clientHash:       this.clientHash,
+			BGMFileExtension: this.BGMFileExtension
 		}, '*');
 	}
 
