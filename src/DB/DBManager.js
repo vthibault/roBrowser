@@ -522,6 +522,10 @@ define(function(require)
 		var it = DB.getItemInfo( item.ITID );
 		var str = '';
 
+		if (!item.IsIdentified) {
+			return it.unidentifiedDisplayName;
+		}
+
 		if (item.RefiningLevel) {
 			str = '+' + item.RefiningLevel + ' ';
 		}
@@ -565,7 +569,7 @@ define(function(require)
 		}
 
 
-		str += item.IsIdentified ? it.identifiedDisplayName : it.unidentifiedDisplayName;
+		str += it.identifiedDisplayName;
 
 		if (it.slotCount) {
 			str += ' [' + it.slotCount + ']';
