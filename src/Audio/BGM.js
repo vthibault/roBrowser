@@ -11,8 +11,8 @@
  * @author Vincent Thibault
  */
  
-define( ['require', 'Utils/jquery', 'Core/Client', 'Preferences/Audio'],
-function( require,         jQuery,        Client,         Preferences )
+define( ['require', 'Utils/jquery', 'Core/Client', 'Core/Configs', 'Preferences/Audio'],
+function( require,         jQuery,        Client,        Configs,   Preferences )
 {
 	'use strict';
 
@@ -29,7 +29,22 @@ function( require,         jQuery,        Client,         Preferences )
 	BGM.isPlaying   = 'false';
 
 	BGM.audio       = document.createElement('audio');
-	BGM.useHTML5    = BGM.audio.canPlayType && BGM.audio.canPlayType('audio/mpeg') !== '';
+	BGM.useHTML5    = false;
+	BGM.extension   = 'mp3';
+
+	// Test for BGMFileExtension config
+	if (BGM.audio.canPlayType) {
+		var extensions = Configs.get('BGMFileExtension', ['mp3']);
+
+		while (extensions.length) {
+			if (BGM.audio.canPlayType('audio/' + extensions[0]).replace(/no/i, '')) {
+				BGM.extension = extensions[0];
+				BGM.useHTML5  = true;
+				break;
+			}
+			extentions.splice(0, 1);
+		}
+	}
 
 
 	/**
@@ -111,7 +126,11 @@ function( require,         jQuery,        Client,         Preferences )
 		if ((this.useHTML5 || this.position !== null) && Preferences.BGM.play) {
 
 			if (filename.match(/bgm/i)) {
-				filename = filename.match(/\w+\.mp3/).toString();
+				filename = filename.match(/\w+\.mp3/i).toString();
+			}
+
+			if (this.useHTML5) {
+				filename = filename.replace(/mp3$/i, BGM.extension);
 			}
 
 			Client.loadFile( 'BGM/' + filename, function(url) {

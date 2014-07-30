@@ -211,6 +211,16 @@
 
 
 	/**
+	 * @var {Array} list of extensions you want to use for your BGMs.
+	 * It will test each extensions until there is one it can read.
+	 *
+	 * Examples: ['ogg', 'mp4', 'mp3']
+	 * Will try to see if it can load '.ogg' audio file, if it fail, will try to see if it can load .mp4, etc.
+	 */
+	ROBrowser.prototype.BGMFileExtension = ['mp3'];
+
+
+	/**
 	 * @var {string} roBrowser api window path
 	 */
 	ROBrowser.prototype.baseUrl = (function(){
