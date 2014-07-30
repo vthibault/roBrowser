@@ -102,6 +102,9 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 		if (this.entity.objecttype === Entity.TYPE_MOB) {
 			ctx.fillStyle = ( hp_per < 0.25 ) ? '#FFFF00' : '#FF00E7';
 		}
+		else if (this.entity.objecttype === Entity.TYPE_PET) {
+			ctx.fillStyle = ( hp_per < 0.25 ) ? '#FFFF00' : '#FFE7E7';
+		}
 		else {
 			ctx.fillStyle = ( hp_per < 0.25 ) ? '#FF0000' : '#10ef21';
 		}

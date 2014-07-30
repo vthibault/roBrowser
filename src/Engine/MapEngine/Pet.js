@@ -96,6 +96,15 @@ define(function( require )
 	{
 		PetInformations.append();
 		PetInformations.setInformations( pkt );
+
+		if (Session.petId) {
+			var entity = EntityManager.get(Session.petId);
+			if (entity) {
+				entity.life.hp     = pkt.nFullness;
+				entity.life.hp_max = 100;
+				entity.life.update();
+			}
+		}
 	}
 
 
@@ -141,6 +150,9 @@ define(function( require )
 
 			case 2:
 				PetInformations.setHunger(pkt.data);
+				entity.life.hp     = pkt.data;
+				entity.life.hp_max = 100;
+				entity.life.update();
 				break;
 
 			case 3: /// 3 = accessory ID
