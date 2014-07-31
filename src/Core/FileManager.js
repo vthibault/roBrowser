@@ -337,6 +337,7 @@ define(function( require )
 					// Audio
 					case 'wav':
 					case 'mp3':
+					case 'ogg':
 						// From GRF : change the data to an URI
 						if (buffer instanceof ArrayBuffer) {
 							result = URL.createObjectURL(

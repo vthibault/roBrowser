@@ -17,6 +17,7 @@ define(function( require )
 	// Load dependencies
 	var TextEncoding = require('Vendors/text-encoding');
 	var DB           = require('DB/DBManager');
+	var BGM          = require('Audio/BGM');
 	var Sound        = require('Audio/SoundManager');
 	var Configs      = require('Core/Configs');
 	var Thread       = require('Core/Thread');
@@ -146,6 +147,7 @@ define(function( require )
 		var packetver    = String(Configs.get('packetver'));
 		var remoteClient = Configs.get('remoteClient');
 		var autoLogin    = Configs.get('autoLogin');
+		var audioExt     = Configs.get('BGMFileExtension');
 
 		// Server packetver
 		if (packetver) {
@@ -160,6 +162,11 @@ define(function( require )
 		// Add support for remote client in server definition
 		if (remoteClient) {
 			Thread.send( 'SET_HOST', remoteClient);
+		}
+
+		// Server audio configuration
+		if (audioExt) {
+			BGM.setAvailableExtensions(audioExt);
 		}
 
 		// GMs account list from server

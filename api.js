@@ -211,6 +211,16 @@
 
 
 	/**
+	 * @var {Array} list of extensions you want to use for your BGMs.
+	 * It will test each extensions until there is one it can read.
+	 *
+	 * Examples: ['ogg', 'mp4', 'mp3']
+	 * Will try to see if it can load '.ogg' audio file, if it fail, will try to see if it can load .mp4, etc.
+	 */
+	ROBrowser.prototype.BGMFileExtension = ['mp3'];
+
+
+	/**
 	 * @var {string} roBrowser api window path
 	 */
 	ROBrowser.prototype.baseUrl = (function(){
@@ -330,20 +340,21 @@
 	function WaitForInitialization()
 	{
 		this._APP.postMessage({
-			application:    this.application,
-			servers:        this.servers,
-			grfList:        this.grfList,
-			remoteClient:   this.remoteClient,
-			packetver:      this.packetver,
-			development:    this.development,
-			api:            this.api,
-			socketProxy:    this.socketProxy,
-			packetKeys:     this.packetKeys,
-			skipServerList: this.skipServerList,
-			skipIntro:      this.skipIntro,
-			autoLogin:      this.autoLogin,
-			version:        this.version,
-			clientHash:     this.clientHash,
+			application:      this.application,
+			servers:          this.servers,
+			grfList:          this.grfList,
+			remoteClient:     this.remoteClient,
+			packetver:        this.packetver,
+			development:      this.development,
+			api:              this.api,
+			socketProxy:      this.socketProxy,
+			packetKeys:       this.packetKeys,
+			skipServerList:   this.skipServerList,
+			skipIntro:        this.skipIntro,
+			autoLogin:        this.autoLogin,
+			version:          this.version,
+			clientHash:       this.clientHash,
+			BGMFileExtension: this.BGMFileExtension
 		}, '*');
 	}
 

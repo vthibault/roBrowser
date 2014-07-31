@@ -172,6 +172,8 @@ define(function( require )
 		Models.free( gl );
 		Damage.free( gl );
 		EffectManager.free( gl );
+		SoundManager.stop();
+		BGM.stop();
 
 		Mouse.intersect = false;
 
