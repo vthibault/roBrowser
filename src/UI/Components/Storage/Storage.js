@@ -149,11 +149,6 @@ define(function(require)
 				overlay.hide();
 			})
 
-			// Stop drag drop feature
-			.on('mousedown', '.item', function(event){
-				event.stopImmediatePropagation();
-			})
-
 			// Item drag drop feature
 			.on('dragstart', '.item', function(event){
 				// Set image to the drag drop element
@@ -378,7 +373,7 @@ define(function(require)
 	/**
 	 * Extend Storage window size
 	 */
-	function onResize( event )
+	function onResize()
 	{
 		var ui         = Storage.ui;
 		var top        = ui.position().top;
@@ -411,9 +406,6 @@ define(function(require)
 				clearInterval(_Interval);
 			}
 		});
-
-		event.stopImmediatePropagation();
-		return false;
 	}
 
 
@@ -433,7 +425,7 @@ define(function(require)
 	/**
 	 * Modify tab, filter display entries
 	 */
-	function switchTab( event )
+	function switchTab()
 	{
 		var idx          = jQuery(this).index();
 		_preferences.tab = idx;
@@ -442,9 +434,6 @@ define(function(require)
 			Storage.ui.find('.tabs').css('backgroundImage', 'url("' + data + '")');
 			filter(idx);
 		});
-
-		event.stopImmediatePropagation();
-		return false;
 	}
 
 

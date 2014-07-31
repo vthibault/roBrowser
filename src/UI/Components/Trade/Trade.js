@@ -81,8 +81,7 @@ define(function(require)
 		});
 
 		// Avoid drag and drop on input
-		this.ui.find('.zeny.send').mousedown(function(event){
-			event.stopImmediatePropagation();
+		this.ui.find('.zeny.send').mousedown(function(){
 			this.select();
 		});
 
@@ -117,11 +116,6 @@ define(function(require)
 				overlay.hide();
 			})
 
-			// Stop drag drop feature
-			.on('mousedown', '.item', function(event){
-				event.stopImmediatePropagation();
-			})
-
 			// Right click on item
 			.on('contextmenu', '.item', function(event) {
 				var idx  = parseInt( this.getAttribute('data-index'), 10);
@@ -141,7 +135,7 @@ define(function(require)
 				return false;
 			});
 
-		this.draggable();
+		this.draggable(this.ui.find('.titlebar'));
 	};
 
 

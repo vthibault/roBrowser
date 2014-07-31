@@ -92,7 +92,6 @@ define(function(require)
 		this.ui.find('.footer .extend').mousedown(OnResize.bind(this));
 		this.ui.find('.titlebar .close').click(function(){
 			Inventory.ui.hide();
-			return false;
 		});
 
 
@@ -140,11 +139,6 @@ define(function(require)
 			// Stop title feature
 			.on('mouseout', '.item', function(){
 				overlay.hide();
-			})
-
-			// Stop drag drop feature
-			.on('mousedown', '.item', function(event){
-				event.stopImmediatePropagation();
 			})
 
 			// Item drag drop feature
@@ -280,7 +274,7 @@ define(function(require)
 			case 'TOGGLE':
 				this.ui.toggle();
 				if (this.ui.is(':visible')) {
-					this.ui[0].parentNode.appendChild(this.ui[0]);
+					this.focus();
 				}
 				else { // Fix Mouse.intersect bug
 					this.ui.trigger('mouseleave');
@@ -293,7 +287,7 @@ define(function(require)
 	/**
 	 * Extend inventory window size
 	 */
-	function OnResize( event )
+	function OnResize()
 	{
 		var ui      = this.ui;
 		var content = ui.find('.container .content');
@@ -343,9 +337,6 @@ define(function(require)
 				clearInterval(_Interval);
 			}
 		});
-
-		event.stopImmediatePropagation();
-		return false;
 	}
 
 
@@ -375,7 +366,7 @@ define(function(require)
 	/**
 	 * Modify tab, filter display entries
 	 */
-	function SwitchTab( event )
+	function SwitchTab()
 	{
 		var idx          = jQuery(this).index();
 		_preferences.tab = parseInt(idx, 10);
@@ -384,16 +375,13 @@ define(function(require)
 			Inventory.ui.find('.tabs').css('backgroundImage', 'url(' + data + ')');
 			Filter.call(Inventory, idx);
 		});
-
-		event.stopImmediatePropagation();
-		return false;
 	}
 
 
 	/**
 	 * Hide/show inventory's content
 	 */
-	function ToggleReduction( event )
+	function ToggleReduction()
 	{
 		// TODO: fix this part
 		if (_realSize) {
@@ -406,9 +394,6 @@ define(function(require)
 			this.ui.height(17);
 			this.ui.find('.panel').hide();
 		}
-
-		event.stopImmediatePropagation();
-		return false;
 	}
 
 

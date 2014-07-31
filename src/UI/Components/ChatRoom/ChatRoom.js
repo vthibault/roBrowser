@@ -95,13 +95,13 @@ define(function(require)
 	{
 		// Bindings
 		this.ui.find('.extend').mousedown(onResize);
-		this.ui.find('.close').click(this.remove.bind(this));
+		this.ui.find('.close')
+			.mousedown(function(event){
+				event.stopImmediatePropagation();
+				return false;
+			})
+			.click(this.remove.bind(this));
 		
-		//Dont activate drag
-		this.ui.find('input, select, button').mousedown(function( event ) {
-			event.stopImmediatePropagation();
-		});
-
 		this.draggable(this.ui.find('.titlebar'));
 	};
 
@@ -271,7 +271,7 @@ define(function(require)
 	/**
 	 * Resize ChatRoom
 	 */
-	function onResize( event )
+	function onResize()
 	{
 		var ui         = ChatRoom.ui;
 		var top        = ui.position().top;
@@ -311,9 +311,6 @@ define(function(require)
 				clearInterval(_Interval);
 			}
 		});
-
-		event.stopImmediatePropagation();
-		return false;
 	}
 
 

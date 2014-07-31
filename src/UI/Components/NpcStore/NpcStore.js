@@ -106,8 +106,8 @@ define(function(require)
 		});
 
 		// Resize
-		InputWindow.find('.resize').mousedown(function(event){ onResize(InputWindow); event.stopImmediatePropagation(); return false; });
-		OutputWindow.find('.resize').mousedown(function(event){ onResize(OutputWindow); event.stopImmediatePropagation(); return false; });
+		InputWindow.find('.resize').mousedown(function(){ onResize(InputWindow); });
+		OutputWindow.find('.resize').mousedown(function(){ onResize(OutputWindow); });
 
 		ui.find('.content')
 			.on('mousewheel DOMMouseScroll', onScroll)
@@ -652,13 +652,12 @@ define(function(require)
 			$window.trigger('mouseup');
 		}
 
-		return function onItemFocus( event )
+		return function onItemFocus()
 		{
 			NpcStore.ui.find('.item.selected').removeClass('selected');
 			jQuery(this).addClass('selected');
 
 			Events.setTimeout( stopDragDrop, 4);
-			event.stopImmediatePropagation();
 		};
 	}();
 

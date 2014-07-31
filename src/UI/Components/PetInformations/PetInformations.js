@@ -48,24 +48,19 @@ define(function(require)
 	{
 		var ui = this.ui;
 
-		this.draggable();
+		this.draggable(this.ui.find('.titlebar'));
 
-		ui.find('.close').mousedown(function(event){
+		ui.find('.base').mousedown(function(event) {
+			event.stopImmediatePropagation();
+			return false;
+		});
+
+		ui.find('.close').click(function(){
 			ui.hide();
-			event.stopImmediatePropagation();
 		});
 
-		ui.find('.name').mousedown(function(event){
-			event.stopImmediatePropagation();
-		});
-
-		ui.find('.modify').mousedown(function(event){
-			event.stopImmediatePropagation();
+		ui.find('.modify').click(function(){
 			PetInformations.reqNameEdit( ui.find('.name').val() );
-		});
-
-		ui.find('.command').mousedown(function(event){
-			event.stopImmediatePropagation();
 		});
 
 		ui.find('.command').change(function(){
@@ -138,7 +133,7 @@ define(function(require)
 			case 'TOGGLE':
 				this.ui.toggle();
 				if (this.ui.is(':visible')) {
-					this.ui[0].parentNode.appendChild(this.ui[0]);
+					this.focus();
 				}
 				break;
 		}

@@ -108,6 +108,7 @@ define(function(require)
 		// Don't activate drag drop when clicking on buttons
 		this.ui.find('.titlebar .base').mousedown(function( event ){
 			event.stopImmediatePropagation();
+			return false;
 		});
 
 		// Bind events
@@ -117,7 +118,6 @@ define(function(require)
 
 		this.ui.find('.titlebar .close').click(function(){
 			Equipment.ui.hide();
-			return false;
 		});
 
 		this.ui.find('.removeOption').click(this.onRemoveOption);
@@ -163,11 +163,6 @@ define(function(require)
 				var index   = parseInt(this.getAttribute('data-index'), 10);
 				Equipment.onUnEquip( index );
 				Equipment.ui.find('.overlay').hide();
-			})
-
-			// Stop drag drop feature
-			.on('mousedown', '.item', function(event){
-				event.stopImmediatePropagation();
 			})
 
 			// Title feature
@@ -270,7 +265,7 @@ define(function(require)
 		if (this.ui.is(':visible')) {
 			Renderer.render(renderCharacter);
 			_btnLevelUp.detach();
-			this.ui[0].parentNode.appendChild(this.ui[0]);
+			this.focus();
 		}
 		else {
 			Renderer.stop(renderCharacter);
@@ -385,8 +380,6 @@ define(function(require)
 		Client.loadFile( DB.INTERFACE_PATH + 'basic_interface/view' + state + '.bmp', function(data){
 			self.css('backgroundImage', 'url(' + data + ')');
 		});
-
-		return false;
 	}
 
 
@@ -396,7 +389,6 @@ define(function(require)
 	function toggleEquip()
 	{
 		Equipment.onConfigUpdate( 0, !_showEquip ? 1 : 0 );
-		return false;
 	}
 
 

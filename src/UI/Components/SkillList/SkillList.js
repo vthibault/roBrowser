@@ -89,7 +89,6 @@ define(function(require)
 		this.ui.find('.footer .extend').mousedown(onResize);
 		this.ui.find('.titlebar .close').click(function(){
 			SkillList.ui.hide();
-			return false;
 		});
 
 		// Get level up button
@@ -141,7 +140,7 @@ define(function(require)
 			})
 
 			// background color
-			.on('mousedown', '.selectable', function(event){
+			.on('mousedown', '.selectable', function(){
 				var main = jQuery(this).parent();
 
 				if (!main.hasClass('skill')) {
@@ -150,13 +149,6 @@ define(function(require)
 
 				SkillList.ui.find('.skill').removeClass('selected');
 				main.addClass('selected');
-
-				event.stopImmediatePropagation();
-			})
-
-			// Stop drag drop
-			.on('mousedown', '.skill', function(event){
-				event.stopImmediatePropagation();
 			})
 
 			// Item drag drop feature
@@ -235,7 +227,7 @@ define(function(require)
 		this.ui.toggle();
 
 		if (this.ui.is(':visible')) {
-			this.ui[0].parentNode.appendChild(this.ui[0]);
+			this.focus();
 			_btnLevelUp.detach();
 		}
 	};
@@ -488,7 +480,7 @@ define(function(require)
 	/**
 	 * Extend SkillList window size
 	 */
-	function onResize( event )
+	function onResize()
 	{
 		var ui      = SkillList.ui;
 		var top     = ui.position().top;
@@ -527,9 +519,6 @@ define(function(require)
 				clearInterval(_Interval);
 			}
 		});
-
-		event.stopImmediatePropagation();
-		return false;
 	}
 
 

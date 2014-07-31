@@ -112,6 +112,7 @@ define(function( require )
 			var _intersect, _enter = 0;
 			var element = this.__mouseStopBlock || this.ui;
 
+			// stop intersection
 			element.mouseenter(function(){
 				if (_enter === 0) {
 					_intersect = Mouse.intersect;
@@ -123,16 +124,19 @@ define(function( require )
 				}
 			});
 
+			// restore previous state
 			element.mouseleave(function(){
 				if (_enter > 0) {
 					_enter--;
 				}
-
 				if(_intersect) {
 					Mouse.intersect = true;
 					getModule('Renderer/EntityManager').setOverEntity(null);
 				}
 			});
+
+			// Focus the UI on mousedown
+			element.mousedown(this.focus.bind(this));
 		}
 
 		if (this._htmlText) {
@@ -193,6 +197,21 @@ define(function( require )
 
 		if (this.onAppend) {
 			this.onAppend();
+			this.focus();
+		}
+	};
+
+
+	/**
+	 * Focus the UI
+	 * (stay at the top of others)
+	 */
+	UIComponent.prototype.focus = function focus()
+	{
+		var ui = this.ui.get(0);
+
+		if (ui.parentNode) {
+			ui.parentNode.appendChild(ui);
 		}
 	};
 
@@ -267,25 +286,14 @@ define(function( require )
 
 		// Drag drop stuff
 		element.mousedown(function(event) {
-
 			// Only on left click
 			if (event.which !== 1) {
 				return;
 			}
 
 			var x, y, width, height, drag;
-			var updateDepth = container.css('zIndex') == 50;
-
-			// Don't propagate event.
-			event.stopImmediatePropagation();
-
-			// Set element over others components
-			if (updateDepth) {
-				container.css('zIndex', 51);
-			}
-
-			x = container.position().left - Mouse.screen.x;
-			y = container.position().top  - Mouse.screen.y;
+			x      = container.position().left - Mouse.screen.x;
+			y      = container.position().top  - Mouse.screen.y;
 			width  = container.width();
 			height = container.height();
 
@@ -295,24 +303,11 @@ define(function( require )
 
 			// Stop the drag (need to focus on window to avoid possible errors...)
 			jQuery(window).on('mouseup.dragdrop', function(event){
-				// Only on left click
-				if (event.which !== 1 && !event.isTrigger) {
-					return;
+				if (event.which === 1 || event.isTrigger) {
+					container.stop().animate({ opacity:1.0 }, 500 );
+					Events.clearTimeout(drag);
+					jQuery(window).off('mouseup.dragdrop');
 				}
-
-				// Get back zIndex, push the element to the end to be over others components
-				if (updateDepth) {
-					Events.setTimeout(function(){
-						container.css('zIndex', 50);
-						if (container[0].parentNode) {
-							container[0].parentNode.appendChild(container[0]);
-						}
-					}, 1);
-				}
-
-				container.stop().animate({ opacity:1.0 }, 500 );
-				Events.clearTimeout(drag);
-				jQuery(window).off('mouseup.dragdrop');
 			});
 
 			// Process dragging

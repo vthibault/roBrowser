@@ -45,14 +45,14 @@ define(function(require)
 	 */
 	SoundOption.init = function Init()
 	{
+		this.ui.find('.base').mousedown(function(event) {
+			event.stopImmediatePropagation();
+			return false;
+		});
+
 		this.ui.find('.close').click(function(){
 			this.remove();
 		}.bind(this));
-
-		//Avoid drag and drop in input elements
-		this.ui.find('input').mousedown(function(event){
-			event.stopImmediatePropagation();
-		});
 
 		this.ui.find('.sound').change(function(){
 			AudioSettings.Sound.volume = parseInt(this.value, 10) / 100;
@@ -96,7 +96,7 @@ define(function(require)
 			}
 		});
 
-		this.draggable();
+		this.draggable(this.ui.find('.titlebar'));
 	};
 
 

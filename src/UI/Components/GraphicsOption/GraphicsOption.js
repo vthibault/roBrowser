@@ -46,12 +46,12 @@ define(function(require)
 	 */
 	GraphicsOption.init = function Init()
 	{
-		this.ui.find('.close').click(this.remove.bind(this));
-
-		//Avoid drag and drop in input elements
-		this.ui.find('input, select').mousedown(function(event){
+		this.ui.find('.base').mousedown(function(event) {
 			event.stopImmediatePropagation();
+			return false;
 		});
+
+		this.ui.find('.close').click(this.remove.bind(this));
 
 		this.ui.find('.details').change(function(){
 			GraphicsSettings.quality = parseInt(this.value, 10);
@@ -100,7 +100,7 @@ define(function(require)
 			}
 		});
 
-		this.draggable();
+		this.draggable(this.ui.find('.titlebar'));
 	};
 
 

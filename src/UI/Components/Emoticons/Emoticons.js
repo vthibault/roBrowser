@@ -108,12 +108,16 @@ define(function(require)
 			.on('dblclick',  'canvas', onPlayEmoticon)
 			.on('mousedown', 'canvas', onSelectEmoticon);
 
+		this.ui.find('.base').mousedown(function(event){
+			event.stopImmediatePropagation();
+			return false;
+		})
+
 		this.ui.find('.prev').addClass('disabled');
-		this.ui.find('.close').mousedown(onStopPropagation).click(onClose);
+		this.ui.find('.close').click(onClose);
 		this.ui.find('.prev').click(movePage(-1));
 		this.ui.find('.next').click(movePage(+1));
 
-		this.ui.mousedown(onStopPropagation);
 		this.draggable(this.ui.find('.titlebar'));
 	};
 
@@ -201,36 +205,20 @@ define(function(require)
 	 */
 	function movePage(index)
 	{
-		return function movePageClosure(event) {
+		return function movePageClosure() {
 			if (!this.className.match(/disabled/)) {
 				Emoticons.movePage(index);
 			}
-			event.stopImmediatePropagation();
-
-			return false;
 		};
-	}
-
-
-	/**
-	 * Stop element to be draggable
-	 */
-	function onStopPropagation(event)
-	{
-		event.stopImmediatePropagation();
-		return false;
 	}
 
 
 	/**
 	 * Exit window
 	 */
-	function onClose( event )
+	function onClose()
 	{
 		Emoticons.ui.hide();
-
-		event.stopImmediatePropagation();
-		return false;
 	}
 
 
@@ -238,7 +226,7 @@ define(function(require)
 	 * Select an emoticon
 	 * Display the command shortcut in the ChatBox
 	 */
-	function onSelectEmoticon( event )
+	function onSelectEmoticon()
 	{
 		var idx = this.getAttribute('data-index');
 		var cmd = EmoticonsDB.names[idx];
@@ -246,25 +234,19 @@ define(function(require)
 		if (cmd && !ChatBox.ui.find('.battlemode').is(':visible')) {
 			ChatBox.ui.find('.input .message').val('/' + cmd).select();
 		}
-
-		event.stopImmediatePropagation();
-		return false;
 	}
 
 
 	/**
 	 * Do an emoticon
 	 */
-	function onPlayEmoticon( event )
+	function onPlayEmoticon()
 	{
 		var idx = this.getAttribute('data-index');
 		var cmd = EmoticonsDB.names[idx];
 
 		ChatBox.ui.find('.input .message').val('/' + cmd);
 		ChatBox.submit();
-
-		event.stopImmediatePropagation();
-		return false;
 	}
 
 

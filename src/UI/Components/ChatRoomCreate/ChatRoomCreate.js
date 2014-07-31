@@ -80,12 +80,7 @@ define(function(require)
 			return false;
 		});
 
-		// Do not activate drag
-		this.ui.find('input, button, select').mousedown(function(event) {
-			event.stopImmediatePropagation();
-		});
-
-		this.draggable();
+		this.draggable(this.ui.find('.titlebar'));
 		this.ui.hide();
 	};
 
@@ -182,7 +177,7 @@ define(function(require)
 			case 'TOGGLE':
 				this.ui.toggle();
 				if (this.ui.is(':visible')) {
-					this.ui[0].parentNode.appendChild(this.ui[0]);
+					this.focus();
 				}
 				break;
 		}
