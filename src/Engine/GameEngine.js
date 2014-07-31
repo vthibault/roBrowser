@@ -146,7 +146,9 @@ define(function( require )
 	 */
 	function reload()
 	{
+		BGM.setAvailableExtensions( Configs.get('BGMFileExtension', ['mp3']) );
 		BGM.play('01.mp3');
+
 		UIManager.removeComponents();
 		Network.close();
 
