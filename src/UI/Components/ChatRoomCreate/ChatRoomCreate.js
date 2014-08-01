@@ -74,10 +74,14 @@ define(function(require)
 	ChatRoomCreate.init = function init()
 	{
 		// Bindings
-		this.ui.find('.close, .cancel').on('click', this.hide.bind(this));
+		this.ui.find('.close, .cancel').mousedown(stopPropagation).click(this.hide.bind(this));
 		this.ui.find('.ok').on('click', parseChatSetup.bind(this) );
 		this.ui.find('.setup').submit(function() {
 			return false;
+		});
+
+		this.ui.find('input, select').mousedown(function(event){
+			event.stopImmediatePropagation();
 		});
 
 		this.draggable(this.ui.find('.titlebar'));
@@ -185,10 +189,13 @@ define(function(require)
 
 
 	/**
-	 * Pseudo functions :)
+	 * Stop event propagation
 	 */
-	ChatRoomCreate.requestRoom = function requestRoom(){};
-
+	function stopPropagation( event )
+	{
+		event.stopImmediatePropagation();
+		return false;
+	}
 
 	/**
 	 * Parse and send chat room request
@@ -219,6 +226,12 @@ define(function(require)
 		this.requestRoom();
 		this.hide();
 	}
+
+
+	/**
+	 * Pseudo functions :)
+	 */
+	ChatRoomCreate.requestRoom = function requestRoom(){};
 
 
 	/**

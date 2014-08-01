@@ -426,7 +426,7 @@ define(function(require)
 		count           = _guild.length;
 
 		if (count) {
-			_ctx.fillStyle   = 'rgb(0.9,0.7,0.8)';
+			_ctx.fillStyle   = 'rgb(245,175,200)';
 			_ctx.strokeStyle = 'white';
 			for (i = 0; i < count; ++i) {
 				dot = _guild[i];

@@ -39,6 +39,9 @@ define(function(require)
 		this.draggable();
 		this.ui.css({ top: (Renderer.height-120)/1.5-49, left: (Renderer.width -280)/2+1 });
 		this.ui.find('button').click(validate.bind(this));
+		this.ui.find('input').mousedown(function(event) {
+			event.stopImmediatePropagation();
+		});
 
 		this.overlay = jQuery('<div/>')
 			.addClass('win_popup_overlay')

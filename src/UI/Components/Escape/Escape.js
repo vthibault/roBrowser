@@ -41,30 +41,18 @@ define(function(require)
 			left:(Renderer.width -this.ui.width())  * 0.5
 		});
 		this.draggable();
-		
+
+		this.ui.find('.node').mousedown(function(event){
+			event.stopImmediatePropagation();
+			return false;
+		});
 
 		// Only used in specific case
 		this.ui.find('button').show();
 		this.ui.find('.resurection, .savepoint').hide();
 
-		this.ui.find('.sound').click(function(){
-			if (!SoundOption.ui || !SoundOption.ui[0].parentNode) {
-				SoundOption.append();
-			}
-			else {
-				SoundOption.remove();
-			}
-		});
-
-		this.ui.find('.graphics').click(function(){
-			if (!GraphicsOption.ui || !GraphicsOption.ui[0].parentNode) {
-				GraphicsOption.append();
-			}
-			else {
-				GraphicsOption.remove();
-			}
-		});
-
+		this.ui.find('.sound').click(onToggleSoundUI);
+		this.ui.find('.graphics').click(onToggleGraphicUI);
 		this.ui.find('.resurection').click(this.onResurectionRequest);
 		this.ui.find('.savepoint').click(this.onReturnSavePointRequest);
 		this.ui.find('.charselect').click(this.onCharSelectionRequest);
@@ -103,20 +91,41 @@ define(function(require)
 	Escape.onKeyDown = function onKeyDown( event )
 	{
 		if (event.which === KEYS.ESCAPE) {
-
-			if (this.ui.is(':visible')) {
-				this.ui.hide();
-			}
-			else {
-				this.ui.show();
-			}
-
+			this.ui.toggle();
 			event.stopImmediatePropagation();
 			return false;
 		}
 
 		return true;
 	};
+
+
+	/**
+	 * Click on Sound button, toggle the UI
+	 */
+	function onToggleSoundUI()
+	{
+		if (!SoundOption.ui || !SoundOption.ui[0].parentNode) {
+			SoundOption.append();
+		}
+		else {
+			SoundOption.remove();
+		}
+	}
+
+
+	/**
+	 * Click on Graphic button, toggle the UI
+	 */
+	function onToggleGraphicUI()
+	{
+		if (!GraphicsOption.ui || !GraphicsOption.ui[0].parentNode) {
+			GraphicsOption.append();
+		}
+		else {
+			GraphicsOption.remove();
+		}
+	}
 
 
 	/**

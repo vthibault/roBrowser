@@ -101,7 +101,11 @@ define(function(require)
 				return false;
 			})
 			.click(this.remove.bind(this));
-		
+
+		this.ui.find('.sendmsg').mousedown(function(event){
+			event.stopImmediatePropagation();
+		});
+
 		this.draggable(this.ui.find('.titlebar'));
 	};
 

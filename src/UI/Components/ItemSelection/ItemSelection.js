@@ -46,7 +46,7 @@ define(function(require)
 		this.list  = this.ui.find('.list:first');
 		this.index = 0;
 
-		this.draggable(this.ui.find('head'));
+		this.draggable(this.ui.find('.head'));
 
 		// Click Events
 		this.ui.find('.ok').click( this.selectIndex.bind(this) );

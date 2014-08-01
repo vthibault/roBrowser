@@ -46,53 +46,13 @@ define(function(require)
 	 */
 	PetInformations.init = function init()
 	{
-		var ui = this.ui;
-
 		this.draggable(this.ui.find('.titlebar'));
 
-		ui.find('.base').mousedown(function(event) {
-			event.stopImmediatePropagation();
-			return false;
-		});
+		this.ui.find('.base').mousedown(stopPropagation);
+		this.ui.find('.close').click(onClose);
+		this.ui.find('.modify').click(onChangeName);
+		this.ui.find('.command').change(onCommandSelected);
 
-		ui.find('.close').click(function(){
-			ui.hide();
-		});
-
-		ui.find('.modify').click(function(){
-			PetInformations.reqNameEdit( ui.find('.name').val() );
-		});
-
-		ui.find('.command').change(function(){
-			switch (this.value) {
-				case 'feed':
-					PetInformations.reqPetFeed();
-					break;
-
-				case 'action':
-					PetInformations.reqPetAction();
-					break;
-
-				case 'release':
-					PetInformations.reqBackToEgg();
-					break;
-
-				case 'unequip':
-					PetInformations.reqUnEquipPet();
-					break;
-
-				default:
-			}
-			this.value = 'default';
-		});
-	};
-
-
-	/**
-	 * Once append to body, remember of user configs
-	 */
-	PetInformations.onAppend = function onAppend()
-	{
 		if (!_preferences.show) {
 			this.ui.hide();
 		}
@@ -200,6 +160,64 @@ define(function(require)
 			671
 		));
 	};
+
+
+	/**
+	 * User just execute a command
+	 */
+	function onCommandSelected()
+	{
+		switch (this.value) {
+			case 'feed':
+				PetInformations.reqPetFeed();
+				break;
+
+			case 'action':
+				PetInformations.reqPetAction();
+				break;
+
+			case 'release':
+				PetInformations.reqBackToEgg();
+				break;
+
+			case 'unequip':
+				PetInformations.reqUnEquipPet();
+				break;
+
+			default:
+		}
+
+		this.value = 'default';
+	}
+
+
+	/**
+	 * Request to modify pet's name
+	 */
+	function onChangeName()
+	{
+		var input = PetInformations.ui.find('.name');
+		PetInformations.reqNameEdit( input.val() );
+	}
+
+
+	/**
+	 * Closing window
+	 */
+	function onClose()
+	{
+		PetInformations.ui.hide();
+	}
+
+
+	/**
+	 * Stop event propagation
+	 */
+	function stopPropagation( event )
+	{
+		event.stopImmediatePropagation();
+		return false;
+	}
 
 
 	/**

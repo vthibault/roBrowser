@@ -135,6 +135,18 @@ define(function( require )
 				}
 			});
 
+			// Custom fix for firefox, mouseleave isn't trigger when element is
+			// removed from body, test case: http://jsfiddle.net/7h4sj/
+			element.on('x_remove', function(){
+				if (_enter > 0) {
+					_enter = 0;
+					if(_intersect) {
+						Mouse.intersect = true;
+						getModule('Renderer/EntityManager').setOverEntity(null);
+					}
+				}
+			});
+
 			// Focus the UI on mousedown
 			element.mousedown(this.focus.bind(this));
 		}
@@ -163,7 +175,7 @@ define(function( require )
 				jQuery(window).off('keydown.' + this.name);
 			}
 
-			this.ui.trigger('mouseleave');
+			this.ui.trigger('x_remove');
 			this.ui.detach();
 		}
 	};
@@ -192,7 +204,7 @@ define(function( require )
 		this.ui.appendTo('body');
 		
 		if (this.onKeyDown) {
-			jQuery(window).on('keydown.' + this.name, this.onKeyDown.bind(this));
+			jQuery(window).off('keydown.' + this.name).on('keydown.' + this.name, this.onKeyDown.bind(this));
 		}
 
 		if (this.onAppend) {

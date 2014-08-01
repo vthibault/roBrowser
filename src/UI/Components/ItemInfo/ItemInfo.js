@@ -81,7 +81,12 @@ define(function(require)
 	{
 		this.ui.css({ top: 200, left:200 });
 
-		this.ui.find('.close').click(this.remove.bind(this));
+		this.ui.find('.close')
+			.mousedown(function(event){
+				event.stopImmediatePropagation();
+				return false;
+			})
+			.click(this.remove.bind(this));
 
 		// Ask to see card.
 		this.ui.find('.view').click(function(){
@@ -89,7 +94,7 @@ define(function(require)
 			CardIllustration.setCard(this.item);
 		}.bind(this));
 
-		this.draggable();
+		this.draggable(this.ui.find('.title'));
 	};
 
 

@@ -97,18 +97,13 @@ define(function(require)
 		// Client do not send packet
 		ui.find('.btn.cancel').click(this.remove.bind(this));
 		ui.find('.btn.buy, .btn.sell').click(this.submit.bind(this));
-		ui.find('.selectall').mousedown(function(){
-			_preferences.select_all = !_preferences.select_all;
-
-			Client.loadFile(DB.INTERFACE_PATH + 'checkbox_' + (_preferences.select_all ? 1 : 0) + '.bmp', function(data){
-				this.style.backgroundImage = 'url('+ data +')';
-			}.bind(this));
-		});
+		ui.find('.selectall').mousedown(onToggleSelectAmount);
 
 		// Resize
 		InputWindow.find('.resize').mousedown(function(){ onResize(InputWindow); });
 		OutputWindow.find('.resize').mousedown(function(){ onResize(OutputWindow); });
 
+		// Items options
 		ui.find('.content')
 			.on('mousewheel DOMMouseScroll', onScroll)
 			.on('contextmenu',      '.icon', onItemInfo)
@@ -118,7 +113,6 @@ define(function(require)
 			.on('dragend',          '.item', function(){
 				delete window._OBJ_DRAG_;
 			});
-
 
 		// Drop items
 		ui.find('.InputWindow, .OutputWindow')
@@ -355,7 +349,6 @@ define(function(require)
 			return;
 		}
 
-
 		// Create it
 		content.append(
 			'<div class="item" draggable="true" data-index="'+ item.index +'">' +
@@ -417,11 +410,11 @@ define(function(require)
 		// Start resizing
 		interval = setInterval( resizing, 30);
 
-		// Stop resizing
-		jQuery(window).one('mouseup', function(event){
-			// Only on left click
+		// Stop resizing on left click
+		jQuery(window).on('mouseup.resize', function(event){
 			if (event.which === 1) {
 				clearInterval(interval);
+				jQuery(window).off('mouseup.resize');
 			}
 		});
 	}
@@ -447,7 +440,6 @@ define(function(require)
 
 		return function transferItem(fromContent, toContent, isAdding, index, count)
 		{
-
 			// Add item to the list
 			if (isAdding) {
 
@@ -709,6 +701,19 @@ define(function(require)
 				index:     this.getAttribute('data-index')
 			})
 		);
+	}
+
+
+	/**
+	 * Option to automatically buy/sell alls items instead of specify the amount
+	 */
+	function onToggleSelectAmount()
+	{
+		_preferences.select_all = !_preferences.select_all;
+
+		Client.loadFile(DB.INTERFACE_PATH + 'checkbox_' + (_preferences.select_all ? 1 : 0) + '.bmp', function(data) {
+			this.style.backgroundImage = 'url('+ data +')';
+		}.bind(this));
 	}
 
 
