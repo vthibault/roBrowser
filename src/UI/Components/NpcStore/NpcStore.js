@@ -333,6 +333,7 @@ define(function(require)
 	{
 		var it = DB.getItemInfo( item.ITID );
 		var element = content.find('.item[data-index='+ item.index +']:first');
+		var price;
 
 		// 0 as amount ? remove it
 		if (item.count === 0) {
@@ -349,13 +350,23 @@ define(function(require)
 			return;
 		}
 
+		price = item.price;
+
+		// Discount price
+		if ('discountprice' in item && item.price !== item.discountprice) {
+			price += ' -> ' + item.discountprice;
+		}
+		else if ('overchargeprice' in item && item.price !== item.overchargeprice) {
+			price += ' -> ' + item.overchargeprice;
+		}
+
 		// Create it
 		content.append(
 			'<div class="item" draggable="true" data-index="'+ item.index +'">' +
 				'<div class="icon"></div>' +
 				'<div class="amount">' + (isFinite(item.count) ? item.count : '') + '</div>' +
 				'<div class="name">'+ it.identifiedDisplayName +'</div>' +
-				'<div class="price">'+ (item.discountprice || item.overchargeprice || item.price) +'</div>' +
+				'<div class="price">'+ price +'</div>' +
 				'<div class="unity">Z</div>' +
 			'</div>'
 		);
