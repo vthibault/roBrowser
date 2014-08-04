@@ -24,16 +24,22 @@ function(      Client,          Preferences,              Memory )
 
 
 	/**
+	 * Re-usable sounds
+	 */
+	var _cache = [];
+
+
+	/**
 	 * @Constructor
 	 */
-	var Sound = {};
+	var SoundManager = {};
 
 
 	/**
 	 * @var {float} sound volume
 	 *
 	 */
-	Sound.volume = Preferences.Sound.volume;
+	SoundManager.volume = Preferences.Sound.volume;
 
 
 	/**
@@ -41,9 +47,8 @@ function(      Client,          Preferences,              Memory )
 	 *
 	 * @param {string} filename
 	 * @param {optional|number} vol (volume)
-	 * @param {optional|boolean} auto-repeat
 	 */
-	Sound.play = function play( filename, vol, repeat ) {
+	SoundManager.play = function play( filename, vol ) {
 		var volume;
 
 		// Sound volume * Global volume
@@ -59,6 +64,16 @@ function(      Client,          Preferences,              Memory )
 			return;
 		}
 
+		// Re-usable sound
+		var sound = getSoundFromCache(filename);
+		if (sound) {
+			sound.volume  = Math.min(volume,1.0);
+			sound._volume = volume;
+			sound.play();
+			_sounds.push(sound);
+			return;
+		}
+
 		// Get the sound from client.
 		Client.loadFile( 'data/wav/' + filename, function( url ) {
 			var sound = document.createElement('audio');
@@ -69,20 +84,7 @@ function(      Client,          Preferences,              Memory )
 			sound.volume      = Math.min(volume,1.0);
 			sound._volume     = volume;
 			sound.play();
-
-			// Once the sound finish, remove it from memory
-			sound.addEventListener('ended', function Remove(){
-				var pos = _sounds.indexOf(this);
-				if (pos !== -1) {
-					if (repeat) {
-						sound.currentTime = 0;
-						sound.play();
-					}
-					else {
-						_sounds.splice( pos, 1 );
-					}
-				}
-			}, false);
+			sound.addEventListener('ended', onSoundEnded, false);
 
 			// Add it to the list
 			_sounds.push(sound);
@@ -95,7 +97,7 @@ function(      Client,          Preferences,              Memory )
 	 *
 	 * @param {optional|string} filename to stop
 	 */
-	Sound.stop = function stop( filename )
+	SoundManager.stop = function stop( filename )
 	{
 		var i, count, list;
 
@@ -130,7 +132,7 @@ function(      Client,          Preferences,              Memory )
 	 *
 	 * @param {number} volume
 	 */
-	Sound.setVolume = function setVolume( volume )
+	SoundManager.setVolume = function setVolume( volume )
 	{
 		var i, count = _sounds.length;
 		this.volume  = Math.min( volume, 1.0);
@@ -145,8 +147,61 @@ function(      Client,          Preferences,              Memory )
 
 
 	/**
+	 * Move sound to cache.
+	 * ff we have a request to play the same sound again, get it back
+	 * Will avoid to re-create sound object at each request (re-usable object)
+	 */
+	function onSoundEnded()
+	{
+		var pos = _sounds.indexOf(this);
+
+		if (pos !== -1) {
+			_sounds.splice( pos, 1);
+		}
+
+		this.tick = Date.now();
+		_cache.push(this);
+	}
+
+
+	/**
+	 * Remove sound from cache and return it
+	 * Check at the same time to remove sound not used since some times.
+	 *
+	 * @param {string} filename
+	 * @param {Audio} sound element
+	 */
+	function getSoundFromCache(filename)
+	{
+		var i, tick = Date.now(), count = _cache.length;
+		var out = null;
+
+		for (i = 0; i < count; i++) {
+			if (!out && _cache[i].filename === filename) {
+				out      = _cache[i];
+				out.tick = tick;
+				_cache.splice(i, 1);
+				i--;
+				count--;
+				continue;
+			}
+
+			// remove
+			if (_cache[i].tick + 60000 < tick) {
+				_cache.splice(i, 1);
+				i--;
+				count--;
+				continue;
+			}
+		}
+
+		return out;
+	}
+
+
+	/**
 	 * Export
 	 */
-	return Sound;
+	return SoundManager;
 
 });

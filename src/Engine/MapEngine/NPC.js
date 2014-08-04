@@ -368,13 +368,7 @@ define(function( require )
 			case 1:
 				Sound.play( pkt.fileName );
 				break;
-/*
-			// Play repeat
-			// Not supported !
-			case 1:
-				Sound.play( pkt.fileName, Sound.volume, true );
-				break;
-*/
+
 			// From rathena, should stop a sound but doesn't seems to work in official client ?
 			case 2:
 				Sound.stop( pkt.fileName );
