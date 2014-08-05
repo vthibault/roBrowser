@@ -69,6 +69,7 @@ function(      Client,          Preferences,              Memory )
 		if (sound) {
 			sound.volume  = Math.min(volume,1.0);
 			sound._volume = volume;
+			sound.tick    = Date.now();
 			sound.play();
 			_sounds.push(sound);
 			return;
@@ -76,15 +77,26 @@ function(      Client,          Preferences,              Memory )
 
 		// Get the sound from client.
 		Client.loadFile( 'data/wav/' + filename, function( url ) {
-			var sound = document.createElement('audio');
+			var i, count = _sounds.length;
+			var sound, tick = Date.now();
+
+			// Wait a delay to replay a sound
+			for (i = 0; i < count; ++i) {
+				if (_sounds[i].src === url && _sounds[i].tick > tick - 100) {
+					return;
+				}
+			}
 
 			// Initialiaze the sound and play it
+			sound             = document.createElement('audio');
 			sound.filename    = filename;
 			sound.src         = url;
+			sound.tick        = tick;
 			sound.volume      = Math.min(volume,1.0);
 			sound._volume     = volume;
-			sound.play();
+
 			sound.addEventListener('ended', onSoundEnded, false);
+			sound.play();
 
 			// Add it to the list
 			_sounds.push(sound);
