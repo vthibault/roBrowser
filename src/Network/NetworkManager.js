@@ -322,8 +322,14 @@ define(function( require )
 			}
 
 			// Parse packet
-			var data = new packet.struct(fp, offset);
-			console.log( '%c[Network] Recv:', 'color:#900090', data, packet.callback ? '' : '(no callback)'  );
+			if (!packet.instance) {
+				packet.instance = new packet.struct(fp, offset);
+			}
+			else {
+				packet.struct.call(packet.instance, fp, offset);
+			}
+
+			console.log( '%c[Network] Recv:', 'color:#900090', packet.instance, packet.callback ? '' : '(no callback)'  );
 
 			// Support for "0" type
 			if (length) {
@@ -332,7 +338,7 @@ define(function( require )
 
 			// Call controller
 			if (packet.callback) {
-				packet.callback(data);
+				packet.callback(packet.instance);
 			}
 		}
 

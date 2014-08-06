@@ -464,8 +464,8 @@ define(function( require )
 
 		// Move to position
 		pkt         = new PACKET.CZ.REQUEST_MOVE();
-		pkt.dest[0] = out[ count - 1 ][0];
-		pkt.dest[1] = out[ count - 1 ][1];
+		pkt.dest[0] = out[(count-1)*2 + 0];
+		pkt.dest[1] = out[(count-1)*2 + 1];
 		Network.sendPacket(pkt);
 	};
 
@@ -524,8 +524,8 @@ define(function( require )
 		// Save the packet and move to the position
 		Session.moveAction = pkt;
 		pkt                = new PACKET.CZ.REQUEST_MOVE();
-		pkt.dest[0]        = out[ count - 1 ][0];
-		pkt.dest[1]        = out[ count - 1 ][1];
+		pkt.dest[0]        = out[(count-1)*2 + 0];
+		pkt.dest[1]        = out[(count-1)*2 + 1];
 		Network.sendPacket(pkt);
 	};
 

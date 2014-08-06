@@ -36,9 +36,11 @@ define( function( require )
 	{
 		this.speed =  150;
 		this.tick  =  0;
-		this.path  =  [];
+		this.path  =  new Int16Array(32*2);
 		this.pos   =  new Float32Array(3);
 		this.onEnd = null;
+		this.index =  0;
+		this.total =  0;
 	}
 
 
@@ -51,23 +53,24 @@ define( function( require )
 	 * @param {number} to_y
 	 * @param {number} range optional
 	 */
-	function WalkTo( from_x, from_y, to_x, to_y, range )
+	function walkTo( from_x, from_y, to_x, to_y, range )
 	{
-		var path  = [];
-		var count = PathFinding.search( from_x | 0, from_y | 0, to_x | 0, to_y | 0, range || 0, path );
+		var path  = this.walk.path;
+		var total = PathFinding.search( from_x | 0, from_y | 0, to_x | 0, to_y | 0, range || 0, path);
 
-		if (count) {
-			path.length = count;
-			path.shift();
+		this.walk.index =     1 * 2; // skip first index
+		this.walk.total = total * 2;
 
-			if (count === 2 && path[0][0] === from_x && path[0][1] === from_y){
+		if (total) {
+			// Same position
+			if (total === 2 &&
+				path[this.walk.index+0] === from_x &&
+				path[this.walk.index+1] === from_y){
 				return;
 			}
 
 			this.walk.pos.set(this.position);
-			this.walk.path = path;
 			this.walk.tick = Renderer.tick;
-
 			this.headDir   = 0;
 
 			if (this.action !== this.ACTION.WALK) {
@@ -85,22 +88,24 @@ define( function( require )
 	/**
 	 * Process walking
 	 */
-	function WalkProcess()
+	function walkProcess()
 	{
 		var pos  = this.position;
 		var walk = this.walk;
 		var path = walk.path;
+		var index = walk.index;
+		var total = walk.total;
 
 		var x, y, speed;
 		var TICK = Renderer.tick;
 		var delay = 0;
 
-		if (path.length) {
+		if (index < total) {
 
 			// Calculate new position, base on time and walk speed.
-			while (path.length) {
-				x = path[0][0] - (walk.pos[0]);
-				y = path[0][1] - (walk.pos[1]);
+			while (index < total) {
+				x = path[index+0] - (walk.pos[0]);
+				y = path[index+1] - (walk.pos[1]);
 
 				// Seems like walking on diagonal is slower ?
 				speed = ( x && y ) ? walk.speed / 0.6 : walk.speed;
@@ -111,13 +116,16 @@ define( function( require )
 				}
 
 				walk.tick += speed;
-				walk.pos.set(path.shift());
+				walk.pos[0] = path[index+0];
+				walk.pos[1] = path[index+1];
+				index += 2;
 			}
 
 			// Calculate and store new position
 			// TODO: check the min() part.
 
-			delay  = Math.min(speed, TICK-walk.tick);
+			delay      = Math.min(speed, TICK-walk.tick);
+			walk.index = index;
 
 			// Should not happened, avoid division by 0
 			if (!delay) {
@@ -129,7 +137,7 @@ define( function( require )
 			pos[2] = Altitude.getCellHeight( pos[0], pos[1] );
 
 			// Update player direction while walking
-			if (path.length) {
+			if (index < total) {
 				this.direction = DIRECTION[(x>0?1:x<0?-1:0)+1][(y>0?1:y<0?-1:0)+1];
 				return;
 			}
@@ -165,8 +173,8 @@ define( function( require )
 	{
 		this.onWalkEnd   = function onWalkEnd(){};
 		this.walk        = new WalkStructure();
-		this.walkTo      = WalkTo;
-		this.walkProcess = WalkProcess;
+		this.walkTo      = walkTo;
+		this.walkProcess = walkProcess;
 	};
 });
 
