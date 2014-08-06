@@ -220,11 +220,41 @@ define(function( require )
 	 */
 	UIComponent.prototype.focus = function focus()
 	{
-		var ui = this.ui.get(0);
-
-		if (ui.parentNode) {
-			ui.parentNode.appendChild(ui);
+		if (!this.manager) {
+			return;
 		}
+
+		var components = this.manager.components;
+		var name, zIndex, list = [];
+		var i, count, j;
+
+		// Store components zIndex in a list
+		for (name in components) {
+			if (this !== components[name] && components[name].__active) {
+				zIndex = parseInt(components[name].ui.css('zIndex'), 10);
+				list[zIndex-50] = zIndex;
+			}
+		}
+
+		// Re-organize it to have a linear zIndex order (remove gap)
+		for (i = 0, j = 0, count = list.length; i < count; ++i) {
+			if (!list[i]) {
+				j++;
+				continue;
+			}
+			list[i] -= j;
+		}
+
+		// Apply new zIndex to list
+		for (name in components) {
+			if (this !== components[name] && components[name].__active) {
+				zIndex = parseInt(components[name].ui.css('zIndex'), 10);
+				components[name].ui.css('zIndex', list[zIndex-50]);
+			}
+		}
+
+		// Push our zIndex at top
+		this.ui.css('zIndex', list.length + 50 - j);
 	};
 
 
@@ -329,19 +359,19 @@ define(function( require )
 				var opacity = parseFloat(container.css('opacity')||1) - 0.02;
 
 				// Magnet on border
-				if (x_ < 10 && x_ > -10) {
+				if (Math.abs(x_) < 10) {
 					x_ = 0;
 				}
-				if (y_ < 10 && y_ > -10) {
+				if (Math.abs(y_) < 10) {
 					y_ = 0;
 				}
 
-				if (x_ + width > Mouse.screen.width  - 10 && x_ + width < Mouse.screen.width + 10) {
+				if (Math.abs((x_ + width) - Mouse.screen.width) < 10) {
 					x_ = Mouse.screen.width - width;
 				}
 
-				if (y_ + height > Mouse.screen.height - 10 && y_ + height < Mouse.screen.height+ 10) {
-					y_ = Mouse.screen.height- height;
+				if (Math.abs((y_ + height) - Mouse.screen.height) < 10) {
+					y_ = Mouse.screen.height - height;
 				}
 
 				container.css({ top: y_, left: x_, opacity: Math.max(opacity,0.7) });

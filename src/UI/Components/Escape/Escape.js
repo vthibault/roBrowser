@@ -92,6 +92,11 @@ define(function(require)
 	{
 		if (event.which === KEYS.ESCAPE) {
 			this.ui.toggle();
+
+			if (this.ui.is(':visible')) {
+				this.focus();
+			}
+
 			event.stopImmediatePropagation();
 			return false;
 		}

@@ -186,11 +186,9 @@ define(function(require)
 	{
 		switch (key.cmd) {
 			case 'TOGGLE':
+				this.ui.toggle();
 				if (this.ui.is(':visible')) {
-					this.ui.hide();
-				}
-				else {
-					this.ui.show();
+					this.focus();
 				}
 				break;
 		}

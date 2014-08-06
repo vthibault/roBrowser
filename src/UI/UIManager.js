@@ -43,6 +43,7 @@ define(function( require )
 			throw new Error('UIManager::addComponent() - Invalid type of component');
 		}
 
+		component.manager = this;
 		this.components[ component.name ] = component;
 		return component;
 	};
