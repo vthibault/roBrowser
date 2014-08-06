@@ -66,10 +66,16 @@ define(function(require)
 			// Manage indexes
 			.on('mousedown', 'div', function(event) {
 				selectIndex.call(self, jQuery(this));
+			})
+
+			// Select index
+			.on('dblclick',  'div', validate.bind(this))
+
+			// Stop drag drop
+			.mousedown(function(event) {
 				event.stopImmediatePropagation();
 				return false;
 			})
-			.on('dblclick',  'div', validate.bind(this))
 	};
 
 

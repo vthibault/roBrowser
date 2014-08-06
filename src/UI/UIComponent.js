@@ -49,6 +49,22 @@ define(function( require )
 
 
 	/**
+	 * @var {enum} Mouse mode
+	 */
+	UIComponent.MouseMode = {
+		CROSS:  0, // cross the ui and intersect with scene
+		STOP:   1, // don't intersect the scene if mouse over the ui
+		FREEZE: 2  // don't intersect the scene if ui is alive in scene (TODO)
+	};
+
+
+	/**
+	 * @var {number} mouse behavior
+	 */
+	UIComponent.prototype.mouseMode = UIComponent.MouseMode.STOP;
+
+
+	/**
 	 * @var {boolean} is Component ready ?
 	 */
 	UIComponent.prototype.__loaded = false;
@@ -89,6 +105,52 @@ define(function( require )
 			this.init();
 		}
 
+		// If the ui don't allow to be crossed by mouse to intersect the scene then
+		// _enter variable is here to fix a recurrent bug in mouseenter and mouseleave
+		// when mouseenter can be triggered multiples time
+		if (this.mouseMode === UIComponent.MouseMode.STOP) {
+			var _intersect, _enter = 0;
+			var element = this.__mouseStopBlock || this.ui;
+
+			// stop intersection
+			element.mouseenter(function(){
+				if (_enter === 0) {
+					_intersect = Mouse.intersect;
+					_enter++;
+					if (_intersect) {
+						Mouse.intersect = false;
+						Cursor.setType( Cursor.ACTION.DEFAULT );
+					}
+				}
+			});
+
+			// restore previous state
+			element.mouseleave(function(){
+				if (_enter > 0) {
+					_enter--;
+				}
+				if(_intersect) {
+					Mouse.intersect = true;
+					getModule('Renderer/EntityManager').setOverEntity(null);
+				}
+			});
+
+			// Custom fix for firefox, mouseleave isn't trigger when element is
+			// removed from body, test case: http://jsfiddle.net/7h4sj/
+			element.on('x_remove', function(){
+				if (_enter > 0) {
+					_enter = 0;
+					if(_intersect) {
+						Mouse.intersect = true;
+						getModule('Renderer/EntityManager').setOverEntity(null);
+					}
+				}
+			});
+
+			// Focus the UI on mousedown
+			element.mousedown(this.focus.bind(this));
+		}
+
 		if (this._htmlText) {
 			this.ui.detach();
 		}
@@ -113,7 +175,7 @@ define(function( require )
 				jQuery(window).off('keydown.' + this.name);
 			}
 
-			this.ui.trigger('mouseleave');
+			this.ui.trigger('x_remove');
 			this.ui.detach();
 		}
 	};
@@ -142,12 +204,57 @@ define(function( require )
 		this.ui.appendTo('body');
 		
 		if (this.onKeyDown) {
-			jQuery(window).on('keydown.' + this.name, this.onKeyDown.bind(this));
+			jQuery(window).off('keydown.' + this.name).on('keydown.' + this.name, this.onKeyDown.bind(this));
 		}
 
 		if (this.onAppend) {
 			this.onAppend();
+			this.focus();
 		}
+	};
+
+
+	/**
+	 * Focus the UI
+	 * (stay at the top of others)
+	 */
+	UIComponent.prototype.focus = function focus()
+	{
+		if (!this.manager) {
+			return;
+		}
+
+		var components = this.manager.components;
+		var name, zIndex, list = [];
+		var i, count, j;
+
+		// Store components zIndex in a list
+		for (name in components) {
+			if (this !== components[name] && components[name].__active) {
+				zIndex = parseInt(components[name].ui.css('zIndex'), 10);
+				list[zIndex-50] = zIndex;
+			}
+		}
+
+		// Re-organize it to have a linear zIndex order (remove gap)
+		for (i = 0, j = 0, count = list.length; i < count; ++i) {
+			if (!list[i]) {
+				j++;
+				continue;
+			}
+			list[i] -= j;
+		}
+
+		// Apply new zIndex to list
+		for (name in components) {
+			if (this !== components[name] && components[name].__active) {
+				zIndex = parseInt(components[name].ui.css('zIndex'), 10);
+				components[name].ui.css('zIndex', list[zIndex-50]);
+			}
+		}
+
+		// Push our zIndex at top
+		this.ui.css('zIndex', list.length + 50 - j);
 	};
 
 
@@ -213,59 +320,22 @@ define(function( require )
 	UIComponent.prototype.draggable = function draggable( element )
 	{
 		var container = this.ui;
-		var _intersect, _enter = 0;
 
 		// Global variable
 		if (!element) {
 			element = this.ui;
 		}
 
-		// Draggable elements stop the mouse to intersect with the scene
-		// _enter variable is here to fix a recurrent bug in mouseenter and mouseleave
-		// when mouseenter can be triggered multiples time
-		element.mouseenter(function(){
-			if (_enter === 0) {
-				_intersect = Mouse.intersect;
-				_enter++;
-				if (_intersect) {
-					Mouse.intersect = false;
-					Cursor.setType( Cursor.ACTION.DEFAULT );
-				}
-			}
-		});
-
-		element.mouseleave(function(){
-			if (_enter > 0) {
-				_enter--;
-			}
-
-			if(_intersect) {
-				Mouse.intersect = true;
-				getModule('Renderer/EntityManager').setOverEntity(null);
-			}
-		});
-
 		// Drag drop stuff
-		element.mousedown( function(event) {
-
+		element.mousedown(function(event) {
 			// Only on left click
 			if (event.which !== 1) {
 				return;
 			}
 
 			var x, y, width, height, drag;
-			var updateDepth = element.css('zIndex') == 50;
-
-			// Don't propagate event.
-			event.stopImmediatePropagation();
-
-			// Set element over others components
-			if (updateDepth) {
-				element.css('zIndex', 51);
-			}
-
-			x = container.position().left - Mouse.screen.x;
-			y = container.position().top  - Mouse.screen.y;
+			x      = container.position().left - Mouse.screen.x;
+			y      = container.position().top  - Mouse.screen.y;
 			width  = container.width();
 			height = container.height();
 
@@ -275,24 +345,11 @@ define(function( require )
 
 			// Stop the drag (need to focus on window to avoid possible errors...)
 			jQuery(window).on('mouseup.dragdrop', function(event){
-				// Only on left click
-				if (event.which !== 1 && !event.isTrigger) {
-					return;
+				if (event.which === 1 || event.isTrigger) {
+					container.stop().animate({ opacity:1.0 }, 500 );
+					Events.clearTimeout(drag);
+					jQuery(window).off('mouseup.dragdrop');
 				}
-
-				// Get back zIndex, push the element to the end to be over others components
-				if (updateDepth) {
-					Events.setTimeout(function(){
-						element.css('zIndex', 50);
-						if (element[0].parentNode) {
-							element[0].parentNode.appendChild(element[0]);
-						}
-					}, 1);
-				}
-
-				container.stop().animate({ opacity:1.0 }, 500 );
-				Events.clearTimeout(drag);
-				jQuery(window).off('mouseup.dragdrop');
 			});
 
 			// Process dragging
@@ -302,19 +359,19 @@ define(function( require )
 				var opacity = parseFloat(container.css('opacity')||1) - 0.02;
 
 				// Magnet on border
-				if (x_ < 10 && x_ > -10) {
+				if (Math.abs(x_) < 10) {
 					x_ = 0;
 				}
-				if (y_ < 10 && y_ > -10) {
+				if (Math.abs(y_) < 10) {
 					y_ = 0;
 				}
 
-				if (x_ + width > Mouse.screen.width  - 10 && x_ + width < Mouse.screen.width + 10) {
+				if (Math.abs((x_ + width) - Mouse.screen.width) < 10) {
 					x_ = Mouse.screen.width - width;
 				}
 
-				if (y_ + height > Mouse.screen.height - 10 && y_ + height < Mouse.screen.height+ 10) {
-					y_ = Mouse.screen.height- height;
+				if (Math.abs((y_ + height) - Mouse.screen.height) < 10) {
+					y_ = Mouse.screen.height - height;
 				}
 
 				container.css({ top: y_, left: x_, opacity: Math.max(opacity,0.7) });

@@ -97,18 +97,13 @@ define(function(require)
 		// Client do not send packet
 		ui.find('.btn.cancel').click(this.remove.bind(this));
 		ui.find('.btn.buy, .btn.sell').click(this.submit.bind(this));
-		ui.find('.selectall').mousedown(function(){
-			_preferences.select_all = !_preferences.select_all;
-
-			Client.loadFile(DB.INTERFACE_PATH + 'checkbox_' + (_preferences.select_all ? 1 : 0) + '.bmp', function(data){
-				this.style.backgroundImage = 'url('+ data +')';
-			}.bind(this));
-		});
+		ui.find('.selectall').mousedown(onToggleSelectAmount);
 
 		// Resize
-		InputWindow.find('.resize').mousedown(function(event){ onResize(InputWindow); event.stopImmediatePropagation(); return false; });
-		OutputWindow.find('.resize').mousedown(function(event){ onResize(OutputWindow); event.stopImmediatePropagation(); return false; });
+		InputWindow.find('.resize').mousedown(function(){ onResize(InputWindow); });
+		OutputWindow.find('.resize').mousedown(function(){ onResize(OutputWindow); });
 
+		// Items options
 		ui.find('.content')
 			.on('mousewheel DOMMouseScroll', onScroll)
 			.on('contextmenu',      '.icon', onItemInfo)
@@ -119,7 +114,6 @@ define(function(require)
 				delete window._OBJ_DRAG_;
 			});
 
-
 		// Drop items
 		ui.find('.InputWindow, .OutputWindow')
 			.on('drop', onDrop)
@@ -129,8 +123,8 @@ define(function(require)
 			});
 
 		// Hacky drag drop
-		this.draggable.call({ui: InputWindow  });
-		this.draggable.call({ui: OutputWindow });
+		this.draggable.call({ui: InputWindow },  InputWindow.find('.titlebar'));
+		this.draggable.call({ui: OutputWindow }, OutputWindow.find('.titlebar'));
 	};
 
 
@@ -339,6 +333,7 @@ define(function(require)
 	{
 		var it = DB.getItemInfo( item.ITID );
 		var element = content.find('.item[data-index='+ item.index +']:first');
+		var price;
 
 		// 0 as amount ? remove it
 		if (item.count === 0) {
@@ -355,6 +350,15 @@ define(function(require)
 			return;
 		}
 
+		price = item.price;
+
+		// Discount price
+		if ('discountprice' in item && item.price !== item.discountprice) {
+			price += ' -> ' + item.discountprice;
+		}
+		else if ('overchargeprice' in item && item.price !== item.overchargeprice) {
+			price += ' -> ' + item.overchargeprice;
+		}
 
 		// Create it
 		content.append(
@@ -362,7 +366,7 @@ define(function(require)
 				'<div class="icon"></div>' +
 				'<div class="amount">' + (isFinite(item.count) ? item.count : '') + '</div>' +
 				'<div class="name">'+ it.identifiedDisplayName +'</div>' +
-				'<div class="price">'+ (item.discountprice || item.overchargeprice || item.price) +'</div>' +
+				'<div class="price">'+ price +'</div>' +
 				'<div class="unity">Z</div>' +
 			'</div>'
 		);
@@ -417,11 +421,11 @@ define(function(require)
 		// Start resizing
 		interval = setInterval( resizing, 30);
 
-		// Stop resizing
-		jQuery(window).one('mouseup', function(event){
-			// Only on left click
+		// Stop resizing on left click
+		jQuery(window).on('mouseup.resize', function(event){
 			if (event.which === 1) {
 				clearInterval(interval);
+				jQuery(window).off('mouseup.resize');
 			}
 		});
 	}
@@ -447,7 +451,6 @@ define(function(require)
 
 		return function transferItem(fromContent, toContent, isAdding, index, count)
 		{
-
 			// Add item to the list
 			if (isAdding) {
 
@@ -652,13 +655,12 @@ define(function(require)
 			$window.trigger('mouseup');
 		}
 
-		return function onItemFocus( event )
+		return function onItemFocus()
 		{
 			NpcStore.ui.find('.item.selected').removeClass('selected');
 			jQuery(this).addClass('selected');
 
 			Events.setTimeout( stopDragDrop, 4);
-			event.stopImmediatePropagation();
 		};
 	}();
 
@@ -710,6 +712,19 @@ define(function(require)
 				index:     this.getAttribute('data-index')
 			})
 		);
+	}
+
+
+	/**
+	 * Option to automatically buy/sell alls items instead of specify the amount
+	 */
+	function onToggleSelectAmount()
+	{
+		_preferences.select_all = !_preferences.select_all;
+
+		Client.loadFile(DB.INTERFACE_PATH + 'checkbox_' + (_preferences.select_all ? 1 : 0) + '.bmp', function(data) {
+			this.style.backgroundImage = 'url('+ data +')';
+		}.bind(this));
 	}
 
 

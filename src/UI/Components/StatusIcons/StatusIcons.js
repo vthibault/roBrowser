@@ -30,6 +30,12 @@ define(function( require )
 
 
 	/**
+	 * Mouse can cross this UI
+	 */
+	StatusIcons.mouseMode = UIComponent.MouseMode.CROSS;
+
+
+	/**
 	 * @var {Array} Informations waiting for UI to be ready
 	 */
 	var _stack = [];

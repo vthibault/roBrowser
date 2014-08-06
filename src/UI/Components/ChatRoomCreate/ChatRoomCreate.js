@@ -74,18 +74,17 @@ define(function(require)
 	ChatRoomCreate.init = function init()
 	{
 		// Bindings
-		this.ui.find('.close, .cancel').on('click', this.hide.bind(this));
+		this.ui.find('.close, .cancel').mousedown(stopPropagation).click(this.hide.bind(this));
 		this.ui.find('.ok').on('click', parseChatSetup.bind(this) );
 		this.ui.find('.setup').submit(function() {
 			return false;
 		});
 
-		// Do not activate drag
-		this.ui.find('input, button, select').mousedown(function(event) {
+		this.ui.find('input, select').mousedown(function(event){
 			event.stopImmediatePropagation();
 		});
 
-		this.draggable();
+		this.draggable(this.ui.find('.titlebar'));
 		this.ui.hide();
 	};
 
@@ -182,7 +181,7 @@ define(function(require)
 			case 'TOGGLE':
 				this.ui.toggle();
 				if (this.ui.is(':visible')) {
-					this.ui[0].parentNode.appendChild(this.ui[0]);
+					this.focus();
 				}
 				break;
 		}
@@ -190,10 +189,13 @@ define(function(require)
 
 
 	/**
-	 * Pseudo functions :)
+	 * Stop event propagation
 	 */
-	ChatRoomCreate.requestRoom = function requestRoom(){};
-
+	function stopPropagation( event )
+	{
+		event.stopImmediatePropagation();
+		return false;
+	}
 
 	/**
 	 * Parse and send chat room request
@@ -224,6 +226,12 @@ define(function(require)
 		this.requestRoom();
 		this.hide();
 	}
+
+
+	/**
+	 * Pseudo functions :)
+	 */
+	ChatRoomCreate.requestRoom = function requestRoom(){};
 
 
 	/**

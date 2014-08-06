@@ -79,27 +79,12 @@ define(function(require)
 	 */
 	SkillList.init = function init()
 	{
-		// Don't activate drag drop when clicking on buttons
-		this.ui.find('.titlebar .base').mousedown(function(event){
-			event.stopImmediatePropagation();
-			return false;
-		});
-
-		// Bind buttons
+		this.ui.find('.titlebar .base').mousedown(stopPropagation);
 		this.ui.find('.footer .extend').mousedown(onResize);
-		this.ui.find('.titlebar .close').click(function(){
-			SkillList.ui.hide();
-			return false;
-		});
+		this.ui.find('.titlebar .close').click(onClose);
 
 		// Get level up button
-		_btnIncSkill = this.ui.find('.btn.levelup').detach();
-		_btnIncSkill.click(function(){
-			var index = this.parentNode.parentNode.getAttribute('data-index');
-			SkillList.onIncreaseSkill(
-				parseInt(index, 10)
-			);
-		});
+		_btnIncSkill = this.ui.find('.btn.levelup').detach().click(onRequestSkillUp);
 
 		// Get button to open skill when level up
 		_btnLevelUp = jQuery('#lvlup_job').detach();
@@ -107,85 +92,17 @@ define(function(require)
 			_btnLevelUp.detach();
 			SkillList.ui.show();
 			SkillList.ui.parent().append(SkillList.ui);
-		});
+		}).mousedown(stopPropagation);
 
+		// Bind skills
 		this.ui
+			.on('dblclick',    '.skill .icon, .skill .name', onRequestUseSkill)
+			.on('contextmenu', '.skill .icon, .skill .name', onRequestSkillInfo)
+			.on('mousedown',   '.selectable', onSkillFocus)
+			.on('dragstart',   '.skill',      onSkillDragStart)
+			.on('dragend',     '.skill',      onSkillDragEnd);
 
-			// Use skill
-			.on('dblclick', '.skill .icon, .skill .name', function(){
-				var main  = jQuery(this).parent();
-
-				if (!main.hasClass('skill')) {
-					main = main.parent();
-				}
-
-				SkillList.useSkillID(parseInt(main.data('index'), 10));
-			})
-
-			// Skill info
-			.on('contextmenu', '.skill .icon, .skill .name', function(){
-				var main  = jQuery(this).parent();
-				var skill;
-
-				if (!main.hasClass('skill')) {
-					main = main.parent();
-				}
-
-				skill = getSkillById(parseInt(main.data('index'), 10));
-
-				SkillDescription.append();
-				SkillDescription.setSkill(skill.SKID);
-			})
-
-			// background color
-			.on('mousedown', '.selectable', function(event){
-				var main = jQuery(this).parent();
-
-				if (!main.hasClass('skill')) {
-					main = main.parent();
-				}
-
-				SkillList.ui.find('.skill').removeClass('selected');
-				main.addClass('selected');
-
-				event.stopImmediatePropagation();
-			})
-
-			// Stop drag drop
-			.on('mousedown', '.skill', function(event){
-				event.stopImmediatePropagation();
-			})
-
-			// Item drag drop feature
-			.on('dragstart', '.skill', function(event){
-				var index = parseInt(this.getAttribute('data-index'), 10);
-				var skill = getSkillById(index);
-
-				// Can't drag a passive skill (or disabled)
-				if (!skill || !skill.level || !skill.type) {
-					event.stopImmediatePropagation();
-					return false;
-				}
-
-				var img   = new Image();
-				img.src   = this.firstChild.firstChild.src;
-
-				event.originalEvent.dataTransfer.setDragImage( img, 12, 12 );
-				event.originalEvent.dataTransfer.setData('Text',
-					JSON.stringify( window._OBJ_DRAG_ = {
-						type: 'skill',
-						from: 'skilllist',
-						data:  skill
-					})
-				);
-			})
-
-			// Clean up
-			.on('dragend', '.skill', function(){
-				delete window._OBJ_DRAG_;
-			});
-
-		this.draggable();
+		this.draggable(this.ui.find('.titlebar'));
 	};
 
 
@@ -232,7 +149,7 @@ define(function(require)
 		this.ui.toggle();
 
 		if (this.ui.is(':visible')) {
-			this.ui[0].parentNode.appendChild(this.ui[0]);
+			this.focus();
 			_btnLevelUp.detach();
 		}
 	};
@@ -291,7 +208,6 @@ define(function(require)
 			return;
 		}
 
-
 		var sk        = SkillInfo[ skill.SKID ];
 		var levelup   = _btnIncSkill.clone(true);
 		var className = !skill.level ? 'disabled' : skill.type ? 'active' : 'passive';
@@ -342,8 +258,8 @@ define(function(require)
 	 */
 	SkillList.removeSkill = function removeSkill()
 	{
+		// Not implemented by gravity ? server have to send the whole list again ?
 	};
-
 
 
 	/**
@@ -383,7 +299,6 @@ define(function(require)
 
 		this.onUpdateSkill( skill.SKID, skill.level);
 	};
-
 
 
 	/**
@@ -463,6 +378,16 @@ define(function(require)
 
 
 	/**
+	 * Stop event propagation
+	 */
+	function stopPropagation( event )
+	{
+		event.stopImmediatePropagation();
+		return false;
+	}
+
+
+	/**
 	 * Find a skill by it's id
 	 *
 	 * @param {number} skill id
@@ -485,7 +410,7 @@ define(function(require)
 	/**
 	 * Extend SkillList window size
 	 */
-	function onResize( event )
+	function onResize()
 	{
 		var ui      = SkillList.ui;
 		var top     = ui.position().top;
@@ -519,14 +444,12 @@ define(function(require)
 		_Interval = setInterval(resizing, 30);
 
 		// Stop resizing on left click
-		jQuery(window).one('mouseup', function(event){
+		jQuery(window).on('mouseup.resize', function(event){
 			if (event.which === 1) {
 				clearInterval(_Interval);
+				jQuery(window).off('mouseup.resize');
 			}
 		});
-
-		event.stopImmediatePropagation();
-		return false;
 	}
 
 
@@ -545,6 +468,113 @@ define(function(require)
 			width:  width  * 32,
 			height: height * 32
 		});
+	}
+
+
+	/**
+	 * Closing window
+	 */
+	function onClose()
+	{
+		SkillList.ui.hide();
+	}
+
+
+	/**
+	 * Request to upgrade a skill
+	 */
+	function onRequestSkillUp()
+	{
+		var index = this.parentNode.parentNode.getAttribute('data-index');
+		SkillList.onIncreaseSkill(
+			parseInt(index, 10)
+		);
+	}
+
+
+	/**
+	 * Request to use a skill
+	 */
+	function onRequestUseSkill()
+	{
+		var main  = jQuery(this).parent();
+
+		if (!main.hasClass('skill')) {
+			main = main.parent();
+		}
+
+		SkillList.useSkillID(parseInt(main.data('index'), 10));
+	}
+
+
+	/**
+	 * Request to get skill info (right click on a skill)
+	 */
+	function onRequestSkillInfo()
+	{
+		var main = jQuery(this).parent();
+		var skill;
+
+		if (!main.hasClass('skill')) {
+			main = main.parent();
+		}
+
+		skill = getSkillById(parseInt(main.data('index'), 10));
+
+		SkillDescription.append();
+		SkillDescription.setSkill(skill.SKID);
+	}
+
+
+	/**
+	 * Focus a skill in the list (background color changed)
+	 */
+	function onSkillFocus()
+	{
+		var main = jQuery(this).parent();
+
+		if (!main.hasClass('skill')) {
+			main = main.parent();
+		}
+
+		SkillList.ui.find('.skill').removeClass('selected');
+		main.addClass('selected');
+	}
+
+
+	/**
+	 * Start to drag a skill (to put it on the hotkey UI ?)
+	 */
+	function onSkillDragStart( event )
+	{
+		var index = parseInt(this.getAttribute('data-index'), 10);
+		var skill = getSkillById(index);
+
+		// Can't drag a passive skill (or disabled)
+		if (!skill || !skill.level || !skill.type) {
+			return stopPropagation(event);
+		}
+
+		var img   = new Image();
+		img.src   = this.firstChild.firstChild.src;
+
+		event.originalEvent.dataTransfer.setDragImage( img, 12, 12 );
+		event.originalEvent.dataTransfer.setData('Text',
+			JSON.stringify( window._OBJ_DRAG_ = {
+				type: 'skill',
+				from: 'skilllist',
+				data:  skill
+			})
+		);
+	}
+
+
+	/**
+	 * Stop the drag drop action, clean up
+	 */
+	function onSkillDragEnd()
+	{
+		delete window._OBJ_DRAG_;
 	}
 
 

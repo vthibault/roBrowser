@@ -88,135 +88,36 @@ define(function(require)
 	Storage.init = function Init()
 	{
 		// Bind buttons
-		this.ui.find('.tabs button').mousedown(switchTab);
+		this.ui.find('.tabs button').mousedown(onSwitchTab);
 		this.ui.find('.footer .extend').mousedown(onResize);
 		this.ui.find('.footer .close').click(this.onClosePressed.bind(this));
 
-		// drag, drop items
-		this.ui.on('drop', onDrop);
-		this.ui.on('dragover', function(event){
-			event.stopImmediatePropagation();
-			return false;
-		});
-
-		var overlay = this.ui.find('.overlay');
-
-		this.ui.find('.container .content')
-
-			// Scroll feature should block at each line
-			.on('mousewheel DOMMouseScroll', onScroll)
-
-			// Title feature
-			.on('mouseover', '.item', function(){
-				var idx = parseInt( this.getAttribute('data-index'), 10);
-				var i   = getItemIndexById(idx);
-
-				// Not found
-				if (i < 0) {
-					return;
-				}
-
-				// Get back data
-				var item = _list[i];
-				var pos  = jQuery(this).position();
-
-				// Display box
-				overlay.show();
-				overlay.css({top: pos.top-10, left:pos.left+35});
-				overlay.html(DB.getItemName(item) + ' ' + ( item.count || 1 ) + ' ea');
-
-				if (item.IsIdentified) {
-					overlay.removeClass('grey');
-				}
-				else {
-					overlay.addClass('grey');
-				}
-			})
-
-			// Stop title feature
-			.on('mouseout', '.item', function(){
-				overlay.hide();
-			})
-
-			// Stop drag drop feature
-			.on('mousedown', '.item', function(event){
-				event.stopImmediatePropagation();
-			})
-
-			// Item drag drop feature
-			.on('dragstart', '.item', function(event){
-				// Set image to the drag drop element
-				var img = new Image();
-				var url = this.firstChild.style.backgroundImage.match(/\(([^\)]+)/)[1];
-				url     = url = url.replace(/^\"/, '').replace(/\"$/, ''); // Firefox bug
-				img.src = url;
-
-				event.originalEvent.dataTransfer.setDragImage( img, 12, 12 );
-
-				var index   = parseInt(this.getAttribute('data-index'), 10);
-				var i       = getItemIndexById(index);
-
-				if (i > -1) {
-					event.originalEvent.dataTransfer.setData('Text',
-						JSON.stringify( window._OBJ_DRAG_ = {
-							type: 'item',
-							from: 'storage',
-							data: _list[i]
-						})
-					);
-				}
-
-				// Stop component to be draggable
-				jQuery(window).trigger('mouseup');
-				overlay.hide();
-			})
-
-			// Clean up
-			.on('dragend', '.item', function(){
-				delete window._OBJ_DRAG_;
-			})
-
-			// Right click on item
-			.on('contextmenu', '.item', function(event) {
-				var index   = parseInt(this.getAttribute('data-index'), 10);
-				var i       = getItemIndexById(index);
-
-				if (i > -1) {
-
-					// Don't add the same UI twice, remove it
-					if (ItemInfo.uid === _list[i].ITID) {
-						ItemInfo.remove();
-					}
-
-					// Add ui to window
-					ItemInfo.append();
-					ItemInfo.uid = _list[i].ITID;
-					ItemInfo.setItem( _list[i] );
-				}
-
-				event.stopImmediatePropagation();
-				return false;
-			});
-
-		this.draggable();
-	};
-
-
-	/**
-	 * Apply preferences once append to body
-	 */
-	Storage.onAppend = function onAppend()
-	{
+		// Load tabs
 		Client.loadFile( DB.INTERFACE_PATH + 'basic_interface/tab_itm_ex_0'+ (_preferences.tab+1) +'.bmp', function(data){
 			Storage.ui.find('.tabs').css('backgroundImage', 'url("' + data + '")');
 		});
 
+		// Resize, position
 		resizeHeight(_preferences.height);
-
 		this.ui.css({
 			top:  Math.min( Math.max( 0, _preferences.y), Renderer.height - this.ui.height()),
 			left: Math.min( Math.max( 0, _preferences.x), Renderer.width  - this.ui.width())
 		});
+
+		// drag, drop items
+		this.ui
+			.on('drop',     onDrop)
+			.on('dragover', stopPropagation)
+
+			.find('.container .content')
+				.on('mousewheel DOMMouseScroll', onScroll)
+				.on('mouseover',   '.item',      onItemOver)
+				.on('mouseout',    '.item',      onItemOut)
+				.on('dragstart',   '.item',      onItemDragStart)
+				.on('dragend',     '.item',      onItemDragEnd)
+				.on('contextmenu', '.item',      onItemInfo);
+
+		this.draggable(this.ui.find('.titlebar'));
 	};
 
 
@@ -383,9 +284,19 @@ define(function(require)
 
 
 	/**
+	 * Stop event propagation
+	 */
+	function stopPropagation( event )
+	{
+		event.stopImmediatePropagation();
+		return false;
+	}
+
+
+	/**
 	 * Extend Storage window size
 	 */
-	function onResize( event )
+	function onResize()
 	{
 		var ui         = Storage.ui;
 		var top        = ui.position().top;
@@ -411,16 +322,13 @@ define(function(require)
 		// Start resizing
 		_Interval = setInterval( resizing, 30);
 
-		// Stop resizing
-		jQuery(window).one('mouseup', function(event){
-			// Only on left click
+		// Stop resizing on left click
+		jQuery(window).on('mouseup.resize', function(event){
 			if (event.which === 1) {
 				clearInterval(_Interval);
+				jQuery(window).off('mouseup.resize');
 			}
 		});
-
-		event.stopImmediatePropagation();
-		return false;
 	}
 
 
@@ -440,18 +348,15 @@ define(function(require)
 	/**
 	 * Modify tab, filter display entries
 	 */
-	function switchTab( event )
+	function onSwitchTab()
 	{
 		var idx          = jQuery(this).index();
 		_preferences.tab = idx;
 
 		Client.loadFile(DB.INTERFACE_PATH + 'basic_interface/tab_itm_ex_0'+ (idx+1) +'.bmp', function(data){
 			Storage.ui.find('.tabs').css('backgroundImage', 'url("' + data + '")');
-			filter(idx);
+			requestFilter();
 		});
-
-		event.stopImmediatePropagation();
-		return false;
 	}
 
 
@@ -502,7 +407,7 @@ define(function(require)
 	 * Change tab,
 	 * Update its content
 	 */
-	function filter()
+	function requestFilter()
 	{
 		Storage.ui.find('.container .content').empty();
 		var i, count;
@@ -550,6 +455,116 @@ define(function(require)
 		}
 
 		this.scrollTop = Math.floor(this.scrollTop/32) * 32 - (delta * 32);
+		return false;
+	}
+
+
+	/**
+	 * Mouse over item, display name and informations
+	 */
+	function onItemOver()
+	{
+		var idx = parseInt( this.getAttribute('data-index'), 10);
+		var i   = getItemIndexById(idx);
+
+		// Not found
+		if (i < 0) {
+			return;
+		}
+
+		// Get back data
+		var item    = _list[i];
+		var pos     = jQuery(this).position();
+		var overlay = Storage.ui.find('.overlay');
+
+		// Display box
+		overlay.show();
+		overlay.css({top: pos.top-10, left:pos.left+35});
+		overlay.html(DB.getItemName(item) + ' ' + ( item.count || 1 ) + ' ea');
+
+		if (item.IsIdentified) {
+			overlay.removeClass('grey');
+		}
+		else {
+			overlay.addClass('grey');
+		}
+	}
+
+
+	/**
+	 * Mouse mouve out of an item, hide title description
+	 */
+	function onItemOut()
+	{
+		Storage.ui.find('.overlay').hide();
+	}
+
+
+	/**
+	 * Start dragging an item
+	 */
+	function onItemDragStart( event )
+	{
+		var index   = parseInt(this.getAttribute('data-index'), 10);
+		var i       = getItemIndexById(index);
+
+		if (i === -1) {
+			return;
+		}
+
+		// Set image to the drag drop element
+		var img = new Image();
+		var url = this.firstChild.style.backgroundImage.match(/\(([^\)]+)/)[1];
+		url     = url = url.replace(/^\"/, '').replace(/\"$/, ''); // Firefox bug
+		img.src = url;
+
+		event.originalEvent.dataTransfer.setDragImage( img, 12, 12 );
+		event.originalEvent.dataTransfer.setData('Text',
+			JSON.stringify( window._OBJ_DRAG_ = {
+				type: 'item',
+				from: 'storage',
+				data: _list[i]
+			})
+		);
+
+		onItemOut();
+	}
+
+
+	/**
+	 * Stop the drag/drop on an item
+	 */
+	function onItemDragEnd()
+	{
+		delete window._OBJ_DRAG_;
+	}
+
+
+	/**
+	 * Display item description
+	 *
+	 */
+	function onItemInfo( event )
+	{
+		event.stopImmediatePropagation();
+
+		var index   = parseInt(this.getAttribute('data-index'), 10);
+		var i       = getItemIndexById(index);
+
+		if (i === -1) {
+			return false;
+		}
+
+		// Don't add the same UI twice, remove it
+		if (ItemInfo.uid === _list[i].ITID) {
+			ItemInfo.remove();
+		}
+
+		// Add ui to window
+		ItemInfo.append();
+		ItemInfo.uid = _list[i].ITID;
+		ItemInfo.setItem( _list[i] );
+
 		return false;
 	}
 

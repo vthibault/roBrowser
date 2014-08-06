@@ -37,6 +37,12 @@ define(function(require)
 
 
 	/**
+	 * Mouse can cross this UI
+	 */
+	SkillTargetSelection.mouseMode = UIComponent.MouseMode.CROSS;
+
+
+	/**
 	 * @var {constant}
 	 */
 	SkillTargetSelection.TYPE = {

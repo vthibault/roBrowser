@@ -18,6 +18,7 @@ define(function(require)
 	var DB                 = require('DB/DBManager');
 	var StatusConst        = require('DB/Status/StatusState');
 	var EquipLocation      = require('DB/Items/EquipmentLocation');
+	var ItemType           = require('DB/Items/ItemType');
 	var jQuery             = require('Utils/jquery');
 	var Client             = require('Core/Client');
 	var Preferences        = require('Core/Preferences');
@@ -80,46 +81,33 @@ define(function(require)
 	 */
 	Equipment.init = function init()
 	{
+		_ctx = this.ui.find('canvas')[0].getContext('2d');
+
 		// Get button to open skill when level up
-		_btnLevelUp = jQuery('#lvlup_base').detach();
-		_btnLevelUp.click(function(){
-			_btnLevelUp.detach();
+		_btnLevelUp = jQuery('#lvlup_base')
+			.detach()
+			.mousedown(stopPropagation)
+			.click(function(){
+				_btnLevelUp.detach();
+				Equipment.ui.show();
+				Equipment.ui.parent().append(Equipment.ui);
 
-			if (!Equipment.ui.is(':visible')) {
-				Renderer.render(renderCharacter);
-			}
-
-			Equipment.ui.show();
-			Equipment.ui.parent().append(Equipment.ui);
-		});
-
-		_ctx  = this.ui.find('canvas')[0].getContext('2d');
+				if (Equipment.ui.is(':visible')) {
+					Renderer.render(renderCharacter);
+				}
+			});
 
 		// Append WinStats to content (hacked)
 		WinStats.prepare();
 		WinStats.__loaded = true;
 		this.ui.find('.status_component').append(WinStats.ui);
 
-		this.draggable();
-
 		// Don't activate drag drop when clicking on buttons
-		this.ui.find('.titlebar .base').mousedown(function( event ){
-			event.stopImmediatePropagation();
-		});
-
-		// Bind events
-		this.ui.find('.titlebar .mini').click(function(){
-			Equipment.ui.find('.panel').toggle();
-		});
-
-		this.ui.find('.titlebar .close').click(function(){
-			Equipment.ui.hide();
-			return false;
-		});
+		this.ui.find('.titlebar .base').mousedown(stopPropagation);
+		this.ui.find('.titlebar .mini').click(function(){ Equipment.ui.find('.panel').toggle(); });
+		this.ui.find('.titlebar .close').click(function(){ Equipment.ui.hide(); });
 
 		this.ui.find('.removeOption').click(this.onRemoveOption);
-
-		// Show Status ?
 		this.ui.find('.view_status').mousedown(toggleStatus);
 		this.ui.find('.show_equip').mousedown(toggleEquip);
 
@@ -130,71 +118,12 @@ define(function(require)
 
 		// Bind items
 		this.ui.find('.content')
+			.on('contextmenu', '.item',  onEquipmentInfo)
+			.on('dblclick',    '.item',  onEquipmentUnEquip)
+			.on('mouseover',   'button', onEquipmentOver)
+			.on('mouseout',    'button', onEquipmentOut);
 
-			// Right click on item
-			.on('contextmenu', '.item', function(event) {
-				var index   = parseInt(this.getAttribute('data-index'), 10);
-				var item    = _list[index];
-
-				if (item) {
-
-					// Don't add the same UI twice, remove it
-					if (ItemInfo.uid === item.ITID) {
-						ItemInfo.remove();
-					}
-
-					// Add ui to window
-					else {
-						ItemInfo.append();
-						ItemInfo.uid =  item.ITID;
-						ItemInfo.setItem( item );
-					}
-				}
-
-				event.stopImmediatePropagation();
-				return false;
-			})
-
-			// Want to unequip
-			.on('dblclick', '.item', function() {
-				var index   = parseInt(this.getAttribute('data-index'), 10);
-				Equipment.onUnEquip( index );
-				Equipment.ui.find('.overlay').hide();
-			})
-
-			// Stop drag drop feature
-			.on('mousedown', '.item', function(event){
-				event.stopImmediatePropagation();
-			})
-
-			// Title feature
-			.on('mouseover', 'button', function(){
-				var idx  = parseInt( this.parentNode.getAttribute('data-index'), 10);
-				var item = _list[idx];
-
-				if (!item) {
-					return;
-				}
-
-				// Get back data
-				var overlay = Equipment.ui.find('.overlay');
-				var pos     = jQuery(this).position();
-
-				// Possible jquery error
-				if (!pos.top && !pos.left) {
-					return;
-				}
-
-				// Display box
-				overlay.show();
-				overlay.css({top: pos.top-22, left:pos.left-22});
-				overlay.html(DB.getItemName(item));
-			})
-
-			// Stop title feature
-			.on('mouseout', 'button', function(){
-				Equipment.ui.find('.overlay').hide();
-			});
+		this.draggable(this.ui.find('.titlebar'));
 	};
 
 
@@ -267,13 +196,10 @@ define(function(require)
 		if (this.ui.is(':visible')) {
 			Renderer.render(renderCharacter);
 			_btnLevelUp.detach();
-			this.ui[0].parentNode.appendChild(this.ui[0]);
+			this.focus();
 		}
 		else {
 			Renderer.stop(renderCharacter);
-
-			// Fix Mouse.intersect bug
-			this.ui.trigger('mouseleave');
 		}
 	};
 
@@ -302,7 +228,7 @@ define(function(require)
 	{
 		_showEquip = on;
 
-		Client.loadFile( DB.INTERFACE_PATH + 'checkbox_' + ( on ? '1' : '0' ) + '.bmp', function(data){
+		Client.loadFile( DB.INTERFACE_PATH + 'checkbox_' + (on ? '1' : '0') + '.bmp', function(data){
 			Equipment.ui.find('.show_equip').css('backgroundImage', 'url(' + data + ')');
 		});
 	};
@@ -367,6 +293,15 @@ define(function(require)
 	};
 
 
+	/**
+	 * Stop an event to propagate
+	 */
+	function stopPropagation( event )
+	{
+		event.stopImmediatePropagation();
+		return false;
+	}
+
 
 	/**
 	 * Display or not status window
@@ -380,10 +315,8 @@ define(function(require)
 		status.toggle();
 
 		Client.loadFile( DB.INTERFACE_PATH + 'basic_interface/view' + state + '.bmp', function(data){
-			self.style.backgroundImage = 'url(' + data + ')';
+			self.css('backgroundImage', 'url(' + data + ')');
 		});
-
-		return false;
 	}
 
 
@@ -393,7 +326,6 @@ define(function(require)
 	function toggleEquip()
 	{
 		Equipment.onConfigUpdate( 0, !_showEquip ? 1 : 0 );
-		return false;
 	}
 
 
@@ -518,9 +450,9 @@ define(function(require)
 			if (data.type === 'item') {
 				item = data.data;
 
-				// Only for TYPE.WEAPON and TYPE.EQUIP
-				if ((item.type ===  4 || item.type === 5 || item.type === 10) && item.IsIdentified && !item.IsDamaged) {
-					selector = getSelectorFromLocation( 'location' in item ? item.location : item.WearLocation );
+				if ((item.type === ItemType.WEAPON || item.type === ItemType.EQUIP || item.type === ItemType.AMMO) &&
+				    item.IsIdentified && !item.IsDamaged) {
+					selector = getSelectorFromLocation( 'location' in item ? item.location : item.WearLocation);
 					ui       = Equipment.ui.find(selector);
 
 					Client.loadFile( DB.INTERFACE_PATH + 'basic_interface/item_invert.bmp', function(data){
@@ -540,11 +472,10 @@ define(function(require)
 	 */
 	function onDragLeave( event )
 	{
-		Equipment.ui.find('td').css('backgroundImage','none');
+		Equipment.ui.find('td').css('backgroundImage', 'none');
 		event.stopImmediatePropagation();
 		return false;
 	}
-
 
 
 	/**
@@ -565,15 +496,90 @@ define(function(require)
 		if (data && data.type === 'item') {
 			item = data.data;
 
-			// Only for TYPE.WEAPON and TYPE.EQUIP
-			if ((item.type ===  4 || item.type === 5 || item.type === 10 ) && item.IsIdentified && !item.IsDamaged) {
-				Equipment.ui.find('td').css('backgroundImage','none');
+			if ((item.type === ItemType.WEAPON || item.type === ItemType.EQUIP || item.type === ItemType.AMMO) &&
+			    item.IsIdentified && !item.IsDamaged) {				Equipment.ui.find('td').css('backgroundImage','none');
 				Equipment.onEquipItem( item.index, 'location' in item ? item.location : item.WearState );
 			}
 		}
 
 		event.stopImmediatePropagation();
 		return false;
+	}
+
+
+	/**
+	 * Right click on an item
+	 */
+	function onEquipmentInfo( event )
+	{
+		var index = parseInt(this.getAttribute('data-index'), 10);
+		var item  = _list[index];
+
+		if (item) {
+
+			// Don't add the same UI twice, remove it
+			if (ItemInfo.uid === item.ITID) {
+				ItemInfo.remove();
+			}
+
+			// Add ui to window
+			else {
+				ItemInfo.append();
+				ItemInfo.uid = item.ITID;
+				ItemInfo.setItem(item);
+			}
+		}
+
+		event.stopImmediatePropagation();
+		return false;
+	}
+
+
+	/**
+	 * Double click on an equipment to remove it
+	 */
+	function onEquipmentUnEquip()
+	{
+		var index = parseInt(this.getAttribute('data-index'), 10);
+		Equipment.onUnEquip( index );
+		Equipment.ui.find('.overlay').hide();
+	}
+
+
+	/**
+	 * When mouse is over an equipment, display the item name
+	 */
+	function onEquipmentOver()
+	{
+		var idx  = parseInt( this.parentNode.getAttribute('data-index'), 10);
+		var item = _list[idx];
+
+		if (!item) {
+			return;
+		}
+
+		// Get back data
+		var overlay = Equipment.ui.find('.overlay');
+		var pos     = jQuery(this).position();
+
+		// Possible jquery error
+		if (!pos.top && !pos.left) {
+			return;
+		}
+
+		// Display box
+		overlay.show();
+		overlay.css({top: pos.top-22, left:pos.left-22});
+		overlay.html(DB.getItemName(item));
+	}
+
+
+	/**
+	 * Remove the item name
+	 */
+	function onEquipmentOut()
+	{
+		Equipment.ui.find('.overlay').hide();
 	}
 
 

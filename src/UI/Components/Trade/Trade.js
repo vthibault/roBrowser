@@ -68,80 +68,21 @@ define(function(require)
 		this.ui.find('.trade.enabled').click(onTrade.bind(this));
 		this.ui.find('.cancel').click(onCancel.bind(this));
 
-		this.ui.on('mousedown', '.disabled', function(event){
-			event.stopImmediatePropagation();
-			return false;
-		});
+		this.ui
+			.on('mousedown', '.disabled', stopPropagation)
+			.on('drop',     onDrop)
+			.on('dragover', stopPropagation);
 
-		// drag, drop items
-		this.ui.on('drop',     onDrop);
-		this.ui.on('dragover', function(event){
-			event.stopImmediatePropagation();
-			return false;
-		});
-
-		// Avoid drag and drop on input
-		this.ui.find('.zeny.send').mousedown(function(event){
-			event.stopImmediatePropagation();
+		this.ui.find('.zeny.send').mousedown(function(){
 			this.select();
 		});
 
-		var overlay = this.ui.find('.overlay');
-
 		this.ui.find('.box')
+			.on('mouseover',   '.item', onItemOver)
+			.on('mouseout',    '.item', onItemOut)
+			.on('contextmenu', '.item', onItemInfo);
 
-			// Title feature
-			.on('mouseover', '.item', function(){
-				var idx  = parseInt( this.getAttribute('data-index'), 10);
-				var item = this.parentNode.className.match(/send/i) ? _send[idx] : _recv[idx];
-				var $e   = jQuery(this);
-				var pos  = $e.parent().position();
-				pos.left += $e.position().left;
-				pos.top  += $e.position().top;
-
-				// Display box
-				overlay.show();
-				overlay.css({top: pos.top+5, left:pos.left+30});
-				overlay.html(DB.getItemName(item));
-
-				if (item.IsIdentified) {
-					overlay.removeClass('grey');
-				}
-				else {
-					overlay.addClass('grey');
-				}
-			})
-
-			// Stop title feature
-			.on('mouseout', '.item', function(){
-				overlay.hide();
-			})
-
-			// Stop drag drop feature
-			.on('mousedown', '.item', function(event){
-				event.stopImmediatePropagation();
-			})
-
-			// Right click on item
-			.on('contextmenu', '.item', function(event) {
-				var idx  = parseInt( this.getAttribute('data-index'), 10);
-				var item = this.parentNode.className.match(/send/i) ? _send[idx] : _recv[idx];
-
-				// Don't add the same UI twice, remove it
-				if (ItemInfo.uid === item.ITID) {
-					ItemInfo.remove();
-				}
-
-				// Add ui to window
-				ItemInfo.append();
-				ItemInfo.uid = item.ITID;
-				ItemInfo.setItem(item);
-
-				event.stopImmediatePropagation();
-				return false;
-			});
-
-		this.draggable();
+		this.draggable(this.ui.find('.titlebar'));
 	};
 
 
@@ -308,11 +249,27 @@ define(function(require)
 		this.ui.find('.box.' + element).addClass('disabled');
 
 		if (element === 'send') {
-			this.ui.find('.ok.disabled, .trade.enabled').show();
-			this.ui.find('.ok.enabled, .trade.disabled').hide();
+			this.ui.find('.ok.disabled').show();
+			this.ui.find('.ok.enabled').hide();
 			this.ui.find('.zeny.send').addClass('disabled').attr('disabled', true);
 		}
+
+		// Can conclude
+		if (this.ui.find('.box.recv.disabled').is(':visible') && this.ui.find('.box.send.disabled').is(':visible')) {
+			this.ui.find('.trade.enabled').show();
+			this.ui.find('.trade.disabled').hide();
+		}
 	};
+
+
+	/**
+	 * Stop event propagation
+	 */
+	function stopPropagation( event )
+	{
+		event.stopImmediatePropagation();
+		return false;
+	}
 
 
 	/**
@@ -393,6 +350,74 @@ define(function(require)
 
 		onRequestAddItem(item.index, 1);
 		return false;
+	}
+
+
+	/**
+	 * When mouse is over an item, show title
+	 */
+	function onItemOver()
+	{
+		var idx  = parseInt( this.getAttribute('data-index'), 10);
+		var item = this.parentNode.className.match(/send/i) ? _send[idx] : _recv[idx];
+
+		if (!item) {
+			return;
+		}
+
+		var $e      = jQuery(this);
+		var pos     = $e.parent().position();
+		var overlay = Trade.ui.find('.overlay');
+
+		pos.left += $e.position().left;
+		pos.top  += $e.position().top;
+
+		// Display box
+		overlay.show();
+		overlay.css({top: pos.top+5, left:pos.left+30});
+		overlay.html(DB.getItemName(item));
+
+		if (item.IsIdentified) {
+			overlay.removeClass('grey');
+		}
+		else {
+			overlay.addClass('grey');
+		}
+	}
+
+
+	/**
+	 * Hide the item title when mouse is not over anymore
+	 */
+	function onItemOut()
+	{
+		Trade.ui.find('.overlay').hide();
+	}
+
+
+	/**
+	 * Display ItemInfo UI
+	 */
+	function onItemInfo( event )
+	{
+		var idx  = parseInt( this.getAttribute('data-index'), 10);
+		var item = this.parentNode.className.match(/send/i) ? _send[idx] : _recv[idx];
+
+		if (!item) {
+			return stopPropagation(event);
+		}
+
+		// Don't add the same UI twice, remove it
+		if (ItemInfo.uid === item.ITID) {
+			ItemInfo.remove();
+		}
+
+		// Add ui to window
+		ItemInfo.append();
+		ItemInfo.uid = item.ITID;
+		ItemInfo.setItem(item);
+
+		return stopPropagation(event);
 	}
 
 

@@ -108,6 +108,9 @@ define(function(require)
 		this.ui.css('top', (Renderer.height - ( this.ui.find('.content').height() + 53 )) + 'px');
 		this.draggable( this.ui.find('.input') );
 
+		// Sorry for this un-documented code (see UIComponent for more informations)
+		this.__mouseStopBlock = this.ui.find('.input');
+
 		// Setting chatbox scrollbar
 		Client.loadFiles([DB.INTERFACE_PATH + 'basic_interface/dialscr_down.bmp', DB.INTERFACE_PATH + 'basic_interface/dialscr_up.bmp'], function( down, up ){
 			jQuery('style:first').append([
