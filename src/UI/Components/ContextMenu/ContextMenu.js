@@ -24,20 +24,7 @@ define(function(require)
 	/**
 	 * Create Component
 	 */
-	var ContextMenu = new UIComponent( 'ContextMenu', '<div id="ContextMenu"/>', cssText);
-
-
-	/**
-	 * Overlay, click on it and contextmenu will disapear
-	 */
-	var _overlay = jQuery('<div/>').css({
-		position: 'fixed',
-		top:    0,
-		left:   0,
-		zIndex: 999,
-		width: '100%',
-		height:'100%'
-	});
+	var ContextMenu = new UIComponent( 'ContextMenu', '<div id="ContextMenu"><div class="menu"/></div>', cssText);
 
 
 	/**
@@ -45,11 +32,11 @@ define(function(require)
 	 */
 	ContextMenu.init = function init()
 	{
-		_overlay.mousedown(function(){
+		this.ui.mousedown(function(){
 			ContextMenu.remove();
 		});
 
-		this.ui.on('mousedown', 'div', function(event){
+		this.ui.find('.menu').on('mousedown', 'div', function(event){
 			event.stopImmediatePropagation();
 			return false;
 		});
@@ -61,11 +48,9 @@ define(function(require)
 	 */
 	ContextMenu.onAppend = function onAppend()
 	{
-		this.ui.css('zIndex', 1000);
-		_overlay.appendTo('body');
-
-		var width  = this.ui.width();
-		var height = this.ui.height();
+		var menu   = this.ui.find('.menu');
+		var width  = menu.width();
+		var height = menu.height();
 		var x      = Mouse.screen.x;
 		var y      = Mouse.screen.y;
 
@@ -77,7 +62,7 @@ define(function(require)
 			y = Mouse.screen.y - height;
 		}
 
-		this.ui.css({ top:  y, left: x });
+		menu.css({ top:y, left:x });
 	};
 
 
@@ -86,8 +71,7 @@ define(function(require)
 	 */
 	ContextMenu.onRemove = function onRemove()
 	{
-		_overlay.detach();
-		this.ui.empty();
+		this.ui.find('.menu').empty();
 	};
 
 
@@ -99,7 +83,7 @@ define(function(require)
 	 */
 	ContextMenu.addElement = function addElement(text, callback)
 	{
-		this.ui.append(jQuery('<div/>').text(text).click(function(){
+		this.ui.find('.menu').append(jQuery('<div/>').text(text).click(function(){
 			ContextMenu.remove();
 			callback();
 		}));
@@ -111,7 +95,7 @@ define(function(require)
 	 */
 	ContextMenu.nextGroup = function nextGroup()
 	{
-		this.ui.append('<hr/>');
+		this.ui.find('.menu').append('<hr/>');
 	};
 
 

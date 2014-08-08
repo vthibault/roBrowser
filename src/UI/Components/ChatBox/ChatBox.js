@@ -157,6 +157,7 @@ define(function(require)
 			var names = _historyNickName.list;
 			var i, count = names.length;
 			var pos = jQuery(this).offset();
+			var ui = ContextMenu.ui.find('.menu');
 
 			if (!count) {
 				ChatBox.addText( DB.getMessage(192), ChatBox.TYPE.ERROR);
@@ -171,9 +172,9 @@ define(function(require)
 			}
 
 			ContextMenu.addElement('', onPrivateMessageUserSelection(''));
-			ContextMenu.ui.css({
-				top:  pos.top - ContextMenu.ui.height() - 5,
-				left: pos.left - ContextMenu.ui.width() - 5
+			ui.css({
+				top:  pos.top - ui.height() - 5,
+				left: pos.left - ui.width() - 5
 			});
 		}).mousedown(function(event){
 			event.stopImmediatePropagation();
@@ -183,6 +184,7 @@ define(function(require)
 		// Send message to...
 		this.ui.find('.input .filter').click(function(){
 			var pos = jQuery(this).offset();
+			var ui = ContextMenu.ui.find('.menu');
 
 			ContextMenu.remove();
 			ContextMenu.append();
@@ -191,9 +193,9 @@ define(function(require)
 			ContextMenu.addElement(DB.getMessage(86),  onChangeTargetMessage(ChatBox.TYPE.PARTY));
 			ContextMenu.addElement(DB.getMessage(437), onChangeTargetMessage(ChatBox.TYPE.GUILD));
 
-			ContextMenu.ui.css({
-				top:  pos.top - ContextMenu.ui.height() - 5,
-				left: pos.left - ContextMenu.ui.width() + 25
+			ui.css({
+				top:  pos.top - ui.height() - 5,
+				left: pos.left - ui.width() + 25
 			});
 		}).mousedown(function(event){
 			event.stopImmediatePropagation();
