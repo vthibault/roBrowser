@@ -47,6 +47,7 @@ define(function( require )
 	var ChatRoomCreate   = require('UI/Components/ChatRoomCreate/ChatRoomCreate');
 	var Emoticons        = require('UI/Components/Emoticons/Emoticons');
 	var SkillList        = require('UI/Components/SkillList/SkillList');
+	var PartyFriends     = require('UI/Components/PartyFriends/PartyFriends');
 
 
 	/**
@@ -135,13 +136,14 @@ define(function( require )
 		require('./MapEngine/Item').call();
 		require('./MapEngine/PrivateMessage').call();
 		require('./MapEngine/Storage').call();
-		require('./MapEngine/Group').call();
+		require('./MapEngine/Group').init();
 		require('./MapEngine/Guild').call();
 		require('./MapEngine/Skill').call();
 		require('./MapEngine/ChatRoom').call();
 		require('./MapEngine/Pet').call();
 		require('./MapEngine/Store').call();
 		require('./MapEngine/Trade').call();
+		require('./MapEngine/Friends').init();
 	}
 
 
@@ -250,6 +252,7 @@ define(function( require )
 			ChatRoomCreate.append();
 			Emoticons.append();
 			SkillList.append();
+			PartyFriends.append();
 
 			// Map loaded
 			Network.sendPacket(

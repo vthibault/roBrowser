@@ -401,7 +401,7 @@ define(function( require )
 		var hover_uri = null;
 
 		// text
-		if (msgId) {
+		if (msgId && DB.getMessage(msgId, '')) {
 			$node.text( DB.getMessage(msgId, '') );
 		}
 

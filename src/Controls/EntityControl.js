@@ -21,6 +21,7 @@ define(function( require )
 	var Preferences = require('Preferences/Controls');
 	var Camera      = require('Renderer/Camera');
 	var Session     = require('Engine/SessionStorage');
+	var Friends     = require('Engine/MapEngine/Friends');
 	var PACKET      = require('Network/PacketStructure');
 	var Network     = require('Network/NetworkManager');
 	var Cursor      = require('UI/CursorManager');
@@ -232,9 +233,15 @@ define(function( require )
 				ContextMenu.addElement( DB.getMessage(87).replace('%s', this.display.name), function(){
 					Trade.reqExchange(entity.GID, entity.display.name);
 				});
-				//ContextMenu.nextGroup();
+
+				ContextMenu.nextGroup();
 				//ContextMenu.addElement( DB.getMessage(360), openPrivateMessageWindow);
-				//ContextMenu.addElement( DB.getMessage(358), sendFriendInvitation);
+				if (!Friends.isFriend(this.display.name)) {
+					ContextMenu.addElement( DB.getMessage(358), function(){
+						Friends.addFriend(entity.display.name);
+					});
+				}
+
 				//ContextMenu.nextGroup();
 				//ContextMenu.addElement( DB.getMessage(315), blockUserPrivateMessage);
 				break;
