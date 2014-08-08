@@ -38,6 +38,12 @@ define(function(require)
 
 
 	/**
+	 * @var {boolean} do not focus this UI
+	 */
+	ItemObtain.needFocus = false;
+
+
+	/**
 	 * @var {TimeOut} timer
 	 */
 	var _timer = 0;

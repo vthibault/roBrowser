@@ -36,6 +36,12 @@ define(function( require )
 
 
 	/**
+	 * @var {boolean} do not focus this UI
+	 */
+	StatusIcons.needFocus = false;
+
+
+	/**
 	 * @var {Array} Informations waiting for UI to be ready
 	 */
 	var _stack = [];

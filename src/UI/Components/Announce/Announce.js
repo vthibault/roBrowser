@@ -35,6 +35,12 @@ define(function(require)
 
 
 	/**
+	 * @var {boolean} do not focus this UI
+	 */
+	Announce.needFocus = false;
+
+
+	/**
 	 * @var {TimeOut} timer
 	 */
 	var _timer = 0;

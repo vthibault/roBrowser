@@ -41,6 +41,12 @@ define(function(require)
 
 
 	/**
+	 * @var {boolean} do not focus this UI
+	 */
+	MiniMap.needFocus = false;
+
+
+	/**
 	 * @var {Preferences}
 	 */
 	var _preferences = Preferences.get('MiniMap', {
