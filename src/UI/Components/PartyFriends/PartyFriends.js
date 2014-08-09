@@ -161,7 +161,7 @@ define(function(require)
 					this.ui.toggle();
 				}
 				else {
-					_preferences.friend = true;
+					_preferences.friend = false;
 					onChangeTab();
 					this.ui.show();
 				}
@@ -176,7 +176,7 @@ define(function(require)
 					this.ui.toggle();
 				}
 				else {
-					_preferences.friend = false;
+					_preferences.friend = true;
 					onChangeTab();
 					this.ui.show();
 				}
@@ -205,7 +205,7 @@ define(function(require)
 		for (i = 0; i < count; i++) {
 			_friends[i] = friends[i];
 			ui.append(
-				'<div class="node">' +
+				'<div class="node'+ (friends[i].state === 0 ? ' online' : '') +'">' +
 					'<span class="name">' + friends[i].Name + '</span>' +
 				'</div>'
 			);
@@ -226,13 +226,15 @@ define(function(require)
 	{
 		var node = this.ui.find('.content .friend .node:eq(' + index + ')');
 
-		if (!state) {
+		if (state) {
 			node.css('backgroundImage', '');
+			ChatBox.addText( DB.getMessage(1042).replace('%s', _friends[index].Name), ChatBox.TYPE.BLUE);
 			return;
 		}
 
+		ChatBox.addText( DB.getMessage(1041).replace('%s', _friends[index].Name), ChatBox.TYPE.BLUE);
 		Client.loadFile(DB.INTERFACE_PATH + 'basic_interface/grp_online.bmp', function(url){
-			node.css('backgroundImage', url);
+			node.css('backgroundImage', 'url(' + url + ')');
 		});
 	};
 
@@ -247,23 +249,27 @@ define(function(require)
 	{
 		// Add it
 		if (!_friends[idx]) {
-			_friends[idx] = friend;
+			_friends[idx] = {};
 
 			this.ui.find('.content .friend').append(
 				'<div class="node">' +
-					'<span class="name">' + friend.Name + '</span>' +
+					'<span class="name"></span>' +
 				'</div>'
 			);
 
 			this.ui.find('.friendcount').text(_friends.length);
-			return;
 		}
 
 		_friends[idx].Name = friend.Name;
 		_friends[idx].GID  = friend.GID;
 		_friends[idx].AID  = friend.AID;
 
-		this.ui.find('.content .friend .node:eq('+ index +') .name').text(friend.Name);
+		var node = this.ui.find('.content .friend .node:eq('+ idx +')');
+		node.find('.name').text(friend.Name);
+
+		Client.loadFile(DB.INTERFACE_PATH + 'basic_interface/grp_online.bmp', function(url){
+			node.css('backgroundImage', 'url(' + url + ')');
+		});
 	};
 
 
@@ -293,22 +299,17 @@ define(function(require)
 	PartyFriends.setParty = function setParty(name, members)
 	{
 		this.ui.find('.partyname').text('('+name+')');
+		this.ui.find('.content .party').empty();
+		Session.isPartyLeader = false;
+
+		this.ui.find('.party.create').hide();
+		this.ui.find('.party.leave').show();
 
 		var i, count = members.length;
-		var ui = this.ui.find('.content .party');
 
-		_party.length = count;
-		ui.empty();
-
+		_party.length = 0;
 		for (i = 0; i < count; i++) {
-			_party[i] = members[i];
-			ui.append(
-				'<div class="node'+ (members[i].role === 0 ? ' leader' : '') + (members[i].state === 0 ? ' online' : '') +'">' +
-					'<span class="name">' + members[i].characterName + '</span>' +
-					'<span class="map">(' + members[i].mapName + ')</span>' +
-					'<canvas class="life"></canvas> <span class="hp">0/0</span>' +
-				'</div>'
-			);
+			PartyFriends.addPartyMember(members[i]);
 		}
 
 		_index = -1;
@@ -322,15 +323,66 @@ define(function(require)
 	 */
 	PartyFriends.addPartyMember = function addPartyMember( player )
 	{
-		_party.push(player);
+		var role = player.role || player.Role || 0;
+		var i, count = _party.length;
+		var node, texture;
 
-		this.ui.find('.content .party').append(
-			'<div class="node'+ (members[i].Role === 0 ? ' leader' : '') + (members[i].state === 0 ? ' online' : '') +'">' +
-				'<span class="name">' + members[i].characterName + '</span>' +
-				'<span class="map">(' + members[i].mapName + ')</span>' +
-				'<canvas class="life"></canvas> <span class="hp">0/0</span>' +
-			'</div>'
-		);
+		// Check if we are the leader
+		if (player.AID === Session.AID) {
+			Session.isPartyLeader = (role === 0);
+			if (Session.isPartyLeader) {
+				this.ui.find('.party.add').show();
+			}
+			else {
+				this.ui.find('.party.add').hide();
+			}
+		}
+
+		// Search for duplicates entries
+		for (i = 0; i < count; ++i) {
+			if (_party[i].AID === player.AID) {
+				break;
+			}
+		}
+
+		// Update
+		if (i < count) {
+			node = this.ui.find('.content .party .node:eq('+ i +')');
+			node.removeClass('leader online');
+
+			if (role === 0) {
+				node.addClass('leader');
+			}
+			if (player.state === 0) {
+				node.addClass('online');
+			}
+
+			node.css('backgroundImage', '');
+			node.find('.name').text(player.characterName);
+			node.find('.map').text(DB.getMapName(player.mapName));
+		}
+
+		// Create
+		else {
+			_party.push(player);
+			this.ui.find('.content .party').append(
+				'<div class="node'+ (role === 0 ? ' leader' : '') + (player.state === 0 ? ' online' : '') + (player.AID === Session.AID ? ' self' : '') + '">' +
+					'<span class="name">' + player.characterName + '</span>' +
+					'<span class="map">(' + DB.getMapName(player.mapName) + ')</span>' +
+					'<canvas class="life" width="60" height="5"></canvas> <span class="hp"></span>' +
+				'</div>'
+			);
+
+			node = this.ui.find('.content .party .node:eq('+ i +')');
+		}
+
+		// Add texture
+		texture = role === 0 ? 'grp_leader.bmp' : player.state === 0 ? 'grp_online.bmp' : '';
+		if (texture) {
+			Client.loadFile(DB.INTERFACE_PATH + 'basic_interface/' + texture, function(url){
+				node.css('backgroundImage', 'url(' + url + ')');
+			});
+		}
 	};
 
 
@@ -343,7 +395,13 @@ define(function(require)
 	{
 		if (AID === Session.AID) {
 			_party.length = 0;
-			this.ui.find('.content .party .node').empty();
+
+			this.ui.find('.content .party').empty();
+			this.ui.find('.partyname').text('');
+			this.ui.find('.party.create').show();
+			this.ui.find('.party.leave, .party.add').hide();
+
+			ChatBox.addText( DB.getMessage(84), ChatBox.TYPE.BLUE);
 			return;
 		}
 
@@ -369,6 +427,8 @@ define(function(require)
 	 */
 	PartyFriends.updateMemberLife = function updateMemberLife(AID, canvas, hp, maxhp)
 	{
+		var i, count = _party.length;
+
 		for (i = 0; i < count; ++i) {
 			if (_party[i].AID === AID) {
 				var node = this.ui.find('.content .party .node:eq(' + i + ')');
@@ -431,13 +491,12 @@ define(function(require)
 
 			if (Session.hasParty) {
 				ui.find('.party.create').hide();
-				ui.find('.party.leave').show();
 
-				// TODO: if is leader
-				ui.find('.party.add').show();
+				if (!Session.isPartyLeader) {
+					ui.find('.party.add').hide();
+				}
 			}
 			else {
-				ui.find('.party.create').show();
 				ui.find('.party.add, .party.leave').hide();
 			}
 		}
@@ -452,7 +511,7 @@ define(function(require)
 	 */
 	function onRequestRemoveSelection()
 	{
-		if (_index < 0) {
+		if (_index < 0 || _preferences.lock) {
 			return;
 		}
 
@@ -462,17 +521,9 @@ define(function(require)
 		UIManager.showPromptBox( text, 'ok', 'cancel', function(){
 			if (_preferences.friend) {
 				PartyFriends.onRemoveFriend(_index);
-				//TODO
-				//PartyFriends.ui.find('.friend .node:eq('+ _index +')').remove();
-				//_friends.splice(_index, 1);
-				//_index = -1;
-				//this.ui.find('.friendcount').text(_friends.length);
 			}
 			else {
-				PartyFriends.onExpelMember(_index);
-				PartyFriends.ui.find('.party .node:eq('+ _index +')').remove();
-				_party.splice(_index, 1);
-				_index = -1;
+				PartyFriends.onExpelMember( _party[_index].AID, _party[_index].characterName);
 			}
 		});
 	}
@@ -484,12 +535,18 @@ define(function(require)
 	 */
 	function onRequestPrivateMessage()
 	{
-		if (_index < 0) {
+		if (_index < 0 || _preferences.lock) {
 			return;
 		}
 
-		var target = _preferences.friend ? _friends[_index] : _party[_index];
-		ChatBox.ui.find('.username').val(target.Name);
+		if (_preferences.friend) {
+			ChatBox.ui.find('.username').val(_friends[_index].Name);
+		}
+		else {
+			ChatBox.ui.find('.username').val(_party[_index].characterName);
+		}
+
+		ChatBox.ui.find('.message').select();
 	}
 
 
@@ -498,13 +555,18 @@ define(function(require)
 	 */
 	function onRightClickInfo()
 	{
+		if (_preferences.lock) {
+			return;
+		}
+
+		ContextMenu.remove();
 		ContextMenu.append();
 
 		if (_preferences.friend) {
-			ContextMenu.addElement( DB.getMessage(348), onRequestPrivateMessage);
+			ContextMenu.addElement( DB.getMessage(360), onRequestPrivateMessage);
 
 			if (_friends[_index].GID !== Session.GID) {
-				ContextMenu.addElement( DB.getMessage(341), onRequestRemoveSelection);
+				ContextMenu.addElement( DB.getMessage(351), onRequestRemoveSelection);
 			}
 		}
 		else {
@@ -514,11 +576,12 @@ define(function(require)
 				ContextMenu.addElement( DB.getMessage(2055), onRequestLeaveParty);
 			}
 			else {
-				ContextMenu.addElement( DB.getMessage(348), onRequestPrivateMessage);
+				ContextMenu.addElement( DB.getMessage(360), onRequestPrivateMessage);
 
-				// if leader (TODO)
-				ContextMenu.addElement( DB.getMessage(97),   onRequestRemoveSelection);
-				ContextMenu.addElement( DB.getMessage(1531), onRequestPartyDelegation);
+				if (Session.isPartyLeader) {
+					ContextMenu.addElement( DB.getMessage(97),   onRequestRemoveSelection);
+					ContextMenu.addElement( DB.getMessage(1532), onRequestPartyDelegation);
+				}
 			}
 		}
 	}
@@ -530,6 +593,10 @@ define(function(require)
 	 */
 	function onRequestInformation()
 	{
+		if (_preferences.lock) {
+			return;
+		}
+
 		// Not implemented yet
 		UIManager.showMessageBox( DB.getMessage(191), 'ok');
 	}
@@ -540,6 +607,10 @@ define(function(require)
 	 */
 	function onRequestLeaveParty()
 	{
+		if (_preferences.lock) {
+			return;
+		}
+
 		// Are you sure that you want to leave ?
 		UIManager.showPromptBox( DB.getMessage(357), 'ok', 'cancel', function(){
 			PartyFriends.onRequestLeave();
@@ -553,9 +624,13 @@ define(function(require)
 	 */
 	function onRequestPartyDelegation()
 	{
+		if (_preferences.lock) {
+			return;
+		}
+
 		// Do you want to delegate the real party?
-		UIManager.showPromptBox( DB.getMessage(1532), 'ok', 'cancel', function(){
-			PartyFriends.onRequestChangeLeader(_index);
+		UIManager.showPromptBox( DB.getMessage(1533), 'ok', 'cancel', function(){
+			PartyFriends.onRequestChangeLeader( _party[_index].AID );
 		});
 	}
 

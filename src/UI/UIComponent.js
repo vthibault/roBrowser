@@ -87,6 +87,10 @@ define(function( require )
 	 */
 	UIComponent.prototype.prepare = function prepare()
 	{
+		if (this.__loaded) {
+			return;
+		}
+
 		if (this._htmlText) {
 			this.ui = jQuery(this._htmlText);
 			this.ui.css('zIndex', 50);

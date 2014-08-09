@@ -53,6 +53,10 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.ADD_MEMBER_TO_GROUP,       onPartyMemberJoin );
 		Network.hookPacket( PACKET.ZC.ADD_MEMBER_TO_GROUP2,      onPartyMemberJoin );
 		Network.hookPacket( PACKET.ZC.DELETE_MEMBER_FROM_GROUP,  onPartyMemberLeave );
+
+		PartyUI.onExpelMember         = GroupEngine.onRequestExpel;
+		PartyUI.onRequestChangeLeader = GroupEngine.onRequestChangeLeader;
+		PartyUI.onRequestLeave        = GroupEngine.onRequestLeave;
 	};
 
 
@@ -95,6 +99,8 @@ define(function( require )
 	 */
 	GroupEngine.onRequestInvitation = function onRequestPartyInvitation( AID, pseudo )
 	{
+		ChatBox.addText( pseudo + ' ' + DB.getMessage(2060), ChatBox.TYPE.BLUE);
+
 		var pkt = new PACKET.CZ.REQ_JOIN_GROUP();
 		pkt.AID = AID;
 		pkt.CharName = pseudo;
@@ -308,7 +314,7 @@ define(function( require )
 			};
 		}
 
-		UIManager.showPromptBox( pkt.groupName + DB.getMessage(94), 'ok', 'cancel', onAnswer(1), onAnswer(0) );
+		UIManager.showPromptBox( pkt.groupName + ' ' + DB.getMessage(94), 'ok', 'cancel', onAnswer(1), onAnswer(0) );
 	}
 
 
@@ -339,7 +345,7 @@ define(function( require )
 			case 9: id = 1871; break;
 		}
 
-		ChatBox.addText( DB.getMessage(id).replace('%s', pkt.characterName), ChatBox.TYPE.INFO);
+		ChatBox.addText( DB.getMessage(id).replace('%s', pkt.characterName), color);
 	}
 
 

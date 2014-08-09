@@ -34,6 +34,8 @@ define(function()
 		zeny:        0,
 
 		petId:       0,
-		hasParty:    false
+
+		hasParty:      false,
+		isPartyLeader: false,
 	};
 });

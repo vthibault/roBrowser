@@ -260,6 +260,10 @@ define(function( require )
 			);
 		};
 
+		if (!PartyFriends.__loaded) {
+			PartyFriends.prepare();
+		}
+
 		MapRenderer.setMap( pkt.mapName );
 	}
 

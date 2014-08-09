@@ -2414,9 +2414,9 @@ define(['Utils/BinaryWriter', './PacketVerManager'], function(BinaryWriter, PACK
 		pkt.view.setUint32(ver[4], this.ReqGID, true);
 
 		if (ver[2] === 11) {
-			pkt.view.setInt8(ver[4], this.Result, true);
+			pkt.view.setInt8(ver[5], this.Result, true);
 		} else {
-			pkt.view.setInt32(ver[4], this.Result, true);
+			pkt.view.setInt32(ver[5], this.Result, true);
 		}
 
 		return pkt;

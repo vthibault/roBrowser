@@ -170,6 +170,10 @@ define(function( require )
 			case 'q':
 				getModule('UI/Components/ChatRoom/ChatRoom').remove();
 				return;
+
+			case 'leave':
+				getModule('Engine/MapEngine/Group').onRequestLeave();
+				return;
 		}
 
 

@@ -30,6 +30,7 @@ define(function( require )
 	var ContextMenu = require('UI/Components/ContextMenu/ContextMenu');
 	var Pet         = require('UI/Components/PetInformations/PetInformations');
 	var Trade       = require('UI/Components/Trade/Trade');
+	var getModule   = require;
 
 
 	/**
@@ -211,6 +212,7 @@ define(function( require )
 		switch (this.objecttype) {
 			case Entity.TYPE_PET:
 				if (Session.petId === this.GID) {
+					ContextMenu.remove();
 					ContextMenu.append();
 					ContextMenu.addElement( DB.getMessage(596), Pet.ui.show.bind(Pet.ui)); // check pet status
 					ContextMenu.addElement( DB.getMessage(592), Pet.reqPetFeed);           // Feed pet
@@ -222,10 +224,10 @@ define(function( require )
 
 			case Entity.TYPE_PC:
 				/// TODO: complete it : 
-				/// - check for party leader action (invite)
 				/// - check for guild leader action (invite, ally, ...)
 				/// - check for admin action (kick, mute, ...)
 
+				ContextMenu.remove();
 				ContextMenu.append();
 				//ContextMenu.addElement( DB.getMessage(1362), checkPlayerEquipment);
 
@@ -234,11 +236,19 @@ define(function( require )
 					Trade.reqExchange(entity.GID, entity.display.name);
 				});
 
-				ContextMenu.nextGroup();
 				//ContextMenu.addElement( DB.getMessage(360), openPrivateMessageWindow);
+
 				if (!Friends.isFriend(this.display.name)) {
+					ContextMenu.nextGroup();
 					ContextMenu.addElement( DB.getMessage(358), function(){
 						Friends.addFriend(entity.display.name);
+					});
+				}
+
+				if (Session.hasParty && Session.isPartyLeader) {
+					ContextMenu.nextGroup();
+					ContextMenu.addElement( DB.getMessage(88).replace('%s', this.display.name), function(){
+						getModule('Engine/MapEngine/Group').onRequestInvitation(entity.GID, entity.display.name);
 					});
 				}
 
