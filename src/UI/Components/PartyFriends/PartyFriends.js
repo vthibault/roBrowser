@@ -16,10 +16,12 @@ define(function(require)
 	 * Dependencies
 	 */
 	var DB             = require('DB/DBManager');
+	var jQuery         = require('Utils/jquery');
 	var Preferences    = require('Core/Preferences');
 	var Client         = require('Core/Client');
 	var Renderer       = require('Renderer/Renderer');
 	var Session        = require('Engine/SessionStorage');
+	var Mouse          = require('Controls/MouseEventHandler');
 	var UIManager      = require('UI/UIManager');
 	var UIComponent    = require('UI/UIComponent');
 	var ContextMenu    = require('UI/Components/ContextMenu/ContextMenu');
@@ -58,8 +60,8 @@ define(function(require)
 	var _preferences = Preferences.get('PartyFriends', {
 		x:        200,
 		y:        200,
-	//	width:    7,
-	//	height:   4,
+		width:    12,
+		height:   6,
 		show:     false,
 		friend:   true,
 		lock:     false
@@ -84,6 +86,7 @@ define(function(require)
 		this.ui.find('.remove').mousedown(onRequestRemoveSelection);
 		this.ui.find('.privatemessage').mousedown(onRequestPrivateMessage);
 		this.ui.find('.leave').mousedown(onRequestLeaveParty);
+		this.ui.find('.resize').mousedown(onResize);
 
 		//this.ui.find('.mail').mousedown();
 		//this.ui.find('.info').mousedown();
@@ -117,8 +120,7 @@ define(function(require)
 			this.ui.find('.lock.off').show();
 		}
 
-		// TODO:
-		//this.resize( _preferences.width, _preferences.height );
+		this.resize( _preferences.width, _preferences.height);
 
 		this.ui.css({
 			top:  Math.min( Math.max( 0, _preferences.y), Renderer.height - this.ui.height()),
@@ -137,15 +139,10 @@ define(function(require)
 	 */
 	PartyFriends.onRemove = function onRemove()
 	{
-		// TODO: does the packet is sent at each map-change ?
-		//this.ui.find('.container .content').empty();
-
 		// Save preferences
 		_preferences.show   =  this.ui.is(':visible');
 		_preferences.y      =  parseInt(this.ui.css('top'), 10);
 		_preferences.x      =  parseInt(this.ui.css('left'), 10);
-		//_preferences.width  =  Math.floor( (this.ui.width()  - (23 + 16 + 16 - 30)) / 32 );
-		//_preferences.height =  Math.floor( (this.ui.height() - (31 + 19 - 30     )) / 32 );
 		_preferences.save();
 	};
 
@@ -421,6 +418,28 @@ define(function(require)
 
 
 	/**
+	 * Extend inventory window size
+	 *
+	 * @param {number} width
+	 * @param {number} height
+	 */
+	PartyFriends.resize = function resize( width, height )
+	{
+		width  = Math.min( Math.max(width, 12), 13);
+		height = Math.min( Math.max(height, 6), 12);
+
+		_preferences.width  = width;
+		_preferences.height = height;
+		_preferences.save();
+
+		this.ui.find('.content').css({
+			width:  width  * 20,
+			height: height * 20
+		});
+	};
+
+
+	/**
 	 * Update player life in interface
 	 *
 	 * @param {number} account id
@@ -443,6 +462,53 @@ define(function(require)
 			}
 		}
 	};
+
+
+	/**
+	 * Resizing UI
+	 */
+	function onResize()
+	{
+		var ui      = PartyFriends.ui;
+		var content = ui.find('.content');
+		var top     = ui.position().top;
+		var left    = ui.position().left;
+		var lastWidth  = 0;
+		var lastHeight = 0;
+		var _Interval;
+
+		function resizing()
+		{
+			var extraX = -20;
+			var extraY =  25 + 21;
+
+			var w = Math.floor( (Mouse.screen.x - left - extraX) / 20 );
+			var h = Math.floor( (Mouse.screen.y - top  - extraY) / 20 );
+
+			// Maximum and minimum window size
+			w = Math.min( Math.max(w, 12), 13);
+			h = Math.min( Math.max(h,  6), 12);
+
+			if (w === lastWidth && h === lastHeight) {
+				return;
+			}
+
+			PartyFriends.resize( w, h );
+			lastWidth  = w;
+			lastHeight = h;
+		}
+
+		// Start resizing
+		_Interval = setInterval( resizing, 30);
+
+		// Stop resizing on left click
+		jQuery(window).on('mouseup.resize', function(event){
+			if (event.which === 1) {
+				clearInterval(_Interval);
+				jQuery(window).off('mouseup.resize');
+			}
+		});
+	}
 
 
 	/**
