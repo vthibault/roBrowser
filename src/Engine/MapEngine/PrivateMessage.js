@@ -17,6 +17,7 @@ define(function( require )
 	 * Load dependencies
 	 */
 	var DB            = require('DB/DBManager');
+	var Friends       = require('Engine/MapEngine/Friends');
 	var Network       = require('Network/NetworkManager');
 	var PACKET        = require('Network/PacketStructure');
 	var ChatBox       = require('UI/Components/ChatBox/ChatBox');
@@ -29,7 +30,8 @@ define(function( require )
 	 */
 	function onPrivateMessage( pkt )
 	{
-		ChatBox.addText('(From '+ pkt.sender +') : ' + pkt.msg.replace(/\|\d{2}/, ''), ChatBox.TYPE.PRIVATE );
+		var prefix = Friends.isFriend(pkt.sender) ? DB.getMessage(102) : 'From';
+		ChatBox.addText('[ '+ prefix +' '+ pkt.sender +' ] : ' + pkt.msg.replace(/\|\d{2}/, ''), ChatBox.TYPE.PRIVATE );
 		ChatBox.saveNickName(pkt.sender);
 	}
 
@@ -46,7 +48,9 @@ define(function( require )
 		var msg  = ChatBox.PrivateMessageStorage.msg;
 		
 		if (pkt.result === 0) {
-			ChatBox.addText( '(To '+ user +') : ' + msg, ChatBox.TYPE.PRIVATE );
+			if (user && msg) {
+				ChatBox.addText( '[ To '+ user +' ] : ' + msg, ChatBox.TYPE.PRIVATE );
+			}
 		}
 		else {
 			ChatBox.addText( '('+ user +') : ' + DB.getMessage(147 + pkt.result),  ChatBox.TYPE.PRIVATE );

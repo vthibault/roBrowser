@@ -133,6 +133,27 @@ define(function( require )
 
 
 	/**
+	 * Say hi to all your friends
+	 */
+	FriendEngine.sayHi = function sayHi()
+	{
+		var i, count = _friends.length;
+		var pkt = new PACKET.CZ.WHISPER();
+
+		pkt.msg = '(Hi) *^_^*';
+
+		for (i = 0; i < count; ++i) {
+			if (_friends[i].State === 0) {
+				pkt.receiver = _friends[i].Name;
+				Network.sendPacket(pkt);
+			}
+		}
+
+		ChatBox.addText( '[ To Friends ] : ' + pkt.msg, ChatBox.TYPE.PRIVATE );
+	};
+
+
+	/**
 	 * Get friend list from server
 	 *
 	 * @param {object} pkt - PACKET.ZC.FRIENDS_LIST
@@ -205,9 +226,10 @@ define(function( require )
 					_friends[idx] = {};
 				}
 
-				_friends[idx].AID  = pkt.AID;
-				_friends[idx].GID  = pkt.GID;
-				_friends[idx].Name = pkt.Name;
+				_friends[idx].AID   = pkt.AID;
+				_friends[idx].GID   = pkt.GID;
+				_friends[idx].Name  = pkt.Name;
+				_friends[idx].State = 0;
 
 				FriendUI.updateFriend(idx, _friends[idx]);
 				break;

@@ -205,7 +205,7 @@ define(function(require)
 		for (i = 0; i < count; i++) {
 			_friends[i] = friends[i];
 			ui.append(
-				'<div class="node'+ (friends[i].state === 0 ? ' online' : '') +'">' +
+				'<div class="node'+ (friends[i].State === 0 ? ' online' : '') +'">' +
 					'<span class="name">' + friends[i].Name + '</span>' +
 				'</div>'
 			);
@@ -225,6 +225,8 @@ define(function(require)
 	PartyFriends.updateFriendState = function updateFriendState( index, state)
 	{
 		var node = this.ui.find('.content .friend .node:eq(' + index + ')');
+
+		_friends[index].State = state;
 
 		if (state) {
 			node.css('backgroundImage', '');
@@ -260,9 +262,10 @@ define(function(require)
 			this.ui.find('.friendcount').text(_friends.length);
 		}
 
-		_friends[idx].Name = friend.Name;
-		_friends[idx].GID  = friend.GID;
-		_friends[idx].AID  = friend.AID;
+		_friends[idx].Name   = friend.Name;
+		_friends[idx].GID    = friend.GID;
+		_friends[idx].AID    = friend.AID;
+		_friends[idx].State  = friend.State || 0;
 
 		var node = this.ui.find('.content .friend .node:eq('+ idx +')');
 		node.find('.name').text(friend.Name);

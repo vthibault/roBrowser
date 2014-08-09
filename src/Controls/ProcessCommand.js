@@ -174,6 +174,10 @@ define(function( require )
 			case 'leave':
 				getModule('Engine/MapEngine/Group').onRequestLeave();
 				return;
+
+			case 'hi':
+				getModule('Engine/MapEngine/Friends').sayHi();
+				return;
 		}
 
 
