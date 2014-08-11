@@ -201,6 +201,19 @@ define(function(require)
 
 
 	/**
+	 * Show/Hide UI
+	 */
+	PartyFriends.toggle = function toggle()
+	{
+		this.ui.toggle();
+
+		if (this.ui.is(':visible')) {
+			this.focus();
+		}
+	};
+
+
+	/**
 	 * Set friends to UI
 	 *
 	 * @param {Array} friends list
@@ -758,9 +771,9 @@ define(function(require)
 
 			if (player.state === 0) {
 				SkillTargetSelection.intersectEntityId(player.AID);
-				SkillTargetSelection.remove();
 			}
 
+			SkillTargetSelection.remove();
 			event.stopImmediatePropagation();
 			return false;
 		}

@@ -127,7 +127,7 @@ define(function(require)
 		events.unshift( events.pop() );
 
 		// Execute before *request move* / *request attack*
-		jQuery(window).on('mousedown.targetselection', intersectEntities);
+		jQuery(window).one('mousedown.targetselection', intersectEntities);
 		events = jQuery._data(window, 'events').mousedown;
 		events.unshift( events.pop() );
 	};
@@ -233,12 +233,11 @@ define(function(require)
 	 */
 	function intersectEntities(event)
 	{
+		SkillTargetSelection.remove();
+
 		if (!Mouse.intersect) {
 			return false;
 		}
-
-		jQuery(window).off('mousedown.targetselection');
-		SkillTargetSelection.remove();
 
 		// Only left click
 		if (event.which !== 1) {
