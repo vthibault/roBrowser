@@ -24,6 +24,7 @@ define(function(require)
 	var Mouse          = require('Controls/MouseEventHandler');
 	var UIManager      = require('UI/UIManager');
 	var UIComponent    = require('UI/UIComponent');
+	var PartyHelper    = require('UI/Components/PartyFriends/PartyHelper');
 	var ContextMenu    = require('UI/Components/ContextMenu/ContextMenu');
 	var ChatBox        = require('UI/Components/ChatBox/ChatBox');
 	var htmlText       = require('text!./PartyFriends.html');
@@ -55,6 +56,15 @@ define(function(require)
 
 
 	/**
+	 * @var {Object} party setup
+	 */
+	var _options = {
+		exp_share:         0,
+		item_share:        0,
+		item_sharing_type: 0
+	};
+
+	/**
 	 * @var {Preferences} structure
 	 */
 	var _preferences = Preferences.get('PartyFriends', {
@@ -73,6 +83,9 @@ define(function(require)
 	 */
 	PartyFriends.init = function init()
 	{
+		// Start loading the helper
+		PartyHelper.prepare();
+
 		// Avoid drag drop problems
 		this.ui.find('.base').mousedown(function(event){
 			event.stopImmediatePropagation();
@@ -89,13 +102,13 @@ define(function(require)
 		this.ui.find('.resize').mousedown(onResize);
 
 		//this.ui.find('.mail').mousedown();
-		//this.ui.find('.info').mousedown();
-		//this.ui.find('.party.create').mousedown();
-		//this.ui.find('.party.add').mousedown();
+		this.ui.find('.party.create').mousedown(onOpenPartyCreationWindow);
+		this.ui.find('.party.add').mousedown(onOpenPartyInviteWindow);
+		this.ui.find('.info').mousedown(onOpenPartyOptionWindow);
 
 		this.ui.find('.content')
 			.on('contextmenu', '.name', onRightClickInfo)
-			.on('mousedown',   '.name', onSelectionChange)
+			.on('mousedown',   '.name', onSelectionChange);
 
 		this.draggable(this.ui.find('.titlebar'));
 	};
@@ -140,9 +153,9 @@ define(function(require)
 	PartyFriends.onRemove = function onRemove()
 	{
 		// Save preferences
-		_preferences.show   =  this.ui.is(':visible');
-		_preferences.y      =  parseInt(this.ui.css('top'), 10);
-		_preferences.x      =  parseInt(this.ui.css('left'), 10);
+		_preferences.show   = this.ui.is(':visible');
+		_preferences.y      = parseInt(this.ui.css('top'), 10);
+		_preferences.x      = parseInt(this.ui.css('left'), 10);
 		_preferences.save();
 	};
 
@@ -325,7 +338,7 @@ define(function(require)
 	{
 		var role = player.role || player.Role || 0;
 		var i, count = _party.length;
-		var node, texture;
+		var node, texture, ctx;
 
 		// Check if we are the leader
 		if (player.AID === Session.AID) {
@@ -359,7 +372,7 @@ define(function(require)
 
 			node.css('backgroundImage', '');
 			node.find('.name').text(player.characterName);
-			node.find('.map').text(DB.getMapName(player.mapName));
+			node.find('.map').text('('+DB.getMapName(player.mapName)+')');
 		}
 
 		// Create
@@ -374,6 +387,16 @@ define(function(require)
 			);
 
 			node = this.ui.find('.content .party .node:eq('+ i +')');
+		}
+
+		ctx = node.find('canvas').get(0).getContext('2d');
+		ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+		node.find('.hp').text('');
+
+		// Update life
+		if (player.life && player.life.display) {
+			ctx.drawImage(player.life.canvas, 0, 0, 60, 5, 0, 0, 60, 5);
+			node.find('.hp').text(player.life.hp + '/' + player.life.hp_max);
 		}
 
 		// Add texture
@@ -465,12 +488,26 @@ define(function(require)
 
 
 	/**
+	 * Update party options
+	 *
+	 * @param {boolean} exp share option
+	 * @param {boolean} item share option
+	 * @param {boolean} item sharing option
+	 */
+	PartyFriends.setOptions = function setOptions( exp_share, item_share, item_sharing_type)
+	{
+		_options.exp_share         = exp_share;
+		_options.item_share        = item_share;
+		_options.item_sharing_type = item_sharing_type;
+	};
+
+
+	/**
 	 * Resizing UI
 	 */
 	function onResize()
 	{
 		var ui      = PartyFriends.ui;
-		var content = ui.find('.content');
 		var top     = ui.position().top;
 		var left    = ui.position().left;
 		var lastWidth  = 0;
@@ -717,14 +754,65 @@ define(function(require)
 
 
 	/**
+	 * Request to create a team (open the window)
+	 */
+	function onOpenPartyCreationWindow()
+	{
+		if (PartyHelper.__active && PartyHelper.getType() === PartyHelper.Type.CREATE) {
+			PartyHelper.remove();
+			return;
+		}
+
+		PartyHelper.append();
+		PartyHelper.setType(PartyHelper.Type.CREATE);
+	}
+
+
+	/**
+	 * Request to open invitation window
+	 */
+	function onOpenPartyInviteWindow()
+	{
+		if (PartyHelper.__active && PartyHelper.getType() === PartyHelper.Type.INVITE) {
+			PartyHelper.remove();
+			return;
+		}
+
+		PartyHelper.append();
+		PartyHelper.setType(PartyHelper.Type.INVITE);
+	}
+
+
+	/**
+	 * Request to open invitation window
+	 */
+	function onOpenPartyOptionWindow()
+	{
+		if (_preferences.friend) {
+			return;
+		}
+
+		if (PartyHelper.__active && PartyHelper.getType() === PartyHelper.Type.SETUP) {
+			PartyHelper.remove();
+			return;
+		}
+
+		PartyHelper.append();
+		PartyHelper.setType(PartyHelper.Type.SETUP);
+		PartyHelper.setOptions(_options, Session.isPartyLeader);
+	}
+
+
+	/**
 	 * Callbacks to define
 	 */
-	PartyFriends.onRemoveFriend        = function(){};
-	PartyFriends.onRequestLeave        = function(){};
-	PartyFriends.onExpelMember         = function(){};
-	PartyFriends.onRequestChangeLeader = function(){};
-	PartyFriends.onRequestAddingMember = function(){};
-	PartyFriends.onRequestCreateParty  = function(){};
+	PartyFriends.onRemoveFriend         = function(){};
+	PartyFriends.onRequestLeave         = function(){};
+	PartyFriends.onExpelMember          = function(){};
+	PartyFriends.onRequestChangeLeader  = function(){};
+	PartyFriends.onRequestAddingMember  = function(){};
+	PartyFriends.onRequestPartyCreation = function(){};
+	PartyFriends.onRequestSettingUpdate = function(){};
 
 
 	/**

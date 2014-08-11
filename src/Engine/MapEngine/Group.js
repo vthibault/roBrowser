@@ -54,9 +54,12 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.ADD_MEMBER_TO_GROUP2,      onPartyMemberJoin );
 		Network.hookPacket( PACKET.ZC.DELETE_MEMBER_FROM_GROUP,  onPartyMemberLeave );
 
-		PartyUI.onExpelMember         = GroupEngine.onRequestExpel;
-		PartyUI.onRequestChangeLeader = GroupEngine.onRequestChangeLeader;
-		PartyUI.onRequestLeave        = GroupEngine.onRequestLeave;
+		PartyUI.onExpelMember          = GroupEngine.onRequestExpel;
+		PartyUI.onRequestChangeLeader  = GroupEngine.onRequestChangeLeader;
+		PartyUI.onRequestLeave         = GroupEngine.onRequestLeave;
+		PartyUI.onRequestPartyCreation = GroupEngine.onRequestCreation;
+		PartyUI.onRequestAddingMember  = GroupEngine.onRequestInvitation; // TODO
+		PartyUI.onRequestSettingUpdate = GroupEngine.onRequestInfoUpdate;
 	};
 
 
@@ -67,9 +70,13 @@ define(function( require )
 	 */
 	GroupEngine.onRequestCreationEasy = function onRequestPartyCreationEasy( name )
 	{
-		var pkt  = new PACKET.CZ.MAKE_GROUP();
-		pkt.name = name;
-		Network.sendPacket(pkt)
+		if (Session.hasParty) {
+			return;
+		}
+
+		var pkt = new PACKET.CZ.MAKE_GROUP();
+		pkt.groupName = name;
+		Network.sendPacket(pkt);
 	};
 
 
@@ -83,11 +90,15 @@ define(function( require )
 	 */
 	GroupEngine.onRequestCreation = function onRequestPartyCreation( name, pickupRule, divisionRule )
 	{
+		if (Session.hasParty) {
+			return;
+		}
+
 		var pkt = new PACKET.CZ.MAKE_GROUP2();
 		pkt.groupName = name;
 		this.ItemPickupRule = pickupRule;
 		this.ItemDivisionRule = divisionRule;
-		Network.sendPacket(pkt)
+		Network.sendPacket(pkt);
 	};
 
 
@@ -99,7 +110,11 @@ define(function( require )
 	 */
 	GroupEngine.onRequestInvitation = function onRequestPartyInvitation( AID, pseudo )
 	{
-		ChatBox.addText( pseudo + ' ' + DB.getMessage(2060), ChatBox.TYPE.BLUE);
+		if (!Session.hasParty || !Session.isPartyLeader) {
+			return;
+		}
+
+		ChatBox.addText( pseudo + ' ' + DB.getMessage(2060, ' has recieved an invitation to join your party.'), ChatBox.TYPE.BLUE);
 
 		var pkt = new PACKET.CZ.REQ_JOIN_GROUP();
 		pkt.AID = AID;
@@ -113,6 +128,10 @@ define(function( require )
 	 */
 	GroupEngine.onRequestLeave = function onRequestPartyLeave()
 	{
+		if (!Session.hasParty) {
+			return;
+		}
+
 		var pkt = new PACKET.CZ.REQ_LEAVE_GROUP();
 		Network.sendPacket(pkt);
 	};
@@ -126,6 +145,10 @@ define(function( require )
 	 */
 	GroupEngine.onRequestExpel = function onRequestPartyExpel( AID, pseudo )
 	{
+		if (!Session.hasParty || !Session.isPartyLeader) {
+			return;
+		}
+
 		var pkt = new PACKET.CZ.REQ_EXPEL_GROUP_MEMBER();
 		pkt.AID = AID;
 		pkt.characterName = pseudo;
@@ -142,6 +165,10 @@ define(function( require )
 	 */
 	GroupEngine.onRequestInfoUpdate = function onRequestPartyInfoUpdate( expOption, pickupRule, divisionRule)
 	{
+		if (!Session.hasParty || !Session.isPartyLeader) {
+			return;
+		}
+
 		var pkt = new PACKET.CZ.GROUPINFO_CHANGE_V2();
 		pkt.expOption = expOption;
 		pkt.ItemPickupRule = pickupRule;
@@ -157,6 +184,10 @@ define(function( require )
 	 */
 	GroupEngine.onRequestChangeLeader = function onRequestChangePartyLeader( AID )
 	{
+		if (!Session.hasParty || !Session.isPartyLeader) {
+			return;
+		}
+
 		var pkt = new PACKET.CZ.CHANGE_GROUP_MASTER();
 		pkt.AID = AID;
 		Network.sendPacket(pkt);
@@ -170,7 +201,20 @@ define(function( require )
 	 */
 	function onPartyList( pkt )
 	{
+		var i, count;
+		var entity;
+
 		Session.hasParty = true;
+		count            = pkt.groupInfo.length;
+
+		for (i = 0; i < count; ++i) {
+			entity = EntityManager.get(pkt.groupInfo[i].AID);
+			if (entity && entity.life.display) {
+				pkt.groupInfo[i].life = entity.life;
+			}
+		}
+
+		PartyUI.ui.show();
 		PartyUI.setParty( pkt.groupName, pkt.groupInfo);
 	}
 
@@ -182,6 +226,12 @@ define(function( require )
 	 */
 	function onPartyMemberJoin( pkt )
 	{
+		var entity = EntityManager.get(pkt.AID);
+
+		if (entity && entity.life.display) {
+			pkt.life = entity.life;
+		}
+
 		PartyUI.addPartyMember(pkt);
 	}
 
@@ -196,7 +246,7 @@ define(function( require )
 		switch (pkt.result) {
 			case 0: // leave
 			case 1: // expel
-				break;				
+				break;
 
 			case 2:
 				// Cannot leave a party in this map
@@ -279,6 +329,8 @@ define(function( require )
 	 */
 	function onPartyOption( pkt )
 	{
+		PartyUI.setOptions(pkt.expOption, pkt.ItemPickupRule, pkt.ItemDivisionRule);
+
 		ChatBox.addText( DB.getMessage(291) + '  - ' + DB.getMessage(292) + '  : ' + DB.getMessage(287 + pkt.expOption ), ChatBox.TYPE.INFO );
 		ChatBox.addText( DB.getMessage(291) + '  - ' + DB.getMessage(293) + '  : ' + DB.getMessage(289 + pkt.ItemPickupRule), ChatBox.TYPE.INFO );
 		ChatBox.addText( DB.getMessage(291) + '  - ' + DB.getMessage(738) + '  : ' + DB.getMessage(287 + pkt.ItemDivisionRule), ChatBox.TYPE.INFO );
