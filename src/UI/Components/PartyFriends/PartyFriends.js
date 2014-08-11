@@ -15,20 +15,21 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
-	var DB             = require('DB/DBManager');
-	var jQuery         = require('Utils/jquery');
-	var Preferences    = require('Core/Preferences');
-	var Client         = require('Core/Client');
-	var Renderer       = require('Renderer/Renderer');
-	var Session        = require('Engine/SessionStorage');
-	var Mouse          = require('Controls/MouseEventHandler');
-	var UIManager      = require('UI/UIManager');
-	var UIComponent    = require('UI/UIComponent');
-	var PartyHelper    = require('UI/Components/PartyFriends/PartyHelper');
-	var ContextMenu    = require('UI/Components/ContextMenu/ContextMenu');
-	var ChatBox        = require('UI/Components/ChatBox/ChatBox');
-	var htmlText       = require('text!./PartyFriends.html');
-	var cssText        = require('text!./PartyFriends.css');
+	var DB                   = require('DB/DBManager');
+	var jQuery               = require('Utils/jquery');
+	var Preferences          = require('Core/Preferences');
+	var Client               = require('Core/Client');
+	var Renderer             = require('Renderer/Renderer');
+	var Session              = require('Engine/SessionStorage');
+	var Mouse                = require('Controls/MouseEventHandler');
+	var UIManager            = require('UI/UIManager');
+	var UIComponent          = require('UI/UIComponent');
+	var PartyHelper          = require('UI/Components/PartyFriends/PartyHelper');
+	var ContextMenu          = require('UI/Components/ContextMenu/ContextMenu');
+	var ChatBox              = require('UI/Components/ChatBox/ChatBox');
+	var htmlText             = require('text!./PartyFriends.html');
+	var cssText              = require('text!./PartyFriends.css');
+	var getModule            = require;
 
 
 	/**
@@ -479,7 +480,7 @@ define(function(require)
 				var node = this.ui.find('.content .party .node:eq(' + i + ')');
 				var ctx  = node.find('canvas').get(0).getContext('2d');
 
-				ctx.drawImage(canvas, 0, 0, ctx.canvas.width, ctx.canvas.height);
+				ctx.drawImage(canvas, 0, 0, 60, 5, 0, 0, 60, 5);
 				node.find('.hp').text(hp + '/' + maxhp);
 				break;
 			}
@@ -744,12 +745,25 @@ define(function(require)
 	/**
 	 * Change selection (click on a friend/party)
 	 */
-	function onSelectionChange()
+	function onSelectionChange(event)
 	{
 		PartyFriends.ui.find('.content .name').removeClass('selection');
 		this.classList.add('selection');
 
 		_index = PartyFriends.ui.find(this.parentNode.parentNode).find('.name').index(this);
+
+		var SkillTargetSelection = getModule('UI/Components/SkillTargetSelection/SkillTargetSelection');
+		if (SkillTargetSelection.__active && !_preferences.friend) {
+			var player = _party[_index];
+
+			if (player.state === 0) {
+				SkillTargetSelection.intersectEntityId(player.AID);
+				SkillTargetSelection.remove();
+			}
+
+			event.stopImmediatePropagation();
+			return false;
+		}
 	}
 
 

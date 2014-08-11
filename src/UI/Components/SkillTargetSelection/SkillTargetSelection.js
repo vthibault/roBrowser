@@ -127,7 +127,7 @@ define(function(require)
 		events.unshift( events.pop() );
 
 		// Execute before *request move* / *request attack*
-		jQuery(window).one('mousedown.targetselection', intersectEntity);
+		jQuery(window).on('mousedown.targetselection', intersectEntities);
 		events = jQuery._data(window, 'events').mousedown;
 		events.unshift( events.pop() );
 	};
@@ -231,8 +231,13 @@ define(function(require)
 	/**
 	 * Intersect entity when clicking
 	 */
-	function intersectEntity(event)
+	function intersectEntities(event)
 	{
+		if (!Mouse.intersect) {
+			return false;
+		}
+
+		jQuery(window).off('mousedown.targetselection');
 		SkillTargetSelection.remove();
 
 		// Only left click
@@ -250,11 +255,24 @@ define(function(require)
 
 		// Get entity
 		var entity = EntityManager.getOverEntity();
-		var target = 0;
 
 		if (!entity) {
 			return false;
 		}
+
+		intersectEntity(entity);
+		return false;
+	}
+
+
+	/**
+	 * Intersect with an entity
+	 *
+	 * @param {object} entity
+	 */
+	function intersectEntity(entity)
+	{
+		var target = 0;
 
 		// Get target type
 		switch (entity.objecttype) {
@@ -272,29 +290,43 @@ define(function(require)
 			// Can't use skill on this type
 			// (warp, npc, items, effects...)
 			default:
-				return false;
+				return;
 		}
 
 		// This skill can't be casted on this type
 		if (!(target & _flag) && !KEYS.SHIFT && !Controls.noshift) {
-			return false;
+			return;
 		}
 
 		// Pet capture
 		if (_flag === SkillTargetSelection.TYPE.PET) {
 			SkillTargetSelection.onPetSelected(entity.GID);
-			return false;
+			return;
 		}
 
 		// Can't cast evil skill on your self
 		if ((_flag & SkillTargetSelection.TYPE.ENEMY) && entity === Session.Entity) {
-			return false;
+			return;
 		}
 
 		// Cast skill
 		SkillTargetSelection.onUseSkillToId(_skill.SKID, _skill.level, entity.GID);
-		return false;
+		return;
 	}
+
+
+	/**
+	 * Intersect with an entity ID
+	 * (used in party UI)
+	 */
+	SkillTargetSelection.intersectEntityId = function intersectEntityId(id)
+	{
+		var entity = EntityManager.get(id);
+		if (entity) {
+			intersectEntity(entity);
+		}
+	};
+
 
 
 	/**
