@@ -198,7 +198,7 @@ define(function( require )
 	{
 		var path;
 
-		if (head <= 0) {
+		if (head < 0) {
 			return;
 		}
 
