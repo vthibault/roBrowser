@@ -32,6 +32,7 @@ define(function( require )
 	var Announce       = require('UI/Components/Announce/Announce');
 	var Equipment      = require('UI/Components/Equipment/Equipment');
 	var SkillList      = require('UI/Components/SkillList/SkillList');
+	var PartyUI        = require('UI/Components/PartyFriends/PartyFriends');
 
 
 	/**
@@ -239,6 +240,10 @@ define(function( require )
 
 				if (Session.Entity.life.hp_max > -1) {
 					BasicInfo.update('hp', Session.Entity.life.hp, Session.Entity.life.hp_max);
+
+					if (Session.hasParty) {
+						PartyUI.updateMemberLife(Session.AID, Session.Entity.life.canvas, Session.Entity.life.hp, Session.Entity.life.hp_max);
+					}
 				}
 				break;
 
@@ -248,6 +253,10 @@ define(function( require )
 
 				if (Session.Entity.life.hp > -1) {
 					BasicInfo.update('hp', Session.Entity.life.hp, Session.Entity.life.hp_max);
+
+					if (Session.hasParty) {
+						PartyUI.updateMemberLife(Session.AID, Session.Entity.life.canvas, Session.Entity.life.hp, Session.Entity.life.hp_max);
+					}
 				}
 				break;
 

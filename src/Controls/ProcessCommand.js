@@ -31,7 +31,7 @@ define(function( require )
 	 * Process command
 	 */
 	return function processCommand( text ){
-		var pkt;
+		var pkt, matches;
 		var cmd = text.split(' ')[0];
 
 		switch (cmd) {
@@ -169,6 +169,30 @@ define(function( require )
 
 			case 'q':
 				getModule('UI/Components/ChatRoom/ChatRoom').remove();
+				return;
+
+			case 'leave':
+				getModule('Engine/MapEngine/Group').onRequestLeave();
+				return;
+
+			case 'invite':
+				matches = text.match(/^invite\s+(")?([^"]+)(")?/);
+				if (matches && matches[2]) {
+					getModule('Engine/MapEngine/Group').onRequestInvitation(0, matches[2]);
+					return;
+				}
+				break;
+
+			case 'organize':
+				matches = text.match(/^organize\s+(")?([^"]+)(")?/);
+				if (matches && matches[2]) {
+					getModule('Engine/MapEngine/Group').onRequestCreationEasy(matches[2]);
+					return;
+				}
+				break;
+
+			case 'hi':
+				getModule('Engine/MapEngine/Friends').sayHi();
 				return;
 		}
 

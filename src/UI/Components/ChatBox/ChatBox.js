@@ -203,7 +203,7 @@ define(function(require)
 		});
 
 		// Change size
-		this.ui.find('.input .size').mousedown(function( event ){
+		this.ui.find('.input .size').click(function( event ){
 			ChatBox.updateHeight(true);
 			event.stopImmediatePropagation();
 			return false;

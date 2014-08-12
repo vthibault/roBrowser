@@ -37,10 +37,12 @@ define( ['Core/Preferences', 'Controls/KeyEventHandler'], function( Preferences,
 	defaultKey[ KEYS.Q ]   = { component:'Equipment',       cmd:'TOGGLE', alt:true };
 	defaultKey[ KEYS.S ]   = { component:'SkillList',       cmd:'TOGGLE', alt:true };
 	defaultKey[ KEYS.V ]   = { component:'BasicInfo',       cmd:'EXTEND', alt:true };
+	defaultKey[ KEYS.H ]   = { component:'PartyFriends',    cmd:'FRIEND', alt:true };
+	defaultKey[ KEYS.Z ]   = { component:'PartyFriends',    cmd:'PARTY',  alt:true };
 
 
 	/**
 	 * Export
 	 */
-	return Preferences.get( 'BattleMode', defaultKey, 1.3 );
+	return Preferences.get( 'BattleMode', defaultKey, 1.4 );
 });

@@ -77,10 +77,20 @@ define(function( require )
 
 
 	/**
+	 * @var {boolean} focus element zIndex ? 
+	 */
+	UIComponent.prototype.needFocus = true;
+
+
+	/**
 	 * Prepare the component to be used
 	 */
 	UIComponent.prototype.prepare = function prepare()
 	{
+		if (this.__loaded) {
+			return;
+		}
+
 		if (this._htmlText) {
 			this.ui = jQuery(this._htmlText);
 			this.ui.css('zIndex', 50);
@@ -220,7 +230,7 @@ define(function( require )
 	 */
 	UIComponent.prototype.focus = function focus()
 	{
-		if (!this.manager) {
+		if (!this.manager || !this.needFocus) {
 			return;
 		}
 
@@ -230,7 +240,7 @@ define(function( require )
 
 		// Store components zIndex in a list
 		for (name in components) {
-			if (this !== components[name] && components[name].__active) {
+			if (this !== components[name] && components[name].__active && components[name].needFocus) {
 				zIndex = parseInt(components[name].ui.css('zIndex'), 10);
 				list[zIndex-50] = zIndex;
 			}
@@ -247,7 +257,7 @@ define(function( require )
 
 		// Apply new zIndex to list
 		for (name in components) {
-			if (this !== components[name] && components[name].__active) {
+			if (this !== components[name] && components[name].__active && components[name].needFocus) {
 				zIndex = parseInt(components[name].ui.css('zIndex'), 10);
 				components[name].ui.css('zIndex', list[zIndex-50]);
 			}
@@ -401,7 +411,7 @@ define(function( require )
 		var hover_uri = null;
 
 		// text
-		if (msgId) {
+		if (msgId && DB.getMessage(msgId, '')) {
 			$node.text( DB.getMessage(msgId, '') );
 		}
 

@@ -47,6 +47,7 @@ define(function( require )
 	var ChatRoomCreate   = require('UI/Components/ChatRoomCreate/ChatRoomCreate');
 	var Emoticons        = require('UI/Components/Emoticons/Emoticons');
 	var SkillList        = require('UI/Components/SkillList/SkillList');
+	var PartyFriends     = require('UI/Components/PartyFriends/PartyFriends');
 
 
 	/**
@@ -135,13 +136,14 @@ define(function( require )
 		require('./MapEngine/Item').call();
 		require('./MapEngine/PrivateMessage').call();
 		require('./MapEngine/Storage').call();
-		require('./MapEngine/Group').call();
+		require('./MapEngine/Group').init();
 		require('./MapEngine/Guild').call();
 		require('./MapEngine/Skill').call();
 		require('./MapEngine/ChatRoom').call();
 		require('./MapEngine/Pet').call();
 		require('./MapEngine/Store').call();
 		require('./MapEngine/Trade').call();
+		require('./MapEngine/Friends').init();
 	}
 
 
@@ -175,6 +177,11 @@ define(function( require )
 	{
 		Session.Entity = new Entity( Session.Character );
 		Session.Entity.onWalkEnd = onWalkEnd;
+
+		// Reset
+		Session.petId         =     0;
+		Session.hasParty      = false;
+		Session.isPartyLeader = false;
 
 		BasicInfo.update('blvl', Session.Character.level );
 		BasicInfo.update('jlvl', Session.Character.joblevel );
@@ -250,12 +257,17 @@ define(function( require )
 			ChatRoomCreate.append();
 			Emoticons.append();
 			SkillList.append();
+			PartyFriends.append();
 
 			// Map loaded
 			Network.sendPacket(
 				new PACKET.CZ.NOTIFY_ACTORINIT()
 			);
 		};
+
+		if (!PartyFriends.__loaded) {
+			PartyFriends.prepare();
+		}
 
 		MapRenderer.setMap( pkt.mapName );
 	}
@@ -378,6 +390,7 @@ define(function( require )
 			StatusIcons.clean();
 			ChatBox.clean();
 			ShortCut.clean();
+			PartyFriends.clean()
 			MapRenderer.free();
 			Renderer.stop();
 			onRestart();
@@ -394,7 +407,10 @@ define(function( require )
 		switch (pkt.result) {
 			// Disconnect
 			case 0:
+				StatusIcons.clean();
 				ChatBox.clean();
+				ShortCut.clean();
+				PartyFriends.clean()
 				Renderer.stop();
 				onExitSuccess();
 				break;

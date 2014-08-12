@@ -28,6 +28,12 @@ define(function(require)
 
 
 	/**
+	 * @var {boolean} do not focus this UI
+	 */
+	EntityRoom.needFocus = false;
+
+
+	/**
 	 * Once in HTML, focus the input
 	 */
 	EntityRoom.onAppend = function onAppend()
