@@ -34,6 +34,11 @@ define( ['Audio/SoundManager'], function( SoundManager )
 	 */
 	Sound.prototype.play = function play( fileName, action, animation )
 	{
+		// Pet does not produce sound
+		if (this.entity.objecttype === this.entity.constructor.TYPE_PET) {
+			return;
+		}
+
 		// Do not replay the sound if there is no updates
 		if (this._lastActionId    === action &&
 			this._lastAnimationId === animation &&
@@ -76,5 +81,6 @@ define( ['Audio/SoundManager'], function( SoundManager )
 	return function init()
 	{
 		this.sound = new Sound();
+		this.sound.entity = this;
 	};
 });
