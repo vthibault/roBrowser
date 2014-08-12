@@ -20,6 +20,7 @@ define(function(require)
 	var Renderer           = require('Renderer/Renderer');
 	var Client             = require('Core/Client');
 	var Events             = require('Core/Events');
+	var Preferences        = require('Core/Preferences');
 	var KEYS               = require('Controls/KeyEventHandler');
 	var BattleMode         = require('Controls/BattleMode');
 	var History            = require('./History');
@@ -54,6 +55,16 @@ define(function(require)
 	 * @var {number} Chatbox position's index
 	 */
 	var _heightIndex = 2;
+
+
+	/**
+	 * @var {Preferences} structure
+	 */
+	var _preferences = Preferences.get('ChatBox', {
+		x:      5,
+		y:      Infinity,
+		height: 2
+	}, 1.0);
 
 
 	/**
@@ -100,7 +111,14 @@ define(function(require)
 	 */
 	ChatBox.init = function init()
 	{
-		this.ui.css('top', (Renderer.height - ( this.ui.find('.content').height() + 53 )) + 'px');
+		_heightIndex = _preferences.height - 1;
+		ChatBox.updateHeight();
+
+		this.ui.css({
+			top:  Math.min( Math.max( 0, _preferences.y - this.ui.height()), Renderer.height - this.ui.height()),
+			left: Math.min( Math.max( 0, _preferences.x), Renderer.width  - this.ui.width())
+		});
+
 		this.draggable( this.ui.find('.input') );
 
 		// Sorry for this un-documented code (see UIComponent for more informations)
@@ -252,6 +270,11 @@ define(function(require)
 	ChatBox.onRemove = function OnRemove()
 	{
 		this.ui.find('.content').off('scroll');
+
+		_preferences.y      = parseInt(this.ui.css('top'), 10) + this.ui.height();
+		_preferences.x      = parseInt(this.ui.css('left'), 10);
+		_preferences.height = _heightIndex;
+		_preferences.save();
 	};
 
 
