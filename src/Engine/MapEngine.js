@@ -178,6 +178,11 @@ define(function( require )
 		Session.Entity = new Entity( Session.Character );
 		Session.Entity.onWalkEnd = onWalkEnd;
 
+		// Reset
+		Session.petId         =     0;
+		Session.hasParty      = false;
+		Session.isPartyLeader = false;
+
 		BasicInfo.update('blvl', Session.Character.level );
 		BasicInfo.update('jlvl', Session.Character.joblevel );
 		BasicInfo.update('zeny', Session.Character.money );
@@ -385,6 +390,7 @@ define(function( require )
 			StatusIcons.clean();
 			ChatBox.clean();
 			ShortCut.clean();
+			PartyFriends.clean()
 			MapRenderer.free();
 			Renderer.stop();
 			onRestart();
@@ -401,7 +407,10 @@ define(function( require )
 		switch (pkt.result) {
 			// Disconnect
 			case 0:
+				StatusIcons.clean();
 				ChatBox.clean();
+				ShortCut.clean();
+				PartyFriends.clean()
 				Renderer.stop();
 				onExitSuccess();
 				break;

@@ -9,7 +9,7 @@
 #PartyFriends .titlebar .right { float:right; margin-right:3px;}
 #PartyFriends .titlebar .clear { clear:both; }
 
-#PartyFriends .content { height:120px; width:240px; background-color:white; }
+#PartyFriends .content { height:120px; width:240px; background-color:white; overflow-x:hidden; overflow-y:auto; }
 #PartyFriends .clear { clear:both; }
 
 /* Friend list */
@@ -19,8 +19,7 @@
 
 #PartyFriends .content .party, #PartyFriends .content .friend { padding:4px; }
 #PartyFriends .content .party .node { white-space:nowrap; color:#007b7b; position:relative; height:20px; } 
-#PartyFriends .content .party .node.self { color:#08317b; }
-#PartyFriends .content .party .node.leader { font-weight:bold; }
+#PartyFriends .content .party .node.leader { font-weight:bold; color:#08317b; }
 #PartyFriends .content .party .node.online .life,
 #PartyFriends .content .party .node.online .hp,
 #PartyFriends .content .party .node.online .map { display:initial;}
@@ -37,5 +36,6 @@
 #PartyFriends .navigation button:hover .overlay { display:block; }
 
 #PartyFriends .footer { border-radius:0px 0px 3px 3px; width:100%; height:21px; background-repeat:repeat-x; background-color:transparent; position:relative; }
-#PartyFriends .footer .switchtab { border:none; background-repeat:no-repeat; background-color:transparent; background-position:0px 3px; padding-left:15px; }
+#PartyFriends .footer .party, #PartyFriends .footer .friend { padding-left: 5px; padding-top: 3px; }
+#PartyFriends .footer .switchtab { height:15px; border:none; background-repeat:no-repeat; background-color:transparent; background-position:0px 3px; padding-left:15px; }
 #PartyFriends .footer .resize { position:absolute; right:0px; bottom:1px; width:13px; height:13px; border:none; background-repeat:no-repeat; background-color:transparent; }

@@ -148,6 +148,29 @@ define(function(require)
 
 
 	/**
+	 * Clean up UI
+	 */
+	PartyFriends.clean = function clean()
+	{
+		_party.length   = 0;
+		_friends.length = 0;
+		_index          = -1;
+
+		_options.exp_share         = 0;
+		_options.item_share        = 0;
+		_options.item_sharing_type = 0;
+
+		this.ui.find('.partyname').text('');
+		this.ui.find('.friendcount').text('0');
+		this.ui.find('.content .party, .content .friend').empty();
+
+		// Reset buttons
+		_preferences.friend = !_preferences.friend;
+		onChangeTab();
+	};
+
+
+	/**
 	 * Removing the UI from window, save preferences
 	 *
 	 */
@@ -367,7 +390,8 @@ define(function(require)
 
 		// Search for duplicates entries
 		for (i = 0; i < count; ++i) {
-			if (_party[i].AID === player.AID) {
+			// No GID, need to compare using charactername (wtf)
+			if (_party[i].AID === player.AID && _party[i].characterName === player.characterName) {
 				break;
 			}
 		}
@@ -393,7 +417,7 @@ define(function(require)
 		else {
 			_party.push(player);
 			this.ui.find('.content .party').append(
-				'<div class="node'+ (role === 0 ? ' leader' : '') + (player.state === 0 ? ' online' : '') + (player.AID === Session.AID ? ' self' : '') + '">' +
+				'<div class="node'+ (role === 0 ? ' leader' : '') + (player.state === 0 ? ' online' : '') + '">' +
 					'<span class="name">' + player.characterName + '</span>' +
 					'<span class="map">(' + DB.getMapName(player.mapName) + ')</span>' +
 					'<canvas class="life" width="60" height="5"></canvas> <span class="hp"></span>' +
@@ -414,7 +438,7 @@ define(function(require)
 		}
 
 		// Add texture
-		texture = role === 0 ? 'grp_leader.bmp' : player.state === 0 ? 'grp_online.bmp' : '';
+		texture = role === 0 && player.state === 0 ? 'grp_leader.bmp' : player.state === 0 ? 'grp_online.bmp' : '';
 		if (texture) {
 			Client.loadFile(DB.INTERFACE_PATH + 'basic_interface/' + texture, function(url){
 				node.css('backgroundImage', 'url(' + url + ')');
@@ -427,8 +451,9 @@ define(function(require)
 	 * Remove a character from list
 	 *
 	 * @param {number} account id
+	 * @param {string} character name
 	 */
-	PartyFriends.removePartyMember = function removePartyMember( AID )
+	PartyFriends.removePartyMember = function removePartyMember( AID, characterName )
 	{
 		if (AID === Session.AID) {
 			_party.length = 0;
@@ -445,7 +470,9 @@ define(function(require)
 		var i, count = _party.length;
 
 		for (i = 0; i < count; ++i) {
-			if (_party[i].AID === AID) {
+			// Why Gravity doesn't send the GID ? Meaning we can't have the same
+			// character name twice (even in the same account).
+			if (_party[i].AID === AID && _party[i].characterName === characterName) {
 				_party.splice(i, 1);
 				this.ui.find('.content .party .node:eq(' + i + ')').remove();
 				break;
@@ -487,11 +514,15 @@ define(function(require)
 	PartyFriends.updateMemberLife = function updateMemberLife(AID, canvas, hp, maxhp)
 	{
 		var i, count = _party.length;
+		var node, ctx;
 
 		for (i = 0; i < count; ++i) {
-			if (_party[i].AID === AID) {
-				var node = this.ui.find('.content .party .node:eq(' + i + ')');
-				var ctx  = node.find('canvas').get(0).getContext('2d');
+			// No GID data, so have to check for the online character in
+			// the account (since we can have multiple players in a team
+			// using the same account).
+			if (_party[i].AID === AID && _party[i].state === 0) {
+				node = this.ui.find('.content .party .node:eq(' + i + ')');
+				ctx  = node.find('canvas').get(0).getContext('2d');
 
 				ctx.drawImage(canvas, 0, 0, 60, 5, 0, 0, 60, 5);
 				node.find('.hp').text(hp + '/' + maxhp);

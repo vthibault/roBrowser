@@ -263,7 +263,7 @@ define(function( require )
 			Session.hasParty = false;
 		}
 
-		PartyUI.removePartyMember(pkt.AID);
+		PartyUI.removePartyMember(pkt.AID, pkt.characterName);
 	}
 
 
