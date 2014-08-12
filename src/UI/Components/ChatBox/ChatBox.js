@@ -49,11 +49,6 @@ define(function(require)
 	var _historyNickName = new History(true);
 
 
-	/**
-	 * @var {Array} stack - data saved and waiting for the ui to be ready to be processed
-	 */
-	var _stack = [];
-
 
 	/**
 	 * @var {number} Chatbox position's index
@@ -243,16 +238,8 @@ define(function(require)
 	 */
 	ChatBox.onAppend = function OnAppend()
 	{
-		var i, count;
-
 		// Focus the input
 		this.ui.find('.input .message').focus();
-
-		// Write memorized texts
-		for (i = 0, count = _stack.length; i < count; ++i) {
-			this.addText.apply(this, _stack[i]);
-		}
-		_stack.length = 0;
 
 		var content = this.ui.find('.content')[0];
 		content.scrollTop = content.scrollHeight;
@@ -445,11 +432,6 @@ define(function(require)
 	 */
 	ChatBox.addText = function addText( text, type, color, override )
 	{
-		if (!this.__loaded) {
-			_stack.push(arguments);
-			return;
-		}
-
 		var $content = this.ui.find('.content');
 
 		if (!color) {

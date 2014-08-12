@@ -144,6 +144,12 @@ define(function( require )
 		require('./MapEngine/Store').call();
 		require('./MapEngine/Trade').call();
 		require('./MapEngine/Friends').init();
+
+		// Prepare UI
+		PartyFriends.prepare();
+		StatusIcons.prepare();
+		BasicInfo.prepare();
+		ChatBox.prepare();
 	}
 
 
@@ -264,10 +270,6 @@ define(function( require )
 				new PACKET.CZ.NOTIFY_ACTORINIT()
 			);
 		};
-
-		if (!PartyFriends.__loaded) {
-			PartyFriends.prepare();
-		}
 
 		MapRenderer.setMap( pkt.mapName );
 	}
