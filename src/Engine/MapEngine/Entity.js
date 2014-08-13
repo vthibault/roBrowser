@@ -230,11 +230,14 @@ define(function( require )
 
 			// Damage
 			case 0:  // regular
+			case 4:  // absorbed
 			case 8:  // double attack
 			case 9:  // endure
 			case 10: // critital
 				if (dstEntity) {
-					if (pkt.damage && pkt.action !== 9) { // only if damage and do not have endure
+					// only if damage and do not have endure
+					// and damage isn't absorbed (healing)
+					if (pkt.damage && pkt.action !== 9 && pkt.action !== 4) {
 						dstEntity.setAction({
 							delay:  Renderer.tick + pkt.attackMT,
 							action: dstEntity.ACTION.HURT,
@@ -257,7 +260,8 @@ define(function( require )
 					if (target) {
 						switch (pkt.action) {
 
-							// regular damage
+							// regular damage (and endure)
+							case 9:
 							case 0:
 								Damage.add( pkt.damage, target, Renderer.tick + pkt.attackMT );
 								break;
@@ -345,10 +349,6 @@ define(function( require )
 					repeat: true,
 					play:   true
 				});
-				break;
-
-			// type=04 TODO: reflected/absorbed damage?
-			case 4:
 				break;
 		}
 	}
