@@ -18,6 +18,7 @@ define(function( require )
 	var DB            = require('DB/DBManager');
 	var Network       = require('Network/NetworkManager');
 	var PACKET        = require('Network/PacketStructure');
+	var EntityManager = require('Renderer/EntityManager');
 	var NpcStore      = require('UI/Components/NpcStore/NpcStore');
 	var ChatBox       = require('UI/Components/ChatBox/ChatBox');
 
@@ -124,13 +125,61 @@ define(function( require )
 
 
 	/**
+	 * Received items list to buy from player
+	 *
+	 * @param {object} pkt - PACKET.ZC.PC_PURCHASE_ITEMLIST_FROMMC
+	 */
+	function onVendingStoreList( _pkt )
+	{
+		NpcStore.append();
+		NpcStore.setType(NpcStore.Type.VENDING_STORE);
+		NpcStore.setList(_pkt.itemList);
+
+		// Get seller name
+		var entity = EntityManager.get(_pkt.AID);
+		NpcStore.ui.find('.seller').text( entity ? entity.display.name : '');
+
+		// Bying items
+		NpcStore.onSubmit = function(itemList) {
+			NpcStore.remove();
+
+			var i, count;
+			var pkt;
+
+			if (_pkt instanceof PACKET.ZC.PC_PURCHASE_ITEMLIST_FROMMC2) {
+				pkt = new PACKET.CZ.PC_PURCHASE_ITEMLIST_FROMMC2();
+				pkt.UniqueID = _pkt.UniqueID;
+			}
+			else {
+				pkt = new PACKET.CZ.PC_PURCHASE_ITEMLIST_FROMMC();
+			}
+
+			pkt.AID = _pkt.AID;
+			count   = itemList.length;
+
+			for (i = 0; i < count; ++i) {
+				pkt.itemList.push({
+					index:  itemList[i].index,
+					count: itemList[i].count
+				});
+			}
+
+			Network.sendPacket(pkt);
+		};
+	}
+
+
+	/**
 	 * Initialize
 	 */
 	return function MainEngine()
 	{
-		Network.hookPacket( PACKET.ZC.PC_PURCHASE_ITEMLIST, onBuyList );
-		Network.hookPacket( PACKET.ZC.PC_PURCHASE_RESULT,   onBuyResult );
-		Network.hookPacket( PACKET.ZC.PC_SELL_ITEMLIST,     onSellList );
-		Network.hookPacket( PACKET.ZC.PC_SELL_RESULT,       onSellResult );
+		Network.hookPacket( PACKET.ZC.PC_PURCHASE_ITEMLIST,         onBuyList );
+		Network.hookPacket( PACKET.ZC.PC_PURCHASE_RESULT,           onBuyResult );
+		Network.hookPacket( PACKET.ZC.PC_SELL_ITEMLIST,             onSellList );
+		Network.hookPacket( PACKET.ZC.PC_SELL_RESULT,               onSellResult );
+		Network.hookPacket( PACKET.ZC.PC_PURCHASE_ITEMLIST_FROMMC,  onVendingStoreList );
+		Network.hookPacket( PACKET.ZC.PC_PURCHASE_ITEMLIST_FROMMC2, onVendingStoreList );
+		Network.hookPacket( PACKET.ZC.PC_PURCHASE_RESULT_FROMMC,    onBuyResult );
 	};
 });
