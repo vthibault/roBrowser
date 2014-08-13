@@ -616,7 +616,7 @@ define(function(require)
 		}
 
 		// Just allow item from store
-		if (data.type !== 'item' || data.from !== 'store' || data.container === this.className) {
+		if (data.type !== 'item' || data.from !== 'NpcStore' || data.container === this.className) {
 			return false;
 		}
 
@@ -693,22 +693,11 @@ define(function(require)
 	/**
 	 * Focus an item
 	 */
-	var onItemFocus = function onItemFocusClosure()
+	function onItemFocus()
 	{
-		var $window = jQuery(window);
-
-		function stopDragDrop() {
-			$window.trigger('mouseup');
-		}
-
-		return function onItemFocus()
-		{
-			NpcStore.ui.find('.item.selected').removeClass('selected');
-			jQuery(this).addClass('selected');
-
-			Events.setTimeout( stopDragDrop, 4);
-		};
-	}();
+		NpcStore.ui.find('.item.selected').removeClass('selected');
+		jQuery(this).addClass('selected');
+	}
 
 
 	/**
@@ -753,7 +742,7 @@ define(function(require)
 		event.originalEvent.dataTransfer.setData('Text',
 			JSON.stringify( window._OBJ_DRAG_ = {
 				type:      'item',
-				from:      'store',
+				from:      'NpcStore',
 				container: container,
 				index:     this.getAttribute('data-index')
 			})

@@ -381,19 +381,19 @@ define(function(require)
 		}
 
 		switch (data.from) {
-			case 'skilllist':
+			case 'SkillList':
 				ShortCut.onChange( index, true, element.SKID, element.level);
 				removeElement( true, element.SKID, row);
 				addElement( index, true, element.SKID, element.level);
 				break;
 
-			case 'inventory':
+			case 'Inventory':
 				ShortCut.onChange( index, false, element.ITID, 0);
 				removeElement( false, element.ITID, row);
 				addElement( index, false, element.ITID, 0);
 				break;
 
-			case 'shortcut':
+			case 'ShortCut':
 				ShortCut.onChange( index, element.isSkill, element.ID, element.count);
 				removeElement( element.isSkill, element.ID, row);
 				addElement( index, element.isSkill, element.ID, element.count);
@@ -431,13 +431,10 @@ define(function(require)
 		event.originalEvent.dataTransfer.setData('Text',
 			JSON.stringify( window._OBJ_DRAG_ = {
 				type: _list[index].isSkill ? 'skill' : 'item',
-				from: 'shortcut',
-				data:  _list[index]
+				from: 'ShortCut',
+				data: _list[index]
 			})
 		);
-
-		// Stop component to be draggable
-		jQuery(window).trigger('mouseup');
 	}
 
 

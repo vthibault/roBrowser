@@ -377,7 +377,7 @@ define(function(require)
 		event.stopImmediatePropagation();
 
 		// Just support items for now ?
-		if (!data || data.type !== 'item' || data.from !== 'inventory') {
+		if (!data || data.type !== 'item' || data.from !== 'Inventory') {
 			return false;
 		}
 
@@ -522,7 +522,7 @@ define(function(require)
 		event.originalEvent.dataTransfer.setData('Text',
 			JSON.stringify( window._OBJ_DRAG_ = {
 				type: 'item',
-				from: 'storage',
+				from: 'Storage',
 				data: _list[i]
 			})
 		);

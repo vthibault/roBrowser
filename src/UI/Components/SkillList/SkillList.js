@@ -562,7 +562,7 @@ define(function(require)
 		event.originalEvent.dataTransfer.setData('Text',
 			JSON.stringify( window._OBJ_DRAG_ = {
 				type: 'skill',
-				from: 'skilllist',
+				from: 'SkillList',
 				data:  skill
 			})
 		);

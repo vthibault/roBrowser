@@ -589,7 +589,7 @@ define(function(require)
 		}
 
 		// Just allow item from storage
-		if (data.type !== 'item' || data.from !== 'storage') {
+		if (data.type !== 'item' || data.from !== 'Storage') {
 			return false;
 		}
 
@@ -696,13 +696,11 @@ define(function(require)
 		event.originalEvent.dataTransfer.setData('Text',
 			JSON.stringify( window._OBJ_DRAG_ = {
 				type: 'item',
-				from: 'inventory',
+				from: 'Inventory',
 				data:  item
 			})
 		);
 
-		// Stop component to be draggable
-		jQuery(window).trigger('mouseup');
 		onItemOut();
 	}
 

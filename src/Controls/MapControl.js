@@ -15,6 +15,7 @@ define(function( require )
 	// Load dependencies
 	var jQuery        = require('Utils/jquery');
 	var DB            = require('DB/DBManager');
+	var UIManager     = require('UI/UIManager');
 	var Cursor        = require('UI/CursorManager');
 	var InputBox      = require('UI/Components/InputBox/InputBox');
 	var ChatBox       = require('UI/Components/ChatBox/ChatBox');
@@ -198,40 +199,53 @@ define(function( require )
 		}
 		catch(e) {}
 
-		// Just support items for now ?
-		if (data && data.type === 'item' && data.from === 'inventory') {
-
-			// Can't drop an item on map if Equipment window is open
-			if (Equipment.ui.is(':visible')) {
-				ChatBox.addText(
-					DB.getMessage(189),
-					ChatBox.TYPE.ERROR
-				);
-				return;
-			}
-
-			item = data.data;
-
-			// Have to specify how much
-			if (item.count > 1) {
-				InputBox.append();
-				InputBox.setType('number', false, item.count);
-				InputBox.onSubmitRequest = function OnSubmitRequest( count ) {
-					InputBox.remove();
-					MapEngine.onDropItem(
-						item.index,
-						parseInt(count, 10 )
-					);
-				};
-			}
-
-			// Only one, don't have to specify
-			else {
-				MapEngine.onDropItem( item.index, 1 );
-			}
+		// Stop default behavior
+		event.stopImmediatePropagation();
+		if (!data) {
+			return false;
 		}
 
-		event.stopImmediatePropagation();
+		// Hacky way to trigger mouseleave (mouseleave isn't
+		// triggered when dragging an object).
+		// ondragleave event is not relyable to do it (not working as intended)
+		if (data.from) {
+			UIManager.getComponent(data.from).ui.trigger('mouseleave');
+		}
+
+		// Just support items ?
+		if (data.type !== 'item' || data.from !== 'Inventory') {
+			return false;
+		}
+
+		// Can't drop an item on map if Equipment window is open
+		if (Equipment.ui.is(':visible')) {
+			ChatBox.addText(
+				DB.getMessage(189),
+				ChatBox.TYPE.ERROR
+			);
+			return false;
+		}
+
+		item = data.data;
+
+		// Have to specify how much
+		if (item.count > 1) {
+			InputBox.append();
+			InputBox.setType('number', false, item.count);
+			InputBox.onSubmitRequest = function OnSubmitRequest( count ) {
+				InputBox.remove();
+				MapEngine.onDropItem(
+					item.index,
+					parseInt(count, 10 )
+				);
+			};
+		}
+
+		// Only one, don't have to specify
+		else {
+			MapEngine.onDropItem( item.index, 1 );
+		}
+
 		return false;
 	}
 

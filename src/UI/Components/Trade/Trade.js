@@ -324,7 +324,7 @@ define(function(require)
 		event.stopImmediatePropagation();
 
 		// Just support items for now ?
-		if (!data || data.type !== 'item' || data.from !== 'inventory') {
+		if (!data || data.type !== 'item' || data.from !== 'Inventory') {
 			return false;
 		}
 
