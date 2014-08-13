@@ -214,7 +214,6 @@ define(function( require )
 			}
 		}
 
-		PartyUI.ui.show();
 		PartyUI.setParty( pkt.groupName, pkt.groupInfo);
 	}
 
