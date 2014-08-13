@@ -267,9 +267,10 @@ define(function(require)
 			return;
 		}
 
-		if (this.addItemSub(item)) {
-			this.list.push(item);
-			this.onUpdateItem(item.ITID, item.count);
+		object = jQuery.extend({}, item);
+		if (this.addItemSub(object)) {
+			this.list.push(object);
+			this.onUpdateItem(object.ITID, object.count);
 		}
 	};
 

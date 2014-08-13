@@ -415,6 +415,8 @@ define(function(require)
 
 		// Create
 		else {
+			player = jQuery.extend({}, player);
+
 			_party.push(player);
 			this.ui.find('.content .party').append(
 				'<div class="node'+ (role === 0 ? ' leader' : '') + (player.state === 0 ? ' online' : '') + '">' +
