@@ -166,6 +166,14 @@ define(function(require)
 				if (this.ui.is(':visible')) {
 					this.focus();
 				}
+				else {
+					// Chrome bug
+					// when clicking double clicking an a weapon to equip
+					// the item disapear, if you don't move the mouse and
+					// triggered ALT+E then, the window disapear and you
+					// can't trigger the scene anymore
+					this.ui.trigger('mouseleave');
+				}
 				break;
 		}
 	};

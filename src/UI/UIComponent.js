@@ -138,10 +138,11 @@ define(function( require )
 			element.mouseleave(function(){
 				if (_enter > 0) {
 					_enter--;
-				}
-				if(_intersect) {
-					Mouse.intersect = true;
-					getModule('Renderer/EntityManager').setOverEntity(null);
+
+					if(_enter === 0 && _intersect) {
+						Mouse.intersect = true;
+						getModule('Renderer/EntityManager').setOverEntity(null);
+					}
 				}
 			});
 
