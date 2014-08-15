@@ -89,7 +89,6 @@ function(    GameFileDecrypt,         BinaryReader,         Struct,         Infl
 		var reader = this.reader;
 		var data, out;
 		var i, count;
-		var c, str;
 
 
 		// Helper
@@ -142,41 +141,78 @@ function(    GameFileDecrypt,         BinaryReader,         Struct,         Infl
 		// Uncompress data
 		(new Inflate(data)).getBytes(out);
 
-		// Read all entries
-		fp         = new BinaryReader( out.buffer );
-		table.data = '';
-		entries    = new Array(header.filecount);
-
-		for (i = 0, count = header.filecount; i < count; ++i) {
-			str = '';
-			while ((c = fp.getUint8())) {
-				str += String.fromCharCode(c);
-			}
-
-			entries[i] = fp.readStruct(GRF.struct_entry);
-			entries[i].filename = str.toLowerCase();
-		}
+		// Load entries
+		entries = loadEntries(out, header.filecount);
 
 		// Store table data (used for regex search in tablelist)
+		table.data = '';
 		for (i = 0, count = out.length; i < count; ++i) {
 			table.data += String.fromCharCode( out[i] );
 		}
 
 		// Sort entries (for binary search)
-		entries.sort(function(a,b){
-			if (a.filename > b.filename) {
-				return 1;
-			}
-			if (a.filename < b.filename) {
-				return -1;
-			}
-			return 0;
-		});
+		entries.sort(sortEntries);
 
 		this.header  = header;
 		this.entries = entries;
 		this.table   = table;
 	};
+
+
+	/**
+	 * Load entries
+	 * Note: this function is quiet intensive, BinaryReader is slowing down
+	 * the process and generate too much memory to garbage (GC pause of 6sec).
+	 *
+	 * @param {Uint8Array} content table
+	 * @param {number} file count
+	 */
+	 function loadEntries( out, count )
+	 {
+		// Read all entries
+		var i, pos, str;
+		var entries = new Array(count);
+
+		for (i = 0, pos = 0; i < count; ++i) {
+			str = '';
+			while (out[pos]) {
+				str += String.fromCharCode(out[pos++]);
+			}
+			pos++;
+
+			entries[i] = {
+				filename:       str.toLowerCase(),
+				pack_size:      out[pos++] | out[pos++] << 8 | out[pos++] << 16 | out[pos++] << 24,
+				length_aligned: out[pos++] | out[pos++] << 8 | out[pos++] << 16 | out[pos++] << 24,
+				real_size:      out[pos++] | out[pos++] << 8 | out[pos++] << 16 | out[pos++] << 24,
+				type:           out[pos++],
+				offset:         out[pos++] | out[pos++] << 8 | out[pos++] << 16 | out[pos++] << 24
+			};
+		}
+
+		return entries;
+	}
+
+
+
+	/**
+	 * Sort entries (to find it faster)
+	 *
+	 * @param {object} entry 1
+	 * @param {object} entry 2
+	 */
+	function sortEntries(a, b)
+	{
+		if (a.filename > b.filename) {
+			return 1;
+		}
+
+		if (a.filename < b.filename) {
+			return -1;
+		}
+
+		return 0;
+	}
 
 
 	/**
