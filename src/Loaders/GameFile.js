@@ -146,8 +146,8 @@ function(    GameFileDecrypt,         BinaryReader,         Struct,         Infl
 
 		// Store table data (used for regex search in tablelist)
 		table.data = '';
-		for (i = 0, count = out.length; i < count; ++i) {
-			table.data += String.fromCharCode( out[i] );
+		for (i = 0, count = entries.length; i < count; ++i) {
+			table.data += entries[i].filename + '\0';
 		}
 
 		// Sort entries (for binary search)
