@@ -629,9 +629,16 @@ define(function( require )
 	{
 		// No action to do ?
 		if (Session.moveAction) {
-			Network.sendPacket(Session.moveAction);
-
-			Session.moveAction = null;
+			// Not sure why, but there is a synchronization error with the
+			// server when moving to attack (wrong position).
+			// So wait 50ms to be sure we are at the correct position before
+			// performing an action
+			Events.setTimeout(function(){
+				if (Session.moveAction) {
+					Network.sendPacket(Session.moveAction);
+					Session.moveAction = null;
+				}
+			}, 50);
 		}
 	}
 
