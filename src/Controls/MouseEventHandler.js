@@ -8,7 +8,7 @@
  * @author Vincent Thibault
  */
 
-define(function()
+define(['Utils/jquery'], function( jQuery )
 {
 	"use strict";
 
@@ -44,6 +44,16 @@ define(function()
 	 * @var {boolean} Do we intersect object ?
 	 */
 	Mouse.intersect = false;
+
+
+	/**
+	 * Track mouse move event
+	 */
+	jQuery(window).mousemove(function(event)
+	{
+		Mouse.screen.x = event.pageX;
+		Mouse.screen.y = event.pageY;
+	});
 
 
 	/**

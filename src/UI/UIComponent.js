@@ -158,6 +158,11 @@ define(function( require )
 				}
 			});
 
+			// Do not cross
+			element.on('touchstart', function(event){
+				event.stopImmediatePropagation();
+			});
+
 			// Focus the UI on mousedown
 			element.mousedown(this.focus.bind(this));
 		}
@@ -338,9 +343,14 @@ define(function( require )
 		}
 
 		// Drag drop stuff
-		element.mousedown(function(event) {
+		element.on('mousedown touchstart', function(event) {
+			if (event.type === 'touchstart') {
+				Mouse.screen.x = event.originalEvent.touches[0].pageX;
+				Mouse.screen.y = event.originalEvent.touches[0].pageY;
+			}
+
 			// Only on left click
-			if (event.which !== 1) {
+			else if (event.which !== 1) {
 				return;
 			}
 
@@ -355,11 +365,11 @@ define(function( require )
 			drag = Events.setTimeout( dragging, 15);
 
 			// Stop the drag (need to focus on window to avoid possible errors...)
-			jQuery(window).on('mouseup.dragdrop', function(event){
-				if (event.which === 1 || event.isTrigger) {
+			jQuery(window).on('mouseup.dragdrop touchend.dragdrop', function(event){
+				if (event.type === 'touchend' || event.which === 1 || event.isTrigger) {
 					container.stop().animate({ opacity:1.0 }, 500 );
 					Events.clearTimeout(drag);
-					jQuery(window).off('mouseup.dragdrop');
+					jQuery(window).off('mouseup.dragdrop touchend.dragdrop');
 				}
 			});
 

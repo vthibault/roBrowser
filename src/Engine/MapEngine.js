@@ -31,6 +31,7 @@ define(function( require )
 	var EntityManager    = require('Renderer/EntityManager');
 	var Entity           = require('Renderer/Entity/Entity');
 	var Altitude         = require('Renderer/Map/Altitude');
+	var MapControl       = require('Controls/MapControl');
 	var Mouse            = require('Controls/MouseEventHandler');
 	var KEYS             = require('Controls/KeyEventHandler');
 	var UIManager        = require('UI/UIManager');
@@ -63,18 +64,24 @@ define(function( require )
 
 
 	/**
+	 * @namespace MapEngine
+	 */
+	var MapEngine = {};
+
+
+	/**
 	 * Connect to Map Server
 	 *
 	 * @param {number} IP
 	 * @param {number} port
 	 * @param {string} mapName
 	 */
-	function init( ip, port, mapName )
+	MapEngine.init = function init( ip, port, mapName )
 	{
 		_mapName = mapName;
 
 		// Connect to char server
-		Network.connect( Network.utils.longToIP( ip ), port, function( success ){
+		Network.connect( Network.utils.longToIP( ip ), port, function onconnect( success ) {
 
 			// Force reloading map
 			MapRenderer.currentMap = '';
@@ -117,6 +124,11 @@ define(function( require )
 
 		_isInitialised = true;
 
+		MapControl.init();
+		MapControl.onRequestWalk     = onRequestWalk;
+		MapControl.onRequestStopWalk = onRequestStopWalk;
+
+
 		// Hook packets
 		Network.hookPacket( PACKET.ZC.AID,                 onReceiveAccountID );
 		Network.hookPacket( PACKET.ZC.ACCEPT_ENTER,        onConnectionAccepted );
@@ -150,7 +162,7 @@ define(function( require )
 		StatusIcons.prepare();
 		BasicInfo.prepare();
 		ChatBox.prepare();
-	}
+	};
 
 
 	/**
@@ -502,7 +514,7 @@ define(function( require )
 	/**
 	 * Ask to move
 	 */
-	function onMouseDown()
+	function onRequestWalk()
 	{
 		Events.clearTimeout(_walkTimer);
 
@@ -517,14 +529,14 @@ define(function( require )
 			return;
 		}
 
-		onWalkRequest();
+		walkIntervalProcess();
 	}
 
 
 	/**
 	 * Stop moving
 	 */
-	function onMouseUp()
+	function onRequestStopWalk()
 	{
 		Events.clearTimeout(_walkTimer);
 	}
@@ -533,7 +545,7 @@ define(function( require )
 	/**
 	 * Moving function
 	 */
-	function onWalkRequest()
+	function walkIntervalProcess()
 	{
 		// setTimeout isn't accurate, so reduce the value
 		// to avoid possible errors.
@@ -557,7 +569,7 @@ define(function( require )
 		}
 
 		Events.clearTimeout(_walkTimer);
-		_walkTimer    =  Events.setTimeout( onWalkRequest, 500);
+		_walkTimer    =  Events.setTimeout( walkIntervalProcess, 500);
 		_walkLastTick = +Renderer.tick;
 	}
 
@@ -665,7 +677,7 @@ define(function( require )
 	 * @param {number} index in inventory
 	 * @param {number} count to drop
 	 */
-	function onDropItem( index, count )
+	MapEngine.onDropItem = function onDropItem( index, count )
 	{
 		if (count) {
 			var pkt   = new PACKET.CZ.ITEM_THROW();
@@ -745,12 +757,5 @@ define(function( require )
 	/**
 	 * Export
 	 */
-	return new function MapEngine(){
-		this.init        = init;
-		this.onMouseUp   = onMouseUp;
-		this.onMouseDown = onMouseDown;
-		this.onDropItem  = onDropItem;
-
-		require('Controls/MapControl').call(this);
-	}();
+	return MapEngine;
 });

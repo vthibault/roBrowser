@@ -21,6 +21,7 @@ define(function( require )
 	var ChatBox       = require('UI/Components/ChatBox/ChatBox');
 	var Equipment     = require('UI/Components/Equipment/Equipment');
 	var Mouse         = require('Controls/MouseEventHandler');
+	var Mobile        = require('Core/Mobile');
 	var Renderer      = require('Renderer/Renderer');
 	var Camera        = require('Renderer/Camera');
 	var EntityManager = require('Renderer/EntityManager');
@@ -37,27 +38,59 @@ define(function( require )
 
 
 	/**
-	 * Moving the mouse on the scene
+	 * @namespace MapControl
 	 */
-	function OnMouseMove( event )
+	var MapControl = {};
+
+
+	/**
+	 * Callback used when requesting to move somewhere
+	 */
+	MapControl.onRequestWalk = function(){};
+
+
+	/**
+	 * Callback used when request to stop move
+	 */
+	MapControl.onRequestStopWalk = function(){};
+
+
+	/**
+	 * Initializing the controller
+	 */
+	MapControl.init = function init()
 	{
-		Mouse.screen.x = event.pageX;
-		Mouse.screen.y = event.pageY;
-	}
+		Mobile.init();
+		Mobile.onTouchStart = onMouseDown.bind(this);
+		Mobile.onTouchEnd   = onMouseUp.bind(this);
+
+		// Attach events
+		jQuery( Renderer.canvas )
+			.on('mousewheel DOMMouseScroll', onMouseWheel)
+			.on('dragover',                  onDragOver )
+			.on('drop',                      onDrop.bind(this));
+
+		jQuery(window)
+			.on('contextmenu',     function(){ return false; })
+			.on('mousedown.map',   onMouseDown.bind(this))
+			.on('mouseup.map',     onMouseUp.bind(this));
+	};
 
 
 	/**
 	 * What to do when clicking on the map ?
 	 */
-	function OnMouseDown( event )
+	function onMouseDown( event )
 	{
+		var action = event && event.which || 1;
+
 		Session.moveAction = null;
 
 		if (!Mouse.intersect) {
 			return;
 		}
 
-		switch (event.which) {
+		switch (action) {
 
 			// Left click
 			case 1:
@@ -83,7 +116,9 @@ define(function( require )
 				}
 
 				// Start walking
-				this.onMouseDown();
+				if (this.onRequestWalk) {
+					this.onRequestWalk();
+				}
 				break;
 
 			// Right Click
@@ -101,16 +136,17 @@ define(function( require )
 	/**
 	 * What to do when stop clicking on the map ?
 	 */
-	function OnMouseUp( event )
+	function onMouseUp( event )
 	{
 		var entity;
+		var action = event && event.which || 1;
 
 		// Not rendering yet
 		if (!Mouse.intersect) {
 			return;
 		}
 
-		switch (event.which) {
+		switch (action) {
 
 			// Left click
 			case 1:
@@ -128,7 +164,9 @@ define(function( require )
 				}
 
 				// stop walking
-				this.onMouseUp();
+				if (this.onRequestStopWalk) {
+					this.onRequestStopWalk();
+				}
 				break;
 
 			// Right Click
@@ -153,7 +191,7 @@ define(function( require )
 	/**
 	 * Zoom feature
 	 */
-	function OnMouseWheel( event )
+	function onMouseWheel( event )
 	{
 		// Zooming on the scene
 		// Cross browser delta
@@ -176,7 +214,7 @@ define(function( require )
 	/**
 	 * Allow dropping data
 	 */
-	function OnDragOver(event)
+	function onDragOver(event)
 	{
 		event.stopImmediatePropagation();
 		return false;
@@ -187,7 +225,7 @@ define(function( require )
 	/**
 	 * Drop items to the map
 	 */
-	function OnDrop( event )
+	function onDrop( event )
 	{
 		var item, data;
 		var MapEngine = this;
@@ -232,7 +270,7 @@ define(function( require )
 		if (item.count > 1) {
 			InputBox.append();
 			InputBox.setType('number', false, item.count);
-			InputBox.onSubmitRequest = function OnSubmitRequest( count ) {
+			InputBox.onSubmitRequest = function onSubmitRequest( count ) {
 				InputBox.remove();
 				MapEngine.onDropItem(
 					item.index,
@@ -251,22 +289,8 @@ define(function( require )
 
 
 
-
 	/**
 	 *  Exports
 	 */
-	return function Initialize()
-	{
-		// Attach events
-		jQuery( Renderer.canvas )
-			.on('mousewheel DOMMouseScroll', OnMouseWheel)
-			.on('dragover', OnDragOver )
-			.on('drop', OnDrop.bind(this));
-
-		jQuery(window)
-			.on('contextmenu', function(){ return false; })
-			.mousemove( OnMouseMove )
-			.mousedown( OnMouseDown.bind(this) )
-			.mouseup( OnMouseUp.bind(this) );
-	};
+	return MapControl;
 });

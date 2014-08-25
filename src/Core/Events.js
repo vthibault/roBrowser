@@ -54,7 +54,7 @@ define(function()
 		var event;
 
 		tick  = _tick + delay;
-		event = { callback: callback, tick: _tick + delay, uid:_uid++ };
+		event = { callback: callback, tick: tick, uid:_uid++ };
 
 		// Add it to the list, sorted by delay
 		for (i = 0, count = _events.length; i < count; ++i) {
