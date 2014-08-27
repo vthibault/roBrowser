@@ -25,7 +25,7 @@ define(function( require )
 	///   replace the %d in the file name with a rand(val1, val2).
 	///
 	/// - wav:
-	///   autio file stored in data/wav/ folder
+	///   audio file stored in data/wav/ folder
 	///
 	/// - attachedEntity:
 	///   if set to true, the effect will follow the entity attached
@@ -37,7 +37,7 @@ define(function( require )
 	///   Sprite file name stored in data/sprite/ÀÌÆÑÆ®/(.*).spr
 	///
 	/// - wav:
-	///   autio file stored in data/wav/ folder
+	///   audio file stored in data/wav/ folder
 	///
 	/// - attachedEntity:
 	///   if set to true, the effect will follow the entity attached
