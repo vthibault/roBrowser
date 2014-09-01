@@ -37,5 +37,5 @@
 
 #PartyFriends .footer { border-radius:0px 0px 3px 3px; width:100%; height:21px; background-repeat:repeat-x; background-color:transparent; position:relative; }
 #PartyFriends .footer .party, #PartyFriends .footer .friend { padding-left: 5px; padding-top: 3px; }
-#PartyFriends .footer .switchtab { height:15px; border:none; background-repeat:no-repeat; background-color:transparent; background-position:0px 3px; padding-left:15px; }
+#PartyFriends .footer .switchtab { height:15px; border:none; background-repeat:no-repeat; background-color:transparent; background-position:0px 0px; padding-left:15px; }
 #PartyFriends .footer .resize { position:absolute; right:0px; bottom:1px; width:13px; height:13px; border:none; background-repeat:no-repeat; background-color:transparent; }

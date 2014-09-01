@@ -21,17 +21,23 @@ define(function( require )
 	var Network       = require('Network/NetworkManager');
 	var PACKET        = require('Network/PacketStructure');
 	var EntityManager = require('Renderer/EntityManager');
+	var MapRenderer   = require('Renderer/MapRenderer');
 	var UIManager     = require('UI/UIManager');
 	var ChatBox       = require('UI/Components/ChatBox/ChatBox');
 	var MiniMap       = require('UI/Components/MiniMap/MiniMap');
 	var PartyUI       = require('UI/Components/PartyFriends/PartyFriends');
 
 
-
 	/**
 	 * Party namespace
 	 */
 	var GroupEngine = {};
+
+
+	/**
+	 * @var {string} temporary variable to store party name
+	 */
+	var _partyName = '';
 
 
 	/**
@@ -53,6 +59,7 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.ADD_MEMBER_TO_GROUP,       onPartyMemberJoin );
 		Network.hookPacket( PACKET.ZC.ADD_MEMBER_TO_GROUP2,      onPartyMemberJoin );
 		Network.hookPacket( PACKET.ZC.DELETE_MEMBER_FROM_GROUP,  onPartyMemberLeave );
+		Network.hookPacket( PACKET.ZC.ACK_MAKE_GROUP,            onPartyCreate );
 
 		PartyUI.onExpelMember          = GroupEngine.onRequestExpel;
 		PartyUI.onRequestChangeLeader  = GroupEngine.onRequestChangeLeader;
@@ -73,6 +80,8 @@ define(function( require )
 		if (Session.hasParty) {
 			return;
 		}
+
+		_partyName = name;
 
 		var pkt = new PACKET.CZ.MAKE_GROUP();
 		pkt.groupName = name;
@@ -192,6 +201,42 @@ define(function( require )
 		pkt.AID = AID;
 		Network.sendPacket(pkt);
 	};
+
+
+	/**
+	 * Get answer from party creation
+	 *
+	 * @param {object} pkt - PACKET.ZC.ACK_MAKE_GROUP
+	 */
+	function onPartyCreate( pkt )
+	{
+		switch (pkt.result) {
+			case 0: // Ok, process
+				ChatBox.addText( DB.getMessage(77), ChatBox.TYPE.BLUE);
+				Session.hasParty = true;
+
+				PartyUI.setParty( _partyName, [{
+					AID:           Session.AID,
+					characterName: Session.Entity.display.name,
+					role:          0, // leader
+					state:         0, // online
+					mapName:       MapRenderer.currentMap
+				}]);
+				break;
+
+			case 1: // party name already exists
+				ChatBox.addText( DB.getMessage(78), ChatBox.TYPE.ERROR);
+				break;
+
+			case 1: // already in a party
+				ChatBox.addText( DB.getMessage(79), ChatBox.TYPE.ERROR);
+				break;
+
+			case 3: // cannot organize parties on this map
+				ChatBox.addText( DB.getMessage(1387), ChatBox.TYPE.ERROR);
+				break;
+		}
+	}
 
 
 	/**

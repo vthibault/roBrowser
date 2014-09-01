@@ -108,7 +108,7 @@ define( ['./PacketStructure' ], function( PACKET )
 		0xf4: PACKET.ZC.ADD_ITEM_TO_STORE, // ok
 		0xf6: PACKET.ZC.DELETE_ITEM_FROM_STORE, // ok
 		0xf8: PACKET.ZC.CLOSE_STORE, // ok
-		0xfa: PACKET.ZC.ACK_MAKE_GROUP,
+		0xfa: PACKET.ZC.ACK_MAKE_GROUP, // ok
 		0xfb: PACKET.ZC.GROUP_LIST, // ok
 		0xfd: PACKET.ZC.ACK_REQ_JOIN_GROUP, // ok
 		0xfe: PACKET.ZC.REQ_JOIN_GROUP,
