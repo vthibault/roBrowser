@@ -56,6 +56,12 @@ define(function( require )
 
 
 	/**
+	 * Callback used when dropping an item to the map
+	 */
+	MapControl.onRequestDropItem = function(){};
+
+
+	/**
 	 * Initializing the controller
 	 */
 	MapControl.init = function init()
@@ -272,7 +278,7 @@ define(function( require )
 			InputBox.setType('number', false, item.count);
 			InputBox.onSubmitRequest = function onSubmitRequest( count ) {
 				InputBox.remove();
-				MapEngine.onDropItem(
+				MapControl.onRequestDropItem(
 					item.index,
 					parseInt(count, 10 )
 				);
@@ -281,7 +287,7 @@ define(function( require )
 
 		// Only one, don't have to specify
 		else {
-			MapEngine.onDropItem( item.index, 1 );
+			MapControl.onRequestDropItem( item.index, 1 );
 		}
 
 		return false;

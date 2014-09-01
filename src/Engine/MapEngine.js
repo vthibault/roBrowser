@@ -127,6 +127,7 @@ define(function( require )
 		MapControl.init();
 		MapControl.onRequestWalk     = onRequestWalk;
 		MapControl.onRequestStopWalk = onRequestStopWalk;
+		MapControl.onRequestDropItem = onDropItem;
 
 
 		// Hook packets
@@ -295,7 +296,7 @@ define(function( require )
 	function onServerChange( pkt )
 	{
 		jQuery(window).off('keydown.map');
-		init( pkt.addr.ip, pkt.addr.port, pkt.mapName );
+		MapEngine.init( pkt.addr.ip, pkt.addr.port, pkt.mapName );
 	}
 
 
@@ -404,7 +405,7 @@ define(function( require )
 			StatusIcons.clean();
 			ChatBox.clean();
 			ShortCut.clean();
-			PartyFriends.clean()
+			PartyFriends.clean();
 			MapRenderer.free();
 			Renderer.stop();
 			onRestart();
@@ -424,7 +425,7 @@ define(function( require )
 				StatusIcons.clean();
 				ChatBox.clean();
 				ShortCut.clean();
-				PartyFriends.clean()
+				PartyFriends.clean();
 				Renderer.stop();
 				onExitSuccess();
 				break;
@@ -677,7 +678,7 @@ define(function( require )
 	 * @param {number} index in inventory
 	 * @param {number} count to drop
 	 */
-	MapEngine.onDropItem = function onDropItem( index, count )
+	function onDropItem( index, count )
 	{
 		if (count) {
 			var pkt   = new PACKET.CZ.ITEM_THROW();
