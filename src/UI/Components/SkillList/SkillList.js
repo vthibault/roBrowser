@@ -217,7 +217,7 @@ define(function(require)
 				'<td class="levelupcontainer"></td>' +
 				'<td class=selectable>' +
 					'<div class="name">' +
-						sk.SkillName  +'<br/>' +
+						jQuery.escape(sk.SkillName)  +'<br/>' +
 						'<span class="level">' +
 						(
 							sk.bSeperateLv ? 'Lv : <span class="current">'+ skill.level + '</span> / <span class="max">' + skill.level + '</span>'

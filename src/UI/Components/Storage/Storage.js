@@ -228,7 +228,7 @@ define(function(require)
 				'<div class="item" data-index="' + item.index +'" draggable="true">' +
 					'<div class="icon"></div>' +
 					'<div class="amount">'+ (item.count ? '<span class="count">' + item.count + '</span>' + ' ' : '') + '</div>' +
-					'<span class="name">' + DB.getItemName(item) + '</span>' +
+					'<span class="name">' + jQuery.escape(DB.getItemName(item)) + '</span>' +
 				'</div>'
 			);
 
@@ -480,7 +480,7 @@ define(function(require)
 		// Display box
 		overlay.show();
 		overlay.css({top: pos.top-10, left:pos.left+35});
-		overlay.html(DB.getItemName(item) + ' ' + ( item.count || 1 ) + ' ea');
+		overlay.text(DB.getItemName(item) + ' ' + ( item.count || 1 ) + ' ea');
 
 		if (item.IsIdentified) {
 			overlay.removeClass('grey');

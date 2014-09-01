@@ -256,7 +256,7 @@ define(function(require)
 		this.ui.find(getSelectorFromLocation(location)).html(
 			'<div class="item" data-index="'+ item.index +'">' +
 				'<button></button>' +
-				'<span>' + DB.getItemName(item) + '</span>' +
+				'<span>' + jQuery.escape(DB.getItemName(item)) + '</span>' +
 			'</div>'
 		);
 
@@ -570,7 +570,7 @@ define(function(require)
 		// Display box
 		overlay.show();
 		overlay.css({top: pos.top-22, left:pos.left-22});
-		overlay.html(DB.getItemName(item));
+		overlay.text(DB.getItemName(item));
 	}
 
 

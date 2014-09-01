@@ -172,7 +172,7 @@ define(function(require)
 
 		if (itemId && card) {
 			file = 'item/' + card.identifiedResourceName + '.bmp';
-			name = '<div class="name">'+ card.identifiedDisplayName + '</div>';
+			name = '<div class="name">'+ jQuery.escape(card.identifiedDisplayName) + '</div>';
 		}
 		else if (index < maxSlots) {
 			file = 'empty_card_slot.bmp';

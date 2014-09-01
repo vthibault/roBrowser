@@ -161,15 +161,15 @@ define(function(require)
 		var members  = '';
 		var i, count = this.members.length;
 
-		this.ui.find('.titlebar .title').html( this.title );
-		this.ui.find('.titlebar .count').html( this.count + '/' + this.limit );
+		this.ui.find('.titlebar .title').text( this.title );
+		this.ui.find('.titlebar .count').text( this.count + '/' + this.limit );
 
 		for (i = 0; i < count; ++i) {
 			if (this.members[i] == this.owner) {
-				members = '<span class="owner">' + this.members[i] + '</span><br/>' + members;
+				members = '<span class="owner">' + jQuery.escape(this.members[i]) + '</span><br/>' + members;
 				continue;
 			}
-			members += this.members[i] + '<br/>';
+			members +=  jQuery.escape(this.members[i]) + '<br/>';
 		}
 
 		this.ui.find('.members').html( members );

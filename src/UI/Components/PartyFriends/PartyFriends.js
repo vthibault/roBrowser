@@ -253,7 +253,7 @@ define(function(require)
 			_friends[i] = friends[i];
 			ui.append(
 				'<div class="node'+ (friends[i].State === 0 ? ' online' : '') +'">' +
-					'<span class="name">' + friends[i].Name + '</span>' +
+					'<span class="name">' + jQuery.escape(friends[i].Name) + '</span>' +
 				'</div>'
 			);
 		}
@@ -420,8 +420,8 @@ define(function(require)
 			_party.push(player);
 			this.ui.find('.content .party').append(
 				'<div class="node'+ (role === 0 ? ' leader' : '') + (player.state === 0 ? ' online' : '') + '">' +
-					'<span class="name">' + player.characterName + '</span>' +
-					'<span class="map">(' + DB.getMapName(player.mapName) + ')</span>' +
+					'<span class="name">' + jQuery.escape(player.characterName) + '</span>' +
+					'<span class="map">(' + jQuery.escape(DB.getMapName(player.mapName)) + ')</span>' +
 					'<canvas class="life" width="60" height="5"></canvas> <span class="hp"></span>' +
 				'</div>'
 			);

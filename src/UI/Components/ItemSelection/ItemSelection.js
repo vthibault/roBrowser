@@ -15,6 +15,7 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
+	var jQuery      = require('Utils/jquery');
 	var DB          = require('DB/DBManager');
 	var SkillInfo   = require('DB/Skills/SkillInfo');
 	var Client      = require('Core/Client');
@@ -108,7 +109,7 @@ define(function(require)
 		ItemSelection.list.append(
 			'<div class="item" data-index="'+ index +'">' +
 				'<div class="icon"></div>' +
-				'<span class="name">' + name + '</span>' +
+				'<span class="name">' + jQuery.escape(name) + '</span>' +
 			'</div>'
 		);
 

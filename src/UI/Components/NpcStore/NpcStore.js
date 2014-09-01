@@ -411,7 +411,7 @@ define(function(require)
 			'<div class="item" draggable="true" data-index="'+ item.index +'">' +
 				'<div class="icon"></div>' +
 				'<div class="amount">' + (isFinite(item.count) ? item.count : '') + '</div>' +
-				'<div class="name">'+ DB.getItemName(item) +'</div>' +
+				'<div class="name">'+ jQuery.escape(DB.getItemName(item)) +'</div>' +
 				'<div class="price">'+ price +'</div>' +
 				'<div class="unity">Z</div>' +
 			'</div>'

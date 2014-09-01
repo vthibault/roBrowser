@@ -313,14 +313,18 @@ define(function(require)
 			}
 		}
 
-		Client.loadFile( DB.INTERFACE_PATH + 'item/' + file + '.bmp', function(data){
+		Client.loadFile( DB.INTERFACE_PATH + 'item/' + file + '.bmp', function(url){
 			ui.html(
 				'<div draggable="true" class="icon">' +
-					'<div class="img" style="background-image:url(' + data + ')"></div>' +
-					'<div class="amount">'+ count + '</div>' +
-					'<span class="name">' + name + '</span>' +
+					'<div class="img"></div>' +
+					'<div class="amount"></div>' +
+					'<span class="name"></span>' +
 				'</div>'
 			);
+
+			ui.find('.img').css('backgroundImage', 'url('+ url +')');
+			ui.find('.amount').text(count);
+			ui.find('.name').text(name);
 		});
 	}
 

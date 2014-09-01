@@ -6,8 +6,8 @@
  * @author Vincent Thibault
  */
 
-define(['Core/Configs', 'Core/Context', 'Core/Preferences', 'Preferences/Audio', 'Preferences/Graphics'],
-function(     Configs,        Context,        Preferences,               Audio,               Graphics )
+define(['Utils/jquery', 'Core/Configs', 'Core/Context', 'Core/Preferences', 'Preferences/Audio', 'Preferences/Graphics'],
+function(      jQuery,        Configs,        Context,        Preferences,               Audio,               Graphics )
 {
 	'use strict';
 
@@ -59,19 +59,29 @@ function(     Configs,        Context,        Preferences,               Audio, 
 		var i, count;
 		var serverlist = _preferences.serverlist;
 		var $servers = ui.find('.servers').empty();
+		var element = jQuery(
+			'<tr>' +
+			'	<td><input type="text" class="display"/></td>'   +
+			'	<td><input type="text" class="address"/></td>'   +
+			'	<td><input type="text" class="version"/></td>'   +
+			'	<td><input type="text" class="langtype"/></td>'  +
+			'	<td><input type="text" class="packetver"/></td>' +
+			'	<td><button class="btn_delete"></button></td>'   +
+			'</tr>'
+		);
 
 		for (i = 0, count = serverlist.length; i < count; ++i) {
-			$servers.append(
-				'<tr>' +
-				'	<td><input type="text" class="display" value="'+ serverlist[i].display +'"/></td>' +
-				'	<td><input type="text" class="address" value="'+ serverlist[i].address +':'+ serverlist[i].port +'"/></td>' +
-				'	<td><input type="text" class="version" value="'+ serverlist[i].version +'"/></td>' +
-				'	<td><input type="text" class="langtype" value="'+ serverlist[i].langtype +'"/></td>' +
-				'	<td><input type="text" class="packetver" value="'+ serverlist[i].packetver + '"/></td>' +
-				'	<td><button class="btn_delete"></button></td>' +
-				'</tr>'
-			);
+			var server = element.clone();
+
+			server.find('.display').val(serverlist[i].display);
+			server.find('.address').val(serverlist[i].address +':'+ serverlist[i].port);
+			server.find('.version').val(serverlist[i].version);
+			server.find('.langtype').val(serverlist[i].langtype);
+			server.find('.packetver').val(serverlist[i].packetver);
+
+			$servers.append(server);
 		}
+
 
 		apply();
 	}

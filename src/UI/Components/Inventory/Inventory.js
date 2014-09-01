@@ -663,7 +663,7 @@ define(function(require)
 		// Display box
 		overlay.show();
 		overlay.css({top: pos.top, left:pos.left+35});
-		overlay.html( DB.getItemName(item) + ' ' + (item.count || 1) + ' ea');
+		overlay.text(DB.getItemName(item) + ' ' + (item.count || 1) + ' ea');
 
 		if (item.IsIdentified) {
 			overlay.removeClass('grey');

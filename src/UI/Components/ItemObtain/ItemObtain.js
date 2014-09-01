@@ -16,6 +16,7 @@ define(function(require)
 	 * Dependencies
 	 */
 	var DB                 = require('DB/DBManager');
+	var jQuery             = require('Utils/jquery');
 	var Client             = require('Core/Client');
 	var Events             = require('Core/Events');
 	var Renderer           = require('Renderer/Renderer');
@@ -107,7 +108,7 @@ define(function(require)
 
 		this.ui.find('.content').html(
 			'<img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" class="'+ item.ITID +'" width="24" height="24" /> ' +
-			display + ' ' + DB.getMessage(696).replace('%d', item.count || 1)
+			jQuery.escape(display + ' ' + DB.getMessage(696).replace('%d', item.count || 1))
 		);
 
 		this.ui.css('left', ( Renderer.width - (this.ui.width()) ) >> 1 );
