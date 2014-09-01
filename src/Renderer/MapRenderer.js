@@ -109,6 +109,12 @@ define(function( require )
 			return;
 		}
 
+		// Support for instance map
+		// Is it always 3 digits ?
+		mapname = mapname
+			.replace(/^(\d{3})(\d@)/, '$2') // 0061@tower   -> 1@tower
+			.replace(/^\d{3}#/, '');        // 003#prontera -> prontera
+
 		// Clean objects
 		SoundManager.stop();
 		Renderer.stop();
