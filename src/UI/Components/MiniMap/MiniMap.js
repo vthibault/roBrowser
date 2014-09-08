@@ -434,11 +434,14 @@ define(function(require)
 		if (count) {
 			_ctx.fillStyle   = 'rgb(245,175,200)';
 			_ctx.strokeStyle = 'white';
+			_ctx.lineWidth   = 2;
 			for (i = 0; i < count; ++i) {
 				dot = _guild[i];
-				_ctx.moveTo( start_x + dot.x * f + 0, start_y + 128 - dot.y * f - 3 );
-				_ctx.lineTo( start_x + dot.x * f + 3, start_y + 128 - dot.y * f + 3 );
-				_ctx.lineTo( start_x + dot.x * f - 3, start_y + 128 - dot.y * f + 3 );
+				_ctx.beginPath();
+				_ctx.moveTo( start_x + dot.x * f + 0, start_y + 128 - dot.y * f - 4 );
+				_ctx.lineTo( start_x + dot.x * f + 4, start_y + 128 - dot.y * f + 4 );
+				_ctx.lineTo( start_x + dot.x * f - 4, start_y + 128 - dot.y * f + 4 );
+				_ctx.lineTo( start_x + dot.x * f + 0, start_y + 128 - dot.y * f - 4 );
 			}
 			_ctx.stroke();
 			_ctx.fill();
