@@ -18,9 +18,11 @@ define(function( require )
 	 */
 	var DB            = require('DB/DBManager');
 	var Inflate       = require('Utils/Inflate');
+	var BinaryWriter  = require('Utils/BinaryWriter');
 	var Session       = require('Engine/SessionStorage');
 	var Network       = require('Network/NetworkManager');
 	var PACKET        = require('Network/PacketStructure');
+	var EntityManager = require('Renderer/EntityManager');
 	var ChatBox       = require('UI/Components/ChatBox/ChatBox');
 	var MiniMap       = require('UI/Components/MiniMap/MiniMap');
 	var Guild         = require('UI/Components/Guild/Guild');
@@ -85,6 +87,7 @@ define(function( require )
 		Guild.onRequestDeleteRelation = GuildEngine.requestDeleteRelatedGuild;
 		Guild.onRequestAccess         = GuildEngine.requestAccess;
 		Guild.onRequestGuildEmblem    = GuildEngine.requestGuildEmblem;
+		Guild.onSendEmblem            = GuildEngine.sendEmblem;
 	};
 
 
@@ -325,6 +328,43 @@ define(function( require )
 
 
 	/**
+	 * Send Emblem to server.
+	 * Note: it's a hacky way that do not compress the emblem.
+	 *
+	 * @param {Uint8Array} file
+	 */
+	GuildEngine.sendEmblem = (function sendEmblemClosure()
+	{
+		function adler32(data) {
+			for (var i = 0, len = data.length, s1 = 1, s2 = 0; i < len; i++) {
+				s1 = (s1 + data[i]) % 65521;
+				s2 = (s2 + s1) % 65521;
+			}
+			return (s2 << 16) + s1;
+		}
+		return function sendEmblem(data) {
+			var len = data.length;
+			var out = new BinaryWriter(2 + 1 + 2 + 2 + len + 4);
+
+			// zlib compression
+			out.writeUChar(0x78);
+			out.writeUChar(0x1);
+			out.writeUChar(0x1);
+			out.writeUShort(len);
+			out.writeUShort(~len & 0xffff);
+			out.writeBuffer(data.buffer);
+			out.view.setInt32( out.offset, adler32(data), false); // big endian
+
+
+			// send packet
+			var pkt = new PACKET.CZ.REGISTER_GUILD_EMBLEM_IMG();
+			pkt.img = out.buffer;
+			Network.sendPacket(pkt);
+		};
+	})();
+
+
+	/**
 	 * @var {number} our guild id
 	 */
 	GuildEngine.guild_id = -1;
@@ -447,9 +487,27 @@ define(function( require )
 			img.onload        = function(){
 				version.image = this;
 
+				// Update our guild emblem
+				if (pkt.GDID === GuildEngine.guild_id) {
+					Guild.setEmblem(this);
+				}
+
+				// Execute callbacks
 				while (version.funcs.length) {
 					version.funcs.shift().call(null, this);
 				}
+
+				// Update display name
+				EntityManager.forEach(function(entity){
+					if (entity.GUID === pkt.GDID) {
+						entity.display.emblem = img;
+						entity.display.update(
+							entity.objecttype === entity.constructor.TYPE_MOB ? '#ffc6c6' :
+							entity.objecttype === entity.constructor.TYPE_NPC ? '#94bdf7' :
+							'white'
+						);
+					}
+				})
 			};
 		};
 	})();
@@ -815,7 +873,6 @@ define(function( require )
 				break;
 		}
 	}
-
 
 
 	/**

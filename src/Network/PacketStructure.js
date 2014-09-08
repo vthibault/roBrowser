@@ -1328,15 +1328,17 @@ define(['Utils/BinaryWriter', './PacketVerManager'], function(BinaryWriter, PACK
 
 	// 0x153
 	PACKET.CZ.REGISTER_GUILD_EMBLEM_IMG = function PACKET_CZ_REGISTER_GUILD_EMBLEM_IMG() {
-		this.img = '';
+		this.img;
 	};
 	PACKET.CZ.REGISTER_GUILD_EMBLEM_IMG.prototype.build = function() {
-		var pkt_len = 2 + 2 + this.img.length;
+		var pkt_len = 2 + 2 + this.img.byteLength;
 		var pkt_buf = new BinaryWriter(pkt_len);
 
 		pkt_buf.writeShort(0x153);
 		pkt_buf.writeShort(pkt_len);
-		pkt_buf.writeBinaryString(this.img);
+		pkt_buf.writeBuffer(this.img);
+
+		window.buffer = pkt_buf.buffer;
 		return pkt_buf;
 	};
 

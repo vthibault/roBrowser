@@ -205,6 +205,17 @@ define(function(require)
 				ui.find('.footer .btn_ok').show();
 			});
 
+		// Upload emblem
+		ui.find('.content.info .emblem_edit input').change(function(){
+			if (this.files.length && this.files[0].type === 'image/bmp') {
+				var reader = new FileReader();
+				reader.onload = function(e) {
+					Guild.onSendEmblem(new Uint8Array(e.target.result));
+				};
+				reader.readAsArrayBuffer(this.files[0]);
+			}
+		});
+
 		ui.find('.footer .btn_ok').click(onValidate);
 
 		this.draggable(this.ui.find('.titlebar'));
@@ -309,11 +320,20 @@ define(function(require)
 		general.find('.exp .value').text(info.exp);
 		general.find('.tax .value').text(info.point);
 
-		Guild.onRequestGuildEmblem(info.GDID, info.emblemVersion, function(image){
-			general.find('.emblem_container').css('backgroundImage', 'url('+ image.src +')');
-		});
+		Guild.onRequestGuildEmblem(info.GDID, info.emblemVersion, Guild.setEmblem.bind(this));
 
 		renderTendency(info.honor, info.virtue);
+	};
+
+
+	/**
+	 * Set guild emblem
+	 *
+	 * @param {Image}
+	 */
+	Guild.setEmblem = function setEmblem( image )
+	{
+		this.ui.find('.content.info').find('.emblem_container').css('backgroundImage', 'url('+ image.src +')');
 	};
 
 
@@ -926,6 +946,13 @@ define(function(require)
 	 * @param {function} callback once loaded
 	 */
 	Guild.onRequestGuildEmblem = function(){};
+
+
+	/**
+	 * Send new guild emblem to the server
+	 * @param {UInt8Array} emblem data
+	 */
+	Guild.onSendEmblem = function(){}
 
 
 	/**

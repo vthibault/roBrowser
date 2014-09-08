@@ -81,7 +81,8 @@
 
 
 #Guild .content.info .emblem_container { width:24px; height:24px; position:absolute; top:70px; left:300px; background-color:#709ce7; background-repeat:no-repeat; }
-#Guild .content.info .emblem_edit { position:absolute; top:75px; left:350px; width:42px; height:20px; border:none; background-color:transparent; background-repeat:no-repeat; }
+#Guild .content.info .emblem_edit { position:absolute; top:75px; left:350px; width:42px; height:20px; border:none; background-color:transparent; background-repeat:no-repeat; overflow:hidden; }
+#Guild .content.info .emblem_edit input { opacity:0; }
 
 /*
  * Guild Members
