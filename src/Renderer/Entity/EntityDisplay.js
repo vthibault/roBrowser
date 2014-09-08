@@ -221,16 +221,16 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 			multiShadow(ctx, lines[0], start_x, 0,  0,  1, 0);
 			multiShadow(ctx, lines[0], start_x, 0, -1,  0, 0);
 			multiShadow(ctx, lines[0], start_x, 0,  1,  0, 0);
-			multiShadow(ctx, lines[1], start_x, fontSize * 1.5,  0, -1, 0);
-			multiShadow(ctx, lines[1], start_x, fontSize * 1.5,  0,  1, 0);
-			multiShadow(ctx, lines[1], start_x, fontSize * 1.5, -1,  0, 0);
-			multiShadow(ctx, lines[1], start_x, fontSize * 1.5,  1,  0, 0);
+			multiShadow(ctx, lines[1], start_x, fontSize * 1.2,  0, -1, 0);
+			multiShadow(ctx, lines[1], start_x, fontSize * 1.2,  0,  1, 0);
+			multiShadow(ctx, lines[1], start_x, fontSize * 1.2, -1,  0, 0);
+			multiShadow(ctx, lines[1], start_x, fontSize * 1.2,  1,  0, 0);
 			ctx.fillStyle   = color;
 			ctx.strokeStyle = 'black';
 			ctx.strokeText(lines[0], start_x, 0);
 			ctx.fillText(  lines[0], start_x, 0);
-			ctx.strokeText(lines[1], start_x, fontSize * 1.5);
-			ctx.fillText(  lines[1], start_x, fontSize * 1.5);
+			ctx.strokeText(lines[1], start_x, fontSize * 1.2);
+			ctx.fillText(  lines[1], start_x, fontSize * 1.2);
 		}
 
 		// fillText renderer
@@ -238,10 +238,10 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 			ctx.translate(0.5, 0.5);
 			ctx.fillStyle    = 'black';
 			ctx.outlineText( lines[0], start_x, 0 );
-			ctx.outlineText( lines[1], start_x, fontSize * 1.5 );
+			ctx.outlineText( lines[1], start_x, fontSize * 1.2 );
 			ctx.fillStyle    = color;
 			ctx.fillText( lines[0], start_x, 0 );
-			ctx.fillText( lines[1], start_x, fontSize * 1.5 );
+			ctx.fillText( lines[1], start_x, fontSize * 1.2 );
 		}
 	};
 

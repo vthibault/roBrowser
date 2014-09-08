@@ -37,5 +37,8 @@ define(function()
 
 		hasParty:      false,
 		isPartyLeader: false,
+
+		hasGuild:    false,
+		guildRight:  0
 	};
 });

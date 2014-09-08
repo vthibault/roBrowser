@@ -1449,7 +1449,7 @@ define(['Utils/BinaryWriter', './PacketVerManager'], function(BinaryWriter, PACK
 			pkt_buf.writeLong(this.memberList[i].right);
 			pkt_buf.writeLong(this.memberList[i].ranking);
 			pkt_buf.writeLong(this.memberList[i].payRate);
-			pkt_buf.writePos(this.memberList[i].posName);
+			pkt_buf.writeString(this.memberList[i].posName, 24);
 		}
 
 		return pkt_buf;
@@ -6230,7 +6230,7 @@ define(['Utils/BinaryWriter', './PacketVerManager'], function(BinaryWriter, PACK
 				out[i] = {};
 				out[i].GDID = fp.readLong();
 				out[i].relation = fp.readLong();
-				out[i].GuildName = fp.readString(24);
+				out[i].guildName = fp.readString(24);
 			}
 			return out;
 		})();
@@ -6269,7 +6269,7 @@ define(['Utils/BinaryWriter', './PacketVerManager'], function(BinaryWriter, PACK
 	PACKET.ZC.GUILD_EMBLEM_IMG = function PACKET_ZC_GUILD_EMBLEM_IMG(fp, end) {
 		this.GDID = fp.readLong();
 		this.emblemVersion = fp.readLong();
-		this.img = fp.readBinaryString(end - fp.tell());
+		this.img = new Uint8Array(fp.buffer, fp.offset, end - fp.offset);
 	};
 	PACKET.ZC.GUILD_EMBLEM_IMG.size = -1;
 
@@ -6396,7 +6396,11 @@ define(['Utils/BinaryWriter', './PacketVerManager'], function(BinaryWriter, PACK
 			for (i = 0; i < count; ++i) {
 				out[i] = {};
 				out[i].charname = fp.readString(24);
-				out[i].account = fp.readString(24);
+
+				if (PACKETVER.max < 20100803) {
+					out[i].account = fp.readString(24);
+				}
+
 				out[i].reason = fp.readString(40);
 			}
 			return out;
@@ -6429,7 +6433,7 @@ define(['Utils/BinaryWriter', './PacketVerManager'], function(BinaryWriter, PACK
 			for (i = 0; i < count; ++i) {
 				out[i] = {};
 				out[i].positionID = fp.readLong();
-				out[i].posName = fp.readPos();
+				out[i].posName = fp.readString(24);
 			}
 			return out;
 		})();
@@ -6506,14 +6510,14 @@ define(['Utils/BinaryWriter', './PacketVerManager'], function(BinaryWriter, PACK
 	// 0x174
 	PACKET.ZC.ACK_CHANGE_GUILD_POSITIONINFO = function PACKET_ZC_ACK_CHANGE_GUILD_POSITIONINFO(fp, end) {
 		this.memberList = (function() {
-			var i, count=(end-fp.tell())/30|0, out=new Array(count);
+			var i, count=(end-fp.tell())/40|0, out=new Array(count);
 			for (i = 0; i < count; ++i) {
 				out[i] = {};
 				out[i].positionID = fp.readLong();
 				out[i].right = fp.readLong();
 				out[i].ranking = fp.readLong();
 				out[i].payRate = fp.readLong();
-				out[i].posName = fp.readPos();
+				out[i].posName = fp.readString(24);
 			}
 			return out;
 		})();
@@ -6526,16 +6530,16 @@ define(['Utils/BinaryWriter', './PacketVerManager'], function(BinaryWriter, PACK
 		this.Info = {};
 		this.Info.AID = fp.readLong();
 		this.Info.GID = fp.readLong();
-		this.Info.head = fp.readShort();
-		this.Info.headPalette = fp.readShort();
-		this.Info.sex = fp.readShort();
-		this.Info.job = fp.readShort();
-		this.Info.level = fp.readShort();
-		this.Info.contributionExp = fp.readLong();
-		this.Info.currentState = fp.readLong();
-		this.Info.positionID = fp.readLong();
-		this.Info.intro = fp.readString(50);
-		this.Info.charname = fp.readString(24);
+		this.Info.HeadType = fp.readShort();
+		this.Info.HeadPalette = fp.readShort();
+		this.Info.Sex = fp.readShort();
+		this.Info.Job = fp.readShort();
+		this.Info.Level = fp.readShort();
+		this.Info.MemberExp = fp.readLong();
+		this.Info.CurrentState = fp.readLong();
+		this.Info.GPositionID = fp.readLong();
+		this.Info.Memo = fp.readString(50);
+		this.Info.CharName = fp.readString(24);
 	};
 	PACKET.ZC.ACK_GUILD_MEMBER_INFO.size = 106;
 

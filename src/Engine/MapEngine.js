@@ -49,6 +49,7 @@ define(function( require )
 	var Emoticons        = require('UI/Components/Emoticons/Emoticons');
 	var SkillList        = require('UI/Components/SkillList/SkillList');
 	var PartyFriends     = require('UI/Components/PartyFriends/PartyFriends');
+	var Guild            = require('UI/Components/Guild/Guild');
 
 
 	/**
@@ -150,7 +151,7 @@ define(function( require )
 		require('./MapEngine/PrivateMessage').call();
 		require('./MapEngine/Storage').call();
 		require('./MapEngine/Group').init();
-		require('./MapEngine/Guild').call();
+		require('./MapEngine/Guild').init();
 		require('./MapEngine/Skill').call();
 		require('./MapEngine/ChatRoom').call();
 		require('./MapEngine/Pet').call();
@@ -163,6 +164,7 @@ define(function( require )
 		StatusIcons.prepare();
 		BasicInfo.prepare();
 		ChatBox.prepare();
+		Guild.prepare();
 	};
 
 
@@ -201,6 +203,8 @@ define(function( require )
 		Session.petId         =     0;
 		Session.hasParty      = false;
 		Session.isPartyLeader = false;
+		Session.hasGuild      = false;
+		Session.guildRight    =     0;
 
 		BasicInfo.update('blvl', Session.Character.level );
 		BasicInfo.update('jlvl', Session.Character.joblevel );
@@ -277,6 +281,7 @@ define(function( require )
 			Emoticons.append();
 			SkillList.append();
 			PartyFriends.append();
+			Guild.append();
 
 			// Map loaded
 			Network.sendPacket(

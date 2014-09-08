@@ -145,6 +145,8 @@ define(function()
 		this.codeBuf      = 0;
 
 		while (!this.readBlock());
+
+		return this.bufferPos;
 	};
 
 	/**

@@ -27,6 +27,7 @@ define(function(require)
 	var Equipment          = require('UI/Components/Equipment/Equipment');
 	var SkillList          = require('UI/Components/SkillList/SkillList');
 	var PartyFriends       = require('UI/Components/PartyFriends/PartyFriends');
+	var Guild              = require('UI/Components/Guild/Guild');
 	var Escape             = require('UI/Components/Escape/Escape');
 	var htmlText           = require('text!./BasicInfo.html');
 	var cssText            = require('text!./BasicInfo.css');
@@ -96,8 +97,11 @@ define(function(require)
 					PartyFriends.toggle();
 					break;
 
-				case 'map':
 				case 'guild':
+					Guild.toggle();
+					break;
+
+				case 'map':
 				case 'quest':
 			}
 		});
