@@ -29,6 +29,8 @@
 
 #Equipment .ammo_container { position:relative; }
 #Equipment .ammo { position:absolute; top:30px; }
+#Equipment .ammo .item { text-align:center; }
+#Equipment .ammo .item span { width:45px; }
 #Equipment .removeOption { position:absolute; top:85px; left:12px; width:36px; height:36px; background-repeat:no-repeat; background-color:transparent; border:none; display:none; }
 
 #Equipment .footer { height:20px; border-bottom:1px solid #c0c0c0; }

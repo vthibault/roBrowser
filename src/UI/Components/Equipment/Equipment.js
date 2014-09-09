@@ -450,7 +450,7 @@ define(function(require)
 			if (data.type === 'item') {
 				item = data.data;
 
-				if ((item.type === ItemType.WEAPON || item.type === ItemType.EQUIP || item.type === ItemType.AMMO) &&
+				if ((item.type === ItemType.WEAPON || item.type === ItemType.EQUIP) &&
 				    item.IsIdentified && !item.IsDamaged) {
 					selector = getSelectorFromLocation( 'location' in item ? item.location : item.WearLocation);
 					ui       = Equipment.ui.find(selector);
@@ -497,7 +497,8 @@ define(function(require)
 			item = data.data;
 
 			if ((item.type === ItemType.WEAPON || item.type === ItemType.EQUIP || item.type === ItemType.AMMO) &&
-			    item.IsIdentified && !item.IsDamaged) {				Equipment.ui.find('td').css('backgroundImage','none');
+			    item.IsIdentified && !item.IsDamaged) {
+			    Equipment.ui.find('td').css('backgroundImage','none');
 				Equipment.onEquipItem( item.index, 'location' in item ? item.location : item.WearState );
 			}
 		}
