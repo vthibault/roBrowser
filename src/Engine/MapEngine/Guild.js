@@ -652,7 +652,7 @@ define(function( require )
 				break;
 
 			case 2: // still members on the guild
-				ChatBox.addText( DB.getMessage(401), ChatBox.TYPE.ERROR);
+				ChatBox.addText( DB.getMessage(402), ChatBox.TYPE.ERROR);
 				break;
 		}
 	}
