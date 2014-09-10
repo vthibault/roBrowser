@@ -18,6 +18,7 @@ define(function( require )
 	 */
 	var DB            = require('DB/DBManager');
 	var Inflate       = require('Utils/Inflate');
+	var Texture       = require('Utils/Texture');
 	var BinaryWriter  = require('Utils/BinaryWriter');
 	var Session       = require('Engine/SessionStorage');
 	var Network       = require('Network/NetworkManager');
@@ -480,11 +481,19 @@ define(function( require )
 				};
 			}
 
-			// Store it in a local url
-			version           = versions[pkt.emblemVersion];
-			img               = new Image();
-			img.src           = src;
-			img.onload        = function(){
+			// Prepare our emblem image
+			img        = new Image();
+			img.onload = renderEmblem;
+
+			// Load the emblem, remove magenta, free blob from memory
+			Texture.load(src, function(){
+				img.src = this.toDataURL();
+				URL.revokeObjectURL(src);
+			});
+
+			// Start displaying the emblem
+			function renderEmblem() {
+				var version   = versions[pkt.emblemVersion];
 				version.image = this;
 
 				// Update our guild emblem
@@ -508,7 +517,7 @@ define(function( require )
 						);
 					}
 				})
-			};
+			}
 		};
 	})();
 
