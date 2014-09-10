@@ -36,7 +36,7 @@ roBrowser is developed by a [team](https://github.com/vthibault/roBrowser/graphs
 
 ## Contact
 
-* [Demo](http://www.demo.robrowser.com/)
+* [Demo](http://demo.robrowser.com/)
 * [roBrowser website](http://www.robrowser.com/)
 * [roBrowser forum](http://forum.robrowser.com/)
 * IRC Channel: *irc.rizon.net* / Channel: *#roBrowser*
