@@ -1,27 +1,13 @@
 ![logo](http://www.robrowser.com/logo.png)
+
 roBrowser is a web-based clone of the popular MMORPG [Ragnorak Online](http://iro.ragnarokonline.com/) built with WebGL, JavaScript, HTML5, and more. The project is entirely free and opensource, so you're welcome to setup roBrowser on your own server or try a [demo](http://demo.robrowser.com/).
 
 You can learn more at http://robrowser.com
 
-* [Demo](http://demo.robrowser.com/)
-* [roBrowser website](http://www.robrowser.com/)
-* [roBrowser forum](http://forum.robrowser.com/)
 * [GIT Repository URL](https://github.com/vthibault/roBrowser/)
-* IRC Channel: *irc.rizon.net* / Channel: *#roBrowser*
 
-
-Table of Contents
------------------
-
-* 1 What is roBrowser?
-* 2 Prerequisites
-* 3 Installation
-
-1. What is roBrowser?
----------------------
-roBrowser is an Open Source adaptation of Ragnarok Online client for the web. Written mostly in javascript/html5, the program is very flexible and in constant evolution. The project is managed by a group of volunteers located around the world.
-Simply, it looks like :
-
+Screenshots
+-----------
 ![screen](http://upload.robrowser.com/demo.jpg)
 
 2. Prerequisites
@@ -39,3 +25,7 @@ This section is a very brief set of installation instructions and subject to cha
 * 4 Installing the [remote client](https://github.com/vthibault/roBrowser/tree/master/client) and set the parameter *remoteClient* to your server
 * 5 Installing the [websocket proxy](https://github.com/herenow/wsProxy/blob/master/README.md) and set the parameter *socketProxy* to your proxy server url
 * 6 Configure roBrowser - [documentation](http://www.robrowser.com/getting-started#API) or some [demos](https://github.com/vthibault/roBrowser/tree/master/examples)
+
+* [roBrowser website](http://www.robrowser.com/)
+* [roBrowser forum](http://forum.robrowser.com/)
+* IRC Channel: *irc.rizon.net* / Channel: *#roBrowser*
