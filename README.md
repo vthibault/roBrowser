@@ -19,7 +19,7 @@ To run roBrowser you will need a browser that supports [WebGL](http://www.chrome
 * Opera
 * IE11
 
-If you don't run roBrowser in Chrome and don't set up a WebSocketProxy server, you will need a Java plugin installed to send sockets.
+If you don't run roBrowser in a Chrome App, you will need a Java plugin installed instead.
 
 ### Quickstart
 
