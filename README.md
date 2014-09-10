@@ -1,5 +1,7 @@
 ![logo](http://www.robrowser.com/logo.png)
+roBrowser is a web-based clone of the popular MMORPG [Ragnorak Online](http://iro.ragnarokonline.com/) built with WebGL, JavaScript, HTML5, and more. The project is entirely free and opensource, so you're welcome to setup roBrowser on your own server or try a [demo](http://demo.robrowser.com/).
 
+You can learn more at http://robrowser.com
 
 * [Demo](http://demo.robrowser.com/)
 * [roBrowser website](http://www.robrowser.com/)
@@ -10,6 +12,7 @@
 
 Table of Contents
 -----------------
+
 * 1 What is roBrowser?
 * 2 Prerequisites
 * 3 Installation
