@@ -4,16 +4,13 @@ roBrowser is a web-based clone of the popular MMORPG [Ragnorak Online](http://ir
 
 You can learn more at http://robrowser.com
 
-Screenshots
-===========
+## Screenshots
 ![screen](http://upload.robrowser.com/demo.jpg)
 
 
-Installing
-==========
+## Installing
 
-Prerequisites
--------------
+### Prerequisites
 
 To run roBrowser you will need a browser that supports [WebGL](http://www.chromeexperiments.com/webgl/) and is OpenGL ES 2.0 compatible. We've tested the following browsers:
 
@@ -24,8 +21,7 @@ To run roBrowser you will need a browser that supports [WebGL](http://www.chrome
 
 If you don't run roBrowser in Chrome and don't set up a WebSocketProxy server, you will need a Java plugin installed to send sockets.
 
-Quickstart
-----------
+### Quickstart
 
 1.  [Download roBrowser](https://github.com/vthibault/roBrowser/archive/master.zip) and extract it.
 2.  [Convert DB](https://github.com/vthibault/roBrowser/tree/master/tools/converter/) to get custom content to roBrowser.
@@ -34,13 +30,11 @@ Quickstart
 5.  Installing the [websocket proxy](https://github.com/herenow/wsProxy/blob/master/README.md) and set the parameter *socketProxy* to your proxy server url
 6.  Configure roBrowser - [documentation](http://www.robrowser.com/getting-started#API) and some [examples](https://github.com/vthibault/roBrowser/tree/master/examples)
 
-Contributing
-============
+## Contributing
 
 roBrowser is developed by a [team](https://github.com/vthibault/roBrowser/graphs/contributors) located around the world. Check out the [documentation](http://www.robrowser.com/getting-started#API) and submit a pull request!
 
-Contact
-=======
+## Contact
 
 * [roBrowser website](http://www.robrowser.com/)
 * [roBrowser forum](http://forum.robrowser.com/)
