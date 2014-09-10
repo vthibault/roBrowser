@@ -179,7 +179,8 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 				[ SK.AC_SHOWER,5 ],
 				[ SK.DC_THROWARROW,1 ]
 			]
-		}
+		},
+		ActionType: "ATTACK"
 	};
 
 	SkillInfo[SK.CG_MOONLIT] = {
@@ -232,7 +233,8 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 			[ SK.KN_PIERCE,5 ],
 			[ SK.KN_RIDING,1 ],
 			[ SK.KN_SPEARSTAB,5 ]
-		]
+		],
+		ActionType: "ATTACK"
 	};
 
 	SkillInfo[SK.LK_HEADCRUSH] = {
@@ -245,7 +247,8 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 		_NeedSkillList : [
 			[ SK.KN_SPEARMASTERY,9 ],
 			[ SK.KN_RIDING,1 ]
-		]
+		],
+		ActionType: "ATTACK"
 	};
 
 	SkillInfo[SK.LK_JOINTBEAT] = {
@@ -258,7 +261,8 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 		_NeedSkillList : [
 			[ SK.KN_CAVALIERMASTERY,3 ],
 			[ SK.LK_HEADCRUSH,3 ]
-		]
+		],
+		ActionType: "ATTACK"
 	};
 
 	SkillInfo[SK.AL_PNEUMA] = {
@@ -361,7 +365,8 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 			[ SK.AS_RIGHT,3 ],
 			[ SK.AS_SONICBLOW,5 ],
 			[ SK.ASC_BREAKER,1 ]
-		]
+		],
+		ActionType: "ATTACK"
 	};
 
 	SkillInfo[SK.ASC_CDP] = {
@@ -528,7 +533,8 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 		MaxLv : 7,
 		SpAmount : [ 70, 60, 50, 40, 30, 20, 10 ],
 		bSeperateLv : false,
-		AttackRange : [ 9, 9, 9, 9, 9, 9, 9 ]
+		AttackRange : [ 9, 9, 9, 9, 9, 9, 9 ],
+		ActionType: "ATTACK"
 	};
 
 	SkillInfo[SK.TK_HPTIME] = {
@@ -1322,7 +1328,8 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 			[ SK.MC_MAMMONITE,10 ],
 			[ SK.BS_HAMMERFALL,5 ],
 			[ SK.WS_CARTBOOST,1 ]
-		]
+		],
+		ActionType: "ATTACK"
 	};
 
 	SkillInfo[SK.WS_OVERTHRUSTMAX] = {
@@ -1513,7 +1520,8 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 		AttackRange : [ 9 ],
 		_NeedSkillList : [
 			[ SK.AC_DOUBLE,10 ]
-		]
+		],
+		ActionType: "ATTACK"
 	};
 
 	SkillInfo[SK.GS_GLITTERING] = {
@@ -1571,7 +1579,8 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 		_NeedSkillList : [
 			[ SK.GS_GLITTERING,1 ],
 			[ SK.GS_CHAINACTION,10 ]
-		]
+		],
+		ActionType: "ATTACK"
 	};
 
 	SkillInfo[SK.RK_DRAGONHOWLING] = {
@@ -1583,7 +1592,8 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 		AttackRange : [ 1, 1, 1, 1, 1 ],
 		_NeedSkillList : [
 			[ SK.RK_DRAGONTRAINING,2 ]
-		]
+		],
+		ActionType: "ATTACK"
 	};
 
 	SkillInfo[SK.GS_BULLSEYE] = {
@@ -1596,7 +1606,8 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 		_NeedSkillList : [
 			[ SK.GS_GLITTERING,5 ],
 			[ SK.GS_TRACKING,10 ]
-		]
+		],
+		ActionType: "ATTACK"
 	};
 
 	SkillInfo[SK.RK_REFRESH] = {
@@ -1640,7 +1651,8 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 		_NeedSkillList : [
 			[ SK.GS_GLITTERING,4 ],
 			[ SK.GS_DISARM,5 ]
-		]
+		],
+		ActionType: "ATTACK"
 	};
 
 	SkillInfo[SK.GC_VENOMIMPRESS] = {
@@ -1686,7 +1698,8 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 		AttackRange : [ 9 ],
 		_NeedSkillList : [
 			[ SK.GS_GLITTERING,1 ]
-		]
+		],
+		ActionType: "ATTACK"
 	};
 
 	SkillInfo[SK.GC_COUNTERSLASH] = {
@@ -1710,7 +1723,8 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 		AttackRange : [ 9 ],
 		_NeedSkillList : [
 			[ SK.GS_GLITTERING,1 ]
-		]
+		],
+		ActionType: "ATTACK"
 	};
 
 	SkillInfo[SK.GC_CLOAKINGEXCEED] = {
@@ -1732,6 +1746,7 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 		SpAmount : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
 		bSeperateLv : false,
 		AttackRange : [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ],
+		ActionType: "ATTACK"
 	};
 
 	SkillInfo[SK.GC_CROSSRIPPERSLASHER] = {
@@ -1797,7 +1812,8 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 		AttackRange : [ 9, 9, 9, 9, 9, 9, 9, 9, 9, 9 ],
 		_NeedSkillList : [
 			[ SK.GS_SINGLEACTION,5 ]
-		]
+		],
+		ActionType: "ATTACK"
 	};
 
 	SkillInfo[SK.GS_DISARM] = {
@@ -1809,7 +1825,8 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 		AttackRange : [ 9, 9, 9, 9, 9 ],
 		_NeedSkillList : [
 			[ SK.GS_TRACKING,7 ]
-		]
+		],
+		ActionType: "ATTACK"
 	};
 
 	SkillInfo[SK.GS_PIERCINGSHOT] = {
@@ -1821,7 +1838,8 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 		AttackRange : [ 9, 9, 9, 9, 9 ],
 		_NeedSkillList : [
 			[ SK.GS_TRACKING,5 ]
-		]
+		],
+		ActionType: "ATTACK"
 	};
 
 	SkillInfo[SK.GS_RAPIDSHOWER] = {
@@ -1833,7 +1851,8 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 		AttackRange : [ 9, 9, 9, 9, 9, 9, 9, 9, 9, 9 ],
 		_NeedSkillList : [
 			[ SK.GS_CHAINACTION,3 ]
-		]
+		],
+		ActionType: "ATTACK"
 	};
 
 	SkillInfo[SK.GS_DESPERADO] = {
@@ -1845,7 +1864,8 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 		AttackRange : [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ],
 		_NeedSkillList : [
 			[ SK.GS_RAPIDSHOWER,5 ]
-		]
+		],
+		ActionType: "ATTACK"
 	};
 
 	SkillInfo[SK.GS_GATLINGFEVER] = {
@@ -1870,7 +1890,8 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 		AttackRange : [ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 ],
 		_NeedSkillList : [
 			[ SK.GS_SINGLEACTION,5 ]
-		]
+		],
+		ActionType: "ATTACK"
 	};
 
 	SkillInfo[SK.GS_FULLBUSTER] = {
@@ -1882,7 +1903,8 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 		AttackRange : [ 9, 9, 9, 9, 9, 9, 9, 9, 9, 9 ],
 		_NeedSkillList : [
 			[ SK.GS_DUST,3 ]
-		]
+		],
+		ActionType: "ATTACK"
 	};
 
 	SkillInfo[SK.GS_SPREADATTACK] = {
@@ -1894,7 +1916,8 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 		AttackRange : [ 9, 9, 9, 9, 9, 9, 9, 9, 9, 9 ],
 		_NeedSkillList : [
 			[ SK.GS_FULLBUSTER,5 ]
-		]
+		],
+		ActionType: "ATTACK"
 	};
 
 	SkillInfo[SK.GS_GROUNDDRIFT] = {
@@ -3304,7 +3327,8 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 		MaxLv : 10,
 		SpAmount : [ 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 ],
 		bSeperateLv : true,
-		AttackRange : [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ]
+		AttackRange : [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ],
+		ActionType: "ATTACK"
 	};
 
 	SkillInfo[SK.NPC_SLOWCAST] = {
@@ -3509,7 +3533,8 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 			this[JobId.JT_ROGUE] = [
 				[ SK.AC_VULTURE,10 ]
 			]
-		}
+		},
+		ActionType: "ATTACK"
 	};
 
 	SkillInfo[SK.HLIF_HEAL] = {
@@ -3566,7 +3591,8 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 		AttackRange : [ 9, 9, 9, 9, 9, 9, 9, 9, 9, 9 ],
 		_NeedSkillList : [
 			[ SK.AC_DOUBLE,5 ]
-		]
+		],
+		ActionType: "ATTACK"
 	};
 
 	SkillInfo[SK.GD_KAFRACONTRACT] = {
@@ -3671,7 +3697,8 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 		MaxLv : 10,
 		SpAmount : [ 12, 12, 12, 12, 12, 12, 12, 12, 12, 12 ],
 		bSeperateLv : false,
-		AttackRange : [ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 ]
+		AttackRange : [ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 ],
+		ActionType: "ATTACK"
 	};
 
 	SkillInfo[SK.TF_DETOXIFY] = {
@@ -3766,7 +3793,8 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 		_NeedSkillList : [
 			[ SK.KN_RIDING,1 ],
 			[ SK.KN_SPEARSTAB,3 ]
-		]
+		],
+		ActionType: "ATTACK"
 	};
 
 	SkillInfo[SK.EL_HURRICANE] = {
@@ -3787,7 +3815,8 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 		AttackRange : [ 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 ],
 		_NeedSkillList : [
 			[ SK.KN_PIERCE,5 ]
-		]
+		],
+		ActionType: "ATTACK"
 	};
 
 	SkillInfo[SK.KN_SPEARBOOMERANG] = {
@@ -3844,7 +3873,8 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 			this[JobId.JT_SUPERNOVICE2] = [
 				[ SK.KN_AUTOCOUNTER,5 ]
 			]
-		}
+		},
+		ActionType: "ATTACK"
 	};
 
 	SkillInfo[SK.KN_CHARGEATK] = {
@@ -3936,7 +3966,8 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 		Type : "Quest",
 		SpAmount : [ 10 ],
 		bSeperateLv : false,
-		AttackRange : [ 9 ]
+		AttackRange : [ 9 ],
+		ActionType: "ATTACK"
 	};
 
 	SkillInfo[SK.BA_PANGVOICE] = {
@@ -4846,7 +4877,8 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 		MaxLv : 10,
 		SpAmount : [ 8, 8, 8, 8, 8, 15, 15, 15, 15, 15 ],
 		bSeperateLv : true,
-		AttackRange : [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ]
+		AttackRange : [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ],
+		ActionType: "ATTACK"
 	};
 
 	SkillInfo[SK.WZ_FIREPILLAR] = {
@@ -4867,7 +4899,8 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 		MaxLv : 1,
 		SpAmount : [ 5 ],
 		bSeperateLv : false,
-		AttackRange : [ 2 ]
+		AttackRange : [ 2 ],
+		ActionType: "ATTACK"
 	};
 
 	SkillInfo[SK.MER_RECUPERATE] = {
@@ -5476,7 +5509,8 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 		MaxLv : 5,
 		SpAmount : [ 10, 10, 10, 10, 10 ],
 		bSeperateLv : true,
-		AttackRange : [ 3, 3, 3, 3, 3 ]
+		AttackRange : [ 3, 3, 3, 3, 3 ],
+		ActionType: "PICKUP"
 	};
 
 	SkillInfo[SK.HT_LANDMINE] = {
@@ -5485,7 +5519,8 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 		MaxLv : 5,
 		SpAmount : [ 10, 10, 10, 10, 10 ],
 		bSeperateLv : true,
-		AttackRange : [ 3, 3, 3, 3, 3 ]
+		AttackRange : [ 3, 3, 3, 3, 3 ],
+		ActionType: "PICKUP"
 	};
 
 	SkillInfo[SK.HT_ANKLESNARE] = {
@@ -5497,7 +5532,8 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 		AttackRange : [ 3, 3, 3, 3, 3 ],
 		_NeedSkillList : [
 			[ SK.HT_SKIDTRAP,1 ]
-		]
+		],
+		ActionType: "PICKUP"
 	};
 
 	SkillInfo[SK.HT_SHOCKWAVE] = {
@@ -5509,7 +5545,8 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 		AttackRange : [ 3, 3, 3, 3, 3 ],
 		_NeedSkillList : [
 			[ SK.HT_ANKLESNARE,1 ]
-		]
+		],
+		ActionType: "PICKUP"
 	};
 
 	SkillInfo[SK.HT_SANDMAN] = {
@@ -5521,8 +5558,8 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 		AttackRange : [ 3, 3, 3, 3, 3 ],
 		_NeedSkillList : [
 			[ SK.HT_FLASHER,1 ]
-		]
-
+		],
+		ActionType: "PICKUP"
 	};
 
 	SkillInfo[SK.HT_FLASHER] = {
@@ -5534,7 +5571,8 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 		AttackRange : [ 3, 3, 3, 3, 3 ],
 		_NeedSkillList : [
 			[ SK.HT_SKIDTRAP,1 ]
-		]
+		],
+		ActionType: "PICKUP"
 	};
 
 	SkillInfo[SK.HT_FREEZINGTRAP] = {
@@ -5546,7 +5584,8 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 		AttackRange : [ 3, 3, 3, 3, 3 ],
 		_NeedSkillList : [
 			[ SK.HT_FLASHER,1 ]
-		]
+		],
+		ActionType: "PICKUP"
 	};
 
 	SkillInfo[SK.HT_BLASTMINE] = {
@@ -5560,7 +5599,8 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 			[ SK.HT_LANDMINE,1 ],
 			[ SK.HT_SANDMAN,1 ],
 			[ SK.HT_FREEZINGTRAP,1 ]
-		]
+		],
+		ActionType: "PICKUP"
 	};
 
 	SkillInfo[SK.HT_CLAYMORETRAP] = {
@@ -5573,7 +5613,8 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 		_NeedSkillList : [
 			[ SK.HT_SHOCKWAVE,1 ],
 			[ SK.HT_BLASTMINE,1 ]
-		]
+		],
+		ActionType: "PICKUP"
 	};
 
 	SkillInfo[SK.HT_REMOVETRAP] = {
@@ -5590,7 +5631,8 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 			this[JobId.JT_ROGUE] = [
 				[ SK.AC_DOUBLE,5 ]
 			]
-		}
+		},
+		ActionType: "PICKUP"
 	};
 
 	SkillInfo[SK.HT_TALKIEBOX] = {
@@ -5603,7 +5645,8 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 		_NeedSkillList : [
 			[ SK.HT_REMOVETRAP,1 ],
 			[ SK.HT_SHOCKWAVE,1 ]
-		]
+		],
+		ActionType: "PICKUP"
 	};
 
 	SkillInfo[SK.RK_SONICWAVE] = {
@@ -6010,7 +6053,8 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 		AttackRange : [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ],
 		_NeedSkillList : [
 			[ SK.AS_KATAR,4 ]
-		]
+		],
+		ActionType: "ATTACK"
 	};
 
 	SkillInfo[SK.AS_GRIMTOOTH] = {
@@ -6456,7 +6500,8 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 		Type : "Quest",
 		SpAmount : [ 15 ],
 		bSeperateLv : false,
-		AttackRange : [ 9 ]
+		AttackRange : [ 9 ],
+		ActionType: "ATTACK"
 	};
 
 	SkillInfo[SK.TF_SPRINKLESAND] = {
@@ -6543,7 +6588,8 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 		Type : "Quest",
 		SpAmount : [ 12 ],
 		bSeperateLv : false,
-		AttackRange : [ 1 ]
+		AttackRange : [ 1 ],
+		ActionType: "ATTACK"
 	};
 
 	SkillInfo[SK.SO_POISON_BUSTER] = {
@@ -6935,7 +6981,8 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 		AttackRange : [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ],
 		_NeedSkillList : [
 			[ SK.RG_STEALCOIN,4 ]
-		]
+		],
+		ActionType: "ATTACK"
 	};
 
 	SkillInfo[SK.RG_TUNNELDRIVE] = {
@@ -6960,8 +7007,8 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 		_NeedSkillList : [
 			[ SK.RG_TUNNELDRIVE,2 ],
 			[ SK.RG_BACKSTAP,2 ]
-		]
-
+		],
+		ActionType: "ATTACK"
 	};
 
 	SkillInfo[SK.RG_STRIPWEAPON] = {
@@ -11135,7 +11182,8 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 		_NeedSkillList : [
 			[ SK.MO_IRONHAND,7 ],
 			[ SK.MO_CALLSPIRITS,5 ]
-		]
+		],
+		ActionType: "ATTACK"
 	};
 
 	SkillInfo[SK.RK_MILLENNIUMSHIELD] = {
@@ -11340,7 +11388,8 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 			[ SK.TF_POISON,5 ],
 			[ SK.AS_CLOAKING,3 ],
 			[ SK.AS_ENCHANTPOISON,6 ]
-		]
+		],
+		ActionType: "ATTACK"
 	};
 
 	SkillInfo[SK.SL_GUNNER] = {
@@ -11413,7 +11462,8 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 		_NeedSkillList : [
 			[ SK.AC_DOUBLE,5 ],
 			[ SK.AC_CONCENTRATION,10 ]
-		]
+		],
+		ActionType: "ATTACK"
 	};
 
 	SkillInfo[SK.NJ_TATAMIGAESHI] = {
@@ -11422,7 +11472,7 @@ define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
 		MaxLv : 5,
 		SpAmount : [ 15, 15, 15, 15, 15 ],
 		bSeperateLv : false,
-		AttackRange : [ 1, 1, 1, 1, 1 ],
+		AttackRange : [ 1, 1, 1, 1, 1 ]
 	};
 
 	SkillInfo[SK.GS_CHAINACTION] = {

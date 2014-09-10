@@ -604,8 +604,10 @@ define(function( require )
 				srcEntity.dialog.set( ( (SkillInfo[pkt.SKID] && SkillInfo[pkt.SKID].SkillName ) || 'Unknown Skill' ) + ' !!' );
 			}
 
+			var action = (SkillInfo[pkt.SKID] && SkillInfo[pkt.SKID].ActionType) || 'SKILL';
+
 			srcEntity.setAction({
-				action: srcEntity.ACTION.SKILL,
+				action: srcEntity.ACTION[action],
 				frame:  0,
 				repeat: false,
 				play:   true,
