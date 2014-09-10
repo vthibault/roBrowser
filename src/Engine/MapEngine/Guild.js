@@ -118,28 +118,31 @@ define(function( require )
 	 */
 	GuildEngine.requestGuildEmblem = function requestGuildEmblem(guild_id, version, callback)
 	{
+		var emblem;
+
+		// Guild does not exist
 		if (!_emblems[guild_id]) {
-			_emblems[guild_id] = {};
-		}
-
-		// Doesn't exist yet
-		if (!_emblems[guild_id][version]) {
-			_emblems[guild_id][version] = {
-				funcs: []
+			_emblems[guild_id] = {
+				version:  -1,
+				image:    new Image(),
+				callback: []
 			};
-
-			// Ask server to send emblem
-			var pkt  = new PACKET.CZ.REQ_GUILD_EMBLEM_IMG();
-			pkt.GDID = guild_id;
-			Network.sendPacket(pkt);
 		}
 
-		if (_emblems[guild_id][version].image) {
-			callback(_emblems[guild_id][version].image);
+		emblem = _emblems[guild_id];
+
+		// Lower version, update it to the current
+		if (version <= emblem.version) {
+			callback(emblem.image);
 			return;
 		}
 
-		_emblems[guild_id][version].funcs.push(callback);
+		// Ask for new version
+		var pkt  = new PACKET.CZ.REQ_GUILD_EMBLEM_IMG();
+		pkt.GDID = guild_id;
+		Network.sendPacket(pkt);
+
+		emblem.callback.push(callback);
 	};
 
 
@@ -269,7 +272,7 @@ define(function( require )
 	 */
 	GuildEngine.requestLeave = function requestLeave( AID, GID, reason)
 	{
-		var pkt = new PACKET.CZ.REQ_LEAVE_GUILD()
+		var pkt = new PACKET.CZ.REQ_LEAVE_GUILD();
 		pkt.GDID = GuildEngine.guild_id;
 		pkt.AID = AID;
 		pkt.GID = GID;
@@ -288,7 +291,7 @@ define(function( require )
 	 */
 	GuildEngine.requestMemberExpel = function requestMemberExpel( AID, GID, reason)
 	{
-		var pkt = new PACKET.CZ.REQ_BAN_GUILD()
+		var pkt = new PACKET.CZ.REQ_BAN_GUILD();
 		pkt.GDID = GuildEngine.guild_id;
 		pkt.AID = AID;
 		pkt.GID = GID;
@@ -461,29 +464,27 @@ define(function( require )
 
 		return function onGuildEmblem( pkt )
 		{
+			var emblem, inflate, len, src, img;
+
 			// Create guild namespace if does not exist
 			if (!_emblems[pkt.GDID]) {
-				_emblems[pkt.GDID] = {};
-			}
-
-			var versions, version;
-			var inflate, len, src, img;
-
-			// Uncompress emblem
-			inflate  = new Inflate(pkt.img);
-			len      = inflate.getBytes(data);
-			src      = URL.createObjectURL(new Blob([data.subarray(0, len).buffer], { type: 'image/bmp' }));
-			versions = _emblems[pkt.GDID];
-
-			if (!versions[pkt.emblemVersion]) {
-				versions[pkt.emblemVersion] = {
-					funcs: []
+				_emblems[pkt.GDID] = {
+					version:  -1,
+					image:    new Image(),
+					callback: []
 				};
 			}
 
+			// Uncompress emblem
+			inflate = new Inflate(pkt.img);
+			len     = inflate.getBytes(data);
+			src     = URL.createObjectURL(new Blob([data.subarray(0, len).buffer], { type: 'image/bmp' }));
+			emblem  = _emblems[pkt.GDID];
+
 			// Prepare our emblem image
-			img        = new Image();
-			img.onload = renderEmblem;
+			img            = new Image();
+			img.onload     = renderEmblem;
+			emblem.version = pkt.emblemVersion;
 
 			// Load the emblem, remove magenta, free blob from memory
 			Texture.load(src, function(){
@@ -493,8 +494,7 @@ define(function( require )
 
 			// Start displaying the emblem
 			function renderEmblem() {
-				var version   = versions[pkt.emblemVersion];
-				version.image = this;
+				emblem.image = this;
 
 				// Update our guild emblem
 				if (pkt.GDID === GuildEngine.guild_id) {
@@ -502,11 +502,11 @@ define(function( require )
 				}
 
 				// Execute callbacks
-				while (version.funcs.length) {
-					version.funcs.shift().call(null, this);
+				while (emblem.callback.length) {
+					emblem.callback.shift().call(null, this);
 				}
 
-				// Update display name
+				// Update display name of entities
 				EntityManager.forEach(function(entity){
 					if (entity.GUID === pkt.GDID) {
 						entity.display.emblem = img;
@@ -516,7 +516,7 @@ define(function( require )
 							'white'
 						);
 					}
-				})
+				});
 			}
 		};
 	})();
