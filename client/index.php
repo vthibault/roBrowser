@@ -10,10 +10,7 @@
 
 	// Apply configs
 	if ($CONFIGS['DEBUG']) {
-		// Do not show debug if the request is from roBrowser
-		if (empty($_SERVER['HTTP_X_APPLICATION']) || $_SERVER['HTTP_X_APPLICATION'] !== 'roBrowser') {
-			Debug::enable();
-		}
+		Debug::enable();
 	}
 
 
