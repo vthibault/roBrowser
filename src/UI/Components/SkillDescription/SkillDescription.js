@@ -48,6 +48,16 @@ define(function(require)
 
 
 	/**
+	 * Click event function, remove UI once click somewhere else
+	 */
+	var clickHandler = function onClick(event) {
+		if(jQuery(event.target).parents().index(SkillDescription.ui) === -1) {
+			SkillDescription.remove();
+		}
+	}
+
+
+	/**
 	 * Once append
 	 */
 	SkillDescription.onAppend = function onAppend()
@@ -56,11 +66,18 @@ define(function(require)
 		var events = jQuery._data( window, 'events').keydown;
 		events.unshift( events.pop() );
 
-       // Close ui if click away from it
-       var outer = jQuery('html');
-       outer.bind('click', SkillDescription.remove.bind(this))
-       outer.unbind('click', SkillDescription.remove.bind(this))
+		// Bind close ui if click away from it
+		jQuery(document).bind('click', clickHandler);
 	};
+
+
+	/**
+	 * Once removed
+	 */
+	SkillDescription.onRemove = function onRemove()
+	{
+		jQuery(document).unbind('click', clickHandler);
+	}
 
 
 	/**
@@ -91,7 +108,7 @@ define(function(require)
 		});
 	};
 
-	
+
 	/**
 	 * Create component and export it
 	 */
