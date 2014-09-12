@@ -55,6 +55,11 @@ define(function(require)
 		// Seems like "EscapeWindow" is execute first, push it before.
 		var events = jQuery._data( window, 'events').keydown;
 		events.unshift( events.pop() );
+
+       // Close ui if click away from it
+       var outer = jQuery('html');
+       outer.bind('click', SkillDescription.remove.bind(this))
+       outer.unbind('click', SkillDescription.remove.bind(this))
 	};
 
 
