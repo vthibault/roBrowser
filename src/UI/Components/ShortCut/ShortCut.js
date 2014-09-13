@@ -455,8 +455,13 @@ define(function(require)
 
 		// Display skill informations
 		if (element.isSkill) {
-			SkillDescription.append();
-			SkillDescription.setSkill( _list[index].ID );
+			if (SkillDescription.uid === _list[index].ID) {
+				SkillDescription.remove();
+			}
+			else {
+				SkillDescription.append();
+				SkillDescription.setSkill( _list[index].ID );
+			}
 		}
 
 		// Display item informations

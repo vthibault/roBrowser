@@ -33,6 +33,12 @@ define(function(require)
 
 
 	/**
+	* SkillDescription unique id
+	*/
+	SkillDescription.uid = -1;
+
+
+	/**
 	 * Once append to the DOM
 	 */
 	SkillDescription.onKeyDown = function onKeyDown( event )
@@ -76,7 +82,8 @@ define(function(require)
 	 */
 	SkillDescription.onRemove = function onRemove()
 	{
-		jQuery(document).unbind('click', clickHandler);
+		this.uid = -1; // reset uid
+		jQuery(document).unbind('click', clickHandler); // unbind handler
 	}
 
 
@@ -100,6 +107,7 @@ define(function(require)
 	 */
 	SkillDescription.setSkill = function setSkill( id )
 	{
+		this.uid = id;
 		this.ui.find('.content').text(SkillDB[id] || '...');
 
 		this.ui.css({
