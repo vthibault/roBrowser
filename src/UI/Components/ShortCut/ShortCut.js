@@ -414,6 +414,7 @@ define(function(require)
 	function onDragEnd()
 	{
 		delete window._OBJ_DRAG_;
+		this.classList.remove('hide');
 	}
 
 
@@ -426,6 +427,7 @@ define(function(require)
 		var img, index;
 
 		index = parseInt(this.parentNode.getAttribute('data-index'), 10);
+		this.classList.add('hide');
 
 		// Extract image from css to get it when dragging the element
 		img     = new Image();
