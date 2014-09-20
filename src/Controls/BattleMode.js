@@ -37,9 +37,9 @@ define(function(require)
 		var key = Preferences[keyId];
 
 		if (key &&
-		   (!key.shift || KEYS.SHIFT) &&
-		   (!key.alt   || KEYS.ALT)   &&
-		   (!key.ctrl  || KEYS.CTRL)
+		   ((!!key.shift) === KEYS.SHIFT) &&
+		   ((!!key.alt)   === KEYS.ALT)   &&
+		   ((!!key.ctrl)  === KEYS.CTRL)
 		) {
 			var component = UIManager.getComponent(key.component);
 			if (component.onShortCut) {
