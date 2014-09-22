@@ -54,16 +54,6 @@ define(function(require)
 
 
 	/**
-	 * Click event function, remove UI once click somewhere else
-	 */
-	var clickHandler = function onClick(event) {
-		if(jQuery(event.target).parents().index(SkillDescription.ui) === -1) {
-			SkillDescription.remove();
-		}
-	}
-
-
-	/**
 	 * Once append
 	 */
 	SkillDescription.onAppend = function onAppend()
@@ -71,9 +61,6 @@ define(function(require)
 		// Seems like "EscapeWindow" is execute first, push it before.
 		var events = jQuery._data( window, 'events').keydown;
 		events.unshift( events.pop() );
-
-		// Bind close ui if click away from it
-		jQuery(document).bind('click', clickHandler);
 	};
 
 
@@ -83,8 +70,7 @@ define(function(require)
 	SkillDescription.onRemove = function onRemove()
 	{
 		this.uid = -1; // reset uid
-		jQuery(document).unbind('click', clickHandler); // unbind handler
-	}
+	};
 
 
 	/**
