@@ -30,7 +30,7 @@
 						var script  = document.createElement('script');
 						script.src  = 'src/Vendors/require.js?' + ROConfig.version;
 						script.type = 'text/javascript';
-						script.setAttribute('data-main', 'src/App/' + event.data.application) + '?' + ROConfig.version;
+						script.setAttribute('data-main', 'src/App/' + event.data.application + '?' + ROConfig.version);
 
 						document.getElementsByTagName('head')[0].appendChild(script);
 						event.source.postMessage('ready', '*' );
