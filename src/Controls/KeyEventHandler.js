@@ -222,8 +222,9 @@ define( ['Utils/jquery'], function( jQuery )
 	 */
 	jQuery(window).bind('keydown keyup', function( event ) {
 		KEYS.SHIFT = !! event.shiftKey;
-		KEYS.CTRL  = !! event.ctrlKey;
-		KEYS.ALT   = !! event.altKey;
+		// Do not trigger Events upon holding Ctrl+Alt
+		KEYS.CTRL  = (!! event.ctrlKey) && (! event.altKey);
+		KEYS.ALT   = (!! event.altKey) && (!event.ctrlKey);
 	});
 
 
