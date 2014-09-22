@@ -145,9 +145,11 @@ function(    GameFileDecrypt,         BinaryReader,         Struct,         Infl
 		entries = loadEntries(out, header.filecount);
 
 		// Store table data (used for regex search in tablelist)
+		// Set filename to lowercase (case insensitive in official client)
 		table.data = '';
 		for (i = 0, count = entries.length; i < count; ++i) {
-			table.data += entries[i].filename + '\0';
+			table.data          += entries[i].filename + '\0';
+			entries[i].filename  = entries[i].filename.toLowerCase();
 		}
 
 		// Sort entries (for binary search)
@@ -181,7 +183,7 @@ function(    GameFileDecrypt,         BinaryReader,         Struct,         Infl
 			pos++;
 
 			entries[i] = {
-				filename:       str.toLowerCase(),
+				filename:       str,
 				pack_size:      out[pos++] | out[pos++] << 8 | out[pos++] << 16 | out[pos++] << 24,
 				length_aligned: out[pos++] | out[pos++] << 8 | out[pos++] << 16 | out[pos++] << 24,
 				real_size:      out[pos++] | out[pos++] << 8 | out[pos++] << 16 | out[pos++] << 24,

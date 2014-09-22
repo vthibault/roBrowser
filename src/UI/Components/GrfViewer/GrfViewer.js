@@ -21,6 +21,7 @@ define(function(require)
 	var Client             = require('Core/Client');
 	var Thread             = require('Core/Thread');
 	var Memory             = require('Core/MemoryManager');
+	var Events             = require('Core/Events');
 
 	var KEYS               = require('Controls/KeyEventHandler');
 
@@ -115,6 +116,12 @@ define(function(require)
 			ui.find('#previous'),
 			ui.find('#next')
 		);
+
+		// Renderer is not rendering, causing issue in src/UI/UIComponents.js#212
+		// Trigger manually the event.
+		setTimeout(function(){
+			Events.process(100);
+		}, 10);
 	};
 
 
@@ -507,6 +514,11 @@ define(function(require)
 		// Stored action to know if user act during the process
 		var actionID = _actionID + 0;
 
+		function cleanUp()
+		{
+			URL.revokeObjectURL(this.src);
+		}
+
 		function process()
 		{
 			// Stop here if we change page.
@@ -536,11 +548,11 @@ define(function(require)
 
 					// Display image
 					if (url) {
-						self.find('img:first').attr('src', url );
-
+						var img = self.find('img:first').get(0);
 						if (url.match(/^blob\:/)){
-							URL.revokeObjectURL(url);
+							img.onload = img.onerror = img.onabort = cleanUp;
 						}
+						img.src = url;
 					}
 
 					// Fetch next range.
