@@ -521,6 +521,13 @@ define(function(require)
 
 		skill = getSkillById(parseInt(main.data('index'), 10));
 
+		// Don't add the same UI twice, remove it
+		if (SkillDescription.uid === skill.SKID) {
+			SkillDescription.remove();
+			return;
+		}
+
+		// Add ui to window
 		SkillDescription.append();
 		SkillDescription.setSkill(skill.SKID);
 	}
