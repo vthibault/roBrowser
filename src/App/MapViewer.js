@@ -47,7 +47,6 @@ function(
 	Mouse, MapControl,
 	Intro
 ) {
-
 	'use strict';
 
 
@@ -156,7 +155,8 @@ function(
 			Intro.remove();
 
 			MapRenderer.onLoad = MapViewer.onLoad;
-			MapControl.call(MapViewer);
+			MapControl.init();
+			MapControl.onRequestWalk = MapViewer.onMouseDown;
 
 			// Direct access from API
 			if (Configs.get('API')) {
@@ -229,13 +229,6 @@ function(
 			MapViewer.spot.position[2] = Mouse.world.z;
 		}
 	};
-
-
-	/**
-	 * Mouse up on canvas
-	 * Nothing to do here
-	 */
-	MapViewer.onMouseUp = function OnMouseUp(){};
 
 
 	/**
