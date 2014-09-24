@@ -105,7 +105,10 @@ define(function( require )
 
 		// Loading Game file (txt, lua, lub)
 		q.add(function(){
-			DB.onReady = q.next;
+			DB.onReady = function(){
+				Background.setImage( 'bgi_temp.bmp'); // remove loading
+				q._next();
+			};
 			DB.onProgress = function(i, count) {
 				Background.setPercent( Math.floor(i/count * 100) );
 			};
@@ -182,6 +185,7 @@ define(function( require )
 
 			Renderer.stop();
 			MapRenderer.free();
+			BGM.play('01.mp3');
 		});
 
 		// Hooking WinList
@@ -226,7 +230,6 @@ define(function( require )
 	function loadClientInfo( callback )
 	{
 		var servers     = Configs.get('servers', 'data/clientinfo.xml');
-		_servers.length = 0;
 
 		if (servers instanceof Array) {
 			_servers = servers;
@@ -234,6 +237,7 @@ define(function( require )
 			return;
 		}
 
+		_servers.length = 0;
 		Client.loadFile( servers, function(xml)
 		{
 			// $.parseXML() don't parse buggy xml (and a lot of clientinfo.xml are not properly write)...
