@@ -54,7 +54,7 @@ define(function( require )
 	UIComponent.MouseMode = {
 		CROSS:  0, // cross the ui and intersect with scene
 		STOP:   1, // don't intersect the scene if mouse over the ui
-		FREEZE: 2  // don't intersect the scene if ui is alive in scene (TODO)
+		FREEZE: 2  // don't intersect the scene if ui is alive in scene
 	};
 
 
@@ -193,6 +193,10 @@ define(function( require )
 
 			this.ui.trigger('x_remove');
 			this.ui.detach();
+
+			if (this.mouseMode === UIComponent.MouseMode.FREEZE) {
+				Mouse.intersect = true;
+			}
 		}
 	};
 
@@ -223,10 +227,16 @@ define(function( require )
 			jQuery(window).off('keydown.' + this.name).on('keydown.' + this.name, this.onKeyDown.bind(this));
 		}
 
+		if (this.mouseMode === UIComponent.MouseMode.FREEZE) {
+			Mouse.intersect = false;
+			Cursor.setType( Cursor.ACTION.DEFAULT );
+		}
+
 		if (this.onAppend) {
 			this.onAppend();
-			this.focus();
 		}
+
+		this.focus();
 	};
 
 

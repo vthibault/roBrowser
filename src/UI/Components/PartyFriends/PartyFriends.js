@@ -664,7 +664,7 @@ define(function(require)
 	 */
 	function onRequestRemoveSelection()
 	{
-		if (_index < 0 || _preferences.lock) {
+		if (_index < 0 || _preferences.lock || !_party[_index]) {
 			return;
 		}
 
@@ -782,7 +782,7 @@ define(function(require)
 		}
 
 		// Do you want to delegate the real party?
-		UIManager.showPromptBox( DB.getMessage(1533), 'ok', 'cancel', function(){
+		UIManager.showPromptBox( DB.getMessage(1532), 'ok', 'cancel', function(){
 			PartyFriends.onRequestChangeLeader( _party[_index].AID );
 		});
 	}

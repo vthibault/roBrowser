@@ -65,7 +65,7 @@ define(function( require )
 		PartyUI.onRequestChangeLeader  = GroupEngine.onRequestChangeLeader;
 		PartyUI.onRequestLeave         = GroupEngine.onRequestLeave;
 		PartyUI.onRequestPartyCreation = GroupEngine.onRequestCreation;
-		PartyUI.onRequestAddingMember  = GroupEngine.onRequestInvitation; // TODO
+		PartyUI.onRequestAddingMember  = GroupEngine.onRequestInvitation;
 		PartyUI.onRequestSettingUpdate = GroupEngine.onRequestInfoUpdate;
 	};
 
@@ -123,7 +123,7 @@ define(function( require )
 			return;
 		}
 
-		ChatBox.addText( pseudo + ' ' + DB.getMessage(2060, ' has recieved an invitation to join your party.'), ChatBox.TYPE.BLUE);
+		ChatBox.addText( pseudo + ' ' + DB.getMessage(2059, ' has recieved an invitation to join your party.'), ChatBox.TYPE.BLUE);
 
 		var pkt = new PACKET.CZ.REQ_JOIN_GROUP();
 		pkt.AID = AID;

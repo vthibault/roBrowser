@@ -51,6 +51,12 @@ define(function(require)
 
 
 	/**
+	 * Freeze the mouse
+	 */
+	NpcStore.mouseMode = UIComponent.MouseMode.FREEZE;
+
+
+	/**
 	 * @var {Preferences} 
 	 */
 	var _preferences = Preferences.get('NpcStore', {
@@ -121,6 +127,9 @@ define(function(require)
 			.on('dragover', function(event) {
 				event.stopImmediatePropagation();
 				return false;
+			})
+			.on('mousedown', function(){
+				NpcStore.focus();
 			});
 
 		// Hacky drag drop
@@ -136,7 +145,6 @@ define(function(require)
 	{
 		var InputWindow  = this.ui.find('.InputWindow');
 		var OutputWindow = this.ui.find('.OutputWindow');
-		Mouse.intersect  = false;
 
 		InputWindow.css({  top:  _preferences.inputWindow.y,  left: _preferences.inputWindow.x });
 		OutputWindow.css({ top:  _preferences.outputWindow.y, left: _preferences.outputWindow.x });
@@ -162,7 +170,6 @@ define(function(require)
 		var InputWindow  = this.ui.find('.InputWindow');
 		var OutputWindow = this.ui.find('.OutputWindow');
 
-		Mouse.intersect  = true;
 		_input.length    = 0;
 		_output.length   = 0;
 
