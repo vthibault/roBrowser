@@ -135,6 +135,7 @@ define(["./JobConst"], function( JobId )
 	duplicateEntry(JobId.RANGER2,          JobId.RANGER2_H,          JobId.RANGER2_B);
 	duplicateEntry(JobId.ARCHBISHOP,       JobId.ARCHBISHOP_H,       JobId.ARCHBISHOP_B);
 	duplicateEntry(JobId.MECHANIC,         JobId.MECHANIC_H,         JobId.MECHANIC_B);
+	duplicateEntry(JobId.MECHANIC2,        JobId.MECHANIC2_H,        JobId.MECHANIC2_B);
 	duplicateEntry(JobId.GUILLOTINE_CROSS, JobId.GUILLOTINE_CROSS_H, JobId.GUILLOTINE_CROSS_B);
 	duplicateEntry(JobId.ROYAL_GUARD,      JobId.ROYAL_GUARD_H,      JobId.ROYAL_GUARD_B);
 	duplicateEntry(JobId.ROYAL_GUARD2,     JobId.ROYAL_GUARD2_H,     JobId.ROYAL_GUARD2_B);
