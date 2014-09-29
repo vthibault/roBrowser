@@ -25,6 +25,7 @@
 					ROConfig.autoLogin        = event.data.autoLogin        || [];
 					ROConfig.version          = event.data.version          || '';
 					ROConfig.BGMFileExtension = event.data.BGMFileExtension || ['mp3'];
+					ROConfig.plugins          = event.data.plugins          || {};
 
 					if (ROConfig.development) {
 						var script  = document.createElement('script');

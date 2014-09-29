@@ -221,6 +221,13 @@
 
 
 	/**
+	 * @var {Object} Define plugin to execute
+	 * It will test each extensions until there is one it can read.
+	 */
+	ROBrowser.prototype.plugins = {};
+
+
+	/**
 	 * @var {string} roBrowser api window path
 	 */
 	ROBrowser.prototype.baseUrl = (function(){
@@ -328,8 +335,8 @@
 		}
 
 		// Start waiting for robrowser
-		this._Interval  = setInterval( WaitForInitialization.bind(this), 100 );
-		window.addEventListener( 'message', OnMessage, false );
+		this._Interval = setInterval( WaitForInitialization.bind(this), 100 );
+		window.addEventListener('message', OnMessage, false );
 	};
 
 
@@ -354,6 +361,7 @@
 			autoLogin:        this.autoLogin,
 			version:          this.version,
 			clientHash:       this.clientHash,
+			plugins:          this.plugins,
 			BGMFileExtension: this.BGMFileExtension
 		}, '*');
 	}
@@ -363,5 +371,4 @@
 	 * Export
 	 */
 	window.ROBrowser = ROBrowser;
-
 })();
