@@ -233,8 +233,8 @@
 	ROBrowser.prototype.baseUrl = (function(){
 		var script = document.getElementsByTagName('script');
 		return script[ script.length -1 ].src
-			.replace(/\/build\/[^\/]+\.js.*/, '/api.js') // redirect compiled script
-			.replace(/\/src\/.*/, '/api.js');           // fix error with cache
+			.replace(/\/[^\/]+\.js.*/, '/api.js') // redirect compiled script
+			.replace(/\/src\/.*/, '/api.js');     // fix error with cache (FF)
 	})().replace('.js', '.html');
 
 
