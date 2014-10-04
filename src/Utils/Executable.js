@@ -94,7 +94,7 @@ define( ['./BinaryReader'], function( BinaryReader )
 		}
 
 		// TODO: check in the Executable binary
-		if (file.size < 1024 * 1024 * 3 || file.size > 1024 * 1024 * 5) {
+		if (file.size < 1024 * 1024 * 3 || file.size > 1024 * 1024 * 7) {
 			return false;
 		}
 
