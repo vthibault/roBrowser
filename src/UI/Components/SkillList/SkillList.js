@@ -203,7 +203,7 @@ define(function(require)
 		}
 
 		// Already in list, update it instead of duplicating it
-		if (this.ui.find('.skill .id' + skill.SKID + ':first').length) {
+		if (this.ui.find('.skill.id' + skill.SKID + ':first').length) {
 			this.updateSkill( skill );
 			return;
 		}
@@ -283,7 +283,7 @@ define(function(require)
 		target.upgradable  = skill.upgradable;
 
 		// Update UI
-		element = this.ui.find('.skill .id' + skill.SKID + ':first');
+		element = this.ui.find('.skill.id' + skill.SKID + ':first');
 		element.find('.level .current, .level .max').text(skill.level);
 		element.find('.spcost').text(skill.spcost);
 
