@@ -70,8 +70,10 @@ define(function(require)
 					addClass('menu_node').
 					text(list[i]).
 					data('id', i).
-					mousedown(function(){
+					mousedown(function(event){
 						WinList.setIndex( jQuery(this).data('id') );
+						event.stopImmediatePropagation();
+						return false;
 					}).
 					dblclick( this.selectIndex.bind(this) )
 			);

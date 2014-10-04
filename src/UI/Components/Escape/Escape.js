@@ -53,10 +53,10 @@ define(function(require)
 
 		this.ui.find('.sound').click(onToggleSoundUI);
 		this.ui.find('.graphics').click(onToggleGraphicUI);
-		this.ui.find('.resurection').click(this.onResurectionRequest);
-		this.ui.find('.savepoint').click(this.onReturnSavePointRequest);
-		this.ui.find('.charselect').click(this.onCharSelectionRequest);
-		this.ui.find('.exit').click(this.onExitRequest);
+		this.ui.find('.resurection').click(function(){ Escape.onResurectionReques(); });
+		this.ui.find('.savepoint').click(function(){ Escape.onReturnSavePointRequest(); });
+		this.ui.find('.charselect').click(function(){ Escape.onCharSelectionRequest(); });
+		this.ui.find('.exit').click(function(){ Escape.onExitRequest(); });
 		this.ui.find('.cancel').click(function(){ Escape.ui.hide(); });
 	};
 
