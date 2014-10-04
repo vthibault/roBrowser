@@ -241,7 +241,11 @@ define(function( require )
 			return;
 		}
 
-		Client.loadFile( DB.INTERFACE_PATH + 'illust/' + pkt.imageName + '.bmp', function( url ){
+		if (pkt.imageName.indexOf('.') === -1) {
+			pkt.imageName += '.bmp';
+		}
+
+		Client.loadFile( DB.INTERFACE_PATH + 'illust/' + pkt.imageName, function( url ){
 
 			// If the npc box is already closed, don't show the image
 			if (!NpcBox.ui || !NpcBox.ui.is(':visible')) {
