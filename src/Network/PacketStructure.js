@@ -10432,6 +10432,22 @@ define(['Utils/BinaryWriter', './PacketVerManager'], function(BinaryWriter, PACK
 	PACKET.ZC.SKILL_ENTRY3.size = -1;
 
 
+	// 0x8c8
+	PACKET.ZC.NOTIFY_ACT3 = function PACKET_ZC_NOTIFY_ACT3(fp, end) {
+		this.GID = fp.readULong();
+		this.targetGID = fp.readULong();
+		this.startTime = fp.readULong();
+		this.attackMT = fp.readLong();
+		this.attackedMT = fp.readLong();
+		this.damage = fp.readLong();
+		fp.seek(1, SEEK_CUR);
+		this.count = fp.readShort();
+		this.action = fp.readUChar();
+		this.leftDamage = fp.readLong();
+	};
+	PACKET.ZC.NOTIFY_ACT3.size = 34;
+
+
 	// 0x8d0
 	PACKET.ZC.REQ_WEAR_EQUIP_ACK2 = function PACKET_ZC_REQ_WEAR_EQUIP_ACK2(fp, end) {
 		this.index = fp.readUShort();

@@ -208,7 +208,7 @@ define(function(require)
 	 */
 	CharSelect.setInfo = function setInfo( pkt )
 	{
-		_maxSlots           = pkt.TotalSlotNum || 9; // default 9 ?
+		_maxSlots           = Math.floor((pkt.TotalSlotNum + pkt.PremiumStartSlot) || 9); // default 9 ?
 		_sex                = pkt.sex;
 		_slots.length       = 0;
 		_entitySlots.length = 0;

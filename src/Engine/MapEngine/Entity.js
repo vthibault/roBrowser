@@ -962,6 +962,7 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.STOPMOVE,                     onEntityStopMove );
 		Network.hookPacket( PACKET.ZC.NOTIFY_ACT,                   onEntityAction );
 		Network.hookPacket( PACKET.ZC.NOTIFY_ACT2,                  onEntityAction );
+		Network.hookPacket( PACKET.ZC.NOTIFY_ACT3,                  onEntityAction );
 		Network.hookPacket( PACKET.ZC.NOTIFY_CHAT,                  onEntityTalk );
 		Network.hookPacket( PACKET.ZC.NPC_CHAT,                     onEntityTalkColor );
 		Network.hookPacket( PACKET.ZC.ACK_REQNAME,                  onEntityIdentity );

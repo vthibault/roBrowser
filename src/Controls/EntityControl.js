@@ -169,7 +169,7 @@ define(function( require )
 			case Entity.TYPE_NPC:
 				pkt      = new PACKET.CZ.CONTACTNPC();
 				pkt.NAID = this.GID;
-				pkt.type = 0; // TODO: what is it for ?
+				pkt.type = 1; // 1 for NPC in Aegis
 				Network.sendPacket(pkt);
 
 				// Updare look
