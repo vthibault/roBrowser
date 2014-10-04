@@ -6,7 +6,7 @@ It give access to some useful API and so, do not depend on JAVA for the socket c
 
 ###Configuration###
 
-Open **chrome-app/settings.js** and add your own configurations: *packetver*, *width*, *height*, *quality*, *remoteClient*, *grfList*, *servers*, ...
+Open **applications/settings.js** and add your own configurations: *packetver*, *width*, *height*, *quality*, *remoteClient*, *grfList*, *servers*, ...
 You can see a list of availables parameters [in the getting started guide](http://www.robrowser.com/getting-started#API)
 
 ###Creation###

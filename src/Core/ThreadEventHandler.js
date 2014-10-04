@@ -8,6 +8,13 @@
  * @author Vincent Thibault
  */
 
+// Node-webkit
+if (self.require) {
+	self.requireNode = self.require;
+	delete self.require;
+	self.requireNode.version = process.versions.node;
+	delete process.versions.node;
+}
 
 importScripts('../Vendors/require.js');
 requirejs.config({

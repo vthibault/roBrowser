@@ -26,6 +26,8 @@ define(function( require )
 	var ChromeSocket   = require('./SocketHelpers/ChromeSocket');
 	var JavaSocket     = require('./SocketHelpers/JavaSocket');
 	var WebSocket      = require('./SocketHelpers/WebSocket');
+	var TCPSocket      = require('./SocketHelpers/TCPSocket');
+	var NodeSocket     = require('./SocketHelpers/NodeSocket');
 	var getModule      = require;
 
 
@@ -47,7 +49,7 @@ define(function( require )
 	 * Buffer to use to read packets
 	 * @var buffer
 	 */
-	var _save_buffer         = null;
+	var _save_buffer = null;
 
 
 	/**
@@ -88,9 +90,19 @@ define(function( require )
 		var socket, Socket;
 		var proxy = Configs.get('socketProxy', null);
 
-		// Native socket
+		// Chrome App
 		if (Context.Is.APP) {
 			Socket = ChromeSocket;
+		}
+
+		// Firefox OS App
+		else if (TCPSocket.isSupported()) {
+			Socket = TCPSocket;
+		}
+
+		// node-webkit
+		else if (NodeSocket.isSupported()) {
+			Socket = NodeSocket;
 		}
 
 		// Web Socket with proxy

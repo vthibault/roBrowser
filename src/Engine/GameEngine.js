@@ -80,7 +80,7 @@ define(function( require )
 		// Start Intro, wait the user to add files
 		q.add(function(){
 			Client.onFilesLoaded = function(count){
-				if (!Configs.get('remoteClient') && !count) {
+				if (!Configs.get('remoteClient') && !count && !window.requireNode) {
 					if (!Context.Is.APP) {
 						alert( 'No client to initialize roBrowser');
 					}
