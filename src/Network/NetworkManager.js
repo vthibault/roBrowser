@@ -21,7 +21,6 @@ define(function( require )
 	var PACKETVER      = require('./PacketVerManager');
 	var PacketVersions = require('./PacketVersions');
 	var PacketRegister = require('./PacketRegister');
-	var PacketGuess    = require('./PacketGuess');
 	var PacketCrypt    = require('./PacketCrypt');
 	var ChromeSocket   = require('./SocketHelpers/ChromeSocket');
 	var JavaSocket     = require('./SocketHelpers/JavaSocket');
@@ -65,7 +64,6 @@ define(function( require )
 		this.struct   = struct;
 		this.size     = size;
 		this.callback = null;
-		this.guess    = null;
 	}
 
 
@@ -211,21 +209,6 @@ define(function( require )
 
 
 	/**
-	 * Register a function for a packet to guess the procole version
-	 *
-	 * @param {object} packet
-	 * @param {function} callback to guess PACKETVER
-	 */
-	function guessPacketVer( packet, callback)
-	{
-		if (!packet.id) {
-			throw new Error('NetworkManager::GuessPacketVer() - Packet not yet register "'+ packet.name +'"');
-		}
-		Packets.list[ packet.id ].guess = callback;
-	}
-
-
-	/**
 	 * Force to read from a used version for the next receive data
 	 *
 	 * @param callback
@@ -316,11 +299,6 @@ define(function( require )
 			}
 
 			offset += length;
-
-			// Try to guess the packet version
-			if (packet.guess && PACKETVER.min !== PACKETVER.max) {
-				packet.guess( length );
-			}
 
 			// Not enough bytes, need to wait for new buffer to read more.
 			if (offset > fp.length) {
@@ -460,7 +438,6 @@ define(function( require )
 		this.send           = send;
 		this.setPing        = setPing;
 		this.connect        = connect;
-		this.guessPacketVer = guessPacketVer;
 		this.hookPacket     = hookPacket;
 		this.close          = close;
 		this.read           = read;
@@ -483,9 +460,6 @@ define(function( require )
 		for (i = 0; i < count; ++i) {
 			registerPacket( keys[i], PacketRegister[ keys[i] ] );
 		}
-
-		// Guess packetver
-		PacketGuess.call(this);
 
 		this.utils = {
 			longToIP: utilsLongToIP

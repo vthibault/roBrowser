@@ -101,10 +101,16 @@
 	 *
 	 * Supported value:
 	 *    a) YYYYMMDD     (number: date you want)
-	 *    b) 'auto'       (detect packetver from client and packets received from server)
 	 *    c) 'executable' (detect packetver from executable compilation date)
 	 */
 	ROBrowser.prototype.packetver    = 'auto';
+
+
+	/**
+	 * @var {number} character info block size
+	 * If not set, it will try to guess the type based on the packetver and the block total length
+	 */
+	ROBrowser.prototype.charBlockSize = 0;
 
 
 	/**
@@ -362,6 +368,7 @@
 			version:          this.version,
 			clientHash:       this.clientHash,
 			plugins:          this.plugins,
+			charBlockSize:    this.charBlockSize,
 			BGMFileExtension: this.BGMFileExtension
 		}, '*');
 	}

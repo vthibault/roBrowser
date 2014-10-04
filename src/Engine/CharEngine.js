@@ -334,7 +334,7 @@ define(function( require )
 		var pkt;
 
 		// Old Packet required stats
-		if (PACKETVER.min < 20120307) {
+		if (PACKETVER.value < 20120307) {
 			pkt = new PACKET.CH.MAKE_CHAR();
 			pkt.Str  = Str;
 			pkt.Agi  = Agi;

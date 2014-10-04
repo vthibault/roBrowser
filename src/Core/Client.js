@@ -40,13 +40,12 @@ define(function( require )
 		function OnDate(date){
 			// Avoid errors
 			if (date > 20000000) {
-				PACKETVER.min = date;
-				PACKETVER.max = date;
+				PACKETVER.value = date;
 			}
 		}
 
 		// Find executable and set the packetver
-		if (!packetver || String(packetver).match(/^(executable|auto)$/i)) {
+		if (!packetver || String(packetver).match(/^executable$/i)) {
 			for (i = 0, count = files.length; i < count; ++i) {
 				if (Executable.isROExec(files[i])) {
 					Executable.getDate(files[i], OnDate);
@@ -55,8 +54,7 @@ define(function( require )
 			}
 		}
 		else if (typeof packetver === 'number') {
-			PACKETVER.min = packetver;
-			PACKETVER.max = packetver;
+			PACKETVER.value = packetver;
 		}
 
 		// GRF Host config

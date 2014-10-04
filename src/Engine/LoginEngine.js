@@ -152,11 +152,13 @@ define(function( require )
 		// Server packetver
 		if (packetver) {
 			if (packetver.match(/^\d+$/)) {
-				PACKETVER.set( parseInt(packetver, 10) );
+				PACKETVER.value = parseInt(packetver, 10);
 			}
-			else if (packetver.match(/auto/i)) {
-				PACKETVER.set( 0, Infinity);
-			}
+		}
+
+		if (!PACKETVER.value) {
+			UIManager.showErrorBox('Sorry, no PACKETVER configs found.')
+			return;
 		}
 
 		// Add support for remote client in server definition

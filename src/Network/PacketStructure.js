@@ -1666,7 +1666,6 @@ define(['Utils/BinaryWriter', './PacketVerManager'], function(BinaryWriter, PACK
 	PACKET.CZ.PING = function PACKET_CZ_PING() {
 		this.AID = 0;
 	};
-	PACKET.CZ.PING.size = 6;
 	PACKET.CZ.PING.prototype.build = function() {
 		var pkt_len = 2 + 4;
 		var pkt_buf = new BinaryWriter(pkt_len);
@@ -3375,7 +3374,7 @@ define(['Utils/BinaryWriter', './PacketVerManager'], function(BinaryWriter, PACK
 		pkt_buf.writeShort(0x2b0);
 		pkt_buf.writeULong(this.Version);
 		pkt_buf.writeString(this.ID, 24);
-		pkt_buf.writeString(this.Passwd, 24);
+		pkt_buf.writeBinaryString(this.Passwd, 24);
 		pkt_buf.writeUChar(this.clienttype);
 		pkt_buf.writeBinaryString(this.m_szIP, 16);
 		pkt_buf.writeBinaryString(this.m_szMacAddr, 13);
@@ -4457,7 +4456,7 @@ define(['Utils/BinaryWriter', './PacketVerManager'], function(BinaryWriter, PACK
 
 	// 0x6b
 	PACKET.HC.ACCEPT_ENTER_NEO_UNION = function PACKET_HC_ACCEPT_ENTER_NEO_UNION(fp, end) {
-		if (PACKETVER.min >= 20100413) {
+		if (PACKETVER.value >= 20100413) {
 			this.TotalSlotNum = fp.readUChar();
 			this.PremiumStartSlot = fp.readUChar();
 			this.PremiumEndSlot = fp.readUChar();
@@ -4467,82 +4466,7 @@ define(['Utils/BinaryWriter', './PacketVerManager'], function(BinaryWriter, PACK
 		this.time1 = fp.readULong();
 		this.time2 = fp.readULong();
 		this.dummy2_endbilling = fp.readBinaryString(7);
-		this.charInfo = (function() {
-			var i = -1,
-				out = [];
-			while (fp.tell() < end) {
-				i++;
-				out[i] = {};
-				out[i].GID = fp.readULong();
-				out[i].exp = fp.readLong();
-				out[i].money = fp.readLong();
-				out[i].jobexp = fp.readLong();
-				out[i].joblevel = fp.readLong();
-				out[i].bodyState = fp.readLong();
-				out[i].healthState = fp.readLong();
-				out[i].effectState = fp.readLong();
-				out[i].virtue = fp.readLong();
-				out[i].honor = fp.readLong();
-				out[i].jobpoint = fp.readShort();
-
-				if (PACKETVER.min > 20081217) {
-					out[i].hp = fp.readLong();
-					out[i].maxhp = fp.readLong();
-				} else {
-					out[i].hp = fp.readShort();
-					out[i].maxhp = fp.readShort();
-				}
-
-				out[i].sp = fp.readShort();
-				out[i].maxsp = fp.readShort();
-				out[i].speed = fp.readShort();
-				out[i].job = fp.readShort();
-				out[i].head = fp.readShort();
-				out[i].weapon = fp.readShort();
-				out[i].level = fp.readShort();
-				out[i].sppoint = fp.readShort();
-				out[i].accessory = fp.readShort();
-				out[i].shield = fp.readShort();
-				out[i].accessory2 = fp.readShort();
-				out[i].accessory3 = fp.readShort();
-				out[i].headpalette = fp.readShort();
-				out[i].bodypalette = fp.readShort();
-				out[i].name = fp.readString(24);
-				out[i].Str = fp.readUChar();
-				out[i].Agi = fp.readUChar();
-				out[i].Vit = fp.readUChar();
-				out[i].Int = fp.readUChar();
-				out[i].Dex = fp.readUChar();
-				out[i].Luk = fp.readUChar();
-				out[i].CharNum = fp.readUChar();
-				out[i].haircolor = fp.readUChar();
-
-				if (PACKETVER.min >= 20061023) {
-					out[i].bIsChangedCharName = fp.readShort();
-
-					if ((PACKETVER.min >= 20100720 && PACKETVER.min <= 20100727) || PACKETVER.min >= 20100803) {
-						out[i].lastMap = fp.readBinaryString(16);
-					}
-					if (PACKETVER.min >= 20100803) {
-						out[i].DeleteDate = fp.readLong();
-
-						if (PACKETVER.min >= 20110111) {
-							out[i].Robe = fp.readLong();
-
-							if (PACKETVER.min !== 20111116) {
-								if (PACKETVER.min >= 20110928) {
-									out[i].SlotAddon = fp.readLong();
-								}
-								if (PACKETVER.min >= 20111025) {
-									out[i].RenameAddon = fp.readLong();
-								}
-							}
-						}
-					}
-				}
-			}
-			return out;
-		})();
+		this.charInfo = PACKETVER.parseCharInfo(fp, end);
 	};
 	PACKET.HC.ACCEPT_ENTER_NEO_UNION.size = -1;
 
@@ -4556,73 +4480,7 @@ define(['Utils/BinaryWriter', './PacketVerManager'], function(BinaryWriter, PACK
 
 	// 0x6d
 	PACKET.HC.ACCEPT_MAKECHAR_NEO_UNION = function PACKET_HC_ACCEPT_MAKECHAR_NEO_UNION(fp, end) {
-		this.charinfo = {};
-		this.charinfo.GID = fp.readULong();
-		this.charinfo.exp = fp.readLong();
-		this.charinfo.money = fp.readLong();
-		this.charinfo.jobexp = fp.readLong();
-		this.charinfo.joblevel = fp.readLong();
-		this.charinfo.bodystate = fp.readLong();
-		this.charinfo.healthstate = fp.readLong();
-		this.charinfo.effectstate = fp.readLong();
-		this.charinfo.virtue = fp.readLong();
-		this.charinfo.honor = fp.readLong();
-		this.charinfo.jobpoint = fp.readShort();
-		if (PACKETVER.min > 20081217) {
-			this.charinfo.hp = fp.readLong();
-			this.charinfo.maxhp = fp.readLong();
-		} else {
-			this.charinfo.hp = fp.readShort();
-			this.charinfo.maxhp = fp.readShort();
-		}
-		this.charinfo.sp = fp.readShort();
-		this.charinfo.maxsp = fp.readShort();
-		this.charinfo.speed = fp.readShort();
-		this.charinfo.job = fp.readShort();
-		this.charinfo.head = fp.readShort();
-		this.charinfo.weapon = fp.readShort();
-		this.charinfo.level = fp.readShort();
-		this.charinfo.sppoint = fp.readShort();
-		this.charinfo.accessory = fp.readShort();
-		this.charinfo.shield = fp.readShort();
-		this.charinfo.accessory2 = fp.readShort();
-		this.charinfo.accessory3 = fp.readShort();
-		this.charinfo.headpalette = fp.readShort();
-		this.charinfo.bodypalette = fp.readShort();
-		this.charinfo.name = fp.readString(24);
-		this.charinfo.Str = fp.readUChar();
-		this.charinfo.Agi = fp.readUChar();
-		this.charinfo.Vit = fp.readUChar();
-		this.charinfo.Int = fp.readUChar();
-		this.charinfo.Dex = fp.readUChar();
-		this.charinfo.Luk = fp.readUChar();
-		this.charinfo.CharNum = fp.readUChar();
-		this.charinfo.haircolor = fp.readUChar();
-
-		if (PACKETVER.min >= 20061023) {
-			this.charinfo.bIsChangedCharName = fp.readShort();
-
-			if ((PACKETVER.min >= 20100720 && PACKETVER.min <= 20100727) || PACKETVER.min >= 20100803) {
-				this.charinfo.lastMap = fp.readBinaryString(16);
-
-				if (PACKETVER.min >= 20100803) {
-					this.charinfo.DeleteDate = fp.readLong();
-
-					if (PACKETVER.min >= 20110111) {
-						this.charinfo.Robe = fp.readLong();
-
-						if (PACKETVER.min !== 20111116) {
-							if (PACKETVER.min >= 20110928) {
-								this.charinfo.SlotAddon = fp.readLong();
-							}
-							if (PACKETVER.min >= 20111025) {
-								this.charinfo.RenameAddon = fp.readLong();
-							}
-						}
-					}
-				}
-			}
-		}
+		this.charinfo = PACKETVER.parseCharInfo(fp, end)[0];
 	};
 	PACKET.HC.ACCEPT_MAKECHAR_NEO_UNION.size = 0;
 
@@ -5000,6 +4858,13 @@ define(['Utils/BinaryWriter', './PacketVerManager'], function(BinaryWriter, PACK
 	PACKET.ZC.ACK_REQNAME.size = 30;
 
 
+	// 0x96
+	PACKET.ZC.UNK1 = function PACKET_ZC_UNK1(fp, end) {
+		this.unk = fp.readUShort();
+	};
+	PACKET.ZC.UNK1.size = 4;
+
+
 	// 0x97
 	PACKET.ZC.WHISPER = function PACKET_ZC_WHISPER(fp, end) {
 		this.sender = fp.readString(24);
@@ -5193,7 +5058,7 @@ define(['Utils/BinaryWriter', './PacketVerManager'], function(BinaryWriter, PACK
 	PACKET.ZC.REQ_WEAR_EQUIP_ACK = function PACKET_ZC_REQ_WEAR_EQUIP_ACK(fp, end) {
 		this.index = fp.readUShort();
 		this.wearLocation = fp.readUShort();
-		if (PACKETVER.min >= 20100629) {
+		if (PACKETVER.value >= 20100629) {
 			this.viewid = fp.readUShort();
 		}
 		this.result = fp.readUChar();
@@ -6639,6 +6504,13 @@ define(['Utils/BinaryWriter', './PacketVerManager'], function(BinaryWriter, PACK
 		this.ServerID = fp.readULong();
 	};
 	PACKET.ZC.COLLECTORDEAD.size = 6;
+
+
+	// 0x187
+	PACKET.HC.PING = function PACKET_HC_PING(fp, end) {
+		this.AID = fp.readULong();
+	};
+	PACKET.HC.PING.size = 6;
 
 
 	// 0x188
@@ -10296,10 +10168,9 @@ define(['Utils/BinaryWriter', './PacketVerManager'], function(BinaryWriter, PACK
 		this.PremiumStartSlot = fp.readUChar();
 		this.PremiumEndSlot = fp.readUChar();
 		this.dummy1_beginbilling = fp.readChar();
-		this.code = fp.readULong();
-		this.time1 = fp.readULong();
-		this.time2 = fp.readULong();
-		this.dummy2_endbilling = fp.readBinaryString(7);
+		this.code = fp.readChar();
+		fp.seek(20, SEEK_CUR);
+		this.charInfo = PACKETVER.parseCharInfo(fp, end);
 	};
 	PACKET.HC.ACCEPT_ENTER_NEO_UNION_HEADER.size = -1;
 
@@ -11059,57 +10930,7 @@ define(['Utils/BinaryWriter', './PacketVerManager'], function(BinaryWriter, PACK
 
 	// 0x99d
 	PACKET.HC.ACCEPT_ENTER_NEO_UNION_LIST = function PACKET_HC_ACCEPT_ENTER_NEO_UNION_LIST(fp, end) {
-		this.charInfo = (function() {
-			var i = -1,
-				out = [];
-			while (fp.tell() < end) {
-				i++;
-				out[i] = {};
-				out[i].GID = fp.readULong();
-				out[i].exp = fp.readLong();
-				out[i].money = fp.readLong();
-				out[i].jobexp = fp.readLong();
-				out[i].joblevel = fp.readLong();
-				out[i].bodystate = fp.readLong();
-				out[i].healthstate = fp.readLong();
-				out[i].effectstate = fp.readLong();
-				out[i].virtue = fp.readLong();
-				out[i].honor = fp.readLong();
-				out[i].jobpoint = fp.readShort();
-				out[i].hp = fp.readLong();
-				out[i].maxhp = fp.readLong();
-				out[i].sp = fp.readShort();
-				out[i].maxsp = fp.readShort();
-				out[i].speed = fp.readShort();
-				out[i].job = fp.readShort();
-				out[i].head = fp.readShort();
-				out[i].weapon = fp.readShort();
-				out[i].level = fp.readShort();
-				out[i].sppoint = fp.readShort();
-				out[i].accessory = fp.readShort();
-				out[i].shield = fp.readShort();
-				out[i].accessory2 = fp.readShort();
-				out[i].accessory3 = fp.readShort();
-				out[i].headpalette = fp.readShort();
-				out[i].bodypalette = fp.readShort();
-				out[i].name = fp.readString(24);
-				out[i].Str = fp.readUChar();
-				out[i].Agi = fp.readUChar();
-				out[i].Vit = fp.readUChar();
-				out[i].Int = fp.readUChar();
-				out[i].Dex = fp.readUChar();
-				out[i].Luk = fp.readUChar();
-				out[i].CharNum = fp.readUChar();
-				out[i].haircolor = fp.readUChar();
-				out[i].bIsChangedCharName = fp.readShort();
-				out[i].lastMap = fp.readBinaryString(16);
-				out[i].DeleteDate = fp.readLong();
-				out[i].Robe = fp.readLong();
-				out[i].SlotAddon = fp.readLong();
-				out[i].RenameAddon = fp.readLong();
-			}
-			return out;
-		})();
+		this.charInfo = PACKETVER.parseCharInfo(fp, end);
 	};
 	PACKET.HC.ACCEPT_ENTER_NEO_UNION_LIST.size = -1;
 
