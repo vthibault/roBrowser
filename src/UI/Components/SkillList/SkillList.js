@@ -290,7 +290,7 @@ define(function(require)
 		element.removeClass('active passive disabled');
 		element.addClass(!skill.level ? 'disabled' : skill.type ? 'active' : 'passive');
 
-		if (skill.upgradable) {
+		if (skill.upgradable && _points) {
 			element.find('.levelup').show();
 		}
 		else {
