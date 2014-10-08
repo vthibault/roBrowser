@@ -87,7 +87,7 @@ define(function( require )
 	function onItemPickAnswer( pkt )
 	{
 		// Fail
-		if (pkt.result === 6) {
+		if (pkt.result !== 0) {
 			ChatBox.addText( DB.getMessage(53), ChatBox.TYPE.ERROR );
 			return;
 		}
