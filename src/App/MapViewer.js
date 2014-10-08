@@ -90,6 +90,7 @@ function(
 
 					switch (event.data.type) {
 						case 'init':
+							BGM.setAvailableExtensions(['mp3']);
 							Thread.delegate( event.source, event.origin );
 							Thread.init();
 							Renderer.init();
@@ -129,6 +130,7 @@ function(
 		else {
 			// Waiting for the Thread to be ready
 			q.add(function(){
+				BGM.setAvailableExtensions(['mp3']);
 				Thread.hook('THREAD_READY', q.next );
 				Thread.init();
 			});
