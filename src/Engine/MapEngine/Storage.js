@@ -49,7 +49,7 @@ define(function( require )
 	 */
 	function onStorageList( pkt )
 	{
-		itemBuffer = itemBuffer.concat( pkt.ItemInfo );
+		itemBuffer = itemBuffer.concat( pkt.ItemInfo || pkt.itemInfo );
 	}
 
 
