@@ -201,7 +201,10 @@ define(function( require )
 		}
 
 		// Check for double click (reset angle and zoom)
-		if (action.tick + 500 > tick) {
+		if (action.tick + 500 > tick &&
+		    Math.abs(action.x-Mouse.screen.x) < 10 && // Check the mouse position to avoid bug while rotating
+		    Math.abs(action.y-Mouse.screen.y) < 10) { // to fast the camera...
+
 			if (KEYS.SHIFT) {
 				this.angleFinal[0] = +this.range;
 			}
