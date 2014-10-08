@@ -275,6 +275,7 @@ define(function( require )
 		}
 
 		filename = filename.replace( /\\/g, '/');
+		var url  = filename.replace(/[^//]+/g, function(a){return encodeURIComponent(a);});
 
 		// Don't load mp3 sounds to avoid blocking the queue
 		// They can be load by the HTML5 Audio / Flash directly.
@@ -284,7 +285,7 @@ define(function( require )
 		}
 
 		var xhr = new XMLHttpRequest();
-		xhr.open('GET', this.remoteClient + filename, true);
+		xhr.open('GET', this.remoteClient + url, true);
 		xhr.responseType = 'arraybuffer';
 		xhr.onload = function(){
 			if (xhr.status == 200) {
