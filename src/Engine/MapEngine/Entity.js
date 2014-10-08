@@ -71,6 +71,13 @@ define(function( require )
 		if (entity) {
 			entity.remove( pkt.type );
 		}
+
+		// Show escape menu
+		if (pkt.GID === Session.Entity.GID && pkt.type === 1) {
+			Escape.ui.show();
+			Escape.ui.find('.savepoint').show();
+			Escape.ui.find('.graphics, .sound, .hotkey').hide();
+		}
 	}
 
 

@@ -28,7 +28,6 @@ define(function( require )
 	var ChatRoom       = require('UI/Components/ChatRoom/ChatRoom');
 	var BasicInfo      = require('UI/Components/BasicInfo/BasicInfo');
 	var WinStats       = require('UI/Components/WinStats/WinStats');
-	var Escape         = require('UI/Components/Escape/Escape');
 	var Announce       = require('UI/Components/Announce/Announce');
 	var Equipment      = require('UI/Components/Equipment/Equipment');
 	var SkillList      = require('UI/Components/SkillList/SkillList');
@@ -230,13 +229,6 @@ define(function( require )
 			case StatusProperty.HP:
 				Session.Entity.life.hp = amount;
 				Session.Entity.life.update();
-
-				// Urg we are dead !
-				if (amount < 1) {
-					Escape.ui.show();
-					Escape.ui.find('.savepoint').show();
-					Escape.ui.find('.graphics, .sound, .hotkey').hide();
-				}
 
 				if (Session.Entity.life.hp_max > -1) {
 					BasicInfo.update('hp', Session.Entity.life.hp, Session.Entity.life.hp_max);
