@@ -224,7 +224,6 @@ define(function( require )
 
 			case Entity.TYPE_PC:
 				/// TODO: complete it : 
-				/// - check for guild leader action (invite, ally, ...)
 				/// - check for admin action (kick, mute, ...)
 
 				ContextMenu.remove();
@@ -239,14 +238,14 @@ define(function( require )
 
 				// Guild features
 				if (Session.hasGuild) {
-					if (Session.guildRight & 0x01) {
+					if (Session.guildRight & 0x01 && !this.GUID) {
 						// Send (%s) a Guild invitation
 						ContextMenu.addElement( DB.getMessage(382).replace('%s', this.display.name), function(){
 							getModule('Engine/MapEngine/Guild').requestPlayerInvitation(entity.GID);
 						});
 					}
 
-					if (Session.isGuildMaster) {
+					if (Session.isGuildMaster && this.GUID && Session.Entity.GUID !== this.GUID) {
 						ContextMenu.nextGroup();
 
 						// Set this guild as an Alliance
