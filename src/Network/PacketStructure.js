@@ -6394,7 +6394,8 @@ define(['Utils/BinaryWriter', './PacketVerManager'], function(BinaryWriter, PACK
 	// 0x163
 	PACKET.ZC.BAN_LIST = function PACKET_ZC_BAN_LIST(fp, end) {
 		this.banList = (function() {
-			var i, count=(end-fp.tell())/88|0, out=new Array(count);
+			var size = (PACKETVER.max < 20100803) ? 88 : 64;
+			var i, count=(end-fp.tell())/size|0, out=new Array(count);
 			for (i = 0; i < count; ++i) {
 				out[i] = {};
 				out[i].charname = fp.readString(24);
