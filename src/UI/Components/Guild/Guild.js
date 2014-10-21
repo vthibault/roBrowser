@@ -36,7 +36,7 @@ define(function(require)
 	/**
 	 * @var {Preferences} structure
 	 */
-	var _preferences = Preferences.get('Inventory', {
+	var _preferences = Preferences.get('Guild', {
 		x: 100,
 		y: 100
 	}, 1.0);
