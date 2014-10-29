@@ -111,9 +111,10 @@ function(              Altitude,        Client,         WebGL,         Texture )
 
 				canvas.width  = WebGL.toPowerOfTwo(this.width);
 				canvas.height = WebGL.toPowerOfTwo(this.height);
-
+				
+				ctx.globalAlpha = 0.6;
 				ctx.drawImage( this, 0, 0, canvas.width, canvas.height );
-				ctx.fillStyle = 'rgba( 40, 220, 130, 0.5 )'; // TODO: can't find the value in the client
+				ctx.fillStyle = 'rgb( 50, 240, 160)';
 				ctx.globalCompositeOperation = 'source-atop';
 				ctx.fillRect(0, 0, canvas.width, canvas.height);
 
