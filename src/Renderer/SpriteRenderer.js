@@ -57,7 +57,7 @@ function(      WebGL,         glMatrix,      Camera )
 
 			// Spherical billboard
 			"mat[0].xyz = vec3( 1.0, 0.0, 0.0 );",
-			"mat[1].xyz = vec3( 0.0, 1.0 + 2.0/uCameraLatitude, uCameraLatitude/50.0 );",
+			"mat[1].xyz = vec3( 0.0, 1.0 + 0.5/uCameraLatitude, uCameraLatitude/50.0 );",
 			"mat[2].xyz = vec3( 0.0, 0.0, 1.0 );",
 
 			"return mat;",
