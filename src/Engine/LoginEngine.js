@@ -181,6 +181,7 @@ define(function( require )
 		// Autologin features
 		if (autoLogin instanceof Array && autoLogin[0] && autoLogin[1]) {
 			onConnectionRequest.apply( null, autoLogin);
+			Configs.set('autoLogin',null);
 		}
 		else {
 			WinLogin.append();
