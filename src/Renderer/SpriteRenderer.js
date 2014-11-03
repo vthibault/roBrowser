@@ -353,10 +353,10 @@ function(      WebGL,         glMatrix,      Camera )
 			_buffer = gl.createBuffer();
 			gl.bindBuffer( gl.ARRAY_BUFFER, _buffer );
 			gl.bufferData( gl.ARRAY_BUFFER, new Float32Array([
-				-0.5, +0.5, 0.0, 0.0, 1.0,
-				+0.5, +0.5, 1.0, 0.0, 1.0,
-				-0.5, -0.5, 0.0, 1.0, 0.0,
-				+0.5, -0.5, 1.0, 1.0, 0.0
+				-0.5, +0.5, 0.0, 0.0,
+				+0.5, +0.5, 1.0, 0.0,
+				-0.5, -0.5, 0.0, 1.0,
+				+0.5, -0.5, 1.0, 1.0
 			]), gl.STATIC_DRAW );
 		}
 
@@ -403,8 +403,8 @@ function(      WebGL,         glMatrix,      Camera )
 		gl.bindBuffer( gl.ARRAY_BUFFER, _buffer );
 
 		// Link attribute
-		gl.vertexAttribPointer( attribute.aPosition,     2, gl.FLOAT, false,  5*4, 0   );
-		gl.vertexAttribPointer( attribute.aTextureCoord, 2, gl.FLOAT, false,  5*4, 2*4 );
+		gl.vertexAttribPointer( attribute.aPosition,     2, gl.FLOAT, false,  4*4, 0   );
+		gl.vertexAttribPointer( attribute.aTextureCoord, 2, gl.FLOAT, false,  4*4, 2*4 );
 	
 		// Binding 3D context
 		this.render = RenderCanvas3D;
