@@ -1,40 +1,42 @@
 ![logo](http://www.robrowser.com/logo.png)
 
+roBrowser is a web-based clone of the popular MMORPG [Ragnarok Online](http://iro.ragnarokonline.com/) built with WebGL, JavaScript, HTML5, and more. The project is entirely free and opensource, so you're welcome to setup roBrowser on your own server or try a [demo](http://demo.robrowser.com/).
 
-Table of Contents
------------------
-* 1 What is roBrowser?
-* 2 Prerequisites
-* 3 Installation
-* 4 Helpful Links
+You can learn more at http://robrowser.com
 
-1. What is roBrowser?
----------------------
-roBrowser is an Open Source adaptation of Ragnarok Online client for the web. Written mostly in javascript/html5, the program is very flexible and in constant evolution. The project is managed by a group of volunteers located around the world.
-Simply, it looks like :
+## Screenshots
+![screen](http://upload.robrowser.com/demo.jpg)
 
-![screen](http://upload.robrowser.com/demo.jpg?a)
 
-2. Prerequisites
-----------------
-To execute roBrowser you will require a recent Browser that support WebGL and an OpenGL ES 2.0 GPU compatible. It's tested and working on *Chrome*, *Firefox* and *Opera*.
-If you don't run roBrowser as a Chrome App and don't set a WebSocketProxy server, it will require Java plugin installed in your web browser to send sockets.
+## Installing
 
-3. Installation
----------------
-This section is a very brief set of installation instructions and subject to changes.
+### Prerequisites
 
-* 1 [Download roBrowser](https://github.com/vthibault/roBrowser/archive/master.zip) and extract it.
-* 2 [Compile scripts](https://github.com/vthibault/roBrowser/tree/master/build) to reduce loading time.
-* 3 Installing the [remote client](https://github.com/vthibault/roBrowser/tree/master/client) and set the parameter *remoteClient* to your server
-* 4 Installing the [websocket proxy](https://github.com/herenow/wsProxy/blob/master/README.md) and set the parameter *socketProxy* to your proxy server url
-* 5 Configure roBrowser - [documentation](http://www.robrowser.com/getting-started#API) or some [demos](https://github.com/vthibault/roBrowser/tree/master/demos)
+To run roBrowser you will need a browser that supports [WebGL](http://www.chromeexperiments.com/webgl/) and is OpenGL ES 2.0 compatible. We've tested the following browsers:
 
-4. Helpful Links
-----------------
+* Chrome
+* FireFox
+* Opera
+* IE11
 
+If you don't run roBrowser in a Chrome App, you will need a Java plugin installed instead.
+
+### Quickstart
+
+1.  [Download roBrowser](https://github.com/vthibault/roBrowser/archive/master.zip) and extract it.
+2.  [Convert DB](https://github.com/vthibault/roBrowser/tree/master/tools/converter/) to get custom content to roBrowser.
+3.  [Compile scripts](https://github.com/vthibault/roBrowser/tree/master/tools/build/) to reduce loading time.
+4.  Install the [remote client](https://github.com/vthibault/roBrowser/tree/master/client) and set the parameter *remoteClient* to your server.
+5.  Install the [websocket proxy](https://github.com/herenow/wsProxy/blob/master/README.md) and set the parameter *socketProxy* to your proxy server URL.
+6.  Configure roBrowser - [documentation](http://www.robrowser.com/getting-started#API) and some [examples](https://github.com/vthibault/roBrowser/tree/master/examples).
+
+## Contributing
+
+roBrowser is developed by a [team](https://github.com/vthibault/roBrowser/graphs/contributors) located around the world. Check out the [documentation](http://www.robrowser.com/getting-started#API) and submit a pull request!
+
+## Contact
+
+* [Demo](http://demo.robrowser.com/)
 * [roBrowser website](http://www.robrowser.com/)
 * [roBrowser forum](http://forum.robrowser.com/)
-* [GIT Repository URL](https://github.com/vthibault/roBrowser/)
-* [Demo](http://demo.robrowser.com/)
 * IRC Channel: *irc.rizon.net* / Channel: *#roBrowser*

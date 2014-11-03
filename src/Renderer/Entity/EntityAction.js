@@ -24,15 +24,20 @@ define(['Renderer/Renderer', 'DB/DBManager'], function( Renderer, DB )
 		this.SIT        = -1;
 		this.PICKUP     = -1;
 		this.READYFIGHT = -1;
-		this.WTF        = -1;
+		this.FREEZE     = -1;
 		this.HURT       = -1;
 		this.DIE        = -1;
-		this.WTF2       = -1;
+		this.FREEZE2    = -1;
 		this.ATTACK1    = -1;
 		this.ATTACK2    = -1;
 		this.ATTACK3    = -1;
 		this.SKILL      = -1;
 		this.ACTION     = -1;
+
+		this.SPECIAL    = -1;
+		this.PERF1      = -1;
+		this.PERF2      = -1;
+		this.PERF3      = -1;
 	}
 
 
@@ -68,9 +73,16 @@ define(['Renderer/Renderer', 'DB/DBManager'], function( Renderer, DB )
 		else {
 
 			// Know attack frame based on weapon type
-			if (option.action === this.ACTION.ATTACK && this.objecttype === this.constructor.TYPE_PC) {
-				var attack    = DB.getWeaponAction( this.weapon, this._job );
-				option.action = [ this.ACTION.ATTACK1, this.ACTION.ATTACK2, this.ACTION.ATTACK3 ][attack];
+			if (option.action === this.ACTION.ATTACK) {
+				if (this.objecttype === this.constructor.TYPE_PC) {
+					var attack    = DB.getWeaponAction( this.weapon, this._job, this._sex );
+					option.action = [ this.ACTION.ATTACK1, this.ACTION.ATTACK2, this.ACTION.ATTACK3 ][attack];
+				}
+
+				// No action loaded yet
+				if (option.action === -2) {
+					option.action = this.ACTION.ATTACK1;
+				}
 			}
 
 			this.action = option.action === -1 || typeof option.action === 'undefined' ? this.ACTION.IDLE : option.action;
@@ -81,6 +93,9 @@ define(['Renderer/Renderer', 'DB/DBManager'], function( Renderer, DB )
 			anim.play   = typeof option.play !== 'undefined' ? option.play : true;
 			anim.next   = option.next   || false;
 			anim.save   = false;
+
+			// Reset sounds
+			this.sound.free();
 		}
 	}
 
@@ -106,9 +121,9 @@ define(['Renderer/Renderer', 'DB/DBManager'], function( Renderer, DB )
 				this.ACTION.READYFIGHT = 4;
 				this.ACTION.ATTACK1    = 5;
 				this.ACTION.HURT       = 6;
-				this.ACTION.WTF        = 7;
+				this.ACTION.FREEZE     = 7;
 				this.ACTION.DIE        = 8;
-				this.ACTION.WTF2       = 9;
+				this.ACTION.FREEZE2    = 9;
 				this.ACTION.ATTACK2    = 10;
 				this.ACTION.ATTACK3    = 11;
 				this.ACTION.SKILL      = 12;
@@ -123,17 +138,30 @@ define(['Renderer/Renderer', 'DB/DBManager'], function( Renderer, DB )
 				this.ACTION.DIE    = 4;
 				break;
 
+			case Entity.TYPE_PET:
+				this.ACTION.IDLE     = 0;
+				this.ACTION.WALK     = 1;
+				this.ACTION.ATTACK   = 2;
+				this.ACTION.HURT     = 3;
+				this.ACTION.DIE      = 4;
+				this.ACTION.SPECIAL  = 5;
+				this.ACTION.PERF1    = 6;
+				this.ACTION.PERF2    = 7;
+				this.ACTION.PERF3    = 8;
+				break;
+
 			// NPC action
 			case Entity.TYPE_NPC:
 				this.ACTION.IDLE   = 0;
-				// NPC don't have other frame ?
+				// For those NPC that move with unitwalk scriptcommand
+				this.ACTION.WALK   = 1;
 				break;
 
 			// When you see a warp with /effect, it's 3 times bigger.
 			// TODO: put it somewhere else
 			case Entity.TYPE_WARP:
-				this.xSize       = 5 / 3;
-				this.ySize       = 5 / 3;
+				this.xSize       = 20;
+				this.ySize       = 20;
 				break;
 
 			// Homunculus
@@ -149,9 +177,8 @@ define(['Renderer/Renderer', 'DB/DBManager'], function( Renderer, DB )
 				break;
 
 			//TODO: define others Entities ACTION
-			case Entity.TYPE_PET:
 			case Entity.TYPE_ELEM:
 				break;
 		}
-	}
+	};
 });

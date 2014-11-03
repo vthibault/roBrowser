@@ -9,10 +9,20 @@
  * @author Vincent Thibault
  */
 
-define( [ 'Utils/Executable',  'Network/PacketVerManager',  './Thread',  './MemoryManager', 'Utils/Texture'],
-function(        Executable,                  PACKETVER,       Thread,      Memory,                Texture)
+define(function( require )
 {
 	'use strict';
+
+
+	// Load dependencies
+	var Executable    = require('Utils/Executable');
+	var Texture       = require('Utils/Texture');
+	var WebGL         = require('Utils/WebGL');
+	var Configs       = require('./Configs');
+	var Thread        = require('./Thread');
+	var Memory        = require('./MemoryManager');
+	var PACKETVER     = require('Network/PacketVerManager');
+	var getModule     = require;
 
 
 	/**
@@ -24,19 +34,18 @@ function(        Executable,                  PACKETVER,       Thread,      Memo
 	function init( files )
 	{
 		var i, count;
-
-		window.ROConfig = window.ROConfig || {};
+		var packetver    = Configs.get('packetver');
+		var remoteClient = Configs.get('remoteClient');
 
 		function OnDate(date){
 			// Avoid errors
 			if (date > 20000000) {
-				PACKETVER.min = date;
-				PACKETVER.max = date;
+				PACKETVER.value = date;
 			}
 		}
 
 		// Find executable and set the packetver
-		if (!ROConfig.packetver || String(ROConfig.packetver).match(/^(executable|auto)$/i)) {
+		if (!packetver || String(packetver).match(/^executable$/i)) {
 			for (i = 0, count = files.length; i < count; ++i) {
 				if (Executable.isROExec(files[i])) {
 					Executable.getDate(files[i], OnDate);
@@ -44,14 +53,13 @@ function(        Executable,                  PACKETVER,       Thread,      Memo
 				}
 			}
 		}
-		else if (typeof ROConfig.packetver === 'number') {
-			PACKETVER.min = ROConfig.packetver;
-			PACKETVER.max = ROConfig.packetver;
+		else if (typeof packetver === 'number') {
+			PACKETVER.value = packetver;
 		}
 
 		// GRF Host config
-		if (ROConfig.remoteClient) {
-			Thread.send( 'SET_HOST', ROConfig.remoteClient );
+		if (remoteClient) {
+			Thread.send( 'SET_HOST', remoteClient);
 		}
 
 		// Save full client
@@ -136,9 +144,9 @@ function(        Executable,                  PACKETVER,       Thread,      Memo
 
 		// Initialize client files (load GRF, etc).
 		Thread.send( 'CLIENT_INIT', {
-			files:   list,
-			grfList: ROConfig.grfList || 'DATA.INI',
-			save:    !!ROConfig.saveFiles
+			files:     list,
+			grfList:   Configs.get('grfList') || 'DATA.INI',
+			save:    !!Configs.get('saveFiles')
 		}, Client.onFilesLoaded );
 	}
 
@@ -220,9 +228,9 @@ function(        Executable,                  PACKETVER,       Thread,      Memo
 
 		function callback(data, error, input)
 		{
-			var i, count;
-			var gl, frames, texture, palette;
-			var precision, size;
+			var i, count, j, size;
+			var gl, frames, texture, layers, palette;
+			var precision;
 
 			if (data && !error) {
 				switch (input.filename.substr(-3)){
@@ -231,50 +239,74 @@ function(        Executable,                  PACKETVER,       Thread,      Memo
 						Texture.load( data, function(){
 							Memory.set( input.filename, this.toDataURL(), error);
 						});
-					return;
+						return;
 
-				case 'spr':
-					gl     = require('Renderer/Renderer').getContext();
-					frames = data.frames;
-					count  = frames.length;
+					// Load str textures
+					case 'str':
+						gl     = getModule('Renderer/Renderer').getContext();
+						layers = data.layers;
 
-					// Send sprites to GPU
-					for (i = 0; i < count; i++) {
-						frames[i].texture = gl.createTexture();
-						precision  = frames[i].type ? gl.LINEAR : gl.NEAREST;
-						size       = frames[i].type ? gl.RGBA   : gl.LUMINANCE;
-						gl.bindTexture( gl.TEXTURE_2D, frames[i].texture );
-						gl.texImage2D(gl.TEXTURE_2D, 0, size, frames[i].width, frames[i].height, 0, size, gl.UNSIGNED_BYTE, frames[i].data );
-						gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, precision);
-						gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, precision);
-					}
+						for (i = 0; i < data.layernum; ++i) {
+							layers[i].materials = new Array(layers[i].texcnt);
 
-					// Send palette to GPU
-					if (data.rgba_index !== 0) {
-						data.texture = gl.createTexture();
-						gl.bindTexture( gl.TEXTURE_2D, data.texture );
-						gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 256, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, data.palette );
+							for (j = 0; j < layers[i].texcnt; ++j) {
+								(function(url, materials, textureId){
+									Client.loadFile( url, function(url){
+										WebGL.texture( gl, url, function(texture) {
+											materials[textureId] = texture;
+										});
+									});
+								})(layers[i].texname[j], layers[i].materials, j);
+							}
+						}
+
+						Memory.set(input.filename, data, error);
+						return;
+
+					case 'spr':
+						gl     = getModule('Renderer/Renderer').getContext();
+						frames = data.frames;
+						count  = frames.length;
+
+						// Send sprites to GPU
+						for (i = 0; i < count; i++) {
+							frames[i].texture = gl.createTexture();
+							precision  = frames[i].type ? gl.LINEAR : gl.NEAREST;
+							size       = frames[i].type ? gl.RGBA   : gl.LUMINANCE;
+							gl.bindTexture( gl.TEXTURE_2D, frames[i].texture );
+							gl.texImage2D(gl.TEXTURE_2D, 0, size, frames[i].width, frames[i].height, 0, size, gl.UNSIGNED_BYTE, frames[i].data );
+							gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, precision);
+							gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, precision);
+							gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+							gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+						}
+
+						// Send palette to GPU
+						if (data.rgba_index !== 0) {
+							data.texture = gl.createTexture();
+							gl.bindTexture( gl.TEXTURE_2D, data.texture );
+							gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 256, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, data.palette );
+							gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+							gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+						}
+
+						Memory.set( input.filename, data, error);
+						return;
+
+					// Build palette
+					case 'pal':
+						gl      = getModule('Renderer/Renderer').getContext();
+						texture = gl.createTexture();
+						palette = new Uint8Array(data);
+
+						gl.bindTexture( gl.TEXTURE_2D, texture );
+						gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 256, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, palette );
 						gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
 						gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-					}
+						gl.generateMipmap( gl.TEXTURE_2D );
 
-					Memory.set( input.filename, data, error);
-					return;
-
-				// Build palette
-				case 'pal':
-					gl      = require('Renderer/Renderer').getContext();
-					texture = gl.createTexture();
-					palette = new Uint8Array(data);
-
-					gl.bindTexture( gl.TEXTURE_2D, texture );
-					gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 256, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, palette );
-					gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-					gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-					gl.generateMipmap( gl.TEXTURE_2D );
-
-					Memory.set( input.filename, { palette:palette, texture:texture }, error);
-					return;
+						Memory.set( input.filename, { palette:palette, texture:texture }, error);
+						return;
 				}
 			}
 

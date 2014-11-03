@@ -21,6 +21,7 @@ define(function( require )
 	var DB               = require('DB/DBManager');
 	var SoundManager     = require('Audio/SoundManager');
 	var BGM              = require('Audio/BGM');
+	var Events           = require('Core/Events');
 	var Session          = require('Engine/SessionStorage');
 	var Network          = require('Network/NetworkManager');
 	var PACKET           = require('Network/PacketStructure');
@@ -29,6 +30,8 @@ define(function( require )
 	var MapRenderer      = require('Renderer/MapRenderer');
 	var EntityManager    = require('Renderer/EntityManager');
 	var Entity           = require('Renderer/Entity/Entity');
+	var Altitude         = require('Renderer/Map/Altitude');
+	var MapControl       = require('Controls/MapControl');
 	var Mouse            = require('Controls/MouseEventHandler');
 	var KEYS             = require('Controls/KeyEventHandler');
 	var UIManager        = require('UI/UIManager');
@@ -43,6 +46,9 @@ define(function( require )
 	var Equipment        = require('UI/Components/Equipment/Equipment');
 	var StatusIcons      = require('UI/Components/StatusIcons/StatusIcons');
 	var ChatRoomCreate   = require('UI/Components/ChatRoomCreate/ChatRoomCreate');
+	var Emoticons        = require('UI/Components/Emoticons/Emoticons');
+	var SkillList        = require('UI/Components/SkillList/SkillList');
+	var PartyFriends     = require('UI/Components/PartyFriends/PartyFriends');
 
 
 	/**
@@ -52,33 +58,44 @@ define(function( require )
 
 
 	/**
+	 * @var {boolean} is initialized
+	 */
+	var _isInitialised = false;
+
+
+	/**
+	 * @namespace MapEngine
+	 */
+	var MapEngine = {};
+
+
+	/**
 	 * Connect to Map Server
 	 *
 	 * @param {number} IP
 	 * @param {number} port
-	 * @param {number} Character ID
 	 * @param {string} mapName
 	 */
-	function init( ip, port, GID, mapName )
+	MapEngine.init = function init( ip, port, mapName )
 	{
 		_mapName = mapName;
 
 		// Connect to char server
-		Network.connect( Network.utils.longToIP( ip ), port, function( success ){
+		Network.connect( Network.utils.longToIP( ip ), port, function onconnect( success ) {
 
 			// Force reloading map
 			MapRenderer.currentMap = '';
 
 			// Fail to connect...
 			if (!success) {
-				UIManager.showErrorBox( DB.msgstringtable[1] );
+				UIManager.showErrorBox( DB.getMessage(1) );
 				return;
 			}
 
 			// Success, try to login.
 			var pkt        = new PACKET.CZ.ENTER();
 			pkt.AID        = Session.AID;
-			pkt.GID        = GID;
+			pkt.GID        = Session.GID;
 			pkt.AuthCode   = Session.AuthCode;
 			pkt.clientTime = Date.now();
 			pkt.Sex        = Session.Sex;
@@ -94,11 +111,24 @@ define(function( require )
 
 			// Ping
 			var ping = new PACKET.CZ.REQUEST_TIME();
+			var startTick = Date.now();
 			Network.setPing(function(){
-				ping.time = Date.now();
+				ping.clientTime = Date.now() - startTick;
 				Network.sendPacket(ping);
 			});
 		}, true);
+
+		// Do not hook multiple time
+		if (_isInitialised) {
+			return;
+		}
+
+		_isInitialised = true;
+
+		MapControl.init();
+		MapControl.onRequestWalk     = onRequestWalk;
+		MapControl.onRequestStopWalk = onRequestStopWalk;
+		MapControl.onRequestDropItem = onDropItem;
 
 
 		// Hook packets
@@ -120,11 +150,43 @@ define(function( require )
 		require('./MapEngine/Item').call();
 		require('./MapEngine/PrivateMessage').call();
 		require('./MapEngine/Storage').call();
-		require('./MapEngine/Group').call();
+		require('./MapEngine/Group').init();
 		require('./MapEngine/Guild').call();
 		require('./MapEngine/Skill').call();
 		require('./MapEngine/ChatRoom').call();
-	}
+		require('./MapEngine/Pet').call();
+		require('./MapEngine/Store').call();
+		require('./MapEngine/Trade').call();
+		require('./MapEngine/Friends').init();
+
+		// Prepare UI
+		MiniMap.prepare();
+		Escape.prepare();
+		Inventory.prepare();
+		Equipment.prepare();
+		ShortCut.prepare();
+		ChatRoomCreate.prepare();
+		Emoticons.prepare();
+		SkillList.prepare();
+		PartyFriends.prepare();
+		StatusIcons.prepare();
+		BasicInfo.prepare();
+		ChatBox.prepare();
+
+		// Bind UI
+		WinStats.onRequestUpdate        = onRequestStatUpdate;
+		Equipment.onUnEquip             = onUnEquip;
+		Equipment.onConfigUpdate        = onConfigUpdate;
+		Equipment.onEquipItem           = onEquipItem;
+		Equipment.onRemoveOption        = onRemoveOption;
+		Inventory.onUseItem             = onUseItem;
+		Inventory.onEquipItem           = onEquipItem;
+		Escape.onExitRequest            = onExitRequest;
+		Escape.onCharSelectionRequest   = onRestartRequest;
+		Escape.onReturnSavePointRequest = onReturnSavePointRequest;
+		Escape.onResurectionRequest     = onResurectionRequest;
+		ChatBox.onRequestTalk           = onRequestTalk;
+	};
 
 
 	/**
@@ -158,24 +220,16 @@ define(function( require )
 		Session.Entity = new Entity( Session.Character );
 		Session.Entity.onWalkEnd = onWalkEnd;
 
+		// Reset
+		Session.petId         =     0;
+		Session.hasParty      = false;
+		Session.isPartyLeader = false;
+
 		BasicInfo.update('blvl', Session.Character.level );
 		BasicInfo.update('jlvl', Session.Character.joblevel );
 		BasicInfo.update('zeny', Session.Character.money );
 		BasicInfo.update('name', Session.Character.name );
 		BasicInfo.update('job',  Session.Character.job );
-
-		// Bind UI
-		WinStats.onRequestUpdate        = onRequestStatUpdate;
-		Equipment.onUnEquip             = onUnEquip;
-		Equipment.onConfigUpdate        = onConfigUpdate;
-		Equipment.onEquipItem           = onEquipItem;
-		Inventory.onUseItem             = onUseItem;
-		Inventory.onEquipItem           = onEquipItem;
-		Escape.onExitRequest            = onExitRequest;
-		Escape.onCharSelectionRequest   = onRestartRequest;
-		Escape.onReturnSavePointRequest = onReturnSavePointRequest;
-		Escape.onResurectionRequest     = onResurectionRequest;
-		ChatBox.onRequestTalk           = onRequestTalk;
 
 		// Fix http://forum.robrowser.com/?topic=32177.0
 		onMapChange({
@@ -229,6 +283,9 @@ define(function( require )
 			StatusIcons.append();
 			ShortCut.append();
 			ChatRoomCreate.append();
+			Emoticons.append();
+			SkillList.append();
+			PartyFriends.append();
 
 			// Map loaded
 			Network.sendPacket(
@@ -242,21 +299,13 @@ define(function( require )
 
 	/**
 	 * Change zone server
-	 * TODO: add support for zone-server changed.
 	 *
 	 * @param {object} pkt - PACKET.ZC.NPCACK_SERVERMOVE
 	 */
 	function onServerChange( pkt )
 	{
 		jQuery(window).off('keydown.map');
-		/*
-			pkt.mapName
-			pkt.xPos
-			pkt.yPos
-			pkt.addr.ip
-			pkt.addr.port
-		*/
-		// Have to resend authcode sex etc ?
+		MapEngine.init( pkt.addr.ip, pkt.addr.port, pkt.mapName );
 	}
 
 
@@ -290,7 +339,7 @@ define(function( require )
 	 */
 	function onExitFail( pkt )
 	{
-		ChatBox.addText( DB.msgstringtable[502], ChatBox.TYPE.ERROR);
+		ChatBox.addText( DB.getMessage(502), ChatBox.TYPE.ERROR);
 	}
 
 
@@ -359,12 +408,13 @@ define(function( require )
 	{
 		if (!pkt.type) {
 			// Have to wait 10sec
-			ChatBox.addText( DB.msgstringtable[502], ChatBox.TYPE.ERROR );
+			ChatBox.addText( DB.getMessage(502), ChatBox.TYPE.ERROR );
 		}
 		else {
 			StatusIcons.clean();
 			ChatBox.clean();
 			ShortCut.clean();
+			PartyFriends.clean();
 			MapRenderer.free();
 			Renderer.stop();
 			onRestart();
@@ -381,14 +431,17 @@ define(function( require )
 		switch (pkt.result) {
 			// Disconnect
 			case 0:
+				StatusIcons.clean();
 				ChatBox.clean();
+				ShortCut.clean();
+				PartyFriends.clean();
 				Renderer.stop();
 				onExitSuccess();
 				break;
 
 			case 1:
 				// Have to wait 10 sec
-				ChatBox.addText( DB.msgstringtable[502], ChatBox.TYPE.ERROR);
+				ChatBox.addText( DB.getMessage(502), ChatBox.TYPE.ERROR);
 				break;
 
 			default:
@@ -401,29 +454,57 @@ define(function( require )
 	 *
 	 * @param {string} user
 	 * @param {string} text
+	 * @param {number} target
 	 */
-	function onRequestTalk( user, text )
+	function onRequestTalk( user, text, target )
 	{
 		var pkt;
+		var flag_party = text[0] === '%' || KEYS.CTRL;
+		var flag_guild = text[0] === '$' || KEYS.ALT;
 
+		text = text.replace(/^(\$|\%)/, '');
+
+		// Private messages
 		if (user.length) {
 			pkt          = new PACKET.CZ.WHISPER();
 			pkt.receiver = user;
 			pkt.msg      = text;
-		}
-		else if (text[0] === '%') {
-			pkt     = new PACKET.CZ.REQUEST_CHAT_PARTY();
-			pkt.msg = Session.Entity.display.name + ' : ' + text.substr(1);
-		}
-		else if (text[0] === '$') {
-			pkt     = new PACKET.CZ.GUILD_CHAT();
-			pkt.msg = Session.Entity.display.name + ' : ' + text.substr(1);
-		}
-		else {
-			pkt     = new PACKET.CZ.REQUEST_CHAT();
-			pkt.msg = Session.Entity.display.name + ' : ' + text;
+			Network.sendPacket(pkt);
+			return;
 		}
 
+		// Set off/on flags
+		if (flag_party) {
+			target = (target & ~ChatBox.TYPE.PARTY) | (~target & ChatBox.TYPE.PARTY);
+		}
+
+		if (flag_guild) {
+			target = (target & ~ChatBox.TYPE.GUILD) | (~target & ChatBox.TYPE.GUILD);
+		}
+
+		// Get packet
+		if (target & ChatBox.TYPE.PARTY) {
+			pkt = new PACKET.CZ.REQUEST_CHAT_PARTY();
+		}
+		else if (target & ChatBox.TYPE.GUILD) {
+			pkt = new PACKET.CZ.GUILD_CHAT();
+		}
+		else {
+			pkt = new PACKET.CZ.REQUEST_CHAT();
+		}
+
+		// send packet
+		pkt.msg = Session.Entity.display.name + ' : ' + text;
+		Network.sendPacket(pkt);
+	}
+
+
+	/**
+	 * Remove cart/peco/falcon
+	 */
+	function onRemoveOption()
+	{
+		var pkt = new PACKET.CZ.REQ_CARTOFF();
 		Network.sendPacket(pkt);
 	}
 
@@ -443,12 +524,12 @@ define(function( require )
 	/**
 	 * Ask to move
 	 */
-	function onMouseDown()
+	function onRequestWalk()
 	{
-		clearTimeout(_walkTimer);
+		Events.clearTimeout(_walkTimer);
 
 		// If siting, update direction
-		if (Session.Entity.action === Session.Entity.ACTION.SIT) {
+		if (Session.Entity.action === Session.Entity.ACTION.SIT /*|| KEYS.SHIFT see: http://forum.robrowser.com/index.php?topic=32240#msg32446 */) {
 			Session.Entity.lookTo( Mouse.world.x, Mouse.world.y );
 
 			var pkt     = new PACKET.CZ.CHANGE_DIRECTION();
@@ -458,38 +539,108 @@ define(function( require )
 			return;
 		}
 
-		onWalkRequest();
+		walkIntervalProcess();
 	}
 
 
 	/**
 	 * Stop moving
 	 */
-	function onMouseUp()
+	function onRequestStopWalk()
 	{
-		clearTimeout(_walkTimer);
+		Events.clearTimeout(_walkTimer);
 	}
 
 
 	/**
 	 * Moving function
 	 */
-	function onWalkRequest()
+	function walkIntervalProcess()
 	{
-		if (_walkLastTick + 500 > Renderer.tick) {
+		// setTimeout isn't accurate, so reduce the value
+		// to avoid possible errors.
+		if (_walkLastTick + 450 > Renderer.tick) {
 			return;
 		}
 
-		if (Mouse.world.x > -1 && Mouse.world.y > -1) {
+		var isWalkable   = (Mouse.world.x > -1 && Mouse.world.y > -1);
+		var isCurrentPos = (Math.round(Session.Entity.position[0]) === Mouse.world.x &&
+		                    Math.round(Session.Entity.position[1]) === Mouse.world.y);
+
+		if (isWalkable && !isCurrentPos) {
 			var pkt = new PACKET.CZ.REQUEST_MOVE();
-			pkt.dest[0] = Mouse.world.x;
-			pkt.dest[1] = Mouse.world.y;
+
+			if (!checkFreeCell(Mouse.world.x, Mouse.world.y, 1, pkt.dest)) {
+				pkt.dest[0] = Mouse.world.x;
+				pkt.dest[1] = Mouse.world.y;
+			}
+
 			Network.sendPacket(pkt);
 		}
 
-		clearTimeout(_walkTimer);
-		_walkTimer    =  setTimeout( onWalkRequest, 500);
+		Events.clearTimeout(_walkTimer);
+		_walkTimer    =  Events.setTimeout( walkIntervalProcess, 500);
 		_walkLastTick = +Renderer.tick;
+	}
+
+
+	/**
+	 * Search free cells around a position
+	 *
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} range
+	 * @param {array} out
+	 */
+	function checkFreeCell(x, y, range, out)
+	{
+		var _x, _y, r;
+		var d_x = Session.Entity.position[0] < x ? -1 : 1;
+		var d_y = Session.Entity.position[1] < y ? -1 : 1;
+
+		// Search possible positions
+		for (r = 0; r <= range; ++r) {
+			for (_x = -r; _x <= r; ++_x) {
+				for (_y = -r; _y <= r; ++_y) {
+					if (isFreeCell(x + _x * d_x, y + _y * d_y)) {
+						out[0] = x + _x * d_x;
+						out[1] = y + _y * d_y;
+						return true;
+					}
+				}
+			}
+		}
+
+		return false;
+	}
+
+
+	/**
+	 * Does a cell is free (walkable, and no entity on)
+	 *
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {returns} is free
+	 */
+	function isFreeCell(x, y)
+	{
+		if (!(Altitude.getCellType(x, y) & Altitude.TYPE.WALKABLE)) {
+			return false;
+		}
+
+		var free = true;
+
+		EntityManager.forEach(function(entity){
+			if (Math.round(entity.position[0]) === x &&
+			    Math.round(entity.position[1]) === y) {
+				free = false;
+				return false;
+			}
+
+			return true;
+		});
+
+		return free;
 	}
 
 
@@ -498,12 +649,18 @@ define(function( require )
 	 */
 	function onWalkEnd()
 	{
-		var entity = EntityManager.getFocusEntity();
-		if (entity) {
-			var pkt       = new PACKET.CZ.REQUEST_ACT();
-			pkt.action    = 7;
-			pkt.targetGID = entity.GID;
-			Network.sendPacket(pkt);
+		// No action to do ?
+		if (Session.moveAction) {
+			// Not sure why, but there is a synchronization error with the
+			// server when moving to attack (wrong position).
+			// So wait 50ms to be sure we are at the correct position before
+			// performing an action
+			Events.setTimeout(function(){
+				if (Session.moveAction) {
+					Network.sendPacket(Session.moveAction);
+					Session.moveAction = null;
+				}
+			}, 50);
 		}
 	}
 
@@ -610,12 +767,5 @@ define(function( require )
 	/**
 	 * Export
 	 */
-	return new function MapEngine(){
-		this.init        = init;
-		this.onMouseUp   = onMouseUp;
-		this.onMouseDown = onMouseDown;
-		this.onDropItem  = onDropItem;
-
-		require('Controls/MapControl').call(this);
-	}();
+	return MapEngine;
 });

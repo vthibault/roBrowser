@@ -15,7 +15,7 @@ define(function( require )
 	/**
 	 * Dependencies
 	 */
-	var StatusTable        = require('DB/StatusTable');
+	var StatusTable        = require('DB/Status/StatusInfo');
 	var jQuery             = require('Utils/jquery');
 	var Texture            = require('Utils/Texture');
 	var Client             = require('Core/Client');
@@ -27,6 +27,18 @@ define(function( require )
 	 * Create component
 	 */
 	var StatusIcons = new UIComponent( 'StatusIcons' );
+
+
+	/**
+	 * Mouse can cross this UI
+	 */
+	StatusIcons.mouseMode = UIComponent.MouseMode.CROSS;
+
+
+	/**
+	 * @var {boolean} do not focus this UI
+	 */
+	StatusIcons.needFocus = false;
 
 
 	/**
@@ -79,11 +91,13 @@ define(function( require )
 			return;
 		}
 
-		if (!target.length) {
-			Client.loadFile( 'data/texture/effect/' + StatusTable[index], function(data){
+		if (!target.length && StatusTable[index].icon) {
+			Client.loadFile( 'data/texture/effect/' + StatusTable[index].icon, function(data){
 				Texture.load( data, function(){
-					this.className = 'effect'+ index;
-					ui.append(this);
+					if (!ui.find('.effect' + index).length) {
+						this.className = 'effect'+ index;
+						ui.append(this);
+					}
 				});
 			});
 		}

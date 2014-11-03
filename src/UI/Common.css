@@ -1,0 +1,22 @@
+/* Avoid input focus border */
+:focus {outline:none;}
+::-moz-focus-inner {border:0;}
+
+* { -moz-user-select:none; }
+
+html, body {
+	margin:0;
+}
+
+body {
+	background-color:black;
+	font-size:12px;
+	font-family:Arial;
+	overflow:hidden;
+	-webkit-user-select:none;
+	user-select:none;
+}
+
+button {
+	padding: 0;
+}

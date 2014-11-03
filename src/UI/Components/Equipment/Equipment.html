@@ -15,8 +15,13 @@
 		<table class="content" data-background="basic_interface/equipwin_bg.bmp">
 			<tr>
 				<td class="head_top col1"></td>
-				<td rowspan="6" class="col2">
-					<canvas width="55" height="125"></canvas>
+				<td rowspan="6">
+					<!-- avoid applying css on td directly-->
+					<div class="col2 ammo_container">
+						<div class="ammo"></div>
+						<button class="removeOption" data-background="basic_interface/btn_off.bmp"></button>
+						<canvas width="55" height="125"></canvas>
+					</div>
 				</td>
 				<td class="head_mid col3"></td>
 			</tr>
@@ -44,7 +49,7 @@
 			</div>
 			<div class="right">
 				<button class="show_equip" data-background="checkbox_0.bmp" data-preload="checkbox_1.bmp"></button>
-				<span data-text="1358">Show Equip</span>
+				<span data-text="1362">Show Equip</span>
 			</div>
 			<div class="clear"></div>
 		</div>
@@ -52,4 +57,5 @@
 			<!-- Import status component -->
 		</div>
 	</div>
+	<button id="lvlup_base" data-background="basic_interface/lv_up_off.bmp" data-sown="basic_interface/lv_up_on.bmp"></button>
 </div>

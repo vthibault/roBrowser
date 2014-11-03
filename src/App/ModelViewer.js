@@ -29,21 +29,37 @@ require({
 		jquery: 'Vendors/jquery-1.9.1'
 	}
 },
-   ['Core/Thread', 'Core/Context', 'Core/Client', 'UI/Components/ModelViewer/ModelViewer'],
-function( Thread,        Context,        Client,                             ModelViewer ) {
+   ['Core/Configs', 'Core/Thread', 'Core/Context', 'Core/Client', 'UI/Components/ModelViewer/ModelViewer'],
+function( Configs,        Thread,        Context,        Client,                             ModelViewer ) {
 	'use strict';
 
-	function synchronise( event ) {
-		Thread.delegate( event.source, event.origin );
-		Thread.init();
-		ModelViewer.append();
+	function onAPIMessage( event ) {
+		if (typeof event.data !== 'object') {
+			return;
+		}
 
-		window.removeEventListener('message', synchronise, false);
+		switch (event.data.type) {
+			case 'init':
+				Thread.delegate( event.source, event.origin );
+				Thread.init();
+				ModelViewer.append();
+				break;
+
+			case 'load':
+				ModelViewer.loadModel(event.data.data);
+				event.stopPropagation();
+				break;
+
+			case 'stop':
+				ModelViewer.stop();
+				event.stopPropagation();
+				break;
+		}
 	}
 
 	// Resources sharing
-	if (ROConfig.API) {
-		window.addEventListener('message', synchronise, false);
+	if (Configs.get('API')) {
+		window.addEventListener('message', onAPIMessage, false);
 		return;
 	}
 

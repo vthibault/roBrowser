@@ -12,7 +12,7 @@
 
 var _global = this;
 
-define( ['./Struct'], function( Struct )
+define( ['./Struct', 'Vendors/text-encoding'], function( Struct, TextEncoding )
 {
 	'use strict';
 
@@ -196,19 +196,42 @@ define( ['./Struct'], function( Struct )
 	BinaryReader.prototype.readString = function getString( len )
 	{
 		var offset = this.offset + 0;
-		var i, uint8, out = new Array(len);
+		var i, uint8, data = new Uint8Array(len);
 	
 		for (i = 0; i < len; ++i) {
 			if (!(uint8 = this.getUint8())) {
 				break;
 			}
-			out[i] = uint8;
+			data[i] = uint8;
 		}
 
 		this.offset = offset + len;
-		out.length  = i;
 
-		return String.fromCharCode.apply( null, out );
+		return TextEncoding.decode(data.subarray(0, i));
+	};
+
+
+	/**
+	 * Read binary string from buffer
+	 *
+	 * @param integer string length
+	 * @return string
+	 */
+	BinaryReader.prototype.getBinaryString  =
+	BinaryReader.prototype.readBinaryString = function getBinaryString( len )
+	{
+		var offset = this.offset + 0, i;
+		var uint8, out = '';
+	
+		for (i = 0; i < len; ++i) {
+			if (!(uint8 = this.getUint8())) {
+				break;
+			}
+			out += String.fromCharCode(uint8);
+		}
+
+		this.offset = offset + len;
+		return out;
 	};
 
 

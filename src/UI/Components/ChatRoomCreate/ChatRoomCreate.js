@@ -22,7 +22,6 @@ define(function(require)
 	var Preferences = require('Core/Preferences');
 	var UIManager   = require('UI/UIManager');
 	var UIComponent = require('UI/UIComponent');
-	var ChatRoom    = require('UI/Components/ChatRoom/ChatRoom');
 	var htmlText    = require('text!./ChatRoomCreate.html');
 	var cssText     = require('text!./ChatRoomCreate.css');
 
@@ -75,18 +74,17 @@ define(function(require)
 	ChatRoomCreate.init = function init()
 	{
 		// Bindings
-		this.ui.find('.close, .cancel').on('click', this.hide.bind(this));
+		this.ui.find('.close, .cancel').mousedown(stopPropagation).click(this.hide.bind(this));
 		this.ui.find('.ok').on('click', parseChatSetup.bind(this) );
 		this.ui.find('.setup').submit(function() {
 			return false;
 		});
 
-		// Do not activate drag
-		this.ui.find('input, button, select').mousedown(function(event) {
+		this.ui.find('input, select').mousedown(function(event){
 			event.stopImmediatePropagation();
 		});
 
-		this.draggable();
+		this.draggable(this.ui.find('.titlebar'));
 		this.ui.hide();
 	};
 
@@ -155,20 +153,7 @@ define(function(require)
 	 */
 	ChatRoomCreate.onKeyDown = function onKeyDown( event )
 	{
-		var isVisible = this.ui.is(':visible');
-
-		if (KEYS.ALT && event.which === KEYS.C && !ChatRoom.isOpen) {
-			if (isVisible) {
-				this.hide();
-			}
-			else {
-				this.show();
-			}
-			event.stopImmediatePropagation();
-			return false;
-		}
-
-		if (isVisible) {
+		if (this.ui.is(':visible')) {
 			if (event.which === KEYS.ENTER) {
 				parseChatSetup.call(this);
 				event.stopImmediatePropagation();
@@ -186,10 +171,31 @@ define(function(require)
 
 
 	/**
-	 * Pseudo functions :)
+	 * Process shortcut
+	 *
+	 * @param {object} key
 	 */
-	ChatRoomCreate.requestRoom = function requestRoom(){};
+	ChatRoomCreate.onShortCut = function onShurtCut( key )
+	{
+		switch (key.cmd) {
+			case 'TOGGLE':
+				this.ui.toggle();
+				if (this.ui.is(':visible')) {
+					this.focus();
+				}
+				break;
+		}
+	};
 
+
+	/**
+	 * Stop event propagation
+	 */
+	function stopPropagation( event )
+	{
+		event.stopImmediatePropagation();
+		return false;
+	}
 
 	/**
 	 * Parse and send chat room request
@@ -206,7 +212,7 @@ define(function(require)
 			overlay.className = 'win_popup_overlay';
 			document.body.appendChild(overlay);
 
-			var popup = UIManager.showMessageBox( DB.msgstringtable[13], 'ok', function(){
+			var popup = UIManager.showMessageBox( DB.getMessage(13), 'ok', function(){
 				document.body.removeChild(overlay);
 			}, true);
 
@@ -220,6 +226,12 @@ define(function(require)
 		this.requestRoom();
 		this.hide();
 	}
+
+
+	/**
+	 * Pseudo functions :)
+	 */
+	ChatRoomCreate.requestRoom = function requestRoom(){};
 
 
 	/**

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Compiling roBrowser</title>
+	<meta charset="utf-8"/>
+	<link rel="stylesheet" type="text/css" href="style.css"/>
+	<script type="text/javascript" src="script.js"></script>
+</head>
+<body>
+	<h1>Compilation Tool</h1>
+	<h2>Select the module you want to compile.</h2>
+
+	<div id="panel" class="hide">
+		<div class="group" data-app="App/Online">
+			<img src="../../applications/icon_128.png" width="48" height="48" />
+			<h1>Online</h1>
+		</div>
+		<div class="group" data-app="Core/ThreadEventHandler">
+			<img src="thread.png" width="48" height="48" />
+			<h1>Thread</h1>
+		</div>
+		<div class="group" data-app="App/GrfViewer">
+			<img src="../../src/UI/Components/GrfViewer/Icons/directory.png" width="48" height="48" />
+			<h1>GRF Viewer</h1>
+		</div>
+		<div class="group" data-app="App/StrViewer">
+			<img src="../../src/UI/Components/GrfViewer/Icons/fx.png" width="48" height="48" />
+			<h1>STR Viewer</h1>
+		</div>
+		<div class="group" data-app="App/ModelViewer">
+			<img src="../../src/UI/Components/GrfViewer/Icons/3d.png" width="48" height="48" />
+			<h1>Model Viewer</h1>
+		</div>
+		<div class="group" data-app="App/MapViewer">
+			<img src="../../src/UI/Components/GrfViewer/Icons/map.png" width="48" height="48" />
+			<h1>Map Viewer</h1>
+		</div>
+	</div>
+
+	<div id="loading" class="hide">
+		<div class="gear-loading"></div>
+		<div class="status">Loading scripts...</div>
+	</div>
+
+	<div id="result" class="hide">
+		<h2>Save this file at the location : <span class="location">/</span>.</h2>
+		<a href="#" download=""><button>Download</button></a>
+	</div>
+</body>
+</html>

@@ -29,7 +29,7 @@ define( ['jquery', 'DB/DBManager'], function( jQuery, DB )
 
 			// Escape, secure entry
 			value = String(value);
-			txt   = value.replace( /</g, '&#60;').replace(/>/g,'&#62;');
+			txt   = jQuery.escape(value);
 
 			// Msg color ^000000
 			reg = /\^([a-fA-F0-9]{6})/ ;
@@ -40,7 +40,7 @@ define( ['jquery', 'DB/DBManager'], function( jQuery, DB )
 			// Hiding hack ^nItemID^502
 			reg = /\^nItemID\^(\d+)/g;
 			while ((result = reg.exec(txt))) {
-				txt = txt.replace( result[0], DB.itemList[ result[1] ] ? DB.itemList[ result[1] ].identifiedDisplayName : 'Unknown Item' );
+				txt = txt.replace( result[0], DB.getItemInfo(result[1]).identifiedDisplayName );
 			}
 
 			// Line feed feature
@@ -50,6 +50,22 @@ define( ['jquery', 'DB/DBManager'], function( jQuery, DB )
 
 		}, null, text, arguments.length );
 	};
+
+
+	/**
+	 * Escape special chars from a string
+	 *
+	 * @param {string} text
+	 * @returns {string} encoded string
+	 */
+	jQuery.escape = (function escapeClosure(){
+		var element = document.createElement('div');
+
+		return function escape(text) {
+			element.textContent = text;
+			return element.innerHTML;
+		};
+	})();
 
 
 	/**

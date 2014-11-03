@@ -9,46 +9,31 @@
  * @author Vincent Thibault
  */
 
-define([
-	'Utils/jquery',
-	'Utils/Queue',
-	'Audio/SoundManager',
-	'Audio/BGM',
-	'DB/DBManager',
-	'Core/Client',
-	'Core/Thread',
-	'Core/Context',
-	'Engine/LoginEngine',
-	'Network/NetworkManager',
-	'Renderer/Renderer',
-	'UI/UIManager',
-	'UI/CursorManager',
-	'UI/Scrollbar',
-	'UI/Background',
-	'UI/Components/Intro/Intro',
-	'UI/Components/WinList/WinList'
-],
-function(
-	jQuery,
-	Queue,
-	Sound,
-	BGM,
-	DB,
-	Client,
-	Thread,
-	Context,
-	LoginEngine,
-	Network,
-	Renderer,
-	UIManager,
-	Cursor,
-	Scrollbar,
-	Background,
-	Intro,
-	WinList
-)
+define(function( require )
 {
 	'use strict';
+
+
+	// Load dependencies
+	var jQuery      = require('Utils/jquery');
+	var Queue       = require('Utils/Queue');
+	var Sound       = require('Audio/SoundManager');
+	var BGM         = require('Audio/BGM');
+	var DB          = require('DB/DBManager');
+	var Configs     = require('Core/Configs');
+	var Client      = require('Core/Client');
+	var Thread      = require('Core/Thread');
+	var Context     = require('Core/Context');
+	var LoginEngine = require('Engine/LoginEngine');
+	var Network     = require('Network/NetworkManager');
+	var Renderer    = require('Renderer/Renderer');
+	var MapRenderer = require('Renderer/MapRenderer');
+	var UIManager   = require('UI/UIManager');
+	var Cursor      = require('UI/CursorManager');
+	var Scrollbar   = require('UI/Scrollbar');
+	var Background  = require('UI/Background');
+	var Intro       = require('UI/Components/Intro/Intro');
+	var WinList     = require('UI/Components/WinList/WinList');
 
 
 	/**
@@ -94,35 +79,50 @@ function(
 
 		// Start Intro, wait the user to add files
 		q.add(function(){
-			Intro.onFilesSubmit = function( files ) {
-				Client.onFilesLoaded = function(count){
-					if (!ROConfig.remoteClient && !count) {
-						try {
-							alert( 'No client to initialize roBrowser');
-						}
-						catch(e){
-							// FIXME: no window.alert() in chrome app.
-						}
-						Intro.remove();
-						Intro.append();
-						return;
+			Client.onFilesLoaded = function(count){
+				if (!Configs.get('remoteClient') && !count && !window.requireNode) {
+					if (!Context.Is.APP) {
+						alert( 'No client to initialize roBrowser');
 					}
-					q._next();
-				};
-				Client.init( files );
+					else {
+						// FIXME: no window.alert() in chrome app.
+					}
+					Intro.remove();
+					Intro.append();
+					return;
+				}
+				q._next();
 			};
-			Intro.append();
-		});
 
-		// Loading clientinfo
-		q.add(function(){
-			loadClientInfo(q.next);
+			if (Configs.get('skipIntro')) {
+				Client.init([]);
+				return;
+			}
+
+			Intro.onFilesSubmit = Client.init.bind(Client);
+			Intro.append();
 		});
 
 		// Loading Game file (txt, lua, lub)
 		q.add(function(){
-			DB.onReady = q.next;
-			DB.init();
+			DB.onReady = function(){
+				Background.setImage( 'bgi_temp.bmp'); // remove loading
+				q._next();
+			};
+			DB.onProgress = function(i, count) {
+				Background.setPercent( Math.floor(i/count * 100) );
+			};
+			UIManager.removeComponents();
+			Background.init();
+			Background.resize( Renderer.width, Renderer.height );
+			Background.setImage( 'bgi_temp.bmp', function(){
+				DB.init();
+			});
+		});
+
+		q.add(function(){
+			Thread.send('CLIENT_FILES_ALIAS', DB.mapalias );
+			loadClientInfo(q.next);
 		});
 
 		// Initialize cursor
@@ -149,7 +149,9 @@ function(
 	 */
 	function reload()
 	{
+		BGM.setAvailableExtensions( Configs.get('BGMFileExtension', ['mp3']) );
 		BGM.play('01.mp3');
+
 		UIManager.removeComponents();
 		Network.close();
 
@@ -161,8 +163,18 @@ function(
 			// Display server list
 			var list = new Array( _servers.length );
 			var i, count = list.length;
-	
-			if (count) {
+
+			// WTF no servers ?
+			if (count === 0) {
+				UIManager.showMessageBox( 'Sorry, no server found.', 'ok', init);
+			}
+
+			// Just 1 server, skip the WinList
+			else if (count === 1 && Configs.get('skipServerList')) {
+				LoginEngine.onExitRequest = reload;
+				LoginEngine.init( _servers[0] );
+			}
+			else {
 				for (i = 0; i < count; ++i) {
 					list[i] = _servers[i].display;
 				}
@@ -171,12 +183,9 @@ function(
 				WinList.setList( list );
 			}
 
-			// WTF no servers ?
-			else {
-				UIManager.showMessageBox( 'Sorry, no server found.', 'ok', init);
-			}
-
 			Renderer.stop();
+			MapRenderer.free();
+			BGM.play('01.mp3');
 		});
 
 		// Hooking WinList
@@ -220,16 +229,16 @@ function(
 	 */
 	function loadClientInfo( callback )
 	{
-		_servers.length = 0;
-		ROConfig.servers = ROConfig.servers || 'data/clientinfo.xml';
+		var servers     = Configs.get('servers', 'data/clientinfo.xml');
 
-		if (ROConfig.servers instanceof Array) {
-			_servers = ROConfig.servers;
+		if (servers instanceof Array) {
+			_servers = servers;
 			callback();
 			return;
 		}
 
-		Client.loadFile( ROConfig.servers, function(xml)
+		_servers.length = 0;
+		Client.loadFile( servers, function(xml)
 		{
 			// $.parseXML() don't parse buggy xml (and a lot of clientinfo.xml are not properly write)...
 			xml = xml.replace(/^.*<\?xml/, '<?xml');
@@ -255,7 +264,14 @@ function(
 					port:       connection.find('port:first').text(),
 					version:    connection.find('version:first').text(),
 					langtype:   connection.find('langtype:first').text(),
-					packetver:  connection.find('packetver:first').text()
+					packetver:  connection.find('packetver:first').text(),
+					adminList:  (function(){
+						var list   = [];
+						connection.find('yellow admin, aid admin').each(function(){
+							list.push(parseInt(this.textContent,10));
+						});
+						return list;
+					})()
 				});
 
 				if (index === stop) {

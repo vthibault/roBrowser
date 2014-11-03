@@ -59,6 +59,7 @@ define(function()
 
 		this.ws.onclose = function OnClose()
 		{
+			self.connected = false;
 			this.close();
 
 			if (self.onClose) {

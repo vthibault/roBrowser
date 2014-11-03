@@ -41,7 +41,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 		var i, count;
 
 		this.fp     = new BinaryReader(data);
-		this.header = this.fp.readString(2);
+		this.header = this.fp.readBinaryString(2);
 
 		if (this.header !== 'AC') {
 			throw new Error('ACT::load() - Incorrect header "' + this.header + '", must be "AC"');
@@ -56,7 +56,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 			this.sounds.length = count;
 
 			for (i = 0; i < count; ++i) {
-				this.sounds[i] = this.fp.readString(40);
+				this.sounds[i] = this.fp.readBinaryString(40);
 			}
 	
 			// Delay

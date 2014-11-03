@@ -8,10 +8,22 @@
  * @author Vincent Thibault
  */
 
-define(  ['Loaders/GameFile', 'Loaders/LuaByte', 'Loaders/World', 'Loaders/Ground', 'Loaders/Altitude', 'Loaders/Model', 'Loaders/Sprite', 'Loaders/Action', 'Core/FileSystem'],
-function(          GameFile,           LuaByte,           World,           Ground,           Altitude,           Model,           Sprite,           Action,        FileSystem )
+define(function( require )
 {
 	'use strict';
+
+
+	// Load dependencies
+	var GameFile   = require('Loaders/GameFile');
+	var World      = require('Loaders/World');
+	var Ground     = require('Loaders/Ground');
+	var Altitude   = require('Loaders/Altitude');
+	var Model      = require('Loaders/Model');
+	var Sprite     = require('Loaders/Sprite');
+	var Action     = require('Loaders/Action');
+	var Str        = require('Loaders/Str');
+	var FileSystem = require('Core/FileSystem');
+	var fs         = self.requireNode && self.requireNode('fs');
 
 
 	/**
@@ -35,25 +47,37 @@ function(          GameFile,           LuaByte,           World,           Groun
 
 
 	/**
+	 * Files alias
+	 * @var {object}
+	 */
+	FileManager.filesAlias = {};
+
+
+	/**
 	 * Initialize file manager with a list of files
 	 *
 	 * @param {mixed} grf list
 	 */
 	FileManager.init = function Init( grfList )
 	{
-		
-		var i, count;
+		var content, files, result, regex;
+		var i, count, sortBySize = true;
 		var list = [];
 
 		// load GRFs from a file (DATA.INI)
 		if (typeof grfList === 'string') {
-			var files = FileSystem.search( grfList );
+			if (fs) {
+				content = fs.readFileSync(grfList);
+			}
+			else if ((files = FileSystem.search(grfList)).length) {
+				content = (new FileReaderSync()).readAsText(files[0]);
+			}
+			else {
+				grfList = /\.grf$/i;
+			}
 
-			if (files.length) {
-				var content = (new FileReaderSync()).readAsText(files[0]);
-
-				var result;
-				var regex = /(\d+)=([^\s]+)/g;
+			if (content) {
+				regex   = /(\d+)=([^\s]+)/g;
 
 				// Get a list of GRF
 				while ((result = regex.exec(content))) {
@@ -70,11 +94,8 @@ function(          GameFile,           LuaByte,           World,           Groun
 					i++;
 				}
 
-				grfList = list;
-			}
-
-			else {
-				grfList = /\.grf$/i;
+				grfList    = list;
+				sortBySize = false;
 			}
 		}
 
@@ -82,17 +103,27 @@ function(          GameFile,           LuaByte,           World,           Groun
 		if (grfList instanceof Array) {
 			list = grfList;
 			for (i = 0, count = list.length; i < count; ++i) {
-				list[i] = FileSystem.getFile( list[i] );
+				if (fs && fs.existsSync(list[i])) {
+					list[i] = {
+						name: list[i],
+						size: fs.statSync(list[i]).size,
+						fd:   fs.openSync(list[i], 'r')
+					};
+					continue;
+				}
+				list[i] = FileSystem.getFileSync( list[i] );
 			}
-
-			list.sort(function(a,b){
-				return a.size - b.size;
-			});
 		}
 
 		// Search GRF from a regex
 		if (grfList instanceof RegExp) {
 			list = FileSystem.search( grfList );
+		}
+
+		if (sortBySize) {
+			list.sort(function(a,b){
+				return a.size - b.size;
+			});
 		}
 
 		// Load Game files
@@ -184,33 +215,48 @@ function(          GameFile,           LuaByte,           World,           Groun
 	 */
 	FileManager.get = function Get( filename, callback )
 	{
-		var i, count;
-		var path, file;
-		var fileList;
-
-		// GRF path is as window : dir\to\location.txt
+		// Trim the path
 		filename = filename.replace(/^\s+|\s+$/g, '');
 
-		// Search in filesystem
-		file = FileSystem.getFile(filename);
-		if (file) {
-			callback( (new FileReaderSync()).readAsArrayBuffer(file));
+		if (fs && fs.existsSync(filename)) {
+			callback(fs.readFileSync(filename));
 			return;
 		}
 
-		path     = filename.replace( /\//g, '\\');
-		fileList = this.gameFiles;
-		count    = fileList.length;
+		// Search in filesystem
+		FileSystem.getFile(
+			filename,
 
-		for (i = 0; i < count; ++i) {
-			if (fileList[i].getFile( path, callback)) {
-				return;
+			// Found in file system, youhou !
+			function onFound(file) {
+				var reader = new FileReader();
+				reader.onloadend = function onLoad(event){
+					callback( event.target.result );
+				};
+				reader.readAsArrayBuffer(file);
+			},
+
+			// Not found, fetching files
+			function onNotFound() {
+				var i, count;
+				var fileList;
+				var path;
+
+				path     = filename.replace( /\//g, '\\');
+				fileList = FileManager.gameFiles;
+				count    = fileList.length;
+
+				for (i = 0; i < count; ++i) {
+					if (fileList[i].getFile( path, callback)) {
+						return;
+					}
+				}
+
+				// Not in GRFs ? Try to load it from
+				// remote client host
+				FileManager.getHTTP( filename, callback);
 			}
-		}
-
-		// Not in GRFs ? Try to load it from
-		// remote client host
-		this.getHTTP( filename, callback);
+		);
 	};
 
 
@@ -229,6 +275,7 @@ function(          GameFile,           LuaByte,           World,           Groun
 		}
 
 		filename = filename.replace( /\\/g, '/');
+		var url  = filename.replace(/[^//]+/g, function(a){return encodeURIComponent(a);});
 
 		// Don't load mp3 sounds to avoid blocking the queue
 		// They can be load by the HTML5 Audio / Flash directly.
@@ -238,7 +285,7 @@ function(          GameFile,           LuaByte,           World,           Groun
 		}
 
 		var xhr = new XMLHttpRequest();
-		xhr.open('GET', this.remoteClient + filename, true);
+		xhr.open('GET', this.remoteClient + url, true);
 		xhr.responseType = 'arraybuffer';
 		xhr.onload = function(){
 			if (xhr.status == 200) {
@@ -307,6 +354,7 @@ function(          GameFile,           LuaByte,           World,           Groun
 					// Audio
 					case 'wav':
 					case 'mp3':
+					case 'ogg':
 						// From GRF : change the data to an URI
 						if (buffer instanceof ArrayBuffer) {
 							result = URL.createObjectURL(
@@ -371,8 +419,8 @@ function(          GameFile,           LuaByte,           World,           Groun
 						result = new Action(buffer).compile();
 						break;
 
-					case 'lub':
-						result = new LuaByte(buffer).reverse();
+					case 'str':
+						result = new Str(buffer);
 						break;
 
 					default:

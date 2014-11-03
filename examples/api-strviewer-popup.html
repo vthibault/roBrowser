@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>StrViewer from http://www.robrowser.com</title>
+		<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+		<script type="text/javascript" src="../api.js"></script>
+		<script type="text/javascript">
+			function initialize() {
+				document.getElementById('robrowser').addEventListener("click", function(){
+					var ROConfig = {
+						type:          ROBrowser.TYPE.POPUP,
+						application:   ROBrowser.APP.STRVIEWER,
+						remoteClient:  "http://grf.robrowser.com/",
+						width:          800,
+						height:         600,
+						development:    true
+					};
+					var RO = new ROBrowser(ROConfig);
+					RO.start();
+				}, false );
+			}
+			window.addEventListener("load", initialize, false);
+		</script>
+	</head>
+	<body>
+		<input type="button" value="Run StrViewer" id="robrowser"/>
+	</body>
+</html>

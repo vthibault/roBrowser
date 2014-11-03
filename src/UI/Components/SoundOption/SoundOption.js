@@ -43,60 +43,18 @@ define(function(require)
 	/**
 	 * Initialize UI
 	 */
-	SoundOption.init = function Init()
+	SoundOption.init = function init()
 	{
-		this.ui.find('.close').click(function(){
-			this.remove();
-		}.bind(this));
+		this.ui.find('.base').mousedown(stopPropagation);
+		this.ui.find('.close').click(onClose);
 
-		//Avoid drag and drop in input elements
-		this.ui.find('input').mousedown(function(event){
-			event.stopImmediatePropagation();
-		});
+		this.ui.find('.sound').change(onSoundVolumeUpdate);
+		this.ui.find('.bgm').change(onBGMVolumeUpdate);
 
-		this.ui.find('.sound').change(function(){
-			AudioSettings.Sound.volume = parseInt(this.value, 10) / 100;
-			AudioSettings.save();
+		this.ui.find('.sound_state').change(onToggleSound);
+		this.ui.find('.bgm_state').change(onToggleBGM);
 
-			SoundManager.setVolume( AudioSettings.Sound.volume );
-		});
-
-		this.ui.find('.bgm').change(function(){
-			AudioSettings.BGM.volume = parseInt(this.value, 10) / 100;
-			AudioSettings.save();
-
-			AudioManager.setVolume( AudioSettings.BGM.volume );
-		});
-
-		this.ui.find('.sound_state').change(function(){
-			var oldVolume            = AudioSettings.Sound.volume;
-			AudioSettings.Sound.play = this.checked;
-
-			if (this.checked) {
-				SoundManager.setVolume(AudioSettings.Sound.volume);
-			}
-			else {
-				SoundManager.setVolume(0);
-				SoundManager.stop();
-			}
-
-			AudioSettings.Sound.volume = oldVolume; // setVolume modify the value, get it back
-			AudioSettings.save();
-		});
-
-		this.ui.find('.bgm_state').change(function(){
-			AudioSettings.BGM.play = this.checked;
-			AudioSettings.save();
-
-			if (this.checked) {
-				AudioManager.play(AudioManager.filename);
-			}
-			else {
-				AudioManager.stop();
-			}
-		});
-
-		this.draggable();
+		this.draggable(this.ui.find('.titlebar'));
 	};
 
 
@@ -105,7 +63,7 @@ define(function(require)
 	 * When append the element to html
 	 * Execute elements in memory
 	 */
-	SoundOption.onAppend = function OnAppend()
+	SoundOption.onAppend = function onAppend()
 	{
 		this.ui.css({
 			top:     _preferences.y,
@@ -122,12 +80,93 @@ define(function(require)
 	/**
 	 * Once remove, save preferences
 	 */
-	SoundOption.onRemove = function OnRemove()
+	SoundOption.onRemove = function onRemove()
 	{
 		_preferences.x    = parseInt(this.ui.css('left'), 10);
 		_preferences.y    = parseInt(this.ui.css('top'), 10);
 		_preferences.save();
 	};
+
+
+	/**
+	 * Stop event propagation
+	 */
+	function stopPropagation( event )
+	{
+		event.stopImmediatePropagation();
+		return false;
+	}
+
+
+	/**
+	 * Close the UI
+	 */
+	function onClose()
+	{
+		SoundOption.remove();
+	}
+
+
+	/**
+	 * Update sound volume
+	 */
+	function onSoundVolumeUpdate()
+	{
+		AudioSettings.Sound.volume = parseInt(this.value, 10) / 100;
+		AudioSettings.save();
+
+		SoundManager.setVolume( AudioSettings.Sound.volume );
+	}
+
+
+	/**
+	 * Toggle sound (on/off)
+	 */
+	function onToggleSound()
+	{
+		var oldVolume            = AudioSettings.Sound.volume;
+		AudioSettings.Sound.play = this.checked;
+
+		if (AudioSettings.Sound.play) {
+			SoundManager.setVolume(AudioSettings.Sound.volume);
+		}
+		else {
+			SoundManager.setVolume(0);
+			SoundManager.stop();
+		}
+
+		AudioSettings.Sound.volume = oldVolume; // setVolume modify the value, get it back
+		AudioSettings.save();
+	}
+
+
+	/**
+	 * Update BGM volume
+	 */
+	function onBGMVolumeUpdate()
+	{
+		AudioSettings.BGM.volume = parseInt(this.value, 10) / 100;
+		AudioSettings.save();
+
+		AudioManager.setVolume( AudioSettings.BGM.volume );
+	}
+
+
+	/**
+	 * Toggle BGM (on/off)
+	 */
+	function onToggleBGM()
+	{
+		AudioSettings.BGM.play = this.checked;
+		AudioSettings.save();
+
+		if (AudioSettings.BGM.play) {
+			AudioManager.play(AudioManager.filename);
+		}
+		else {
+			AudioManager.stop();
+		}
+	}
 
 
 	/**

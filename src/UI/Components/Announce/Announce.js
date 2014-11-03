@@ -15,16 +15,29 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
-	var jQuery             = require('Utils/jquery');
-	var Renderer           = require('Renderer/Renderer');
-	var UIManager          = require('UI/UIManager');
-	var UIComponent        = require('UI/UIComponent');
+	var jQuery      = require('Utils/jquery');
+	var Events      = require('Core/Events');
+	var Renderer    = require('Renderer/Renderer');
+	var UIManager   = require('UI/UIManager');
+	var UIComponent = require('UI/UIComponent');
 
 
 	/**
 	 * Create Announce component
 	 */
 	var Announce = new UIComponent( 'Announce' );
+
+
+	/**
+	 * Mouse can cross this UI
+	 */
+	Announce.mouseMode = UIComponent.MouseMode.CROSS;
+
+
+	/**
+	 * @var {boolean} do not focus this UI
+	 */
+	Announce.needFocus = false;
 
 
 	/**
@@ -62,7 +75,7 @@ define(function(require)
 	Announce.onRemove = function onRemove()
 	{
 		if (_timer) {
-			clearTimeout( _timer );
+			Events.clearTimeout( _timer );
 			this.timer = 0;
 		}
 	};
@@ -137,10 +150,10 @@ define(function(require)
 
 		// Start tomer
 		if (_timer) {
-			clearTimeout(_timer);
+			Events.clearTimeout(_timer);
 		}
 
-		this.timer = setTimeout( this.timeEnd.bind(this), _life );
+		this.timer = Events.setTimeout( this.timeEnd.bind(this), _life );
 	};
 
 

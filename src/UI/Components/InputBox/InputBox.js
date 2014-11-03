@@ -39,6 +39,9 @@ define(function(require)
 		this.draggable();
 		this.ui.css({ top: (Renderer.height-120)/1.5-49, left: (Renderer.width -280)/2+1 });
 		this.ui.find('button').click(validate.bind(this));
+		this.ui.find('input').mousedown(function(event) {
+			event.stopImmediatePropagation();
+		});
 
 		this.overlay = jQuery('<div/>')
 			.addClass('win_popup_overlay')
@@ -125,7 +128,7 @@ define(function(require)
 		switch (type) {
 			case 'number':
 				this.ui.addClass('number');
-				this.ui.find('.text').text( DB.msgstringtable[1259] );
+				this.ui.find('.text').text( DB.getMessage(1259) );
 				this.ui.find('input').attr('type', 'text');
 				defaultVal = defaultVal || 0;
 				break;
@@ -144,7 +147,7 @@ define(function(require)
 
 			case 'mail':
 				this.ui.removeClass('number');
-				this.ui.find('.text').text( DB.msgstringtable[300] );
+				this.ui.find('.text').text( DB.getMessage(300) );
 				this.ui.find('input').attr('type', 'password');
 				break;
 		}

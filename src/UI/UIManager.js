@@ -7,10 +7,16 @@
  *
  * @author Vincent Thibault
  */
-define( ['require', 'Utils/jquery', './UIComponent', 'Controls/KeyEventHandler', 'Renderer/Renderer' ],
-function( require,         jQuery,     UIComponent,            KEYS,                       Renderer )
+define(function( require )
 {
 	'use strict';
+
+	// Load dependencies
+	var jQuery      = require('Utils/jquery');
+	var UIComponent = require('./UIComponent');
+	var KEYS        = require('Controls/KeyEventHandler');
+	var Renderer    = require('Renderer/Renderer');
+	var getModule   = require;
 
 
 	/**
@@ -37,6 +43,7 @@ function( require,         jQuery,     UIComponent,            KEYS,            
 			throw new Error('UIManager::addComponent() - Invalid type of component');
 		}
 
+		component.manager = this;
 		this.components[ component.name ] = component;
 		return component;
 	};
@@ -79,7 +86,7 @@ function( require,         jQuery,     UIComponent,            KEYS,            
 	 * @param {number} Game screen width
 	 * @param {number} Game screen height
 	 */
-	UIManager.fixResizeOverflow = function dixResizeOverflow( WIDTH, HEIGHT)
+	UIManager.fixResizeOverflow = function fixResizeOverflow( WIDTH, HEIGHT)
 	{
 		var keys = Object.keys(this.components);
 		var i, count = keys.length;
@@ -136,7 +143,7 @@ function( require,         jQuery,     UIComponent,            KEYS,            
 				case KEYS.ESCAPE:
 					overlay.remove();
 					this.remove();
-					require('Engine/GameEngine').reload();
+					getModule('Engine/GameEngine').reload();
 			}
 		};
 

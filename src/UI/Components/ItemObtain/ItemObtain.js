@@ -16,7 +16,9 @@ define(function(require)
 	 * Dependencies
 	 */
 	var DB                 = require('DB/DBManager');
+	var jQuery             = require('Utils/jquery');
 	var Client             = require('Core/Client');
+	var Events             = require('Core/Events');
 	var Renderer           = require('Renderer/Renderer');
 	var UIManager          = require('UI/UIManager');
 	var UIComponent        = require('UI/UIComponent');
@@ -28,6 +30,18 @@ define(function(require)
 	 * Create component
 	 */
 	var ItemObtain = new UIComponent( 'ItemObtain', htmlText, cssText );
+
+
+	/**
+	 * Mouse can cross this UI
+	 */
+	ItemObtain.mouseMode = UIComponent.MouseMode.CROSS;
+
+
+	/**
+	 * @var {boolean} do not focus this UI
+	 */
+	ItemObtain.needFocus = false;
 
 
 	/**
@@ -52,12 +66,21 @@ define(function(require)
 
 
 	/**
+	 * Once append to body
+	 */
+	ItemObtain.onAppend = function onAppend()
+	{
+		this.ui.css('left', ( Renderer.width - (this.ui.width()) ) >> 1 );
+	};
+
+
+	/**
 	 * Once removed from HTML, clean timer
 	 */
 	ItemObtain.onRemove = function onRemove()
 	{
 		if (_timer) {
-			clearTimeout(_timer);
+			Events.clearTimeout(_timer);
 			_timer = 0;
 		}
 	};
@@ -75,33 +98,31 @@ define(function(require)
 	/**
 	 * Add item informations
 	 *
-	 * @param {number} itemid
-	 * @param {boolean} identify
-	 * @param {number} amount
+	 * @param {object} item
 	 */
-	ItemObtain.set = function set( itemid, identify, amount )
+	ItemObtain.set = function set( item )
 	{
-		var it       = DB.getItemInfo( itemid );
-		var display  = identify ? it.identifiedDisplayName  : it.unidentifiedDisplayName;
-		var resource = identify ? it.identifiedResourceName : it.unidentifiedResourceName;
+		var it       = DB.getItemInfo(item.ITID);
+		var display  = DB.getItemName(item);
+		var resource = item.IsIdentified ? it.identifiedResourceName : it.unidentifiedResourceName;
 
 		this.ui.find('.content').html(
-			'<img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" width="24" height="24" /> ' +
-			display + ' ' + DB.msgstringtable[696].replace('%d', amount)
+			'<img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" class="'+ item.ITID +'" width="24" height="24" /> ' +
+			jQuery.escape(display + ' ' + DB.getMessage(696).replace('%d', item.count || 1))
 		);
 
 		this.ui.css('left', ( Renderer.width - (this.ui.width()) ) >> 1 );
 
 		Client.loadFile( DB.INTERFACE_PATH + 'item/' + resource + '.bmp', (function(url){
-			this.ui.find('img').attr('src', url);
+			this.ui.find('img.' + item.ITID).attr('src', url);
 		}).bind(this));
 
 		// Start tomer
 		if (_timer) {
-			clearTimeout(_timer);
+			Events.clearTimeout(_timer);
 		}
 
-		_timer = setTimeout( this.timeEnd.bind(this), _life );
+		_timer = Events.setTimeout( this.timeEnd.bind(this), _life );
 	};
 
 

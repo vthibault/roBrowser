@@ -102,18 +102,18 @@ define(function()
 		// Drag drop
 		div = document.createElement('div');
 		if (!('draggable' in div) && !('ondragstart' in div && 'ondrop' in div)) {
-			throw 'Your web browser need to be update, it does not support Drag \'nd Drop features.';
+			throw 'Your web browser need to be updated, it does not support Drag \'nd Drop features.';
 		}
 
 		// Canvas
 		canvas = document.createElement('canvas');
 		if (!canvas.getContext || !canvas.getContext('2d')) {
-			throw 'Your web browser need to be update, it does not support &lt;canvas&gt; element.';
+			throw 'Your web browser need to be updated, it does not support &lt;canvas&gt; element.';
 		}
 
 		// WebGL
 		if (!window.WebGLRenderingContext) {
-			throw 'Your web browser need to be update, it does not support 3D graphics.';
+			throw 'Your web browser need to be updated, it does not support 3D graphics.';
 		}
 
 		element = document.createElement('canvas');
@@ -121,22 +121,22 @@ define(function()
 		try { gl = gl || element.getContext('experimental-webgl'); } catch(e){}
 
 		if (!gl) {
-			throw 'Your web browser OR your Graphics Card OR Drivers need to be update, it does not support 3D graphics.\nFor more informations check <a href="http://get.webgl.org/" target="_blank">get.webgl.org</a>';
+			throw 'Your web browser OR your Graphics Card OR Drivers need to be updated, it does not support 3D graphics.\nFor more informations check <a href="http://get.webgl.org/" target="_blank">get.webgl.org</a>';
 		}
 
 		// Web Worker
 		if (!window.Worker) {
-			throw 'Your web browser need to be update, it does not support Threads (Web Worker API).';
+			throw 'Your web browser need to be updated, it does not support Threads (Web Worker API).';
 		}
 
 		// FileReader API
 		if (!window.File || !window.FileList || !window.FileReader) {
-			throw 'Your web browser need to be update, it does not support File API.';
+			throw 'Your web browser need to be updated, it does not support File API.';
 		}
 
 		// DataView
 		if (!window.DataView || !DataView.prototype.getFloat64) {
-			throw 'Your web browser need to be update, it does not support File API (DataView).';
+			throw 'Your web browser need to be updated, it does not support File API (DataView).';
 		}
 	};
 

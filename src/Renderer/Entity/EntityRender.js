@@ -32,13 +32,8 @@ define( function( require )
 	 */
 	function render( modelView, projection )
 	{
-		// Item falling
-		if (this.objecttype === this.constructor.TYPE_ITEM) {
-			this.position[2] = Math.max(
-				Altitude.getCellHeight( this.position[0], this.position[1] ),
-				this.position[2] - 0.4
-			);
-		}
+		// Process action
+		this.animations.process();
 
 		// Move character if walking
 		if (this.action === this.ACTION.WALK) {
@@ -53,6 +48,7 @@ define( function( require )
 		// Render it only if visible
 		if (this.effectColor[3]) {
 			this.renderEntity();
+			this.attachments.render(Renderer.tick);
 		}
 
 		// Update character UI (life, dialog, etc.)
@@ -90,7 +86,7 @@ define( function( require )
 			// Project to screen
 			mat4.multiply( _matrix, projection, _matrix );
 
-			if (entity.effectColor[3]) {
+			if (entity.effectColor[3] && entity._job !== 139) {
 				calculateBoundingRect( entity, _matrix );
 			}
 
@@ -125,12 +121,13 @@ define( function( require )
 		var size   = glMatrix.vec2.create();
 		var vector = vec4.create();
 		var out    = vec4.create();
+		var minSize;
 
 		return function calculateBoundingRect( entity, matrix )
 		{
 			var z;
-			var xFactor = 1 / (7 * entity.xSize);
-			var yFactor = 1 / (7 * entity.ySize);
+			var xFactor = 1 / 175.0 * entity.xSize;
+			var yFactor = 1 / 175.0 * entity.ySize;
 
 			// No body ? Default picking (sprite 110 for example)
 			if (entity.boundingRect.x1 === Infinity ||
@@ -176,19 +173,17 @@ define( function( require )
 			entity.boundingRect.y2 = size[1] - Math.round(size[1] * (out[1] * z));
 
 
-			// Don't resize item
-			if (entity.objecttype !== entity.constructor.TYPE_ITEM) {
+			// Minimum picking size is
+			minSize = entity.objecttype === entity.constructor.TYPE_ITEM ? 30 : 60;
 
-				// Minimum picking size is 45x45 (official client feature)
-				if (entity.boundingRect.x2 - entity.boundingRect.x1 < 90) {
-					entity.boundingRect.x1 = (entity.boundingRect.x1 + entity.boundingRect.x2) * 0.5 - 45;
-					entity.boundingRect.x2 = (entity.boundingRect.x1 + entity.boundingRect.x2) * 0.5 + 45;
-				}
+			if (entity.boundingRect.x2 - entity.boundingRect.x1 < minSize) {
+				entity.boundingRect.x1 = (entity.boundingRect.x1 + entity.boundingRect.x2) * 0.5 - minSize * 0.5;
+				entity.boundingRect.x2 = (entity.boundingRect.x1 + entity.boundingRect.x2) * 0.5 + minSize * 0.5;
+			}
 
-				if (entity.boundingRect.y2 - entity.boundingRect.y1 < 90) {
-					entity.boundingRect.y1 = (entity.boundingRect.y1 + entity.boundingRect.y2) * 0.5 - 45;
-					entity.boundingRect.y2 = (entity.boundingRect.y1 + entity.boundingRect.y2) * 0.5 + 45;
-				}
+			if (entity.boundingRect.y2 - entity.boundingRect.y1 < minSize) {
+				entity.boundingRect.y1 = (entity.boundingRect.y1 + entity.boundingRect.y2) * 0.5 - minSize * 0.5;
+				entity.boundingRect.y2 = (entity.boundingRect.y1 + entity.boundingRect.y2) * 0.5 + minSize * 0.5;
 			}
 		};
 	}();
@@ -217,7 +212,7 @@ define( function( require )
 			}
 
 			// Avoid look up, render as IDLE all not supported frames
-			var action    = this.action === -1 ? this.ACTION.IDLE : this.action;
+			var action    = this.action < 0 ? this.ACTION.IDLE : this.action;
 			var direction = (Camera.direction + this.direction + 8) % 8;
 			var behind    = direction > 1 && direction < 6;
 
@@ -229,16 +224,7 @@ define( function( require )
 				SpriteRenderer.position[1] = this.position[1];
 				SpriteRenderer.position[2] = Altitude.getCellHeight(this.position[0], this.position[1]);
 
-				// Item shadow is smaller
-				// TODO: find a better way
-				if (this.objecttype === Entity.TYPE_ITEM) {
-					this.xSize = this.ySize = 10;
-					renderElement( this, this.files.shadow, 'shadow', _position, false );
-					this.xSize = this.ySize = 5;
-				}
-				else {
-					renderElement( this, this.files.shadow, 'shadow', _position, false );
-				}
+				renderElement( this, this.files.shadow, 'shadow', _position, false );
 			}
 
 			SpriteRenderer.position.set(this.position);
@@ -294,7 +280,6 @@ define( function( require )
 	 */
 	var renderElement = function renderElementClosure()
 	{
-		var _result   = new Array(2);
 		var _position = new Int32Array(2);
 
 		return function renderElement( entity, files, type, position, is_main )
@@ -320,18 +305,16 @@ define( function( require )
 			var action = act.actions[
 				(( entity.action * 8 ) +                         // Action
 				( Camera.direction + entity.direction + 8 ) % 8  // Direction
-				) % act.actions.length ];                      // Avoid overflow on action (ex: if there is just one action)
+				) % act.actions.length ];                        // Avoid overflow on action (ex: if there is just one action)
 
 			// Find animation
-			calcAnimation( entity, entity.action, action, type, Renderer.tick - entity.animation.tick, _result );
-			var animation_id = _result[0];
-			var sound_delay  = _result[1];
+			var animation_id = calcAnimation( entity, entity.action, action, type, Renderer.tick - entity.animation.tick);
 			var animation    = action.animations[animation_id];
 			var layers       = animation.layers;
 
 			// Play sound
 			if (animation.sound > -1) {
-				entity.soundPlay( act.sounds[animation.sound], sound_delay );
+				entity.sound.play( act.sounds[animation.sound], entity.action, animation_id );
 			}
 
 			_position[0] = 0;
@@ -344,7 +327,7 @@ define( function( require )
 
 			// Render all frames
 			for (var i=0, count=layers.length; i<count; ++i) {
-				entity.renderLayer( layers[i], spr, pal, _position, type === 'body' );
+				entity.renderLayer( layers[i], spr, pal, files.size, _position, type === 'body' );
 			}
 
 			// Save reference
@@ -359,13 +342,11 @@ define( function( require )
 	/**
 	 * Calculate animations
 	 */
-	function calcAnimation( entity, ACTION, action, type, time_passed, out )
+	function calcAnimation( entity, ACTION, action, type, time_passed )
 	{
 		// Fix for shadow
 		if (type === 'shadow') {
-			out[0] = 0;
-			out[1] = 0;
-			return;
+			return 0;
 		}
 
 		// To avoid look up
@@ -374,6 +355,8 @@ define( function( require )
 		var delay             = action.delay + 0;
 		var Entity            = entity.constructor;
 		var headDir           = 0;
+		var animation         = entity.animation;
+		var anim;
 
 		// Delay on walk
 		// TODO: search how works the delay on walk and aspd.
@@ -382,8 +365,8 @@ define( function( require )
 		}
 
 		// Delay on attack
-		else if (ACTION === entity.ACTION.ATTACK  || ACTION === entity.ACTION.ATTACK2 || ACTION === entity.ACTION.ATTACK3) {
-			delay = entity.attack_speed / animations_count * 2;
+		else if (ACTION === entity.ACTION.ATTACK || ACTION === entity.ACTION.ATTACK1 || ACTION === entity.ACTION.ATTACK2 || ACTION === entity.ACTION.ATTACK3) {
+			delay = entity.attack_speed / animations_count;
 		}
 
 
@@ -394,54 +377,52 @@ define( function( require )
 			headDir           = entity.headDir + 0;
 		}
 
-
-		// Animation stuff
-		var anim, animation = entity.animation;
-
 		// Get rid of doridori
 		if (type === 'body' && entity.objecttype === Entity.TYPE_PC && ( ACTION === entity.ACTION.IDLE || ACTION === entity.ACTION.SIT )) {
-			anim = entity.headDir;
+			return entity.headDir;
 		}
 
 		// Don't play, so stop at the current frame.
-		else if (animation.play === false) {
-			anim  = Math.min(animation.frame, animations_length-1);
-			delay = Infinity;
+		if (animation.play === false) {
+			return Math.min(animation.frame, animations_length-1);
 		}
 
 		// Repeatable
-		else if (animation.repeat) {
-			anim = (
-				Math.floor( time_passed / delay )  // animation based on time (with floor hack)
-				% animations_count                 // avoid overflow, it's repeatable
-				+ animations_count * headDir       // get rid of doridori
-				+ animation.frame                  // don't forget the previous frame
-			) % animations_length ;                // repeatable.
+		if (animation.repeat) {
+			anim = Math.floor( time_passed / delay );
+
+			// repeat
+			if (anim >= animations_count) {
+				if (entity.sound._animCounter !== Math.floor(anim/animations_count)) {
+					entity.sound.free();
+					entity.sound._animCounter = Math.floor(anim/animations_count);
+				}
+				anim %= animations_count;
+			}
+
+			anim += animations_count * headDir; // get rid of doridori
+			anim += animation.frame;            // don't forget the previous frame
+			anim %= animations_length;          // avoid overflow
+
+			return anim;
 		}
 
 		// No repeat
-		else {
-			anim = (
-				Math.min( time_passed / delay | 0, animations_count || animations_count -1 )  // Avoid an error if animation = 0, search for -1 :(
-				+ animations_count * headDir // get rid of doridori
-				+ animation.frame            // previous frame
-			);
+		anim = (
+			Math.min( time_passed / delay | 0, animations_count || animations_count -1 )  // Avoid an error if animation = 0, search for -1 :(
+			+ animations_count * headDir // get rid of doridori
+			+ animation.frame            // previous frame
+		);
 
-			if (type === 'body' && anim >= animations_length - 1) {
-				animation.frame = anim = animations_length - 1;
-				animation.play  = false;
-				if (animation.next) {
-					entity.setAction( animation.next );
-				}
+		if (type === 'body' && anim >= animations_length - 1) {
+			animation.frame = anim = animations_length - 1;
+			animation.play  = false;
+			if (animation.next) {
+				entity.setAction( animation.next );
 			}
-
-			anim  = Math.min( anim, animations_count-1 );
-			delay = Infinity;
 		}
 
-		// Export
-		out[0] = anim;
-		out[1] = delay;
+		return Math.min( anim, animations_count-1 );
 	}
 
 
@@ -451,10 +432,11 @@ define( function( require )
 	 * @param {object} layer structure
 	 * @param {object} spr sprite structure
 	 * @param {object} pal palette structure
+	 * @param {float}  sprite size
 	 * @param {Array} pos [x,y] where to render the sprite
 	 * @param {bool} is main body
 	 */
-	function renderLayer( layer, spr, pal, pos, isbody )
+	function renderLayer( layer, spr, pal, size, pos, isbody )
 	{
 		// If there is nothing to render
 		if (layer.index < 0) {
@@ -479,37 +461,30 @@ define( function( require )
 			index += spr.old_rgba_index;
 		}
 
-		var width   = spr.frames[ index ].width;
-		var height  = spr.frames[ index ].height;
+		var frame  = spr.frames[ index ];
+		var width  = frame.width;
+		var height = frame.height;
 
 		// Apply the scale
-		width  *= layer.scale[0];
-		height *= layer.scale[1];
+		width  *= layer.scale[0] * size;
+		height *= layer.scale[1] * size;
 
 
 		// Get the entity bounding rect
 		if (isbody) {
-			this.boundingRect.x1 = Math.min( this.boundingRect.x1,  (layer.pos[0] + pos[0]) - width /2 );
-			this.boundingRect.y1 = Math.max( this.boundingRect.y1, -(layer.pos[1] + pos[1]) + height/2 );
-			this.boundingRect.x2 = Math.max( this.boundingRect.x2,  (layer.pos[0] + pos[0]) + width /2 );
-			this.boundingRect.y2 = Math.min( this.boundingRect.y2, -(layer.pos[1] + pos[1]) - height/2 );
-		}
+			var w = (frame.originalWidth  * layer.scale[0] * size) / 2;
+			var h = (frame.originalHeight * layer.scale[1] * size) / 2;
 
-		// Image rotation
-		SpriteRenderer.angle = layer.angle;
+			this.boundingRect.x1 = Math.min( this.boundingRect.x1,  (layer.pos[0] + pos[0]) - w );
+			this.boundingRect.y1 = Math.max( this.boundingRect.y1, -(layer.pos[1] + pos[1]) + h );
+			this.boundingRect.x2 = Math.max( this.boundingRect.x2,  (layer.pos[0] + pos[0]) + w );
+			this.boundingRect.y2 = Math.min( this.boundingRect.y2, -(layer.pos[1] + pos[1]) - h );
+		}
 
 		// Image inverted
 		if (layer.is_mirror) {
 			width = -width;
 		}
-
-		// Re-positionning image
-		// The sprite in world should be a factor of 35 (not sure)
-		var x = ( layer.pos[0] + pos[0] ) / ( this.xSize * 7 );
-		var y = ( layer.pos[1] + pos[1] ) / ( this.ySize * 7 ) - 0.5; // in the middle of the cell: -0.5
-		width  /= ( this.xSize * 7 );
-		height /= ( this.ySize * 7 );
-
 
 		// copy color
 		SpriteRenderer.color[0] = layer.color[0] * this.effectColor[0];
@@ -523,11 +498,14 @@ define( function( require )
 		}
 
 		// Store shader info
+		SpriteRenderer.angle         = layer.angle;
 		SpriteRenderer.size[0]       = width;
 		SpriteRenderer.size[1]       = height;
-		SpriteRenderer.offset[0]     = x;
-		SpriteRenderer.offset[1]     = y;
-		SpriteRenderer.image.texture = spr.frames[ index ].texture;
+		SpriteRenderer.offset[0]     = layer.pos[0] + pos[0];
+		SpriteRenderer.offset[1]     = layer.pos[1] + pos[1];
+		SpriteRenderer.xSize         = this.xSize;
+		SpriteRenderer.ySize         = this.ySize;
+		SpriteRenderer.image.texture = frame.texture;
 
 		// Draw Sprite
 		SpriteRenderer.render();

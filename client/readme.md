@@ -5,18 +5,14 @@ The remote client exist to help users without a FullClient on their computer to 
 Because pushing directly the fullclient on a server/ftp can provoke some errors, this tool allow to :
 
  - Get the files from a client used in another domain (Cross-origin resource sharing).
- - Extracting file directly from GRF archive file (only version 0x200 supported for now).
- - Converting BMP files to PNG to speed up the transfer (downloading).
+ - Extracting files directly from GRF archive (only version 0x200 supported for now - without DES encryption).
+ - Converting BMP files to PNG to speed up the transfer.
  - Optimized to don't call any script if files are already extracted/converted (resource friendly).
 
 ###Add your fullclient###
 
-Just put your fullclient files in this directory. If you want to put only the required files, put :
-
- - *DATA.INI*
- - Your *GRFs* files (listed in the DATA.INI file)
- - *data/* folder
- - *BGM/* folder
+Just put your GRFs files and DATA.INI file in the `resources/` directory.
+Overwrite the `data/` and `BGM/` directories with your own folders.
 
 **Note: to be sure to use a compatible version of your GRFs, download *GRF Builder* and repack them manually (Option > Repack type > Decrypt -> Repack), it will ensure the GRFs files are converted in the proper version**
 
@@ -24,35 +20,19 @@ Just put your fullclient files in this directory. If you want to put only the re
 
 ###Configure the remote client###
 
-Open *"index.php"* file
-
- - Where is locate your fullclient ?
-
-    `Client::$path        =  ""           ;`
-
- If the fullclient is locate as default, in the current directory, let the string empty.
-
- - The remote client need to know your data.ini file name, so complete the line:
-
-    `Client::$data_ini    =  "data.ini"   ;`
-
- **Note:** It's case sensitive
-
- - Do you want to extract files from your GRFs into the data directory to use less server resources ?
-
-    `Client::$AutoExtract =  false        ;`
+Open *configs.php* file and complete it
 
 ----------------
 
 ###Configure the rewrite rule###
 
-Open *".htaccess"* file, you will have some example on how to modify the rewrite rule to match your url location.
+Open *".htaccess"* file, you will have some example on how to modify the rewrite rule to match your url location :
 
-    ex : myroserver.com/client/
+    #ex : myroserver.com/client/
     ErrorDocument 404 /client/index.php
 
-    ex : myroserver.com/low/client/
+    #ex : myroserver.com/low/client/
     ErrorDocument 404 /low/client/index.php
 
-    ex : client.myroserver.com/
+    #ex : client.myroserver.com/
     ErrorDocument 404 /index.php

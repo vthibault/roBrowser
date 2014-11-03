@@ -21,6 +21,7 @@ define(function( require )
 	var DB             = require('DB/DBManager');
 	var UIManager      = require('UI/UIManager');
 	var Background     = require('UI/Background');
+	var Cursor         = require('UI/CursorManager');
 	var Session        = require('Engine/SessionStorage');
 	var MemoryManager  = require('Core/MemoryManager');
 	var Mouse          = require('Controls/MouseEventHandler');
@@ -32,8 +33,10 @@ define(function( require )
 	var Altitude       = require('Renderer/Map/Altitude');
 	var Water          = require('Renderer/Map/Water');
 	var Models         = require('Renderer/Map/Models');
-	var Sounds         = require('Renderer/Sounds');
+	var Sounds         = require('Renderer/Map/Sounds');
+	var Effects        = require('Renderer/Map/Effects');
 	var SpriteRenderer = require('Renderer/SpriteRenderer');
+	var EffectManager  = require('Renderer/EffectManager');
 	var Sky            = require('Renderer/Effects/Sky');
 	var Damage         = require('Renderer/Effects/Damage');
 	var MapPreferences = require('Preferences/Map');
@@ -64,9 +67,15 @@ define(function( require )
 
 
 	/**
-	 * @var {array} Sounds object
+	 * @var {array} Sounds object list
 	 */
 	MapRenderer.sounds = null;
+
+
+	/**
+	 * @var {array} Effects object list
+	 */
+	MapRenderer.effects = null;
 
 
 	/**
@@ -100,10 +109,17 @@ define(function( require )
 			return;
 		}
 
+		// Support for instance map
+		// Is it always 3 digits ?
+		mapname = mapname
+			.replace(/^(\d{3})(\d@)/, '$2') // 0061@tower   -> 1@tower
+			.replace(/^\d{3}#/, '');        // 003#prontera -> prontera
+
 		// Clean objects
 		SoundManager.stop();
 		Renderer.stop();
 		UIManager.removeComponents();
+		Cursor.setType(Cursor.ACTION.DEFAULT);
 
 		// Don't reload a map when it's just a local teleportation
 		if (this.currentMap !== mapname) {
@@ -113,9 +129,6 @@ define(function( require )
 
 			// Parse the filename (ugly RO)
 			var filename = mapname.replace(/\.gat$/i, '.rsw');
-			if (filename in DB.mapalias) {
-				filename = DB.mapalias[filename];
-			}
 
 			Background.setLoading(function() {
 				// Hooking Thread
@@ -137,6 +150,7 @@ define(function( require )
 		var gl = Renderer.getContext();
 		EntityManager.free();
 		Damage.free( gl );
+		EffectManager.free( gl );
 
 		// Basic TP
 		Background.remove(function(){
@@ -158,14 +172,21 @@ define(function( require )
 		EntityManager.free();
 		GridSelector.free( gl );
 		Sounds.free();
+		Effects.free();
 		Ground.free( gl );
 		Water.free( gl );
 		Models.free( gl );
 		Damage.free( gl );
+		EffectManager.free( gl );
+		SoundManager.stop();
+		BGM.stop();
 
-		this.light  = null;
-		this.water  = null;
-		this.sounds = null;
+		Mouse.intersect = false;
+
+		this.light   = null;
+		this.water   = null;
+		this.sounds  = null;
+		this.effects = null;
 	};
 
 
@@ -185,9 +206,10 @@ define(function( require )
 	 */
 	function onWorldComplete( data )
 	{
-		this.light  = data.light;
-		this.water  = data.water;
-		this.sounds = data.sound;
+		this.light   = data.light;
+		this.water   = data.water;
+		this.sounds  = data.sound;
+		this.effects = data.effect;
 
 		// Calculate light direction
 		this.light.direction = new Float32Array(3);
@@ -214,10 +236,11 @@ define(function( require )
 		Water.init( gl, this.water );
 
 		// Initialize sounds
-		var i, count = this.sounds.length;
-		var tmp;
+		var i, count, tmp;
+
+		count = this.sounds.length;
 		for (i = 0; i < count; ++i) {
-			tmp = -this.sounds[i].pos[1];
+			tmp                    = -this.sounds[i].pos[1];
 			this.sounds[i].pos[0] += data.width;
 			this.sounds[i].pos[1]  = this.sounds[i].pos[2] + data.height;
 			this.sounds[i].pos[2]  = tmp;
@@ -226,6 +249,23 @@ define(function( require )
 
 			Sounds.add(this.sounds[i]);
 		}
+
+
+		count = this.effects.length;
+		for (i = 0; i < count; ++i) {
+			// Note: effects objects do not need to be centered in a cell
+			// as we apply +0.5 in the shader, we have to revert it.
+			tmp                     = -this.effects[i].pos[1];
+			this.effects[i].pos[0] += data.width - 0.5;
+			this.effects[i].pos[1]  = this.effects[i].pos[2] + data.height - 0.5;
+			this.effects[i].pos[2]  = tmp;
+			this.effects[i].tick    = 0;
+
+			Effects.add(this.effects[i]);
+		}
+
+		this.effects.length = 0;
+		this.sounds.length  = 0;
 	}
 
 
@@ -255,23 +295,24 @@ define(function( require )
 	function onMapComplete( success, error )
 	{
 		var worldResource = this.currentMap.replace(/\.gat$/i, '.rsw');
+		var mapInfo       = DB.getMap(worldResource);
 
 		// Problem during loading ?
 		if (!success) {
-			UIManager.showErrorBox( error );
+			UIManager.showErrorBox( error ).ui.css('zIndex', 1000);
 			return;
 		}
 
 		// Play BGM
-		BGM.play( DB.mp3[worldResource] || '01.mp3' );
+		BGM.play((mapInfo && mapInfo.mp3) || '01.mp3');
 
 		// Apply fog to map
-		this.fog.exist = !!DB.fog[worldResource];
+		this.fog.exist = !!(mapInfo && mapInfo.fog);
 		if (this.fog.exist) {
-			this.fog.near   = DB.fog[worldResource].near * 100;
-			this.fog.far    = DB.fog[worldResource].far  * 150;
-			this.fog.factor = DB.fog[worldResource].factor;
-			this.fog.color.set( DB.fog[worldResource].color );
+			this.fog.near   = mapInfo.fog.near * 240;
+			this.fog.far    = mapInfo.fog.far  * 240;
+			this.fog.factor = mapInfo.fog.factor;
+			this.fog.color.set( mapInfo.fog.color );
 		}
 
 		// Initialize renderers
@@ -281,10 +322,13 @@ define(function( require )
 		SpriteRenderer.init(gl);
 		Sky.init( gl, worldResource );
 		Damage.init(gl);
+		EffectManager.init(gl);
 
 		// Starting to render
 		Background.remove(function(){
 			MapRenderer.loading = false;
+			Mouse.intersect     = true;
+
 			MapRenderer.onLoad();
 			Sky.setUpCloudData();
 
@@ -324,6 +368,9 @@ define(function( require )
 		projection = Camera.projection;
 		normalMat  = Camera.normalMat;
 
+		// Spam map effects
+		//Effects.spam( Session.Entity.position, tick);
+
 		Ground.render(gl, modelView, projection, normalMat, fog, light );
 		Models.render(gl, modelView, projection, normalMat, fog, light );
 
@@ -340,16 +387,17 @@ define(function( require )
 			}
 		}
 
+		// Display zone effects and entities
+		Sky.render( gl, modelView, projection, fog, tick );
+		EffectManager.render( gl, modelView, projection, fog, tick, true);
 		EntityManager.render( gl, modelView, projection, fog );
 
+		// Rendering water
 		Water.render( gl, modelView, projection, fog, light, tick );
-
-		// Display clouds on maps
-		Sky.render( gl, modelView, projection, fog, tick );
 
 		// Rendering effects
 		Damage.render( gl, modelView, projection, fog, tick );
-		//Effects.render( gl, modelView, projection, fog );
+		EffectManager.render( gl, modelView, projection, fog, tick, false);
 
 		// Play sounds
 		Sounds.render( Session.Entity.position, tick );

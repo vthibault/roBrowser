@@ -237,17 +237,20 @@ define(function()
 		y    = y0;
 		i    = 0;
 
-		out[0] = [ x0, y0 ];
+		out[0] = x0;
+		out[1] = y0;
 
 		while ((i++) < MAX_WALKPATH) {
-			x     +=  dx;
-			y     +=  dy;
-			out[i] = [ x, y ];
+			x         += dx;
+			y         += dy;
+
+			out[i*2+0] = x;
+			out[i*2+1] = y;
 
 			if (x === x1) dx = 0;
 			if (y === y1) dy = 0;
 
-			if (( dx === 0 && dy === 0 ) || (types[ x + y * width ] & type) === 0) {
+			if ((dx === 0 && dy === 0) || (types[x + y * width] & type) === 0) {
 				break;
 			}
 		}
@@ -256,7 +259,7 @@ define(function()
 			// Range feature
 			if (range > 0) {
 				for (x = 0; x < i; ++x) {
-					if (Math.abs(out[x][0]-x1) <= range && Math.abs(out[x][1]-y1) <= range) {
+					if (Math.abs(out[x*2+0]-x1) <= range && Math.abs(out[x*2+1]-y1) <= range) {
 						return x + 1;
 					}
 				}
@@ -301,7 +304,6 @@ define(function()
 		// Direct search
 		i = searchLong( x0, y0, x1, y1, range, out, TYPE.WALKABLE );
 		if (i) {
-			out.length = i;
 			return i;
 		}
 
@@ -314,11 +316,9 @@ define(function()
 		_before.set(short_clean);
 		_flag.set(char_clean);
 
-		heap   = _heap;
-
-
-
-		out[0]   = [ x0, y0 ];
+		heap     = _heap;
+		out[0]   = x0;
+		out[1]   = y0;
 
 		i        = calc_index(x0, y0);
 		_x[i]    = x0;
@@ -416,7 +416,8 @@ define(function()
 
 
 		for (i = rp, j = len-1; j >=0; i = _before[i], j--) {
-			out[j+1] = [ _x[i], _y[i] ];
+			out[(j+1)*2+0] = _x[i];
+			out[(j+1)*2+1] = _y[i];
 		}
 
 		return len+1;

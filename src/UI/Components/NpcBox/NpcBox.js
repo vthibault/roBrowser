@@ -52,11 +52,18 @@ define(function(require)
 			top: Math.max(100, Renderer.height/2 - 200),
 			left: Math.max( Renderer.width/3, 20)
 		});
-		this.draggable();
 
 		// Bind mouse
 		this.ui.find('.next').click( NpcBox.next.bind(this) );
 		this.ui.find('.close').click( NpcBox.close.bind(this) );
+
+		// Content do not drag window (official)
+		// Will also fix the problem about the scrollbar
+		this.ui.find('.content').mousedown(function(event){
+			event.stopImmediatePropagation();
+		});
+
+		this.draggable();
 	};
 
 

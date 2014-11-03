@@ -28,9 +28,15 @@ require({
 		text:   'Vendors/text.require',
 		jquery: 'Vendors/jquery-1.9.1'
 	}
-}, ['UI/Components/GrfViewer/GrfViewer'], function( GRFViewer )
+}, ['UI/Components/GrfViewer/GrfViewer', 'Core/Context'], function( GRFViewer, Context )
 {
 	'use strict';
 
 	GRFViewer.append();
+
+	if (!Context.Is.APP) {
+		window.onbeforeunload = function() {
+			return 'Are you sure to exit ?';
+		};
+	}
 });

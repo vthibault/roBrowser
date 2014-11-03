@@ -6,7 +6,8 @@
  * @author Vincent Thibault
  */
 
-define(['Core/Context', 'Core/Preferences', 'Preferences/Audio', 'Preferences/Graphics'], function( Context, Preferences, Audio, Graphics )
+define(['Utils/jquery', 'Core/Configs', 'Core/Context', 'Core/Preferences', 'Preferences/Audio', 'Preferences/Graphics'],
+function(      jQuery,        Configs,        Context,        Preferences,               Audio,               Graphics )
 {
 	'use strict';
 
@@ -27,12 +28,17 @@ define(['Core/Context', 'Core/Preferences', 'Preferences/Audio', 'Preferences/Gr
 	 *
 	 * @param {jQuery} ui
 	 */
-	function Load( ui )
+	function load( ui )
 	{
+		if (Graphics.screensize === 'full' && !Context.isFullScreen()) {
+			Graphics.screensize = '800x600';
+		}
+
 		ui.find('.screensize').val( Graphics.screensize );
 		ui.find('.quality').val( Graphics.quality ).trigger('change');
 
 		ui.find('.serverdef').attr('checked', false );
+		ui.find('.cursor').attr('checked', Graphics.cursor);
 		ui.find('.serverdef[value="'+ _preferences.serverdef +'"]').attr('checked', 'true').trigger('click');
 		ui.find('.clientinfo').val( _preferences.serverfile );
 		
@@ -40,10 +46,10 @@ define(['Core/Context', 'Core/Preferences', 'Preferences/Audio', 'Preferences/Gr
 		ui.find('.soundvol').val( Audio.Sound.volume * 100 ).trigger('change');
 
 		if (!window.requestFileSystem && !window.webkitRequestFileSystem) {
+			Configs.set('saveFiles', false);
 			ui.find('.save').attr('disabled', 'disabled');
 		}
-
-		else if (ROConfig.hasOwnProperty('saveFiles') && ROConfig.saveFiles === false) {
+		else if (!Configs.get('saveFiles')) {
 			ui.find('.save').attr('disabled', 'disabled');
 		}
 		else {
@@ -53,19 +59,29 @@ define(['Core/Context', 'Core/Preferences', 'Preferences/Audio', 'Preferences/Gr
 		var i, count;
 		var serverlist = _preferences.serverlist;
 		var $servers = ui.find('.servers').empty();
+		var element = jQuery(
+			'<tr>' +
+			'	<td><input type="text" class="display"/></td>'   +
+			'	<td><input type="text" class="address"/></td>'   +
+			'	<td><input type="text" class="version"/></td>'   +
+			'	<td><input type="text" class="langtype"/></td>'  +
+			'	<td><input type="text" class="packetver"/></td>' +
+			'	<td><button class="btn_delete"></button></td>'   +
+			'</tr>'
+		);
 
 		for (i = 0, count = serverlist.length; i < count; ++i) {
-			$servers.append(
-				'<tr>' +
-				'	<td><input type="text" class="display" value="'+ serverlist[i].display +'"/></td>' +
-				'	<td><input type="text" class="address" value="'+ serverlist[i].address +':'+ serverlist[i].port +'"/></td>' +
-				'	<td><input type="text" class="version" value="'+ serverlist[i].version +'"/></td>' +
-				'	<td><input type="text" class="langtype" value="'+ serverlist[i].langtype +'"/></td>' +
-				'	<td><input type="text" class="packetver" value="'+ serverlist[i].packetver + '"/></td>' +
-				'	<td><button class="btn_delete"></button></td>' +
-				'</tr>'
-			);
+			var server = element.clone();
+
+			server.find('.display').val(serverlist[i].display);
+			server.find('.address').val(serverlist[i].address +':'+ serverlist[i].port);
+			server.find('.version').val(serverlist[i].version);
+			server.find('.langtype').val(serverlist[i].langtype);
+			server.find('.packetver').val(serverlist[i].packetver);
+
+			$servers.append(server);
 		}
+
 
 		apply();
 	}
@@ -76,17 +92,18 @@ define(['Core/Context', 'Core/Preferences', 'Preferences/Audio', 'Preferences/Gr
 	 *
 	 * @param {jQuery} ui
 	 */
-	function Save( ui )
+	function save( ui )
 	{
 		Graphics.screensize    = ui.find('.screensize').val();
 		Graphics.quality       = ui.find('.quality').val();
-		_preferences.saveFiles = ui.find('.save:checked').length ? true : false;
+		Graphics.cursor        = ui.find('.cursor:checked').length ? true : false;
+		_preferences.saveFiles = ui.find('.save:checked').length   ? true : false;
 
 		var $servers = ui.find('.servers');
 		var i, count = $servers.find('tr').length;
 		var $server;
 
-		if (ROConfig.serverEditMode) {
+		if (Configs.get('_serverEditMode')) {
 			_preferences.serverdef  = ui.find('.serverdef:checked').val();
 			_preferences.serverfile = ui.find('.clientinfo').val();
 			_preferences.serverlist = [];
@@ -125,7 +142,7 @@ define(['Core/Context', 'Core/Preferences', 'Preferences/Audio', 'Preferences/Gr
 		var isFullScreen = Context.isFullScreen();
 
 		// Full Screen support
-		if (_preferences.screensize === 'full') {
+		if (Graphics.screensize === 'full') {
 			if (!isFullScreen) {
 				Context.requestFullScreen();
 			}
@@ -148,21 +165,17 @@ define(['Core/Context', 'Core/Preferences', 'Preferences/Audio', 'Preferences/Gr
 			}
 		}
 
-		if (ROConfig.serverEditMode) {
-			// Bind data
+		if (Configs.get('_serverEditMode')) {
 			if (_preferences.serverdef === 'serverlist') {
-				ROConfig.servers = _preferences.serverlist;
+				Configs.set('servers', _preferences.serverlist );
 			}
 			else {
-				ROConfig.servers = 'data/' + _preferences.serverfile;
+				Configs.set('servers', 'data/' + _preferences.serverfile );
 			}
 		}
 
-		if (!ROConfig.hasOwnProperty('saveFiles') || ROConfig.saveFiles === true) {
-			ROConfig.saveFiles = _preferences.saveFiles;
-		}
-
-		ROConfig.quality = Graphics.quality;
+		Configs.set('saveFiles', _preferences.saveFiles);
+		Configs.set('quality',   Graphics.quality);
 	}
 
 
@@ -170,7 +183,7 @@ define(['Core/Context', 'Core/Preferences', 'Preferences/Audio', 'Preferences/Gr
 	 * Export
 	 */
 	return {
-		save: Save,
-		load: Load
+		save: save,
+		load: load
 	};
 });

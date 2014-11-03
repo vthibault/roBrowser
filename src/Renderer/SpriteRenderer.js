@@ -40,6 +40,7 @@ function(      WebGL,         glMatrix,      Camera )
 		"uniform vec2 uSpriteRendererOffset;",
 		"uniform mat4 uSpriteRendererAngle;",
 		"uniform vec3 uSpriteRendererPosition;",
+		"uniform float uSpriteRendererDepth;",
 
 		"mat4 Project( mat4 mat, vec3 pos) {",
 
@@ -75,7 +76,7 @@ function(      WebGL,         glMatrix,      Camera )
 
 			// Hack for billboarding
 			"vec3 camPosition = vec3( uViewModelMat[0].w, uViewModelMat[1].w, uViewModelMat[2].w);",
-			"gl_Position.z   -= aIsUp * (uCameraLatitude * 0.25 / distance( gl_Position.xyz, camPosition.xyz));",
+			"gl_Position.z   -= uSpriteRendererDepth + aIsUp * (uCameraLatitude * 0.25 / distance( gl_Position.xyz, camPosition.xyz));",
 		"}"
 	].join("\n");
 
@@ -110,20 +111,12 @@ function(      WebGL,         glMatrix,      Camera )
 			"float blLUT = texture2D(indexT, uv + vec2(0.0, TextInterval.y)).x;",
 			"float brLUT = texture2D(indexT, uv + TextInterval).x;",
 
-			"float atlLUT = 1.0;",
-			"float atrLUT = 1.0;",
-			"float ablLUT = 1.0;",
-			"float abrLUT = 1.0;",
+			"vec4 transparent = vec4( 0.5, 0.5, 0.5, 0.0);",
 
-			"if (tlLUT == 0.0) atlLUT = 0.0;",
-			"if (trLUT == 0.0) atrLUT = 0.0;",
-			"if (blLUT == 0.0) ablLUT = 0.0;",
-			"if (brLUT == 0.0) abrLUT = 0.0;",
-
-			"vec4 tl = vec4( texture2D(LUT, vec2(tlLUT,1.0)).rgb, atlLUT);",
-			"vec4 tr = vec4( texture2D(LUT, vec2(trLUT,1.0)).rgb, atrLUT);",
-			"vec4 bl = vec4( texture2D(LUT, vec2(blLUT,1.0)).rgb, ablLUT);",
-			"vec4 br = vec4( texture2D(LUT, vec2(brLUT,1.0)).rgb, abrLUT);",
+			"vec4 tl = tlLUT == 0.0 ? transparent : vec4( texture2D(LUT, vec2(tlLUT,1.0)).rgb, 1.0);",
+			"vec4 tr = trLUT == 0.0 ? transparent : vec4( texture2D(LUT, vec2(trLUT,1.0)).rgb, 1.0);",
+			"vec4 bl = blLUT == 0.0 ? transparent : vec4( texture2D(LUT, vec2(blLUT,1.0)).rgb, 1.0);",
+			"vec4 br = brLUT == 0.0 ? transparent : vec4( texture2D(LUT, vec2(brLUT,1.0)).rgb, 1.0);",
 
 			"vec2 f  = fract( uv.xy * uTextSize );",
 			"vec4 tA = mix( tl, tr, f.x );",
@@ -191,6 +184,13 @@ function(      WebGL,         glMatrix,      Camera )
 	 */
 	SpriteRenderer.angle = 0;
 
+
+	/**
+	 * @var {number} depth
+	 */
+	SpriteRenderer.depth = 0.0;
+
+
 	/**
 	 * @var {Float32Array[3]} sprite position in 3D world
 	 */
@@ -244,6 +244,18 @@ function(      WebGL,         glMatrix,      Camera )
 
 
 	/**
+	 * @var {number} width unity
+	 */
+	SpriteRenderer.xSize = 5;
+
+
+	/**
+	 * @var {number} height unity
+	 */
+	SpriteRenderer.ySize = 5;
+
+
+	/**
 	 * @var {WebGLProgram}
 	 */
 	var _program = null;
@@ -291,6 +303,11 @@ function(      WebGL,         glMatrix,      Camera )
 	 */
 	var _angle = null;
 
+	/**
+	 * @var {number} last depth operation
+	 */
+	var _depth = null;
+
 
 	/**
 	 * @var {object} last texture used
@@ -307,13 +324,25 @@ function(      WebGL,         glMatrix,      Camera )
 	/**
 	 * @var {Uint16Array} position in 2D canvas 
 	 */
-	var _pos = new Uint16Array(2);
+	var _pos = new Int16Array(2);
 
 
 	/**
 	 * @var {mat4} last generated matrix (used for rotation)
 	 */
 	var _matrix = new Float32Array(4*4);
+
+
+	/**
+	 * @var {Float32Array[2]} sprite size
+	 */
+	var _size = new Float32Array(2);
+
+
+	/**
+	 * @var {Float32Array[2]} sprite offset position
+	 */
+	var _offset = new Float32Array(2);
 
 
 	/**
@@ -386,6 +415,8 @@ function(      WebGL,         glMatrix,      Camera )
 
 		// Binding 3D context
 		this.render = RenderCanvas3D;
+		this.xSize  = 5;
+		this.ySize  = 5;
 
 		_gl = gl;
 		_groupId++;
@@ -420,7 +451,10 @@ function(      WebGL,         glMatrix,      Camera )
 		_ctx        = ctx;
 		_pos[0]     = x;
 		_pos[1]     = y;
+
 		this.render = RenderCanvas2D;
+		this.xSize  = 5;
+		this.ySize  = 5;
 	};
 
 
@@ -458,6 +492,10 @@ function(      WebGL,         glMatrix,      Camera )
 			gl.uniform1i(  uniform.uUsePal, _usepal = use_pal );
 		}
 
+		if (this.depth !== _depth) {
+			gl.uniform1f( uniform.uSpriteRendererDepth, _depth = this.depth);
+		}
+
 		// Rotate
 		if (this.angle !== _angle) {
 			_angle = this.angle;
@@ -470,9 +508,14 @@ function(      WebGL,         glMatrix,      Camera )
 			gl.uniformMatrix4fv( uniform.uSpriteRendererAngle, false, _matrix );
 		}
 
+		_offset[0] = this.offset[0] / 175.0 * this.xSize;
+		_offset[1] = this.offset[1] / 175.0 * this.ySize - 0.5;
+		_size[0]   = this.size[0]   / 175.0 * this.xSize;
+		_size[1]   = this.size[1]   / 175.0 * this.ySize;
+
 		gl.uniform4fv( uniform.uSpriteRendererColor,  this.color );
-		gl.uniform2fv( uniform.uSpriteRendererSize,   this.size );
-		gl.uniform2fv( uniform.uSpriteRendererOffset, this.offset );
+		gl.uniform2fv( uniform.uSpriteRendererSize,   _size );
+		gl.uniform2fv( uniform.uSpriteRendererOffset, _offset );
 
 		// Avoid binding the new texture 150 times if it's the same.
 		if (_groupId !== _lastGroupId || _texture !== this.image.texture) {
@@ -486,90 +529,108 @@ function(      WebGL,         glMatrix,      Camera )
 	/**
 	 * Render in 2D
 	 */
-	function RenderCanvas2D() {
-		this.size[0] *= 35;
-		this.size[1] *= 35;
+	var RenderCanvas2D = function RenderCanvas2DClosure()
+	{
+		var canvas, ctx, imageData;
 
-		// Mirror feature
-		var scale_x  = 1.0;
-		var scale_y  = 1.0;
+		canvas         = document.createElement("canvas");
+		ctx            = canvas.getContext("2d");
+		canvas.width   = 20;
+		canvas.height  = 20;
+		imageData      = ctx.createImageData(canvas.width, canvas.height);
 
-		if (this.size[0] < 0) {
-			scale_x      *= -1;
-			this.size[0] *= -1;
-		}
-
-		if (this.size[1] < 0) {
-			scale_y      *= -1;
-			this.size[1] *= -1;
-		}
-
-
-		var _x   = _pos[0] + this.offset[0] * 35;
-		var _y   = _pos[1] + this.offset[1] * 35;
-
-		var ctx;
-		var pal    = this.palette;
-		var canvas = document.createElement("canvas");
-		var frame  = this.sprite;
-		var width, height, y, x, idx1, idx2;
-		var imageData;
-
-		// Nothing to render
-		if (frame.width <= 0 || frame.height <= 0) {
-			return;
-		}
-
-		// Create canvas
-		ctx           = canvas.getContext("2d");
-		canvas.width  = width  = frame.width;
-		canvas.height = height = frame.height;
-		imageData     = ctx.createImageData( width, height );
-
-		// RGBA images
-		if (this.sprite.type === 1) {
-			for (y = 0; y < height; ++y) {
-				for (x = 0; x < width; ++x) {
-					idx1 = (x + y * width ) * 4;
-					imageData.data[ idx1 + 0 ] = frame.data[ idx1 + 0 ] * this.color[0];
-					imageData.data[ idx1 + 1 ] = frame.data[ idx1 + 1 ] * this.color[1];
-					imageData.data[ idx1 + 2 ] = frame.data[ idx1 + 2 ] * this.color[2];
-					imageData.data[ idx1 + 3 ] = frame.data[ idx1 + 3 ] * this.color[3];
-				}
+		return function RenderCanvas2D()
+		{
+			// Nothing to render
+			if (this.sprite.width <= 0 || this.sprite.height <= 0) {
+				return;
 			}
-		}
 
-		// Palettes
-		else {
-			for (y = 0; y < height; ++y) {
-				for (x = 0; x < width; ++x) {
-					if (frame.data[y * width + x]) {
-						idx1 = ( y * width + x ) * 4;
-						idx2 = frame.data[y * width + x] * 4;
-						imageData.data[ idx1 + 0 ] = pal[ idx2 + 0 ] * this.color[0];
-						imageData.data[ idx1 + 1 ] = pal[ idx2 + 1 ] * this.color[1];
-						imageData.data[ idx1 + 2 ] = pal[ idx2 + 2 ] * this.color[2];
-						imageData.data[ idx1 + 3 ] = 255             * this.color[3];
+			var scale_x, scale_y, idx1, idx2;
+			var x, y, _x, _y, width, height, outputWidth;
+			var pal, frame, color;
+			var input, output;
+
+			scale_x  = 1.0;
+			scale_y  = 1.0;
+			_x       = _pos[0] + this.offset[0];
+			_y       = _pos[1] + this.offset[1] - 0.5 * 35; // middle of cell
+			pal      = this.palette;
+			frame    = this.sprite;
+			width    = frame.width;
+			height   = frame.height;
+
+			_size.set(this.size);
+
+			// Mirror feature
+			if (_size[0] < 0) {
+				scale_x  *= -1;
+				_size[0] *= -1;
+			}
+
+			if (_size[1] < 0) {
+				scale_y  *= -1;
+				_size[1] *= -1;
+			}
+
+			// Resize canvas from memory
+			if (width > canvas.width || height > canvas.height) {
+				canvas.width  = width;
+				canvas.height = height;
+				imageData     = ctx.createImageData(width, height);
+			}
+
+			output      = imageData.data;
+			input       = frame.data;
+			color       = this.color;
+			outputWidth = canvas.width;
+
+			// RGBA images
+			if (this.sprite.type === 1) {
+				for (y = 0; y < height; ++y) {
+					for (x = 0; x < width; ++x) {
+						idx1 = (x + y * outputWidth) * 4;
+						idx2 = (x + y * width) * 4;
+						output[idx1 + 0] = input[idx2 + 0] * color[0];
+						output[idx1 + 1] = input[idx2 + 1] * color[1];
+						output[idx1 + 2] = input[idx2 + 2] * color[2];
+						output[idx1 + 3] = input[idx2 + 3] * color[3];
 					}
 				}
 			}
-		}
 
-		// Insert into the canvas
-		ctx.putImageData( imageData, 0, 0 );
+			// Palettes
+			else {
+				for (y = 0; y < height; ++y) {
+					for (x = 0; x < width; ++x) {
+						idx1 = (y * outputWidth + x) * 4;
+						idx2 = input[y * width + x] * 4;
+						output[idx1 + 0] = pal[idx2 + 0] * color[0];
+						output[idx1 + 1] = pal[idx2 + 1] * color[1];
+						output[idx1 + 2] = pal[idx2 + 2] * color[2];
+						output[idx1 + 3] = input[y * width + x] ? 255 * color[3] : 0;
+					}
+				}
+			}
 
-		// Render sprite in context
-		_ctx.save();
-		_ctx.translate( _x | 0, _y | 0 );
-		_ctx.rotate( this.angle / 180 * Math.PI );
-		_ctx.scale( scale_x, scale_y );
-		_ctx.drawImage(
-			 canvas,
-			-this.size[0] >> 1, -this.size[1] >> 1,
-			 this.size[0]  | 0,  this.size[1]  | 0
-		);
-		_ctx.restore();
-	}
+			// Insert into the canvas
+			ctx.putImageData( imageData, 0, 0, 0, 0, width, height);
+
+			// Render sprite in context
+			_ctx.save();
+			_ctx.translate( _x | 0, _y | 0 );
+			_ctx.rotate( this.angle / 180 * Math.PI );
+			_ctx.scale( scale_x, scale_y );
+			_ctx.drawImage(
+				 canvas,
+				 0,              0,
+				 width,          height,
+				-_size[0] >> 1, -_size[1] >> 1,
+				 _size[0] |  0,  _size[1] |  0
+			);
+			_ctx.restore();
+		};
+	}();
 
 
 	/**

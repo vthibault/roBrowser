@@ -57,8 +57,8 @@ define(function( require )
 		error   = error.stack || error;
 
 		url   = url.replace(/\/([^\/]+)$/g,'/');
-		error = error.replace( /\n/g, "<br/>");
-		error = error.replace( new RegExp(url,"g"), '');
+		error = error.replace( /\n/g, '<br/>');
+		error = error.replace( new RegExp(url,'g'), '');
 		error = error.replace( /\?[^\:]+/g,'');
 
 		if (!this.ui) {

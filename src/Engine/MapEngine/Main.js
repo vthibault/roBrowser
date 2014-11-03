@@ -16,18 +16,22 @@ define(function( require )
 	/**
 	 * Load dependencies
 	 */
-	var DB            = require('DB/DBManager');
-	var PathFinding   = require('Utils/PathFinding');
-	var Session       = require('Engine/SessionStorage');
-	var Network       = require('Network/NetworkManager');
-	var PACKET        = require('Network/PacketStructure');
-	var ChatBox       = require('UI/Components/ChatBox/ChatBox');
-	var ChatRoom      = require('UI/Components/ChatRoom/ChatRoom');
-	var BasicInfo     = require('UI/Components/BasicInfo/BasicInfo');
-	var WinStats      = require('UI/Components/WinStats/WinStats');
-	var Escape        = require('UI/Components/Escape/Escape');
-	var Announce      = require('UI/Components/Announce/Announce');
-	var Equipment     = require('UI/Components/Equipment/Equipment');
+	var DB             = require('DB/DBManager');
+	var StatusProperty = require('DB/Status/StatusProperty');
+	var Session        = require('Engine/SessionStorage');
+	var Network        = require('Network/NetworkManager');
+	var PACKET         = require('Network/PacketStructure');
+	var EntityManager  = require('Renderer/EntityManager');
+	var Renderer       = require('Renderer/Renderer');
+	var Damage         = require('Renderer/Effects/Damage');
+	var ChatBox        = require('UI/Components/ChatBox/ChatBox');
+	var ChatRoom       = require('UI/Components/ChatRoom/ChatRoom');
+	var BasicInfo      = require('UI/Components/BasicInfo/BasicInfo');
+	var WinStats       = require('UI/Components/WinStats/WinStats');
+	var Announce       = require('UI/Components/Announce/Announce');
+	var Equipment      = require('UI/Components/Equipment/Equipment');
+	var SkillList      = require('UI/Components/SkillList/SkillList');
+	var PartyUI        = require('UI/Components/PartyFriends/PartyFriends');
 
 
 	/**
@@ -72,19 +76,9 @@ define(function( require )
 	 */
 	function onPlayerTooFarToAttack( pkt )
 	{
-		var out   = [];
-		var count = PathFinding.search(
-			pkt.xPos,	pkt.yPos,
-			pkt.targetXPos, pkt.targetYPos,
-			pkt.currentAttRange,
-			out
-		);
-
-		if (count) {
-			var _pkt     = new PACKET.CZ.REQUEST_MOVE();
-			_pkt.dest[0] = out[ count - 1 ][0];
-			_pkt.dest[1] = out[ count - 1 ][1];
-			Network.sendPacket(_pkt);
+		var entity = EntityManager.get(pkt.targetAID);
+		if (entity) {
+			entity.onFocus();
 		}
 	}
 
@@ -149,12 +143,29 @@ define(function( require )
 		}
 
 		switch (pkt.statusID) {
-			case 13: WinStats.update('str', pkt.value); break;
-			case 14: WinStats.update('agi', pkt.value); break;
-			case 15: WinStats.update('vit', pkt.value); break;
-			case 16: WinStats.update('int', pkt.value); break;
-			case 17: WinStats.update('dex', pkt.value); break;
-			case 18: WinStats.update('luk', pkt.value); break;
+			case StatusProperty.STR:
+				WinStats.update('str', pkt.value);
+				break;
+
+			case StatusProperty.AGI:
+				WinStats.update('agi', pkt.value);
+				break;
+
+			case StatusProperty.VIT:
+				WinStats.update('vit', pkt.value);
+				break;
+
+			case StatusProperty.INT:
+				WinStats.update('int', pkt.value);
+				break;
+
+			case StatusProperty.DEX:
+				WinStats.update('dex', pkt.value);
+				break;
+
+			case StatusProperty.LUK:
+				WinStats.update('luk', pkt.value);
+				break;
 		}
 	}
 
@@ -192,63 +203,56 @@ define(function( require )
 
 		switch (type) {
 
-			// Walk Speed
-			case  0:
+			case StatusProperty.SPEED:
 				Session.Entity.walk.speed = amount;
 				break;
 
-			// Base exp
-			case  1:
-				BasicInfo.base_exp  = amount;
+			case StatusProperty.EXP:
+				BasicInfo.base_exp = amount;
 				if (BasicInfo.base_exp_next) {
 					BasicInfo.update('bexp', BasicInfo.base_exp, BasicInfo.base_exp_next );
 				}
 				break;
 
-			// Job exp
-			case  2:
-				BasicInfo.job_exp  = amount;
+			case StatusProperty.JOBEXP:
+				BasicInfo.job_exp = amount;
 				if (BasicInfo.job_exp_next) {
 					BasicInfo.update('jexp', BasicInfo.job_exp, BasicInfo.job_exp_next );
 				}
 				break;
 
-			// Karma, manner (not used ?)
-			case  3:
-			case  4:
+			// (not used ?)
+			case StatusProperty.VIRTUE:
+			case StatusProperty.HONOR:
 				break;
 
-			// HP
-			case  5:
+			case StatusProperty.HP:
 				Session.Entity.life.hp = amount;
 				Session.Entity.life.update();
 
-				// Urg we are dead !
-				if (amount < 1) {
-					Escape.ui.show();
-					Escape.ui.find('.savepoint').show();
-					Escape.ui.find('.settings, .sound, .hotkey').hide();
-
-					// TODO: check for resurection button
-				}
-
 				if (Session.Entity.life.hp_max > -1) {
 					BasicInfo.update('hp', Session.Entity.life.hp, Session.Entity.life.hp_max);
+
+					if (Session.hasParty) {
+						PartyUI.updateMemberLife(Session.AID, Session.Entity.life.canvas, Session.Entity.life.hp, Session.Entity.life.hp_max);
+					}
 				}
 				break;
 
-			// HP max
-			case  6:
+			case StatusProperty.MAXHP:
 				Session.Entity.life.hp_max = amount;
 				Session.Entity.life.update();
 
 				if (Session.Entity.life.hp > -1) {
-					BasicInfo.update('hp',  Session.Entity.life.hp, Session.Entity.life.hp_max);
+					BasicInfo.update('hp', Session.Entity.life.hp, Session.Entity.life.hp_max);
+
+					if (Session.hasParty) {
+						PartyUI.updateMemberLife(Session.AID, Session.Entity.life.canvas, Session.Entity.life.hp, Session.Entity.life.hp_max);
+					}
 				}
 				break;
 
-			// SP
-			case  7:
+			case StatusProperty.SP:
 				Session.Entity.life.sp = amount;
 				Session.Entity.life.update();
 
@@ -257,129 +261,169 @@ define(function( require )
 				}
 				break;
 
-			// SP max
-			case  8:
+			case StatusProperty.MAXSP:
 				Session.Entity.life.sp_max = amount;
 				Session.Entity.life.update();
 
 				if (Session.Entity.life.sp > -1) {
-					BasicInfo.update('sp',  Session.Entity.life.sp, Session.Entity.life.sp_max);
+					BasicInfo.update('sp', Session.Entity.life.sp, Session.Entity.life.sp_max);
 				}
 				break;
 
-			// Status points
-			case  9:
+			case StatusProperty.POINT:
 				WinStats.update('statuspoint', amount);
 				break;
 
-			// Base level
-			case 11:
+			case StatusProperty.CLEVEL:
 				BasicInfo.update('blvl', amount);
+				Equipment.onLevelUp();
 				break;
 
-			// Skill points
-			case 12:
+			case StatusProperty.SKPOINT:
+				SkillList.setPoints(amount);
 				break;
 
-			// Str
-			case 13:
+			case StatusProperty.STR:
 				WinStats.update('str',  pkt.defaultStatus);
 				WinStats.update('str2', pkt.plusStatus);
 				break;
 
-			// Agi
-			case 14:
+			case StatusProperty.AGI:
 				WinStats.update('agi',  pkt.defaultStatus);
 				WinStats.update('agi2', pkt.plusStatus);
 				break;
 
-			// Vit
-			case 15:
+			case StatusProperty.VIT:
 				WinStats.update('vit',  pkt.defaultStatus);
 				WinStats.update('vit2', pkt.plusStatus);
 				break;
 
-			// Int
-			case 16:
+			case StatusProperty.INT:
 				WinStats.update('int',  pkt.defaultStatus);
 				WinStats.update('int2', pkt.plusStatus);
 				break;
 
-			// Dex
-			case 17:
+			case StatusProperty.DEX:
 				WinStats.update('dex',  pkt.defaultStatus);
 				WinStats.update('dex2', pkt.plusStatus);
 				break;
 
-			// Luk
-			case 18:
+			case StatusProperty.LUK:
 				WinStats.update('luk',  pkt.defaultStatus);
 				WinStats.update('luk2', pkt.plusStatus);
 				break;
 
-			// Zeny
-			case 20:
+			case StatusProperty.MONEY:
 				BasicInfo.update('zeny', amount);
 				break;
 
-			// Base exp next
-			case 22:
-				BasicInfo.base_exp_next  = amount;
+			case StatusProperty.MAXEXP:
+				BasicInfo.base_exp_next = amount;
 				if (BasicInfo.base_exp > -1) {
 					BasicInfo.update('bexp', BasicInfo.base_exp, BasicInfo.base_exp_next );
 				}
 				break;
 
-			// Job exp next
-			case 23:
-				BasicInfo.job_exp_next  = amount;
+			case StatusProperty.MAXJOBEXP:
+				BasicInfo.job_exp_next = amount;
 				if (BasicInfo.job_exp > -1) {
 					BasicInfo.update('jexp', BasicInfo.job_exp, BasicInfo.job_exp_next );
 				}
 				break;
 
-			//Weight
-			case 24:
+			case StatusProperty.WEIGHT:
 				BasicInfo.weight = amount;
 				if (BasicInfo.weight_max > -1) {
 					BasicInfo.update('weight', BasicInfo.weight, BasicInfo.weight_max );
 				}
 				break;
 
-			// Weight Max
-			case 25:
+			case StatusProperty.MAXWEIGHT:
 				BasicInfo.weight_max = amount;
 				if (BasicInfo.weight > -1) {
 					BasicInfo.update('weight', BasicInfo.weight, BasicInfo.weight_max );
 				}
 				break;
 
-			// Required Stats point to update a stat
-			case 32: WinStats.update('str3', amount); break; // str
-			case 33: WinStats.update('agi3', amount); break; // agi
-			case 34: WinStats.update('vit3', amount); break; // vit
-			case 35: WinStats.update('int3', amount); break; // int
-			case 36: WinStats.update('dex3', amount); break; // dex
-			case 37: WinStats.update('luk3', amount); break; // luk
+			case StatusProperty.STANDARD_STR:
+				WinStats.update('str3', amount);
+				break;
 
-			// Stats window
-			case 41: WinStats.update('atak',     amount); break; // atk1
-			case 42: WinStats.update('atak2',    amount); break; // atk2
-			case 43: WinStats.update('matak',    amount); break; // matk1
-			case 44: WinStats.update('matak2',   amount); break; // matk2
-			case 45: WinStats.update('def',      amount); break; // def1
-			case 46: WinStats.update('def2',     amount); break; // def2
-			case 47: WinStats.update('mdef',     amount); break; // mdef1
-			case 48: WinStats.update('mdef2',    amount); break; // mdef2
-			case 49: WinStats.update('hit',      amount); break; // hit
-			case 50: WinStats.update('flee',     amount); break; // flee
-			case 51: WinStats.update('flee2',    amount); break; // dodge
-			case 52: WinStats.update('critical', amount); break; // crit
-			case 53: WinStats.update('aspd',     amount); break; // aspd
+			case StatusProperty.STANDARD_AGI:
+				WinStats.update('agi3', amount);
+				break;
 
-			// Job level
-			case 55:
+			case StatusProperty.STANDARD_VIT:
+				WinStats.update('vit3', amount);
+				break;
+
+			case StatusProperty.STANDARD_INT:
+				WinStats.update('int3', amount);
+				break;
+
+			case StatusProperty.STANDARD_DEX:
+				WinStats.update('dex3', amount);
+				break;
+
+			case StatusProperty.STANDARD_LUK:
+				WinStats.update('luk3', amount);
+				break;
+
+			case StatusProperty.ATTPOWER:
+				WinStats.update('atak', amount);
+				break;
+
+			case StatusProperty.REFININGPOWER:
+				WinStats.update('atak2', amount);
+				break;
+
+			case StatusProperty.MAX_MATTPOWER:
+				WinStats.update('matak', amount);
+				break;
+
+			case StatusProperty.MIN_MATTPOWER:
+				WinStats.update('matak2', amount);
+				break;
+
+			case StatusProperty.ITEMDEFPOWER:
+				WinStats.update('def', amount);
+				break;
+
+			case StatusProperty.PLUSDEFPOWER:
+				WinStats.update('def2', amount);
+				break;
+
+			case StatusProperty.MDEFPOWER:
+				WinStats.update('mdef', amount);
+				break;
+
+			case StatusProperty.PLUSMDEFPOWER:
+				WinStats.update('mdef2', amount);
+				break;
+
+			case StatusProperty.HITSUCCESSVALUE:
+				WinStats.update('hit', amount);
+				break;
+
+			case StatusProperty.AVOIDSUCCESSVALUE:
+				WinStats.update('flee', amount);
+				break;
+
+			case StatusProperty.PLUSAVOIDSUCCESSVALUE:
+				WinStats.update('flee2', amount);
+				break;
+
+			case StatusProperty.CRITICALSUCCESSVALUE:
+				WinStats.update('critical', amount);
+				break;
+
+			case StatusProperty.ASPD:
+				WinStats.update('aspd', amount);
+				break;
+
+			case StatusProperty.JOBLEVEL:
 				BasicInfo.update('jlvl', amount);
+				SkillList.onLevelUp();
 				break;
 
 			default:
@@ -428,7 +472,7 @@ define(function( require )
 	 */
 	function onPlayerCountAnswer( pkt )
 	{
-		ChatBox.addText( DB.msgstringtable[178].replace('%d', pkt.count), ChatBox.TYPE.INFO );
+		ChatBox.addText( DB.getMessage(178).replace('%d', pkt.count), ChatBox.TYPE.INFO );
 	}
 
 
@@ -445,12 +489,85 @@ define(function( require )
 			case 0:
 				Equipment.setEquipConfig( pkt.Value );
 				ChatBox.addText(
-					DB.msgstringtable[1358 + (pkt.Value ? 1 : 0) ],
+					DB.getMessage(1358 + (pkt.Value ? 1 : 0) ),
 					ChatBox.TYPE.INFO
 				);
 				break;
 
 			// TODO: other config type to support (PACKET.ZC.CONFIG)
+		}
+	}
+
+
+	/**
+	 * Despite the name, it give information about item equipped
+	 *
+	 * @param {object} pkt - PACKET_ZC_ACTION_FAILURE
+	 */
+	function onActionFailure( pkt )
+	{
+		switch (pkt.errorCode) {
+			case 0: // Please equip the proper amnution first
+				ChatBox.addText( DB.getMessage(242), ChatBox.TYPE.ERROR );
+				break;
+
+			case 1:  // You can't Attack or use Skills because your Weight Limit has been exceeded.
+				ChatBox.addText( DB.getMessage(243), ChatBox.TYPE.ERROR );
+				break;
+
+			case 2: // You can't use Skills because Weight Limit has been exceeded.
+				ChatBox.addText( DB.getMessage(244), ChatBox.TYPE.ERROR );
+				break;
+
+			case 3: // Ammunition has been equipped.
+				// TODO: check the class - assassin: 1040 | gunslinger: 1175 | default: 245
+				ChatBox.addText( DB.getMessage(245), ChatBox.TYPE.BLUE );
+				break;
+		}
+	}
+
+
+	/**
+	 * Server message using msgstringtable
+	 *
+	 * @param {object} pkt - PACKET_ZC_MSG
+	 */
+	function onMessage( pkt )
+	{
+		ChatBox.addText( DB.getMessage(pkt.msg), ChatBox.TYPE.PUBLIC );
+	}
+
+
+	/**
+	 * Recovery of a status
+	 *
+	 * @param {object} pkt - PACKET.ZC.RECOVERY
+	 */
+	function onRecovery( pkt )
+	{
+		switch (pkt.varID) {
+
+			case StatusProperty.HP:
+				Damage.add( pkt.amount, Session.Entity, Renderer.tick, Damage.TYPE.HEAL );
+
+				Session.Entity.life.hp += pkt.amount;
+				Session.Entity.life.update();
+
+				if (Session.Entity.life.hp_max > -1) {
+					BasicInfo.update('hp', Session.Entity.life.hp, Session.Entity.life.hp_max);
+				}
+				break;
+
+			case StatusProperty.SP:
+				Damage.add( pkt.amount, Session.Entity, Renderer.tick, Damage.TYPE.HEAL | Damage.TYPE.SP );
+
+				Session.Entity.life.sp += pkt.amount;
+				Session.Entity.life.update();
+
+				if (Session.Entity.life.sp_max > -1) {
+					BasicInfo.update('sp', Session.Entity.life.sp, Session.Entity.life.sp_max);
+				}
+				break;
 		}
 	}
 
@@ -475,5 +592,8 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.NOTIFY_PLAYERCHAT,           onPlayerMessage );
 		Network.hookPacket( PACKET.ZC.ATTACK_FAILURE_FOR_DISTANCE, onPlayerTooFarToAttack );
 		Network.hookPacket( PACKET.ZC.CONFIG,                      onConfigUpdate );
+		Network.hookPacket( PACKET.ZC.ACTION_FAILURE,              onActionFailure );
+		Network.hookPacket( PACKET.ZC.MSG,                         onMessage );
+		Network.hookPacket( PACKET.ZC.RECOVERY,                    onRecovery );
 	};
 });

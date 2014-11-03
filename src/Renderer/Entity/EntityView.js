@@ -7,9 +7,17 @@
  *
  * @author Vincent Thibault
  */
-define(['Core/Client', 'DB/DBManager', './EntityAction'], function( Client, DB, EntityAction )
+define(function( require )
 {
 	'use strict';
+
+
+	// Load dependencies
+	var Client       = require('Core/Client');
+	var DB           = require('DB/DBManager');
+	var ShadowTable  = require('DB/Monsters/ShadowTable');
+	var MountTable   = require('DB/Jobs/MountTable');
+	var EntityAction = require('./EntityAction');
 
 
 	/**
@@ -21,9 +29,10 @@ define(['Core/Client', 'DB/DBManager', './EntityAction'], function( Client, DB, 
 	 */
 	function ViewFiles( spr, act, pal )
 	{
-		this.spr = spr || null;
-		this.act = act || null;
-		this.pal = pal || null;
+		this.spr  = spr || null;
+		this.act  = act || null;
+		this.pal  = pal || null;
+		this.size = 1.0;
 	}
 
 
@@ -74,32 +83,68 @@ define(['Core/Client', 'DB/DBManager', './EntityAction'], function( Client, DB, 
 	 */
 	function UpdateBody( job )
 	{
-		var path   = DB.getBodyPath( job, this._sex );
-		var Entity = this.constructor;
-		this._job  = -1;
+		var baseJob, path;
+		var Entity;
+
+		if (job < 0) {
+			return;
+		}
+
+		// Avoid fuck*ng errors with mounts !
+		// Sometimes the server send us the job of the mount sprite instead
+		// of the base sprite + effect to have the mount.
+		for (baseJob in MountTable) {
+			if (MountTable[baseJob] === job) {
+				this.costume = job;
+				job          = baseJob;
+				break;
+			}
+		}
+
+		// Clothes keep the old job in memory
+		// and show the costum if used
+		this._job = job;
+		if (this.costume) {
+			job = this.costume;
+		}
+
+		// Resize character
+		this.xSize = this.ySize = DB.isBaby(job) ? 4 : 5;
+
+
+		this.files.shadow.size = job in ShadowTable ? ShadowTable[job] : 1.0;
+		path                   = this.isAdmin ? DB.getAdminPath(this._sex) : DB.getBodyPath( job, this._sex );
+		Entity                 = this.constructor;
 
 		// Define Object type based on its id
-		// TODO: find a better way ?
-		this.objecttype = (
-			job < 45   ? Entity.TYPE_PC   :
-			job < 46   ? Entity.TYPE_WARP :
-			job < 1000 ? Entity.TYPE_NPC  :
-			job < 4000 ? Entity.TYPE_MOB  :
-			job < 6000 ? Entity.TYPE_PC   :
-			job < 7000 ? Entity.TYPE_HOM  :
-						 Entity.TYPE_MERC
-		);
+		if (this.objecttype === Entity.TYPE_UNKNOWN) {
+			var objecttype = (
+				job < 45   ? Entity.TYPE_PC   :
+				job < 46   ? Entity.TYPE_WARP :
+				job < 1000 ? Entity.TYPE_NPC  :
+				job < 4000 ? Entity.TYPE_MOB  :
+				job < 6000 ? Entity.TYPE_PC   :
+				job < 7000 ? Entity.TYPE_HOM  :
+				             Entity.TYPE_MERC
+			);
 
-		// warp ?
-		if (path === null) {
-			// Reload actions frames (the type can change...)
-			EntityAction.call(this);
+			// Clean up action frames
+			if (objecttype !== this.objecttype) {
+				this.objecttype = objecttype;
+				EntityAction.call(this);
+			}
+		}
+
+		// Invisible sprites
+		if (job === 111 || job === 139 || job === 45) {
+			this.files.body.spr = null;
+			this.files.body.act = null;
 			return;
 		}
 
 		// granny model not supported yet :(
 		// Display a poring instead
-		if (path.match(/\.gr2$/i)) {
+		if (path === null || path.match(/\.gr2$/i)) {
 			path = DB.getBodyPath( 1002, this._sex );
 		}
 
@@ -108,12 +153,6 @@ define(['Core/Client', 'DB/DBManager', './EntityAction'], function( Client, DB, 
 		Client.loadFile(path + '.spr', function(){
 			this.files.body.spr = path + '.spr';
 			this.files.body.act = path + '.act';
-
-			// TODO: find a better way ?
-			this._job       = job;
-
-			// Reload actions frames (the type can change...)
-			EntityAction.call(this);
 
 			// Update linked attachments
 			this.bodypalette = this._bodypalette;
@@ -146,10 +185,7 @@ define(['Core/Client', 'DB/DBManager', './EntityAction'], function( Client, DB, 
 			return;
 		}
 
-		var path = DB.getBodyPalPath( this._job, this._bodypalette, this._sex);
-		Client.loadFile( path, function(){
-			this.files.body.pal = path;
-		}.bind(this));
+		this.files.body.pal = DB.getBodyPalPath( this.job, this._bodypalette, this._sex);
 	}
 
 
@@ -160,17 +196,20 @@ define(['Core/Client', 'DB/DBManager', './EntityAction'], function( Client, DB, 
 	 */
 	function UpdateHead( head )
 	{
-		var path   = DB.getHeadPath( head, this._sex );
-		this._head = -1;
+		var path;
+
+		if (head < 0) {
+			return;
+		}
+
+		this._head  = head;
+		path        = DB.getHeadPath( head, this._sex );
 
 		Client.loadFile(path + '.act');
 		Client.loadFile(path + '.spr', function(){
-			this._head          = head;
 			this.files.head.spr = path + '.spr';
 			this.files.head.act = path + '.act';
 			this.files.head.pal = null;
-
-			// Update head palette
 			this.headpalette    = this._headpalette;
 		}.bind(this));
 	}
@@ -196,11 +235,7 @@ define(['Core/Client', 'DB/DBManager', './EntityAction'], function( Client, DB, 
 			return;
 		}
 
-		var path = DB.getHeadPalPath( this._head, this._headpalette, this._sex);
-
-		Client.loadFile( path, function(){
-			this.files.head.pal = path;
-		}.bind(this));
+		this.files.head.pal = DB.getHeadPalPath( this._head, this._headpalette, this._sex);
 	}
 
 
@@ -228,7 +263,7 @@ define(['Core/Client', 'DB/DBManager', './EntityAction'], function( Client, DB, 
 			switch (type) {
 				case 'weapon':
 				case 'shield':
-					path  = DB[func]( val, this._job, this._sex );
+					path  = DB[func]( val, this.job, this._sex );
 					break;
 
 				default:
@@ -244,7 +279,7 @@ define(['Core/Client', 'DB/DBManager', './EntityAction'], function( Client, DB, 
 
 				// Load weapon sound
 				if (type === 'weapon') {
-					this.weapon_sound = DB.getWeaponSound( val );
+					this.sound.attackFile = DB.getWeaponSound( val );
 				}
 
 				return;
@@ -259,7 +294,7 @@ define(['Core/Client', 'DB/DBManager', './EntityAction'], function( Client, DB, 
 
 					// Load weapon sound
 					if (type === 'weapon') {
-						_this.weapon_sound = DB.getWeaponSound( _val );
+						_this.attackFile = DB.getWeaponSound( _val );
 					}
 				},
 
@@ -267,7 +302,7 @@ define(['Core/Client', 'DB/DBManager', './EntityAction'], function( Client, DB, 
 				function(){
 					if (fallback && !final) {
 						_val = DB[fallback](val);
-						path = DB[func]( _val, _this._job, _this._sex );
+						path = DB[func]( _val, _this.job, _this._sex );
 						if (path) {
 							LoadView( path, true );
 						}
@@ -297,7 +332,7 @@ define(['Core/Client', 'DB/DBManager', './EntityAction'], function( Client, DB, 
 		});
 
 		Object.defineProperty(this, 'job', {
-			get: function(){ return this._job },
+			get: function(){ return this.costume || this._job },
 			set: UpdateBody
 		});
 

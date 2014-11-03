@@ -123,21 +123,8 @@ define(function( require )
 	 */
 	function onInputAppear( pkt )
 	{
-		var type;
+		var type = pkt instanceof PACKET.ZC.OPEN_EDITDLGSTR ? 'text' : 'number';
 		var id = pkt.NAID;
-
-		InputBox.append();
-
-		switch (pkt.constructor.name) {
-			case 'PACKET_ZC_OPEN_EDITDLGSTR':
-				type = 'text';
-				break;
-
-			default:
-			case 'PACKET_ZC_OPEN_EDITDLG':
-				type = 'number';
-				break;
-		}
 
 		InputBox.onAppend = function OnAppend()
 		{
@@ -165,6 +152,8 @@ define(function( require )
 			pkt.NAID = id;
 			Network.sendPacket(pkt);
 		};
+
+		InputBox.append();
 	}
 
 
@@ -180,7 +169,7 @@ define(function( require )
 		WinDeal.init = function Init()
 		{
 			this.draggable();
-			this.ui.find('.text').text( DB.msgstringtable[92] );
+			this.ui.find('.text').text( DB.getMessage(92) );
 
 			this.ui.css({
 				top:  (Renderer.height) / 1.5,
@@ -252,13 +241,23 @@ define(function( require )
 			return;
 		}
 
-		Client.loadFile( DB.INTERFACE_PATH + 'illust/' + pkt.imageName + '.bmp', function( url ){
+		if (pkt.imageName.indexOf('.') === -1) {
+			pkt.imageName += '.bmp';
+		}
+
+		Client.loadFile( DB.INTERFACE_PATH + 'illust/' + pkt.imageName, function( url ){
+
+			// If the npc box is already closed, don't show the image
+			if (!NpcBox.ui || !NpcBox.ui.is(':visible')) {
+				return;
+			}
 
 			var img            = new Image();
 			img.src            = url;
 			img.style.position = 'absolute';
 			img.style.zIndex   = 40;
 			img.id             = 'cutin';
+			img.draggable      = false;
 
 			switch (pkt.type) {
 				default:
@@ -373,13 +372,7 @@ define(function( require )
 			case 1:
 				Sound.play( pkt.fileName );
 				break;
-/*
-			// Play repeat
-			// Not supported !
-			case 1:
-				Sound.play( pkt.fileName, Sound.volume, true );
-				break;
-*/
+
 			// From rathena, should stop a sound but doesn't seems to work in official client ?
 			case 2:
 				Sound.stop( pkt.fileName );

@@ -17,6 +17,7 @@ define( function( require )
 	 */
 	var Renderer = require('Renderer/Renderer');
 	var Altitude = require('Renderer/Map/Altitude');
+	var Session  = require('Engine/SessionStorage');
 	var Client   = require('Core/Client');
 	var glMatrix = require('Utils/gl-matrix');
 	var vec3     = glMatrix.vec3;
@@ -41,11 +42,13 @@ define( function( require )
 		require('./EntityWalk').call(this);
 		require('./EntityRender').call(this);
 		require('./EntityRoom').call(this);
+		require('./EntityState').call(this);
+		require('./EntityAttachments').call(this);
+		require('./EntityAnimations').call(this);
 
 		this.boundingRect = { x1:0, y1:0, x2:0, y2:0 };
 		this.matrix       = mat4.create();
 		this.position     = vec3.create();
-		this.effectColor  = new Float32Array([1, 1, 1, 1]);
 
 		// Bind data
 		if (data) {
@@ -58,34 +61,36 @@ define( function( require )
 	/**
 	 * Constantes
 	 */
-	Entity.TYPE_UNKNOWN   =-2;
-	Entity.TYPE_WARP      =-1;
-	Entity.TYPE_PC        = 0;
-	Entity.TYPE_DISGUISED = 1;
-	Entity.TYPE_MOB       = 5;
-	Entity.TYPE_NPC       = 6;
-	Entity.TYPE_PET       = 7;
-	Entity.TYPE_HOM       = 8;
-	Entity.TYPE_MERC      = 9;
-	Entity.TYPE_ELEM      =10;
-	Entity.TYPE_ITEM      =11;
+	Entity.TYPE_EFFECT    = -3;
+	Entity.TYPE_UNKNOWN   = -2;
+	Entity.TYPE_WARP      = -1;
+	Entity.TYPE_PC        =  0;
+	Entity.TYPE_DISGUISED =  1;
+	Entity.TYPE_MOB       =  5;
+	Entity.TYPE_NPC       =  6;
+	Entity.TYPE_PET       =  7;
+	Entity.TYPE_HOM       =  8;
+	Entity.TYPE_MERC      =  9;
+	Entity.TYPE_ELEM      = 10;
+	Entity.TYPE_ITEM      = 11;
 
 
 	/**
 	 * Priority in picking
 	 */
 	Entity.PickingPriority = {};
-	Entity.PickingPriority[Entity.TYPE_MOB]       = 3;
-	Entity.PickingPriority[Entity.TYPE_ITEM]      = 2;
-	Entity.PickingPriority[Entity.TYPE_NPC]       = 1;
-	Entity.PickingPriority[Entity.TYPE_UNKNOWN]   = 0;
-	Entity.PickingPriority[Entity.TYPE_WARP]      = 0;
-	Entity.PickingPriority[Entity.TYPE_PC]        = 0;
-	Entity.PickingPriority[Entity.TYPE_DISGUISED] = 0;
-	Entity.PickingPriority[Entity.TYPE_PET]       = 0;
-	Entity.PickingPriority[Entity.TYPE_HOM]       = 0;
-	Entity.PickingPriority[Entity.TYPE_MERC]      = 0;
-	Entity.PickingPriority[Entity.TYPE_ELEM]      = 0;
+	Entity.PickingPriority[Entity.TYPE_MOB]       =  3;
+	Entity.PickingPriority[Entity.TYPE_ITEM]      =  2;
+	Entity.PickingPriority[Entity.TYPE_NPC]       =  1;
+	Entity.PickingPriority[Entity.TYPE_UNKNOWN]   =  0;
+	Entity.PickingPriority[Entity.TYPE_WARP]      =  0;
+	Entity.PickingPriority[Entity.TYPE_PC]        =  0;
+	Entity.PickingPriority[Entity.TYPE_DISGUISED] =  0;
+	Entity.PickingPriority[Entity.TYPE_PET]       =  0;
+	Entity.PickingPriority[Entity.TYPE_HOM]       =  0;
+	Entity.PickingPriority[Entity.TYPE_MERC]      =  0;
+	Entity.PickingPriority[Entity.TYPE_ELEM]      =  0;
+	Entity.PickingPriority[Entity.TYPE_EFFECT]    = -1;
 
 
 	/**
@@ -93,14 +98,14 @@ define( function( require )
 	 */
 	Entity.prototype.objecttype   = Entity.TYPE_UNKNOWN;
 	Entity.prototype.GID          = 0;
-	Entity.prototype.bodyState    = 0;
-	Entity.prototype.healthState  = 0;
-	Entity.prototype.effectState  = 0;
+	Entity.prototype._bodyState   = 0;
+	Entity.prototype._healthState = 0;
+	Entity.prototype._effectState = 0;
 	Entity.prototype._sex         = -1;
 	Entity.prototype._job         = -1;
-	Entity.prototype._bodypalette = -1;
+	Entity.prototype._bodypalette = 0;
 	Entity.prototype._head        = -1;
-	Entity.prototype._headpalette = -1;
+	Entity.prototype._headpalette = 0;
 	Entity.prototype._weapon      = -1;
 	Entity.prototype._shield      = -1;
 	Entity.prototype._accessory   = -1;
@@ -116,6 +121,7 @@ define( function( require )
 	Entity.prototype.state        = 0;
 	Entity.prototype.clevel       = 0;
 	Entity.prototype.action       = 0;
+	Entity.prototype.costume      = 0;
 
 	Entity.prototype.matrix       = null;
 	Entity.prototype.depth        = 0;
@@ -126,8 +132,8 @@ define( function( require )
 	Entity.prototype.attack_range = 0;
 	Entity.prototype.attack_speed = 300;
 
-	Entity.prototype.weapon_sound = '';
 	Entity.prototype.effectColor  = null;
+	Entity.prototype.isAdmin      = false;
 
 
 	/**
@@ -151,16 +157,21 @@ define( function( require )
 		Client.loadFile(this.files.shadow.spr, null, null, {to_rgba:true});
 		Client.loadFile(this.files.shadow.act);
 
-		this.sex = unit.hasOwnProperty('sex') ? unit.sex : this._sex;
-		this.job = unit.hasOwnProperty('job') ? unit.job : this._job;
-		keys     = Object.keys( unit );
-		count    = keys.length;
+		this.isAdmin = Session.AdminList.indexOf(unit.GID) > -1;
+		this.sex     = unit.hasOwnProperty('sex') ? unit.sex : this._sex;
+		this.job     = unit.hasOwnProperty('job') ? unit.job : this._job;
+		this.clothes = 0;
+		keys         = Object.keys( unit );
+		count        = keys.length;
 
 		for (i = 0; i < count; ++i) {
 			switch (keys[i]) {
 
-				// Set it manually
+				// Server send warp as npc,
+				// roBrowser has a special type for warp.
 				case 'objecttype':
+					this.objecttype = (unit.job === 45) ? Entity.TYPE_WARP : unit.objecttype;
+					require('./EntityAction').call(this);
 					break;
 
 				// Already set
@@ -254,6 +265,8 @@ define( function( require )
 		this.dialog.clean();
 		this.cast.clean();
 		this.room.clean();
+		this.attachments.remove('lockon');
+		this.animations.free();
 
 		// Remove
 		this.remove_tick  = 0;

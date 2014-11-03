@@ -16,14 +16,18 @@ define(function(require)
 	 * Dependencies
 	 */
 	var DB                 = require('DB/DBManager');
+	var MonsterTable       = require('DB/Monsters/MonsterTable');
 	var Client             = require('Core/Client');
 	var Preferences        = require('Core/Preferences');
 	var Renderer           = require('Renderer/Renderer');
-	var KEYS               = require('Controls/KeyEventHandler');
+	var Session            = require('Engine/SessionStorage');
 	var UIManager          = require('UI/UIManager');
 	var UIComponent        = require('UI/UIComponent');
 	var Inventory          = require('UI/Components/Inventory/Inventory');
 	var Equipment          = require('UI/Components/Equipment/Equipment');
+	var SkillList          = require('UI/Components/SkillList/SkillList');
+	var PartyFriends       = require('UI/Components/PartyFriends/PartyFriends');
+	var Escape             = require('UI/Components/Escape/Escape');
 	var htmlText           = require('text!./BasicInfo.html');
 	var cssText            = require('text!./BasicInfo.css');
 
@@ -57,12 +61,6 @@ define(function(require)
 
 
 	/**
-	 * @var {stack} Stack to store data if the UI is not in html yet and received parameters
-	 */
-	var _stack = [];
-
-
-	/**
 	 * Initialize UI
 	 */
 	BasicInfo.init = function init()
@@ -83,15 +81,24 @@ define(function(require)
 					break;
 
 				case 'info':
-					Equipment.ui.toggle();
+					Equipment.toggle();
+					break;
+
+				case 'skill':
+					SkillList.toggle();
+					break;
+
+				case 'option':
+					Escape.ui.toggle();
+					break;
+
+				case 'party':
+					PartyFriends.toggle();
 					break;
 
 				case 'map':
-				case 'party':
 				case 'guild':
 				case 'quest':
-				case 'option':
-				case 'skill':
 			}
 		});
 
@@ -105,15 +112,6 @@ define(function(require)
 	 */
 	BasicInfo.onAppend = function onAppend()
 	{
-		// Bind UI with stack data
-		var i, count;
-
-		for (i = 0, count = _stack.length; i < count; ++i) {
-			this.update.apply( this, _stack[i]);
-		}
-
-		_stack.length = 0;
-
 		// Apply preferences
 		this.ui.css({
 			top:  Math.min( Math.max( 0, _preferences.y), Renderer.height - this.ui.height()),
@@ -152,20 +150,17 @@ define(function(require)
 
 
 	/**
-	 * Key Listener
+	 * Process shortcut
 	 *
-	 * @param {object} event
-	 * @return {boolean}
+	 * @param {object} key
 	 */
-	BasicInfo.onKeyDown = function onKeyDown( event )
+	BasicInfo.onShortCut = function onShortCut( key )
 	{
-		if (KEYS.ALT && event.which === KEYS.V) {
-			this.toggleMode();
-			event.stopImmediatePropagation();
-			return false;
+		switch (key.cmd) {
+			case 'EXTEND':
+				this.toggleMode();
+				break;
 		}
-
-		return true;
 	};
 
 
@@ -234,13 +229,6 @@ define(function(require)
 	 */
 	BasicInfo.update = function ipdate( type, val1, val2 )
 	{
-		// Not loaded yet, add data to stack to bind the UI when
-		// it will be append to the body
-		if (!this.__loaded) {
-			_stack.push(arguments);
-			return;
-		}
-
 		switch (type) {
 			case 'name':
 			case 'blvl':
@@ -249,6 +237,8 @@ define(function(require)
 				break;
 
 			case 'zeny':
+				Session.zeny = val1;
+
 				var list = val1.toString().split('');
 				var i, count = list.length;
 				var str = '';
@@ -261,7 +251,7 @@ define(function(require)
 				break;
 
 			case 'job':
-				this.ui.find('.job_value').text(DB.mobname[val1]);
+				this.ui.find('.job_value').text(MonsterTable[val1]);
 				break;
 
 			case 'bexp':
@@ -273,7 +263,7 @@ define(function(require)
 
 				this.ui.find('.'+ type).show();
 				this.ui.find('.'+ type +' div').css('width', Math.min( 100, Math.floor(val1 * 100 / val2) ) + '%');
-				this.ui.find('.'+ type +'_value').text( (Math.floor(val1 * 1000 / val2) * 0.1).toFixed(1) + '%');
+				this.ui.find('.'+ type +'_value').text( Math.min( 100, (Math.floor(val1 * 1000 / val2) * 0.1).toFixed(1)) + '%');
 				break;
 
 			case 'weight':

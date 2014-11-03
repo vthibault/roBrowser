@@ -12,7 +12,7 @@
  */
  
 define( ['require', 'Utils/jquery', 'Core/Client', 'Preferences/Audio'],
-function( require,         jQuery,        Client,         Preferences )
+function( require,         jQuery,        Client,   Preferences )
 {
 	'use strict';
 
@@ -22,6 +22,7 @@ function( require,         jQuery,        Client,         Preferences )
 	 */
 	var BGM = {};
 
+	// Flash global variables
 	BGM.stat        = 0;
 	BGM.position    = null;
 	BGM.filename    = null;
@@ -29,7 +30,9 @@ function( require,         jQuery,        Client,         Preferences )
 	BGM.isPlaying   = 'false';
 
 	BGM.audio       = document.createElement('audio');
-	BGM.useHTML5    = BGM.audio.canPlayType && BGM.audio.canPlayType('audio/mpeg') !== '';
+	BGM.useHTML5    = false;
+	BGM.extension   = 'mp3';
+	BGM.isInit      = false;
 
 
 	/**
@@ -38,8 +41,13 @@ function( require,         jQuery,        Client,         Preferences )
 	 */
 	BGM.initFlash = function initFlash()
 	{
+		if (BGM.isInit) {
+			return;
+		}
+
 		// Flash need the object to be in a global scope
 		window.BGM = BGM;
+		BGM.isInit = true;
 
 		// Add the flash to the document
 		BGM.flash  = jQuery([
@@ -47,7 +55,7 @@ function( require,         jQuery,        Client,         Preferences )
 				'<param name="AllowScriptAccess" value="always"/>',
 				'<param name="FlashVars" value="listener=BGM&interval=1000"/>',
 			'</object>'
-		]).appendTo('body')[0];
+		].join('\n')).appendTo('body')[0];
 
 		// Flash onInit()
 		BGM.onInit = function onInit() {
@@ -56,7 +64,6 @@ function( require,         jQuery,        Client,         Preferences )
 				BGM.play( BGM.filename );
 			}
 		};
-	
 
 		// Flash onUpdate (every 2ms)
 		BGM.onUpdate = function onUpdate() {
@@ -73,8 +80,14 @@ function( require,         jQuery,        Client,         Preferences )
 	 */
 	BGM.initHTML5 = function initHTML5()
 	{
+		if (BGM.isInit) {
+			return;
+		}
+
+		BGM.isInit = true;
+
 		// Buggy looping for HTM5 Audio...
-		if (typeof BGM.audio.loop == 'boolean') {
+		if (typeof BGM.audio.loop === 'boolean') {
 			BGM.audio.loop = true;
 			return;
 		}
@@ -88,46 +101,106 @@ function( require,         jQuery,        Client,         Preferences )
 
 
 	/**
+	 * Test audio extension from a list to see what format the browser can read
+	 * If the browser can't read audio files, a flash callback will be used.
+	 *
+	 * @param {Array} extensions list
+	 */
+	BGM.setAvailableExtensions = function setAvailableExtensions( extensions )
+	{
+		var i, count;
+		var audio = this.audio;
+
+		this.useHTML5 = false;
+
+		// Test for BGMFileExtension config
+		if (!audio.canPlayType) {
+			BGM.initFlash();
+			return;
+		}
+
+		if (!extensions || !extensions.length) {
+			extensions = ['mp3'];
+		}
+
+		// Find supported audio file from list
+		for (i = 0, count = extensions.length; i < count; ++i) {
+			if (audio.canPlayType('audio/' + extensions[i]).replace(/no/i, '')) {
+				this.extension = extensions[i];
+				this.useHTML5  = true;
+				BGM.initHTML5();
+				return;
+			}
+		}
+
+		BGM.initFlash();
+	};
+
+
+	/**
 	 * Play the audio file specify
 	 *
 	 * @param {string} filename
 	 */
 	BGM.play = function play( filename )
 	{
+		// Nothing to play
+		if (!filename) {
+			return;
+		}
+
+		// Remove the "BGM/" part
+		if (filename.match(/bgm/i)) {
+			filename = filename.match(/\w+\.mp3/i).toString();
+		}
+
+		// If it's the same file, check if it's already playing
+		if (this.filename === filename) {
+			if ((!this.useHTML5 && this.isPlaying == 'true') ||
+				( this.useHTML5 && !this.audio.paused)) {
+					return;
+			}
+		}
+		else {
+			this.filename = filename;
+		}
+
 		// Just if flash is loaded, load the file.
 		if ((this.useHTML5 || this.position !== null) && Preferences.BGM.play) {
-
-			if (filename.match(/bgm/i)) {
-				filename = filename.match(/\w+\.mp3/).toString();
-			}
-
 			Client.loadFile( 'BGM/' + filename, function(url) {
 				BGM.load(url);
 			});
 		}
-
-		BGM.filename = filename;
 	};
 
 
 	/**
 	 * Load the audio file
 	 *
-	 * @param {string} data (HTTP / DATA URI or BLOB)
+	 * @param {string} url (HTTP / DATA URI or BLOB)
 	 */
-	BGM.load = function load(data)
+	BGM.load = function load(url)
 	{
 		if (!Preferences.BGM.play) {
 			return;
 		}
 
+		// Add support for other extensions, only supported with
+		// remote audio files.
+		if (!url.match(/^(blob|data)\:/) && BGM.useHTML5){
+			url = url.replace(/mp3$/i, BGM.extension);
+		}
+
+		// HTML5 audio
 		if (BGM.useHTML5) {
-			BGM.audio.src    = data;
+			BGM.audio.src    = url;
 			BGM.audio.volume = this.volume;
 			BGM.audio.play();
 		}
+
+		// Flash fallback
 		else if (BGM.flash.SetVariable) {
-			BGM.flash.SetVariable('method:setUrl', data );
+			BGM.flash.SetVariable('method:setUrl', url );
 			BGM.flash.SetVariable('method:play', null );
 			BGM.flash.SetVariable('enabled', 'true');
 		}
@@ -153,7 +226,7 @@ function( require,         jQuery,        Client,         Preferences )
 	 *
 	 * @param {number} volume
 	 */
-	BGM.setVolume = function( volume )
+	BGM.setVolume = function setVolume( volume )
 	{
 		BGM.volume  = volume;
 		Preferences.BGM.volume = volume;
@@ -167,14 +240,6 @@ function( require,         jQuery,        Client,         Preferences )
 		}
 	};
 
-
-	// Flash or HTML5 ?
-	if (!BGM.useHTML5) {
-		BGM.initFlash();
-	}
-	else {
-		BGM.initHTML5();
-	}
 
 	/**
 	 * Export

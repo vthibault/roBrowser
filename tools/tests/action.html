@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+	<body></body>
+	<script type="text/javascript" src="../../src/Vendors/require.js"></script>
+	<script type="text/javascript">
+require({
+	baseUrl: '../../src/',
+	paths: {
+		text:   "Vendors/text.require",
+		jquery: "Vendors/jquery-1.9.1"
+	}
+}, ['../tools/tests/FileTester', 'Loaders/Action'], function( FileTester, Action )
+{
+	var ft = new FileTester("act",function(data){
+		new Action(data)
+	});
+
+	ft.start();
+});
+	</script>
+</html>

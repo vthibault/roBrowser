@@ -35,12 +35,24 @@ define(function(require)
 
 
 	/**
+	 * Mouse can cross this UI
+	 */
+	MiniMap.mouseMode = UIComponent.MouseMode.CROSS;
+
+
+	/**
+	 * @var {boolean} do not focus this UI
+	 */
+	MiniMap.needFocus = false;
+
+
+	/**
 	 * @var {Preferences}
 	 */
 	var _preferences = Preferences.get('MiniMap', {
-		zoom:    1.0,
+		zoom:    0,
 		opacity: 2
-	});
+	}, 1.0);
 
 
 	/**
@@ -76,7 +88,13 @@ define(function(require)
 	/**
 	 * @var {CanvasRenderingContext2D} canvas context
 	 */
-	 var _ctx;
+	var _ctx;
+
+
+	 /**
+	  * @var {List} Zoom values
+	  */
+	var _zoomFactor = [1, 10, 6, 3, 2];
 
 
 	/**
@@ -85,13 +103,14 @@ define(function(require)
 	MiniMap.init = function init()
 	{
 		function genericUpdateZoom( value ) {
-			return function() {
+			return function(event) {
 				MiniMap.updateZoom( value );
+				event.stopImmediatePropagation();
+				return false;
 			};
 		}
 
 		_ctx          = this.ui.find('canvas')[0].getContext('2d');
-		this.zoom     = 0.0;
 		this.opacity  = 2;
 
 		Client.loadFile( DB.INTERFACE_PATH + 'map/map_arrow.bmp', function(dataURI){
@@ -126,7 +145,11 @@ define(function(require)
 	{
 		_map.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';
 
-		Client.loadFile( DB.INTERFACE_PATH + 'map/' + mapname.replace(/\..*/,'.bmp'), function(dataURI){
+		var path = DB.INTERFACE_PATH.replace('data/texture/', '') + 'map/' + mapname.replace(/\..*/,'.bmp');
+		path     = path.replace(/\//g, '\\'); // normalize path separator
+		path     = DB.mapalias[path] || path;
+
+		Client.loadFile( 'data/texture/' + path, function(dataURI){
 			_map.src = dataURI;
 		});
 	};
@@ -312,12 +335,13 @@ define(function(require)
 
 	/**
 	 * Change zoom
-	 * TODO: implement zoom feature in minimap.
+	 *
+	 * @param {number} value increment
 	 */
 	MiniMap.updateZoom = function updateZoom( value )
 	{
-		// _preferences.zoom = ...;
-		// _preferences.save();
+		_preferences.zoom = Math.max(0, Math.min(_zoomFactor.length-1, _preferences.zoom + value));
+		_preferences.save();
 	};
 
 
@@ -351,83 +375,121 @@ define(function(require)
 	/**
 	 * Render GUI
 	 */
-	function render( tick )
+	var render = (function renderClosure()
 	{
-		var width   = Altitude.width;
-		var height  = Altitude.height;
-		var pos     = Session.Entity.position;
-		var max     = Math.max(width, height);
-		var f       = 1 / max  * 128;
-		var start_x = (max-width)  / 2 * f;
-		var start_y = (height-max) / 2 * f;
+		var ZOOM_SIZE = 20;
+		var max, start_x, start_y, zoom, f;
+		var pos;
 
-		var i, count, dot;
-
-		// Rendering map
-		_ctx.clearRect( 0, 0, 128, 128 );
-
-		if (_map.complete && _map.width) {
-			_ctx.drawImage( _map, 0, 0, 128, 128 );
+		function projectX(x) {
+			if (zoom === 1) {
+				return (start_x + x * f) | 0;
+			}
+			return (64 + (x-pos[0]) * f * 256 / (zoom*ZOOM_SIZE)) | 0;
 		}
 
-		// Render attached player arrow
-		if (_arrow.complete && _arrow.width) {
-			_ctx.save();
-			_ctx.translate( start_x + pos[0] * f, start_y + 128 - pos[1] * f );
-			_ctx.rotate( ( Session.Entity.direction + 4 ) * 45 * Math.PI / 180 );
-			_ctx.drawImage( _arrow, -_arrow.width * 0.5, -_arrow.height * 0.5 );
-			_ctx.restore();
+		function projectY(y) {
+			if (zoom === 1) {
+				return (start_y + 128 - y * f) | 0;
+			}
+			return (64 - (y-pos[1]) * f * 256 / (zoom*ZOOM_SIZE)) | 0;
 		}
 
-		// Render NPC mark
-		if (tick % 1000 > 500) { // blink effect
+		return function render( tick )
+		{
+			var width, height, i, count;
+			var dot;
 
-			count = _markers.length;
+			width   = Altitude.width;
+			height  = Altitude.height;
 
-			for (i = 0; i < count; ++i) {
-				dot = _markers[i];
+			// closure
+			zoom    = _zoomFactor[_preferences.zoom];
+			pos     = Session.Entity.position;
+			max     = Math.max(width, height);
+			f       = 1 / max  * 128;
+			start_x = (max-width)  / 2 * f;
+			start_y = (height-max) / 2 * f;
 
-				// Auto remove feature
-				if (dot.tick < Renderer.tick) {
-					_markers.splice( i, 1 );
-					i--;
-					count--;
-					continue;
+			// Rendering map
+			_ctx.clearRect( 0, 0, 128, 128 );
+
+			if (_map.complete && _map.width) {
+				if (zoom === 1) {
+					_ctx.drawImage( _map, 0, 0, 128, 128 );
 				}
-
-				// Render mark
-				_ctx.fillStyle = dot.color;
-				_ctx.fillRect( start_x + dot.x * f - 1, start_y + 128 - dot.y * f - 4, 2, 8 );
-				_ctx.fillRect( start_x + dot.x * f - 4, start_y + 128 - dot.y * f - 1, 8, 2 );
+				else {
+					_ctx.drawImage(
+						_map,
+						((start_x +       pos[0] * f) * 4 - ZOOM_SIZE * zoom) | 0,
+						((start_y + 128 - pos[1] * f) * 4 - ZOOM_SIZE * zoom) | 0,
+						ZOOM_SIZE * zoom * 2,
+						ZOOM_SIZE * zoom * 2,
+						0, 0,
+						128, 128
+					);
+				}
 			}
-		}
 
-		// Render party members
-		count = _party.length;
-		for (i = 0; i < count; ++i) {
-			dot           = _party[i];
-			_ctx.fillStyle = 'white';
-			_ctx.fillRect( start_x + dot.x * f - 3, start_y + 128 - dot.y * f - 3, 6, 6 );
-			_ctx.fillStyle = dot.color;
-			_ctx.fillRect( start_x + dot.x * f - 2, start_y + 128 - dot.y * f - 2, 4, 4 );
-		}
+			// Render attached player arrow
+			if (_arrow.complete && _arrow.width) {
+				_ctx.save();
+				_ctx.translate( projectX(pos[0]), projectY(pos[1]) );
+				_ctx.rotate( ( Session.Entity.direction + 4 ) * 45 * Math.PI / 180 );
+				_ctx.drawImage( _arrow, -_arrow.width * 0.5, -_arrow.height * 0.5 );
+				_ctx.restore();
+			}
 
-		// Render guild members
-		count           = _guild.length;
+			// Render NPC mark
+			if (tick % 1000 > 500) { // blink effect
 
-		if (count) {
-			_ctx.fillStyle   = 'rgb(0.9,0.7,0.8)';
-			_ctx.strokeStyle = 'white';
+				count = _markers.length;
+
+				for (i = 0; i < count; ++i) {
+					dot = _markers[i];
+
+					// Auto remove feature
+					if (dot.tick < Renderer.tick) {
+						_markers.splice( i, 1 );
+						i--;
+						count--;
+						continue;
+					}
+
+					// Render mark
+					_ctx.fillStyle = dot.color;
+					_ctx.fillRect( projectX(dot.x) - 1, projectY(dot.y) - 4, 2, 8 );
+					_ctx.fillRect( projectX(dot.x) - 4, projectY(dot.y) - 1, 8, 2 );
+				}
+			}
+
+			// Render party members
+			count = _party.length;
 			for (i = 0; i < count; ++i) {
-				dot = _guild[i];
-				_ctx.moveTo( start_x + dot.x * f + 0, start_y + 128 - dot.y * f - 3 );
-				_ctx.lineTo( start_x + dot.x * f + 3, start_y + 128 - dot.y * f + 3 );
-				_ctx.lineTo( start_x + dot.x * f - 3, start_y + 128 - dot.y * f + 3 );
+				dot           = _party[i];
+				_ctx.fillStyle = 'white';
+				_ctx.fillRect( projectX(dot.x) - 3, projectY(dot.y) - 3, 6, 6 );
+				_ctx.fillStyle = dot.color;
+				_ctx.fillRect( projectX(dot.x) - 2, projectY(dot.y) - 2, 4, 4 );
 			}
-			_ctx.stroke();
-			_ctx.fill();
-		}
-	}
+
+			// Render guild members
+			count = _guild.length;
+
+			if (count) {
+				_ctx.fillStyle   = 'rgb(245,175,200)';
+				_ctx.strokeStyle = 'white';
+				for (i = 0; i < count; ++i) {
+					dot = _guild[i];
+					_ctx.moveTo( projectX(dot.x) + 0, projectY(dot.y) - 3 );
+					_ctx.lineTo( projectX(dot.x) + 3, projectY(dot.y) + 3 );
+					_ctx.lineTo( projectX(dot.x) - 3, projectY(dot.y) + 3 );
+				}
+				_ctx.stroke();
+				_ctx.fill();
+			}
+		};
+	})();
 
 
 	/**

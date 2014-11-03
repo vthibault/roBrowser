@@ -8,11 +8,19 @@
  * @author Vincent Thibault
  */
 
-define([ 'require', 'Utils/jquery', 'Core/Client', 'Loaders/Sprite', 'Loaders/Action'],
-function( require,         jQuery,        Client,           Sprite,           Action )
+define(function( require )
 {
 	'use strict';
 
+
+	// Load dependencies
+	var jQuery        = require('Utils/jquery');
+	var Client        = require('Core/Client');
+	var MemoryManager = require('Core/MemoryManager');
+	var Graphics      = require('Preferences/Graphics');
+	var Sprite        = require('Loaders/Sprite');
+	var Action        = require('Loaders/Action');
+	var getModule     = require;
 
 
 	/**
@@ -28,64 +36,112 @@ function( require,         jQuery,        Client,           Sprite,           Ac
 		DEFAULT: 0,
 		TALK:    1,
 		CLICK:   2,
-		TARGET:  3,
+		LOCK:    3,
 		ROTATE:  4,
 		ATTACK:  5,
 		WARP:    7,
-		PICK:    9
+		PICK:    9,
+		TARGET: 10
 	};
+
+	/**
+	 * @var {boolean} block change ?
+	 */
+	Cursor.freeze = false;
+
+
+	/**
+	 * @var {boolean} magnetism while picking entites ?
+	 */
+	Cursor.magnetism = true;
+
+
+	/**
+	 * @var {boolean} force disabled magnetism
+	 * Used to cast zone skill to ground
+	 */
+	Cursor.blockMagnetism = false;
 
 
 	/**
 	 * @var {integer} Cursor.ACTION.* constant
 	 */
-	Cursor.type = Cursor.ACTION.DEFAULT;
+	var _type = Cursor.ACTION.DEFAULT;
 
 
 	/**
 	 * @var {integer} tick
 	 */
-	Cursor.tick = 0;
+	var _tick = 0;
 
 
 	/**
 	 * @var {boolean} repeat animation ?
 	 */
-	Cursor.norepeat = false;
+	var _norepeat = false;
 
 
 	/**
 	 * @var {integer} animation frame
 	 */
-	Cursor.animation = 0;
+	var _animation = 0;
 
 
 	/**
 	 * @var {boolean} play animation ?
 	 */
-	Cursor.play = true;
+	var _play = true;
 
 
 	/**
-	 * @var {string} last rendered image url
+	 * @var {number} last style id rendered
 	 */
-	Cursor.lastURL = null;
+	var _lastStyleId = -1;
 
 
 	/**
-	 * @var {number} to don't render the same frame twice
+	 * @var {number} last rendered position x
 	 */
-	Cursor.lastAnim = -1;
+	var _lastX = 0;
 
 
 	/**
-	 * @var {Array} images link list
+	 * @var {number} last renderer position y
 	 */
-	Cursor.images = [];
+	var _lastY = 0;
 
 
-	var Entity;
-	var SpriteRenderer;
+	/**
+	 * @var {Array} css style list
+	 */
+	var _compiledStyle = [];
+
+
+	/**
+	 * @var {Sprite} sprite
+	 */
+	var _sprite;
+
+
+	/**
+	 * @var {Action} action
+	 */
+	var _action;
+
+
+	/**
+	 * Define sprite informations (hardcoded)
+	 */
+	var ActionInformations = {};
+	ActionInformations[ Cursor.ACTION.DEFAULT ] = { drawX:  1, drawY: 19, startX:  0, startY:  0, delayMult: 2.0 };
+	ActionInformations[ Cursor.ACTION.TALK    ] = { drawX: 20, drawY: 40, startX: 20, startY: 20, delayMult: 1.0 };
+	ActionInformations[ Cursor.ACTION.WARP    ] = { drawX: 10, drawY: 32, startX:  0, startY:  0, delayMult: 1.0 };
+	ActionInformations[ Cursor.ACTION.ROTATE  ] = { drawX: 18, drawY: 26, startX: 10, startY:  0, delayMult: 1.0 };
+	ActionInformations[ Cursor.ACTION.PICK    ] = { drawX: 20, drawY: 40, startX: 15, startY: 15, delayMult: 1.0 };
+	ActionInformations[ Cursor.ACTION.TARGET  ] = { drawX: 20, drawY: 50, startX: 20, startY: 28, delayMult: 0.5 };
+
+
+	var EntityManager, Entity, SpriteRenderer, Mouse;
 
 
 	/**
@@ -94,84 +150,70 @@ function( require,         jQuery,        Client,           Sprite,           Ac
 	Cursor.init = function init(fn)
 	{
 		// Already loaded
-		if (this.images.length) {
+		if (_sprite) {
 			fn();
 			return;
 		}
 
 		Client.getFiles( ['data/sprite/cursors.spr', 'data/sprite/cursors.act'], function( spr, act ) {
 			try {
-				Cursor.sprite = new Sprite( spr );
-				Cursor.action = new Action( act );
+				_sprite = new Sprite( spr );
+				_action = new Action( act );
 			}
 			catch(e) {
 				console.error('Cursor::init() - ' + e.message );
 				return;
 			}
 
-			Cursor.generateImages();
-			Cursor.bindMouseEvent();
+			// Load it properly later using webgl
+			MemoryManager.remove(null, 'data/sprite/cursors.spr');
+			MemoryManager.remove(null, 'data/sprite/cursors.act');
+
+			bindMouseEvent();
+			preCompiledAnimations();
 			fn();
+
 		});
 
-		Entity         = require('Renderer/Entity/Entity');
-		SpriteRenderer = require('Renderer/SpriteRenderer');
-
-		this.canvas = document.createElement('canvas');
-		this.canvas.width  = 50;
-		this.canvas.height = 60;
-		this.ctx    = this.canvas.getContext('2d');
-		this.entity = new Entity();
+		EntityManager  = getModule('Renderer/EntityManager');
+		Entity         = getModule('Renderer/Entity/Entity');
+		SpriteRenderer = getModule('Renderer/SpriteRenderer');
+		Mouse          = getModule('Controls/MouseEventHandler');
 	};
 
-
-	/**
-	 * Build Image data
-	 */
-	Cursor.generateImages = function generateImages()
-	{
-
-		var i, j, size, count;
-		var str;
-		var canvas;
-
-		this.images.length = 0;
-
-		// Build frames
-		for (i = 0, count = this.sprite.frames.length; i < count; ++i) {
-
-			canvas = this.sprite.getCanvasFromFrame(i);
-
-			if (!canvas) {
-				this.images[i] = '';
-				continue;
-			}
-
-			// Save canvas image to an URI object
-			// TODO: wait for canvas.toBlob() API
-			str    = atob( canvas.toDataURL('image/png').substr(22) );
-			size   = str.length;
-
-			var data = new Uint8Array(size);
-
-			for (j = 0; j < size; ++j) {
-				data[j] = str.charCodeAt(j);
-			}
-
-			this.images[i] = URL.createObjectURL(new Blob([data],{type: 'image/png'}));
-		}
-	};
 
 
 	/**
 	 * Change the cursor for the button click event
 	 */
-	Cursor.bindMouseEvent = function bindMouseEvent()
+	function bindMouseEvent()
 	{
+		// Convert an image from an action to a blob url
+		function generateImage(index)
+		{
+			var canvas, binary, data;
+			var i, count;
+
+			canvas = _sprite.getCanvasFromFrame(index);
+			if (!canvas) {
+				return '';
+			}
+
+			binary = atob( canvas.toDataURL('image/png').replace(/^data[^,]+,/,'') );
+			count  = binary.length;
+			data   = new Uint8Array(count);
+
+			for (i = 0; i < count; ++i) {
+				data[i] = binary.charCodeAt(i);
+			}
+
+			return URL.createObjectURL(new Blob([data], {type: 'image/png'}));
+		}
+
 		// Add CSS rule for button
-		var action    = Cursor.action.actions[Cursor.ACTION.CLICK];
-		var hover     = Cursor.images[action.animations[0].layers[0].index];
-		var down      = Cursor.images[action.animations[1].layers[0].index];
+		var action = _action.actions[Cursor.ACTION.CLICK];
+		var hover  = generateImage(action.animations[0].layers[0].index);
+		var down   = generateImage(action.animations[1].layers[0].index);
 
 		// Append CSS to head
 		jQuery('head').append([
@@ -180,30 +222,103 @@ function( require,         jQuery,        Client,           Sprite,           Ac
 				'button:active { cursor: url(' + down + '), auto; }',
 			'</style>'
 		].join('\n'));
-	};
+	}
+
+
+	/**
+	 * Start pre-compiling animation to avoid building sprites
+	 * during the rendering loop
+	 */
+	function preCompiledAnimations()
+	{
+		var i, j, k, count, size, total, pos;
+		var action, animation, info;
+		var canvas, ctx, entity;
+		var binary, data, dataURI;
+		var dataURIList, position;
+
+		// Start initializing variables
+		canvas         = document.createElement('canvas');
+		canvas.width   = 50;
+		canvas.height  = 50;
+		ctx            = canvas.getContext('2d');
+		entity         = new Entity();
+		dataURIList    = [];
+		_compiledStyle = [];
+		position       = [0,0];
+
+		// Start compiling animation
+		for (i = 0, count = _action.actions.length; i < count; ++i) {
+
+			action = _action.actions[i];
+			info   = ActionInformations[i] || ActionInformations[ Cursor.ACTION.DEFAULT ];
+
+			for (j = 0, size = action.animations.length; j < size; ++j) {
+
+				animation = action.animations[j];
+
+				// Initialize context
+				SpriteRenderer.bind2DContext(ctx, info.drawX, info.drawY );
+				ctx.clearRect(0, 0, 50, 50);
+
+				// Render layers
+				for (k = 0, total = animation.layers.length; k < total; ++k) {
+					entity.renderLayer( animation.layers[k], _sprite, _sprite, 1.0, position, false);
+				}
+
+				dataURI = canvas.toDataURL('image/png');
+				pos     = dataURIList.indexOf(dataURI);
+
+				// Already build
+				if (pos > -1) {
+					animation.compiledStyleIndex = pos;
+					continue;
+				}
+
+				// Modify the canvas to a file object
+				binary = atob( dataURI.replace(/^data[^,]+,/,'') );
+				total  = binary.length;
+				data   = new Uint8Array(total);
+
+				for (k = 0; k < total; ++k) {
+					data[k] = binary.charCodeAt(k);
+				}
+
+				// Store it.
+				animation.compiledStyleIndex = _compiledStyle.length;
+
+				dataURIList.push(dataURI);
+				_compiledStyle.push(URL.createObjectURL(new Blob([data.buffer], {type:'image/png'})));
+			}
+		}
+	}
+
 
 
 	/**
 	 * Change cursor action
 	 *
 	 * @param {number} type - Cursor.ACTION.*
-	 * @param {number} animation numero (optional)
 	 * @param {boolean} norepeat - repeat animation ?
+	 * @param {number} animation numero (optional)
 	 */
 	Cursor.setType = function SetType( type, norepeat, animation )
 	{
-		this.type     = type;
-		this.tick     = Date.now();
-		this.norepeat = !!norepeat;
-		this.lastAnim = -1; // reset
+		if (Cursor.freeze) {
+			return;
+		}
+
+		_type     = type;
+		_tick     = Date.now();
+		_norepeat = !!norepeat;
 
 		if (typeof animation !== 'undefined') {
-			this.animation = animation;
-			this.play      = false;
+			_animation = animation;
+			_play      = false;
 		}
 		else {
-			this.animation = animation || 0;
-			this.play      = true;
+			_animation = animation || 0;
+			_play      = true;
 		}
 	};
 
@@ -214,78 +329,56 @@ function( require,         jQuery,        Client,           Sprite,           Ac
 	Cursor.render = function render( tick )
 	{
 		// Not loaded yet.
-		if (!this.images.length) {
+		if (!Graphics.cursor || !_compiledStyle.length) {
 			return;
 		}
 
-		// New way
-		var i, count;
-		var action    = this.action.actions[this.type];
-		var delay     = action.delay * ( this.type === Cursor.ACTION.DEFAULT ? 2 : 1 );
-		var anim, frame;
+		var info   = ActionInformations[_type] || ActionInformations[Cursor.ACTION.DEFAULT];
+		var action = _action.actions[_type];
+		var anim   = _animation;
+		var delay  = action.delay * info.delayMult;
+		var x      = info.startX;
+		var y      = info.startY;
+		var animation;
 
-		if (this.play) {
-			frame = (tick - this.tick) / delay | 0;
-			if (this.norepeat) {
+		// Repeat / No-repeat features
+		if (_play) {
+			var frame = (tick - _tick) / delay | 0;
+			if (_norepeat) {
 				anim = Math.min( frame, action.animations.length - 1 );
 			}
 			else {
 				anim = frame % action.animations.length;
 			}
 		}
-		else {
-			anim = this.animation;
-		}
 
-		// Don't render the same animation twice
-		// Save CPU...
-		if (anim === this.lastAnim) {
+		animation = action.animations[anim];
+
+		// Issue #61 - Not able to reproduce
+		// If someone got more informations...
+		if (!animation) {
 			return;
 		}
 
-		this.lastAnim = anim;
-		var pos       = [ 0, 0 ];
-		var animation = action.animations[anim];
-		var layers    = animation.layers;
-		var x = 1, y = 19;
+		// Cursor magnetism
+		if (Cursor.magnetism && !Cursor.blockMagnetism) {
+			var entity = EntityManager.getOverEntity();
 
-		// Hardcoded ?
-		switch (this.type) {
-			case Cursor.ACTION.TALK:
-				x = 20;
-				y = 40;
-				break;
-	
-			case Cursor.ACTION.WARP:
-				x = 10;
-				y = 32;
-				break;
-
-			case Cursor.ACTION.ROTATE:
-				x = 18;
-				y = 26;
-				break;
-
-			case Cursor.ACTION.PICK:
-				x = 20;
-				y = 40;
-				break;
+			if (entity &&
+			    (entity.objecttype === Entity.TYPE_MOB ||
+			     entity.objecttype === Entity.TYPE_ITEM)) {
+				x += Math.floor( Mouse.screen.x - (entity.boundingRect.x1 + (entity.boundingRect.x2-entity.boundingRect.x1) / 2));
+				y += Math.floor( Mouse.screen.y - (entity.boundingRect.y1 + (entity.boundingRect.y2-entity.boundingRect.y1) / 2));
+			}
 		}
 
-		// Initialize context
-		SpriteRenderer.bind2DContext( this.ctx, x, y );
-		this.ctx.clearRect(0, 0, 50, 50);
+		// Rendering if cursor changed
+		if (animation.compiledStyleIndex !== _lastStyleId || x !== _lastX || y !== _lastY) {
+			_lastStyleId = animation.compiledStyleIndex;
+			_lastX       = x;
+			_lastY       = y;
 
-		// Render layers
-		for (i = 0, count = layers.length; i < count; ++i) {
-			this.entity.renderLayer( layers[i], this.sprite, this.sprite, pos, false );
-		}
-
-		// Display icons
-		var url = this.canvas.toDataURL();
-		if (url !== this.lastURL) {
-			document.body.style.cursor = 'url('+ url +'), auto';
-			this.lastURL = url;
+			document.body.style.cursor = 'url(' + _compiledStyle[_lastStyleId] + ') ' + x + ' ' + y + ', auto';
 		}
 	};
 

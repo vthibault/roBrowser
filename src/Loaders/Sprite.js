@@ -55,7 +55,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 	SPR.prototype.load = function load(data)
 	{
 		this.fp      = new BinaryReader(data);
-		this.header  = this.fp.readString(2);
+		this.header  = this.fp.readBinaryString(2);
 		this.version = this.fp.readUByte()/10 + this.fp.readUByte();
 
 		if (this.header != 'SP') {
@@ -349,10 +349,12 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 			}
 
 			output[i] = {
-				type:   frame.type,
-				width:  gl_width,
-				height: gl_height,
-				data:   out
+				type:           frame.type,
+				width:          gl_width,
+				height:         gl_height,
+				originalWidth:  width,
+				originalHeight: height,
+				data:           out
 			};
 		}
 

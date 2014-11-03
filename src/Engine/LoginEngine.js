@@ -9,40 +9,29 @@
  * @author Vincent Thibault
  */
 
-define([
-	'require',
-	'DB/DBManager',
-	'Audio/SoundManager',
-	'Core/Thread',
-	'Engine/SessionStorage',
-	'Engine/CharEngine',
-	'Network/NetworkManager',
-	'Network/PacketStructure',
-	'Network/PacketVerManager',
-	'Renderer/Renderer',
-	'UI/UIManager',
-	'UI/Components/WinList/WinList',
-	'UI/Components/WinLogin/WinLogin',
-	'UI/Components/WinPopup/WinPopup'
-],
-function(
-	require,
-	DB,
-	Sound,
-	Thread,
-	Session,
-	CharEngine,
-	Network,
-	PACKET,
-	PACKETVER,
-	Renderer,
-	UIManager,
-	WinList,
-	WinLogin,
-	WinPopup
-)
+define(function( require )
 {
 	'use strict';
+
+
+	// Load dependencies
+	var TextEncoding = require('Vendors/text-encoding');
+	var DB           = require('DB/DBManager');
+	var BGM          = require('Audio/BGM');
+	var Sound        = require('Audio/SoundManager');
+	var Configs      = require('Core/Configs');
+	var Thread       = require('Core/Thread');
+	var Session      = require('Engine/SessionStorage');
+	var CharEngine   = require('Engine/CharEngine');
+	var Network      = require('Network/NetworkManager');
+	var PACKET       = require('Network/PacketStructure');
+	var PACKETVER    = require('Network/PacketVerManager');
+	var Renderer     = require('Renderer/Renderer');
+	var UIManager    = require('UI/UIManager');
+	var WinList      = require('UI/Components/WinList/WinList');
+	var WinPopup     = require('UI/Components/WinPopup/WinPopup');
+	var WinLogin     = require('UI/Components/WinLogin/WinLogin');
+	var getModule    = require;
 
 
 	/**
@@ -51,7 +40,7 @@ function(
 	var WinLoading = WinPopup.clone('WinLoading');
 	WinLoading.init = function(){
 		this.ui.css({ top: (Renderer.height - 120) / 1.5, left: (Renderer.width - 280) / 2.0 });
-		this.ui.find('.text').text( DB.msgstringtable[121] );
+		this.ui.find('.text').text( DB.getMessage(121) );
 	};
 	UIManager.addComponent(WinLoading);
 
@@ -79,44 +68,124 @@ function(
 	 */
 	function init( server )
 	{
-		UIManager.removeComponents();
+		var charset;
 
-		Session.LangType = parseInt(server.langtype, 10);
+		Configs.setServer(server);
+		UIManager.removeComponents();
+		Session.LangType = 'langtype' in server ? parseInt(server.langtype, 10) : 1; // default to SERVICETYPE_AMERICA
+
+		/// Special thanks to curiosity, siriuswhite and ai4rei. See:
+		/// - http://hercules.ws/wiki/Clientinfo.xml
+		/// - http://forum.robrowser.com/index.php?topic=32231
+		/// - http://siriuswhite.de/rodoc/codepage.html
+		switch (Session.LangType) {
+			case 0x00: // SERVICETYPE_KOREA
+				if (Configs.get('disableKorean')) {
+					charset = 'windows-1252';
+					break;
+				}
+
+				console.warn('%c[Warning] You are using a Korean langtype. If you have some charset ' +
+				             'problem set ROConfig.servers[<index>].disableKorean to true or use a proper langtype !',
+				             'font-weight:bold; color:red; font-size:14px');
+
+				charset = 'windows-949';
+				break;
+
+			// SERVICETYPE_AMERICA
+			// SERVICETYPE_INDONESIA
+			// SERVICETYPE_PHILIPPINE
+			// SERVICETYPE_MALAYSIA
+			// SERVICETYPE_SINGAPORE
+			// SERVICETYPE_GERMANY
+			// SERVICETYPE_INDIA
+			// SERVICETYPE_AUSTRALIA
+			default:
+			case 0x0c: // SERVICETYPE_BRAZIL
+			case 0x12: // SERVICETYPE_FRANCE
+				charset = 'windows-1252';
+				break;
+
+			case 0x02: // SERVICETYPE_JAPAN
+				charset = 'shift-jis';
+				break;
+
+			case 0x03: // SERVICETYPE_CHINA
+				charset = 'gbk';
+				break;
+
+			case 0x04: // SERVICETYPE_TAIWAN
+				charset = 'big5';
+				break;
+
+			case 0x05: // SERVICETYPE_THAI
+				charset = 'windows-874';
+				break;
+
+			case 0x0e: // SERVICETYPE_RUSSIA
+				charset = 'windows-1251';
+				break;
+
+			case 0x0f: // SERVICETYPE_VIETNAM
+				charset = 'windows-1258';
+				break;
+
+			// Not supported by the encoder/decoder, jump to windows-1252
+			//case 0x11: // SERVICETYPE_CHILE
+			//	charset = 'windows-1145';
+			//	break;
+
+			case 0x14: // SERVICETYPE_UAE
+				charset = 'windows-1256';
+				break;
+		}
+
+		TextEncoding.setCharset(charset);
 		_server = server;
 
 		// Add support for "packetver" definition in Server listing
-		if ('packetver' in server) {
-			ROConfig.packetver = String(server.packetver);
+		var packetver    = String(Configs.get('packetver'));
+		var remoteClient = Configs.get('remoteClient');
+		var autoLogin    = Configs.get('autoLogin');
+		var audioExt     = Configs.get('BGMFileExtension');
 
-			if (ROConfig.packetver.match(/^\d+$/)) {
-				PACKETVER.set( parseInt(ROConfig.packetver, 10) );
+		// Server packetver
+		if (packetver) {
+			if (packetver.match(/^\d+$/)) {
+				PACKETVER.value = parseInt(packetver, 10);
 			}
-			else if (ROConfig.packetver.match(/auto/i)) {
-				PACKETVER.set( 0, Infinity);
-			}
-			// executable already used
 		}
 
-		// Add support for "packetkeys" definition in server definition
-		if ('packetKeys' in server) {
-			ROConfig.packetKeys = server.packetKeys;
+		if (!PACKETVER.value) {
+			UIManager.showErrorBox('Sorry, no PACKETVER configs found.')
+			return;
 		}
 
 		// Add support for remote client in server definition
-		if ('remoteClient' in server) {
-			ROConfig.remoteClient = server.remoteClient;
-			Thread.send( 'SET_HOST', ROConfig.remoteClient );
+		if (remoteClient) {
+			Thread.send( 'SET_HOST', remoteClient);
 		}
 
-		// Add support for "socketProxy" in server definition
-		if ('socketProxy' in server) {
-			ROConfig.socketProxy = server.socketProxy;
+		// Server audio configuration
+		if (audioExt) {
+			BGM.setAvailableExtensions(audioExt);
 		}
+
+		// GMs account list from server
+		Session.AdminList = server.adminList || [];
 
 		// Hooking win_login
 		WinLogin.onConnectionRequest = onConnectionRequest;
 		WinLogin.onExitRequest       = onExitRequest;
-		WinLogin.append();
+
+		// Autologin features
+		if (autoLogin instanceof Array && autoLogin[0] && autoLogin[1]) {
+			onConnectionRequest.apply( null, autoLogin);
+			Configs.set('autoLogin',null);
+		}
+		else {
+			WinLogin.append();
+		}
 
 		// Hook packets
 		Network.hookPacket( PACKET.AC.ACCEPT_LOGIN,    onConnectionAccepted );
@@ -161,12 +230,34 @@ function(
 		Network.connect( _server.address, _server.port, function( success ) {
 			// Fail to connect...
 			if ( !success ) {
-				UIManager.showErrorBox(DB.msgstringtable[1]);
+				UIManager.showErrorBox(DB.getMessage(1));
 				return;
 			}
 
-			// Success, try to connect
-			var pkt        = new PACKET.CA.LOGIN();
+			var pkt;
+			var hash = Configs.get('clientHash');
+
+			// Client hash config
+			if (hash) {
+				// Convert hexadecimal hash to binary
+				if (/^[a-f0-9]+$/i.test(hash)) {
+					var str = '';
+					var i, count = hash.length;
+
+					for (i = 0; i < count; i += 2) {
+						str += String.fromCharCode(parseInt(hash.substr(i,2),16));
+					}
+
+					hash = str;
+				}
+
+				pkt           = new PACKET.CA.EXE_HASHCHECK();
+				pkt.HashValue = hash;
+				Network.sendPacket(pkt);
+			}
+
+			// Try to connect
+			pkt            = new PACKET.CA.LOGIN();
 			pkt.ID         = username;
 			pkt.Passwd     = password;
 			pkt.Version    = parseInt(_server.version, 10);
@@ -181,7 +272,7 @@ function(
 	 */
 	function onExitRequest()
 	{
-		require('Engine/GameEngine').reload();
+		getModule('Engine/GameEngine').reload();
 	}
 
 
@@ -222,20 +313,34 @@ function(
 		var i, count = _charServers.length;
 		var list     = new Array(count);
 		for (i = 0; i < count; ++i) {
+<<<<<<< HEAD
 			list[i]  =  _charServers[i].property ? DB.msgstringtable[482] + ' ' : '';//482: 'New'
+=======
+			list[i]  =  _charServers[i].property ? DB.getMessage(482) + ' ' : '';
+>>>>>>> upstream/master
 			list[i] +=  _charServers[i].name;
-			list[i] +=  _charServers[i].state    ? DB.msgstringtable[484] : ' ' + DB.msgstringtable[483].replace('%d', _charServers[i].usercount);
+			list[i] +=  _charServers[i].state    ? DB.getMessage(484) : ' ' + DB.getMessage(483).replace('%d', _charServers[i].usercount);
 		}
 
-		// Show window
-		WinList.onIndexSelected = onCharServerSelected;
-		WinList.onExitRequest   = function(){
-			Network.close();
-			WinList.remove();
-			WinLogin.append();
-		};
-		WinList.setList(list);
-		WinList.append();
+		// No choice, connect directly to the server
+		if (count === 1 && Configs.get('skipServerList')) {
+			WinLoading.append();
+			CharEngine.onExitRequest = reload;
+			CharEngine.init(_charServers[0]);
+		}
+
+		// Have to select server in the list
+		else {
+			// Show window
+			WinList.onIndexSelected = onCharServerSelected;
+			WinList.onExitRequest   = function(){
+				Network.close();
+				WinList.remove();
+				WinLogin.append();
+			};
+			WinList.append();
+			WinList.setList(list);
+		}
 
 		// Set ping
 		var ping = new PACKET.CA.CONNECT_INFO_CHANGED();
@@ -280,7 +385,7 @@ function(
 		}
 
 		UIManager.showMessageBox(
-			DB.msgstringtable[error].replace('%s', pkt.blockDate),
+			DB.getMessage(error).replace('%s', pkt.blockDate),
 			null,
 			function(){
 				UIManager.removeComponents();
@@ -318,7 +423,7 @@ function(
 			case 102: msg_id = 1179; break; // More than 10 connections sharing the same IP have logged into the game for an hour. (1176)
 		}
 
-		UIManager.showErrorBox( DB.msgstringtable[msg_id] );
+		UIManager.showErrorBox( DB.getMessage(msg_id) );
 		Network.close();
 	}
 

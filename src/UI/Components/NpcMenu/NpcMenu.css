@@ -9,6 +9,15 @@
 	top:285px;
 }
 
+#NpcMenu .title {
+	white-space: nowrap;
+	overflow: hidden;
+	display: block;
+	width: 260px;
+	padding-left: 3px;
+	padding-top: 3px;
+}
+
 #NpcMenu .container {
 	border-radius:5px;
 	border:1px solid #c1c6c2;

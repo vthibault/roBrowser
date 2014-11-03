@@ -1,0 +1,19 @@
+{
+	"version": "0.1",
+	"name": "roBrowser",
+	"description": "Ragnarok Online Custom Client",
+	"launch_path": "/applications/window.html",
+	"icons": {
+		"16": "/applications/icon_16.png",
+		"128": "/applications/icon_128.png"
+	},
+	"developer": {
+		"name": "Vincent Thibault",
+		"url": "http://www.robrowser.com/"
+	},
+	"permissions": {
+		"tcp-socket":{}
+	},
+	"orientation": ["landscape"],
+	"type": "privileged"
+}

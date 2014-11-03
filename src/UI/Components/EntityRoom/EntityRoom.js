@@ -28,11 +28,27 @@ define(function(require)
 
 
 	/**
+	 * @var {boolean} do not focus this UI
+	 */
+	EntityRoom.needFocus = false;
+
+
+	/**
 	 * Once in HTML, focus the input
 	 */
-	EntityRoom.onAppend = function OnAppend()
+	EntityRoom.onAppend = function onAppend()
 	{
-		this.ui.find('button').dblclick(this.onEnter);
+		this.ui.find('button').dblclick(function(){
+			if (this.onEnter) {
+				this.onEnter();
+			}
+		}.bind(this));
+
+		// Avoid player to move to the cell
+		this.ui.mousedown(function(){
+			return false;
+		});
+
 		this.ui.css('zIndex', 45);
 	};
 
@@ -40,7 +56,7 @@ define(function(require)
 	/**
 	 * Remove data from UI
 	 */
-	EntityRoom.onRemove = function OnRemove()
+	EntityRoom.onRemove = function onRemove()
 	{
 		this.ui.find('button').unbind();
 	};
@@ -52,7 +68,7 @@ define(function(require)
 	 * @param {string} title
 	 * @param {string} url - icon url
 	 */
-	EntityRoom.setTitle = function SetTitle( title, url )
+	EntityRoom.setTitle = function setTitle( title, url )
 	{
 		this.ui.find('button').css('backgroundImage', 'url('+ url +')');
 		this.ui.find('.title, .overlay').text(title);
@@ -62,7 +78,7 @@ define(function(require)
 	/**
 	 * function to define
 	 */
-	EntityRoom.onEnter = function OnEnter(){};
+	EntityRoom.onEnter = function onEnter(){};
 
 
 	/**

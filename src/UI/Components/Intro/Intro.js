@@ -22,6 +22,7 @@ define(function(require)
 	var htmlText    = require('text!./Intro.html');
 	var cssText     = require('text!./Intro.css');
 	var Context     = require('Core/Context');
+	var Configs     = require('Core/Configs');
 	var Particle    = require('./Particle');
 	var Preferences = require('./Preferences');
 	var FileSystem  = require('./FileSystem');
@@ -64,10 +65,8 @@ define(function(require)
 	 */
 	Intro.init = function init()
 	{
-		window.ROConfig = window.ROConfig || {};
-
-		if (!ROConfig.servers || typeof(ROConfig.servers) === 'string') {
-			ROConfig.serverEditMode = true;
+		if (!Configs.get('servers')) {
+			Configs.set('_serverEditMode', true);
 		}
 
 		var ui = this.ui;
@@ -91,6 +90,8 @@ define(function(require)
 		// Settings page
 		ui.find('.btn_settings')
 			.mousedown(function(){
+				Preferences.load( ui );
+
 				ui.find('.overlay.settings')
 					.show()
 					.animate({opacity:1}, 200);
@@ -151,7 +152,7 @@ define(function(require)
 			});
 
 		// Not allow to edit server list
-		if (!ROConfig.serverEditMode) {
+		if (!Configs.get('_serverEditMode')) {
 			ui.find('.serveredit').hide();
 		}
 		
@@ -258,7 +259,6 @@ define(function(require)
 
 		// Initialize window and particle
 		Particle.init( 100, this.ui.find('canvas')[0] );
-		Preferences.load( this.ui );
 	};
 
 
@@ -352,6 +352,23 @@ define(function(require)
 
 		// input[type="file"]
 		if ('files' in this) {
+
+			// In wekit we select the folder, not files.
+			// we have to rewrite the relativePath to remove the main folder from it
+			if (this.files.length) {
+				var token = 'webkitRelativePath' in this.files[0] ? 'webkitRelativePath' :
+				                  'relativePath' in this.files[0] ?       'relativePath' :
+				                                                           null;
+				if (token) {
+					count = this.files.length;
+					var baseFolder = /^[^(\/|\\)]+(\/|\\)/;
+
+					for (i = 0; i < count; ++i) {
+						this.files[i].fullPath = this.files[i][token].replace(baseFolder, '');
+					}
+				}
+			}
+
 			processing(this.files);
 			return false;
 		}

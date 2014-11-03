@@ -7,18 +7,23 @@
  *
  * @author Vincent Thibault
  */
-define(['Controls/KeyEventHandler', 'Controls/MouseEventHandler', 'Preferences/Camera', 'Utils/gl-matrix'], function( KEYS, Mouse, Preferences, glMatrix )
+define(function( require )
 {
 	'use strict';
 
 	/**
 	 * Load dependencies
 	 */
-	var mat4              = glMatrix.mat4;
-	var mat3              = glMatrix.mat3;
-	var vec2              = glMatrix.vec2;
-	var vec3              = glMatrix.vec3;
-	var _position         = vec3.create();
+	var KEYS        = require('Controls/KeyEventHandler');
+	var Mouse       = require('Controls/MouseEventHandler');
+	var Events      = require('Core/Events');
+	var Preferences = require('Preferences/Camera');
+	var glMatrix    = require('Utils/gl-matrix');
+	var mat4        = glMatrix.mat4;
+	var mat3        = glMatrix.mat3;
+	var vec2        = glMatrix.vec2;
+	var vec3        = glMatrix.vec3;
+	var _position   = vec3.create();
 
 
 	/**
@@ -51,12 +56,12 @@ define(['Controls/KeyEventHandler', 'Controls/MouseEventHandler', 'Preferences/C
 	/**
 	 * @var {number} zoom
 	 */
-	Camera.zoom      = 0.0;
+	Camera.zoom      = Preferences.zoom;
 
 	/**
 	 * @var {number} zoomFinal
 	 */
-	Camera.zoomFinal = 0.0;
+	Camera.zoomFinal = Preferences.zoom;
 
 
 	/**
@@ -88,6 +93,12 @@ define(['Controls/KeyEventHandler', 'Controls/MouseEventHandler', 'Preferences/C
 	 */
 	Camera.lastTick = 0;
 
+
+	/**
+	 * @var {number} camera zoom
+	 */
+	Camera.MAX_ZOOM = 10;
+	
 
 	/**
 	 * @var {number} Camera direction
@@ -140,10 +151,6 @@ define(['Controls/KeyEventHandler', 'Controls/MouseEventHandler', 'Preferences/C
 	{
 		this.lastTick  = Date.now();
 
-		// Should not re-initialize zoom ?
-		//this.zoom      = 0.0;
-		//this.zoomFinal = 0.0;
-
 		this.angle[0]      = 240.0;
 		this.angle[1]      = this.rotationFrom % 360.0;
 		this.angleFinal[0] = this.range % 360.0;
@@ -153,6 +160,29 @@ define(['Controls/KeyEventHandler', 'Controls/MouseEventHandler', 'Preferences/C
 		this.position[1] = -this.target.position[1];
 		this.position[2] =  this.target.position[2];
 	};
+	
+	
+	/**
+	 * Save the camera settings
+	 */
+	Camera.save = function SaveClosure()
+	{
+		var _pending = false;
+
+		function save() {
+			_pending         = false;
+			Preferences.zoom = Camera.zoomFinal;
+			Preferences.save();
+		}
+
+		return function saving() {
+			// Save camera settings after 3 seconds
+			if (!_pending) {
+				Events.setTimeout( save, 3000);
+				_pending = true;
+			}
+		};
+	}();
 
 
 	/**
@@ -171,7 +201,10 @@ define(['Controls/KeyEventHandler', 'Controls/MouseEventHandler', 'Preferences/C
 		}
 
 		// Check for double click (reset angle and zoom)
-		if (action.tick + 500 > tick) {
+		if (action.tick + 500 > tick &&
+		    Math.abs(action.x-Mouse.screen.x) < 10 && // Check the mouse position to avoid bug while rotating
+		    Math.abs(action.y-Mouse.screen.y) < 10) { // to fast the camera...
+
 			if (KEYS.SHIFT) {
 				this.angleFinal[0] = +this.range;
 			}
@@ -205,14 +238,14 @@ define(['Controls/KeyEventHandler', 'Controls/MouseEventHandler', 'Preferences/C
 
 		// Zoom
 		else if (KEYS.CTRL) {
-			this.zoomFinal -= ( Mouse.screen.y - this.action.y  ) / Mouse.screen.height * 50;
-			this.zoomFinal  = Math.min( this.zoomFinal, Math.abs(this.altitudeTo-this.altitudeFrom) * 4.0 );
+			this.zoomFinal -= ( Mouse.screen.y - this.action.y  ) / Mouse.screen.height * 150;
+			this.zoomFinal  = Math.min( this.zoomFinal, Math.abs(this.altitudeTo-this.altitudeFrom) * this.MAX_ZOOM );
 			this.zoomFinal  = Math.max( this.zoomFinal,  2.0 );
 		}
 
 		// Rotate
 		else {
-			this.angleFinal[1] -= ( Mouse.screen.x - this.action.x ) / Mouse.screen.width  * 720;
+			this.angleFinal[1] -= ( Mouse.screen.x - this.action.x ) / Mouse.screen.width * 720;
 
 			if (this.angle[1] > 180 && this.angleFinal[1] > 180) {
 				this.angle[1]      -= 360;
@@ -231,6 +264,8 @@ define(['Controls/KeyEventHandler', 'Controls/MouseEventHandler', 'Preferences/C
 		// Update last check
 		this.action.x = +Mouse.screen.x ;
 		this.action.y = +Mouse.screen.y ;
+		
+		this.save();
 	};
 
 
@@ -242,8 +277,10 @@ define(['Controls/KeyEventHandler', 'Controls/MouseEventHandler', 'Preferences/C
 	Camera.setZoom = function SetZoom( delta )
 	{
 		this.zoomFinal += delta * 15;
-		this.zoomFinal  = Math.min( this.zoomFinal, Math.abs(this.altitudeTo-this.altitudeFrom) * 5.0 );
+		this.zoomFinal  = Math.min( this.zoomFinal, Math.abs(this.altitudeTo-this.altitudeFrom) * this.MAX_ZOOM );
 		this.zoomFinal  = Math.max( this.zoomFinal,  2.0 );
+		
+		this.save();
 	};
 
 
@@ -276,7 +313,7 @@ define(['Controls/KeyEventHandler', 'Controls/MouseEventHandler', 'Preferences/C
 
 		// Zoom
 		this.zoom        += ( this.zoomFinal - this.zoom ) * lerp * 2.0;
-
+		
 		// Angle
 		this.angle[0]    += ( this.angleFinal[0] - this.angle[0] ) * lerp * 2.0;
 		this.angle[1]    += ( this.angleFinal[1] - this.angle[1] ) * lerp * 2.0;

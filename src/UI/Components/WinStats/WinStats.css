@@ -1,10 +1,10 @@
 #winstats { position:absolute; width:280px; height:103px; background-color:transparent; background-repeat:no-repeat; font-size:11px; }
-#winstats .group { position:absolute; top:7px; }
+#winstats .group { position:absolute; top:6px; }
 #winstats .group div { height:16px; display:block;}
-#winstats .stats { left:39px; }
-#winstats .bonus { left:54px; }
+#winstats .stats { left:37px; }
+#winstats .bonus { left:58px; }
 #winstats .requirements { left:90px; text-align:right; width:12px; }
-#winstats .column1 { top:5px; right:87px; text-align:right;  }
-#winstats .column2 { top:5px; right:7px; text-align:right; }
+#winstats .column1 { top:5px; right:87px; text-align:right; }
+#winstats .column2 { top:5px; right:5px; text-align:right; }
 #winstats .up { left:80px; top:2px; }
 #winstats .up button { display:block; margin-top:5px; border:none; width:11px; height:11px; background-color:transparent; background-repeat:no-repeat; }

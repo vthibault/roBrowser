@@ -26,6 +26,7 @@ define(function(require)
 	var UIComponent  = require('UI/UIComponent');
 	var htmlText     = require('text!./ChatRoom.html');
 	var cssText      = require('text!./ChatRoom.css');
+	var getModule    = require;
 
 
 	/**
@@ -94,14 +95,18 @@ define(function(require)
 	{
 		// Bindings
 		this.ui.find('.extend').mousedown(onResize);
-		this.ui.find('.close').click(this.remove.bind(this));
-		
-		//Dont activate drag
-		this.ui.find('input, select, button').mousedown(function( event ) {
+		this.ui.find('.close')
+			.mousedown(function(event){
+				event.stopImmediatePropagation();
+				return false;
+			})
+			.click(this.remove.bind(this));
+
+		this.ui.find('.sendmsg').mousedown(function(event){
 			event.stopImmediatePropagation();
 		});
 
-		this.draggable();
+		this.draggable(this.ui.find('.titlebar'));
 	};
 
 
@@ -156,15 +161,15 @@ define(function(require)
 		var members  = '';
 		var i, count = this.members.length;
 
-		this.ui.find('.titlebar .title').html( this.title );
-		this.ui.find('.titlebar .count').html( this.count + '/' + this.limit );
+		this.ui.find('.titlebar .title').text( this.title );
+		this.ui.find('.titlebar .count').text( this.count + '/' + this.limit );
 
 		for (i = 0; i < count; ++i) {
 			if (this.members[i] == this.owner) {
-				members = '<span class="owner">' + this.members[i] + '</span><br/>' + members;
+				members = '<span class="owner">' + jQuery.escape(this.members[i]) + '</span><br/>' + members;
 				continue;
 			}
-			members += this.members[i] + '<br/>';
+			members +=  jQuery.escape(this.members[i]) + '<br/>';
 		}
 
 		this.ui.find('.members').html( members );
@@ -186,7 +191,7 @@ define(function(require)
 
 		// Process commands
 		if (message[0] === '/') {
-			require('Controls/ProcessCommand').call( ChatBox, message.substr(1) );
+			getModule('Controls/ProcessCommand').call( ChatBox, message.substr(1) );
 			ui.find('.send input[name=message]').val('');
 			return true;
 		}
@@ -270,7 +275,7 @@ define(function(require)
 	/**
 	 * Resize ChatRoom
 	 */
-	function onResize( event )
+	function onResize()
 	{
 		var ui         = ChatRoom.ui;
 		var top        = ui.position().top;
@@ -310,9 +315,6 @@ define(function(require)
 				clearInterval(_Interval);
 			}
 		});
-
-		event.stopImmediatePropagation();
-		return false;
 	}
 
 

@@ -18,10 +18,15 @@ define(function(require)
 	var DB                 = require('DB/DBManager');
 	var jQuery             = require('Utils/jquery');
 	var Renderer           = require('Renderer/Renderer');
-	var KEYS               = require('Controls/KeyEventHandler');
 	var Client             = require('Core/Client');
+	var Events             = require('Core/Events');
+	var Preferences        = require('Core/Preferences');
+	var KEYS               = require('Controls/KeyEventHandler');
+	var BattleMode         = require('Controls/BattleMode');
+	var History            = require('./History');
 	var UIManager          = require('UI/UIManager');
 	var UIComponent        = require('UI/UIComponent');
+	var ContextMenu        = require('UI/Components/ContextMenu/ContextMenu');
 	var htmlText           = require('text!./ChatBox.html');
 	var cssText            = require('text!./ChatBox.css');
 	var ProcessCommand     = require('Controls/ProcessCommand');
@@ -34,33 +39,32 @@ define(function(require)
 
 
 	/**
-	 * @var {number} max message sent saved for history features
+	 * @var {History} message cached in history
 	 */
-	var MAX_HISTORY = 50;
+	var _historyMessage = new History();
 
 
 	/**
-	 * @var {Array} history of message sent
+	 * @var {History} nickname cached in history
 	 */
-	var _history = [];
+	var _historyNickName = new History(true);
 
-
-	/**
-	 * @var {number} current index in history
-	 */
-	var _historyIndex = 0;
-
-
-	/**
-	 * @var {Array} stack - data saved and waiting for the ui to be ready to be processed
-	 */
-	var _stack = [];
 
 
 	/**
 	 * @var {number} Chatbox position's index
 	 */
 	var _heightIndex = 2;
+
+
+	/**
+	 * @var {Preferences} structure
+	 */
+	var _preferences = Preferences.get('ChatBox', {
+		x:      5,
+		y:      Infinity,
+		height: 2
+	}, 1.0);
 
 
 	/**
@@ -82,7 +86,14 @@ define(function(require)
 		ERROR:    1 << 6,
 		INFO:     1 << 7,
 		BLUE:     1 << 8, // TODO: find a better name
+		ADMIN:    1 << 9,
 	};
+
+
+	/**
+	 * @var {number} target message ?
+	 */
+	var _sendTo = ChatBox.TYPE.PUBLIC;
 
 
 	/**
@@ -100,8 +111,18 @@ define(function(require)
 	 */
 	ChatBox.init = function init()
 	{
-		this.ui.css('top', (Renderer.height - ( this.ui.find('.content').height() + 53 )) + 'px');
+		_heightIndex = _preferences.height - 1;
+		ChatBox.updateHeight();
+
+		this.ui.css({
+			top:  Math.min( Math.max( 0, _preferences.y - this.ui.height()), Renderer.height - this.ui.height()),
+			left: Math.min( Math.max( 0, _preferences.x), Renderer.width  - this.ui.width())
+		});
+
 		this.draggable( this.ui.find('.input') );
+
+		// Sorry for this un-documented code (see UIComponent for more informations)
+		this.__mouseStopBlock = this.ui.find('.input');
 
 		// Setting chatbox scrollbar
 		Client.loadFiles([DB.INTERFACE_PATH + 'basic_interface/dialscr_down.bmp', DB.INTERFACE_PATH + 'basic_interface/dialscr_up.bmp'], function( down, up ){
@@ -128,8 +149,8 @@ define(function(require)
 		});
 
 		this.ui.find('.input .message').blur(function(){
-			setTimeout(function(){
-				if (document.activeElement.tagName !== 'INPUT') {
+			Events.setTimeout(function(){
+				if (!document.activeElement.tagName.match(/input|select|textarea/i)) {
 					this.focus();
 				}
 			}.bind(this), 1);
@@ -143,24 +164,66 @@ define(function(require)
 			this.type = 'button';
 		});
 
+		// Private message selection
+		this.ui.find('.input .list').click(function(){
+			var $this = this;
+			var names = _historyNickName.list;
+			var i, count = names.length;
+			var pos = jQuery(this).offset();
+			var ui = ContextMenu.ui.find('.menu');
+
+			if (!count) {
+				ChatBox.addText( DB.getMessage(192), ChatBox.TYPE.ERROR);
+				return;
+			}
+
+			ContextMenu.remove();
+			ContextMenu.append();
+
+			for (i = 0; i < count; ++i) {
+				ContextMenu.addElement(names[i], onPrivateMessageUserSelection(names[i]));
+			}
+
+			ContextMenu.addElement('', onPrivateMessageUserSelection(''));
+			ui.css({
+				top:  pos.top - ui.height() - 5,
+				left: pos.left - ui.width() - 5
+			});
+		}).mousedown(function(event){
+			event.stopImmediatePropagation();
+			return false;
+		});
+
+		// Send message to...
+		this.ui.find('.input .filter').click(function(){
+			var pos = jQuery(this).offset();
+			var ui = ContextMenu.ui.find('.menu');
+
+			ContextMenu.remove();
+			ContextMenu.append();
+
+			ContextMenu.addElement(DB.getMessage(85),  onChangeTargetMessage(ChatBox.TYPE.PUBLIC));
+			ContextMenu.addElement(DB.getMessage(86),  onChangeTargetMessage(ChatBox.TYPE.PARTY));
+			ContextMenu.addElement(DB.getMessage(437), onChangeTargetMessage(ChatBox.TYPE.GUILD));
+
+			ui.css({
+				top:  pos.top - ui.height() - 5,
+				left: pos.left - ui.width() + 25
+			});
+		}).mousedown(function(event){
+			event.stopImmediatePropagation();
+			return false;
+		});
+
 		// Change size
-		this.ui.find('.input .size').mousedown(function( event ){
+		this.ui.find('.input .size').click(function( event ){
 			ChatBox.updateHeight(true);
 			event.stopImmediatePropagation();
 			return false;
 		});
 
 		// Scroll feature should block at each line
-		var lastScrollPos = 0;
-		this.ui.find('.content').on('scroll', function(){
-			if (this.scrollTop > lastScrollPos) {
-				this.scrollTop = Math.ceil(this.scrollTop/14) * 14;
-			}
-			else {
-				this.scrollTop = Math.floor(this.scrollTop/14) * 14;
-			}
-			lastScrollPos = this.scrollTop;
-		});
+		this.ui.find('.content').on('mousewheel DOMMouseScroll', onScroll);
 	};
 
 
@@ -169,9 +232,22 @@ define(function(require)
 	 */
 	ChatBox.clean = function Clean()
 	{
+		var matches, i, count;
+
+		matches = this.ui.find('.content').html().match(/(blob:[^"]+)/g);
+		
+		if (matches) {
+			for (i = 0, count = matches.length; i < count; ++i) {
+				window.URL.revokeObjectURL(matches[i]);
+			}
+		}
+
 		this.ui.find('.content').empty();
 		this.ui.find('.input .message').val('');
 		this.ui.find('.input .username').val('');
+
+		_historyMessage.clear();
+		_historyNickName.clear();
 	};
 
 
@@ -180,16 +256,8 @@ define(function(require)
 	 */
 	ChatBox.onAppend = function OnAppend()
 	{
-		var i, count;
-
 		// Focus the input
 		this.ui.find('.input .message').focus();
-
-		// Write memorized texts
-		for (i = 0, count = _stack.length; i < count; ++i) {
-			this.addText.apply(this, _stack[i]);
-		}
-		_stack.length = 0;
 
 		var content = this.ui.find('.content')[0];
 		content.scrollTop = content.scrollHeight;
@@ -202,6 +270,42 @@ define(function(require)
 	ChatBox.onRemove = function OnRemove()
 	{
 		this.ui.find('.content').off('scroll');
+
+		_preferences.y      = parseInt(this.ui.css('top'), 10) + this.ui.height();
+		_preferences.x      = parseInt(this.ui.css('left'), 10);
+		_preferences.height = _heightIndex;
+		_preferences.save();
+	};
+
+
+	/**
+	 * BattleMode processing
+	 *
+	 * @param {number} key id to check
+	 * @return {boolean} found a shortcut ?
+	 */
+	ChatBox.processBattleMode = function processBattleMode( keyId )
+	{
+		// Direct process
+		if (this.ui.find('.battlemode').is(':visible') ||
+			KEYS.ALT || KEYS.SHIFT || KEYS.CTRL ||
+			(keyId >= KEYS.F1 && keyId <= KEYS.F24)) {
+			return BattleMode.process(keyId);
+		}
+
+		var messageBox = this.ui.find('.input .message');
+		var text       = messageBox.val();
+
+		// Hacky, need to wait the browser to add text in the input
+		// If there is no change, send the shortcut.
+		Events.setTimeout(function(){
+			// Nothing rendered, can process the shortcut
+			if (messageBox.val() === text) {
+				BattleMode.process(keyId);
+			}
+		}.bind(this), 4);
+
+		return false;
 	};
 
 
@@ -213,46 +317,61 @@ define(function(require)
 	 */
 	ChatBox.onKeyDown = function OnKeyDown( event )
 	{
-		var is_focus = document.activeElement === this.ui.find('.input .message')[0];
+		var messageBox = this.ui.find('.input .message');
+		var nickBox    = this.ui.find('.input .username');
 
 		switch (event.which) {
+
+			// Battle mode system
 			default:
+				if (ChatBox.processBattleMode(event.which)) {
+					event.stopImmediatePropagation();
+					return false;
+				}
 				return true;
 
 			// Switch from user name, to message input
 			case KEYS.TAB:
-				if (document.activeElement === this.ui.find('.input .message')[0]) {
-					this.ui.find('.input .username').select().focus();
+				if (document.activeElement === messageBox[0]) {
+					nickBox.select().focus();
+					break;
 				}
-				else if (document.activeElement === this.ui.find('.input .username')[0]) {
-					this.ui.find('.input .message').select().focus();
+
+				if (document.activeElement === nickBox[0]) {
+					messageBox.select().focus();
+					break;
 				}
-				else {
-					return true;
-				}
-				break;
+				return true;
 
 			// Get back message from history
 			case KEYS.UP:
-				if (!is_focus || jQuery('#NpcMenu').length) {
-					return true;
-				}
-				if (_historyIndex > 0) {
-					_historyIndex--;
-				}
-				this.ui.find('.input .message').val(_history[_historyIndex]).select();
-				break;
+				if (!jQuery('#NpcMenu').length) {
+					if (document.activeElement === messageBox[0]) {
+						messageBox.val(_historyMessage.previous()).select();
+						break;
+					}
 
-			// Message from history + 1
+					if (document.activeElement === nickBox[0]) {
+						nickBox.val(_historyNickName.previous()).select();
+						break;
+					}
+				}
+				return true;
+
+			// Message from history
 			case KEYS.DOWN:
-				if (!is_focus || jQuery('#NpcMenu').length) {
-					return true;
+				if (!jQuery('#NpcMenu').length) {
+					if (document.activeElement === messageBox[0]) {
+						messageBox.val(_historyMessage.next()).select();
+						break;
+					}
+
+					if (document.activeElement === nickBox[0]) {
+						nickBox.val(_historyNickName.next()).select();
+						break;
+					}
 				}
-				if (_historyIndex < _history.length ) {
-					_historyIndex++;
-				}
-				this.ui.find('.input .message').val(_history[_historyIndex]).select();
-				break;
+				return true;
 
 			// Update chat height
 			case KEYS.F10:
@@ -261,19 +380,20 @@ define(function(require)
 
 			// Send message
 			case KEYS.ENTER:
-				if (document.activeElement.tagName === 'INPUT' && !is_focus) {
+				if (document.activeElement.tagName === 'INPUT' &&
+				    document.activeElement !== messageBox[0]) {
 					return true;
 				}
 
-				if (jQuery('#NpcMenu').length || jQuery('#NpcBox').length) {
+				if (jQuery('#NpcMenu, #NpcBox').length) {
 					return true;
 				}
 
-				this.ui.find('.input .message').focus();
+				messageBox.focus();
 				this.submit();
 				break;
 		}
-	
+
 		event.stopImmediatePropagation();
 		return false;
 	};
@@ -284,41 +404,44 @@ define(function(require)
 	 */
 	ChatBox.submit = function Submit()
 	{
-		var $user = this.ui.find('.input .username');
-		var $text = this.ui.find('.input .message');
+		var input = this.ui.find('.input');
+		var $user = input.find('.username');
+		var $text = input.find('.message');
 
 		var user = $user.val();
 		var text = $text.val();
 
-		// block.
+		// Battle mode
 		if (!text.length) {
+			input.toggle();
+			this.ui.find('.battlemode').toggle();
+
+			if (input.is(':visible')) {
+				$text.focus();
+			}
 			return;
 		}
 
+		// Private message
 		if (user.length && text[0] !== '/') {
 			this.PrivateMessageStorage.nick = user;
 			this.PrivateMessageStorage.msg  = text;
+			_historyNickName.push(user);
+			_historyNickName.previous();
 		}
 
 		// Save in history
-		if (_history[_historyIndex] !== text) {
-
-			if (_history.length >= MAX_HISTORY) {
-				_history.shift();
-			}
-			_history.push(text);
-		}
-
-		_historyIndex = _history.length;
+		_historyMessage.push(text);
 
 		$text.val('');
 
+		// Command
 		if (text[0] === '/') {
 			ProcessCommand.call(this, text.substr(1) );
 			return;
 		}
 
-		this.onRequestTalk( user, text );
+		this.onRequestTalk( user, text, _sendTo );
 	};
 
 
@@ -328,14 +451,10 @@ define(function(require)
 	 * @param {string} text
 	 * @param {number} type
 	 * @param {string} color
+	 * @param {boolean} default false, html or text ? 
 	 */
-	ChatBox.addText = function addText( text, type, color )
+	ChatBox.addText = function addText( text, type, color, override )
 	{
-		if (!this.__loaded) {
-			_stack.push(arguments);
-			return;
-		}
-
 		var $content = this.ui.find('.content');
 
 		if (!color) {
@@ -360,6 +479,9 @@ define(function(require)
 			else if (type & ChatBox.TYPE.BLUE) {
 				color = '#00FFFF';
 			}
+			else if (type & ChatBox.TYPE.ADMIN) {
+				color = '#FFFF00';
+			}
 			else {
 				color = 'white';
 			}
@@ -367,14 +489,28 @@ define(function(require)
 
 		$content.append(
 			jQuery('<div/>').
-				css('color', color).
-				text(text)
+				css('color', color)
+				[ !override ? 'text' : 'html' ](text)
 		);
 
 		// If there is too many line, remove the older one
+		
 		var list = $content.find('div');
 		if (list.length > MAX_MSG) {
-			list.find(':first').remove();
+			var element, matches;
+			var i, count;
+
+			//Check if theres any blob url object to be released from buffer (Check Controls/ScreenShot.js)
+			element = list.eq(0);
+			matches = element.html().match(/(blob:[^"]+)/g);
+
+			if (matches) {
+				for (i = 0, count = matches.length; i < count; ++i) {
+					window.URL.revokeObjectURL(matches[i]);
+				}
+			}
+
+			element.remove();
 		}
 
 		// Always put the scroll at the bottom
@@ -421,6 +557,79 @@ define(function(require)
 
 		$content[0].scrollTop = $content[0].scrollHeight;
 	};
+
+
+	/**
+	 * Save user name to nick name history
+	 *
+	 * @param {string} nick name
+	 */
+	ChatBox.saveNickName = function saveNickName( pseudo )
+	{
+		_historyNickName.push(pseudo);
+	};
+
+
+	/**
+	 * Update scroll by block (14px)
+	 */
+	function onScroll( event )
+	{
+		var delta;
+
+		if (event.originalEvent.wheelDelta) {
+			delta = event.originalEvent.wheelDelta / 120 ;
+			if (window.opera) {
+				delta = -delta;
+			}
+		}
+		else if (event.originalEvent.detail) {
+			delta = -event.originalEvent.detail;
+		}
+
+		this.scrollTop = Math.floor(this.scrollTop/14) * 14 - (delta * 14);
+		return false;
+	}
+
+
+	/**
+	 * Change private message nick name
+	 *
+	 * @param {string} nick name
+	 * @return {function} callback closure
+	 */
+	function onPrivateMessageUserSelection(name)
+	{
+		return function onPrivateMessageUserSelectionClosure()
+		{
+			ChatBox.ui.find('.input .username').val(name);
+		};
+	}
+
+
+	/**
+	 * Change target of global chat (party, guild)
+	 *
+	 * @param {number} type constant
+	 */
+	function onChangeTargetMessage(type)
+	{
+		return function onChangeTargetMessageClosure()
+		{
+			var $input = ChatBox.ui.find('.input .message');
+
+			$input.removeClass('guild party');
+
+			if (type & ChatBox.TYPE.PARTY) {
+				$input.addClass('party');
+			}
+			else if (type & ChatBox.TYPE.GUILD) {
+				$input.addClass('guild');
+			}
+
+			_sendTo = type;
+		};
+	}
 
 
 	/**

@@ -7,36 +7,44 @@
  *
  * @author Vincent Thibault
  */
-define( [
-	'Utils/gl-matrix', 'Controls/KeyEventHandler',
-	'Renderer/Camera', 'Engine/SessionStorage',
-	'Network/PacketStructure', 'Network/NetworkManager',
-	'UI/CursorManager', 'UI/Components/InputBox/InputBox',
-	'Preferences/Controls',
-	'UI/Components/ChatRoom/ChatRoom'
-], function(
-	glMatrix, KEYS,
-	Camera, Session,
-	PACKET, Network,
-	Cursor, InputBox,
-	Preferences,
-	ChatRoom
-)
+define(function( require )
 {
 	'use strict';
+
+
+	// Load dependencies
+	var glMatrix    = require('Utils/gl-matrix');
+	var PathFinding = require('Utils/PathFinding');
+	var DB          = require('DB/DBManager');
+	var KEYS        = require('Controls/KeyEventHandler');
+	var Mouse       = require('Controls/MouseEventHandler');
+	var Preferences = require('Preferences/Controls');
+	var Camera      = require('Renderer/Camera');
+	var Session     = require('Engine/SessionStorage');
+	var Friends     = require('Engine/MapEngine/Friends');
+	var PACKET      = require('Network/PacketStructure');
+	var Network     = require('Network/NetworkManager');
+	var Cursor      = require('UI/CursorManager');
+	var InputBox    = require('UI/Components/InputBox/InputBox');
+	var ChatRoom    = require('UI/Components/ChatRoom/ChatRoom');
+	var ContextMenu = require('UI/Components/ContextMenu/ContextMenu');
+	var Pet         = require('UI/Components/PetInformations/PetInformations');
+	var Trade       = require('UI/Components/Trade/Trade');
+	var getModule   = require;
 
 
 	/**
 	 * Import
 	 */
 	var mat4    = glMatrix.mat4;
+	var vec2    = glMatrix.vec2;
 	var _matrix = mat4.create();
 
 
 	/*
 	 * When mouse is over
 	 */
-	function OnMouseOver()
+	function onMouseOver()
 	{
 		var Entity = this.constructor;
 
@@ -51,7 +59,7 @@ define( [
 			case Entity.TYPE_ELEM:
 			case Entity.TYPE_HOM:
 				// TODO: Check for pvp flag ?
-				if (!KEYS.shift || Preferences.noshift === false) {
+				if ((KEYS.SHIFT === false && Preferences.noshift === false) || this === Session.Entity)  {
 					if (!Camera.action.active ) {
 						Cursor.setType( Cursor.ACTION.DEFAULT );
 					}
@@ -107,7 +115,7 @@ define( [
 	/**
 	 * When mouse is not over yet
 	 */
-	function OnMouseOut()
+	function onMouseOut()
 	{
 		if (!Camera.action.active) {
 			Cursor.setType( Cursor.ACTION.DEFAULT );
@@ -127,7 +135,7 @@ define( [
 	 * When clicking on an Entity
 	 *
 	 */
-	function OnMouseDown()
+	function onMouseDown()
 	{
 		var Entity = this.constructor;
 		var pkt;
@@ -138,17 +146,30 @@ define( [
 
 			case Entity.TYPE_ITEM:
 				Cursor.setType( Cursor.ACTION.PICK, true, 2 );
-				Session.Entity.lookTo( this.position[0], this.position[1] );
 
-				pkt = new PACKET.CZ.ITEM_PICKUP();
+				pkt       = new PACKET.CZ.ITEM_PICKUP();
 				pkt.ITAID = this.GID;
+
+				// Too far, walking to it
+				if (vec2.distance(Session.Entity.position, this.position) > 2) {
+					Session.moveAction = pkt;
+
+					pkt         = new PACKET.CZ.REQUEST_MOVE();
+					pkt.dest[0] = Mouse.world.x;
+					pkt.dest[1] = Mouse.world.y;
+					Network.sendPacket(pkt);
+
+					return true;
+				}
+
 				Network.sendPacket(pkt);
+				Session.Entity.lookTo( this.position[0], this.position[1] );
 				return true;
 
 			case Entity.TYPE_NPC:
 				pkt      = new PACKET.CZ.CONTACTNPC();
 				pkt.NAID = this.GID;
-				pkt.type = 0; // TODO: what is it for ?
+				pkt.type = 1; // 1 for NPC in Aegis
 				Network.sendPacket(pkt);
 
 				// Updare look
@@ -160,6 +181,10 @@ define( [
 				return true;
 
 			case Entity.TYPE_WARP:
+				pkt         = new PACKET.CZ.REQUEST_MOVE();
+				pkt.dest[0] = this.position[0];
+				pkt.dest[1] = this.position[1];
+				Network.sendPacket(pkt);
 				break;
 		}
 
@@ -170,17 +195,82 @@ define( [
 	/**
 	 * Stop clicking on an entity
 	 */
-	function OnMouseUp()
+	function onMouseUp()
 	{
+	}
+
+
+	/**
+	 * When clicking on an Entity
+	 *
+	 */
+	function onContextMenu()
+	{
+		var Entity = this.constructor;
+		var entity = this;
+
+		switch (this.objecttype) {
+			case Entity.TYPE_PET:
+				if (Session.petId === this.GID) {
+					ContextMenu.remove();
+					ContextMenu.append();
+					ContextMenu.addElement( DB.getMessage(596), Pet.ui.show.bind(Pet.ui)); // check pet status
+					ContextMenu.addElement( DB.getMessage(592), Pet.reqPetFeed);           // Feed pet
+					ContextMenu.addElement( DB.getMessage(593), Pet.reqPetAction);         // performance
+					ContextMenu.addElement( DB.getMessage(595), Pet.reqUnEquipPet);        // unequip accessory
+					ContextMenu.addElement( DB.getMessage(594), Pet.reqBackToEgg);         // return to egg shell
+				}
+				break;
+
+			case Entity.TYPE_PC:
+				/// TODO: complete it : 
+				/// - check for guild leader action (invite, ally, ...)
+				/// - check for admin action (kick, mute, ...)
+
+				ContextMenu.remove();
+				ContextMenu.append();
+				//ContextMenu.addElement( DB.getMessage(1362), checkPlayerEquipment);
+
+				// Trade option
+				ContextMenu.addElement( DB.getMessage(87).replace('%s', this.display.name), function(){
+					Trade.reqExchange(entity.GID, entity.display.name);
+				});
+
+				//ContextMenu.addElement( DB.getMessage(360), openPrivateMessageWindow);
+
+				if (!Friends.isFriend(this.display.name)) {
+					ContextMenu.nextGroup();
+					ContextMenu.addElement( DB.getMessage(358), function(){
+						Friends.addFriend(entity.display.name);
+					});
+				}
+
+				if (Session.hasParty && Session.isPartyLeader) {
+					ContextMenu.nextGroup();
+					ContextMenu.addElement( DB.getMessage(88).replace('%s', this.display.name), function(){
+						getModule('Engine/MapEngine/Group').onRequestInvitation(entity.GID, entity.display.name);
+					});
+				}
+
+				//ContextMenu.nextGroup();
+				//ContextMenu.addElement( DB.getMessage(315), blockUserPrivateMessage);
+				break;
+
+			case Entity.TYPE_HOM:
+				break;
+		}
+
+		return false;
 	}
 
 
 	/**
 	 * Focus the entity
 	 */
-	function OnFocus()
+	function onFocus()
 	{
 		var Entity = this.constructor;
+		var main   = Session.Entity;
 		var pkt;
 
 		switch (this.objecttype) {
@@ -189,7 +279,7 @@ define( [
 			case Entity.TYPE_ELEM:
 			case Entity.TYPE_HOM:
 				// TODO: add check for PVP/WOE mapflag
-				if (!KEYS.shift || Preferences.noshift === false) {
+				if (KEYS.SHIFT === false && Preferences.noshift === false)  {
 					if (!Camera.action.active) {
 						Cursor.setType( Cursor.ACTION.DEFAULT );
 					}
@@ -198,9 +288,46 @@ define( [
 			// no break intended.
 
 			case Entity.TYPE_MOB:
-				pkt = new PACKET.CZ.REQUEST_ACT();
-				pkt.action = 7;
+
+				// Start rendering the lock on arrow
+				this.attachments.add({
+					uid:    'lockon',
+					spr:    'data/sprite/cursors.spr',
+					act:    'data/sprite/cursors.act',
+					frame:   Cursor.ACTION.LOCK,
+					repeat:  true,
+					depth:   10.0,
+				});
+
+				var out   = [];
+				var count = PathFinding.search(
+					main.position[0] | 0, main.position[1] | 0,
+					this.position[0] | 0, this.position[1] | 0,
+					main.attack_range + 1,
+					out
+				);
+
+				// Can't attack
+				if (!count) {
+					return true;
+				}
+
+				pkt           = new PACKET.CZ.REQUEST_ACT();
+				pkt.action    = 7;
 				pkt.targetGID = this.GID;
+
+				// in range send packet
+				if (count < 2) {
+					Network.sendPacket(pkt);
+					return true;
+				}
+
+				// Move to entity
+				Session.moveAction = pkt;
+
+				pkt         = new PACKET.CZ.REQUEST_MOVE();
+				pkt.dest[0] = out[(count-1)*2 + 0];
+				pkt.dest[1] = out[(count-1)*2 + 1];
 				Network.sendPacket(pkt);
 				return true;
 		}
@@ -212,7 +339,7 @@ define( [
 	/**
 	 * Lost focus on entity
 	 */
-	function OnFocusEnd()
+	function onFocusEnd()
 	{
 		var Entity = this.constructor;
 
@@ -229,13 +356,16 @@ define( [
 		// Stop displaying name
 		this.display.display = false;
 		this.display.remove();
+
+		// Stop rendering t he lock on arrow
+		this.attachments.remove('lockon');
 	}
 
 
 	/**
 	 * Open entity room (chat room, shop, ...)
 	 */
-	function OnRoomEnter()
+	function onRoomEnter()
 	{
 		var pkt;
 		var Room = this.room.constructor;
@@ -295,12 +425,13 @@ define( [
 	 */
 	return function Init()
 	{
-		this.onMouseOver = OnMouseOver;
-		this.onMouseOut  = OnMouseOut;
-		this.onMouseDown = OnMouseDown;
-		this.onMouseUp   = OnMouseUp;
-		this.onFocus     = OnFocus;
-		this.onFocusEnd  = OnFocusEnd;
-		this.onRoomEnter = OnRoomEnter;
+		this.onMouseOver   = onMouseOver;
+		this.onMouseOut    = onMouseOut;
+		this.onMouseDown   = onMouseDown;
+		this.onMouseUp     = onMouseUp;
+		this.onFocus       = onFocus;
+		this.onFocusEnd    = onFocusEnd;
+		this.onRoomEnter   = onRoomEnter;
+		this.onContextMenu = onContextMenu;
 	};
 });

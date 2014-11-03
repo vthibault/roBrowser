@@ -67,7 +67,22 @@
 	overflow-y:auto;
 	line-height:14px;
 }
+#chatbox .content a {
+	color:inherit;
+	text-decoration:underline;
+}
 
+#chatbox .battlemode {
+	width: 592px;
+	height: 25px;
+	position: relative;
+	border-left: 1px solid white;
+	border-right: 1px solid white;
+	border-top: 1px solid grey;
+	background-color: rgba(0,0,0,0.5);
+	margin-left:3px;
+	display: none;
+}
 
 /** Input **/
 #chatbox .input {
@@ -102,6 +117,7 @@
 	top:3px;
 	left:97px;
 	background-repeat:no-repeat;
+	padding:0;
 }
 
 #chatbox .input .message {
@@ -109,6 +125,8 @@
 	width:460px;
 	padding-left:5px;
 }
+#chatbox .input .message.party { color:#840084; }
+#chatbox .input .message.guild { color:#008484; }
 
 #chatbox .input .filter,
 #chatbox .input .size {

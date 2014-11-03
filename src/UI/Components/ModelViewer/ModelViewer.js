@@ -16,6 +16,7 @@ define(function(require)
 	 * Load dependencies
 	 */
 	var glMatrix           = require('Utils/gl-matrix');
+	var Configs            = require('Core/Configs');
 	var Client             = require('Core/Client');
 	var Model              = require('Loaders/Model');
 	var Renderer           = require('Renderer/Renderer');
@@ -106,7 +107,7 @@ define(function(require)
 		Renderer.show();
 
 		// Initialize the dropdown
-		if (!ROConfig.API) {
+		if (!Configs.get('API')) {
 			initDropDown( this.ui.find('select').get(0) );
 		}
 		else {
@@ -160,14 +161,26 @@ define(function(require)
 
 
 	/**
+	 * Stop to render
+	 */
+	function stop()
+	{
+		var gl = Renderer.getContext();
+
+		Renderer.stop();
+		ModelRenderer.free(gl);
+		gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT );
+	}
+
+
+	/**
 	 * Start loading a model
 	 *
 	 * @param {string} filename
 	 */
 	function loadModel( filename )
 	{
-		Renderer.stop();
-		ModelRenderer.free( Renderer.getContext() );
+		stop();
 
 		Client.getFile( filename, function( buf ) {
 
@@ -277,6 +290,13 @@ define(function(require)
 
 		ModelRenderer.render(gl, _modelView, Camera.projection, _normalMat, _fog, _light );
 	}
+
+
+	/**
+	 * Export
+	 */
+	Viewer.loadModel = loadModel;
+	Viewer.stop      = stop;
 
 
 	/**

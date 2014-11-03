@@ -16,6 +16,7 @@ define(function(require)
 	 * Dependencies
 	 */
 	var DB                 = require('DB/DBManager');
+	var MonsterTable       = require('DB/Monsters/MonsterTable');
 	var Preferences        = require('Core/Preferences');
 	var KEYS               = require('Controls/KeyEventHandler');
 	var Renderer           = require('Renderer/Renderer');
@@ -134,7 +135,6 @@ define(function(require)
 	{
 		_index = _preferences.index;
 
-		this.ui.find('.slotinfo .content').text( DB.msgstringtable[2004] );
 		this.ui.find('.slotinfo .number').text( _list.length + ' / ' + _maxSlots );
 		this.ui.find('.pageinfo .count').text( _maxSlots / 3 );
 
@@ -208,16 +208,20 @@ define(function(require)
 	 */
 	CharSelect.setInfo = function setInfo( pkt )
 	{
-		_maxSlots           = pkt.TotalSlotNum;
+		_maxSlots           = Math.floor((pkt.TotalSlotNum + pkt.PremiumStartSlot) || 9); // default 9 ?
 		_sex                = pkt.sex;
 		_slots.length       = 0;
 		_entitySlots.length = 0;
-		_list.length        =  0;
+		_list.length        = 0;
 
 		if (pkt.charInfo) {
 			var i, count = pkt.charInfo.length;
 			for (i = 0; i < count; ++i) {
 				CharSelect.addCharacter( pkt.charInfo[i] );
+
+				// Guess the max slot
+				// required if the client is < 20100413 and have more than 9 slots
+				_maxSlots = Math.max( _maxSlots, Math.floor(pkt.charInfo[i].CharNum / 3 + 1) * 3 );
 			}
 		}
 
@@ -267,7 +271,7 @@ define(function(require)
 
 			default: // Others error ?
 			case  0: // Incorrect adress email
-				UIManager.showMessageBox( DB.msgstringtable[301], 'ok' );
+				UIManager.showMessageBox( DB.getMessage(301), 'ok' );
 				break;
 		}
 	};
@@ -333,7 +337,7 @@ define(function(require)
 	 */
 	function cancel()
 	{
-		UIManager.showPromptBox( DB.msgstringtable[17], 'ok', 'cancel', function(){
+		UIManager.showPromptBox( DB.getMessage(17), 'ok', 'cancel', function(){
 			CharSelect.onExitRequest();
 		}, null);
 	}
@@ -426,7 +430,7 @@ define(function(require)
 
 		var info = _slots[_index];
 		$charinfo.find('.name').text( info.name );
-		$charinfo.find('.job').text( DB.mobname[info.job] || '' );
+		$charinfo.find('.job').text( MonsterTable[info.job] || '' );
 		$charinfo.find('.lvl').text( info.level );
 		$charinfo.find('.exp').text( info.exp );
 		$charinfo.find('.hp').text( info.hp );

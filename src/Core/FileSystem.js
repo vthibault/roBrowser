@@ -115,10 +115,11 @@ define(function()
 	{
 		var i, count;
 		var list = new Array(files.length);
+		var backslash = /\\\\/g;
 
 		for (i = 0, count = files.length; i < count; ++i) {
 			list[i]       = files[i].file;
-			list[i]._path = files[i].path.replace(/^[^\/]+\//,'');
+			list[i]._path = files[i].path.replace(backslash, '/');
 		}
 
 		return list;
@@ -256,14 +257,14 @@ define(function()
 	{
 		var cache = {}, keys;
 		var i = 0, count = _files.length;
-		var path;
+		var path, filename = /\/?[^\/]+$/;
 
 		// Extract directory from each file path
 		for (; i < count; ++i) {
 			path = _files[i]._path.split('/').slice(0,-1).join('/');
 			while (!(path in cache) && path.length) {
 				cache[path] = true;
-				path        = path.replace(/\/?[^\/]+$/,'');
+				path        = path.replace(filename,'');
 			}
 		}
 
@@ -330,13 +331,15 @@ define(function()
 
 
 	/**
-	 * Get a file in FileSystem
+	 * Get a file in FileSystem (sync)
 	 *
 	 * @param {string} filename
 	 * @returns {File}
 	 */
-	function getFile( filename )
+	function getFileSync( filename )
 	{
+		filename = filename.replace( /\\/g, '/');
+
 		if (!_available || _files.length) {
 			var i, count = _files.length;
 
@@ -368,6 +371,42 @@ define(function()
 
 
 	/**
+	 * Get a file in FileSystem (async)
+	 *
+	 * @param {string} filename
+	 * @param {function} once loaded
+	 * @param {function} callback if not found
+	 */
+	function getFile( filename, onload, onerror )
+	{
+		filename = filename.replace( /\\/g, '/');
+
+		if (!_available || _files.length) {
+			var i, count = _files.length;
+
+			for (i = 0; i < count; ++i) {
+				if (_files[i]._path === filename) {
+					onload(_files[i]);
+					return;
+				}
+			}
+
+			onerror();
+			return;
+		}
+
+		_fs.root.getFile( filename, {create: false}, function(fileEntry){
+			if (fileEntry.isFile) {
+				fileEntry.file(onload);
+			}
+			else {
+				onerror();
+			}
+		}, onerror);
+	}
+
+
+	/**
 	 * Save the content of a files in file system
 	 * (used to save the remote client)
 	 *
@@ -380,7 +419,8 @@ define(function()
 			return;
 		}
 
-		var directories = filePath.split('/').slice(0,-1);
+		var filename    = filePath.replace( /\\/g, '/');
+		var directories = filename.split('/').slice(0,-1);
 		var path        = '';
 
 		// Create hierarchy
@@ -389,7 +429,7 @@ define(function()
 			_fs_sync.root.getDirectory( path, {create: true});
 		}
 
-		var fileEntry = _fs_sync.root.getFile(filePath, {create:true});
+		var fileEntry = _fs_sync.root.getFile(filename, {create:true});
 		var writer    = fileEntry.createWriter();
 
 		writer.write(new Blob([buffer]));
@@ -437,11 +477,12 @@ define(function()
 	 * Public methods
 	 */
 	return {
-		bind:      bind,
-		getFile:   getFile,
-		init:      init,
-		cleanup:   cleanUp,
-		search:    search,
-		saveFile:  saveFile
+		bind:        bind,
+		getFile:     getFile,
+		getFileSync: getFileSync,
+		init:        init,
+		cleanup:     cleanUp,
+		search:      search,
+		saveFile:    saveFile
 	};
 });

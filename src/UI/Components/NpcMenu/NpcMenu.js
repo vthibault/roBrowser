@@ -1,7 +1,7 @@
 /**
- * UI/Components/BasicInfo/BasicInfo.js
+ * UI/Components/NpcMenu/NpcMenu.js
  *
- * Chararacter Basic information windows
+ * Display npc menu
  *
  * This file is part of ROBrowser, Ragnarok Online in the Web Browser (http://www.robrowser.com/).
  *
@@ -47,8 +47,8 @@ define(function(require)
 	 */
 	NpcMenu.init = function init()
 	{
-		this.ui.find('.ok').click(validate);
-		this.ui.find('.cancel').click(cancel);
+		this.ui.find('.ok').click(validate.bind(this));
+		this.ui.find('.cancel').click(cancel.bind(this));
 
 		this.ui.css({
 			top: Math.max(376, Renderer.height/2 + 76 ),
@@ -57,17 +57,25 @@ define(function(require)
 
 		this.draggable();
 
-		// Scroll feature should block at each line
-		var lastScrollPos = 0;
-		this.ui.find('.content').on('scroll', function(){
-			if (this.scrollTop > lastScrollPos) {
-				this.scrollTop = Math.ceil(this.scrollTop/20) * 20;
-			}
-			else {
-				this.scrollTop = Math.floor(this.scrollTop/20) * 20;
-			}
-			lastScrollPos = this.scrollTop;
-		});
+		var self = this;
+		this.ui.find('.content')
+
+			// Scroll feature should block at each line
+			.on('mousewheel DOMMouseScroll', onScroll)
+
+			// Manage indexes
+			.on('mousedown', 'div', function(event) {
+				selectIndex.call(self, jQuery(this));
+			})
+
+			// Select index
+			.on('dblclick',  'div', validate.bind(this))
+
+			// Stop drag drop
+			.mousedown(function(event) {
+				event.stopImmediatePropagation();
+				return false;
+			})
 	};
 
 
@@ -76,7 +84,6 @@ define(function(require)
 	 */
 	NpcMenu.onRemove = function onRemove()
 	{
-		this.ui.find('.content div').unbind();
 		this.ui.find('.content').empty();
 	};
 
@@ -92,11 +99,11 @@ define(function(require)
 		switch (event.which) {
 
 			case KEYS.ENTER:
-				validate();
+				validate.call(this);
 				break;
 
 			case KEYS.ESCAPE:
-				cancel();
+				cancel.call(this);
 				break;
 
 			case KEYS.UP:
@@ -147,7 +154,7 @@ define(function(require)
 	NpcMenu.setMenu = function SetMenu( menu, gid )
 	{
 		var content, list;
-		var i, count;
+		var i, j, count;
 
 		content  = this.ui.find('.content');
 		list     = menu.split(':');
@@ -156,19 +163,15 @@ define(function(require)
 
 		content.empty();
 
-		for (i = 0, count = list.length; i < count; ++i) {
+		for (i = 0, j = 0, count = list.length; i < count; ++i) {
 			// Don't display empty menu
 			if (list[i].length) {
 				jQuery('<div/>')
 					.text(list[i])
-					.data('index', i)
+					.data('index', j++)
 					.appendTo(content);
 			}
 		}
-
-		content.find('div')
-			.mousedown(selectIndex)
-			.dblclick(validate);
 
 		content.find('div:first')
 			.addClass('selected');
@@ -180,7 +183,7 @@ define(function(require)
 	 */
 	function validate()
 	{
-		NpcMenu.onSelectMenu( _ownerID, _index + 1 );
+		this.onSelectMenu( _ownerID, _index + 1 );
 	}
 
 
@@ -189,18 +192,41 @@ define(function(require)
 	 */
 	function cancel()
 	{
-		NpcMenu.onSelectMenu( _ownerID, 255 );
+		this.onSelectMenu( _ownerID, 255 );
 	}
 
 
 	/**
 	 * Select an index, change background color
 	 */
-	function selectIndex()
+	function selectIndex($this)
 	{
-		NpcMenu.ui.find('.content div').removeClass('selected');
-		_index = parseInt(jQuery(this).data('index'), 10);
-		NpcMenu.ui.find('.content div:eq('+ _index +')').addClass('selected');
+		this.ui.find('.content div').removeClass('selected');
+		$this.addClass('selected');
+
+		_index = parseInt($this.data('index'), 10);
+	}
+
+
+	/**
+	 * Update scroll by block (20px)
+	 */
+	function onScroll( event )
+	{
+		var delta;
+
+		if (event.originalEvent.wheelDelta) {
+			delta = event.originalEvent.wheelDelta / 120 ;
+			if (window.opera) {
+				delta = -delta;
+			}
+		}
+		else if (event.originalEvent.detail) {
+			delta = -event.originalEvent.detail;
+		}
+
+		this.scrollTop = Math.floor(this.scrollTop/20) * 20 - (delta * 20);
+		return false;
 	}
 
 

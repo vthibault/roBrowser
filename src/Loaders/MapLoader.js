@@ -20,12 +20,18 @@ define( ['Core/FileManager'], function( FileManager )
 	 */
 	function Loader( list )
 	{
-		this.files = list;
-		this.list  = list.slice(0);
+		this.files  = list;
+		this.list   = list.slice(0);
 		this.offset = 0;
-		this.count = list.length;
-		this.out   = new Array(this.count);
+		this.count  = list.length;
+		this.out    = new Array(this.count);
 	}
+
+
+	/**
+	 * @var {number} static file count (avoid "too much recursion from firefox")
+	 */
+	Loader.count = 0;
 
 
 	/**
@@ -61,6 +67,11 @@ define( ['Core/FileManager'], function( FileManager )
 	 */
 	Loader.prototype._next = function next()
 	{
+		// Possible problem with setTimeout
+		if (!this.list.length) {
+			return;
+		}
+
 		var filename = this.list.shift();
 		FileManager.load( filename, function(data) {
 
@@ -69,7 +80,7 @@ define( ['Core/FileManager'], function( FileManager )
 			this.offset++;
 
 			// Start the progress
-			if (this.onprogress) {
+			if (this.onprogress && this.offset <= this.count ) {
 				this.onprogress( this.offset, this.count );
 			}
 
@@ -81,7 +92,13 @@ define( ['Core/FileManager'], function( FileManager )
 
 			// Continue the queue
 			if (this.list.length) {
-				this._next();
+				// To fix "too much recursion" on Firefox
+				if ((++Loader.count) % 50 === 0) {
+					setTimeout( this._next.bind(this), 4);
+				}
+				else {
+					this._next();
+				}
 			}
 		}.bind(this));
 	};
@@ -129,7 +146,7 @@ define( ['Core/FileManager'], function( FileManager )
 	 */
 	MapLoader.prototype.setProgress = function setProgress( percent )
 	{
-		var progress = Math.floor(percent);
+		var progress = Math.min(100, Math.floor(percent));
 
 		if (progress !== this.progress) {
 			if (this.onprogress) {
@@ -150,70 +167,89 @@ define( ['Core/FileManager'], function( FileManager )
 		// Initialize the loading
 		this.setProgress( 0 );
 
+		var loader = this;
+		var world;
 
-		// Loading 3 main files
-		FileManager.load('data\\' + mapname, function(world){
-			if (!world) {
-				this.onload(false, 'Can\'t find file "' + mapname + '" ! ');
+		//  Get file path (if it's a copy of a file)
+		function getFilePath( path ) {
+			if (path in FileManager.filesAlias) {
+				return FileManager.filesAlias[path];
+			}
+
+			return path;
+		}
+
+		// loading world
+		function onWorldReady(resourceWorld) {
+			if (!resourceWorld) {
+				loader.onload(false, 'Can\'t find file "' + mapname + '" ! ');
 				return;
 			}
 
-			this.setProgress( 1 );
+			world = resourceWorld;
+			loader.setProgress( 1 );
 
 			// Load Altitude
-			FileManager.load('data\\' + world.files.gat, function(altitude) {
-				if (!altitude) {
-					this.onload(false, 'Can\'t find file "' + world.files.gat + '" !');
-					return;
-				}
+			FileManager.load('data\\' + getFilePath(world.files.gat), onAltitudeReady);
+		}
 
-				this.setProgress( 2 );
-				this.ondata('MAP_ALTITUDE', altitude.compile());
-			}.bind(this));
+		// Loading altitude
+		function onAltitudeReady(altitude) {
+			if (!altitude) {
+				loader.onload(false, 'Can\'t find file "' + world.files.gat + '" !');
+				return;
+			}
 
+			loader.setProgress( 2 );
+			loader.ondata('MAP_ALTITUDE', altitude.compile());
 
-			// Load ground
-			FileManager.load('data\\' + world.files.gnd, function(ground) {
-				if (!ground) {
-					this.onload(false, 'Can\'t find file "' + world.files.gnd + '" !');
-					return;
-				}
+			FileManager.load('data\\' + getFilePath(world.files.gnd), onGroundReady);
+		}
 
-				this.setProgress( 3 );
+		// Load ground
+		function onGroundReady(ground) {
+			if (!ground) {
+				loader.onload(false, 'Can\'t find file "' + world.files.gnd + '" !');
+				return;
+			}
 
-				// Compiling ground
-				var CompiledGround = ground.compile( world.water.level, world.water.waveHeight );
+			loader.setProgress( 3 );
 
-				// Just to approximate, guess we have 2 textures for each models
-				// To get a more linear loading
-				this.fileCount = ground.textures.length + world.models.length * 3;
+			// Compiling ground
+			var compiledGround = ground.compile( world.water.level, world.water.waveHeight );
 
-				// Add water to the list
-				if (CompiledGround.waterVertCount) {
-					this.fileCount += 32;
-				}
+			// Just to approximate, guess we have 2 textures for each models
+			// To get a more linear loading
+			loader.fileCount = ground.textures.length + world.models.length * 3;
 
-				// Loading Gound and Water textures
-				this.loadGroundTextures( world, CompiledGround, function( waters, textures){
-					world.water.images      = waters;
-					CompiledGround.textures = textures;
+			// Add water to the list
+			if (compiledGround.waterVertCount) {
+				loader.fileCount += 32;
+			}
 
-					this.ondata('MAP_WORLD',  world.compile());
-					this.ondata('MAP_GROUND', CompiledGround );
+			// Loading Gound and Water textures
+			loader.loadGroundTextures( world, compiledGround, function onLoaded(waters, textures) {
+				world.water.images      = waters;
+				compiledGround.textures = textures;
 
-					// Start loading models
-					this.loadModels(world.models, ground);
-				}.bind(this));
+				loader.ondata('MAP_WORLD',  world.compile());
+				loader.ondata('MAP_GROUND', compiledGround );
 
-			}.bind(this));
-		}.bind(this));
+				// Start loading models
+				loader.loadModels(world.models, ground);
+			});
+		}
+
+		// Start loading World Resource file
+		FileManager.load('data\\' + getFilePath(mapname), onWorldReady);
 	};
 
 
 	/**
 	 * Loading Ground and Water textures
 	 *
-	 * @param {object} CompiledGround
+	 * @param {object} world resource file
+	 * @param {object} compiledGround
 	 * @param {function} callback
 	 */
 	MapLoader.prototype.loadGroundTextures = function LoadGroundTextures( world, ground, callback )
@@ -287,7 +323,12 @@ define( ['Core/FileManager'], function( FileManager )
 			for (i = 0, count = models.length; i < count; ++i) {
 				pos = filenames.indexOf(models[i].filename);
 
-				// Fail to load model
+				// Duplicate from a model removed from list
+				if (pos === -1) {
+					continue;
+				}
+
+				// Because of a problem the model isn't load, remove it from the list
 				if (!objects[pos] ) {
 					objects.splice(pos, 1);
 					filenames.splice(pos, 1);

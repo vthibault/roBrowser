@@ -8,7 +8,6 @@
  * @author Vincent Thibault
  */
 
-
 importScripts('../Vendors/require.js');
 requirejs.config({
 	baseUrl: '../'
@@ -55,6 +54,10 @@ function(      FileManager,        FileSystem,           MapLoader )
 
 			// Modify client host
 			case 'SET_HOST':
+				if (msg.data.substr(-1) !== '/') {
+					msg.data += '/';
+				}
+
 				FileManager.remoteClient = msg.data;
 				break;
 
@@ -93,6 +96,10 @@ function(      FileManager,        FileSystem,           MapLoader )
 				FileSystem.init( msg.data.files, msg.data.save );
 				break;
 
+			// Files alias
+			case 'CLIENT_FILES_ALIAS':
+				FileManager.filesAlias = msg.data;
+				break;
 
 			// Get a file from client/grf
 			case 'GET_FILE':

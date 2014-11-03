@@ -29,6 +29,12 @@ function(    GameFileDecrypt,         BinaryReader,         Struct,         Infl
 
 
 	/**
+	 * @var {File System} Nodejs
+	 */
+	var fs = self.requireNode && self.requireNode('fs');
+
+
+	/**
 	 * GRF Constants
 	 */
 	GRF.FILELIST_TYPE_FILE           = 0x01; // entry is a file
@@ -85,8 +91,7 @@ function(    GameFileDecrypt,         BinaryReader,         Struct,         Infl
 
 		// Local object
 		var buffer, fp;
-		var header;
-		var table;
+		var header, entries, table;
 		var reader = this.reader;
 		var data, out;
 		var i, count;
@@ -95,6 +100,13 @@ function(    GameFileDecrypt,         BinaryReader,         Struct,         Infl
 		// Helper
 		file.slice  = file.slice || file.webkitSlice || file.mozSlice;
 		reader.load = function( start, len ) {
+			// node.js
+			if (fs && file.fd) {
+				var buffer = new Buffer(len);
+				fs.readSync(file.fd, buffer, 0, len, start);
+				return (new Uint8Array(buffer)).buffer;
+			}
+
 			return reader.readAsArrayBuffer(
 				file.slice( start, start+len )
 			);
@@ -112,7 +124,7 @@ function(    GameFileDecrypt,         BinaryReader,         Struct,         Infl
 		fp     = new BinaryReader(buffer);
 		header = fp.readStruct( GRF.struct_header );
 
-		header.signature  = String.fromCharCode.apply( null, header.signature.toString().split(',') ); // Check a better way for this...
+		header.signature  = String.fromCharCode.apply( null, header.signature);
 		header.filecount -= header.skip + 7;
 
 
@@ -142,21 +154,80 @@ function(    GameFileDecrypt,         BinaryReader,         Struct,         Infl
 		// Uncompress data
 		(new Inflate(data)).getBytes(out);
 
-		// Read all entries
-		fp          = new BinaryReader( out.buffer );
-		table.fp    = fp;
-		table.data  = '';
+		// Load entries
+		entries = loadEntries(out, header.filecount);
 
-		for (i = 0, count = out.length; i < count; ++i) {
-			table.data += String.fromCharCode( out[i] );
+		// Store table data (used for regex search in tablelist)
+		// Set filename to lowercase (case insensitive in official client)
+		table.data = '';
+		for (i = 0, count = entries.length; i < count; ++i) {
+			table.data          += entries[i].filename + '\0';
+			entries[i].filename  = entries[i].filename.toLowerCase();
 		}
 
-		// Search in file isn't case sensitive...
-		table.dataLowerCase = table.data.toLowerCase();
+		// Sort entries (for binary search)
+		entries.sort(sortEntries);
 
-		this.table  = table;
-		this.header = header;
+		this.header  = header;
+		this.entries = entries;
+		this.table   = table;
 	};
+
+
+	/**
+	 * Load entries
+	 * Note: this function is quiet intensive, BinaryReader is slowing down
+	 * the process and generate too much memory to garbage (GC pause of 6sec).
+	 *
+	 * @param {Uint8Array} content table
+	 * @param {number} file count
+	 */
+	 function loadEntries( out, count )
+	 {
+		// Read all entries
+		var i, pos, str;
+		var entries = new Array(count);
+
+		for (i = 0, pos = 0; i < count; ++i) {
+			str = '';
+			while (out[pos]) {
+				str += String.fromCharCode(out[pos++]);
+			}
+			pos++;
+
+			entries[i] = {
+				filename:       str,
+				pack_size:      out[pos++] | out[pos++] << 8 | out[pos++] << 16 | out[pos++] << 24,
+				length_aligned: out[pos++] | out[pos++] << 8 | out[pos++] << 16 | out[pos++] << 24,
+				real_size:      out[pos++] | out[pos++] << 8 | out[pos++] << 16 | out[pos++] << 24,
+				type:           out[pos++],
+				offset:         out[pos++] | out[pos++] << 8 | out[pos++] << 16 | out[pos++] << 24
+			};
+		}
+
+		return entries;
+	}
+
+
+
+	/**
+	 * Sort entries (to find it faster)
+	 *
+	 * @param {object} entry 1
+	 * @param {object} entry 2
+	 */
+	function sortEntries(a, b)
+	{
+		if (a.filename > b.filename) {
+			return 1;
+		}
+
+		if (a.filename < b.filename) {
+			return -1;
+		}
+
+		return 0;
+	}
 
 
 	/**
@@ -188,6 +259,40 @@ function(    GameFileDecrypt,         BinaryReader,         Struct,         Infl
 
 
 	/**
+	 * Binary Search hack to find files in GRF list
+	 *
+	 * @param {string} filename
+	 */
+	GRF.prototype.search = function searchClosure()
+	{
+		var range = new Uint32Array(2);
+
+		return function search( filename )
+		{
+			var entries = this.entries;
+			var v       = 0;
+			var middle  = 0;
+
+			range[1] = 0;
+			range[0] = entries.length - 1;
+
+			while (range[1] < range[0]) {
+				middle   = range[1] + ((range[0]-range[1]) >> 1);
+				v        = (entries[middle].filename < filename) | 0;
+				range[v] = middle + v;
+			}
+
+			if (range[1] < entries.length && entries[range[1]].filename === filename) {
+				return range[1];
+			}
+
+			return -1;
+		};
+	}();
+
+
+
+	/**
 	 * Find a file in the GRF
 	 *
 	 * @param {string} filename
@@ -196,24 +301,27 @@ function(    GameFileDecrypt,         BinaryReader,         Struct,         Infl
 	GRF.prototype.getFile = function getFile( filename, callback )
 	{
 		// Not case sensitive...
-		var path  = filename.toLowerCase();
-		var table = this.table.dataLowerCase;
-
-		var fp    = this.table.fp;
-		var pos  = table.indexOf( path + '\0' );
+		var path = filename.toLowerCase();
 		var entry, blob;
 		var reader;
 
+		var pos = this.search(path);
+
 		// If filename is find in GRF table list
 		if (pos !== -1) {
-
-			// Skip filename, read file info
-			fp.seek( pos + path.length + 1, SEEK_SET );
-			entry = fp.readStruct(GRF.struct_entry);
+			entry = this.entries[pos];
 
 			// Directory ?
 			if (!(entry.type & GRF.FILELIST_TYPE_FILE)) {
 				return false;
+			}
+
+			// node.js
+			if (fs && file.fd) {
+				var buffer = new Buffer(entry.length_aligned);
+				fs.readSync(this.file.fd, buffer, 0, entry.length_aligned, entry.offset + GRF.struct_header.size);
+				grf.decodeEntry( (new Uint8Array(buffer)).buffer, entry, callback);
+				return true;
 			}
 
 			blob = this.file.slice(

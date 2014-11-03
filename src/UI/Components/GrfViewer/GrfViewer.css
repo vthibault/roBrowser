@@ -1,3 +1,8 @@
+body {
+	overflow:auto;
+	font-size:14px;
+}
+
 #grfviewer {
 	font-family: Times;
 	margin-top:60px;
@@ -211,7 +216,7 @@
 	display:none;
 }
 
-#info a {
+#info button {
 	background-color: rgb(243, 243, 243);
 	background-image: -webkit-linear-gradient(top, rgb(254, 254, 254), rgb(244, 244, 244));
 	background-image: -moz-linear-gradient(top, rgb(254, 254, 254), rgb(244, 244, 244));
@@ -224,7 +229,6 @@
 	cursor: pointer;
 	font-family: sans-serif;
 	font-size: 14px;
-	padding: 20px 36px 20px 36px;
 	text-align: center;
 	text-decoration: none;
 	text-shadow: rgb(255, 255, 255) 0px 1px 0px;
@@ -233,8 +237,8 @@
 	z-index: 0;
 }
 
-#info a:hover { border: 1px solid rgb(165, 165, 165); }
-#info a:active {
+#info button:hover { border: 1px solid rgb(165, 165, 165); }
+#info button:active {
 	background-image: -webkit-linear-gradient(top, rgb(234, 234, 234), rgb(244, 244, 244));
 	background-image: -moz-linear-gradient(top, rgb(234, 234, 234), rgb(244, 244, 244));
 }

@@ -7,36 +7,37 @@
  *
  * @author Vincent Thibault
  */
-define([
-	'require',
-	'DB/DBManager',
-	'Audio/BGM',               'Audio/SoundManager',
-	'Engine/SessionStorage',
-	'Network/PacketStructure', 'Network/NetworkManager',
-	'Preferences/Controls',    'Preferences/Audio',       'Preferences/Map',    'Preferences/Camera'
-],
-function(
-	require,
-	DB,
-	BGM,                 Sound,
-	Session,
-	PACKET,              Network,
-	ControlPreferences,  AudioPreferences,  MapPreferences,  CameraPreferences
-) {
+define(function( require )
+{
 	'use strict';
+
+
+	// Load dependencies
+	var DB                 = require('DB/DBManager');
+	var Emotions           = require('DB/Emotions');
+	var BGM                = require('Audio/BGM');
+	var Sound              = require('Audio/SoundManager');
+	var Session            = require('Engine/SessionStorage');
+	var PACKET             = require('Network/PacketStructure');
+	var Network            = require('Network/NetworkManager');
+	var ControlPreferences = require('Preferences/Controls');
+	var AudioPreferences   = require('Preferences/Audio');
+	var MapPreferences     = require('Preferences/Map');
+	var CameraPreferences  = require('Preferences/Camera');
+	var getModule          = require;
 
 
 	/**
 	 * Process command
 	 */
 	return function processCommand( text ){
-		var pkt;
+		var pkt, matches;
 		var cmd = text.split(' ')[0];
 
 		switch (cmd) {
 
 			case 'sound':
-				this.addText( DB.msgstringtable[27 + AudioPreferences.Sound.play], this.TYPE.INFO );
+				this.addText( DB.getMessage(27 + AudioPreferences.Sound.play), this.TYPE.INFO );
 				AudioPreferences.Sound.play = !AudioPreferences.Sound.play;
 				AudioPreferences.save();
 
@@ -46,7 +47,7 @@ function(
 				return;
 
 			case 'bgm':
-				this.addText( DB.msgstringtable[31 + AudioPreferences.BGM.play], this.TYPE.INFO );
+				this.addText( DB.getMessage(31 + AudioPreferences.BGM.play), this.TYPE.INFO );
 				AudioPreferences.BGM.play = !AudioPreferences.BGM.play;
 				AudioPreferences.save();
 
@@ -58,14 +59,26 @@ function(
 				}
 				return;
 
+			case 'effect':
+				this.addText( DB.getMessage(23 + MapPreferences.effect), this.TYPE.INFO );
+				MapPreferences.effect = !MapPreferences.effect;
+				MapPreferences.save();
+				return;
+
+			case 'mineffect':
+				this.addText( DB.getMessage(687 + MapPreferences.mineffect), this.TYPE.INFO );
+				MapPreferences.mineffect = !MapPreferences.mineffect;
+				MapPreferences.save();
+				return;
+
 			case 'miss':
-				this.addText( DB.msgstringtable[317 + MapPreferences.miss], this.TYPE.INFO );
+				this.addText( DB.getMessage(317 + MapPreferences.miss), this.TYPE.INFO );
 				MapPreferences.miss = !MapPreferences.miss;
 				MapPreferences.save();
 				return;
 
 			case 'camera':
-				this.addText( DB.msgstringtable[319 + CameraPreferences.smooth], this.TYPE.INFO );
+				this.addText( DB.getMessage(319 + CameraPreferences.smooth), this.TYPE.INFO );
 				CameraPreferences.smooth = !CameraPreferences.smooth;
 				CameraPreferences.save();
 				return;
@@ -83,14 +96,14 @@ function(
 
 			case 'noctrl':
 			case 'nc':
-				this.addText( DB.msgstringtable[717 + ControlPreferences.noctrl], this.TYPE.INFO );
+				this.addText( DB.getMessage(717 + ControlPreferences.noctrl), this.TYPE.INFO );
 				ControlPreferences.noctrl = !ControlPreferences.noctrl;
 				ControlPreferences.save();
 				return;
 
 			case 'noshift':
 			case 'ns':
-				this.addText( DB.msgstringtable[701 + ControlPreferences.noshift], this.TYPE.INFO );
+				this.addText( DB.getMessage(701 + ControlPreferences.noshift), this.TYPE.INFO );
 				ControlPreferences.noshift = !ControlPreferences.noshift;
 				ControlPreferences.save();
 				return;
@@ -132,10 +145,9 @@ function(
 				return;
 
 			case 'where':
-				var currentMap = require('Renderer/MapRenderer').currentMap;
+				var currentMap = getModule('Renderer/MapRenderer').currentMap;
 				this.addText(
-					( DB.mapname[ currentMap.replace('.gat','.rsw') ] || DB.msgstringtable[187] ) +
-					'(' + currentMap + ') : ' + Math.floor(Session.Entity.position[0]) + ', ' + Math.floor(Session.Entity.position[1]),
+					DB.getMapName(currentMap) + '(' + currentMap + ') : ' + Math.floor(Session.Entity.position[0]) + ', ' + Math.floor(Session.Entity.position[1]),
 					this.TYPE.INFO
 				);
 				return;
@@ -146,12 +158,41 @@ function(
 				Network.sendPacket(pkt);
 				return;
 
+			case 'memo':
+				pkt = new PACKET.CZ.REMEMBER_WARPPOINT();
+				Network.sendPacket(pkt);
+				return;
+
 			case 'chat':
-				require('UI/Components/ChatRoomCreate/ChatRoomCreate').show();
+				getModule('UI/Components/ChatRoomCreate/ChatRoomCreate').show();
 				return;
 
 			case 'q':
-				require('UI/Components/ChatRoom/ChatRoom').remove();
+				getModule('UI/Components/ChatRoom/ChatRoom').remove();
+				return;
+
+			case 'leave':
+				getModule('Engine/MapEngine/Group').onRequestLeave();
+				return;
+
+			case 'invite':
+				matches = text.match(/^invite\s+(")?([^"]+)(")?/);
+				if (matches && matches[2]) {
+					getModule('Engine/MapEngine/Group').onRequestInvitation(0, matches[2]);
+					return;
+				}
+				break;
+
+			case 'organize':
+				matches = text.match(/^organize\s+(")?([^"]+)(")?/);
+				if (matches && matches[2]) {
+					getModule('Engine/MapEngine/Group').onRequestCreationEasy(matches[2]);
+					return;
+				}
+				break;
+
+			case 'hi':
+				getModule('Engine/MapEngine/Friends').sayHi();
 				return;
 		}
 
@@ -170,8 +211,15 @@ function(
 			}
 		}
 
+		// Show emotion
+		if (cmd in Emotions.commands) {
+			pkt      = new PACKET.CZ.REQ_EMOTION();
+			pkt.type = Emotions.commands[cmd];
+			Network.sendPacket(pkt);
+			return;
+		}
 
 		// Command not found
-		this.addText( DB.msgstringtable[95], this.TYPE.INFO );
+		this.addText( DB.getMessage(95), this.TYPE.INFO );
 	};
 });

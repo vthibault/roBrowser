@@ -8,36 +8,327 @@
  * @author Vincent Thibault
  */
 
-define( function()
+define(function()
 {
 	'use strict';
 
 	/**
-	 * TGA class loader
+	 * TGA Namespace
+	 * @constructor
 	 */
-	function Targa() {
-		this.header   = null;
-		this.offset   = 0;
-		this.use_rle  = false;
-		this.use_pal  = false;
-		this.use_grey = false;
+	function Targa()
+	{
 	}
 
-	// TGA Constants
-	Targa.TYPE_NO_DATA     = 0;
-	Targa.TYPE_INDEXED     = 1;
-	Targa.TYPE_RGB         = 2;
-	Targa.TYPE_GREY        = 3;
-	Targa.TYPE_RLE_INDEXED = 9;
-	Targa.TYPE_RLE_RGB     = 10;
-	Targa.TYPE_RLE_GREY    = 11;
 
-	Targa.ORIGIN_MASK      = 0x30;
-	Targa.ORIGIN_SHIFT     = 0x04;
-	Targa.ORIGIN_BL        = 0x00;
-	Targa.ORIGIN_BR        = 0x01;
-	Targa.ORIGIN_UL        = 0x02;
-	Targa.ORIGIN_UR        = 0x03;
+	/**
+	 * @var {object} TGA type constants
+	 */
+	Targa.Type = {
+		NO_DATA     : 0,
+		INDEXED     : 1,
+		RGB         : 2,
+		GREY        : 3,
+		RLE_INDEXED : 9,
+		RLE_RGB     : 10,
+		RLE_GREY    : 11,
+	};
+
+
+	/**
+	 * @var {object} TGA origin constants
+	 */
+	Targa.Origin = {
+		BOTTOM_LEFT:  0x00,
+		BOTTOM_RIGHT: 0x01,
+		TOP_LEFT:     0x02,
+		TOP_RIGHT:    0x03,
+		SHIFT:        0x04,
+		MASK:         0x30,
+	};
+
+
+	/**
+	 * Check the header of TGA file to detect errors
+	 *
+	 * @param {object} tga header structure
+	 * @throws Error
+	 */
+	function checkHeader( header )
+	{
+		// What the need of a file without data ?
+		if (header.imageType === Targa.Type.NO_DATA) {
+			throw new Error('Targa::checkHeader() - No data');
+		}
+
+		// Indexed type
+		if (header.hasColorMap) {
+			if (header.colorMapLength > 256 || header.colorMapSize !== 24 || header.colorMapType !== 1) {
+				throw new Error('Targa::checkHeader() - Invalid colormap for indexed type');
+			}
+		}
+		else {
+			if (header.colorMapType) {
+				throw new Error('Targa::checkHeader() - Why does the image contain a palette ?');
+			}
+		}
+
+		// Check image size
+		if (header.width <= 0 || header.height <= 0) {
+			throw new Error('Targa::checkHeader() - Invalid image size');
+		}
+
+		// Check pixel size
+		if (header.pixelDepth !== 8  &&
+		    header.pixelDepth !== 16 &&
+		    header.pixelDepth !== 24 &&
+		    header.pixelDepth !== 32) {
+			throw new Error('Targa::checkHeader() - Invalid pixel size "' + header.pixelDepth + '"');
+		}
+	}
+
+
+	/**
+	 * Decode RLE compression
+	 *
+	 * @param {Uint8Array} data
+	 * @param {number} offset in data to start loading RLE
+	 * @param {number} pixel count
+	 * @param {number} output buffer size
+	 */
+	function decodeRLE( data, offset, pixelSize, outputSize)
+	{
+		var pos, c, count, i;
+		var pixels, output;
+
+		output = new Uint8Array(outputSize);
+		pixels = new Uint8Array(pixelSize);
+		pos    = 0;
+
+		while (pos < outputSize) {
+			c     = data[offset++];
+			count = (c & 0x7f) + 1;
+
+			// RLE pixels.
+			if (c & 0x80) {
+				// Bind pixel tmp array
+				for (i = 0; i < pixelSize; ++i) {
+					pixels[i] = data[offset++];
+				}
+
+				// Copy pixel array
+				for (i = 0; i < count; ++i) {
+					output.set(pixels, pos);
+					pos += pixelSize;
+				}
+			}
+
+			// Raw pixels.
+			else {
+				count *= pixelSize;
+				for (i = 0; i < count; ++i) {
+					output[pos++] = data[offset++];
+				}
+			}
+		}
+
+		return output;
+	}
+
+
+	/**
+	 * Return a ImageData object from a TGA file (8bits)
+	 *
+	 * @param {Array} imageData - ImageData to bind
+	 * @param {Array} indexes - index to colormap
+	 * @param {Array} colormap
+	 * @param {number} width
+	 * @param {number} y_start - start at y pixel.
+	 * @param {number} x_start - start at x pixel.
+	 * @param {number} y_step  - increment y pixel each time.
+	 * @param {number} y_end   - stop at pixel y.
+	 * @param {number} x_step  - increment x pixel each time.
+	 * @param {number} x_end   - stop at pixel x.
+	 * @returns {Array} imageData
+	 */
+	function getImageData8bits(imageData, indexes, colormap, width, y_start, y_step, y_end, x_start, x_step, x_end)
+	{
+		var color, i, x, y;
+
+		for (i = 0, y = y_start; y !== y_end; y += y_step) {
+			for (x = x_start; x !== x_end; x += x_step, i++) {
+				color = indexes[i];
+				imageData[(x + width * y) * 4 + 3] = 255;
+				imageData[(x + width * y) * 4 + 2] = colormap[(color * 3) + 0];
+				imageData[(x + width * y) * 4 + 1] = colormap[(color * 3) + 1];
+				imageData[(x + width * y) * 4 + 0] = colormap[(color * 3) + 2];
+			}
+		}
+
+		return imageData;
+	}
+
+
+	/**
+	 * Return a ImageData object from a TGA file (16bits)
+	 *
+	 * @param {Array} imageData - ImageData to bind
+	 * @param {Array} pixels data
+	 * @param {Array} colormap - not used
+	 * @param {number} width
+	 * @param {number} y_start - start at y pixel.
+	 * @param {number} x_start - start at x pixel.
+	 * @param {number} y_step  - increment y pixel each time.
+	 * @param {number} y_end   - stop at pixel y.
+	 * @param {number} x_step  - increment x pixel each time.
+	 * @param {number} x_end   - stop at pixel x.
+	 * @returns {Array} imageData
+	 */
+	function getImageData16bits(imageData, pixels, colormap, width, y_start, y_step, y_end, x_start, x_step, x_end)
+	{
+		var color, i, x, y;
+
+		for (i = 0, y = y_start; y !== y_end; y += y_step) {
+			for (x = x_start; x !== x_end; x += x_step, i += 2) {
+				color = pixels[i + 0] | (pixels[i + 1] << 8);
+				imageData[(x + width * y) * 4 + 0] = (color & 0x7C00) >> 7;
+				imageData[(x + width * y) * 4 + 1] = (color & 0x03E0) >> 2;
+				imageData[(x + width * y) * 4 + 2] = (color & 0x001F) >> 3;
+				imageData[(x + width * y) * 4 + 3] = (color & 0x8000) ? 0 : 255;
+			}
+		}
+
+		return imageData;
+	}
+
+
+	/**
+	 * Return a ImageData object from a TGA file (24bits)
+	 *
+	 * @param {Array} imageData - ImageData to bind
+	 * @param {Array} pixels data
+	 * @param {Array} colormap - not used
+	 * @param {number} width
+	 * @param {number} y_start - start at y pixel.
+	 * @param {number} x_start - start at x pixel.
+	 * @param {number} y_step  - increment y pixel each time.
+	 * @param {number} y_end   - stop at pixel y.
+	 * @param {number} x_step  - increment x pixel each time.
+	 * @param {number} x_end   - stop at pixel x.
+	 * @returns {Array} imageData
+	 */
+	function getImageData24bits(imageData, pixels, colormap, width, y_start, y_step, y_end, x_start, x_step, x_end)
+	{
+		var i, x, y;
+
+		for (i = 0, y = y_start; y !== y_end; y += y_step) {
+			for (x = x_start; x !== x_end; x += x_step, i += 3) {
+				imageData[(x + width * y) * 4 + 3] = 255;
+				imageData[(x + width * y) * 4 + 2] = pixels[i + 0];
+				imageData[(x + width * y) * 4 + 1] = pixels[i + 1];
+				imageData[(x + width * y) * 4 + 0] = pixels[i + 2];
+			}
+		}
+
+		return imageData;
+	}
+
+
+	/**
+	 * Return a ImageData object from a TGA file (32bits)
+	 *
+	 * @param {Array} imageData - ImageData to bind
+	 * @param {Array} pixels data
+	 * @param {Array} colormap - not used
+	 * @param {number} width
+	 * @param {number} y_start - start at y pixel.
+	 * @param {number} x_start - start at x pixel.
+	 * @param {number} y_step  - increment y pixel each time.
+	 * @param {number} y_end   - stop at pixel y.
+	 * @param {number} x_step  - increment x pixel each time.
+	 * @param {number} x_end   - stop at pixel x.
+	 * @returns {Array} imageData
+	 */
+	function getImageData32bits(imageData, pixels, colormap, width, y_start, y_step, y_end, x_start, x_step, x_end)
+	{
+		var i, x, y;
+
+		for (i = 0, y = y_start; y !== y_end; y += y_step) {
+			for (x = x_start; x !== x_end; x += x_step, i += 4) {
+				imageData[(x + width * y) * 4 + 2] = pixels[i + 0];
+				imageData[(x + width * y) * 4 + 1] = pixels[i + 1];
+				imageData[(x + width * y) * 4 + 0] = pixels[i + 2];
+				imageData[(x + width * y) * 4 + 3] = pixels[i + 3];
+			}
+		}
+
+		return imageData;
+	}
+
+
+	/**
+	 * Return a ImageData object from a TGA file (8bits grey)
+	 *
+	 * @param {Array} imageData - ImageData to bind
+	 * @param {Array} pixels data
+	 * @param {Array} colormap - not used
+	 * @param {number} width
+	 * @param {number} y_start - start at y pixel.
+	 * @param {number} x_start - start at x pixel.
+	 * @param {number} y_step  - increment y pixel each time.
+	 * @param {number} y_end   - stop at pixel y.
+	 * @param {number} x_step  - increment x pixel each time.
+	 * @param {number} x_end   - stop at pixel x.
+	 * @returns {Array} imageData
+	 */
+	function getImageDataGrey8bits(imageData, pixels, colormap, width, y_start, y_step, y_end, x_start, x_step, x_end)
+	{
+		var color, i, x, y;
+
+		for (i = 0, y = y_start; y !== y_end; y += y_step) {
+			for (x = x_start; x !== x_end; x += x_step, i++) {
+				color = pixels[i];
+				imageData[(x + width * y) * 4 + 0] = color;
+				imageData[(x + width * y) * 4 + 1] = color;
+				imageData[(x + width * y) * 4 + 2] = color;
+				imageData[(x + width * y) * 4 + 3] = 255;
+			}
+		}
+
+		return imageData;
+	}
+
+
+	/**
+	 * Return a ImageData object from a TGA file (16bits grey)
+	 *
+	 * @param {Array} imageData - ImageData to bind
+	 * @param {Array} pixels data
+	 * @param {Array} colormap - not used
+	 * @param {number} width
+	 * @param {number} y_start - start at y pixel.
+	 * @param {number} x_start - start at x pixel.
+	 * @param {number} y_step  - increment y pixel each time.
+	 * @param {number} y_end   - stop at pixel y.
+	 * @param {number} x_step  - increment x pixel each time.
+	 * @param {number} x_end   - stop at pixel x.
+	 * @returns {Array} imageData
+	 */
+	function getImageDataGrey16bits(imageData, pixels, colormap, width, y_start, y_step, y_end, x_start, x_step, x_end)
+	{
+		var i, x, y;
+
+		for (i = 0, y = y_start; y !== y_end; y += y_step) {
+			for (x = x_start; x !== x_end; x += x_step, i += 2) {
+				imageData[(x + width * y) * 4 + 0] = pixels[i + 0];
+				imageData[(x + width * y) * 4 + 1] = pixels[i + 0];
+				imageData[(x + width * y) * 4 + 2] = pixels[i + 0];
+				imageData[(x + width * y) * 4 + 3] = pixels[i + 1];
+			}
+		}
+
+		return imageData;
+	}
 
 
 	/**
@@ -46,16 +337,17 @@ define( function()
 	 * @param {string} path - Path of the filename to load
 	 * @param {function} callback - callback to trigger when the file is loaded
 	 */
-	Targa.prototype.open = function Targa_open(path, callback) {
-		var req, _this = this;
+	Targa.prototype.open = function targaOpen(path, callback)
+	{
+		var req, tga = this;
 		req = new XMLHttpRequest();
 		req.responseType = 'arraybuffer';
 		req.open('GET', path, true);
 		req.onload = function() {
 			if (this.status === 200) {
-				_this.load(new Uint8Array(req.response));
+				tga.load(new Uint8Array(req.response));
 				if (callback) {
-					callback.call(_this);
+					callback.call(tga);
 				}
 			}
 		};
@@ -66,192 +358,67 @@ define( function()
 	/**
 	 * Load and parse a TGA file
 	 *
-	 * @param {Uint8Array} data - Binary data of the TGA file
+	 * @param {Uint8Array} data - TGA file buffer array
 	 */
-	Targa.prototype.load = function Targa_load(data) {
-		// Not enough data to contain header ?
-		if (data.length < 19)
-			throw new Error('Targa::load() - Not enough data to contain header');
+	Targa.prototype.load = function targaLoad( data )
+	{
+		var offset = 0;
 
-		// Read Header
-		this.offset = 0;
+		// Not enough data to contain header ?
+		if (data.length < 0x12) {
+			throw new Error('Targa::load() - Not enough data to contain header');
+		}
+
+		// Read TgaHeader
 		this.header = {
-			id_length:       data[this.offset++],
-			colormap_type:   data[this.offset++],
-			image_type:      data[this.offset++],
-			colormap_index:  data[this.offset++] | data[this.offset++] << 8,
-			colormap_length: data[this.offset++] | data[this.offset++] << 8,
-			colormap_size:   data[this.offset++],
-			origin: [
-				data[this.offset++] | data[this.offset++] << 8,
-				data[this.offset++] | data[this.offset++] << 8
-			],
-			width:      data[this.offset++] | data[this.offset++] << 8,
-			height:     data[this.offset++] | data[this.offset++] << 8,
-			pixel_size: data[this.offset++],
-			flags:      data[this.offset++]
+			/* 0x00  BYTE */  idLength:       data[offset++],
+			/* 0x01  BYTE */  colorMapType:   data[offset++],
+			/* 0x02  BYTE */  imageType:      data[offset++],
+			/* 0x03  WORD */  colorMapIndex:  data[offset++] | data[offset++] << 8,
+			/* 0x05  WORD */  colorMapLength: data[offset++] | data[offset++] << 8,
+			/* 0x07  BYTE */  colorMapDepth:  data[offset++],
+			/* 0x08  WORD */  offsetX:        data[offset++] | data[offset++] << 8,
+			/* 0x0a  WORD */  offsetY:        data[offset++] | data[offset++] << 8,
+			/* 0x0c  WORD */  width:          data[offset++] | data[offset++] << 8,
+			/* 0x0e  WORD */  height:         data[offset++] | data[offset++] << 8,
+			/* 0x10  BYTE */  pixelDepth:     data[offset++],
+			/* 0x11  BYTE */  flags:          data[offset++]
 		};
 
-		// Assume it's a valid Targa file.
-		this.checkHeader();
-		if (this.header.id_length + this.offset > data.length) {
+		// Set shortcut
+		this.header.hasEncoding = (this.header.imageType === Targa.Type.RLE_INDEXED || this.header.imageType === Targa.Type.RLE_RGB   || this.header.imageType === Targa.Type.RLE_GREY);
+		this.header.hasColorMap = (this.header.imageType === Targa.Type.RLE_INDEXED || this.header.imageType === Targa.Type.INDEXED);
+		this.header.isGreyColor = (this.header.imageType === Targa.Type.RLE_GREY    || this.header.imageType === Targa.Type.GREY);
+
+		// Check if a valid TGA file (or if we can load it)
+		checkHeader(this.header);
+
+		// Move to data
+		offset += this.header.idLength;
+		if (offset >= data.length) {
 			throw new Error('Targa::load() - No data');
 		}
 
-		// Skip not needed data
-		this.offset += this.header.id_length;
-
-		// Get some informations.
-		switch (this.header.image_type) {
-			case Targa.TYPE_RLE_INDEXED:
-				this.use_rle = true;
-				this.use_pal = true;
-				break;
-
-			case Targa.TYPE_INDEXED:
-				this.use_pal = true;
-				break;
-
-			case Targa.TYPE_RLE_RGB:
-				this.use_rle = true;
-				break;
-
-			case Targa.TYPE_RGB:
-				break;
-
-			case Targa.TYPE_RLE_GREY:
-				this.use_rle = true;
-				this.use_grey = true;
-				break;
-
-			case Targa.TYPE_GREY:
-				this.use_grey = true;
-				break;
+		// Read palette
+		if (this.header.hasColorMap) {
+			var colorMapSize  = this.header.colorMapLength * (this.header.colorMapDepth >> 3);
+			this.palette      = data.subarray( offset, offset + colorMapSize);
+			offset           += colorMapSize;
 		}
 
-		this.parse(data);
-	};
+		var pixelSize  = this.header.pixelDepth >> 3;
+		var imageSize  = this.header.width * this.header.height;
+		var pixelTotal = imageSize * pixelSize;
 
-
-	/**
-	 * Check the header of TGA file to detect errors
-	 *
-	 * @throws Error
-	 */
-	Targa.prototype.checkHeader = function Targa_checkHeader() {
-		switch (this.header.image_type) {
-			// Check indexed type
-			case Targa.TYPE_INDEXED:
-			case Targa.TYPE_RLE_INDEXED:
-				if (this.header.colormap_length > 256 || this.header.colormap_size !== 24 || this.header.colormap_type !== 1) {
-					throw new Error('Targa::checkHeader() - Invalid type colormap data for indexed type');
-				}
-				break;
-
-			// Check colormap type
-			case Targa.TYPE_RGB:
-			case Targa.TYPE_GREY:
-			case Targa.TYPE_RLE_RGB:
-			case Targa.TYPE_RLE_GREY:
-				if (this.header.colormap_type) {
-					throw new Error('Targa::checkHeader() - Invalid type colormap data for colormap type');
-				}
-				break;
-
-			// What the need of a file without data ?
-			case Targa.TYPE_NO_DATA:
-				throw new Error('Targa::checkHeader() - No data');
-
-			// Invalid type ?
-			default:
-				throw new Error('Targa::checkHeader() - Invalid type "' + this.header.image_type + '"');
+		// RLE encoded
+		if (this.header.hasEncoding) {
+			this.imageData = decodeRLE(data, offset, pixelSize, pixelTotal);
 		}
 
-		// Check image size
-		if (this.header.width <= 0 || this.header.height <= 0) {
-			throw new Error('Targa::checkHeader() - Invalid image size');
-		}
-
-		// Check pixel size
-		if (this.header.pixel_size !== 8  &&
-		    this.header.pixel_size !== 16 &&
-		    this.header.pixel_size !== 24 &&
-		    this.header.pixel_size !== 32) {
-			throw new Error('Targa::checkHeader() - Invalid pixel size "' + this.header.pixel_size + '"');
-		}
-	};
-
-
-	/**
-	 * Parse data from TGA file
-	 *
-	 * @param {Uint8Array} data - Binary data of the TGA file
-	 */
-	Targa.prototype.parse = function Targa_parse(data) {
-		var _header,
-		    pixel_data,
-		    pixel_size,
-		    pixel_total;
-
-		_header      = this.header;
-		pixel_size   = _header.pixel_size >> 3;
-		pixel_total  = _header.width * _header.height * pixel_size;
-
-		// Read palettes
-		if (this.use_pal) {
-			this.palettes = data.subarray(
-				this.offset,
-				this.offset += _header.colormap_length * pixel_size
-			);
-		}
-
-		// Read LRE
-		if (this.use_rle) {
-			pixel_data = new Uint8Array(pixel_total);
-
-			var c, count, i;
-			var offset = 0;
-			var pixels = new Uint8Array(pixel_size);
-
-			while (offset < pixel_total) {
-				c     = data[this.offset++];
-				count = (c & 0x7f) + 1;
-
-				// RLE pixels.
-				if (c & 0x80) {
-					// Bind pixel tmp array
-					for (i = 0; i < pixel_size; ++i) {
-						pixels[i] = data[this.offset++];
-					}
-
-					// Copy pixel array
-					for (i = 0; i < count; ++i) {
-						pixel_data.set(pixels, offset + i * pixel_size);
-					}
-
-					offset += pixel_size * count;
-				}
-
-				// Raw pixels.
-				else {
-					count *= pixel_size;
-					for (i = 0; i < count; ++i) {
-						pixel_data[offset + i] = data[this.offset++];
-					}
-					offset += count;
-				}
-			}
-		}
-
-		// RAW Pixels
+		// RAW pixels
 		else {
-			pixel_data = data.subarray(
-				this.offset,
-				this.offset += (this.use_pal ? _header.width * _header.height : pixel_total)
-			);
+			this.imageData = data.subarray( offset, offset + (this.header.hasColorMap ? imageSize : pixelTotal) );
 		}
-
-		this.image = pixel_data;
 	};
 
 
@@ -261,79 +428,73 @@ define( function()
 	 * @param {object} imageData - Optional ImageData to work with
 	 * @returns {object} imageData
 	 */
-	Targa.prototype.getImageData = function Targa_getImageData( imageData ) {
-		var width  = this.header.width,
-		    height = this.header.height,
-		    x_start,
-		    y_start,
-		    x_step,
-		    y_step,
-		    y_end,
-		    x_end,
-		    func,
-		    data;
+	Targa.prototype.getImageData = function targaGetImageData( imageData )
+	{
+		var width  = this.header.width;
+		var height = this.header.height;
+		var origin = (this.header.flags & Targa.Origin.MASK) >> Targa.Origin.SHIFT;
+		var x_start, x_step, x_end, y_start, y_step, y_end;
+		var getImageData;
 
-		data =
-			// sent as argument
-			imageData ||
+		// Create an imageData
+		if (!imageData) {
+			if (document) {
+				imageData = document.createElement('canvas').getContext('2d').createImageData(width, height);
+			}
+			// In Thread context ?
+			else {
+				imageData = {
+					width:  width,
+					height: height,
+					data: new Uint8ClampedArray(width * height * 4)
+				};
+			}
+		}
 
-			// In main frame ?
-			(document && document.createElement('canvas').getContext('2d').createImageData(width, height)) ||
-			// Not have access to document.
-			{
-				width: width,
-				height: height,
-				data: new Uint8Array(width * height * 4)
-			};
+		if (origin === Targa.Origin.TOP_LEFT || origin === Targa.Origin.TOP_RIGHT) {
+			y_start = 0;
+			y_step  = 1;
+			y_end   = height;
+		}
+		else {
+			y_start = height - 1;
+			y_step  = -1;
+			y_end   = -1;
+		}
 
-		// Check how we should write the pixels
-		switch ((this.header.flags & Targa.ORIGIN_MASK) >> Targa.ORIGIN_SHIFT) {
-			default:
-			case Targa.ORIGIN_UL:
-				x_start = 0;
-				x_step = 1;
-				x_end = width;
-				y_start = 0;
-				y_step = 1;
-				y_end = height;
+		if (origin === Targa.Origin.TOP_LEFT || origin === Targa.Origin.BOTTOM_LEFT) {
+			x_start = 0;
+			x_step  = 1;
+			x_end   = width;
+		}
+		else {
+			x_start = width - 1;
+			x_step  = -1;
+			x_end   = -1;
+		}
+
+		// TODO: use this.header.offsetX and this.header.offsetY ?
+
+		switch (this.header.pixelDepth) {
+			case 8:
+				getImageData = this.header.isGreyColor ? getImageDataGrey8bits : getImageData8bits;
 				break;
 
-			case Targa.ORIGIN_BL:
-				x_start = 0;
-				x_step = 1;
-				x_end = width;
-				y_start = height - 1;
-				y_step = -1;
-				y_end = -1;
+			case 16:
+				getImageData = this.header.isGreyColor ? getImageDataGrey16bits : getImageData16bits;
 				break;
 
-			case Targa.ORIGIN_UR:
-				x_start = width - 1;
-				x_step = -1;
-				x_end = -1;
-				y_start = 0;
-				y_step = 1;
-				y_end = height;
+			case 24:
+				getImageData = getImageData24bits;
 				break;
 
-			case Targa.ORIGIN_BR:
-				x_start = width - 1;
-				x_step = -1;
-				x_end = -1;
-				y_start = height - 1;
-				y_step = -1;
-				y_end = -1;
+			case 32:
+				getImageData = getImageData32bits;
 				break;
 		}
 
-		// TODO: use this.header.origin[0-1] ?
-		// x_start += this.header.origin[0];
-		// y_start += this.header.origin[1];
-
-		// Load the specify method
-		func = 'getImageData' + (this.use_grey ? 'Grey' : '') + (this.header.pixel_size) + 'bits';
-		this[func](data.data, y_start, y_step, y_end, x_start, x_step, x_end);
-		return data;
+		getImageData(imageData.data, this.imageData, this.palette, width, y_start, y_step, y_end, x_start, x_step, x_end);
+		return imageData;
 	};
 
 
@@ -342,13 +503,19 @@ define( function()
 	 *
 	 * @returns {object} CanvasElement
 	 */
-	Targa.prototype.getCanvas = function Targa_getCanvas() {
-		var canvas = document.createElement('canvas');
-		var ctx = canvas.getContext('2d');
-		var imageData = ctx.createImageData(this.header.width, this.header.height);
-		canvas.width = this.header.width;
+	Targa.prototype.getCanvas = function targaGetCanvas()
+	{
+		var canvas, ctx, imageData;
+
+		canvas    = document.createElement('canvas');
+		ctx       = canvas.getContext('2d');
+		imageData = ctx.createImageData(this.header.width, this.header.height);
+
+		canvas.width  = this.header.width;
 		canvas.height = this.header.height;
+
 		ctx.putImageData(this.getImageData(imageData), 0, 0);
+
 		return canvas;
 	};
 
@@ -359,191 +526,9 @@ define( function()
 	 * @param {string} type - Optional image content-type to output (default: image/png)
 	 * @returns {string} url
 	 */
-	Targa.prototype.getDataURL = function Targa_getDatURL( type ) {
+	Targa.prototype.getDataURL = function targaGetDatURL( type )
+	{
 		return this.getCanvas().toDataURL(type || 'image/png');
-	};
-
-
-	/**
-	 * Return a ImageData object from a TGA file (8bits)
-	 *
-	 * @param {object} imageData - ImageData to bind
-	 * @param {int} y_start - start at y pixel.
-	 * @param {int} x_start - start at x pixel.
-	 * @param {int} y_step  - increment y pixel each time.
-	 * @param {int} y_end   - stop at pixel y.
-	 * @param {int} x_step  - increment x pixel each time.
-	 * @param {int} x_end   - stop at pixel x.
-	 * @returns {object} imageData
-	 */
-	Targa.prototype.getImageData8bits = function Targa_getImageData8bits(imageData, y_start, y_step, y_end, x_start, x_step, x_end) {
-		var image = this.image, colormap = this.palettes;
-		var width = this.header.width;
-		var color, i = 0, x, y;
-
-		for (y = y_start; y !== y_end; y += y_step) {
-			for (x = x_start; x !== x_end; x += x_step, i++) {
-				color = image[i];
-				imageData[(x + width * y) * 4 + 3] = 255;
-				imageData[(x + width * y) * 4 + 2] = colormap[(color * 3) + 0];
-				imageData[(x + width * y) * 4 + 1] = colormap[(color * 3) + 1];
-				imageData[(x + width * y) * 4 + 0] = colormap[(color * 3) + 2];
-			}
-		}
-
-		return imageData;
-	};
-
-
-	/**
-	 * Return a ImageData object from a TGA file (16bits)
-	 *
-	 * @param {object} imageData - ImageData to bind
-	 * @param {int} y_start - start at y pixel.
-	 * @param {int} x_start - start at x pixel.
-	 * @param {int} y_step  - increment y pixel each time.
-	 * @param {int} y_end   - stop at pixel y.
-	 * @param {int} x_step  - increment x pixel each time.
-	 * @param {int} x_end   - stop at pixel x.
-	 * @returns {object} imageData
-	 */
-	Targa.prototype.getImageData16bits = function Targa_getImageData16bits(imageData, y_start, y_step, y_end, x_start, x_step, x_end) {
-		var image = this.image;
-		var width = this.header.width;
-		var color, i = 0, x, y;
-
-		for (y = y_start; y !== y_end; y += y_step) {
-			for (x = x_start; x !== x_end; x += x_step, i += 2) {
-				color = image[i + 0] + (image[i + 1] << 8); // Inversed ?
-				imageData[(x + width * y) * 4 + 0] = (color & 0x7C00) >> 7;
-				imageData[(x + width * y) * 4 + 1] = (color & 0x03E0) >> 2;
-				imageData[(x + width * y) * 4 + 2] = (color & 0x001F) >> 3;
-				imageData[(x + width * y) * 4 + 3] = (color & 0x8000) ? 0 : 255;
-			}
-		}
-
-		return imageData;
-	};
-
-
-	/**
-	 * Return a ImageData object from a TGA file (24bits)
-	 *
-	 * @param {object} imageData - ImageData to bind
-	 * @param {int} y_start - start at y pixel.
-	 * @param {int} x_start - start at x pixel.
-	 * @param {int} y_step  - increment y pixel each time.
-	 * @param {int} y_end   - stop at pixel y.
-	 * @param {int} x_step  - increment x pixel each time.
-	 * @param {int} x_end   - stop at pixel x.
-	 * @returns {object} imageData
-	 */
-	Targa.prototype.getImageData24bits = function Targa_getImageData24bits(imageData, y_start, y_step, y_end, x_start, x_step, x_end) {
-		var image = this.image;
-		var width = this.header.width;
-		var i = 0, x, y;
-
-		for (y = y_start; y !== y_end; y += y_step) {
-			for (x = x_start; x !== x_end; x += x_step, i += 3) {
-				imageData[(x + width * y) * 4 + 3] = 255;
-				imageData[(x + width * y) * 4 + 2] = image[i + 0];
-				imageData[(x + width * y) * 4 + 1] = image[i + 1];
-				imageData[(x + width * y) * 4 + 0] = image[i + 2];
-			}
-		}
-
-		return imageData;
-	};
-
-
-	/**
-	 * Return a ImageData object from a TGA file (32bits)
-	 *
-	 * @param {object} imageData - ImageData to bind
-	 * @param {int} y_start - start at y pixel.
-	 * @param {int} x_start - start at x pixel.
-	 * @param {int} y_step  - increment y pixel each time.
-	 * @param {int} y_end   - stop at pixel y.
-	 * @param {int} x_step  - increment x pixel each time.
-	 * @param {int} x_end   - stop at pixel x.
-	 * @returns {object} imageData
-	 */
-	Targa.prototype.getImageData32bits = function Targa_getImageData32bits(imageData, y_start, y_step, y_end, x_start, x_step, x_end) {
-		var image = this.image;
-		var width = this.header.width;
-		var i = 0, x, y;
-
-		for (y = y_start; y !== y_end; y += y_step) {
-			for (x = x_start; x !== x_end; x += x_step, i += 4) {
-				imageData[(x + width * y) * 4 + 2] = image[i + 0];
-				imageData[(x + width * y) * 4 + 1] = image[i + 1];
-				imageData[(x + width * y) * 4 + 0] = image[i + 2];
-				imageData[(x + width * y) * 4 + 3] = image[i + 3];
-			}
-		}
-
-		return imageData;
-	};
-
-
-	/**
-	 * Return a ImageData object from a TGA file (8bits grey)
-	 *
-	 * @param {object} imageData - ImageData to bind
-	 * @param {int} y_start - start at y pixel.
-	 * @param {int} x_start - start at x pixel.
-	 * @param {int} y_step  - increment y pixel each time.
-	 * @param {int} y_end   - stop at pixel y.
-	 * @param {int} x_step  - increment x pixel each time.
-	 * @param {int} x_end   - stop at pixel x.
-	 * @returns {object} imageData
-	 */
-	Targa.prototype.getImageDataGrey8bits = function Targa_getImageDataGrey8bits(imageData, y_start, y_step, y_end, x_start, x_step, x_end) {
-		var image = this.image;
-		var width = this.header.width;
-		var color, i = 0, x, y;
-
-		for (y = y_start; y !== y_end; y += y_step) {
-			for (x = x_start; x !== x_end; x += x_step, i++) {
-				color = image[i];
-				imageData[(x + width * y) * 4 + 0] = color;
-				imageData[(x + width * y) * 4 + 1] = color;
-				imageData[(x + width * y) * 4 + 2] = color;
-				imageData[(x + width * y) * 4 + 3] = 255;
-			}
-		}
-
-		return imageData;
-	};
-
-
-	/**
-	 * Return a ImageData object from a TGA file (16bits grey)
-	 *
-	 * @param {object} imageData - ImageData to bind
-	 * @param {int} y_start - start at y pixel.
-	 * @param {int} x_start - start at x pixel.
-	 * @param {int} y_step  - increment y pixel each time.
-	 * @param {int} y_end   - stop at pixel y.
-	 * @param {int} x_step  - increment x pixel each time.
-	 * @param {int} x_end   - stop at pixel x.
-	 * @returns {object} ImageData
-	 */
-	Targa.prototype.getImageDataGrey16bits = function Targa_getImageDataGrey16bits(imageData, y_start, y_step, y_end, x_start, x_step, x_end) {
-		var image = this.image;
-		var width = this.header.width;
-		var i = 0, x, y;
-
-		for (y = y_start; y !== y_end; y += y_step) {
-			for (x = x_start; x !== x_end; x += x_step, i += 2) {
-				imageData[(x + width * y) * 4 + 0] = image[i + 0];
-				imageData[(x + width * y) * 4 + 1] = image[i + 0];
-				imageData[(x + width * y) * 4 + 2] = image[i + 0];
-				imageData[(x + width * y) * 4 + 3] = image[i + 1];
-			}
-		}
-
-		return imageData;
 	};
 
 

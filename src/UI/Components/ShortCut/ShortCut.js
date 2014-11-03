@@ -15,22 +15,23 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
-	var DB                 = require('DB/DBManager');
-	var SkillInfo          = require('DB/SkillInfo');
-	var jQuery             = require('Utils/jquery');
-	var Client             = require('Core/Client');
-	var Preferences        = require('Core/Preferences');
-	var Renderer           = require('Renderer/Renderer');
-	var KEYS               = require('Controls/KeyEventHandler');
-	var Mouse              = require('Controls/MouseEventHandler');
-	var UIManager          = require('UI/UIManager');
-	var UIComponent        = require('UI/UIComponent');
-	var ItemInfo           = require('UI/Components/ItemInfo/ItemInfo');
-	var Inventory          = require('UI/Components/Inventory/Inventory');
-	//var SkillInfoWindow  = require('UI/Components/SkillInfo/SkillInfo');
-	//var SkillWindow      = require('UI/Components/Skill/Skill')
-	var htmlText           = require('text!./ShortCut.html');
-	var cssText            = require('text!./ShortCut.css');
+	var DB                   = require('DB/DBManager');
+	var ItemType             = require('DB/Items/ItemType');
+	var SkillInfo            = require('DB/Skills/SkillInfo');
+	var jQuery               = require('Utils/jquery');
+	var Client               = require('Core/Client');
+	var Preferences          = require('Core/Preferences');
+	var Renderer             = require('Renderer/Renderer');
+	var Mouse                = require('Controls/MouseEventHandler');
+	var UIManager            = require('UI/UIManager');
+	var UIComponent          = require('UI/UIComponent');
+	var ItemInfo             = require('UI/Components/ItemInfo/ItemInfo');
+	var Inventory            = require('UI/Components/Inventory/Inventory');
+	var SkillWindow          = require('UI/Components/SkillList/SkillList');
+	var SkillDescription     = require('UI/Components/SkillDescription/SkillDescription');
+	var SkillTargetSelection = require('UI/Components/SkillTargetSelection/SkillTargetSelection');
+	var htmlText             = require('text!./ShortCut.html');
+	var cssText              = require('text!./ShortCut.css');
 
 
 	/**
@@ -67,43 +68,21 @@ define(function(require)
 	ShortCut.init = function init()
 	{
 		this.ui.find('.resize').mousedown(onResize);
+		this.ui.find('.close').mousedown(stopPropagation).click(onClose);
 
-		this.ui.find('.close').click(function(event){
-			ShortCut.ui.css('height', 0);
-			_preferences.size = 0;
-			_preferences.save();
+		this.ui
+			// Dropping to the shortcut
+			.on('drop',     '.container', onDrop)
+			.on('dragover', '.container', stopPropagation)
 
-			event.stopImmediatePropagation();
-			return false;
-		});
-
-		// Dropping to the shortcut
-		this.ui.on('drop', '.container', onDrop);
-		this.ui.on('dragover', '.container', function(){
-			event.stopImmediatePropagation();
-			return false;
-		});
-
-		// Drag from the shortcut from somewhere else
-		this.ui.on('dragstart', '.icon', onDrag);
-		this.ui.on('dragend', '.icon', function(){
-			delete window._OBJ_DRAG_;
-		});
-
-		// Click.
-		this.ui.on('dblclick', '.icon', function(event){
-			var index = parseInt(this.parentNode.getAttribute('data-index'), 10);
-			clickElement(index);
-			event.stopImmediatePropagation();
-			return false;
-		});
-
-		this.ui.on('contextmenu', '.icon', onElementInfo);
-
-		// Stop drag drop feature
-		this.ui.on('mousedown', '.icon', function(event){
-			event.stopImmediatePropagation();
-		});
+			// Icons
+			.on('dragstart',   '.icon', onDragStart)
+			.on('dragend',     '.icon', onDragEnd)
+			.on('dblclick',    '.icon', onUseShortCut)
+			.on('contextmenu', '.icon', onElementInfo)
+			.on('mousedown',   '.icon', function(event){
+				event.stopImmediatePropagation();
+			});
 
 		this.draggable();
 	};
@@ -148,38 +127,23 @@ define(function(require)
 
 
 	/**
-	 * Key Listener
+	 * Process shortcut
 	 *
-	 * @param {object} event
-	 * @return {boolean}
+	 * @param {object} key
 	 */
-	ShortCut.onKeyDown = function onKeyDown( event )
+	ShortCut.onShortCut = function onShurtCut( key )
 	{
-		switch (event.which)
-		{
-			// TODO: remove KEYS.Fx and replace with user settings
-			case KEYS.F1:  clickElement(0); break;
-			case KEYS.F2:  clickElement(1); break;
-			case KEYS.F3:  clickElement(2); break;
-			case KEYS.F4:  clickElement(3); break;
-			case KEYS.F5:  clickElement(4); break;
-			case KEYS.F6:  clickElement(5); break;
-			case KEYS.F7:  clickElement(6); break;
-			case KEYS.F8:  clickElement(7); break;
-			case KEYS.F9:  clickElement(8); break;
+		switch (key.cmd.replace(/\d+$/, '')) {
+			case 'EXECUTE':
+				clickElement( parseInt( key.cmd.match(/\d+$/).toString(), 10) );
+				break;
 
-			case KEYS.F12:
+			case 'EXTEND':
 				_preferences.size = (_preferences.size + 1) % (_rowCount + 1);
 				_preferences.save();
 				this.ui.css('height', _preferences.size * 34 );
 				break;
-
-			default:
-				return true;
 		}
-
-		event.stopImmediatePropagation();
-		return false;
 	};
 
 
@@ -191,13 +155,29 @@ define(function(require)
 	ShortCut.setList = function setList( list )
 	{
 		var i, count;
+		var skill;
 
 		this.ui.find('.container').empty();
 		_list.length = list.length;
 		_rowCount    = Math.min( 4, Math.floor(list.length / 9) );
 
 		for (i = 0, count = list.length; i < count; ++i) {
-			if (list[i].ID) {
+			if (list[i].isSkill) {
+				skill = SkillWindow.getSkillById(list[i].ID);
+				if (skill && skill.level) {
+					addElement( i, true, list[i].ID, list[i].count || skill.level );
+				}
+				else {
+					if (!_list[i]) {
+						_list[i] = {};
+					}
+
+					_list[i].isSkill = true;
+					_list[i].ID      = list[i].ID;
+					_list[i].count   = list[i].count;
+				}
+			}
+			else {
 				addElement( i, list[i].isSkill, list[i].ID, list[i].count );
 			}
 		}
@@ -205,12 +185,41 @@ define(function(require)
 
 
 	/**
+	 * Set element data
+	 *
+	 * @param {boolean} is a skill ?
+	 * @param {number} id
+	 * @param {number} count
+	 */
+	ShortCut.setElement = function setElement( isSkill, ID, count )
+	{
+		var i, size;
+
+		for (i = 0, size = _list.length; i < size; ++i) {
+			if (_list[i] && _list[i].isSkill == isSkill && _list[i].ID === ID) {
+				addElement( i, isSkill, ID, count);
+			}
+		}
+	};
+
+
+	/**
+	 * Stop event propagation
+	 */
+	function stopPropagation(event)
+	{
+		event.stopImmediatePropagation();
+		return false;
+	}
+
+
+	/**
 	 * Resizing hotkey window
 	 */
-	function onResize()
+	function onResize( event )
 	{
-		var ui      = ShortCut.ui;
-		var top     = ui.position().top;
+		var ui = ShortCut.ui;
+		var top = ui.position().top;
 		var lastHeight = 0;
 		var _Interval;
 
@@ -234,16 +243,15 @@ define(function(require)
 		// Start resizing
 		_Interval = setInterval( resizing, 30);
 
-		// Stop resizing
-		jQuery(window).one('mouseup', function(event){
-			// Only on left click
+		// Stop resizing on left click
+		jQuery(window).on('mouseup.resize', function(event){
 			if (event.which === 1) {
 				clearInterval(_Interval);
+				jQuery(window).off('mouseup.resize');
 			}
 		});
 
-		event.stopImmediatePropagation();
-		return false;
+		return stopPropagation(event);
 	}
 
 
@@ -269,28 +277,34 @@ define(function(require)
 		_list[index].count   = count;
 
 		if (isSkill) {
+			// Do not display if no level.
+			if (!count) {
+				return;
+			}
+
 			file = SkillInfo[ID].Name;
 			name = SkillInfo[ID].SkillName;
 		}
 		else {
-			var item = DB.getItemInfo(ID);
-			file     = item.identifiedResourceName;
-			name     = item.identifiedDisplayName;
-			var it   = Inventory.getItemById(ID);
+			var item = Inventory.getItemById(ID);
 
-			// Do not display items not int inventory
-			if (!it) {
+			// Do not display items not in inventory
+			if (!item) {
 				return;
 			}
 
+			var it = DB.getItemInfo(ID);
+			file   = item.IsIdentified ? it.identifiedResourceName : it.unidentifiedResourceName;
+			name   = DB.getItemName(item);
+
 			// If equipment, do not display count
-			else if (it.type === Inventory.ITEM.WEAPON || it.type === Inventory.ITEM.EQUIP) {
+			if (item.type === ItemType.WEAPON || item.type === ItemType.EQUIP) {
 				count = 1;
 			}
 
 			// Get item count
 			else {
-				count = it.count;
+				count = item.count;
 			}
 
 			// Do not display item if there is none in the inventory
@@ -299,14 +313,18 @@ define(function(require)
 			}
 		}
 
-		Client.loadFile( DB.INTERFACE_PATH + 'item/' + file + '.bmp', function(data){
+		Client.loadFile( DB.INTERFACE_PATH + 'item/' + file + '.bmp', function(url){
 			ui.html(
 				'<div draggable="true" class="icon">' +
-					'<div class="img" style="background-image:url(' + data + ')"></div>' +
-					'<div class="amount">'+ count + '</div>' +
-					'<span class="name">' + name + '</span>' +
+					'<div class="img"></div>' +
+					'<div class="amount"></div>' +
+					'<span class="name"></span>' +
 				'</div>'
 			);
+
+			ui.find('.img').css('backgroundImage', 'url('+ url +')');
+			ui.find('.amount').text(count);
+			ui.find('.name').text(name);
 		});
 	}
 
@@ -341,25 +359,6 @@ define(function(require)
 
 
 	/**
-	 * Set element data
-	 *
-	 * @param {boolean} is a skill ?
-	 * @param {number} id
-	 * @param {number} count
-	 */
-	ShortCut.setElement = function setElement( isSkill, ID, count )
-	{
-		var i, size;
-
-		for (i = 0, size = _list.length; i < size; ++i) {
-			if (_list[i] && _list[i].isSkill == isSkill && _list[i].ID === ID) {
-				addElement( i, isSkill, ID, count);
-			}
-		}
-	};
-
-
-	/**
 	 * Drop something in the shortcut
 	 * Does the client allow other source than shortcut, inventory
 	 * and skill window to save to shortcut ?
@@ -385,26 +384,24 @@ define(function(require)
 			return false;
 		}
 
-		// Do not process things that don't come from inventory, skill window and shortcut itself
-		if (data.from !== 'inventory' && data.from !== 'skill' && data.from !== 'shortcut') {
-			return false;
-		}
+		switch (data.from) {
+			case 'SkillList':
+				ShortCut.onChange( index, true, element.SKID, element.level);
+				removeElement( true, element.SKID, row);
+				addElement( index, true, element.SKID, element.level);
+				break;
 
-		// Process
-		if (data.from === 'skill') {
-			ShortCut.onChange( index, true, element.SKID, element.level);
-			removeElement( true, element.SKID, row);
-			addElement( index, true, element.SKID, element.level);
-		}
-		else if (data.from === 'inventory') {
-			ShortCut.onChange( index, false, element.ITID, 0);
-			removeElement( false, element.ITID, row);
-			addElement( index, false, element.ITID, 0);
-		}
-		else if (data.from === 'shortcut') {
-			ShortCut.onChange( index, element.isSkill, element.ID, 0);
-			removeElement( element.isSkill, element.ID, row);
-			addElement( index, element.isSkill, element.ID, 0);
+			case 'Inventory':
+				ShortCut.onChange( index, false, element.ITID, 0);
+				removeElement( false, element.ITID, row);
+				addElement( index, false, element.ITID, 0);
+				break;
+
+			case 'ShortCut':
+				ShortCut.onChange( index, element.isSkill, element.ID, element.count);
+				removeElement( element.isSkill, element.ID, row);
+				addElement( index, element.isSkill, element.ID, element.count);
+				break;
 		}
 
 		return false;
@@ -412,30 +409,38 @@ define(function(require)
 
 
 	/**
+	 * Stop the drag and drop
+	 */
+	function onDragEnd()
+	{
+		delete window._OBJ_DRAG_;
+		this.classList.remove('hide');
+	}
+
+
+	/**
 	 * Prepare data to be store in the dragged element
 	 * to change prosition in the shortcut.
 	 */
-	function onDrag( event )
+	function onDragStart( event )
 	{
 		var img, index;
 
-		index  = parseInt(this.parentNode.getAttribute('data-index'), 10);
+		index = parseInt(this.parentNode.getAttribute('data-index'), 10);
+		this.classList.add('hide');
 
 		// Extract image from css to get it when dragging the element
 		img     = new Image();
 		img.src = this.firstChild.style.backgroundImage.match(/\(([^\)]+)/)[1];
-		event.originalEvent.dataTransfer.setDragImage( img, 12, 12 );
 
+		event.originalEvent.dataTransfer.setDragImage( img, 12, 12 );
 		event.originalEvent.dataTransfer.setData('Text',
 			JSON.stringify( window._OBJ_DRAG_ = {
 				type: _list[index].isSkill ? 'skill' : 'item',
-				from: 'shortcut',
-				data:  _list[index]
+				from: 'ShortCut',
+				data: _list[index]
 			})
 		);
-
-		// Stop component to be draggable
-		jQuery(window).trigger('mouseup');
 	}
 
 
@@ -452,23 +457,19 @@ define(function(require)
 
 		// Display skill informations
 		if (element.isSkill) {
-/*
-			if (SkillInfoWindow.uid === _list[index].ID) {
-				SkillInfoWindow.remove();
-				return false;
+			if (SkillDescription.uid === _list[index].ID) {
+				SkillDescription.remove();
 			}
-
-			SkillInfoWindow.append();
-			SkillInfoWindow.uid = _list[index].ID;
-			SkillInfoWindow.setSkill( _list[index] );
-*/
+			else {
+				SkillDescription.append();
+				SkillDescription.setSkill( _list[index].ID );
+			}
 		}
 
 		// Display item informations
 		else {
 
-			if (ItemInfo.uid === _list[index].ID
-				) {
+			if (ItemInfo.uid === _list[index].ID) {
 				ItemInfo.remove();
 				return false;
 			}
@@ -483,6 +484,16 @@ define(function(require)
 
 
 	/**
+	 * Click on a shortcut
+	 */
+	function onUseShortCut()
+	{
+		var index = parseInt(this.parentNode.getAttribute('data-index'), 10);
+		clickElement(index);
+	}
+
+
+	/**
 	 * Clicking on a shortcut
 	 *
 	 * @param {number} shortcut index
@@ -491,6 +502,8 @@ define(function(require)
 	{
 		var shortcut = _list[index];
 
+		SkillTargetSelection.remove();
+
 		// Nothing here ?
 		if (!shortcut) {
 			return;
@@ -498,7 +511,7 @@ define(function(require)
 
 		// Execute skill
 		if (shortcut.isSkill) {
-			//SkillWindow.useSkill( _list[index].ID, _list[index].count );
+			SkillWindow.useSkillID(shortcut.ID);
 		}
 
 		// Use the item
@@ -508,6 +521,17 @@ define(function(require)
 				Inventory.useItem( item );
 			}
 		}
+	}
+
+
+	/**
+	 * Closing the window
+	 */
+	function onClose()
+	{
+		ShortCut.ui.css('height', 0);
+		_preferences.size = 0;
+		_preferences.save();
 	}
 
 
@@ -525,6 +549,19 @@ define(function(require)
 
 
 	/**
+	 * Hook Skill List, get informations when there is a change
+	 * to update the shortcut
+	 *
+	 * @param {number} skill id
+	 * @param {number} level
+	 */
+	SkillWindow.onUpdateSkill = function( id, level)
+	{
+		ShortCut.setElement( true, id, level);
+	};
+
+
+	/**
 	 * Method to define to notify a change.
 	 *
 	 * @param {number} index
@@ -532,7 +569,7 @@ define(function(require)
 	 * @param {number} id
 	 * @param {number} count
 	 */
-	ShortCut.onChange   = function OnConfigUpdate(/*index, isSkill, ID, count*/){};
+	ShortCut.onChange = function OnConfigUpdate(/*index, isSkill, ID, count*/){};
 
 
 	/**

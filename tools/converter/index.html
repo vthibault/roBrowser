@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>File converter</title>
+	<link rel="stylesheet" type="text/css" href="style.css"/>
+	<script type="text/javascript" src="script.js"></script>
+</head>
+<body>
+	<div class="container">
+		<h1>DB Converter</h1>
+		<h2>Drag/drop files on the windows to convert them</h2>
+		<div>
+			<select class="to">
+				<option value="ItemTable">Items Table</option>
+				<option value="HatTable">Hats View ID</option>
+				<option value="MonsterTable">Monsters View ID</option>
+			</select>
+			<br/>
+			<select class="from">
+				<option value="lua">LUA Files</option>
+				<option value="xray">XRAY Files</option>
+				<option value="txt">TXT Files</option>
+			</select>
+		</div>
+
+		<div class="elements"></div>
+
+		<div>
+			<button class="convert" disabled="true">Convert</button>
+		</div>
+
+		<div class="removing">
+			<div></div>
+			<a href="" download="" class="save">
+				<button>Save file</button>
+			</a>
+		</div>
+	</div>
+</body>
+</html>

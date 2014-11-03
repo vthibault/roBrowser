@@ -4,7 +4,7 @@
 
 #Equipment .titlebar { width:280px; height:17px; background-color:white; background-repeat:repeat-x; border-radius:3px 3px 0px 0px; }
 #Equipment .titlebar .base { width:11px; height:11px; border:none; background-color:transparent; background-repeat:no-repeat; vertical-align:middle;}
-#Equipment .titlebar .text { text-shadow:1px 1px white; vertical-align:-2px; 
+#Equipment .titlebar .text { text-shadow:1px 1px white; vertical-align:-2px; white-space:nowrap;
  /* chrome bug */ display: inline-block; width: 32px; height:13px; }
 
 #Equipment .titlebar .left { margin-left:3px; float:left; }
@@ -13,22 +13,30 @@
 
 #Equipment .panel { background-color:white; }
 #Equipment .content { display:inline-block; width:280px; height:130px; border-spacing:0; }
-#Equipment .col1, #Equipment .col3  { width:115px; height:24px; background-color:transparent; background-repeat:no-repeat; background-position-y:9px; }
-#Equipment .col1 { background-position-x:3px; }
-#Equipment .col3 { background-position-x:81px; }
+#Equipment .col1, #Equipment .col3  { width:115px; height:24px; background-color:transparent; background-repeat:no-repeat; }
+#Equipment .col1 { background-position:5% 50%; }
+#Equipment .col3 { background-position:95% 50%; }
 
 #Equipment .overlay { position:absolute; display:none; white-space:nowrap; z-index:900; height:13px; padding:5px; background:rgba(0,0,0,0.7); color:white; text-shadow:1px 1px black;}
 
 #Equipment .item button { width:24px; height:24px; background-color:transparent; background-repeat:no-repeat; border: none; }
-#Equipment .item span { white-space:pre; width:80px; height:24px; display:inline-block; line-height:12px; }
+#Equipment .item span { width:80px; height:24px; display:inline-block; line-height:12px; word-break:break-all; overflow:hidden; text-shadow:1px 1px white; }
 
 #Equipment .col3 .item button, #Equipment .col3 .item span { float:right; }
 #Equipment .col1 .item button, #Equipment .col1 .item span { float:left; }
 #Equipment .col1 .item { padding-left:4px; }
 #Equipment .col3 .item { padding-right:4px; }
 
+#Equipment .ammo_container { position:relative; }
+#Equipment .ammo { position:absolute; top:30px; }
+#Equipment .ammo .item { text-align:center; }
+#Equipment .ammo .item span { width:45px; }
+#Equipment .removeOption { position:absolute; top:85px; left:12px; width:36px; height:36px; background-repeat:no-repeat; background-color:transparent; border:none; display:none; }
+
 #Equipment .footer { height:20px; border-bottom:1px solid #c0c0c0; }
 #Equipment .footer .left { float:left; text-align:left; margin-left:5px; margin-top:3px; }
 #Equipment .footer .right { float:right; text-align:right; margin-right:5px; margin-top:3px; }
 #Equipment .footer .view_status { width:9px; height:14px; border:none; background-color:transparent; background-repeat:no-repeat; }
 #Equipment .footer .show_equip { width:10px; height:12px; border:none; background-color:transparent; background-repeat:no-repeat; }
+
+#lvlup_base { z-index:51; position:absolute; left:0px; bottom:0px; width:43px; height:43px; border:none; background-color:transparent; background-repeat:no-repeat; }

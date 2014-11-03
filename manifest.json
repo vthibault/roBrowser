@@ -8,20 +8,21 @@
 
 	"minimum_chrome_version": "23",
 	"icons": {
-		"16":  "chrome-app/icon_16.png",
-		"128": "chrome-app/icon_128.png"
+		"16":  "applications/icon_16.png",
+		"128": "applications/icon_128.png"
 	},
 
 	"app": {
 		"background": {
-		  "scripts": ["chrome-app/index.js"]
+		  "scripts": ["applications/chrome-app/index.js"]
 		}
 	},
 
 	"permissions": [
 		{ "socket": ["tcp-connect:*:*"] },
 		"storage",
-		"http://*/*"
+		"http://*/*",
+		"https://*/*"
 	],
 
 	"requirements": {

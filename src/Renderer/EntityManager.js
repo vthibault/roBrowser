@@ -7,10 +7,17 @@
  *
  * @author Vincent Thibault
  */
-define(['./Entity/Entity', './SpriteRenderer', 'Controls/MouseEventHandler'],
-function(         Entity,     SpriteRenderer,            Mouse )
+define(function( require )
 {
 	'use strict';
+
+
+	// Load dependencies
+	var Session        = require('Engine/SessionStorage');
+	var Entity         = require('./Entity/Entity');
+	var SpriteRenderer = require('./SpriteRenderer');
+	var Mouse          = require('Controls/MouseEventHandler');
+	var KEYS           = require('Controls/KeyEventHandler');
 
 
 	var _list = [];
@@ -23,6 +30,10 @@ function(         Entity,     SpriteRenderer,            Mouse )
 	 */
 	function getEntityIndex( gid )
 	{
+		if (gid < 0) {
+			return -1;
+		}
+
 		var i, count = _list.length;
 	
 		for (i = 0; i < count; ++i) {
@@ -60,6 +71,15 @@ function(         Entity,     SpriteRenderer,            Mouse )
 	 */
 	function getEntity( gid )
 	{
+		// Reason for this check:
+		// - Most packets your received is for the main character, so
+		//   this check speed up the process.
+		// - When you load a map, the main character is not in the list yet
+		//   so we skip a lot of vital informations
+		if (Session.Entity.GID === gid) {
+			return Session.Entity;
+		}
+
 		var index = getEntityIndex(gid);
 		if (index < 0) {
 			return null;
@@ -94,13 +114,13 @@ function(         Entity,     SpriteRenderer,            Mouse )
 	 */
 	function free()
 	{
-		var count = _list.length;
+		var i, count = _list.length;
 
-		while (count--) {
-			_list[0].clean();
-			delete _list[0];   // better to clean directly ?
-			_list.splice(0,1); // Don't erase the first one.
+		for (i = 0; i < count; ++i) {
+			_list[i].clean();
 		}
+
+		_list.length = 0;
 	}
 
 
@@ -137,13 +157,16 @@ function(         Entity,     SpriteRenderer,            Mouse )
 	/**
 	 * Set over entity
 	 */
+	var _saveShift = false;
 	function setOverEntity( target )
 	{
 		var current = _over;
 
-		if (target === current) {
+		if (target === current && _saveShift === KEYS.SHIFT) {
 			return;
 		}
+
+		_saveShift = KEYS.SHIFT;
 
 		if (current) {
 			current.onMouseOut();

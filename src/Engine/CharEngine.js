@@ -9,43 +9,28 @@
  * @author Vincent Thibault
  */
 
-define([
-	'require',
-	'Utils/jquery',
-	'DB/DBManager',
-	'Audio/SoundManager',
-	'Engine/SessionStorage',
-	'Engine/MapEngine',
-	'Network/NetworkManager',
-	'Network/PacketStructure',
-	'Network/PacketVerManager',
-	'Renderer/Renderer',
-	'UI/UIManager',
-	'UI/Background',
-	'UI/Components/CharSelect/CharSelect',
-	'UI/Components/CharCreate/CharCreate',
-	'UI/Components/WinPopup/WinPopup',
-	'UI/Components/InputBox/InputBox'
-], function(
-	require,
-	jQuery,
-	DB,
-	Sound,
-	Session,
-	MapEngine,
-	Network,
-	PACKET,
-	PACKETVER,
-	Renderer,
-	UIManager,
-	Background,
-	CharSelect,
-	CharCreate,
-	WinPopup,
-	InputBox
-)
+define(function( require )
 {
 	'use strict';
+
+
+	// Load modules
+	var jQuery     = require('Utils/jquery');
+	var DB         = require('DB/DBManager');
+	var Events     = require('Core/Events');
+	var Sound      = require('Audio/SoundManager');
+	var BGM        = require('Audio/BGM');
+	var Session    = require('Engine/SessionStorage');
+	var MapEngine  = require('Engine/MapEngine');
+	var Network    = require('Network/NetworkManager');
+	var PACKET     = require('Network/PacketStructure');
+	var PACKETVER  = require('Network/PacketVerManager');
+	var UIManager  = require('UI/UIManager');
+	var Background = require('UI/Background');
+	var CharSelect = require('UI/Components/CharSelect/CharSelect');
+	var CharCreate = require('UI/Components/CharCreate/CharCreate');
+	var InputBox   = require('UI/Components/InputBox/InputBox');
+	var getModule  = require;
 
 
 	/**
@@ -65,6 +50,8 @@ define([
 	 */
 	function init( server )
 	{
+		BGM.play('01.mp3');
+
 		// Storing variable
 		_server = server;
 
@@ -73,7 +60,7 @@ define([
 
 			// Fail to connect...
 			if (!success) {
-				UIManager.showErrorBox( DB.msgstringtable[1] );
+				UIManager.showErrorBox( DB.getMessage(1) );
 				return;
 			}
 
@@ -102,6 +89,7 @@ define([
 		Network.hookPacket( PACKET.HC.NOTIFY_ZONESVR,                onReceiveMapInfo );
 		Network.hookPacket( PACKET.HC.ACCEPT_ENTER_NEO_UNION_HEADER, onConnectionAccepted );
 		Network.hookPacket( PACKET.HC.ACCEPT_ENTER_NEO_UNION_LIST,   onConnectionAccepted );
+		Network.hookPacket( PACKET.HC.NOTIFY_ACCESSIBLE_MAPNAME,     onMapUnavailable);
 	}
 
 
@@ -123,7 +111,7 @@ define([
 	 */
 	function onExitRequest()
 	{
-		require('Engine/LoginEngine').reload();
+		getModule('Engine/LoginEngine').reload();
 	}
 
 
@@ -171,7 +159,22 @@ define([
 			// other types ?
 		}
 
-		UIManager.showErrorBox( DB.msgstringtable[msg_id] );
+		UIManager.showErrorBox( DB.getMessage(msg_id) );
+	}
+
+
+	/**
+	 * No map server available
+	 *
+	 * @param {object} pkt - PACKET.HC.NOTIFY_ACCESSIBLE_MAPNAME
+	 */
+	function onMapUnavailable( pkt )
+	{
+		// no map server avaiable
+		UIManager.showMessageBox( DB.getMessage(1811), null, function(){
+			UIManager.getComponent('WinLoading').remove();
+			CharSelect.append();
+		});
 	}
 
 
@@ -203,8 +206,8 @@ define([
 			InputBox.remove();
 			_ui_box.remove();
 			_overlay.detach();
-			clearTimeout(_TimeOut);
-			onDeleteAnswer(-2);
+			Events.clearTimeout(_TimeOut);
+			onDeleteAnswer({ ErrorCode: -2});
 		}
 
 		// Ask the mail
@@ -217,7 +220,7 @@ define([
 		}
 
 		// Display prompt message
-		_ui_box  = UIManager.showPromptBox( DB.msgstringtable[19], 'ok', 'cancel', onOk, onCancel);
+		_ui_box  = UIManager.showPromptBox( DB.getMessage(19), 'ok', 'cancel', onOk, onCancel);
 		_overlay = jQuery('<div/>').addClass('win_popup_overlay').appendTo('body');
 
 		// Submit the mail
@@ -227,7 +230,7 @@ define([
 			_ui_box.remove();
 
 			// Stop rendering...
-			_ui_box = UIManager.showMessageBox( DB.msgstringtable[296].replace('%d',10), 'cancel', function(){
+			_ui_box = UIManager.showMessageBox( DB.getMessage(296).replace('%d',10), 'cancel', function(){
 				_render = false;
 				onCancel();
 			});
@@ -264,7 +267,7 @@ define([
 			}
 
 			// Update text
-			_ui_box.ui.find('.text').text( DB.msgstringtable[296].replace('%d', Math.round(10-percent/10) ) );
+			_ui_box.ui.find('.text').text( DB.getMessage(296).replace('%d', Math.round(10-percent/10) ) );
 
 			// Update progressbar
 			_ctx.clearRect(0, 0, _width, _height);
@@ -277,7 +280,7 @@ define([
 			_ctx.fillStyle = 'rgb(255,255,0)';
 			_ctx.fillText( percent + '%' ,  ( _width - _ctx.measureText( percent+'%').width ) * 0.5 , 12  );
 
-			_TimeOut = setTimeout( render, 30);
+			_TimeOut = Events.setTimeout( render, 30);
 		}
 	}
 
@@ -331,7 +334,7 @@ define([
 		var pkt;
 
 		// Old Packet required stats
-		if (PACKETVER.min < 20120307) {
+		if (PACKETVER.value < 20120307) {
 			pkt = new PACKET.CH.MAKE_CHAR();
 			pkt.Str  = Str;
 			pkt.Agi  = Agi;
@@ -384,7 +387,7 @@ define([
 			case 0xFF: msg_id =   11;  break; // 'Char creation denied'
 		}
 
-		UIManager.showMessageBox( DB.msgstringtable[msg_id], 'ok' );
+		UIManager.showMessageBox( DB.getMessage(msg_id), 'ok' );
 	}
 
 
@@ -415,7 +418,8 @@ define([
 	 */
 	function onReceiveMapInfo( pkt )
 	{
-		MapEngine.init( pkt.addr.ip, pkt.addr.port, pkt.GID, pkt.mapName);
+		Session.GID = pkt.GID;
+		MapEngine.init( pkt.addr.ip, pkt.addr.port, pkt.mapName);
 	}
 
 

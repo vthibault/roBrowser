@@ -8,7 +8,7 @@
  * @author Vincent Thibault
  */
 define( ['Utils/jquery', 'Utils/Texture', 'DB/DBManager', 'Core/Client' ],
-function(       jQuery,         Texture,      DB,          Client )
+function(       jQuery,         Texture,      DB,               Client )
 {
 	'use strict';
 

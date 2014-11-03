@@ -18,11 +18,14 @@ define(function( require )
 	var WebGL         = require('Utils/WebGL');
 	var jQuery        = require('Utils/jquery');
 	var glMatrix      = require('Utils/gl-matrix');
+	var Configs       = require('Core/Configs');
+	var Events        = require('Core/Events');
 	var Background    = require('UI/Background');
 	var Cursor        = require('UI/CursorManager');
 	var Mouse         = require('Controls/MouseEventHandler');
 	var Camera        = require('Renderer/Camera');
 	var mat4          = glMatrix.mat4;
+	var getModule     = require;
 
 
 	/**
@@ -103,9 +106,9 @@ define(function( require )
 
 			jQuery(window).resize(this.onResize.bind(this));
 			this.render(null);
+			this.resize();
 		}
 
-		this.resize();
 		var gl = this.gl;
 
 		gl.clearDepth( 1.0 );
@@ -151,8 +154,8 @@ define(function( require )
 	 */
 	Renderer.onResize = function onResize()
 	{
-		clearTimeout( this.resizeTimeOut );
-		this.resizeTimeOut = setTimeout( this.resize.bind(this), 500 );
+		Events.clearTimeout( this.resizeTimeOut );
+		this.resizeTimeOut = Events.setTimeout( this.resize.bind(this), 500 );
 	};
 
 
@@ -167,7 +170,7 @@ define(function( require )
 		Mouse.screen.width  = this.width;
 		Mouse.screen.height = this.height;
 
-		var quality = ( (window.ROConfig && ROConfig.quality) || 100 ) / 100;
+		var quality = Configs.get('quality', 100) / 100;
 		var width   = this.width  * quality;
 		var height  = this.height * quality;
 
@@ -178,7 +181,7 @@ define(function( require )
 
 		this.gl.viewport( 0, 0, width, height );
 
-		mat4.perspective( 20.0, width/height, 1, 1000, Camera.projection );
+		mat4.perspective( 15.0, width/height, 1, 1000, Camera.projection );
 
 		Background.resize( this.width, this.height );
 
@@ -193,8 +196,7 @@ define(function( require )
 		 * we just cause a big circular dependencies resulting as having Renderer variable as null in
 		 * UI/UIManager.
 		 */
-		var require_fix = require;
-		require_fix('UI/UIManager').fixResizeOverflow( this.width, this.height );
+		getModule('UI/UIManager').fixResizeOverflow( this.width, this.height );
 	};
 
 
@@ -210,6 +212,9 @@ define(function( require )
 	Renderer._render = function render()
 	{
 		_requestAnimationFrame( this._render.bind(this), this.canvas );
+
+		// Execute events
+		Events.process( this.tick );
 
 		this.tick = Date.now();
 		var i, count;

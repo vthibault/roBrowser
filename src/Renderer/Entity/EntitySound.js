@@ -7,73 +7,80 @@
  *
  * @author Vincent Thibault
  */
-define( ['Audio/SoundManager', 'Renderer/Renderer'], function( SoundManager, Renderer )
+define( ['Audio/SoundManager'], function( SoundManager )
 {
 	'use strict';
 
 
 	/**
-	 * Sound Class
+	 * @Constructor
 	 */
-	function Sound( name, timeEnd )
+	function Sound()
 	{
-		this.timeEnd = timeEnd;
-		this.name    = name;
+		this._lastActionId    = -1;
+		this._lastAnimationId = -1;
+		this._lastFileName    = null;
+		this._animCounter     = -1;
+
+		this.attackFile       = null;
 	}
 
-
-	// Play a sound
-	function SoundPlay( name, delay )
+	/**
+	 * Play a sound attached to an entity
+	 *
+	 * @param {string} sound name
+	 * @param {number} action id
+	 * @param {number} animation id
+	 */
+	Sound.prototype.play = function play( fileName, action, animation )
 	{
-		var i = 0, count = this.sounds.length;
-		var now  = Renderer.tick;
-		var play = true;
-		var wavFileName = '';
-
-		while (i < count) {
-			if (this.sounds[i].timeEnd < now) {
-				this.sounds.splice( i, 1 );
-				count--;
-				continue;
-			}
-
-			// Don't play the sound, have a delay to wait
-			if (this.sounds[i].name === name) {
-				play = false;
-			}
-
-			i++;
-		}
-
-		// Don't play sound
-		if (play === false) {
+		// Pet does not produce sound
+		if (this.entity.objecttype === this.entity.constructor.TYPE_PET) {
 			return;
 		}
 
-		// Find Audio filename
-		if (name === 'atk') {
-			if (this.weapon_sound) {
-				Sound.play( this.weapon_sound );
-			}
-		}
-		else {
-			wavFileName = name;
+		// Do not replay the sound if there is no updates
+		if (this._lastActionId    === action &&
+			this._lastAnimationId === animation &&
+			this._lastFileName    === fileName) {
+			return;
 		}
 
-		// Play the sound
-		if (wavFileName !== '') {
-			this.sounds.push(new Sound( wavFileName, now + delay ));
-			SoundManager.play( wavFileName );
+		this._lastActionId    = action;
+		this._lastAnimationId = animation;
+		this._lastFileName    = fileName;
+
+		// Find Audio filename
+		if (fileName === 'atk') {
+			if (!this.attackFile) {
+				return;
+			}
+
+			fileName = this.attackFile;
 		}
-	}
+
+		SoundManager.play(fileName);
+	};
+
+
+	/**
+	 * Reset action and animation
+	 */
+	Sound.prototype.free = function free()
+	{
+		this._lastActionId    = -1;
+		this._lastAnimationId = -1;
+		this._lastFileName    = null;
+		this._animCounter     = -1;
+	};
 
 
 	/**
 	 * Initialize and export methods
 	 */
-	return function Init()
+	return function init()
 	{
-		this.sounds = [];
-		this.soundPlay = SoundPlay;
+		this.sound = new Sound();
+		this.sound.entity = this;
 	};
 });

@@ -17,9 +17,11 @@ define(function(require)
 	 */
 	var jQuery             = require('Utils/jquery');
 
+	var Configs            = require('Core/Configs');
 	var Client             = require('Core/Client');
 	var Thread             = require('Core/Thread');
 	var Memory             = require('Core/MemoryManager');
+	var Events             = require('Core/Events');
 
 	var KEYS               = require('Controls/KeyEventHandler');
 
@@ -48,26 +50,31 @@ define(function(require)
 	/**
 	 * @var {number} The display is done asynchronus, keep reference of the thread
 	 */
-	Viewer.thread      = 0;
+	var _thread = 0;
 
 
 	/**
 	 * @var {number} action id, to stop doing things when the action change
 	 */
-	Viewer.actionID    =  0;
+	var _actionID =  0;
 
 
 	/**
 	 * Initialize Component
 	 */
-	Viewer.init = function Init()
+	Viewer.init = function init()
 	{
+		var ui = this.ui;
+
 		Thread.hook('THREAD_READY', function(){
-			if (window.ROConfig && ROConfig.remoteClient) {
-				Thread.send( 'SET_HOST', ROConfig.remoteClient );
+			var remoteClient = Configs.get('remoteClient');
+			if (remoteClient) {
+				Thread.send( 'SET_HOST', remoteClient);
+				Client.init([]);
 			}
 		});
 		Thread.init();
+
 
 		jQuery('head:first').append(
 			'<style type="text/css">' +
@@ -78,80 +85,103 @@ define(function(require)
 		);
 
 		// Drag drop the GRF.
-		var box = this.ui.find('#info');
+		ui.find('#info')
+			.on('dragover',  function(){ this.style.backgroundColor = '#DFD'; return false; })
+			.on('dragleave', function(){ this.style.backgroundColor = '#EEE'; return false; })
+			.on('drop', function(event){ this.style.backgroundColor = '#EEE'; processGRF(event.originalEvent); return false; });
 
-		box
-			.on('dragover',  function(){ box.css('background', '#DFD'); return false; })
-			.on('dragleave', function(){ box.css('background', '#EEE'); return false; })
-			.on('drop', function(event){ box.css('background', '#EEE'); Viewer.processGRF(event.originalEvent); return false; });
+		// Load GRFs
+		ui.find('#file').change(processGRF);
+		ui.find('#info button').mousedown(function(){
+			ui.find('#file').click();
+		});
 
-		this.ui.find('#file').change(Viewer.processGRF);
+
+		// Bind icons events
+		ui
+			.on('click', '.directory',   onDirectoryClick)
+			.on('click', '.audio',       onAudioClick)
+			.on('click', '.img, .thumb', onImageClick)
+			.on('click', '.txt',         onTextClick)
+			.on('click', '.map',         onWorldClick)
+			.on('click', '.3d',          onObjectClick)
+			.on('click', '.fx',          onEffectClick)
+			.on('contextmenu', '.icon', function(event){ showContextMenu(this,event); return false; });
 
 		// Initialize toolbar
-		Viewer.initToolBar();
+		initToolBar();
 
 		// Initialize history
 		History.init(
-			this.ui.find('#previous'),
-			this.ui.find('#next')
+			ui.find('#previous'),
+			ui.find('#next')
 		);
+
+		// Renderer is not rendering, causing issue in src/UI/UIComponents.js#212
+		// Trigger manually the event.
+		setTimeout(function(){
+			Events.process(100);
+		}, 10);
 	};
 
 
 	/**
 	 * Once append to body, initialize elements
 	 */
-	Viewer.onAppend = function OnAppend()
+	Viewer.onAppend = function onAppend()
 	{
-		Viewer.moveToDirectory('/', true );
+		document.body.style.backgroundColor = 'white';
+		moveToDirectory('/', true );
 	};
 
 
 	/**
 	 * Initialize tool bar
 	 */
-	Viewer.initToolBar = function InitToolBar()
+	function initToolBar()
 	{
+		var ui = Viewer.ui;
+
 		// Path submit
-		this.ui.find('#path').keydown(function(event){
+		ui.find('#path').keydown(function(event){
 			if (event.which === KEYS.ENTER) {
 				var value = this.value.replace(/^\s+|\s+$/g, '');
-				if ( value.substr(-1) !== '/' ) {
+				if (value.substr(-1) !== '/') {
 					value += '/';
 				}
-				Viewer.moveToDirectory( value, true );
+				moveToDirectory( value, true );
 			}
 		});
 
 		// History before
-		this.ui.find('#previous').click(function(){
+		ui.find('#previous').click(function(){
 			var path = History.previous();
 			if (path) {
-				Viewer.moveToDirectory( path, false );
+				moveToDirectory( path, false );
 			}
 		});
 
 		// History after
-		this.ui.find('#next').click(function(){
+		ui.find('#next').click(function(){
 			var path = History.next();
 			if (path) {
-				Viewer.moveToDirectory( path, false );
+				moveToDirectory( path, false );
 			}
 		});
 
 		// Search toolbar
-		this.ui.find('#search')
+		ui.find('#search')
 			.focus(function(){ this.value = ''; })
 			.blur(function(){ this.value = this.value || 'Search...'; })
 			.keydown( function(event) {
 				if (event.which === KEYS.ENTER) {
 					var value = this.value.replace(/^\s+|\s+$/g, '');
 					if (value.length > 2) {
-						Viewer.moveToDirectory( 'search/' + value, true );
+						moveToDirectory( 'search/' + value, true );
 					}
 				}
 			});
-	};
+	}
 
 
 	/**
@@ -160,64 +190,66 @@ define(function(require)
 	 * @param {HTMLElement} icon
 	 * @param {object} event
 	 */
-	Viewer.showContextMenu = function ShowContextMenu( icon, event )
+	function showContextMenu( iconElement, event )
 	{
-		var _contextmenu = this.ui.find('#contextmenu');
-		var _overlay = this.ui.find('.overlay');
-		var _open = _contextmenu.find('.open:first');
-		var _save = _contextmenu.find('.save:first');
-		var _info = _contextmenu.find('.info:first');
-		var _icon = jQuery(icon);
+		var contextmenu = Viewer.ui.find('#contextmenu');
+		var overlay     = Viewer.ui.find('.overlay');
 
-		_contextmenu.css({
+		var open = contextmenu.find('.open:first');
+		var save = contextmenu.find('.save:first');
+		var info = contextmenu.find('.info:first');
+		var icon = jQuery(iconElement);
+
+		contextmenu.css({
 			left: event.pageX,
 			top:  event.pageY
 		}).show();
 
-		_overlay.one('mousedown', function(){
-			_contextmenu.hide();
-			_overlay.hide();
+		overlay.one('mousedown', function(){
+			contextmenu.hide();
+			overlay.hide();
 		}).show();
 
 		 // Clean up
-		_open.removeClass('disable').off('mousedown');
-		_save.removeClass('disable').off('mousedown');
-		_info.removeClass('disable').off('mousedown');
+		open.removeClass('disable').off('mousedown');
+		save.removeClass('disable').off('mousedown');
+		info.removeClass('disable').off('mousedown');
+		save.off('click');
 
 		// Open
-		if (_icon.hasClass('file')) {
-			_open.addClass('disable');
+		if (icon.hasClass('file')) {
+			open.addClass('disable');
 		}
 		else {
-			_open.one('mousedown', function(){
-				_icon.click();
-				_overlay.mousedown();
+			open.one('mousedown', function(){
+				icon.click();
+				overlay.mousedown();
 			});
 		}
 
 		// Save
-		if (_icon.hasClass('directory')) {
-			_save.addClass('disable');
-			_save.attr('href', 'javascript:void(0)');
-			_save.get(0).removeAttribute('download');
+		if (icon.hasClass('directory')) {
+			save.addClass('disable');
+			save.click(function(){ return false; });
+			save.get(0).removeAttribute('download');
 		}
 
 		else {
-			_save.one('mouseup', function(){
-				_overlay.mousedown();
+			save.one('mouseup', function(){
+				overlay.mousedown();
 			});
 
-			Client.getFile( _icon.data('path'), function( buffer) {
+			Client.getFile( icon.data('path'), function( buffer) {
 				// Create temporary url, move to it and release it
-				var url       = URL.createObjectURL(new Blob([buffer],{type: 'application/octet-stream'}));
-				_save.attr({ href:url, download:_icon.text().trim()});
+				var url = URL.createObjectURL(new Blob([buffer],{type: 'application/octet-stream'}));
+				save.attr({ href:url, download:icon.text().trim()});
 			});
 		}
 
 		// Properties
 		// not supported yet.
-		_info.addClass('disable');
-	};
+		info.addClass('disable');
+	}
 
 
 	/**
@@ -226,7 +258,7 @@ define(function(require)
 	 * @param {string} path to move
 	 * @param {boolean} save in history
 	 */
-	Viewer.moveToDirectory = function MoveToDirectory( path, save )
+	function moveToDirectory( path, save )
 	{
 		path = decodeURIComponent(path) || '/';
 		path = path.replace(/\\/g, '/');
@@ -236,17 +268,17 @@ define(function(require)
 		}
 
 		if (path.match(/^search\//)) {
-			Viewer.search( path.substr(7) );
+			search( path.substr(7) );
 		}
 		else {
-			Viewer.showDirectory( path );
+			showDirectory( path );
 		}
 
 		// Update history
 		if (save) {
 			History.push( path );
 		}
-	};
+	}
 
 
 	/**
@@ -255,17 +287,17 @@ define(function(require)
 	 * @param {object} event
 	 * @return {boolean} false
 	 */
-	Viewer.processGRF = function(event)
+	function processGRF(event)
 	{
-		Client.onFilesLoaded = function(){
-			Viewer.moveToDirectory('data/', true);
-		};
+		Viewer.ui.find('#progress').show();
+
+		Client.onFilesLoaded = function(){ moveToDirectory('data/', true); };
 		Client.init( (event.dataTransfer || event.target).files );
 
 		event.preventDefault();
 		event.stopPropagation();
 		return false;
-	};
+	}
 
 
 	/**
@@ -273,53 +305,51 @@ define(function(require)
 	 *
 	 * @param {string} path
 	 */
-	Viewer.showDirectory = function ShowDirectory( path )
+	function showDirectory( path )
 	{
 		// Stop displaying
-		clearTimeout(Viewer.thread);
+		clearTimeout(_thread);
 
 		// Clean up Input
 		path = decodeURIComponent(path) || '/';
 		path = path.replace(/\\/g, '/');
+
 		if (path.substr(0,1) === '/') {
 			path = path.substr(1);
 		}
 
 		// Build regex
+		var ui        = Viewer.ui;
 		var directory = path.replace( /\//g, '\\\\');
 		var reg       = directory + '([^(\\0|\\\\)]+)';
 
 		// Clean windows
-		this.ui.find('#path').val(path);
-		this.ui.find('.icon').unbind().remove();
-		this.ui.find('#progress').show();
-		this.ui.find('#msg').hide();
+		ui.find('#path').val(path);
+		ui.find('.icon').remove();
+		ui.find('#progress').show();
+		ui.find('#msg').hide();
 
 		// Go back to the home
 		if (!path.length) {
-			this.ui.find('#info').show();
-			this.renderFiles(['data']);
+			ui.find('#info').show();
+			renderFiles(['data']);
 			return;
 		}
 
-		this.ui.find('#info').hide();
+		ui.find('#info').hide();
 
 		// Changing action to avoid conflict
-		var actionID = ++this.actionID;
-
+		var actionID = ++_actionID;
 
 		// Send request
-		Client.search( new RegExp(reg, 'gi'), function( list ) {
-			// Request something else, stop.
-			if (actionID !== Viewer.actionID) {
-				return;
-			}
-
+		Client.search( new RegExp(reg, 'gi'), function(list) {
 			// Organize files and directory and render them
-			list.sort(Viewer.sortFiles);
-			Viewer.renderFiles( list );
+			if (actionID === _actionID) {
+				list.sort(sortFiles);
+				renderFiles(list);
+			}
 		});
-	};
+	}
 
 
 	/**
@@ -327,33 +357,28 @@ define(function(require)
 	 *
 	 * @param {string} keyword
 	 */
-	Viewer.search = function Search( keyword )
+	function search( keyword )
 	{
 		// Escape regex, and complete it
-		var search    = keyword.replace(/(\.|\\|\+|\*|\?|\[|\^|\]|\$|\(|\)|\{|\}|\=|\!|<|>|\||\:|\-)/g, '\\$1');
-		var reg       = 'data\\\\([^(\\0\\)]+)?' + search + '([^(\\0|\\\\)]+)?';
+		var search   = keyword.replace(/(\.|\\|\+|\*|\?|\[|\^|\]|\$|\(|\)|\{|\}|\=|\!|<|>|\||\:|\-)/g, '\\$1');
+		var reg      = 'data\\\\([^(\\0\\)]+)?' + search + '([^(\\0|\\\\)]+)?';
+		var ui       = Viewer.ui;
+		var actionID = ++_actionID;
 
 		// Clean path
-		this.ui.find('.icon').unbind().remove();
-		this.ui.find('#progress').show();
-		this.ui.find('#info').hide();
-		this.ui.find('#msg').hide();
-
-		// Avoid merging requests
-		var actionID = ++this.actionID;
+		ui.find('.icon').remove();
+		ui.find('#progress').show();
+		ui.find('#info').hide();
+		ui.find('#msg').hide();
 
 		// Send request
 		Client.search( new RegExp(reg, 'gi'), function( list ) {
-			// Request something else, stop.
-			if (actionID !== Viewer.actionID) {
-				return;
+			if (actionID === _actionID) {
+				list.sort(sortFiles);
+				renderFiles(list);
 			}
-
-			// Organize files and directory and render them
-			list.sort(Viewer.sortFiles);
-			Viewer.renderFiles( list );
 		});
-	};
+	}
 
 
 	/**
@@ -364,7 +389,7 @@ define(function(require)
 	 * @param {string} b file's name
 	 * @return {number}
 	 */
-	Viewer.sortFiles = function SortFiles( a, b )
+	function sortFiles( a, b )
 	{
 		var _a, _b;
 		a  = a.replace(/.*\\/,'');
@@ -375,7 +400,7 @@ define(function(require)
 		if (_a === _b) return a > b ? 1 : -1;
 		if (_a) return  1;
 		return -1;
-	};
+	}
 
 
 	/**
@@ -383,20 +408,18 @@ define(function(require)
 	 *
 	 * @param {Array} list of files and directories
 	 */
-	Viewer.renderFiles = function RenderFiles( list )
+	function renderFiles( list )
 	{
-		// Show
-		this.ui.find('#progress').hide();
+		Viewer.ui.find('#progress').hide();
 
 		// No file in directory ? (or error : the file isn't a directory)
 		if (!list.length) {
-			this.ui.find('#msg').text('No file found.').show();
+			Viewer.ui.find('#msg').text('No file found.').show();
 			return;
 		}
 
 		var i, count;
-		var reg = /(.*\\)/;
-		var type, attr;
+		var type, reg = /(.*\\)/;
 
 		i     = 0;
 		count = list.length;
@@ -407,20 +430,10 @@ define(function(require)
 			var j;
 			var html = '';
 
-			for ( j=0; j<200 && i+j < count; ++j ) {
-				type  = Viewer.getFileIcon(list[j+i]);
-				attr  = '';
-
-				// Binding event in html instead of in javascript is far faster because of a native parsing (tested).
-				if ( type === 'directory' )  attr = ' onclick="Viewer.onDirectoryClick.call(this)"';
-				else if ( type === 'audio' ) attr = ' onclick="Viewer.onAudioClick.call(this)"';
-				else if ( type === 'img' )   attr = ' onclick="Viewer.onImageClick.call(this)"';
-				else if ( type === '3d' )    attr = ' onclick="Viewer.onObjectClick.call(this)"';
-				else if ( type === 'txt' )   attr = ' onclick="Viewer.onTextClick.call(this)"';
-				else if ( type === 'map' )   attr = ' onclick="Viewer.onWorldClick.call(this)"';
-
+			for (j = 0; j < 200 && i + j < count; ++j) {
+				type  = getFileIcon(list[j+i]);
 				html +=
-					'<div class="icon '+ type +'" data-path="'+ list[j+i] +'"'+ attr +' oncontextmenu="Viewer.showContextMenu(this,event); return false;">' +
+					'<div class="icon '+ type +'" data-path="'+ list[j+i] +'">' +
 					'	<img src="'+ require.toUrl('./Icons/' + type +'.png') + '" width="48" height="48"/><br/>' +
 							list[j+i].replace(reg,'') +
 					'</div>';
@@ -430,14 +443,14 @@ define(function(require)
 	
 			i += j;
 
-			if ( i < count ) {
-				Viewer.thread = setTimeout( streamExecute, 4 );
+			if (i < count) {
+				_thread = setTimeout( streamExecute, 4 );
 			}
 		}
 
 		streamExecute();
-		Viewer.displayImagesThumbnail( count );
-	};
+		displayImagesThumbnail( count );
+	}
 
 
 	/**
@@ -446,16 +459,12 @@ define(function(require)
 	 * @param {string} filename
 	 * @return {string} icon name
 	 */
-	Viewer.getFileIcon = function GetFileIcon( filename )
+	function getFileIcon( filename )
 	{
 		var ext = filename.split(/\.([^\.]+)$/)[1] || 'dir';
-		var img = '';
+		var img = 'file';
 
 		switch (ext.toLowerCase()) {
-			default:
-				img = 'file';
-				break;
-
 			case 'dir':
 				img = 'directory';
 				break;
@@ -487,24 +496,33 @@ define(function(require)
 			case 'rsw':
 				img = 'map';
 				break;
+
+			case 'str':
+				img = 'fx';
+				break;
 		}
 
 		return img;
-	};
+	}
 
 
 	/**
 	 * Display real thumbnails for each known file
 	 */
-	Viewer.displayImagesThumbnail = function DisplayImagesTumbnail()
+	function displayImagesThumbnail()
 	{
 		// Stored action to know if user act during the process
-		var actionID = this.actionID + 0;
+		var actionID = _actionID + 0;
+
+		function cleanUp()
+		{
+			URL.revokeObjectURL(this.src);
+		}
 
 		function process()
 		{
 			// Stop here if we change page.
-			if (actionID !== Viewer.actionID) {
+			if (actionID !== _actionID) {
 				return;
 			}
 
@@ -519,26 +537,22 @@ define(function(require)
 
 			// Work with current loaded files
 			nodes.each(function(){
-
 				var self = jQuery(this);
-				
+
 				Client.getFile( self.data('path'), function( data ) {
-
 					// Clean from memory...
-					// and avoid to fetch it later
 					Memory.remove(self.data('path'));
-					self.removeClass('img');
+					self.removeClass('img').addClass('thumb');
 
-					var url = Viewer.getImageThumbnail( self.data('path'), data );
+					var url = getImageThumbnail( self.data('path'), data );
 
 					// Display image
 					if (url) {
-						self.find('img:first').attr('src', url );
-
-						// There is a limit of blob url the browser can support
+						var img = self.find('img:first').get(0);
 						if (url.match(/^blob\:/)){
-							URL.revokeObjectURL(url);
+							img.onload = img.onerror = img.onabort = cleanUp;
 						}
+						img.src = url;
 					}
 
 					// Fetch next range.
@@ -550,7 +564,7 @@ define(function(require)
 		}
 
 		process();
-	};
+	}
 
 
 	/**
@@ -560,7 +574,7 @@ define(function(require)
 	 * @param {ArrayBuffer} data
 	 * @return {string|null} url generated
 	 */
-	Viewer.getImageThumbnail = function GetImageThumbnail( filename, data )
+	function getImageThumbnail( filename, data )
 	{
 		var canvas;
 		var ext = filename.substr(-3).toLowerCase();
@@ -607,58 +621,60 @@ define(function(require)
 					new Blob( [data], { type: 'image/' + ext })
 				);
 		}
-	};
+	}
 
 
 	/**
 	 * User click on directory, open it
 	 */
-	Viewer.onDirectoryClick = function OnDirectoryClick()
+	function onDirectoryClick()
 	{
-		Viewer.moveToDirectory( jQuery(this).data('path') + '/', true );
-	};
+		moveToDirectory( this.getAttribute('data-path') + '/', true );
+	}
 
 
 	/**
 	 * User click on an audio file, play it
 	 */
-	Viewer.onAudioClick = function OnAudioClick()
+	function onAudioClick()
 	{
-		var path = jQuery(this).data('path');
-		var box  = Viewer.ui.find('#preview .box');
-		Viewer.ui.find('#progress').show();
+		var ui   = Viewer.ui;
+		var path = this.getAttribute('data-path');
+		var box  = ui.find('#preview .box');
+
+		ui.find('#progress').show();
 
 		Client.loadFile( path, function(url) {
 			// Create audio
-			var audio         = document.createElement('audio');
-			audio.src         = url;
-			audio.controls    = true;
+			var audio      = document.createElement('audio');
+			audio.src      = url;
+			audio.controls = true;
 			audio.play();
 
 			// Show it on a box
 			box
 				.css('top', ( jQuery(window).height() - 100 ) / 2 )
-				.html( jQuery(audio).click(function(event){
+				.append(jQuery(audio).click(function(event){
 					event.stopPropagation();
 				}));
-	
-			jQuery('#progress').hide();
-			jQuery('#preview').show().one('click',function(){
+
+			ui.find('#progress').hide();
+			ui.find('#preview').show().one('click', function(){
 				jQuery(this).hide();
-				box.find('audio').unbind();
+				box.find('audio').unbind().remove();
 			});
 		});
-	};
+	}
 
 
 	/**
 	 * User click on an image, render it
 	 */
-	Viewer.onImageClick = function OnImageClick()
+	function onImageClick()
 	{
-		var ui = Viewer.ui;
-		var path = jQuery(this).data('path');
-		var box  = ui.find('#preview .box').html('');
+		var ui   = Viewer.ui;
+		var path = this.getAttribute('data-path');
+		var box  = ui.find('#preview .box');
 		ui.find('#progress').show();
 
 		Client.getFile( path, function(data)
@@ -670,9 +686,7 @@ define(function(require)
 				// Sprite support
 				case 'spr':
 					var spr = new Sprite(data);
-					box
-						.css('top', 200)
-						.html('');
+					box.css('top', 200);
 
 					for (i = 0, count = spr.frames.length; i < count; ++i) {
 						canvas = spr.getCanvasFromFrame( i );
@@ -698,7 +712,7 @@ define(function(require)
 
 					box
 						.css('top', jQuery(window).height() / 2 - 64 )
-						.html( canvas );
+						.append( canvas );
 					break;
 
 				// Targa support
@@ -707,7 +721,7 @@ define(function(require)
 					tga.load( new Uint8Array(data) );
 					box
 						.css('top', jQuery(window).height() / 2 - 64 )
-						.html( tga.getCanvas() );
+						.append( tga.getCanvas() );
 						break;
 
 				// Image Support
@@ -720,7 +734,7 @@ define(function(require)
 					img.onload = function() {
 						box
 							.css('top', (jQuery(window).height()-this.height)/2 )
-							.html(this);
+							.append(this);
 
 						URL.revokeObjectURL(url);
 					};
@@ -732,43 +746,43 @@ define(function(require)
 			ui.find('#progress').hide();
 			ui.find('#preview').one('click',function(){
 				jQuery(this).hide();
+				box.find('img, canvas').remove();
 			});
 		});
-	};
+	}
 
 
 	/**
 	 * User click on a model, render it using ModelViewer
 	 */
-	Viewer.onObjectClick = function OnObjectClick()
+	var onObjectClick = function onObjectClickClosure()
 	{
-		var path = jQuery(this).data('path');
-		var ready = false;
-		Viewer.ui.find('#progress').show();
+		var ready   = false;
+		var element = document.createElement('div');
 
-		// Show iframe
-		jQuery('#preview .box').css('top', (jQuery(window).height()-300)* 0.5 );
-		jQuery('#preview').show();
-		jQuery('#progress').hide();
-
-		// Include App
 		var App = new ROBrowser({
-			target:        jQuery('#preview .box').get(0),
+			target:        element,
 			type:          ROBrowser.TYPE.FRAME,
 			application:   ROBrowser.APP.MODELVIEWER,
-			development:   ROConfig.development,
+			development:   Configs.get('development', false),
 			api:           true,
 			width:         500,
-			height:        300
+			height:        400,
+			version:       Configs.get('version', '')
 		});
-		App.start();
 
 		// Ressource sharing
-		function OnMessage(event) {
-			ready = true;
+		function onMessage(event) {
+			if (typeof event.data !== 'object') {
+				return;
+			}
 
 			switch (event.data.type) {
 				case 'SYNC':
+					ready = true;
+					App.onload();
+					break;
+
 				case 'SET_HOST':
 				case 'CLEAN_GRF':
 					return;
@@ -784,71 +798,182 @@ define(function(require)
 		}
 
 		// Wait for synchronisation with frame
-		function synchronise(){
+		function synchronise() {
 			if (!ready) {
-				App._APP.postMessage('SYNC', location.origin);
-				setTimeout(synchronise, 4);
+				App._APP.postMessage({ type: 'init' }, location.origin);
+				setTimeout(synchronise, 100);
 			}
 		}
 
-		// Once app is ready
-		App.onReady = function(){
-			App._APP.location.hash = path.replace(/\\/g,'/');
-			App._APP.frameElement.style.border = '1px solid grey';
-			App._APP.frameElement.style.backgroundColor = '#45484d';
-			window.addEventListener('message', OnMessage, false);
-			synchronise();
-		};
+		return function onObjectClick()
+		{
+			var ui    = Viewer.ui;
+			var path  = this.getAttribute('data-path').replace(/\\/g, '/');
 
-		// Unload app
-		jQuery('#preview').one('click',function(){
-			jQuery(this).hide();
-			window.removeEventListener('message', OnMessage, false);
+			// Show iframe
+			ui.find('#preview .box').css('top', (jQuery(window).height()-400)* 0.5 );
+			element.style.display = 'block';
+
+
+			ui.find('#preview').show();
+
+			// Unload app
+			ui.find('#preview').one('click',function(){
+				ui.find('#preview').hide();
+				element.style.display = 'none';
+				App._APP.postMessage({ type:'stop' }, location.origin);
+				window.removeEventListener('message', onMessage, false);
+			});
+
+			window.addEventListener('message', onMessage, false);
+
+			if (!ready) {
+				// Once app is ready
+				ui.find('#preview .box').append(element);
+
+				App.start();
+				App.onReady = function(){
+					App._APP.frameElement.style.border          = '1px solid grey';
+					App._APP.frameElement.style.backgroundColor = '#45484d';
+					synchronise();
+				};
+				App.onload = function() {
+					App._APP.postMessage({ type:'load', data:path }, location.origin);
+				};
+			}
+			else {
+				App._APP.postMessage({ type:'load', data:path }, location.origin);
+			}
+		};
+	}();
+
+
+
+	/**
+	 * User click on an effect, render it using StrViewer
+	 */
+	var onEffectClick = function onEffectClickClosure()
+	{
+		var ready   = false;
+		var element = document.createElement('div');
+
+		var App = new ROBrowser({
+			target:        element,
+			type:          ROBrowser.TYPE.FRAME,
+			application:   ROBrowser.APP.STRVIEWER,
+			development:   Configs.get('development', false),
+			api:           true,
+			width:         400,
+			height:        400,
+			version:       Configs.get('version', '')
 		});
-	};
+
+		// Ressource sharing
+		function onMessage(event) {
+			if (typeof event.data !== 'object') {
+				return;
+			}
+
+			switch (event.data.type) {
+				case 'SYNC':
+					ready = true;
+					App.onload();
+					break;
+
+				case 'SET_HOST':
+				case 'CLEAN_GRF':
+					return;
+
+				default:
+					Thread.send( event.data.type, event.data.data, function(){
+						App._APP.postMessage({
+							arguments: Array.prototype.slice.call(arguments, 0),
+							uid:       event.data.uid
+						}, location.origin);
+					});
+			}
+		}
+
+		// Wait for synchronisation with frame
+		function synchronise() {
+			if (!ready) {
+				App._APP.postMessage({ type: 'init' }, location.origin);
+				setTimeout(synchronise, 100);
+			}
+		}
+
+		return function onEffectClick()
+		{
+			var ui   = Viewer.ui;
+			var path = this.getAttribute('data-path').replace(/\\/g, '/');
+
+			// Show iframe
+			ui.find('#preview .box').css('top', (jQuery(window).height()-400)* 0.5 );
+			ui.find('#preview').show();
+			element.style.display = 'block';
+
+			// Unload app
+			ui.find('#preview').one('click',function(){
+				ui.find('#preview').hide();
+				element.style.display = 'none';
+				App._APP.postMessage({ type:'stop' }, location.origin);
+				window.removeEventListener('message', onMessage, false);
+			});
+
+			window.addEventListener('message', onMessage, false);
+
+			if (!ready) {
+				// Once app is ready
+				ui.find('#preview .box').append(element);
+
+				App.start();
+				App.onReady = function(){
+					App._APP.frameElement.style.border          = '1px solid grey';
+					App._APP.frameElement.style.backgroundColor = 'black';
+					synchronise();
+				};
+				App.onload = function() {
+					App._APP.postMessage({ type:'load', data:path }, location.origin);
+				};
+			}
+			else {
+				App._APP.postMessage({ type:'load', data:path }, location.origin);
+			}
+		};
+	}();
 
 
 	/**
 	 * User click on a map, render it using MapViewer
 	 */
-	Viewer.onWorldClick = function OnWorldClick()
+	var onWorldClick = function onWorldClick()
 	{
-		var path = jQuery(this).data('path');
-		var ready = false;
-		Viewer.ui.find('#progress').show();
+		var ready   = false;
+		var element = document.createElement('div');
 
-		// Show iframe
-		jQuery('#preview .box').css('top', (jQuery(window).height()-600)* 0.5 );
-		jQuery('#preview').show();
-		jQuery('#progress').hide();
-		document.body.style.overflow = 'hidden';
-
-		// Include App
 		var App = new ROBrowser({
-			target:        jQuery('#preview .box').get(0),
+			target:        element,
 			type:          ROBrowser.TYPE.FRAME,
 			application:   ROBrowser.APP.MAPVIEWER,
-			development:   ROConfig.development,
+			development:   Configs.get('development', false),
 			api:           true,
-			width:         800,
-			height:        600
+			width:         600,
+			height:        480,
+			version:       Configs.get('version', '')
 		});
-		App.start();
-
-		// Wait for synchronisation with frame
-		function synchronise(){
-			if (!ready) {
-				App._APP.postMessage('SYNC', location.origin);
-				setTimeout(synchronise, 4);
-			}
-		}
 
 		// Ressource sharing
-		function OnMessage(event) {
-			ready = true;
+		function onMessage(event) {
+			if (typeof event.data !== 'object') {
+				return;
+			}
 
 			switch (event.data.type) {
 				case 'SYNC':
+					ready = true;
+					App.onload();
+					break;
+
 				case 'SET_HOST':
 				case 'CLEAN_GRF':
 					return;
@@ -873,79 +998,111 @@ define(function(require)
 			});
 		}
 
-		// Once app is ready
-		App.onReady = function(){
-			App._APP.location.hash = path.replace(/\\/g,'/');
-			App._APP.frameElement.style.border = '1px solid grey';
-			App._APP.frameElement.style.backgroundColor = '#45484d';
+		// Wait for synchronisation with frame
+		function synchronise() {
+			if (!ready) {
+				App._APP.postMessage({ type: 'init' }, location.origin);
+				setTimeout(synchronise, 100);
+			}
+		}
 
-			// Hook Tread Map loading
-			threadRedirect('MAP_PROGRESS');
-			threadRedirect('MAP_WORLD');
-			threadRedirect('MAP_GROUND');
-			threadRedirect('MAP_ALTITUDE');
-			threadRedirect('MAP_MODELS');
+		return function onWorldClick()
+		{
+			var ui   = Viewer.ui;
+			var path = this.getAttribute('data-path').replace(/\\/g, '/');
 
-			window.addEventListener('message', OnMessage, false);
-			synchronise();
+			ui.find('#progress').show();
+			element.style.display = 'block';
+
+			// Show iframe
+			ui.find('#preview .box').css('top', (jQuery(window).height()-480)* 0.5 );
+			ui.find('#preview').show();
+			ui.find('#progress').hide();
+			document.body.style.overflow = 'hidden';
+
+			// Unload app
+			ui.find('#preview').one('click',function(){
+				ui.find('#preview').hide();
+				document.body.style.overflow = 'auto';
+				element.style.display = 'none';
+
+				App._APP.postMessage({ type:'stop' }, location.origin);
+				window.removeEventListener('message', onMessage, false);
+			});
+
+			window.addEventListener('message', onMessage, false);
+
+			if (!ready) {
+				// Once app is ready
+				ui.find('#preview .box').append(element);
+
+				App.start();
+				App.onReady = function(){
+					App._APP.frameElement.style.border          = '1px solid grey';
+					App._APP.frameElement.style.backgroundColor = 'black';
+
+					// Hook Tread Map loading
+					threadRedirect('MAP_PROGRESS');
+					threadRedirect('MAP_WORLD');
+					threadRedirect('MAP_GROUND');
+					threadRedirect('MAP_ALTITUDE');
+					threadRedirect('MAP_MODELS');
+
+					synchronise();
+				};
+				App.onload = function() {
+					App._APP.postMessage({ type:'load', data:path }, location.origin);
+				};
+			}
+			else {
+				App._APP.postMessage({ type:'load', data:path }, location.origin);
+			}
 		};
-
-		// Unload app
-		jQuery('#preview').one('click',function(){
-			jQuery(this).hide();
-			document.body.style.overflow = 'auto';
-			window.removeEventListener('message', OnMessage, false);
-		});
-	};
+	}();
 
 
 	/**
 	 *  User click on text, display it
 	 */
-	Viewer.onTextClick = function OnTextClick()
+	function onTextClick()
 	{
-		var path = jQuery(this).data('path');
-		var progress = Viewer.ui.find('#progress');
-		var box      = Viewer.ui.find('#preview .box');
+		var ui       = Viewer.ui;
+		var path     = this.getAttribute('data-path');
+		var progress = ui.find('#progress');
+		var box      = ui.find('#preview .box');
 
 		progress.show();
 
 		Client.loadFile( path, function( text ) {
 			box
 				.css('top', ( jQuery(window).height()-300 ) / 2 )
-				.html(
+				.append(
 					jQuery('<pre/>')
 					.text(text)
 					.click(function(event){
 						event.stopPropagation();
 					})
 					.css({
-						 background:'white',
-						 width:'500px',
-						 display:'inline-block',
-						 height:'300px',
-						 overflow:'scroll',
-						 textAlign:'left',
-						 padding:'10px'
+						 background: 'white',
+						 width:      '500px',
+						 display:    'inline-block',
+						 height:     '300px',
+						 overflow:   'scroll',
+						 textAlign:  'left',
+						 padding:    '10px'
 					})
 				);
 
 			progress.hide();
-			jQuery('#preview')
+
+			ui.find('#preview')
 				.show()
 				.one('click',function(){
-					jQuery(this).hide();
-					box.find('pre').unbind();
+					ui.find('#preview').hide();
+					box.find('pre').unbind().remove();
 				});
 		});
-	};
-
-
-	/**
-	 * Export it as global variable
-	 * (need to be use to reference HTML event)
-	 */
-	window.Viewer = Viewer;
+	}
 
 
 	/**

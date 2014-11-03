@@ -15,13 +15,27 @@ define(function()
 
 	return {
 
-		AuthCode:  0,
-		AID:       0,
-		UserLevel: 0,
-		Sex:       0,
-		LangType:  0,
+		AuthCode:    0,
+		AID:         0,
+		GID:         0,
+		UserLevel:   0,
+		Sex:         0,
+		LangType:    0,
 
-		Character: null,
-		Entity:    null,
+		Character:   null,
+		Entity:      null,
+
+		AdminList:   [],
+
+		intravision: false,
+
+		moveAction:  null,
+
+		zeny:        0,
+
+		petId:       0,
+
+		hasParty:      false,
+		isPartyLeader: false,
 	};
 });

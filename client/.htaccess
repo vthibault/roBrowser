@@ -1,20 +1,18 @@
 # -----------------------------------------
-# How to setup rewrite rule :
+# Example for the url http://myroserver.com/client/
+# > ErrorDocument 404 /client/index.php
 #
-# ex: myroserver.com/client/
-# ErrorDocument 404 /client/index.php
+# Example for the url http://myroserver.com/low/client/
+# > ErrorDocument 404 /low/client/index.php
 #
-# ex : myroserver.com/low/client/
-# ErrorDocument 404 /low/client/index.php
-#
-# ex : client.myroserver.com/
-# ErrorDocument 404 /index.php
+# Example for the url http://client.myroserver.com/
+# > ErrorDocument 404 /index.php
 # -----------------------------------------
-
-
-# Setup the rule
 ErrorDocument 404 /client/index.php
 
+
+# Uncomment the line below if it does not cause error
+#Options -Indexes
 
 #------------------------------------------
 # /!\ Edit this part at your own risk !
@@ -22,6 +20,7 @@ ErrorDocument 404 /client/index.php
 
 <IfModule mod_headers.c>
 	Header set Access-Control-Allow-Origin "*"
+	Header set Access-Control-Allow-Headers "X-Application"
 </IfModule>
 
 Options +FollowSymlinks -MultiViews
@@ -36,3 +35,25 @@ RewriteRule ^(.*)\.bmp$   $1\.png [NC,QSA]
 
 # If no png or jpg file found, run the script in the ErrorDocument
 # to extract files from GRF and convert them
+
+# Have fun with compression
+
+<ifModule mod_gzip.c>
+	mod_gzip_on Yes
+	mod_gzip_dechunk Yes
+	mod_gzip_item_include file \.(act|spr|pal|txt|xml|lua|gnd|gat|rsw|rsm)$
+</ifModule>
+
+<IfModule mod_mime.c>
+	AddType application/ro-action          act
+	AddType application/ro-sprite          spr
+	AddType application/ro-palette         pal
+	AddType application/ro-ground          gnd
+	AddType application/ro-altitude        gat
+	AddType application/ro-world           rsw
+	AddType application/ro-model           rsm
+</Ifmodule>
+
+<IfModule mod_deflate.c>
+	AddOutputFilterByType DEFLATE application/ro-action application/ro-sprite application/ro-palette application/ro-ground application/ro-altitude application/ro-world application/ro-model text/plain application/xml
+</Ifmodule>

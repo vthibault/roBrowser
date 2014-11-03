@@ -30,22 +30,23 @@ require({
 		jquery: 'Vendors/jquery-1.9.1'
 	}
 },
-	['Utils/Queue', 'Audio/BGM',
-	 'Core/Client', 'Core/Thread',
+	['Utils/Queue',
+	 'Core/Configs', 'Core/Client', 'Core/Thread',
+	 'Audio/BGM',
 	 'Engine/SessionStorage',
 	 'Renderer/Renderer', 'Renderer/MapRenderer', 'Renderer/Camera', 'Renderer/Map/Altitude', 'Renderer/Entity/Entity',
 	 'Controls/MouseEventHandler', 'Controls/MapControl',
 	 'UI/Components/Intro/Intro'],
 
 function(
-	Queue, BGM,
-	Client, Thread,
+	Queue,
+	Configs, Client, Thread,
+	BGM,
 	Session,
 	Renderer, MapRenderer, Camera, Altitude, Entity,
 	Mouse, MapControl,
 	Intro
 ) {
-
 	'use strict';
 
 
@@ -75,21 +76,53 @@ function(
 		// Increase max intersection test (because of the max zoom)
 		Altitude.MAX_INTERSECT_COUNT = 500;
 
-		var q = new Queue();
+		var ready     = false;
+		var maptoload = '';
+		var q         = new Queue();
 
 		// Resources sharing
-		if (ROConfig.API) {
+		if (Configs.get('API')) {
 			q.add(function(){
-				function Synchronise( event ) {
-					Thread.delegate( event.source, event.origin );
-					Thread.init();
-					Renderer.init();
-					q._next();
-		
-					window.removeEventListener('message', Synchronise, false);
+				function onAPIMessage( event ) {
+					if (typeof event.data !== 'object') {
+						return;
+					}
+
+					switch (event.data.type) {
+						case 'init':
+							BGM.setAvailableExtensions(['mp3']);
+							Thread.delegate( event.source, event.origin );
+							Thread.init();
+							Renderer.init();
+							q._next();
+							break;
+
+						case 'load':
+							MapRenderer.currentMap = '';
+
+							if (ready) {
+								MapRenderer.setMap(event.data.data.replace('data/',''));
+							}
+							else {
+								maptoload = event.data.data.replace('data/','');
+							}
+							if (MapViewer.dropDown && MapViewer.dropDown.parentNode) {
+								document.body.removeChild( MapViewer.dropDown );
+							}
+							event.stopPropagation();
+							break;
+
+						case 'stop':
+							var gl = Renderer.getContext();
+							MapRenderer.free();
+							Renderer.stop();
+							gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT );
+							event.stopPropagation();
+							break;
+					}
 				}
-		
-				window.addEventListener('message', Synchronise, false);
+
+				window.addEventListener('message', onAPIMessage, false);
 			});
 		}
 
@@ -97,6 +130,7 @@ function(
 		else {
 			// Waiting for the Thread to be ready
 			q.add(function(){
+				BGM.setAvailableExtensions(['mp3']);
 				Thread.hook('THREAD_READY', q.next );
 				Thread.init();
 			});
@@ -123,14 +157,18 @@ function(
 			Intro.remove();
 
 			MapRenderer.onLoad = MapViewer.onLoad;
-			MapRenderer.setMap('guild_vs4.rsw');
-			MapControl.call(MapViewer);
+			MapControl.init();
+			MapControl.onRequestWalk = MapViewer.onMouseDown;
 
 			// Direct access from API
-			if (ROConfig.API) {
-				MapRenderer.setMap( location.hash.substr(1).replace('data/','') );
+			if (Configs.get('API')) {
+				ready     = true;
+				maptoload = maptoload || location.hash.substr(1).replace('data/','');
+				MapRenderer.setMap( maptoload );
 				return;
 			}
+
+			MapRenderer.setMap('guild_vs4.rsw');
 
 			// Initialize dropdown
 			Client.search(/data\\([^\0]+\.rsw)/gi, function( mapList ) {
@@ -166,7 +204,7 @@ function(
 	{
 		BGM.stop();
 
-		if (!ROConfig.API) {
+		if (!Configs.get('API')) {
 			document.body.appendChild( MapViewer.dropDown );
 		}
 
@@ -193,13 +231,6 @@ function(
 			MapViewer.spot.position[2] = Mouse.world.z;
 		}
 	};
-
-
-	/**
-	 * Mouse up on canvas
-	 * Nothing to do here
-	 */
-	MapViewer.onMouseUp = function OnMouseUp(){};
 
 
 	/**

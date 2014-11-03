@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+	<body></body>
+	<script type="text/javascript" src="../../src/Vendors/require.js"></script>
+	<script type="text/javascript">
+require({
+	baseUrl: '../../src/',
+	paths: {
+		text:   "Vendors/text.require",
+		jquery: "Vendors/jquery-1.9.1"
+	}
+}, ['../tools/tests/FileTester', 'Loaders/Model'], function( FileTester, Model )
+{
+	var param = {
+		position: new Float32Array(3),
+		scale:    new Float32Array([1,1,1]),
+		rotation: new Float32Array(3)
+	};
+
+	var ft = new FileTester("rsm",function(data){
+		var model = new Model(data);
+		model.createInstance( param, 0, 0);
+		model.compile();
+	});
+
+	ft.start();
+});
+	</script>
+</html>

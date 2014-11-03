@@ -114,17 +114,17 @@ define(function( require )
 				ChatRoom.owner   = Session.Entity.display.name;
 				ChatRoom.append();
 
-				ChatBox.addText( DB.msgstringtable[64], ChatBox.TYPE.BLUE );
+				ChatBox.addText( DB.getMessage(64), ChatBox.TYPE.BLUE );
 				break;
 
 			// Room limit exceeded
 			case 1:
-				ChatBox.addText( DB.msgstringtable[65], ChatBox.TYPE.ERROR );
+				ChatBox.addText( DB.getMessage(65), ChatBox.TYPE.ERROR );
 				break;
 
 			// Same room already exists
 			case 2:
-				ChatBox.addText( DB.msgstringtable[66], ChatBox.TYPE.ERROR );
+				ChatBox.addText( DB.getMessage(66), ChatBox.TYPE.ERROR );
 				break;
 		}
 	}
@@ -144,21 +144,20 @@ define(function( require )
 	 */
 	function onEnterRoomResult( pkt )
 	{
+		var error = 67;
 		switch (pkt.result) {
 			// full
-			case 0:
-				ChatBox.addText( DB.msgstringtable[65], ChatBox.TYPE.ERROR );
-				break;
-
-			// TODO:
-			case 1:
-			case 2:
-			case 3:
-			case 4:
-			case 5:
-			case 6:
-			case 7:
+			case 0: error = 67; break;
+			case 1: error =  7; break;
+			case 2: error = 68; break;
+			case 3: return; //don't show anything!
+			case 4:	error = 55; break;
+			case 5: error = 432; break;
+			case 6: error = 433; break;
+			case 7: error = 434; break;
 		}
+		
+		ChatBox.addText( DB.getMessage(error), ChatBox.TYPE.ERROR );
 
 	}
 
@@ -173,7 +172,7 @@ define(function( require )
 		ChatRoom.members.push( pkt.name );
 
 		ChatRoom.updateChat();
-		ChatRoom.message(DB.msgstringtable[179].replace('%s', pkt.name), 'join');
+		ChatRoom.message(DB.getMessage(179).replace('%s', pkt.name), 'join');
 	}
 
 
@@ -211,12 +210,12 @@ define(function( require )
 
 		// Leave the room
 		if (pkt.type === 0) {
-			ChatRoom.message(DB.msgstringtable[180].replace('%s', pkt.name), 'leave');
+			ChatRoom.message(DB.getMessage(180).replace('%s', pkt.name), 'leave');
 		}
 
 		// Kick out of the room
 		else {
-			ChatRoom.message(DB.msgstringtable[181].replace('%s', pkt.name), 'leave');
+			ChatRoom.message(DB.getMessage(181).replace('%s', pkt.name), 'leave');
 		}
 	}
 

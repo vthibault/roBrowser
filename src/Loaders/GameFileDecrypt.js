@@ -218,9 +218,9 @@ define(function()
 	 */
 	function decryptBlock( src, index )
 	{
-		initialPermutation( src, index )( src, index );
+		initialPermutation( src, index );
 		roundFunction( src, index );
-		finalPermutation( src, index )( src, index );
+		finalPermutation( src, index );
 	}
 
 
