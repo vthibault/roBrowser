@@ -98,10 +98,6 @@ define(['Core/Configs'], function( Configs )
 	 * @param {number} end of the reader
 	 */
 	function parseCharList(fp, end) {
-		if (!end) {
-			end = fp.length;
-		}
-
 		var i, count, out = [];
 		var blockSize = Configs.get('charBlockSize') || calculateBlockSize();
 		var length = end - fp.tell();

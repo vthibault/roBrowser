@@ -26,8 +26,7 @@ function(      WebGL,         glMatrix,      Camera )
 	var _vertexShader = [
 		"attribute vec2 aPosition;",
 		"attribute vec2 aTextureCoord;",
-		"attribute float aIsUp;",
-
+	
 		"varying vec2 vTextureCoord;",
 
 		"uniform mat4 uModelViewMat;",
@@ -41,6 +40,7 @@ function(      WebGL,         glMatrix,      Camera )
 		"uniform mat4 uSpriteRendererAngle;",
 		"uniform vec3 uSpriteRendererPosition;",
 		"uniform float uSpriteRendererDepth;",
+		"uniform float uSpriteRendererZindex;",
 
 		"mat4 Project( mat4 mat, vec3 pos) {",
 
@@ -52,12 +52,12 @@ function(      WebGL,         glMatrix,      Camera )
 			// Matrix translation
 			"mat[3].x += mat[0].x * x + mat[1].x * y + mat[2].x * z;",
 			"mat[3].y += mat[0].y * x + mat[1].y * y + mat[2].y * z;",
-			"mat[3].z += mat[0].z * x + mat[1].z * y + mat[2].z * z;",
+			"mat[3].z += (mat[0].z * x + mat[1].z * y + mat[2].z * z) + (uCameraLatitude / 50.0);",
 			"mat[3].w += mat[0].w * x + mat[1].w * y + mat[2].w * z;",
 
 			// Spherical billboard
 			"mat[0].xyz = vec3( 1.0, 0.0, 0.0 );",
-			"mat[1].xyz = vec3( 0.0, 1.0, 0.0 );",
+			"mat[1].xyz = vec3( 0.0, 1.0 + 0.5/uCameraLatitude, uCameraLatitude/50.0 );",
 			"mat[2].xyz = vec3( 0.0, 0.0, 1.0 );",
 
 			"return mat;",
@@ -73,10 +73,7 @@ function(      WebGL,         glMatrix,      Camera )
 
 			// Project to camera plane
 			"gl_Position   = uProjectionMat * Project(uModelViewMat, uSpriteRendererPosition) * position;",
-
-			// Hack for billboarding
-			"vec3 camPosition = vec3( uViewModelMat[0].w, uViewModelMat[1].w, uViewModelMat[2].w);",
-			"gl_Position.z   -= uSpriteRendererDepth + aIsUp * (uCameraLatitude * 0.25 / distance( gl_Position.xyz, camPosition.xyz));",
+			"gl_Position.z -= uSpriteRendererZindex * 0.01 + uSpriteRendererDepth;",
 		"}"
 	].join("\n");
 
@@ -403,16 +400,12 @@ function(      WebGL,         glMatrix,      Camera )
 		// Enable all attributes
 		gl.enableVertexAttribArray( attribute.aPosition );
 		gl.enableVertexAttribArray( attribute.aTextureCoord );
-		gl.enableVertexAttribArray( attribute.aIsUp );
 		gl.bindBuffer( gl.ARRAY_BUFFER, _buffer );
 
 		// Link attribute
 		gl.vertexAttribPointer( attribute.aPosition,     2, gl.FLOAT, false,  5*4, 0   );
 		gl.vertexAttribPointer( attribute.aTextureCoord, 2, gl.FLOAT, false,  5*4, 2*4 );
-		gl.vertexAttribPointer( attribute.aIsUp,         1, gl.FLOAT, false,  5*4, 4*4 );
-
-		gl.depthMask(false);
-
+	
 		// Binding 3D context
 		this.render = RenderCanvas3D;
 		this.xSize  = 5;
@@ -432,10 +425,8 @@ function(      WebGL,         glMatrix,      Camera )
 	{
 		var attribute = _program.attribute;
 
-		gl.depthMask(true);
 		gl.disableVertexAttribArray( attribute.aPosition );
 		gl.disableVertexAttribArray( attribute.aTextureCoord );
-		gl.disableVertexAttribArray( attribute.aIsUp );
 	};
 
 
@@ -495,7 +486,8 @@ function(      WebGL,         glMatrix,      Camera )
 		if (this.depth !== _depth) {
 			gl.uniform1f( uniform.uSpriteRendererDepth, _depth = this.depth);
 		}
-
+		
+		gl.uniform1f( uniform.uSpriteRendererZindex, this.zIndex++ );
 		// Rotate
 		if (this.angle !== _angle) {
 			_angle = this.angle;
