@@ -181,6 +181,7 @@ define(function( require )
 		// Autologin features
 		if (autoLogin instanceof Array && autoLogin[0] && autoLogin[1]) {
 			onConnectionRequest.apply( null, autoLogin);
+			Configs.set('autoLogin',null);
 		}
 		else {
 			WinLogin.append();
@@ -312,7 +313,11 @@ define(function( require )
 		var i, count = _charServers.length;
 		var list     = new Array(count);
 		for (i = 0; i < count; ++i) {
+<<<<<<< HEAD
+			list[i]  =  _charServers[i].property ? DB.msgstringtable[482] + ' ' : '';//482: 'New'
+=======
 			list[i]  =  _charServers[i].property ? DB.getMessage(482) + ' ' : '';
+>>>>>>> upstream/master
 			list[i] +=  _charServers[i].name;
 			list[i] +=  _charServers[i].state    ? DB.getMessage(484) : ' ' + DB.getMessage(483).replace('%d', _charServers[i].usercount);
 		}

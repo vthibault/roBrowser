@@ -1,7 +1,13 @@
 /**
+<<<<<<< HEAD:src/DB/HatTable.js
+ * DB/HatTable.js
+ *
+ * Hat Table ID
+=======
  * DB/Items/HatTable.js
  *
  * Hat table view ID
+>>>>>>> upstream/master:src/DB/Items/HatTable.js
  *
  * This file is part of ROBrowser, Ragnarok Online in the Web Browser (http://www.robrowser.com/).
  *
