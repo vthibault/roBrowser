@@ -186,6 +186,8 @@ define(function( require )
 		SpriteRenderer.offset[0]     = 0;
 		SpriteRenderer.offset[1]     = 0;
 		SpriteRenderer.image.palette = null;
+		SpriteRenderer.depth         = 0;
+		gl.depthMask(false);
 
 		for (i = 0; i < MAX_CLOUDS; i++) {
 			cloud = _clouds[i];
@@ -211,6 +213,7 @@ define(function( require )
 				opacity = 1.0;
 			}
 
+			SpriteRenderer.zIndex        = 0;
 			SpriteRenderer.color[3]      = opacity;
 			SpriteRenderer.image.texture = _textures[cloud.sprite];
 
@@ -222,6 +225,7 @@ define(function( require )
 
 		// Clean up
 		SpriteRenderer.unbind(gl);
+		gl.depthMask(true);
 	}
 
 
