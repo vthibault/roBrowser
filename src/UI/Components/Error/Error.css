@@ -2,7 +2,7 @@
 	font-family: 'Kite One';
 	font-style: normal;
 	font-weight: 400;
-	src: local('Kite One'), local('KiteOne-Regular'), url(http://themes.googleusercontent.com/static/fonts/kiteone/v1/hBvjgJD9kW8S58mIkeaeS3YhjbSpvc47ee6xR_80Hnw.ttf) format('truetype');
+	src: local('Kite One'), local('KiteOne-Regular'), url(//themes.googleusercontent.com/static/fonts/kiteone/v1/hBvjgJD9kW8S58mIkeaeS3YhjbSpvc47ee6xR_80Hnw.ttf) format('truetype');
 }
 
 body { background-color:#d2afab; }
