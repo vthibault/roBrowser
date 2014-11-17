@@ -117,7 +117,7 @@ define(['Core/Configs'], function( Configs )
 		var length = end - fp.tell();
 
 		// Nothing to parse
-		if (!length) {
+		if (length <= 0) {
 			return out;
 		}
 
