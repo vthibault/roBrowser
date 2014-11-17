@@ -56,8 +56,13 @@
 	function to_ascii(str) {
 		return str.replace(/[\u0080-\uffff]/g, function(ch) {
 			var code = ch.charCodeAt(0).toString(16);
-			while (code.length < 4) code = "0" + code;
-			return "\\u" + code;
+			if (code.length <= 2) {
+				while (code.length < 2) code = "0" + code;
+				return "\\x" + code;
+			} else {
+				while (code.length < 4) code = "0" + code;
+				 return "\\u" + code;
+			}
 		});
 	}
 
