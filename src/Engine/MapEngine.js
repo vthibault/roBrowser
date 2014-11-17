@@ -135,6 +135,7 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.AID,                 onReceiveAccountID );
 		Network.hookPacket( PACKET.ZC.ACCEPT_ENTER,        onConnectionAccepted );
 		Network.hookPacket( PACKET.ZC.ACCEPT_ENTER2,       onConnectionAccepted );
+		Network.hookPacket( PACKET.ZC.ACCEPT_ENTER3,       onConnectionAccepted );
 		Network.hookPacket( PACKET.ZC.NPCACK_MAPMOVE,      onMapChange );
 		Network.hookPacket( PACKET.ZC.NPCACK_SERVERMOVE,   onServerChange );
 		Network.hookPacket( PACKET.ZC.ACCEPT_QUIT,         onExitSuccess );
@@ -219,6 +220,10 @@ define(function( require )
 	{
 		Session.Entity = new Entity( Session.Character );
 		Session.Entity.onWalkEnd = onWalkEnd;
+
+		if ('sex' in pkt && pkt.sex < 2) {
+			Session.Entity.sex = pkt.sex;
+		}
 
 		// Reset
 		Session.petId         =     0;

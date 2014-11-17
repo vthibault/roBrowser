@@ -284,7 +284,10 @@ define(function(require)
 	 */
 	CharSelect.addCharacter = function addCharacter( character )
 	{
-		character.sex = _sex;
+		if (!('sex' in character) || character.sex === 99) {
+			character.sex = _sex;
+		}
+
 		_list.push( character );
 		_slots[ character.CharNum ] = character;
 

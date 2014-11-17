@@ -527,6 +527,7 @@ define( ['./PacketStructure' ], function( PACKET )
 		0x914: PACKET.ZC.NOTIFY_MOVEENTRY7, // ok
 		0x915: PACKET.ZC.NOTIFY_NEWENTRY7, // ok
 		0x977: PACKET.ZC.NOTIFY_MONSTER_HP, // ok
+		0x97a: PACKET.ZC.ALL_QUEST_LIST_V2,
 		0x983: PACKET.ZC.MSG_STATE_CHANGE4, // ok
 		0x984: PACKET.ZC.MSG_STATE_CHANGE5, // ok
 		0x990: PACKET.ZC.ITEM_PICKUP_ACK5, // partially
@@ -558,5 +559,7 @@ define( ['./PacketStructure' ], function( PACKET )
 		0x9df: PACKET.ZC.ACK_WHISPER2,
 		//0x9d5: npcmarketopenType
 		//0x9d7: npcmarketresultackType
+		0xa00: PACKET.ZC.SHORTCUT_KEY_LIST_V3, // ok
+		0xa18: PACKET.ZC.ACCEPT_ENTER3, // ok
 	};
 });

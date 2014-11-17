@@ -540,6 +540,7 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.ADD_SKILL,              onSkillAdded );
 		Network.hookPacket( PACKET.ZC.SHORTCUT_KEY_LIST,      onShortCutList );
 		Network.hookPacket( PACKET.ZC.SHORTCUT_KEY_LIST_V2,   onShortCutList );
+		Network.hookPacket( PACKET.ZC.SHORTCUT_KEY_LIST_V3,   onShortCutList );
 		Network.hookPacket( PACKET.ZC.ACK_TOUSESKILL,         onSkillResult );
 		Network.hookPacket( PACKET.ZC.NOTIFY_EFFECT,          onSpecialEffect );
 		Network.hookPacket( PACKET.ZC.NOTIFY_EFFECT2,         onEffect );

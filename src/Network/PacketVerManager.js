@@ -87,6 +87,16 @@ define(['Core/Configs'], function( Configs )
 			blockSize += 4;
 		}
 
+		// Character sex
+		if (_value >= 20141016) {
+			blockSize++;
+		}
+
+		// Weapon move from short to int
+		if (_value >= 20141022) {
+			blockSize += 2;
+		}
+
 		return blockSize;
 	}
 
@@ -115,7 +125,7 @@ define(['Core/Configs'], function( Configs )
 		if (!blockSize || length % blockSize) {
 			console.error('CHARACTER_INFO size error!! blockSize : "'+ blockSize +'", list length: ' + length + ', auto-detect...');
 
-			var knownSize = [106, 108, 112, 116, 124, 128, 132, 136, 140, 144];
+			var knownSize = [106, 108, 112, 116, 124, 128, 132, 136, 140, 144, 146, 147];
 			var matches = [];
 
 			for (i = 0, count = knownSize.length; i < count; ++i) {
@@ -160,7 +170,14 @@ define(['Core/Configs'], function( Configs )
 			out[i].speed = fp.readShort();
 			out[i].job = fp.readShort();
 			out[i].head = fp.readShort();
-			out[i].weapon = fp.readShort();
+
+			if (blockSize >= 146) {
+				out[i].weapon = fp.readLong();
+			}
+			else {
+				out[i].weapon = fp.readShort();
+			}
+
 			out[i].level = fp.readShort();
 			out[i].sppoint = fp.readShort();
 			out[i].accessory = fp.readShort();
@@ -212,6 +229,10 @@ define(['Core/Configs'], function( Configs )
 
 			if (blockSize >= 144) {
 				out[i].RenameAddon = fp.readLong();
+			}
+
+			if (blockSize >= 147) {
+				out[i].sex = fp.readUChar();
 			}
 		}
 

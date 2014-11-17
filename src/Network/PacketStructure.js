@@ -10629,6 +10629,25 @@ define(['Utils/BinaryWriter', './PacketVerManager'], function(BinaryWriter, PACK
 	PACKET.ZC.NOTIFY_MONSTER_HP.size = 14;
 
 
+	// 0x97a
+	PACKET.ZC.ALL_QUEST_LIST_V2 = function PACKET_ZC_ALL_QUEST_LIST_V2(fp, end) {
+		this.questCount = fp.readLong();
+		this.QuestList = (function() {
+			var i, count=(end-fp.tell())/15|0, out=new Array(count);
+			for (i = 0; i < count; ++i) {
+				out[i] = {};
+				out[i].questID = fp.readULong();
+				out[i].active = fp.readUChar();
+				out[i]._time = fp.readULong();
+				out[i].time = fp.readULong();
+				out[i].count = fp.readShort();
+			}
+			return out;
+		})();
+	};
+	PACKET.ZC.ALL_QUEST_LIST_V2.size = -1;
+
+
 	// 0x983
 	PACKET.ZC.MSG_STATE_CHANGE4 = function PACKET_ZC_MSG_STATE_CHANGE4(fp, end) {
 		this.index = fp.readShort();
@@ -10993,6 +11012,36 @@ define(['Utils/BinaryWriter', './PacketVerManager'], function(BinaryWriter, PACK
 		this.unknown = fp.readULong(); // AID ?
 	};
 	PACKET.ZC.ACK_WHISPER2.size = 7;
+
+
+	// 0xa00
+	PACKET.ZC.SHORTCUT_KEY_LIST_V3 = function PACKET_ZC_SHORTCUT_KEY_LIST_V3(fp, end) {
+		fp.seek(0x1, SEEK_CUR);
+		this.ShortCutKey = (function() {
+			var i, count = 38,
+				out = new Array(count);
+			for (i = 0; i < count; ++i) {
+				out[i] = {};
+				out[i].isSkill = fp.readChar();
+				out[i].ID = fp.readULong();
+				out[i].count = fp.readShort();
+			}
+			return out;
+		})();
+	};
+	PACKET.ZC.SHORTCUT_KEY_LIST_V3.size = 269;
+
+
+	// 0xa18
+	PACKET.ZC.ACCEPT_ENTER3 = function PACKET_ZC_ACCEPT_ENTER3(fp, end) {
+		this.startTime = fp.readULong();
+		this.PosDir = fp.readPos();
+		this.xSize = fp.readUChar();
+		this.ySize = fp.readUChar();
+		this.font = fp.readShort();
+		this.sex = fp.readUChar();
+	};
+	PACKET.ZC.ACCEPT_ENTER3.size = 14;
 
 
 	/**
