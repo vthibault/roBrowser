@@ -95,8 +95,7 @@
 #Guild .content.members td,
 #Guild .content.members th { text-align:left; font-weight:normal; padding-left:5px; height:35px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 #Guild .content.members tr.online td { background-color:#efe; }
-#Guild .content.members tr canvas { display:none; }
-#Guild .content.members tr.online canvas { display:inline; }
+#Guild .content.members tr canvas { display:inline; }
 #Guild .content.members .name { width:85px; }
 #Guild .content.members .name canvas { vertical-align:-11px; }
 #Guild .content.members .position { width:70px; }

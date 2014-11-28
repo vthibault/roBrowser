@@ -435,7 +435,7 @@ define(function( require )
 
 		Session.hasGuild      = true;
 		Session.guildRight    = pkt.right;
-		Session.isGuildMaster = pkt.isMaster;
+		Session.isGuildMaster = !!pkt.isMaster;
 
 		Session.Entity.GUID       = pkt.GDID;
 		Session.Entity.GEmblemVer = pkt.emblemVersion;

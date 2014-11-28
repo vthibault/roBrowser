@@ -122,14 +122,19 @@ define(function(require)
 
 		// Positions
 		ui.find('.content.positions tbody')
+			.on('mousedown', 'input', function(){
+				return Session.isGuildMaster;
+			})
 			.on('focus', 'input', function(){
 				ui.find('.footer .btn_ok').show();
 				this.select();
 			})
 			.on('click', 'button', function(){
-				this.className = (this.className === 'on' ? 'off' : 'on');
-				this.style.backgroundImage = 'url('+ (this.className === 'on' ? _checkbox_on : _checkbox_off) +')';
-				ui.find('.footer .btn_ok').show();
+				if (Session.isGuildMaster) {
+					this.className = (this.className === 'on' ? 'off' : 'on');
+					this.style.backgroundImage = 'url('+ (this.className === 'on' ? _checkbox_on : _checkbox_off) +')';
+					ui.find('.footer .btn_ok').show();
+				}
 			})
 			.on('mousedown', 'tr', function(){
 				ui.find('.content.positions tbody tr').removeClass('active');
@@ -321,6 +326,13 @@ define(function(require)
 		general.find('.tax .value').text(info.point);
 
 		Guild.onRequestGuildEmblem(info.GDID, info.emblemVersion, Guild.setEmblem.bind(this));
+
+		if (Session.isGuildMaster) {
+			general.find('.emblem_edit').show();
+		}
+		else {
+			general.find('.emblem_edit').hide();
+		}
 
 		renderTendency(info.honor, info.virtue);
 	};
