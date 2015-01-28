@@ -93,7 +93,7 @@ function(      FileManager,        FileSystem,           MapLoader )
 				});
 
 				// Saving full client
-				FileSystem.init( msg.data.files, msg.data.save );
+				FileSystem.init( msg.data.files, msg.data.save, msg.data.quota );
 				break;
 
 			// Files alias
