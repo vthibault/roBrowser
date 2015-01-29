@@ -145,12 +145,16 @@ define(function( require )
 
 		// Get temporary storage info at main thread, the worker can't access it.
 		// https://github.com/vthibault/roBrowser/issues/110
-		temporaryStorage = navigator.temporaryStorage || navigator.webkitTemporaryStorage;
+		temporaryStorage = navigator.temporaryStorage || navigator.webkitTemporaryStorage || {
+			queryUsageAndQuota: function(callback) {
+				callback(0, 0);
+			}
+		};
 
 		temporaryStorage.queryUsageAndQuota(function(used, remaining) {
 			var quota = {
 				used: used,
-			remaining: remaining
+				remaining: remaining
 			};
 
 			// Initialize client files (load GRF, etc).
