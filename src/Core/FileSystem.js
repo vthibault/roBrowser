@@ -67,8 +67,9 @@ define(function()
 	 *
 	 * @param {Array} FileList
 	 * @param {boolean} save files
+	 * @param {Object} quota information
 	 */
-	function init( files, save )
+	function init( files, save, quota )
 	{
 		var requestFileSystemSync, requestFileSystem, temporaryStorage;
 		_files = normalizeFilesPath(files);
@@ -82,26 +83,22 @@ define(function()
 
 		requestFileSystemSync = self.requestFileSystemSync || self.webkitRequestFileSystemSync;
 		requestFileSystem     = self.requestFileSystem     || self.webkitRequestFileSystem;
-		temporaryStorage      = navigator.temporaryStorage || navigator.webkitTemporaryStorage;
 
-		temporaryStorage.queryUsageAndQuota(function(used, remaining){
-			var size = _clientSize || used || remaining;
+		var size = _clientSize || quota.used || quota.remaining;
 
-			requestFileSystem( self.TEMPORARY, size, function( fs ){
-				_fs      = fs;
-				_fs_sync = requestFileSystemSync( self.TEMPORARY, size );
+		requestFileSystem( self.TEMPORARY, size, function( fs ){
+			_fs      = fs;
+			_fs_sync = requestFileSystemSync( self.TEMPORARY, size );
 
-				if (save && _files.length) {
-					cleanUp();
-					buildHierarchy();
-					processUpload(0);
-				}
+			if (save && _files.length) {
+				cleanUp();
+				buildHierarchy();
+				processUpload(0);
+			}
 
-				_save = save;
-				trigger('onready');
-			}, errorHandler);
-
-		});
+			_save = save;
+			trigger('onready');
+		}, errorHandler);
 	}
 
 

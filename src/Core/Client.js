@@ -79,6 +79,7 @@ define(function( require )
 		var last_tick   = Date.now();
 		var list        = [];
 		var i, count;
+		var temporaryStorage;
 
 		if (files.length) {
 			// Progressbar
@@ -142,12 +143,28 @@ define(function( require )
 			}
 		}
 
-		// Initialize client files (load GRF, etc).
-		Thread.send( 'CLIENT_INIT', {
-			files:     list,
-			grfList:   Configs.get('grfList') || 'DATA.INI',
-			save:    !!Configs.get('saveFiles')
-		}, Client.onFilesLoaded );
+		// Get temporary storage info at main thread, the worker can't access it.
+		// https://github.com/vthibault/roBrowser/issues/110
+		temporaryStorage = navigator.temporaryStorage || navigator.webkitTemporaryStorage || {
+			queryUsageAndQuota: function(callback) {
+				callback(0, 0);
+			}
+		};
+
+		temporaryStorage.queryUsageAndQuota(function(used, remaining) {
+			var quota = {
+				used: used,
+				remaining: remaining
+			};
+
+			// Initialize client files (load GRF, etc).
+			Thread.send( 'CLIENT_INIT', {
+				files:     list,
+				grfList:   Configs.get('grfList') || 'DATA.INI',
+				save:    !!Configs.get('saveFiles'),
+				quota:     quota
+			}, Client.onFilesLoaded );
+		});
 	}
 
 
