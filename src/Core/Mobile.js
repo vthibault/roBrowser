@@ -138,8 +138,6 @@ define(function( require )
 	 */
 	var onTouchStart = function onTouchStartClosure()
 	{
-		var _disabled = false;
-
 		function delayedClick() {
 			// Only process mousedown if not doing a gesture
 			if (!_processGesture) {
@@ -175,7 +173,7 @@ define(function( require )
 				_scale          = touchDistance(_touches);
 				_angle          = touchAngle(_touches);
 				_processGesture = true;
-				return;
+				return false;
 			}
 
 			Mouse.screen.x  = _touches[0].pageX;
@@ -184,6 +182,7 @@ define(function( require )
 			_intersect      = true;
 
 			_timer = Events.setTimeout( delayedClick, 200);
+			return false;
 		};
 	}();
 
@@ -233,7 +232,7 @@ define(function( require )
 		}
 
 		var scale = touchDistance(touches) - _scale;
-		var angle = touchAngle(touches) / _angle;
+		//var angle = touchAngle(touches) / _angle;
 		var x     = Math.abs(touchTranslationX(_touches, touches));
 		var y     = Math.abs(touchTranslationY(_touches, touches));
 
@@ -244,9 +243,11 @@ define(function( require )
 		}
 
 		// Process zoom
-		Camera.zoomFinal += scale * 0.1;
-		Camera.zoomFinal = Math.min( Camera.zoomFinal, Math.abs(Camera.altitudeTo-Camera.altitudeFrom) * Camera.MAX_ZOOM );
-		Camera.zoomFinal = Math.max( Camera.zoomFinal,  2.0 );
+		if (Math.abs(scale) > 10) {
+			Camera.zoomFinal += scale * 0.1;
+			Camera.zoomFinal = Math.min( Camera.zoomFinal, Math.abs(Camera.altitudeTo-Camera.altitudeFrom) * Camera.MAX_ZOOM );
+			Camera.zoomFinal = Math.max( Camera.zoomFinal,  2.0 );
+		}
 	}
 
 
