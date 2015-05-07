@@ -313,7 +313,7 @@ define(function( require )
 
 			var tick    = (end-now) / 1000 | 0;
 			var seconds = tick % 60;
-			var minutes = (tick / 60) | 0
+			var minutes = (tick / 60) | 0;
 
 			status.time.textContent = (now >= end || end === Infinity) ? '' : (
 				(minutes ? minutes + ' ' + DB.getMessage(1807, 'minute') + ' ' : '') + 

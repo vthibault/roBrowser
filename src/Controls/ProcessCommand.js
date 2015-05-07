@@ -199,7 +199,7 @@ define(function( require )
 
 		// /str+
 		// TODO: do we have to spam the server with "1" unit or do we have to fix the servers code ?
-		var matches = text.match(/^(\w{3})\+ (\d+)$/);
+		matches = text.match(/^(\w{3})\+ (\d+)$/);
 		if (matches) {
 			var pos = ['str', 'agi', 'vit', 'int', 'dex', 'luk'].indexOf(matches[1]);
 			if (pos > -1 && matches[2] !== 0) {

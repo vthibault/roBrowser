@@ -287,9 +287,9 @@
 				frame.height       = this.height;
 				frame.style.border = 'none';
 
-				frame.setAttribute('allowfullscreen', true);
-				frame.setAttribute('webkitallowfullscreen', true);
-				frame.setAttribute('mozallowfullscreen', true);
+				frame.setAttribute('allowfullscreen', 'true');
+				frame.setAttribute('webkitallowfullscreen', 'true');
+				frame.setAttribute('mozallowfullscreen', 'true');
 
 				if (this.target) {
 					while (this.target.firstChild) {

@@ -166,7 +166,6 @@ define(function(require)
 
 		// Private message selection
 		this.ui.find('.input .list').click(function(){
-			var $this = this;
 			var names = _historyNickName.list;
 			var i, count = names.length;
 			var pos = jQuery(this).offset();

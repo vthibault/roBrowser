@@ -63,5 +63,5 @@
 		for (i = 0; i < count; ++i) {
 			elements[i].addEventListener('mousedown', compile, false);
 		}
-	}, false)
+	}, false);
 })();

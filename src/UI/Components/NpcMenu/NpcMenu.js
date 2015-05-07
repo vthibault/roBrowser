@@ -75,7 +75,7 @@ define(function(require)
 			.mousedown(function(event) {
 				event.stopImmediatePropagation();
 				return false;
-			})
+			});
 	};
 
 

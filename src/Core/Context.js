@@ -32,7 +32,7 @@ define(function()
 	 */
 	Context.isFullScreen = function IsFullScreen()
 	{
-		return (
+		return !!(
 			document.fullscreenElement ||
 			document.mozFullScreenElement ||
 			document.webkitFullscreenElement ||

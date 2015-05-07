@@ -76,6 +76,27 @@ define( ['Audio/SoundManager'], function( SoundManager )
 
 
 	/**
+	 * Reset sound counter to allow repeating sounds
+	 * 
+	 * @param {number} animation index
+	 * @param {number} animation size
+	 */
+	 Sound.prototype.freeOnAnimationEnd = function freeOnAnimationEnd (anim, size)
+	 {
+		if (anim < size) {
+			return;
+		}
+
+		var count = Math.floor(anim / size);
+
+		if (this._animCounter !== count) {
+			this.free();
+			this._animCounter = count;
+		}
+	 };
+
+
+	/**
 	 * Initialize and export methods
 	 */
 	return function init()

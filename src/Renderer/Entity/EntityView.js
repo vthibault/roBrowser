@@ -327,52 +327,52 @@ define(function( require )
 		this.files = new View();
 
 		Object.defineProperty(this, 'sex', {
-			get: function(){ return this._sex },
+			get: function(){ return this._sex; },
 			set: UpdateSex
 		});
 
 		Object.defineProperty(this, 'job', {
-			get: function(){ return this.costume || this._job },
+			get: function(){ return this.costume || this._job; },
 			set: UpdateBody
 		});
 
 		Object.defineProperty(this, 'bodypalette', {
-			get: function(){ return this._bodypalette },
+			get: function(){ return this._bodypalette; },
 			set: UpdateBodyPalette
 		});
 
 		Object.defineProperty(this, 'head', {
-			get: function(){ return this._head },
+			get: function(){ return this._head; },
 			set: UpdateHead
 		});
 
 		Object.defineProperty(this, 'headpalette', {
-			get: function(){ return this._headpalette },
+			get: function(){ return this._headpalette; },
 			set: UpdateHeadPalette
 		});
 
 		Object.defineProperty(this, 'weapon', {
-			get: function(){ return this._weapon },
+			get: function(){ return this._weapon; },
 			set: UpdateGeneric('weapon', 'getWeaponPath', 'getWeaponViewID')
 		});
 
 		Object.defineProperty(this, 'shield', {
-			get: function(){ return this._shield },
+			get: function(){ return this._shield; },
 			set: UpdateGeneric('shield', 'getShieldPath')
 		});
 
 		Object.defineProperty(this, 'accessory', {
-			get: function(){ return this._accessory },
+			get: function(){ return this._accessory; },
 			set: UpdateGeneric('accessory', 'getHatPath')
 		});
 
 		Object.defineProperty(this, 'accessory2', {
-			get: function(){ return this._accessory2 },
+			get: function(){ return this._accessory2; },
 			set: UpdateGeneric('accessory2', 'getHatPath')
 		});
 
 		Object.defineProperty(this, 'accessory3', {
-			get: function(){ return this._accessory3 },
+			get: function(){ return this._accessory3; },
 			set: UpdateGeneric('accessory3', 'getHatPath')
 		});
 	};

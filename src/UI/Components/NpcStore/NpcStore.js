@@ -20,7 +20,6 @@ define(function(require)
 	var ItemType     = require('DB/Items/ItemType');
 	var Client       = require('Core/Client');
 	var Preferences  = require('Core/Preferences');
-	var Events       = require('Core/Events');
 	var Session      = require('Engine/SessionStorage');
 	var Mouse        = require('Controls/MouseEventHandler');
 	var KEYS         = require('Controls/KeyEventHandler');
