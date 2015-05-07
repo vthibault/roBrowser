@@ -362,25 +362,25 @@ define(function()
 			}
 
 			if (y < ys && types[ (x+0) + (y+1) * width ] & TYPE.WALKABLE) {
-				dc[0] = (y >= y1) * 20;
+				dc[0] = (y >= y1 ? 20 : 0);
 				f    |= 1;
 				e    += add_path( heap, x+0, y+1, dist, rp, cost + dc[0] );
 			}
 
 			if (x > 0 && types[ (x-1) + (y+0) * width ] & TYPE.WALKABLE) {
-				dc[1] = (x <= x1) * 20;
+				dc[1] = (x <= x1 ? 20 : 0);
 				f    |= 2;
 				e    += add_path( heap, x-1, y+0, dist, rp, cost + dc[1] );
 			}
 
 			if (y > 0 && types[ (x+0) + (y-1) * width ] & TYPE.WALKABLE) {
-				dc[2] = (y <= y1) * 20;
+				dc[2] = (y <= y1 ? 20 : 0);
 				f    |= 4;
 				e    += add_path( heap, x+0, y-1, dist, rp, cost + dc[2] );
 			}
 
 			if (x < xs && types[ (x+1) + (y+0) * width ] & TYPE.WALKABLE) {
-				dc[3] = (x >= x1) * 20;
+				dc[3] = (x >= x1 ? 20 : 0);
 				f    |= 8;
 				e    += add_path( heap, x+1, y+0, dist, rp, cost + dc[3] );
 			}
