@@ -104,7 +104,12 @@ define(function( require )
 
 			this.gl = WebGL.getContext( this.canvas, param );
 
-			jQuery(window).resize(this.onResize.bind(this));
+			jQuery(window)
+				.resize(this.onResize.bind(this))
+				.on('contextmenu',function(){
+					return false;
+				});
+
 			this.render(null);
 			this.resize();
 		}
