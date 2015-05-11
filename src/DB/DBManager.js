@@ -313,7 +313,17 @@ define(function(require)
 			return null;
 		}
 
+		// Dual weapon (based on range id)
+		if (id > 500 && (id < 2100 || id > 2200)) {
+			return DB.getWeaponPath(id, job, sex);
+		}
+
 		var baseClass = WeaponJobTable[job] || WeaponJobTable[0];
+
+		// ItemID to View Id
+		if ((id in ItemTable) && ('ClassNum' in ItemTable[id])) {
+			id = ItemTable[id].ClassNum;
+		}
 
 		return 'data/sprite/\xb9\xe6\xc6\xd0/' + baseClass + '/' + baseClass + '_' + SexTable[sex] + '_' + ( ShieldTable[id] || ShieldTable[1] );
 	};
@@ -332,6 +342,11 @@ define(function(require)
 		}
 
 		var baseClass = WeaponJobTable[job] || WeaponJobTable[0];
+
+		// ItemID to View Id
+		if ((id in ItemTable) && ('ClassNum' in ItemTable[id])) {
+			id = ItemTable[id].ClassNum;
+		}
 
 		return 'data/sprite/\xc0\xce\xb0\xa3\xc1\xb7/' + baseClass + '/' + baseClass + '_' + SexTable[sex] + ( WeaponTable[id] || ('_' + id) ) ;
 	};
