@@ -59,6 +59,26 @@ define(function( require )
 
 
 	/**
+	 * Remove autofocus on mobile.
+	 * Let the user decide to focus an input/textarea by himself
+	 */
+	var remoteAutoFocus = (function removeAutoFocusClosure()
+	{
+		var _done = false;
+
+		return function removeAutoFocus() {
+			if (_done) {
+				return;
+			}
+
+			jQuery.fn.focus  = function() {};
+			jQuery.fn.select = function() {};
+			_done            = true;
+		};
+	})();
+
+
+	/**
 	 * Return distance between touches
 	 *
 	 * @param {TouchList} touches
@@ -159,6 +179,7 @@ define(function( require )
 
 		return function onTouchStart(event)
 		{
+			remoteAutoFocus();
 			_touches = event.originalEvent.touches;
 			event.stopImmediatePropagation();
 
