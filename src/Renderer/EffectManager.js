@@ -294,6 +294,7 @@ define(function( require )
 	EffectManager.spamEffect = function spamEffect( effect, AID, position, tick, persistent )
 	{
 		var entity = EntityManager.get(AID);
+		var filename;
 
 		if (!position) {
 			if (!entity) {
@@ -305,6 +306,19 @@ define(function( require )
 		// Copy instead of get reference
 		position   = effect.attachedEntity ? position : [ position[0], position[1], position[2] ];
 		persistent = persistent || effect.repeat || false;
+
+		// Play sound
+		if (effect.wav) {
+			filename = effect.wav;
+		
+			if (effect.rand) {
+				filename = filename.replace('%d', Math.round(effect.rand[0] + (effect.rand[1]-effect.rand[0]) * Math.random()));
+			}
+
+			Events.setTimeout(function(){
+				Sound.play(filename + '.wav');
+			}, tick - Renderer.tick);
+		}
 
 		switch (effect.type) {
 			case 'SPR':
@@ -361,13 +375,6 @@ define(function( require )
 			filename = filename.replace('%d', Math.round(effect.rand[0] + (effect.rand[1]-effect.rand[0]) * Math.random()) );
 		}
 
-		// Play sound
-		if (effect.wav) {
-			Events.setTimeout(function(){
-				Sound.play(effect.wav + '.wav');
-			}, tick - Renderer.tick);
-		}
-
 		// Start effect
 		EffectManager.add(new StrEffect('data/texture/effect/' + filename + '.str', position, tick), AID, persistent);
 	}
@@ -402,12 +409,6 @@ define(function( require )
 			EntityManager.add(entity);
 		}
 
-		// Play sound
-		if (effect.wav) {
-			Events.setTimeout(function(){
-				Sound.play(effect.wav + '.wav');
-			}, tick - Renderer.tick);
-		}
 
 		// Sprite effect
 		entity.attachments.add({
