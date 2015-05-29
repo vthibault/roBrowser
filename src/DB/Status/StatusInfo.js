@@ -28,6 +28,7 @@ define(['./StatusConst'], function( SC )
 
 
 	StatusInfo[SC.OVERTHRUSTMAX] = {
+		icon: "\x69\x5f\xbf\xc0\xb9\xf6\xb8\xc6\xbd\xba.tga",
 		haveTimeLimit:   1,
 		posTimeLimitStr: 2,
 		descript: [
@@ -62,6 +63,7 @@ define(['./StatusConst'], function( SC )
 	};
 
 	StatusInfo[SC.AUTOBERSERK] = {
+		icon: "\xb1\xdd\xb0\xad\xba\xd2\xb1\xab.tga",
 		descript: [
 			["Auto Berserk", COLOR_TITLE_BUFF],
 			["Rage when close to death"]
@@ -80,6 +82,7 @@ define(['./StatusConst'], function( SC )
 	};
 
 	StatusInfo[SC.SWORDREJECT] = {
+		icon: "icon04.tga",
 		descript: [
 			["Sword Reject", COLOR_TITLE_BUFF],
 			["Reflects damage back to attacking monsters"],
@@ -145,6 +148,7 @@ define(['./StatusConst'], function( SC )
 	};
 
 	StatusInfo[SC.FOOD_STR] = {
+		icon: "str_gogi.tga",
 		haveTimeLimit: 1,
 		posTimeLimitStr: 1,
 		descript: [
@@ -207,6 +211,7 @@ define(['./StatusConst'], function( SC )
 	};
 
 	StatusInfo[SC.PROTECT_MDEF] = {
+		icon: "\xb8\xb6\xb9\xfd\xb9\xe6\xbe\xee\xc6\xf7\xbc\xc7.tga",
 		haveTimeLimit: 1,
 		posTimeLimitStr: 2,
 		descript: [
@@ -237,6 +242,7 @@ define(['./StatusConst'], function( SC )
 	};
 
 	StatusInfo[SC.PROPERTYTELEKINESIS] = {
+		icon: "i_p_tele.tga",
 		haveTimeLimit: 1,
 		posTimeLimitStr: 1,
 		descript: [
@@ -486,6 +492,7 @@ define(['./StatusConst'], function( SC )
 	};
 
 	StatusInfo[SC.FOOD_INT_CASH] = {
+		icon: "int_gogi.tga",
 		haveTimeLimit: 1,
 		posTimeLimitStr: 1,
 		descript: [
@@ -555,6 +562,7 @@ define(['./StatusConst'], function( SC )
 	};
 
 	StatusInfo[SC.FOOD_VIT] = {
+		icon: "vit_gogi.tga",
 		haveTimeLimit: 1,
 		posTimeLimitStr: 1,
 		descript: [
@@ -585,6 +593,7 @@ define(['./StatusConst'], function( SC )
 	};
 
 	StatusInfo[SC.FOOD_AGI] = {
+		icon: "agi_gogi.tga",
 		haveTimeLimit: 1,
 		posTimeLimitStr: 1,
 		descript: [
@@ -1112,6 +1121,7 @@ define(['./StatusConst'], function( SC )
 	};
 
 	StatusInfo[SC.FOOD_VIT_CASH] = {
+		icon: "vit_gogi.tga",
 		haveTimeLimit: 1,
 		posTimeLimitStr: 1,
 		descript: [
@@ -1133,6 +1143,7 @@ define(['./StatusConst'], function( SC )
 	};
 
 	StatusInfo[SC.TRUESIGHT] = {
+		icon: "icon09.tga",
 		haveTimeLimit: 1,
 		posTimeLimitStr: 2,
 		descript: [
@@ -1544,6 +1555,7 @@ define(['./StatusConst'], function( SC )
 	};
 
 	StatusInfo[SC.FOOD_LUK] = {
+		icon: "luk_gogi.tga",
 		haveTimeLimit: 1,
 		posTimeLimitStr: 1,
 		descript: [
@@ -1576,6 +1588,7 @@ define(['./StatusConst'], function( SC )
 	};
 
 	StatusInfo[SC.FOOD_LUK_CASH] = {
+		icon: "luk_gogi.tga",
 		haveTimeLimit: 1,
 		posTimeLimitStr: 1,
 		descript: [
@@ -1859,6 +1872,7 @@ define(['./StatusConst'], function( SC )
 	};
 
 	StatusInfo[SC.FOOD_DEX] = {
+		icon: "dex_gogi.tga",
 		haveTimeLimit: 1,
 		posTimeLimitStr: 1,
 		descript: [
@@ -2034,6 +2048,7 @@ define(['./StatusConst'], function( SC )
 	};
 
 	StatusInfo[SC.FOOD_AGI_CASH] = {
+		icon: "agi_gogi.tga",
 		haveTimeLimit: 1,
 		posTimeLimitStr: 1,
 		descript: [
@@ -2178,6 +2193,7 @@ define(['./StatusConst'], function( SC )
 	};
 
 	StatusInfo[SC.FOOD_INT] = {
+		icon: "int_gogi.tga",
 		haveTimeLimit: 1,
 		posTimeLimitStr: 1,
 		descript: [
@@ -2318,6 +2334,7 @@ define(['./StatusConst'], function( SC )
 	};
 
 	StatusInfo[SC.FOOD_DEX_CASH] = {
+		icon: "dex_gogi.tga",
 		haveTimeLimit: 1,
 		posTimeLimitStr: 1,
 		descript: [
@@ -2348,6 +2365,7 @@ define(['./StatusConst'], function( SC )
 	};
 
 	StatusInfo[SC.WINDWALK] = {
+		icon: "icon06.tga",
 		haveTimeLimit: 1,
 		posTimeLimitStr: 2,
 		descript: [

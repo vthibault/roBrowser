@@ -55,22 +55,196 @@ define(function( require )
 	///
 	/// - func:
 	///   callback to use
+	
+	/// Note: The following Effect-types are merely ment as placeholders, nothing of it is implemented
+	/// Note2:	Completed documenting loaded files up to @effect 37
+	///			Completed loaded sounds&Entity-Attachement up to @effect 100. Those without a wav entry really play nothing in the client
+	
+	/// type = HIT
+	///  A few white-particles flying away in front of the character. Additionally a few 3D cones textured "effect/lens2.tga" are animated in front of the Entity
+	///  The Particles are coming from:  sprite/ÀÌÆÑÆ®/particle1.act / .spr
+	
+	/// type = STAR
+	///  The sprite is aligned in a plus-shape (+) (2x same sprite) at a random , while every sprite is stretched up to getting so thin it becomes invisible, it rotates randomly to the left. 
+	///  - file
+	///   Texture file name stored in data/texture/effect/(.*).tga
+	
+	/// type = TGA
+	///  Placeholder-type. It does something (Explosions, portals, cylinders, spheres or just plain animations) with a TGA file. Introduced to at least keep track of used tga-file
+	
+	/// type = SOUND
+	///  There seems to be no animation/texture shown - only a sound is played
 
 
 	return {
 
+		1: [{
+			//  Loads 2 tga-images, semi-randomly (alternating pattern but random position) aligns 4 instances of each (=8 in total) in a circle around the object and stretches them away.
+			//  Important note: It really is just stretching one end further and further out, one end of the images is tied to the object
+			type:  'UNKNOWN',
+			file:  'lens1', // lens2 is also used
+			wav:   'effect/ef_hit2',
+			attachedEntity: true
+		}],
+		
+		
+		2: [{
+			type:  'HIT',
+			wav:   'effect/ef_hit3',
+			attachedEntity: true
+		}],
+		
+		
+		3: [{
+			type:  'HIT',
+			wav: 'effect/ef_hit4',
+			attachedEntity: true
+		}],
+		
+		
+		4: [{
+			type:  'STAR',
+			file:  'lens2',
+			wav: 'effect/ef_hit5',
+			attachedEntity: true
+		}],
+		
+		
+		5: [{
+			type:  'STAR',
+			file:  'lens2',
+			wav: 'effect/ef_hit6',
+			attachedEntity: true
+		}],
+		
+		
+		6: [{
+			type: 'TGA',
+			textureName: 'effect/ring_blue',
+			attachedEntity: false
+		}],
+		
+		
+		7: [{
+			type: 'TGA',
+			file: 'effect/alpha_down',
+			wav: '_heal_effect',
+			attachedEntity: true
+		}],
+		
+		
+		8: [{
+			type: 'TGA',
+			file: 'effect/ring_yellow',
+			attachedEntity: false
+		}],
+		
+		
+		9: [{
+			type: 'TGA',
+			file: 'effect/alpha_down',
+			attachedEntity: false
+		}],
+		
+		
 		10: [{
 			type: 'STR',
 			file: 'maemor',
 			min:  'memor_min',
+			wav:  'effect/ef_coin2',
+			attachedEntity: true
+		}],
+
+		
+		11: [{
+			type: 'TGA',
+			file: 'effect/endure',
+			wav:  'effect/ef_endure',
+			attachedEntity: true
+		}],
+
+		
+		12: [{
+			type: 'TGA',
+			file: 'effect/ring_yellow',
+			wav:  'effect/ef_beginspell',
 			attachedEntity: true
 		}],
 
 
 		13: [{
 			type: 'STR',
-			file: 'magician_safe',
+			file: 'magician_safe',	// actually it is 'effect/safetywall' ?
+			wav:  'effect/ef_glasswall',
 			attachedEntity: false
+		}],
+		
+		
+		14: [{
+			type: 'TGA',
+			file: 'effect/ring_blue',
+			wav: '_heal_effect',
+			attachedEntity: true
+		}],
+		
+		
+		15: [{
+			// This seems to be the soulstrike-effect (balls spawning).
+			type: 'UNKNOWN',
+			file: 'sprite/ÀÌÆÑÆ®/particle1',
+			wav: 'effect/ef_soulstrike',
+			attachedEntity: false
+		}],
+		
+		
+		16: [{
+			type: 'TGA',
+			file: 'effect/alpha_center',
+			wav: 'effect/ef_bash',
+			attachedEntity: true
+		}],
+		
+		
+		17: [{
+			type: 'TGA',
+			file: 'effect/´ëÆø¹ß',
+			wav: 'effect/ef_magnumbreak',
+			attachedEntity: false
+		}],
+		
+		
+		18: [{
+			// Stars are shot out of the Entity in some kind of explosion.
+			type: 'UNKNOWN',
+			file: 'sprite/ÀÌÆÑÆ®/particle7',
+			wav: 'effect/ef_steal',
+			attachedEntity: true
+		}],
+		
+		// 19: Invalid Effect ID Popup in client
+		
+		20: [{
+			// Violet particles flying around...
+			type: 'UNKNOWN',
+			file: 'sprite/ÀÌÆÑÆ®/particle3',
+			wav: 'effect/assasin_enchantpoison',
+			attachedEntity: false
+		}],
+		
+		
+		21: [{
+			type: 'UNKNOWN',
+			wav: 'effect/ef_detoxication',
+			file: 'sprite/ÀÌÆÑÆ®/particle2',
+			attachedEntity: false
+		}],
+		
+		
+		22: [{
+			// Sight effect, circling the entity 3.75 times
+			type: 'UNKNOWN',
+			file: 'sprite/ÀÌÆÑÆ®/sight',
+			attachedEntity: true
 		}],
 
 
@@ -81,11 +255,40 @@ define(function( require )
 		}],
 
 
+		24: [{
+			type: 'UNKNOWN',
+			wav: 'effect/ef_fireball',
+			attachedEntity: false
+		}],
+
+
 		25: [{
 			type: 'STR',
 			file: 'firewall%d',
 			wav:  'effect/ef_firewall',
 			rand: [1, 2],
+			attachedEntity: false
+		}],
+
+
+		26: [{
+			type:  'SOUND',
+			wav:   'effect/ef_icearrow1',		// Or ef_icearrow2 & ef_icearrow3 . Seems to be random
+			attachedEntity: false
+		}],
+
+
+		27: [{
+			type: 'TGA',
+			file: 'effect/ice',
+			attachedEntity: false
+		}],
+
+
+		28: [{
+			type: 'TGA',
+			file: 'effect/ice',
+			wav: 'effect/ef_frostdiver2',
 			attachedEntity: false
 		}],
 
@@ -105,10 +308,70 @@ define(function( require )
 		}],
 
 
+		31: [{
+			type: 'UNKNOWN',
+			wav: 'effect/ef_firearrow1',
+			attachedEntity: true
+		}],
+
+
+		32: [{
+			type: 'TGA',
+			file: 'effect/Æø¹ß1', // Uses up to Æø¹ß8 , so eight files for an animated explosion
+			wav: 'effect/ef_napalmbeat',
+			attachedEntity: true
+		}],
+
+
+		33: [{
+			// Ruwach, unknown sprite location
+			attachedEntity: true
+		}],
+
+
+		34: [{
+			type: 'TGA',
+			file: 'effect/ring_blue',
+			wav: 'effect/ef_teleportation',
+			attachedEntity: false
+		}],
+
+
+		35: [{
+			type: 'UNKNOWN',
+			file: 'effect/ring_blue',
+			wav: 'effect/ef_readyportal',
+			attachedEntity: false
+		}],
+
+
+		36: [{
+			// Basically the same floor-animation as #35, but also spawns a cone
+			type: 'TGA',
+			file: 'effect/ring_blue',
+			attachedEntity: false
+		}],
+
+
+		37: [{
+			type: 'TGA',
+			file: 'effect/ac_center2',
+			wav: 'effect/ef_incagility',
+			attachedEntity: true
+		}],
+
+
+		38: [{
+			wav: 'effect/ef_decagility',
+			attachedEntity: true
+		}],
+
+
 		39: [{
 			type: 'SPR',
 			file: '¼º¼ö¶ß±â',
 			head:  true,
+			wav:  'effect/ef_aqua',
 			attachedEntity: true
 		}],
 
@@ -116,6 +379,7 @@ define(function( require )
 		40: [{
 			type: 'STR',
 			file: 'cross',
+			wav:  'effect/ef_signum',
 			attachedEntity: true
 		}],
 
@@ -129,11 +393,47 @@ define(function( require )
 		}],
 
 
+		42: [{
+			type: 'SPR',
+			file: 'Ãàº¹',
+			wav: 'effect/ef_blessing',
+			attachedEntity: true
+		}],
+
+
+		43: [{
+			wav: 'effect/ef_incagidex',
+			attachedEntity: true
+		}],
+
+
+		44: [{
+			attachedEntity: true
+		}],
+
+
+		45: [{ // This one is almost invisible, but there are some small white thingies flying around
+			type: 'UNKNOWN',
+			file: 'sprite/ÀÌÆÑÆ®/particle1',
+			attachedEntity: true
+		}],
+
+
+		46: [{
+			attachedEntity: true
+		}],
+
+
 		47: [{
 			type: 'SPR',
 			file: 'torch_01',
 			attachedEntity: false,
 			repeat: true
+		}],
+
+
+		48: [{
+			attachedEntity: false
 		}],
 
 
@@ -146,10 +446,63 @@ define(function( require )
 		}],
 
 
+		50: [{
+			attachedEntity: true
+		}],
+
+
+		51: [{
+			attachedEntity: true
+		}],
+
+
 		52: [{
 			type: 'STR',
 			file: 'windhit%d',
 			rand: [1, 3],
+			attachedEntity: true
+		}],
+
+
+		53: [{
+			type: 'SPR',
+			file: 'poisonhit',
+			attachedEntity: false
+		}],
+
+
+		54: [{
+			wav:  'effect/ef_beginspell',
+			attachedEntity: true
+		}],
+
+
+		55: [{
+			wav:  'effect/ef_beginspell',
+			attachedEntity: true
+		}],
+
+
+		56: [{
+			wav:  'effect/ef_beginspell',
+			attachedEntity: true
+		}],
+
+
+		57: [{
+			wav:  'effect/ef_beginspell',
+			attachedEntity: true
+		}],
+
+
+		58: [{
+			wav:  'effect/ef_beginspell',
+			attachedEntity: true
+		}],
+
+
+		59: [{
+			wav:  'effect/ef_beginspell',
 			attachedEntity: true
 		}],
 
@@ -169,6 +522,24 @@ define(function( require )
 		}],
 
 
+		61: [{
+			attachedEntity: false
+		}],
+
+
+		62: [{
+			type: 'UNKNOWN',
+			file: 'sprite/ÀÌÆÑÆ®/sight',
+			wav:  'effect/wizard_sightrasher',
+			attachedEntity: false
+		}],
+
+
+		63: [{
+			attachedEntity: false
+		}],
+
+
 		64: [{
 			type: 'STR',
 			file: 'arrowshot',
@@ -179,6 +550,7 @@ define(function( require )
 		65: [{
 			type: 'STR',
 			file: 'invenom',
+			wav:  'effect/thief_invenom',
 			attachedEntity: true
 		}],
 
@@ -224,6 +596,27 @@ define(function( require )
 		}],
 
 
+		71: [{
+			attachedEntity: false
+		}],
+
+
+		72: [{
+			attachedEntity: true
+		}],
+
+
+		73: [{
+			attachedEntity: false
+		}],
+
+
+		74: [{
+			wav:  'effect/wizard_icewall',
+			attachedEntity: false
+		}],
+
+
 		75: [{
 			type: 'STR',
 			file: 'gloria',
@@ -255,6 +648,31 @@ define(function( require )
 			type: 'STR',
 			file: 'recovery',
 			wav:  'effect/priest_recovery',
+			attachedEntity: true
+		}],
+
+
+		79: [{
+			wav:  'effect/wizard_earthspike',
+			attachedEntity: false
+		}],
+
+
+		80: [{
+			wav:  'effect/ef_fireball',
+			attachedEntity: false
+		}],
+
+
+		81: [{
+			// Skill-Hit
+			attachedEntity: true
+		}],
+
+
+		82: [{
+			// Turn Undeath
+			wav:  'effect/ef_bash',
 			attachedEntity: true
 		}],
 
@@ -343,6 +761,12 @@ define(function( require )
 		}],
 
 
+		93: [{
+			wav:  'effect/hunter_shockwavetrap',
+			attachedEntity: true
+		}],
+
+
 		94: [{
 			type: 'STR',
 			file: 'ufidel_pang',
@@ -369,6 +793,27 @@ define(function( require )
 			type: 'STR',
 			file: 'firepillarbomb',
 			wav:  'effect/wizard_fire_pillar_b',
+			attachedEntity: false
+		}],
+
+
+		98: [{
+			// This one is pretty messy... it somehow consists of two sprites, one is attached to the Entity, one isnt. additionally it consists of two sounds
+			// For the sake of simplicity, I propose just using one sprite and one sound - the _a sound is just some "intro" while _b is a real effect
+			wav:  'effect/black_adrenalinerush_b',	// The original client plays _a first and then continues with b
+			attachedEntity: true
+		}],
+
+
+		99: [{
+			// Again two sprites... one attached one not. But here the "main" sprite is ment to stay a little longer
+			wav:  'effect/hunter_flasher',
+			attachedEntity: false
+		}],
+
+
+		100: [{
+			wav:  'effect/hunter_removetrap',
 			attachedEntity: false
 		}],
 

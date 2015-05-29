@@ -302,6 +302,13 @@ define(function( require )
 			position = entity.position;
 		}
 
+		// Play sound
+		if (effect.wav) {
+			Events.setTimeout(function(){
+				Sound.play(effect.wav + '.wav');
+			}, tick - Renderer.tick);
+		}
+		
 		// Copy instead of get reference
 		position   = effect.attachedEntity ? position : [ position[0], position[1], position[2] ];
 		persistent = persistent || effect.repeat || false;
@@ -361,13 +368,6 @@ define(function( require )
 			filename = filename.replace('%d', Math.round(effect.rand[0] + (effect.rand[1]-effect.rand[0]) * Math.random()) );
 		}
 
-		// Play sound
-		if (effect.wav) {
-			Events.setTimeout(function(){
-				Sound.play(effect.wav + '.wav');
-			}, tick - Renderer.tick);
-		}
-
 		// Start effect
 		EffectManager.add(new StrEffect('data/texture/effect/' + filename + '.str', position, tick), AID, persistent);
 	}
@@ -400,13 +400,6 @@ define(function( require )
 			entity.position   = position;
 			entity.objecttype = entity.constructor.TYPE_EFFECT;
 			EntityManager.add(entity);
-		}
-
-		// Play sound
-		if (effect.wav) {
-			Events.setTimeout(function(){
-				Sound.play(effect.wav + '.wav');
-			}, tick - Renderer.tick);
 		}
 
 		// Sprite effect
