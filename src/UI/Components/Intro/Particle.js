@@ -145,7 +145,7 @@ define(function( require )
 		var radius   = this.r * opacity;
 		var gradient = ctx.createRadialGradient(
 			this.x, this.y,  0,
-			this.x, this.y, (radius <= 0 ? 1 : radius | 0)
+			this.x, this.y, Math.max(radius, 0.5)
 		);
 
 		ctx.beginPath();
