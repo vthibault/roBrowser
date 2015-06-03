@@ -194,6 +194,22 @@ define(function( require )
 			case 'hi':
 				getModule('Engine/MapEngine/Friends').sayHi();
 				return;
+
+			case 'guild':
+				matches = text.match(/^guild\s+(")?([^"]+)(")?/);
+				if (matches && matches[2]) {
+					getModule('Engine/MapEngine/Guild').createGuild(matches[2]);
+					return;
+				}
+				break;
+
+			case 'breakguild':
+				matches = text.match(/^breakguild\s+(")?([^"]+)(")?/);
+				if (matches && matches[2]) {
+					getModule('Engine/MapEngine/Guild').breakGuild(matches[2]);
+					return;
+				}
+				break;
 		}
 
 

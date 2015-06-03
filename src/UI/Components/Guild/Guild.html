@@ -1,0 +1,169 @@
+<div id="Guild">
+	<div class="titlebar" data-background="basic_interface/titlebar_mid.bmp">
+		<div class="right">
+			<button class="base close" data-background="basic_interface/sys_close_off.bmp" data-hover="basic_interface/sys_close_on.bmp"></button>
+		</div>
+		<div class="clear"></div>
+	</div>
+
+	<div class="tabs"><!--
+		--><button data-flag="0" class="info" data-text="340">Guild Info</button><!--
+		--><button data-flag="1" class="members" data-text="341">Guildsmen Info</button><!--
+		--><button data-flag="2" class="positions" data-text="342">Position</button><!--
+		--><button data-flag="3" class="skills" data-text="343">Guild Skill</button><!--
+		--><button data-flag="4" class="history" data-text="344">Expel History</button><!--
+		--><button data-flag="6" class="notice" data-text="345">Guild Notice</button>
+	</div>
+
+	<div class="panel">
+
+		<!-- INFO TAB -->
+		<div class="content info">
+			<div class="name">
+				<span data-text="328">Guild Name</span> : <span class="value"></span>
+			</div>
+			<div class="level">
+				<span data-text="329">Guild lvl</span> : <span class="value"></span>
+			</div>
+			<div class="master">
+				<span data-text="330">Guild Master</span> : <span class="value"></span>
+			</div>
+			<div class="members">
+				<span data-text="331">Guildsmen</span> : <span class="numMember">0</span> / <span class="maxMember">0</span> <button data-background="basic_interface/grp_online.bmp"></button> <span class="online"></span>
+			</div>
+			<div class="avglevel">
+				<span data-text="332">Avg.lvl of Guildsmen</span> : <span class="value"></span>
+			</div>
+			<div class="territory">
+				<span data-text="333">Territory</span> : <span class="value"></span>
+			</div>
+			<div class="tendency">
+				<div class="title" data-text="334">Tendency : <span class="value"></span></div>
+				<div class="righteous">R</div>
+				<div class="wiked">W</div>
+				<div class="vulgar">V</div>
+				<div class="famed">F</div>
+				<canvas width="90" height="90"></canvas>
+			</div>
+			<!-- TODO graphic -->
+			<div class="exp">
+				<span data-text="335">EXP</span> : <span class="value"></span>
+			</div>
+			<div class="emblem" data-text="336">Emblem</div>
+			<div class="emblem_container"></div>
+			<button class="emblem_edit" data-background="btn_edit.bmp" data-hover="btn_edit_a.bmp" data-down="btn_edit_b.bmp"><input type="file"/></button>
+
+			<div class="tax">
+				<span data-text="337">Tax Point</span> : <span class="value">0</span>
+			</div>
+			<div class="ally" data-text="338">Alliance</div>
+			<div class="ally_list"></div>
+			<div class="hostile" data-text="339">Antagonist</div>
+			<div class="hostile_list"></div>
+		</div>
+
+
+		<!-- MEMBERS TAB -->
+		<div class="content members">
+			<table>
+				<thead>
+					<tr>
+						<th data-text="407" class="name">Name</th>
+						<th data-text="503" class="position">Position</th>
+						<th data-text="504" class="job">Job</th>
+						<th data-text="408" class="level">Level</th>
+						<th data-text="505" class="note">Note</th>
+						<th data-text="506" class="devotion">Devotion</th>
+						<th data-text="507" class="tax">Tax Point</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr class="MemberView">
+						<td class="name">
+							<canvas width="30" height="30"></canvas>
+							<span class="value"></span>
+						</td>
+						<td class="position"></td>
+						<td class="job"></td>
+						<td class="level"></td>
+						<td class="note"></td>
+						<td class="devotion"></td>
+						<td class="tax"></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+
+		<!-- POSITIONS TAB -->
+		<div class="content positions">
+			<table>
+				<thead>
+					<tr>
+						<th data-text="510" class="id">Rank</th>
+						<th data-text="511" class="title">Position Title</th>
+						<th data-text="512" class="invite">Invitation</th>
+						<th data-text="513" class="punish">Punish</th>
+						<th data-text="514" class="tax">Tax</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr class="PositionView">
+						<td class="id"></td>
+						<td class="title">
+							<input type="text" value=""/>
+						</td>
+						<td class="invite">
+							<button data-background="checkbox_0.bmp" class="off"></button>
+						</td>
+						<td class="punish">
+							<button data-background="checkbox_0.bmp" class="off"></button>
+						</td>
+						<td class="tax">
+							<input type="text" value="0"/> %
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+
+		<!-- SKILLS TAB -->
+		<div class="content skills">
+			<!-- take css from skilllist ? -->
+		</div>
+
+
+		<!-- HISTORY BAN TAB -->
+		<div class="content history">
+			<table>
+				<thead>
+					<tr>
+						<th data-text="407" class="name">Name</th>
+						<th data-text="462" class="reason">The Reason of Expulsion</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr class="ExpelView">
+						<td class="name"></td>
+						<td class="reason"></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+
+		<!-- NOTICE TAB -->
+		<div class="content notice">
+			<div data-text="515" class="subjectTitle">Title</div>
+			<input type="text" class="subject" />
+
+			<div data-text="516" class="noticeTitle">Contents</div>
+			<textarea class="notice"></textarea>
+		</div>
+	</div>
+
+	<div class="footer" data-background="basic_interface/btnbar_mid2.bmp">
+		<button class="btn_ok" data-background="btn_ok.bmp" data-hover="btn_ok_a.bmp" data-down="btn_ok_b.bmp"></button>
+	</div>
+</div>

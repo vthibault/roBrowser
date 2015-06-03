@@ -289,6 +289,23 @@ define(['Vendors/text-encoding'], function(TextEncoding)
 
 
 	/**
+	 * Write buffer to buffer
+	 *
+	 * @param {buffer} buffer
+	 * @return {BinaryWriter}
+	 */
+	BinaryWriter.prototype.setBuffer   =
+	BinaryWriter.prototype.writeBuffer = function setBuffer( buffer )
+	{
+		var data = new Uint8Array(this.buffer);
+		data.set( new Uint8Array(buffer), this.offset );
+
+		this.offset += buffer.byteLength;
+		return this;
+	};
+
+
+	/**
 	 * Skip X bytes from buffer
 	 *
 	 * @param {number}

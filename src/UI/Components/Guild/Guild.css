@@ -1,0 +1,149 @@
+#Guild { position:absolute; top:100px; left:100px; width:400px; height:317px; font-size:12px; }
+
+#Guild .titlebar { width:100%; height:17px; background-color:white; background-repeat:repeat-x; border-radius:3px 3px 0px 0px; }
+#Guild .titlebar .base { width:11px; height:11px; border:none; background-color:transparent; background-repeat:no-repeat; vertical-align:middle; }
+#Guild .titlebar .right { float:right; margin-right:3px;}
+#Guild .titlebar .clear { clear:both; }
+
+#Guild .panel { background-color:white; padding-right:2px; }
+#Guild .content { overflow-y:auto; padding:5px; border-top:1px solid #c6c6c6; height:238px; }
+
+#Guild .tabs { height:23px; background-color:#b5b6b5; white-space:nowrap; }
+#Guild .tabs button.active { background-color: #fff }
+#Guild .tabs button {
+    width:64px; height:23px;
+    margin-left:1px; margin-right:1px; margin-top:1px;
+    padding:0;
+    overflow: hidden; text-overflow: ellipsis; white-space:nowrap;
+    background-color: #cecece;
+    border: 0px;
+    padding:3px;
+}
+#Guild .footer { width:100%; height:27px; background-repeat:repeat-x; background-color:transparent; position:relative; border-radius:0px 0px 3px 3px;}
+#Guild .footer .btn_ok { display:none; position:absolute; bottom:4px; right:4px; width:42px; height:20px; background-repeat:no-repeat; background-color:transparent; border:none; }
+
+#charselect .ok, #charselect .make { right:50px; }
+#charselect .cancel { right:4px; }
+
+#Guild .content.members,
+#Guild .content.positions,
+#Guild .content.skills,
+#Guild .content.history,
+#Guild .content.notice { display:none; }
+
+/*
+ * Guild Info CSS
+ */
+#Guild .content.info .exp,
+#Guild .content.info .emblem,
+#Guild .content.info .tax,
+#Guild .content.info .ally,
+#Guild .content.info .ally_list,
+#Guild .content.info .hostile,
+#Guild .content.info .hostile_list {
+    position: absolute;
+    left: 201px;
+}
+
+#Guild .content.info .name {  position: absolute; left: 9px; top: 54px; }
+#Guild .content.info .level { position: absolute; left: 9px; top: 69px; }
+#Guild .content.info .master { position: absolute; left: 9px; top: 86px; }
+#Guild .content.info .members { position: absolute; left: 9px; top: 102px; }
+#Guild .content.info .avglevel { position: absolute; left: 9px; top: 118px; }
+#Guild .content.info .territory { position: absolute; left: 9px; top: 134px; }
+#Guild .content.info .tendency { position: absolute; left: 9px; top: 155px; }
+#Guild .content.info .tendency .title { position:absolute; top:0px; left:0px; }
+#Guild .content.info .tendency .righteous { position: absolute; left: 50px; top: 16px; text-align:center; }
+#Guild .content.info .tendency .wiked { position: absolute; left: 50px; top:120px; text-align:center; }
+#Guild .content.info .tendency .vulgar { position: absolute; left: 0px; top: 68px; }
+#Guild .content.info .tendency .famed { position: absolute; left: 102px; top: 68px; }
+#Guild .content.info .tendency canvas { position:absolute; top:30px; left:10px; }
+
+#Guild .content.info .members button { margin-left: 5px; vertical-align: -4px; border:none; width:15px; height:15px; background-repeat:no-repeat; background-color:transparent; }
+
+#Guild .content.info .exp { position:absolute; left:201px; top: 54px; }
+#Guild .content.info .emblem { position:absolute; left:201px; top: 78px; }
+#Guild .content.info .tax { position:absolute; left:201px; top: 102px; }
+#Guild .content.info .ally { position:absolute; left:201px; top: 144px; }
+#Guild .content.info .ally_list { position:absolute; left:201px; top: 159px; white-space:pre; width: 168px; height: 48px; background: #CECECE; }
+#Guild .content.info .hostile { position:absolute; left:201px; top: 218px; }
+#Guild .content.info .hostile_list { position:absolute; left:201px; top: 234px; white-space:pre; width: 168px; height: 48px; background: #CECECE; }
+
+#Guild .content.info .ally_list div,
+#Guild .content.info .hostile_list div {
+	padding: 2px;
+}
+#Guild .content.info .ally_list div.active,
+#Guild .content.info .hostile_list div.active {
+	background-color: #739eef;
+	padding: 2px;
+}
+
+
+#Guild .content.info .emblem_container { width:24px; height:24px; position:absolute; top:70px; left:300px; background-color:#709ce7; background-repeat:no-repeat; }
+#Guild .content.info .emblem_edit { position:absolute; top:75px; left:350px; width:42px; height:20px; border:none; background-color:transparent; background-repeat:no-repeat; overflow:hidden; }
+#Guild .content.info .emblem_edit input { opacity:0; }
+
+/*
+ * Guild Members
+ */
+#Guild .content.members table { border-spacing:0; border-collapse:collapse; font-size:12px; }
+#Guild .content.members tbody tr { border-left: 1px solid #c2c2c2; border-right: 1px solid #c2c2c2;}
+#Guild .content.members td { border-bottom: 1px solid #c2c2c2; }
+#Guild .content.members tr.active td { background-color:#739eef!important; }
+#Guild .content.members th { border: 1px solid #c2c2c2; }
+#Guild .content.members td,
+#Guild .content.members th { text-align:left; font-weight:normal; padding-left:5px; height:35px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+#Guild .content.members tr.online td { background-color:#efe; }
+#Guild .content.members tr canvas { display:inline; }
+#Guild .content.members .name { width:85px; }
+#Guild .content.members .name canvas { vertical-align:-11px; }
+#Guild .content.members .position { width:70px; }
+#Guild .content.members .job { width:43px; }
+#Guild .content.members .level { width:30px; }
+#Guild .content.members .note { width:41px; }
+#Guild .content.members .devotion { width:42px; }
+#Guild .content.members .tax { width:63px; }
+
+
+/*
+ * Guild Positions
+ */
+#Guild .content.positions table { border-spacing:0; border-collapse:collapse; font-size:12px; }
+#Guild .content.positions tr.active { border:none; }
+#Guild .content.positions tr.active td { background-color:#739eef; }
+#Guild .content.positions th,
+#Guild .content.positions td { height:20px; font-weight:normal; text-align:left; padding:2px 2px 0px 3px; border: 1px solid #c2c2c2; }
+#Guild .content.positions .id { width: 57px; }
+#Guild .content.positions .title { width: 158px; padding:0px; }
+#Guild .content.positions .invite { width: 68px; }
+#Guild .content.positions .punish { width: 68px; }
+#Guild .content.positions .tax { width: 68px; padding:0; }
+#Guild .content.positions input { border:none; background-color:white; padding: 0; height:18px; }
+#Guild .content.positions .title input { padding-left: 2px; width: 140px; margin-left: 4px; }
+#Guild .content.positions .tax input { width:28px; padding-left:2px; margin-left: 3px; }
+#Guild .content.positions button { border:none; width:10px; height:10px; background-repeat:no-repeat; background-color:transparent; }
+
+/*
+ * Guild Skills
+ */
+
+
+
+
+/*
+ * Guild History
+ */
+#Guild .content.history table { border-spacing:0; border-collapse:collapse; font-size:12px; }
+#Guild .content.history th,
+#Guild .content.history td { font-weight:normal; text-align:left; padding:5px 5px 0px 5px; border: 1px solid #c2c2c2; }
+#Guild .content.history .name { width:90px; }
+#Guild .content.history .reason { width:275px; }
+
+/*
+ * Guild Notice
+ */
+#Guild .notice .subjectTitle {position:absolute; top: 54px; left:9px; }
+#Guild .notice .subject { position:absolute; top:52px; left:50px; padding-left:5px; height:14px; border:none; width:333px; background-color:#EEE; }
+#Guild .notice .noticeTitle { position:absolute; top: 77px; left:9px; }
+#Guild .notice .notice { position:absolute; top: 93px; left:9px; padding-left:5px; margin:0px; width:372px; height:168px; background-color:#EEE; border:none; resize:none; }

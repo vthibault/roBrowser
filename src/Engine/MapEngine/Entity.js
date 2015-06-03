@@ -22,6 +22,7 @@ define(function( require )
 	var Emotions      = require('DB/Emotions');
 	var Events        = require('Core/Events');
 	var Session       = require('Engine/SessionStorage');
+	var Guild         = require('Engine/MapEngine/Guild');
 	var Network       = require('Network/NetworkManager');
 	var PACKET        = require('Network/PacketStructure');
 	var Renderer      = require('Renderer/Renderer');
@@ -439,6 +440,21 @@ define(function( require )
 			entity.display.guild_rank = pkt.RName || '';
 
 			entity.display.load = entity.display.TYPE.COMPLETE;
+
+			if (entity.GUID) {
+				Guild.requestGuildEmblem(entity.GUID, entity.GEmblemVer, function(image) {
+					entity.display.emblem = image;
+					entity.display.update(
+						entity.objecttype === Entity.TYPE_MOB ? '#ffc6c6' :
+						entity.objecttype === Entity.TYPE_NPC ? '#94bdf7' :
+						'white'
+					)
+				});
+			}
+			else {
+				entity.display.emblem = null;
+			}
+
 			entity.display.update(
 				entity.objecttype === Entity.TYPE_MOB ? '#ffc6c6' :
 				entity.objecttype === Entity.TYPE_NPC ? '#94bdf7' :
