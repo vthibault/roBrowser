@@ -489,7 +489,6 @@ define(function( require )
 			// Load the emblem, remove magenta, free blob from memory
 			Texture.load(src, function(){
 				img.src = this.toDataURL();
-				URL.revokeObjectURL(src);
 			});
 
 			// Start displaying the emblem
