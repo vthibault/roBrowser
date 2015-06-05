@@ -45,6 +45,18 @@ define(function( require )
 	var _creationSlot = 0;
 
 
+	/**
+	 * @var {number} char delete timer
+	 */
+	var _charDeleteTimer = 0;
+
+
+	/**
+	 * @var {object} objects used when deleting a character
+	 */
+	var _promptDialog, _overlay;
+
+
 	/*
 	 * Connect to char server
 	 */
@@ -185,13 +197,16 @@ define(function( require )
 	 */
 	function onDeleteRequest( charID )
 	{
-		var _ui_box;
+		var inputMail;
 		var _email;
-		var _overlay;
 		var _time_end;
 		var _render = false;
 		var _canvas, _ctx, _width, _height;
 		var _TimeOut;
+
+		inputMail = InputBox.clone('inputMail', true);
+		inputMail.prepare();
+		inputMail.needFocus = false;
 
 		// Delete the character
 		function deleteCharacter() {
@@ -203,8 +218,8 @@ define(function( require )
 
 		// Cancel the prompt
 		function onCancel() {
-			InputBox.remove();
-			_ui_box.remove();
+			inputMail.remove();
+			_promptDialog.remove();
 			_overlay.detach();
 			Events.clearTimeout(_TimeOut);
 			onDeleteAnswer({ ErrorCode: -2});
@@ -212,25 +227,25 @@ define(function( require )
 
 		// Ask the mail
 		function onOk(){
-			InputBox.append();
-			InputBox.setType('mail', true);
-			InputBox.ui.css('zIndex',101);
-			InputBox.onSubmitRequest = onSubmit;
-			_ui_box.append(); // don't remove message box
+			inputMail.append();
+			inputMail.setType('mail', true);
+			inputMail.ui.css('zIndex',101);
+			inputMail.onSubmitRequest = onSubmit;
+			_promptDialog.append(); // don't remove message box
 		}
 
 		// Display prompt message
-		_ui_box  = UIManager.showPromptBox( DB.getMessage(19), 'ok', 'cancel', onOk, onCancel);
+		_promptDialog  = UIManager.showPromptBox( DB.getMessage(19), 'ok', 'cancel', onOk, onCancel);
 		_overlay = jQuery('<div/>').addClass('win_popup_overlay').appendTo('body');
 
 		// Submit the mail
 		function onSubmit(email){
 			_email = email;
-			InputBox.remove();
-			_ui_box.remove();
+			inputMail.remove();
+			_promptDialog.remove();
 
 			// Stop rendering...
-			_ui_box = UIManager.showMessageBox( DB.getMessage(296).replace('%d',10), 'cancel', function(){
+			_promptDialog = UIManager.showMessageBox( DB.getMessage(296).replace('%d',10), 'cancel', function(){
 				_render = false;
 				onCancel();
 			});
@@ -242,7 +257,7 @@ define(function( require )
 			_height = _canvas.height = 15;
 			_canvas.style.marginTop  = '10px';
 			_canvas.style.marginLeft = '20px';
-			_ui_box.ui.append(_canvas);
+			_promptDialog.ui.append(_canvas);
 
 			// Parameter
 			_time_end = Date.now() + 10000;
@@ -256,18 +271,32 @@ define(function( require )
 		function render() {
 			// Calculate percent
 			var time_left = _time_end - Date.now();
-			var percent   =  Math.round( 100 - time_left / 100 );
+			var percent   =  Math.min(100, Math.round( 100 - time_left / 100 ));
 
 			// Delete character
-			if (percent >= 100) {
-				_ui_box.remove();
-				_overlay.detach();
+			if (percent === 100) {
+				// In new version, there is no packet send to the client
+				// to confirm the character is deleted, have to do a timeout,
+				// ensure there is no error, then remove the character.
+				// https://github.com/HerculesWS/Hercules/blob/master/src/char/char.c#L4231
+				if (PACKETVER.min < 20130000) {
+					_promptDialog.remove();
+					_overlay.detach();
+				}
+				else {
+					_promptDialog.ui.find('button').remove();
+					_charDeleteTimer = setTimeout(function(){
+						CharSelect.deleteAnswer(-1);
+						_promptDialog.remove();
+						_overlay.detach();
+					}, 500);
+				}
+
 				deleteCharacter();
-				return;
 			}
 
 			// Update text
-			_ui_box.ui.find('.text').text( DB.getMessage(296).replace('%d', Math.round(10-percent/10) ) );
+			_promptDialog.ui.find('.text').text( DB.getMessage(296).replace('%d', Math.round(10-percent/10) ) );
 
 			// Update progressbar
 			_ctx.clearRect(0, 0, _width, _height);
@@ -280,7 +309,9 @@ define(function( require )
 			_ctx.fillStyle = 'rgb(255,255,0)';
 			_ctx.fillText( percent + '%' ,  ( _width - _ctx.measureText( percent+'%').width ) * 0.5 , 12  );
 
-			_TimeOut = Events.setTimeout( render, 30);
+			if (percent !== 100) {
+				_TimeOut = Events.setTimeout( render, 30);
+			}
 		}
 	}
 
@@ -292,7 +323,15 @@ define(function( require )
 	 */
 	function onDeleteAnswer(pkt)
 	{
-		var result = typeof( pkt.ErrorCode ) === 'undefined' ? -1 : pkt.ErrorCode;
+		_promptDialog.remove();
+		_overlay.detach();
+
+		if (_charDeleteTimer) {
+			clearTimeout(_charDeleteTimer);
+			_charDeleteTimer = 0;
+		}
+
+		var result = ('ErrorCode' in pkt) ? pkt.ErrorCode : -1;
 		CharSelect.deleteAnswer(result);
 	}
 
