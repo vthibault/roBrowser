@@ -1,5 +1,5 @@
 /**
- * Engine/MapEngine/Trade.js
+ * engine/Mapengine/Trade.js
  *
  * Manage Trade packets and UI
  *
@@ -15,9 +15,9 @@ define(function( require )
 	/**
 	 * Load dependencies
 	 */
-	var DB        = require('DB/DBManager');
-	var Network   = require('Network/NetworkManager');
-	var PACKET    = require('Network/PacketStructure');
+	var DB        = require('db/DBManager');
+	var Network   = require('network/networkManager');
+	var PACKET    = require('network/packets/structureTable');
 	var Trade     = require('UI/Components/Trade/Trade');
 	var ChatBox   = require('UI/Components/ChatBox/ChatBox');
 	var UIManager = require('UI/UIManager');
@@ -80,16 +80,16 @@ define(function( require )
 	{
 		switch (pkt.result) {
 			case 0: // Char is too far
-				ChatBox.addText( DB.getMessage(70), ChatBox.TYPE.ERROR);
+				ChatBox.addText( DB.getMessage(70), ChatBox.Type.ERROR);
 				break;
 
 
 			case 1: // Character does not exist
-				ChatBox.addText( DB.getMessage(71), ChatBox.TYPE.ERROR);
+				ChatBox.addText( DB.getMessage(71), ChatBox.Type.ERROR);
 				break;
 
 			case 2: // In another deal
-				ChatBox.addText( DB.getMessage(72), ChatBox.TYPE.ERROR);
+				ChatBox.addText( DB.getMessage(72), ChatBox.Type.ERROR);
 				break;
 
 			case 3:
@@ -100,7 +100,7 @@ define(function( require )
 				break;
 
 			case 4: // Cancel
-				ChatBox.addText( DB.getMessage(74), ChatBox.TYPE.ERROR);
+				ChatBox.addText( DB.getMessage(74), ChatBox.Type.ERROR);
 				break;
 
 			case 5: // AFK ?
@@ -134,11 +134,11 @@ define(function( require )
 	{
 		switch (pkt.result) {
 			case 1: // overweight
-				ChatBox.addText( DB.getMessage(73), ChatBox.TYPE.ERROR);
+				ChatBox.addText( DB.getMessage(73), ChatBox.Type.ERROR);
 				break;
 
 			case 2: // trade canceled
-				ChatBox.addText( DB.getMessage(74), ChatBox.TYPE.ERROR);
+				ChatBox.addText( DB.getMessage(74), ChatBox.Type.ERROR);
 				break;
 		}
 
@@ -174,7 +174,7 @@ define(function( require )
 	 */
 	function onTradeCancel( pkt )
 	{
-		ChatBox.addText( DB.getMessage(74), ChatBox.TYPE.ERROR);
+		ChatBox.addText( DB.getMessage(74), ChatBox.Type.ERROR);
 		Trade.remove();
 	}
 
@@ -219,13 +219,13 @@ define(function( require )
 	{
 		// Fail
 		if (pkt.result === 1) {
-			ChatBox.addText( DB.getMessage(76), ChatBox.TYPE.ERROR);
+			ChatBox.addText( DB.getMessage(76), ChatBox.Type.ERROR);
 			Trade.remove();
 			return;
 		}
 
 		//TODO: Give items...
-		ChatBox.addText( DB.getMessage(75), ChatBox.TYPE.BLUE);
+		ChatBox.addText( DB.getMessage(75), ChatBox.Type.BLUE);
 		Trade.remove();
 	}
 
@@ -247,7 +247,7 @@ define(function( require )
 	/**
 	 * Initialize
 	 */
-	return function MainEngine()
+	return function tradeEngine()
 	{
 		Network.hookPacket(PACKET.ZC.REQ_EXCHANGE_ITEM,      onTradeRequest);
 		Network.hookPacket(PACKET.ZC.REQ_EXCHANGE_ITEM2,     onTradeRequest);

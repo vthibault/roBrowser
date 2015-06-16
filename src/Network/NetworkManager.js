@@ -1,5 +1,5 @@
 /**
- * Network/NetworkManager.js
+ * network/networkManager.js
  *
  * Network Manager
  * Manage sockets and packets
@@ -8,71 +8,41 @@
  *
  * @author Vincent Thibault
  */
-
 define(function( require )
 {
 	'use strict';
 
 
 	// Load dependencies
-	var Configs        = require('Core/Configs');
-	var Context        = require('Core/Context');
-	var BinaryReader   = require('Utils/BinaryReader');
-	var PACKETVER      = require('./PacketVerManager');
-	var PacketVersions = require('./PacketVersions');
-	var PacketRegister = require('./PacketRegister');
-	var PacketCrypt    = require('./PacketCrypt');
-	var ChromeSocket   = require('./SocketHelpers/ChromeSocket');
-	var JavaSocket     = require('./SocketHelpers/JavaSocket');
-	var WebSocket      = require('./SocketHelpers/WebSocket');
-	var TCPSocket      = require('./SocketHelpers/TCPSocket');
-	var NodeSocket     = require('./SocketHelpers/NodeSocket');
-	var getModule      = require;
+	var Configs         = require('core/Configs');
+	var Context         = require('core/Context');
+	var PACKETVER       = require('./PacketVerManager');
+	var packetRegister  = require('./packets/registerTable');
+	var packetVersions  = require( './packets/versionTable');
+	var PacketEncryptor = require('./PacketEncryptor');
+	var PacketParser    = require('./PacketParser');
+	var ChromeSocket    = require('./sockets/ChromeSocket');
+	var JavaSocket      = require('./sockets/JavaSocket');
+	var WebSocket       = require('./sockets/WebSocket');
+	var TCPSocket       = require('./sockets/TCPSocket');
+	var NodeSocket      = require('./sockets/NodeSocket');
+	var getModule       = require;
 
 
 	/**
-	 * Sockets list
-	 * @var Socket[]
+	 * @Constructor NetworkManager
 	 */
-	var _sockets = [];
+	function NetworkManager() {
+		this.packetParser = new PacketParser();
+		this.packetEncryptor = new PacketEncryptor();
+
+		this._sockets = [];
+		this._currentSocket = null;
 
 
-	/**
-	 * Current Socket
-	 * @var Socket
-	 */
-	var _socket  = null;
-
-
-	/**
-	 * Buffer to use to read packets
-	 * @var buffer
-	 */
-	var _save_buffer = null;
-
-
-	/**
-	 * Packets definition
-	 *
-	 * @param {string} name
-	 * @param {callback} struct - callback to parse the packet
-	 * @param {number} size - packet size
-	 */
-	function Packets( name, Struct, size )
-	{
-		this.name     = name;
-		this.Struct   = Struct;
-		this.size     = size;
-		this.callback = null;
+		this.packetParser.registerPackets(packetRegister);
+		PACKETVER.init(packetVersions);
 	}
-
-
-	/**
-	 * List of supported packets
-	 * @var Packets[]
-	 */
-	Packets.list = [];
-
 
 
 	/**
@@ -83,41 +53,22 @@ define(function( require )
 	 * @param {function} callback once connected or not
 	 * @param {boolean} is zone server ?
 	 */
-	function connect( host, port, callback, isZone)
-	{
-		var socket, Socket;
-		var proxy = Configs.get('socketProxy', null);
+	NetworkManager.prototype.connect = function connect( host, port, callback, isZone) {
+		var socket, Socket, net = this;
 
-		// Chrome App
-		if (Context.Is.APP) {
-			Socket = ChromeSocket;
-		}
-
-		// Firefox OS App
-		else if (TCPSocket.isSupported()) {
-			Socket = TCPSocket;
-		}
-
-		// node-webkit
-		else if (NodeSocket.isSupported()) {
-			Socket = NodeSocket;
-		}
-
-		// Web Socket with proxy
-		else if (proxy) {
-			Socket = WebSocket;
-		}
-	
-		// Java socket...
-		else {
-			Socket = JavaSocket;
-		}
-
-		socket            = new Socket(host, port, proxy);
+		Socket            = this.getSupportedSocket();
+		socket            = new Socket(host, port, Configs.get('socketProxy', null));
 		socket.isZone     = !!isZone;
-		socket.onClose    = onClose;
-		socket.onComplete = function onComplete(success)
-		{
+
+		socket.onClose    = function onclose() {
+			net.onClose(socket);
+		};
+
+		socket.onMessage = function onMessage(buffer) {
+			net.onmessage(buffer);
+		};
+
+		socket.onComplete = function onComplete(success) {
 			var msg   = 'Fail';
 			var color = 'red';
 
@@ -125,24 +76,53 @@ define(function( require )
 				msg   = 'Success';
 				color = 'green';
 
-				// If current socket has ping, remove it
-				if (_socket && _socket.ping) {
-					clearInterval(_socket.ping);
+				if (net._currentSocket) {
+					clearInterval(net._currentSocket.ping);
 				}
 
-				socket.onMessage = receive;
-				_sockets.push(_socket = socket);
-
-				// Map server encryption
-				if (isZone) {
-					PacketCrypt.init();
+				if (socket.isZone) {
+					net.packetEncryptor.init(Configs.get('packetKeys'), Configs.get('packetver'));
 				}
+
+				net._sockets.push(socket);
+				net._currentSocket = socket;
 			}
 
 			console.log( '%c[Network] ' + msg + ' to connect to ' + host + ':' + port, 'font-weight:bold;color:' + color);
 			callback.call( this, success);
 		};
-	}
+	};
+
+
+	/**
+	 * Get supported Socket lib
+	 * 
+	 * @return {Socket}
+	 */
+	NetworkManager.prototype.getSupportedSocket = function getSupportedSocket() {
+		// Chrome App
+		if (Context.Is.APP) {
+			return ChromeSocket;
+		}
+
+		// Firefox OS App
+		if (TCPSocket.isSupported()) {
+			return TCPSocket;
+		}
+
+		// node-webkit
+		if (NodeSocket.isSupported()) {
+			return NodeSocket;
+		}
+
+		// Web Socket with proxy
+		if (Configs.get('socketProxy', null)) {
+			return WebSocket;
+		}
+	
+		// Sno support, then java...
+		return JavaSocket;
+	};
 
 
 	/**
@@ -150,18 +130,17 @@ define(function( require )
 	 *
 	 * @param Packet
 	 */
-	function sendPacket( Packet )
-	{
-		console.log( '%c[Network] Send: ', 'color:#007070', Packet );
-		var pkt = Packet.build();
+	NetworkManager.prototype.sendPacket = function sendPacket( packet ) {
+		console.log( '%c[Network] Send: ', 'color:#007070', packet );
+		var pkt = packet.build();
 
 		// Encrypt packet
-		if (_socket && _socket.isZone) {
-			PacketCrypt.process(pkt.view);
+		if (this._currentSocket && this._currentSocket.isZone) {
+			this.packetEncryptor.encrypt(pkt.view);
 		}
 
-		send( pkt.buffer );
-	}
+		this.send( pkt.buffer );
+	};
 
 
 	/**
@@ -169,27 +148,11 @@ define(function( require )
 	 *
 	 * @param {ArrayBuffer} buffer
 	 */
-	function send( buffer ) {
-		if (_socket) {
-			_socket.send( buffer );
+	NetworkManager.prototype.send = function send( buffer ) {
+		if (this._currentSocket) {
+			this._currentSocket.send( buffer );
 		}
-	}
-
-
-	/**
-	 * Register a Packet
-	 * 
-	 * @param {number} id - packet UID
-	 * @param {function} struct - packet structure callback
-	 */
-	function registerPacket( id, Struct ) {
-		Struct.id = id;
-		Packets.list[id] = new Packets(
-			Struct.name,
-			Struct,
-			Struct.size
-		);
-	}
+	};
 
 
 	/**
@@ -198,195 +161,93 @@ define(function( require )
 	 * @param {object} packet
 	 * @param {function} callback to use packet
 	 */
-	function hookPacket( packet, callback )
-	{
-		if (!packet.id) {
-			throw new Error('NetworkManager::HookPacket() - Packet not yet register "'+ packet.name +'"');
-		}
-
-		Packets.list[ packet.id ].callback = callback;
-	}
-
-
-	/**
-	 * Force to read from a used version for the next receive data
-	 *
-	 * @param callback
-	 */
-	function read(callback)
-	{
-		read.callback = callback;
-	}
-
-
-	/**
-	 * Callback used for reading the data for the next buffer received from server
-	 * @var callback
-	 */
-	read.callback = null;
-
+	NetworkManager.prototype.hookPacket = function hookPacket( packet, callback ) {
+		this.packetParser.getPacket(packet).callback = callback;
+	};
 
 
 	/**
 	 * Received data from server
 	 *
-	 * @param {Uint8Array} buffer
+	 * @param {ArrayBuffer} buffer
 	 */
-	function receive( buf )
-	{
-		var id, packet, fp;
-		var length = 0;
-		var offset = 0;
-		var buffer;
+	NetworkManager.prototype.onmessage = function onMessage( buffer ) {
+		var packet;
 
+		this.packetParser.addBuffer(buffer);
 
-		// Waiting for data ? concat the buffer
-		if (_save_buffer) {
-			var _data = new Uint8Array( _save_buffer.length + buf.byteLength );
-			_data.set( _save_buffer, 0 );
-			_data.set( new Uint8Array(buf), _save_buffer.length );
-			buffer = _data.buffer;
-		}
-		else {
-			buffer = buf;
+		if (this._readCallback) {
+			this._readCallback(this.packetParser._reader);
+			this._readCallback = null;
+			return;
 		}
 
-		fp = new BinaryReader( buffer );
+		while ((packet = this.packetParser.parse(buffer)) !== null) {
+			console.log( '%c[Network] Recv:', 'color:#900090', packet._instance, packet.callback ? '' : '(no callback)'  );
 
-
-		// Read hook
-		if (read.callback) {
-			read.callback( fp );
-			read.callback = null;
-		}
-
-
-		// Read and parse packets
-		while (fp.tell() < fp.length) {
-
-			offset = fp.tell();
-
-			// Not enough bytes...
-			if (offset + 2 >= fp.length) {
-				_save_buffer = new Uint8Array( buffer, offset, fp.length - offset);
-				return;
-			}
-
-			id     = fp.readUShort();
-
-			// Packet not defined ?
-			if (!Packets.list[id]) {
-				console.error(
-					'[Network] Packet "%c0x%s%c" not register, skipping %d bytes.',
-					'font-weight:bold', id.toString(16), 'font-weight:normal', (fp.length-fp.tell())
-				);
-				break;
-			}
-
-			// Find packet size
-			packet  = Packets.list[id];
-
-			if (packet.size < 0) {
-				// Not enough bytes...
-				if (offset + 4 >= fp.length) {
-					_save_buffer = new Uint8Array( buffer, offset, fp.length - offset );
-					return;
-				}
-				length = fp.readUShort();
-			}
-			else {
-				length = packet.size;
-			}
-
-			offset += length;
-
-			// Not enough bytes, need to wait for new buffer to read more.
-			if (offset > fp.length) {
-				offset       = fp.tell() - (packet.size < 0 ? 4 : 2);
-				_save_buffer = new Uint8Array(
-					buffer,
-					offset,
-					fp.length - offset
-				);
-				return;
-			}
-
-			// Parse packet
-			if (!packet.instance) {
-				packet.instance = new packet.Struct(fp, offset);
-			}
-			else {
-				packet.Struct.call(packet.instance, fp, offset);
-			}
-
-			console.log( '%c[Network] Recv:', 'color:#900090', packet.instance, packet.callback ? '' : '(no callback)'  );
-
-			// Support for "0" type
-			if (length) {
-				fp.seek( offset, SEEK_SET );
-			}
-
-			// Call controller
 			if (packet.callback) {
-				packet.callback(packet.instance);
+				packet.callback(packet._instance);
 			}
 		}
+	};
 
-		_save_buffer = null;
-	}
+
+	/**
+	 * Add a read next buffer callback
+	 * 
+	 * @param {function} callback to execute
+	 */
+	NetworkManager.prototype.read = function read( callback ) {
+		this._readCallback = callback;
+	};
 
 
 	/**
 	 * Communication end
 	 * Server ask to close the socket
 	 */
-	function onClose()
-	{
-		var idx = _sockets.indexOf(this);
+	NetworkManager.prototype.onClose = function onClose( socket ) {
+		var idx = this._sockets.indexOf(socket);
 
-		if (this === _socket) {
+		if (socket === this._currentSocket) {
 			console.warn('[Network] Disconnect from server');
 
-			if (_socket.ping) {
-				clearInterval(_socket.ping);
+			if (socket.ping) {
+				clearInterval(socket.ping);
 			}
 
 			getModule('UI/UIManager').showErrorBox('Disconnected from Server.');
 		}
 
 		if (idx !== -1) {
-			_sockets.splice(idx, 1);
+			this._sockets.splice(idx, 1);
 		}
-	}
+	};
 
 
 	/**
 	 * Close connection with server
-	 * Is this needed ?
 	 */
-	function close()
-	{
-		var idx;
-
-		if (_socket) {
-			_socket.close();
-
-			if (_socket.izZone) {
-				PacketCrypt.reset();
-			}
-
-			if (_socket.ping) {
-				clearInterval(_socket.ping);
-			}
-
-			idx     = _sockets.indexOf(_socket);
-			_socket = null;
-
-			if (idx !== -1) {
-				_sockets.splice(idx, 1);
-			}
+	NetworkManager.prototype.close = function close() {
+		if (!this._currentSocket) {
+			return;
 		}
-	}
+
+		this._currentSocket.close();
+
+		if (this._currentSocket.izZone) {
+			this.packetEncryptor.free();
+		}
+
+		clearInterval(this._currentSocket.ping);
+
+		var pos = this._sockets.indexOf(this._currentSocket);
+		this._currentSocket = null;
+
+		if (pos !== -1) {
+			this._sockets.splice(pos, 1);
+		}
+	};
 
 
 	/**
@@ -394,22 +255,21 @@ define(function( require )
 	 *
 	 * @param callback
 	 */
-	function setPing( callback )
-	{
-		if (_socket) {
-			if (_socket.ping) {
-				clearInterval(_socket.ping);
-			}
-			_socket.ping = setInterval( callback, 10000);
+	NetworkManager.prototype.setPing = function setPing( callback ) {
+		if (!this._currentSocket) {
+			return;
+		}
 
-			while (_sockets.length > 1) {
-				if (_socket !== _sockets[0]) {
-					_sockets[0].close();
-					_sockets.splice( 0, 1 );
-				}
+		clearInterval(this._currentSocket.ping);
+		this._currentSocket.ping = setInterval( callback, 10000);
+
+		while (this._sockets.length > 1) {
+			if (this._currentSocket !== this._sockets[0]) {
+				this._sockets[0].close();
+				this._sockets.splice( 0, 1 );
 			}
 		}
-	}
+	};
 
 
 	/**
@@ -418,51 +278,19 @@ define(function( require )
 	 * @param {number} long ip
 	 * @return {string} ip
 	 */
-	function utilsLongToIP( long )
-	{
-		var buf    = new ArrayBuffer(4);
-		var uint8  = new Uint8Array(buf);
-		var uint32 = new Uint32Array(buf);
-		uint32[0]  = long;
+	NetworkManager.prototype.utils = {
+		longToIP: (function utilsLongToIPClosure() {
+			var buf    = new ArrayBuffer(4);
+			var uint8  = new Uint8Array(buf);
+			var uint32 = new Uint32Array(buf);
+	
+			return function utilsLongToIP( long ) {
+				uint32[0]  = long;
+				return Array.prototype.join.call( uint8, '.');
+			};
+		})()
+	};
 
-		return Array.prototype.join.call( uint8, '.' );
-	}
 
-
-	/**
-	 * Export
-	 */
-	return (function Network() {
-		var keys;
-		var i, count;
-
-		// Add packet version
-		keys  = Object.keys(PacketVersions);
-		count = keys.length;
-
-		for (i = 0; i < count; ++i) {
-			PACKETVER.addSupport( keys[i], PacketVersions[ keys[i] ] );
-		}
-
-		// Register packets
-		keys  = Object.keys(PacketRegister);
-		count = keys.length;
-
-		for (i = 0; i < count; ++i) {
-			registerPacket( keys[i], PacketRegister[ keys[i] ] );
-		}
-
-		return {
-			sendPacket: sendPacket,
-			send:       send,
-			setPing:    setPing,
-			connect:    connect,
-			hookPacket: hookPacket,
-			close:      close,
-			read:       read,
-			utils: {
-				longToIP: utilsLongToIP
-			}
-		};
-	})();
+	return (new NetworkManager());
 });

@@ -1,5 +1,5 @@
 /**
- * Utils/Struct.js
+ * utils/Struct.js
  *
  * Implement C like structure in JS, example:
  *

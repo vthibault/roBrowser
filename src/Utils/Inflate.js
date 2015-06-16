@@ -1,5 +1,5 @@
 /**
- * Utils/Inflate.js
+ * utils/Inflate.js
  *
  * GZIP uncompress code, adapted from pdf.js
  *
@@ -16,9 +16,9 @@ define(function()
 		16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15
 	]);
 
-	var _codeLenCodeLengths       = new Uint32Array(19);
-	var _clean_codeLenCodeLengths = new Uint32Array(19);
-	var _codeLengths              = new Uint8Array(640);
+	var _codeLenCodeLengths      = new Uint32Array(19);
+	var _cleanCodeLenCodeLengths = new Uint32Array(19);
+	var _codeLengths             = new Uint8Array(640);
 
 
 	var lengthDecode = new Uint32Array([
@@ -137,7 +137,7 @@ define(function()
 	 * Extract data from ZIP
 	 * @param {Uint8Array} output
 	 */
-	Inflate.prototype.getBytes = function(output) {
+	Inflate.prototype.getBytes = function getBytes(output) {
 		this.buffer       = output;
 		this.bufferPos    = 0;
 
@@ -154,7 +154,7 @@ define(function()
 	 * @param {number} bits
 	 * @returns {number}
 	 */
-	Inflate.prototype.getBits = function Inflate_getBits(bits) {
+	Inflate.prototype.getBits = function getBits(bits) {
 		var codeSize = this.codeSize;
 		var codeBuf  = this.codeBuf;
 		var bytes    = this.bytes;
@@ -182,7 +182,7 @@ define(function()
 	 * @param {Array} table
 	 * @returns {number}
 	 */
-	Inflate.prototype.getCode = function Inflate_getCode(table) {
+	Inflate.prototype.getCode = function getCode(table) {
 		var codes    = table[0];
 		var maxLen   = table[1];
 		var codeSize = this.codeSize;
@@ -218,7 +218,7 @@ define(function()
 	 * @param {number} end
 	 * @returns {Array}
 	 */
-	Inflate.prototype.generateHuffmanTable = function Inflate_GenerateHuffmanTable( lengths, start, end ) {
+	Inflate.prototype.generateHuffmanTable = function generateHuffmanTable( lengths, start, end ) {
 		// find max code length
 		var maxLen = 0;
 		var i;
@@ -260,7 +260,7 @@ define(function()
 	/**
 	 * @returns {boolean}
 	 */
-	Inflate.prototype.readBlock = function Inflate_readBlock() {
+	Inflate.prototype.readBlock = function readBlock() {
 		// read block header
 		var hdr  = this.getBits(3);
 		var stop = !!(hdr & 1);
@@ -308,7 +308,7 @@ define(function()
 			var numCodeLenCodes = this.getBits(4) + 4;
 
 			// build the code lengths code table
-			_codeLenCodeLengths.set(_clean_codeLenCodeLengths);
+			_codeLenCodeLengths.set(_cleanCodeLenCodeLengths);
 
 			for (i = 0; i < numCodeLenCodes; ++i)
 				_codeLenCodeLengths[codeLenCodeMap[i]] = this.getBits(3);

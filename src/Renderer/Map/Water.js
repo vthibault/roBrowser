@@ -1,5 +1,5 @@
 /**
- * Renderer/Map/Water.js
+ * renderer/Map/Water.js
  *
  * Rendering water
  *
@@ -7,7 +7,7 @@
  *
  * @author Vincent Thibault
  */
-define( ['Utils/WebGL'], function( WebGL )
+define( ['utils/WebGL'], function( WebGL )
 {
 	'use strict';
 

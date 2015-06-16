@@ -1,5 +1,5 @@
 /**
- * Renderer/Effects/StrEffect.js
+ * renderer/Effects/StrEffect.js
  *
  * Rendering Str File object
  *
@@ -7,7 +7,7 @@
  *
  * @author Vincent Thibault
  */
-define(['Utils/WebGL', 'Utils/gl-matrix', 'Core/Client'], function( WebGL, glMatrix, Client )
+define(['utils/WebGL', 'utils/gl-matrix', 'core/Client'], function( WebGL, glMatrix, Client )
 {
 	'use strict';
 

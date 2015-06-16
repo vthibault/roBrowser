@@ -15,11 +15,11 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
-	var jQuery      = require('Utils/jquery');
-	var SkillDB     = require('DB/Skills/SkillDescription');
-	var Renderer    = require('Renderer/Renderer');
-	var KEYS        = require('Controls/KeyEventHandler');
-	var Mouse       = require('Controls/MouseEventHandler');
+	var jQuery      = require('utils/jquery');
+	var SkillDB     = require('db/skills/SkillDescription');
+	var Renderer    = require('renderer/Renderer');
+	var KEYS        = require('controls/KeyEventHandler');
+	var Mouse       = require('controls/MouseEventHandler');
 	var UIManager   = require('UI/UIManager');
 	var UIComponent = require('UI/UIComponent');
 	var htmlText    = require('text!./SkillDescription.html');

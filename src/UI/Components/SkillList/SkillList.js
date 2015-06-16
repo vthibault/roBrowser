@@ -15,13 +15,13 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
-	var DB                   = require('DB/DBManager');
-	var SkillInfo            = require('DB/Skills/SkillInfo');
-	var jQuery               = require('Utils/jquery');
-	var Client               = require('Core/Client');
-	var Preferences          = require('Core/Preferences');
-	var Renderer             = require('Renderer/Renderer');
-	var Mouse                = require('Controls/MouseEventHandler');
+	var DB                   = require('db/DBManager');
+	var SkillInfo            = require('db/skills/SkillInfo');
+	var jQuery               = require('utils/jquery');
+	var Client               = require('core/Client');
+	var Preferences          = require('core/Preferences');
+	var Renderer             = require('renderer/Renderer');
+	var Mouse                = require('controls/MouseEventHandler');
 	var UIManager            = require('UI/UIManager');
 	var UIComponent          = require('UI/UIComponent');
 	var SkillTargetSelection = require('UI/Components/SkillTargetSelection/SkillTargetSelection');
@@ -326,12 +326,12 @@ define(function(require)
 	SkillList.useSkill = function useSkill( skill )
 	{
 		// Self
-		if (skill.type & SkillTargetSelection.TYPE.SELF) {
+		if (skill.type & SkillTargetSelection.Type.SELF) {
 			this.onUseSkill( skill.SKID, skill.level);
 		}
 
 		// no elseif intended (see flying kick).
-		if (skill.type & SkillTargetSelection.TYPE.TARGET) {
+		if (skill.type & SkillTargetSelection.Type.TARGET) {
 			SkillTargetSelection.append();
 			SkillTargetSelection.set(skill, skill.type);
 		}
@@ -343,7 +343,7 @@ define(function(require)
 	 *
 	 * @param {number} skill points count
 	 */
-	SkillList.setPoints = function SetPoints( amount )
+	SkillList.setPoints = function setPoints( amount )
 	{
 		var i, count;
 		this.ui.find('.skpoints_count').text(amount);

@@ -1,5 +1,5 @@
 /**
- * DB/Emotions.js
+ * db/Emotions.js
  *
  * List all emotions
  *

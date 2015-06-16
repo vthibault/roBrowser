@@ -13,11 +13,11 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
-	var DB           = require('DB/DBManager');
-	var jQuery       = require('Utils/jquery');
-	var Client       = require('Core/Client');
-	var Session      = require('Engine/SessionStorage');
-	var Renderer     = require('Renderer/Renderer');
+	var DB           = require('db/DBManager');
+	var jQuery       = require('utils/jquery');
+	var Client       = require('core/Client');
+	var Session      = require('engine/SessionStorage');
+	var Renderer     = require('renderer/Renderer');
 	var UIManager    = require('UI/UIManager');
 	var UIComponent  = require('UI/UIComponent');
 	var InputBox     = require('UI/Components/InputBox/InputBox');
@@ -61,7 +61,7 @@ define(function(require)
 	/**
 	 * Initialize UI
 	 */
-	Trade.init = function Init()
+	Trade.init = function init()
 	{
 		// Bind buttons
 		this.ui.find('.ok.enabled').click(onConclude);
@@ -224,13 +224,13 @@ define(function(require)
 	{
 		// You cannot overlap items on a window
 		if (index in _tmpCount) {
-			ChatBox.addText( DB.getMessage(51), ChatBox.TYPE.ERROR);
+			ChatBox.addText( DB.getMessage(51), ChatBox.Type.ERROR);
 			return;
 		}
 
 		// You cannot trade more than 10 types of items per trade.
 		if (_send.length >= 10) {
-			ChatBox.addText( DB.getMessage(297), ChatBox.TYPE.ERROR);
+			ChatBox.addText( DB.getMessage(297), ChatBox.Type.ERROR);
 			return;
 		}
 
@@ -334,7 +334,7 @@ define(function(require)
 		if (item.count > 1) {
 			InputBox.append();
 			InputBox.setType('number', false, item.count);
-			InputBox.onSubmitRequest = function OnSubmitRequest(count) {
+			InputBox.onSubmitRequest = function onSubmitRequest(count) {
 				var value = parseInt(count, 10) || 0;
 				value     = Math.min(Math.max( value, 0), item.count); // cap
 

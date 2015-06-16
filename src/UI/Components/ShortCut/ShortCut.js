@@ -15,14 +15,14 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
-	var DB                   = require('DB/DBManager');
-	var ItemType             = require('DB/Items/ItemType');
-	var SkillInfo            = require('DB/Skills/SkillInfo');
-	var jQuery               = require('Utils/jquery');
-	var Client               = require('Core/Client');
-	var Preferences          = require('Core/Preferences');
-	var Renderer             = require('Renderer/Renderer');
-	var Mouse                = require('Controls/MouseEventHandler');
+	var DB                   = require('db/DBManager');
+	var ItemType             = require('db/items/ItemType');
+	var SkillInfo            = require('db/skills/SkillInfo');
+	var jQuery               = require('utils/jquery');
+	var Client               = require('core/Client');
+	var Preferences          = require('core/Preferences');
+	var Renderer             = require('renderer/Renderer');
+	var Mouse                = require('controls/MouseEventHandler');
 	var UIManager            = require('UI/UIManager');
 	var UIComponent          = require('UI/UIComponent');
 	var ItemInfo             = require('UI/Components/ItemInfo/ItemInfo');
@@ -569,7 +569,7 @@ define(function(require)
 	 * @param {number} id
 	 * @param {number} count
 	 */
-	ShortCut.onChange = function OnConfigUpdate(/*index, isSkill, ID, count*/){};
+	ShortCut.onChange = function onConfigUpdate(/*index, isSkill, ID, count*/){};
 
 
 	/**

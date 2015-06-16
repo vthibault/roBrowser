@@ -1,5 +1,5 @@
 /**
- * Renderer/Effects/Cylinder.js
+ * renderer/Effects/Cylinder.js
  *
  * Generate cone and cylinder
  *
@@ -7,7 +7,7 @@
  *
  * @author Vincent Thibault
  */
-define(['Utils/WebGL', 'Utils/Texture', 'Utils/gl-matrix', 'Core/Client'],
+define(['utils/WebGL', 'utils/Texture', 'utils/gl-matrix', 'core/Client'],
 function(      WebGL,         Texture,          glMatrix,        Client) {
 
 	'use strict';

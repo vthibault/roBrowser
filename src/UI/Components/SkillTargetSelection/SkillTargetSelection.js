@@ -15,16 +15,16 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
-	var DB            = require('DB/DBManager');
-	var SkillInfo     = require('DB/Skills/SkillInfo');
-	var KEYS          = require('Controls/KeyEventHandler');
-	var Mouse         = require('Controls/MouseEventHandler');
-	var jQuery        = require('Utils/jquery');
-	var Renderer      = require('Renderer/Renderer');
-	var Entity        = require('Renderer/Entity/Entity');
-	var EntityManager = require('Renderer/EntityManager');
-	var Session       = require('Engine/SessionStorage');
-	var Controls      = require('Preferences/Controls');
+	var DB            = require('db/DBManager');
+	var SkillInfo     = require('db/skills/SkillInfo');
+	var KEYS          = require('controls/KeyEventHandler');
+	var Mouse         = require('controls/MouseEventHandler');
+	var jQuery        = require('utils/jquery');
+	var Renderer      = require('renderer/Renderer');
+	var Entity        = require('renderer/Entity/Entity');
+	var EntityManager = require('renderer/EntityManager');
+	var Session       = require('engine/SessionStorage');
+	var Controls      = require('preferences/Controls');
 	var UIManager     = require('UI/UIManager');
 	var UIComponent   = require('UI/UIComponent');
 	var Cursor        = require('UI/CursorManager');
@@ -45,7 +45,7 @@ define(function(require)
 	/**
 	 * @var {constant}
 	 */
-	SkillTargetSelection.TYPE = {
+	SkillTargetSelection.Type = {
 		ENEMY:   1,
 		PLACE:   2,
 		SELF:    4,
@@ -185,7 +185,7 @@ define(function(require)
 			return;
 		}
 
-		if (_flag & (SkillTargetSelection.TYPE.PLACE|SkillTargetSelection.TYPE.TRAP)) {
+		if (_flag & (SkillTargetSelection.Type.PLACE|SkillTargetSelection.Type.TRAP)) {
 			Cursor.blockMagnetism = true;
 		}
 
@@ -247,7 +247,7 @@ define(function(require)
 		event.stopImmediatePropagation();
 
 		// Zone skill
-		if (_flag & (SkillTargetSelection.TYPE.PLACE|SkillTargetSelection.TYPE.TRAP)) {
+		if (_flag & (SkillTargetSelection.Type.PLACE|SkillTargetSelection.Type.TRAP)) {
 			SkillTargetSelection.onUseSkillToPos(_skill.SKID, _skill.level, Mouse.world.x, Mouse.world.y);
 			return false;
 		}
@@ -275,15 +275,15 @@ define(function(require)
 
 		// Get target type
 		switch (entity.objecttype) {
-			case Entity.TYPE_MOB:
-				target = SkillTargetSelection.TYPE.ENEMY | SkillTargetSelection.TYPE.PET;
+			case Entity.Type.MOB:
+				target = SkillTargetSelection.Type.ENEMY | SkillTargetSelection.Type.PET;
 				break;
 
-			case Entity.TYPE_PC:
-			case Entity.TYPE_HOM:
-			case Entity.TYPE_MERC:
-			case Entity.TYPE_ELEM:
-				target = SkillTargetSelection.TYPE.FRIEND;
+			case Entity.Type.PC:
+			case Entity.Type.HOM:
+			case Entity.Type.MERC:
+			case Entity.Type.ELEM:
+				target = SkillTargetSelection.Type.FRIEND;
 				break;
 
 			// Can't use skill on this type
@@ -298,13 +298,13 @@ define(function(require)
 		}
 
 		// Pet capture
-		if (_flag === SkillTargetSelection.TYPE.PET) {
+		if (_flag === SkillTargetSelection.Type.PET) {
 			SkillTargetSelection.onPetSelected(entity.GID);
 			return;
 		}
 
 		// Can't cast evil skill on your self
-		if ((_flag & SkillTargetSelection.TYPE.ENEMY) && entity === Session.Entity) {
+		if ((_flag & SkillTargetSelection.Type.ENEMY) && entity === Session.Entity) {
 			return;
 		}
 

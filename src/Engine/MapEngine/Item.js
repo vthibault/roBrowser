@@ -1,5 +1,5 @@
 /**
- * Engine/MapEngine/Item.js
+ * engine/Mapengine/Item.js
  *
  * Item dropped to the ground
  *
@@ -16,13 +16,13 @@ define(function( require )
 	/**
 	 * Load dependencies
 	 */
-	var DB            = require('DB/DBManager');
-	var EquipLocation = require('DB/Items/EquipmentLocation');
-	var Network       = require('Network/NetworkManager');
-	var PACKET        = require('Network/PacketStructure');
-	var ItemObject    = require('Renderer/ItemObject');
-	var Altitude      = require('Renderer/Map/Altitude');
-	var Session       = require('Engine/SessionStorage');
+	var DB            = require('db/DBManager');
+	var EquipLocation = require('db/items/EquipmentLocation');
+	var Network       = require('network/networkManager');
+	var PACKET        = require('network/packets/structureTable');
+	var ItemObject    = require('renderer/ItemObject');
+	var Altitude      = require('renderer/Map/Altitude');
+	var Session       = require('engine/SessionStorage');
 	var ChatBox       = require('UI/Components/ChatBox/ChatBox');
 	var ItemObtain    = require('UI/Components/ItemObtain/ItemObtain');
 	var ItemSelection = require('UI/Components/ItemSelection/ItemSelection');
@@ -88,7 +88,7 @@ define(function( require )
 	{
 		// Fail
 		if (pkt.result !== 0) {
-			ChatBox.addText( DB.getMessage(53), ChatBox.TYPE.ERROR );
+			ChatBox.addText( DB.getMessage(53), ChatBox.Type.ERROR );
 			return;
 		}
 
@@ -98,7 +98,7 @@ define(function( require )
 		var it = DB.getItemInfo( pkt.ITID );
 		ChatBox.addText(
 			DB.getMessage(153).replace('%s', pkt.IsIdentified ? it.identifiedDisplayName : it.unidentifiedDisplayName ).replace('%d', pkt.count ),
-			ChatBox.TYPE.BLUE
+			ChatBox.Type.BLUE
 		);
 
 		Inventory.addItem(pkt);
@@ -141,10 +141,7 @@ define(function( require )
 				item.WearState = 0;
 
 				var it = DB.getItemInfo( item.ITID );
-				ChatBox.addText(
-					it.identifiedDisplayName + ' ' + DB.getMessage(171),
-					ChatBox.TYPE.ERROR
-				);
+				ChatBox.addText( it.identifiedDisplayName + ' ' + DB.getMessage(171), ChatBox.Type.ERROR);
 
 				if (!(pkt.wearLocation & EquipLocation.AMMO)) {
 					Inventory.addItem(item);
@@ -171,10 +168,7 @@ define(function( require )
 			var item = Inventory.removeItem( pkt.index, 1 );
 			var it   = DB.getItemInfo( item.ITID );
 			Equipment.equip( item, pkt.wearLocation );
-			ChatBox.addText(
-				it.identifiedDisplayName + ' ' + DB.getMessage(170),
-				ChatBox.TYPE.BLUE
-			);
+			ChatBox.addText( it.identifiedDisplayName + ' ' + DB.getMessage(170), ChatBox.Type.BLUE );
 
 			// Display
 			if (pkt.wearLocation & EquipLocation.HEAD_TOP)    Session.Entity.accessory2 = pkt.viewid;
@@ -186,10 +180,7 @@ define(function( require )
 
 		// Fail to equip
 		else {
-			ChatBox.addText(
-				DB.getMessage(372),
-				ChatBox.TYPE.ERROR
-			);
+			ChatBox.addText( DB.getMessage(372), ChatBox.Type.ERROR );
 		}
 	}
 
@@ -219,10 +210,7 @@ define(function( require )
 	function onConfigEquip( pkt )
 	{
 		Equipment.setEquipConfig( pkt.bOpenEquipmentWin );
-		ChatBox.addText(
-			DB.getMessage(1358 + (pkt.bOpenEquipmentWin ? 1 : 0) ),
-			ChatBox.TYPE.INFO
-		);
+		ChatBox.addText( DB.getMessage(1358 + (pkt.bOpenEquipmentWin ? 1 : 0) ), ChatBox.Type.INFO);
 	}
 
 
@@ -343,7 +331,7 @@ define(function( require )
 	/**
 	 * Initialize
 	 */
-	return function ItemEngine()
+	return function itemEngine()
 	{
 		Network.hookPacket( PACKET.ZC.ITEM_ENTRY,             onItemExistInGround );
 		Network.hookPacket( PACKET.ZC.ITEM_FALL_ENTRY,        onItemSpamInGround );

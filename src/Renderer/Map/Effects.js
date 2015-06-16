@@ -1,5 +1,5 @@
 /**
- * Renderer/Map/Effects.js
+ * renderer/Map/Effects.js
  *
  * Display 3D effects
  *
@@ -7,7 +7,7 @@
  *
  * @author Vincent Thibault
  */
-define( ['Utils/gl-matrix', 'Renderer/EffectManager'],
+define( ['utils/gl-matrix', 'renderer/EffectManager'],
 function(        glMatrix,            EffectManager)
 {
 	'use strict';

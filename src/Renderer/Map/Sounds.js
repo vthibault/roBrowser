@@ -1,5 +1,5 @@
 /**
- * Renderer/Map/Sounds.js
+ * renderer/Map/Sounds.js
  *
  * Play 3D sounds
  *
@@ -7,7 +7,7 @@
  *
  * @author Vincent Thibault
  */
-define( ['Utils/gl-matrix', 'Audio/SoundManager'],
+define( ['utils/gl-matrix', 'audio/soundManager'],
 function(        glMatrix,         SoundManager )
 {
 	'use strict';

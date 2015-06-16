@@ -1,5 +1,5 @@
 /**
- * Loaders/Action.js
+ * loaders/Action.js
  *
  * Loaders for Gravity .act file (Action)
  *
@@ -8,7 +8,7 @@
  * @author Vincent Thibault
  */
 
-define( ['Utils/BinaryReader'], function( BinaryReader )
+define( ['utils/BinaryReader'], function( BinaryReader )
 {
 	'use strict';
 
@@ -18,7 +18,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 	 *
 	 * @param {ArrayBuffer} data - optional
 	 */
-	function ACT( data )
+	function ActReader( data )
 	{
 		this.fp       = null;
 		this.versions = 0.0;
@@ -36,7 +36,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 	 *
 	 * @param {ArrayBuffer} data
 	 */
-	ACT.prototype.load = function load( data )
+	ActReader.prototype.load = function load( data )
 	{
 		var i, count;
 
@@ -72,13 +72,13 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 	/**
 	 * Load Action part of ACT file
 	 */
-	ACT.prototype.readActions = function readActions()
+	ActReader.prototype.readActions = function readActions()
 	{
 		var i, count = this.fp.readUShort();
 		var actions  = this.actions;
 
 		// Unknown bytes...
-		this.fp.seek( 10, SEEK_CUR );
+		this.fp.seek( 10, BinaryReader.Seek.CUR);
 		actions.length = count;
 	
 		for (i = 0; i < count; ++i) {
@@ -93,7 +93,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 	/**
 	 *	Load Animation part in ACT file
 	 */
-	ACT.prototype.readAnimations = function readAnimations()
+	ActReader.prototype.readAnimations = function readAnimations()
 	{
 		var fp        = this.fp;
 		var i, count  = fp.readULong();
@@ -101,7 +101,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 
 		for (i = 0; i < count; ++i) {
 			// Unknown bytes
-			fp.seek( 32, SEEK_CUR );
+			fp.seek( 32, BinaryReader.Seek.CUR);
 			anim[i] = this.readLayers();
 		}
 
@@ -112,7 +112,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 	/**
 	 * Load ACT Layers
 	 */
-	ACT.prototype.readLayers = function readLayers()
+	ActReader.prototype.readLayers = function readLayers()
 	{
 		var fp     = this.fp;
 		var count  = fp.readULong();
@@ -125,11 +125,11 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 			layer = layers[i] = {
 				pos:       [ fp.readLong(), fp.readLong() ],
 				index:       fp.readLong(),
-				is_mirror:   fp.readLong(),
+				isMirror:    fp.readLong(),
 				scale:     [ 1.0, 1.0 ],
 				color:     [ 1.0, 1.0, 1.0, 1.0 ],
 				angle:       0,
-				spr_type:    0,
+				sprType:     0,
 				width:       0,
 				height:      0
 			};
@@ -142,7 +142,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 				layer.scale[0] = fp.readFloat();
 				layer.scale[1] = version <= 2.3 ? layer.scale[0] : fp.readFloat();
 				layer.angle    = fp.readLong();
-				layer.spr_type = fp.readLong();
+				layer.sprType  = fp.readLong();
 	
 				if (version >= 2.5) {
 					layer.width  = fp.readLong();
@@ -159,9 +159,9 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 			pos.length = count;
 	
 			for (i = 0; i < count; ++i) {
-				fp.seek(4, SEEK_CUR); // Unknown
+				fp.seek(4, BinaryReader.Seek.CUR); // Unknown
 				pos[i] = { x : fp.readLong(), y: fp.readLong() };
-				fp.seek(4, SEEK_CUR); // Unknown
+				fp.seek(4, BinaryReader.Seek.CUR); // Unknown
 			}
 		}
 
@@ -176,7 +176,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 	/**
 	 * Make it transferable in worker context
 	 */
-	ACT.prototype.compile = function compile()
+	ActReader.prototype.compile = function compile()
 	{
 		return {
 			actions: this.actions,
@@ -188,6 +188,6 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 	/**
 	 * Export
 	 */
-	return ACT;
+	return ActReader;
 
 });

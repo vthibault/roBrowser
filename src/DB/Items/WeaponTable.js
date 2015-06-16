@@ -1,5 +1,5 @@
 /**
- * DB/Items/WeaponNameTable.js
+ * db/items/WeaponNameTable.js
  *
  * Weapon resource table name
  *

@@ -1,5 +1,5 @@
 /**
- * Engine/MapEngine/Pet.js
+ * engine/Mapengine/Pet.js
  *
  * Manage Pets
  *
@@ -16,12 +16,12 @@ define(function( require )
 	/**
 	 * Load dependencies
 	 */
-	var DB                   = require('DB/DBManager');
-	var Network              = require('Network/NetworkManager');
-	var PACKET               = require('Network/PacketStructure');
-	var Client               = require('Core/Client');
-	var Session              = require('Engine/SessionStorage');
-	var EntityManager        = require('Renderer/EntityManager');
+	var DB                   = require('db/DBManager');
+	var Network              = require('network/networkManager');
+	var PACKET               = require('network/packets/structureTable');
+	var Client               = require('core/Client');
+	var Session              = require('engine/SessionStorage');
+	var EntityManager        = require('renderer/EntityManager');
 	var UIManager            = require('UI/UIManager');
 	var SlotMachine          = require('UI/Components/SlotMachine/SlotMachine');
 	var SkillTargetSelection = require('UI/Components/SkillTargetSelection/SkillTargetSelection');
@@ -40,7 +40,7 @@ define(function( require )
 		var fakeSkill = { SKID:-10, level:0 };
 
 		SkillTargetSelection.append();
-		SkillTargetSelection.set( fakeSkill, SkillTargetSelection.TYPE.PET, 'Capture Monster');
+		SkillTargetSelection.set( fakeSkill, SkillTargetSelection.Type.PET, 'Capture Monster');
 		SkillTargetSelection.onPetSelected = function onPetSelected(gid){
 			SlotMachine.append();
 			SlotMachine.onTry = function onTry(){
@@ -100,8 +100,8 @@ define(function( require )
 		if (Session.petId) {
 			var entity = EntityManager.get(Session.petId);
 			if (entity) {
-				entity.life.hp     = pkt.nFullness;
-				entity.life.hp_max = 100;
+				entity.life.hp    = pkt.nFullness;
+				entity.life.hpMax = 100;
 				entity.life.update();
 			}
 		}
@@ -117,7 +117,7 @@ define(function( require )
 	{
 		// Fail to feed
 		if (!pkt.cRet) {
-			ChatBox.addText( DB.getMessage(591).replace('%s', DB.getItemInfo(pkt.ITID).identifiedDisplayName), ChatBox.TYPE.ERROR);
+			ChatBox.addText( DB.getMessage(591).replace('%s', DB.getItemInfo(pkt.ITID).identifiedDisplayName), ChatBox.Type.ERROR);
 			return;
 		}
 
@@ -150,8 +150,8 @@ define(function( require )
 
 			case 2:
 				PetInformations.setHunger(pkt.data);
-				entity.life.hp     = pkt.data;
-				entity.life.hp_max = 100;
+				entity.life.hp    = pkt.data;
+				entity.life.hpMax = 100;
 				entity.life.update();
 				break;
 
@@ -291,7 +291,7 @@ define(function( require )
 	/**
 	 * Initialize
 	 */
-	return function NPCEngine()
+	return function petEngine()
 	{
 		Network.hookPacket( PACKET.ZC.START_CAPTURE,      onStartCapture);
 		Network.hookPacket( PACKET.ZC.TRYCAPTURE_MONSTER, onCaptureResult);

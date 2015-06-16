@@ -15,8 +15,8 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
-	var KEYS               = require('Controls/KeyEventHandler');
-	var Renderer           = require('Renderer/Renderer');
+	var KEYS               = require('controls/KeyEventHandler');
+	var Renderer           = require('renderer/Renderer');
 	var UIManager          = require('UI/UIManager');
 	var UIComponent        = require('UI/UIComponent');
 	var SoundOption        = require('UI/Components/SoundOption/SoundOption');

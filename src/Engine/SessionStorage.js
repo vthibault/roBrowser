@@ -1,5 +1,5 @@
 /**
- * Engine/SessionStorage.js
+ * engine/SessionStorage.js
  *
  * Session Storage
  * Manage session variables

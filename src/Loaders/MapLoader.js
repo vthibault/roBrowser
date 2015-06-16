@@ -1,5 +1,5 @@
 /**
- * Loaders/MapLoader.js
+ * loaders/MapLoader.js
  *
  * Loaders for Ragnarok Map
  *
@@ -8,7 +8,7 @@
  * @author Vincent Thibault
  */
 
-define( ['Core/FileManager'], function( FileManager )
+define( ['core/FileManager'], function( FileManager )
 {
 	'use strict';
 
@@ -73,14 +73,14 @@ define( ['Core/FileManager'], function( FileManager )
 		}
 
 		var filename = this.list.shift();
-		FileManager.load( filename, function(data) {
+		FileManager.load( filename, function onload(data) {
 
 			// Store the result
 			this.out[ this.files.indexOf(filename) ] = data;
 			this.offset++;
 
 			// Start the progress
-			if (this.onprogress && this.offset <= this.count ) {
+			if (this.offset <= this.count ) {
 				this.onprogress( this.offset, this.count );
 			}
 
@@ -102,7 +102,6 @@ define( ['Core/FileManager'], function( FileManager )
 			}
 		}.bind(this));
 	};
-
 
 
 	/**
@@ -162,7 +161,7 @@ define( ['Core/FileManager'], function( FileManager )
 	 *
 	 * @param {string} mapname
 	 */
-	MapLoader.prototype.load = function Load( mapname )
+	MapLoader.prototype.load = function load( mapname )
 	{
 		// Initialize the loading
 		this.setProgress( 0 );
@@ -252,7 +251,7 @@ define( ['Core/FileManager'], function( FileManager )
 	 * @param {object} compiledGround
 	 * @param {function} callback
 	 */
-	MapLoader.prototype.loadGroundTextures = function LoadGroundTextures( world, ground, callback )
+	MapLoader.prototype.loadGroundTextures = function loadGroundTextures( world, ground, callback )
 	{
 		var i, count;
 		var textures = [];
@@ -274,7 +273,7 @@ define( ['Core/FileManager'], function( FileManager )
 		var loader = new Loader(textures);
 
 		// On progress
-		loader.onprogress = function OnProgress() {
+		loader.onprogress = function onProgress() {
 			this.setProgress( 3 + 97 / this.fileCount * (++this.offset) );
 		}.bind(this);
 
@@ -295,7 +294,7 @@ define( ['Core/FileManager'], function( FileManager )
 	 * @param {Ground}
 	 * @returns {object} compiled mesh
 	 */
-	MapLoader.prototype.loadModels = function LoadModels( models, ground )
+	MapLoader.prototype.loadModels = function loadModels( models, ground )
 	{
 		var i, count;
 		var files = [];
@@ -356,7 +355,7 @@ define( ['Core/FileManager'], function( FileManager )
 	 *
 	 * @param {Array} objects list
 	 */
-	MapLoader.prototype.compileModels = function CompileModels( objects )
+	MapLoader.prototype.compileModels = function compileModels( objects )
 	{
 		var i, j, count, size, bufferSize;
 		var object, nodes, meshes;
@@ -403,15 +402,15 @@ define( ['Core/FileManager'], function( FileManager )
 	 * @param {Object} b
 	 * @return {number}
 	 */
-	function SortMeshByTextures( a, b )
+	function sortMeshByTextures( a, b )
 	{
-		var reg_tga = /\.tga$/i;
+		var isTga = /\.tga$/i;
 
-		if (a.texture.match(reg_tga)) {
+		if (a.texture.match(isTga)) {
 			return  1;
 		}
 
-		if (b.texture.match(reg_tga)) {
+		if (b.texture.match(isTga)) {
 			return -1;
 		}
 
@@ -437,7 +436,7 @@ define( ['Core/FileManager'], function( FileManager )
 	 * @param {Array} objects list
 	 * @param {number} BufferSize
 	 */
-	MapLoader.prototype.mergeMeshes = function MergeMeshes( objects, bufferSize )
+	MapLoader.prototype.mergeMeshes = function mergeMeshes( objects, bufferSize )
 	{
 		var i, j, count, size, offset;
 		var object, texture;
@@ -452,7 +451,7 @@ define( ['Core/FileManager'], function( FileManager )
 		offset = 0;
 
 		// Sort objects by textures type
-		objects.sort(SortMeshByTextures);
+		objects.sort(sortMeshByTextures);
 
 
 		// Merge meshes

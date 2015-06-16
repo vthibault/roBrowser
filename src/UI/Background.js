@@ -15,9 +15,9 @@ define( function( require )
 	/**
 	 * Load dependencies
 	 */
-	var DB     = require('DB/DBManager');
-	var jQuery = require('Utils/jquery');
-	var Client = require('Core/Client');
+	var DB     = require('db/DBManager');
+	var jQuery = require('utils/jquery');
+	var Client = require('core/Client');
 
 
 	/**

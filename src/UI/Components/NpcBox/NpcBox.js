@@ -15,9 +15,9 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
-	var jQuery      = require('Utils/jquery');
-	var KEYS        = require('Controls/KeyEventHandler');
-	var Renderer    = require('Renderer/Renderer');
+	var jQuery      = require('utils/jquery');
+	var KEYS        = require('controls/KeyEventHandler');
+	var Renderer    = require('renderer/Renderer');
 	var UIManager   = require('UI/UIManager');
 	var UIComponent = require('UI/UIComponent');
 	var htmlText    = require('text!./NpcBox.html');
@@ -126,7 +126,7 @@ define(function(require)
 	 * @param {string} text to display
 	 * @param {number} gid - npc id
 	 */
-	NpcBox.setText = function SetText( text, gid )
+	NpcBox.setText = function setText( text, gid )
 	{
 		var content = this.ui.find('.content');
 		_ownerID    = gid;
@@ -167,7 +167,7 @@ define(function(require)
 	/**
 	 * Press "next" button
 	 */
-	NpcBox.next = function Next()
+	NpcBox.next = function next()
 	{
 		_needCleanUp = true;
 		this.ui.find('.next').hide();
@@ -178,7 +178,7 @@ define(function(require)
 	/**
 	 * Press "close" button
 	 */
-	NpcBox.close = function Close()
+	NpcBox.close = function close()
 	{
 		_needCleanUp = true;
 		this.ui.find('.close').hide();
@@ -189,8 +189,8 @@ define(function(require)
 	/**
 	 * Callback
 	 */
-	NpcBox.onClosePressed = function OnClosePressed(){};
-	NpcBox.onNextPressed  = function OnNextPressed(){};
+	NpcBox.onClosePressed = function onClosePressed(){};
+	NpcBox.onNextPressed  = function onNextPressed(){};
 
 
 	/**

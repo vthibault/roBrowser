@@ -1,5 +1,5 @@
 /**
- * DB/Jobs/WeaponAction.js
+ * db/jobs/WeaponAction.js
  *
  * Define attack action for each weapon
  * WeaponAction[<job>][<weapon type>]
@@ -9,7 +9,7 @@
  * @author Vincent Thibault
  */
 
-define(['./JobConst', 'DB/Items/WeaponType'], function( JobId, WeaponType )
+define(['./JobConst', 'db/items/WeaponType'], function( JobId, WeaponType )
 {
 	"use strict";
 

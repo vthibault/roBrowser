@@ -15,9 +15,9 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
-	var jQuery      = require('Utils/jquery');
-	var Events      = require('Core/Events');
-	var Renderer    = require('Renderer/Renderer');
+	var jQuery      = require('utils/jquery');
+	var Events      = require('core/Events');
+	var Renderer    = require('renderer/Renderer');
 	var UIManager   = require('UI/UIManager');
 	var UIComponent = require('UI/UIComponent');
 

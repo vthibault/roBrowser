@@ -1,5 +1,5 @@
 /**
- * Loaders/Targa.js
+ * loaders/Targa.js
  *
  * Loaders for .tga image file (Targa Truevision)
  *

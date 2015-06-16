@@ -1,5 +1,5 @@
 /**
- * DB/Skills/SkillEffect.js
+ * db/skills/SkillEffect.js
  *
  * List of skills with informations (in progress)
  *

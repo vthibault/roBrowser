@@ -1,5 +1,5 @@
 /**
- * App/GrfViewer.js
+ * app/grfViewer.js
  *
  * Start GRF Viewer instance using ROBrowser
  *
@@ -25,10 +25,10 @@ require.onError = function (err) {
 require({
 	baseUrl: './src/',
 	paths: {
-		text:   'Vendors/text.require',
-		jquery: 'Vendors/jquery-1.9.1'
+		text:   'vendors/text.require',
+		jquery: 'vendors/jquery-1.9.1'
 	}
-}, ['UI/Components/GrfViewer/GrfViewer', 'Core/Context'], function( GRFViewer, Context )
+}, ['UI/Components/GrfViewer/GrfViewer', 'core/Context'], function( GRFViewer, Context )
 {
 	'use strict';
 

@@ -18,7 +18,7 @@ define(function( require )
 	 */
 	var _htmlText    = require('text!./Error.html');
 	var _cssText     = require('text!./Error.css');
-	var jQuery       = require('Vendors/jquery');
+	var jQuery       = require('vendors/jquery');
 
 
 	/**

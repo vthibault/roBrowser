@@ -15,11 +15,11 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
-	var DB          = require('DB/DBManager');
-	var Client      = require('Core/Client');
-	var Preferences = require('Core/Preferences');
-	var Renderer    = require('Renderer/Renderer');
-	var KEYS        = require('Controls/KeyEventHandler');
+	var DB          = require('db/DBManager');
+	var Client      = require('core/Client');
+	var Preferences = require('core/Preferences');
+	var Renderer    = require('renderer/Renderer');
+	var KEYS        = require('controls/KeyEventHandler');
 	var UIManager   = require('UI/UIManager');
 	var UIComponent = require('UI/UIComponent');
 	var htmlText    = require('text!./WinLogin.html');

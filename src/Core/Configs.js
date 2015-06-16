@@ -1,5 +1,5 @@
 /**
- * Core/Configs.js
+ * core/Configs.js
  *
  * Manage application configurations
  *

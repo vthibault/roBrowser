@@ -15,12 +15,12 @@ define(function( require )
 	/**
 	 * Dependencies
 	 */
-	var StatusTable        = require('DB/Status/StatusInfo');
-	var DB                 = require('DB/DBManager');
-	var jQuery             = require('Utils/jquery');
-	var Texture            = require('Utils/Texture');
-	var Client             = require('Core/Client');
-	var Renderer           = require('Renderer/Renderer');
+	var StatusTable        = require('db/status/StatusInfo');
+	var DB                 = require('db/DBManager');
+	var jQuery             = require('utils/jquery');
+	var Texture            = require('utils/Texture');
+	var Client             = require('core/Client');
+	var Renderer           = require('renderer/Renderer');
 	var UIManager          = require('UI/UIManager');
 	var UIComponent        = require('UI/UIComponent');
 	var cssText            = require('text!./StatusIcons.css');

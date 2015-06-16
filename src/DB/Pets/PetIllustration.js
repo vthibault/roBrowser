@@ -1,5 +1,5 @@
 /**
- * DB/Pets/PetIllustration.js
+ * db/pets/PetIllustration.js
  *
  * Pet Illustration list
  *

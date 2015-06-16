@@ -1,5 +1,5 @@
 /**
- * Renderer/Camera.js
+ * renderer/Camera.js
  *
  * Camera class
  *
@@ -14,11 +14,11 @@ define(function( require )
 	/**
 	 * Load dependencies
 	 */
-	var KEYS        = require('Controls/KeyEventHandler');
-	var Mouse       = require('Controls/MouseEventHandler');
-	var Events      = require('Core/Events');
-	var Preferences = require('Preferences/Camera');
-	var glMatrix    = require('Utils/gl-matrix');
+	var KEYS        = require('controls/KeyEventHandler');
+	var Mouse       = require('controls/MouseEventHandler');
+	var Events      = require('core/Events');
+	var Preferences = require('preferences/Camera');
+	var glMatrix    = require('utils/gl-matrix');
 	var mat4        = glMatrix.mat4;
 	var mat3        = glMatrix.mat3;
 	var vec2        = glMatrix.vec2;
@@ -127,7 +127,7 @@ define(function( require )
 	 *
 	 * @param {object} target - Entity player to attach
 	 */
-	Camera.setTarget = function SetTarget( target )
+	Camera.setTarget = function setTarget( target )
 	{
 		this.target = target;
 	};
@@ -138,7 +138,7 @@ define(function( require )
 	 *
 	 * @return {number} latitude
 	 */
-	Camera.getLatitude = function GetLatitude()
+	Camera.getLatitude = function getLatitude()
 	{
 		return this.angle[0] - 180.0;
 	};
@@ -147,7 +147,7 @@ define(function( require )
 	/**
 	 * Initialize Camera
 	 */
-	Camera.init = function Init()
+	Camera.init = function init()
 	{
 		this.lastTick  = Date.now();
 
@@ -165,7 +165,7 @@ define(function( require )
 	/**
 	 * Save the camera settings
 	 */
-	Camera.save = function SaveClosure()
+	Camera.save = function saveClosure()
 	{
 		var _pending = false;
 
@@ -190,7 +190,7 @@ define(function( require )
 	 *
 	 * @param {boolean} active - is mouse down ?
 	 */
-	Camera.rotate = function Rotate( active )
+	Camera.rotate = function rotate( active )
 	{
 		var action = this.action;
 		var tick   = Date.now();
@@ -227,7 +227,7 @@ define(function( require )
 	/**
 	 * Process action when right click is down
 	 */
-	Camera.processMouseAction = function ProcessMouseAction()
+	Camera.processMouseAction = function processMouseAction()
 	{
 		// Rotate Z
 		if (KEYS.SHIFT) {
@@ -274,7 +274,7 @@ define(function( require )
 	 *
 	 * @param {number} delta (zoom)
 	 */
-	Camera.setZoom = function SetZoom( delta )
+	Camera.setZoom = function setZoom( delta )
 	{
 		this.zoomFinal += delta * 15;
 		this.zoomFinal  = Math.min( this.zoomFinal, Math.abs(this.altitudeTo-this.altitudeFrom) * this.MAX_ZOOM );
@@ -289,7 +289,7 @@ define(function( require )
 	 *
 	 * @param {number} tick
 	 */
-	Camera.update = function Update( tick )
+	Camera.update = function update( tick )
 	{
 		var lerp      = Math.min( (tick - this.lastTick) * 0.006, 1.0);
 		this.lastTick = tick;

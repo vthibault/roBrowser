@@ -1,5 +1,5 @@
 /**
- * Core/MemoryItem.js
+ * core/MemoryItem.js
  *
  * Cache Item into memory
  * Used to manage each object in cache, manage callbacks etc.
@@ -145,7 +145,7 @@ define(function()
 	 *
 	 * @param {string} error - optional
 	 */
-	MemoryItem.prototype.onerror = function OnError( error )
+	MemoryItem.prototype.onerror = function onError( error )
 	{
 		var i, size;
 

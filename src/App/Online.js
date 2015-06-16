@@ -1,5 +1,5 @@
 /**
- * App/Online.js
+ * app/online.js
  *
  * Start roBrowser
  *
@@ -26,11 +26,11 @@ require( {
 	urlArgs: ROConfig.version,
 	baseUrl: './src/',
 	paths: {
-		text:   'Vendors/text.require',
-		jquery: 'Vendors/jquery-1.9.1'
+		text:   'vendors/text.require',
+		jquery: 'vendors/jquery-1.9.1'
 	}
 },
-	['Engine/GameEngine', 'Core/Context', 'Plugins/PluginManager'],
+	['engine/GameEngine', 'core/Context', 'plugins/PluginManager'],
 	function(GameEngine,        Context,           Plugins) {
 		'use strict';
 

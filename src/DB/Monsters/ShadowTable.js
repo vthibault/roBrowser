@@ -1,5 +1,5 @@
 /**
- * DB/Monsters/ShadowTable.js
+ * db/monsters/ShadowTable.js
  *
  * Store shadow size based on monster
  *

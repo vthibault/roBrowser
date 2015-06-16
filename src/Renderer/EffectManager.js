@@ -1,5 +1,5 @@
 /**
- * Renderer/EffectManager.js
+ * renderer/EffectManager.js
  *
  * Effects Manager
  *
@@ -15,18 +15,18 @@ define(function( require )
 	/**
 	 * Load dependencies
 	 */
-	var EffectDB      = require('DB/Effects/EffectTable');
-	var SkillEffect   = require('DB/Skills/SkillEffect');
-	var SkillUnit     = require('DB/Skills/SkillUnit');
-	var Events        = require('Core/Events');
-	var Cylinder      = require('Renderer/Effects/Cylinder');
-	var StrEffect     = require('Renderer/Effects/StrEffect');
-	var Entity        = require('Renderer/Entity/Entity');
-	var EntityManager = require('Renderer/EntityManager');
-	var Renderer      = require('Renderer/Renderer');
-	var Altitude      = require('Renderer/Map/Altitude');
-	var Sound         = require('Audio/SoundManager');
-	var Preferences   = require('Preferences/Map');
+	var EffectDB      = require('db/effects/EffectTable');
+	var SkillEffect   = require('db/skills/SkillEffect');
+	var SkillUnit     = require('db/skills/SkillUnit');
+	var Events        = require('core/Events');
+	var Cylinder      = require('renderer/Effects/Cylinder');
+	var StrEffect     = require('renderer/Effects/StrEffect');
+	var Entity        = require('renderer/Entity/Entity');
+	var EntityManager = require('renderer/EntityManager');
+	var Renderer      = require('renderer/Renderer');
+	var Altitude      = require('renderer/Map/Altitude');
+	var Sound         = require('audio/soundManager');
+	var Preferences   = require('preferences/Map');
 
 
 	/**
@@ -397,7 +397,7 @@ define(function( require )
 			entity            = new Entity();
 			entity.GID        = AID;
 			entity.position   = position;
-			entity.objecttype = entity.constructor.TYPE_EFFECT;
+			entity.objecttype = entity.constructor.Type.EFFECT;
 			EntityManager.add(entity);
 		}
 
@@ -405,7 +405,7 @@ define(function( require )
 			entity            = new Entity();
 			entity.GID        = -1;
 			entity.position   = position;
-			entity.objecttype = entity.constructor.TYPE_EFFECT;
+			entity.objecttype = entity.constructor.Type.EFFECT;
 			EntityManager.add(entity);
 		}
 
@@ -429,7 +429,7 @@ define(function( require )
 	 * @param {number} position y
 	 * @param {number} skill unique id
 	 */
-	EffectManager.spamSkillZone = function spamUnit( unit_id, xPos, yPos, uid )
+	EffectManager.spamSkillZone = function spamUnit( unitId, xPos, yPos, uid )
 	{
 		var skillId, effectId;
 		var skill;
@@ -439,11 +439,11 @@ define(function( require )
 			return;
 		}
 
-		if (!(unit_id in SkillUnit)) {
+		if (!(unitId in SkillUnit)) {
 			return;
 		}
 
-		skillId = SkillUnit[unit_id];
+		skillId = SkillUnit[unitId];
 
 		if (!(skillId in SkillEffect)) {
 			return;

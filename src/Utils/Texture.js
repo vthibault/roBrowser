@@ -1,5 +1,5 @@
 /**
- * Utils/Texture.js
+ * utils/Texture.js
  *
  * WebGL Helper function
  *
@@ -10,7 +10,7 @@
  * @author Vincent Thibault
  */
  
-define(['Loaders/Targa'], function( Targa )
+define(['loaders/Targa'], function( Targa )
 {
 	'use strict';
 
@@ -57,7 +57,7 @@ define(['Loaders/Targa'], function( Targa )
 		// Regular images
 		var img = new Image();
 		img.src = data;
-		img.onload = function OnLoadClosure(){
+		img.onload = function onLoadClosure(){
 
 			// Clean up blob
 			if (data.match(/^blob\:/)){

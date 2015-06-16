@@ -6,7 +6,7 @@
  * @author Vincent Thibault
  */
 
-define(['Utils/jquery', 'Core/Configs', 'Core/Context', 'Core/Preferences', 'Preferences/Audio', 'Preferences/Graphics'],
+define(['utils/jquery', 'core/Configs', 'core/Context', 'core/Preferences', 'preferences/Audio', 'preferences/Graphics'],
 function(      jQuery,        Configs,        Context,        Preferences,               Audio,               Graphics )
 {
 	'use strict';

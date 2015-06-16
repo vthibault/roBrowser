@@ -15,18 +15,18 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
-	var jQuery             = require('Utils/jquery');
+	var jQuery             = require('utils/jquery');
 
-	var Configs            = require('Core/Configs');
-	var Client             = require('Core/Client');
-	var Thread             = require('Core/Thread');
-	var Memory             = require('Core/MemoryManager');
-	var Events             = require('Core/Events');
+	var Configs            = require('core/Configs');
+	var Client             = require('core/Client');
+	var Thread             = require('core/Thread');
+	var Memory             = require('core/MemoryManager');
+	var Events             = require('core/Events');
 
-	var KEYS               = require('Controls/KeyEventHandler');
+	var KEYS               = require('controls/KeyEventHandler');
 
-	var Sprite             = require('Loaders/Sprite');
-	var Targa              = require('Loaders/Targa');
+	var Sprite             = require('loaders/Sprite');
+	var Targa              = require('loaders/Targa');
 
 	var UIManager          = require('UI/UIManager');
 	var UIComponent        = require('UI/UIComponent');
@@ -762,8 +762,8 @@ define(function(require)
 
 		var App = new ROBrowser({
 			target:        element,
-			type:          ROBrowser.TYPE.FRAME,
-			application:   ROBrowser.APP.MODELVIEWER,
+			type:          ROBrowser.Type.FRAME,
+			application:   ROBrowser.App.MODELVIEWER,
 			development:   Configs.get('development', false),
 			api:           true,
 			width:         500,
@@ -859,8 +859,8 @@ define(function(require)
 
 		var App = new ROBrowser({
 			target:        element,
-			type:          ROBrowser.TYPE.FRAME,
-			application:   ROBrowser.APP.STRVIEWER,
+			type:          ROBrowser.Type.FRAME,
+			application:   ROBrowser.App.STRVIEWER,
 			development:   Configs.get('development', false),
 			api:           true,
 			width:         400,
@@ -953,8 +953,8 @@ define(function(require)
 
 		var App = new ROBrowser({
 			target:        element,
-			type:          ROBrowser.TYPE.FRAME,
-			application:   ROBrowser.APP.MAPVIEWER,
+			type:          ROBrowser.Type.FRAME,
+			application:   ROBrowser.App.MAPVIEWER,
 			development:   Configs.get('development', false),
 			api:           true,
 			width:         600,

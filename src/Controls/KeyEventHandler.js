@@ -1,5 +1,5 @@
 /**
- * Controls/KeyEventHandler.js
+ * controls/KeyEventHandler.js
  *
  * Key Manager
  *
@@ -8,7 +8,7 @@
  * @author Vincent Thibault
  */
 
-define( ['Utils/jquery'], function( jQuery )
+define( ['utils/jquery'], function( jQuery )
 {
 	'use strict';
 

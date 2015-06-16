@@ -1,5 +1,5 @@
 /**
- * Engine/MapEngine/Skill.js
+ * engine/Mapengine/Skill.js
  *
  * Manage skills
  *
@@ -16,15 +16,15 @@ define(function( require )
 	/**
 	 * Load dependencies
 	 */
-	var DB                   = require('DB/DBManager');
-	var SkillId              = require('DB/Skills/SkillConst');
-	var PathFinding          = require('Utils/PathFinding');
-	var Session              = require('Engine/SessionStorage');
-	var Network              = require('Network/NetworkManager');
-	var PACKET               = require('Network/PacketStructure');
-	var EntityManager        = require('Renderer/EntityManager');
-	var EffectManager        = require('Renderer/EffectManager');
-	var Altitude             = require('Renderer/Map/Altitude');
+	var DB                   = require('db/DBManager');
+	var SkillId              = require('db/skills/SkillConst');
+	var PathFinding          = require('utils/PathFinding');
+	var Session              = require('engine/SessionStorage');
+	var Network              = require('network/networkManager');
+	var PACKET               = require('network/packets/structureTable');
+	var EntityManager        = require('renderer/EntityManager');
+	var EffectManager        = require('renderer/EffectManager');
+	var Altitude             = require('renderer/Map/Altitude');
 	var ShortCut             = require('UI/Components/ShortCut/ShortCut');
 	var ChatBox              = require('UI/Components/ChatBox/ChatBox');
 	var SkillWindow          = require('UI/Components/SkillList/SkillList');
@@ -157,7 +157,7 @@ define(function( require )
 		}
 
 		if (error) {
-			ChatBox.addText( DB.getMessage(error), ChatBox.TYPE.ERROR );
+			ChatBox.addText( DB.getMessage(error), ChatBox.Type.ERROR );
 		}
 	}
 
@@ -255,7 +255,7 @@ define(function( require )
 
 		switch (pkt.result) {
 			case 0: // success
-				ChatBox.addText( DB.getMessage(491), ChatBox.TYPE.BLUE);
+				ChatBox.addText( DB.getMessage(491), ChatBox.Type.BLUE);
 
 				// Remove old item
 				var item = Inventory.removeItem(pkt.index, 1);
@@ -268,7 +268,7 @@ define(function( require )
 				break;
 
 			case 1: // Fail
-				ChatBox.addText( DB.getMessage(492), ChatBox.TYPE.ERROR);
+				ChatBox.addText( DB.getMessage(492), ChatBox.Type.ERROR);
 				break;
 		}
 	}
@@ -343,11 +343,11 @@ define(function( require )
 	{
 		switch (pkt.type) {
 			case 0: //Unable to Teleport in this area
-				ChatBox.addText( DB.getMessage(500), ChatBox.TYPE.ERROR);
+				ChatBox.addText( DB.getMessage(500), ChatBox.Type.ERROR);
 				break;
 
 			case 1: //Saved point cannot be memorized.
-				ChatBox.addText( DB.getMessage(501), ChatBox.TYPE.ERROR);
+				ChatBox.addText( DB.getMessage(501), ChatBox.Type.ERROR);
 				break;
 		}
 	}
@@ -362,15 +362,15 @@ define(function( require )
 	{
 		switch (pkt.errorCode) {
 			case 0: // Saved location as a Memo Point for Warp skill.
-				ChatBox.addText( DB.getMessage(217), ChatBox.TYPE.BLUE);
+				ChatBox.addText( DB.getMessage(217), ChatBox.Type.BLUE);
 				break;
 
 			case 1: // Skill Level is not high enough.
-				ChatBox.addText( DB.getMessage(214), ChatBox.TYPE.ERROR);
+				ChatBox.addText( DB.getMessage(214), ChatBox.Type.ERROR);
 				break;
 
 			case 2: // You haven't learned Warp.
-				ChatBox.addText( DB.getMessage(216), ChatBox.TYPE.ERROR);
+				ChatBox.addText( DB.getMessage(216), ChatBox.Type.ERROR);
 				break;
 		}
 	}
@@ -432,7 +432,7 @@ define(function( require )
 			range = skill.attackRange + 1;
 		}
 		else {
-			range = entity.attack_range;
+			range = entity.attackRange;
 		}
 
 		count = PathFinding.searchLong(
@@ -440,7 +440,7 @@ define(function( require )
 			target.position[0] | 0, target.position[1] | 0,
 			range,
 			out,
-			Altitude.TYPE.WALKABLE
+			Altitude.Type.WALKABLE
 		);
 
 		// Can't attack to this point
@@ -493,7 +493,7 @@ define(function( require )
 			range = skill.attackRange + 1;
 		}
 		else {
-			range = entity.attack_range;
+			range = entity.attackRange;
 		}
 
 		count = PathFinding.searchLong(
@@ -501,7 +501,7 @@ define(function( require )
 			x      | 0, y      | 0,
 			range,
 			out,
-			Altitude.TYPE.WALKABLE
+			Altitude.Type.WALKABLE
 		);
 
 		// Can't attack to this point
@@ -533,7 +533,7 @@ define(function( require )
 	/**
 	 * Initialize
 	 */
-	return function SkillEngine()
+	return function skillEngine()
 	{
 		Network.hookPacket( PACKET.ZC.SKILLINFO_LIST,         onSkillList );
 		Network.hookPacket( PACKET.ZC.SKILLINFO_UPDATE,       onSkillUpdate );

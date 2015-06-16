@@ -1,5 +1,5 @@
 /**
- * Loaders/World.js
+ * loaders/World.js
  *
  * Loaders for Gravity .rsw file (Resource World)
  *
@@ -8,7 +8,7 @@
  * @author Vincent Thibault
  */
 
-define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMatrix )
+define( ['utils/BinaryReader', 'utils/gl-matrix'], function( BinaryReader, glMatrix )
 {
 	'use strict';
 
@@ -18,7 +18,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 	 *
 	 * @param {ArrayBuffer} data - optional
 	 */
-	function RSW( data )
+	function RswReader( data )
 	{
 		this.sounds  = [];
 		this.lights  = [];
@@ -34,7 +34,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 	/**
 	 * Files to load
 	 */
-	RSW.prototype.files = {
+	RswReader.prototype.files = {
 		ini: null,
 		gnd: null,
 		gat: null,
@@ -45,7 +45,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 	/**
 	 * Ground frustum culling
 	 */
-	RSW.prototype.ground = {
+	RswReader.prototype.ground = {
 		top:   -500,
 		bottom: 500,
 		left:  -500,
@@ -56,7 +56,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 	/**
 	 * Water informations
 	 */
-	RSW.prototype.water    = {
+	RswReader.prototype.water    = {
 		level:       0.0,
 		type:        0,
 		waveHeight:  0.2,
@@ -70,7 +70,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 	/**
 	 * Light informations
 	 */
-	RSW.prototype.light = {
+	RswReader.prototype.light = {
 		longitude: 45,
 		latitude:  45,
 		diffuse:   [ 1.0, 1.0, 1.0 ],
@@ -85,7 +85,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 	 *
 	 * @param {ArrayBuffer} data
 	 */
-	RSW.prototype.load = function Load( data )
+	RswReader.prototype.load = function load( data )
 	{
 		var header, version;
 		var i, count;
@@ -221,7 +221,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 	/**
 	 * Compile RSW file
 	 */
-	RSW.prototype.compile = function Compile()
+	RswReader.prototype.compile = function compile()
 	{
 		return {
 			water: this.water,
@@ -235,5 +235,5 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 	/**
 	 * Export
 	 */
-	return RSW;
+	return RswReader;
 });

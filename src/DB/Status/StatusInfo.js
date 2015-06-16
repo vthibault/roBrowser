@@ -1,5 +1,5 @@
 /**
- * DB/Status/StatusInfo.js
+ * db/status/StatusInfo.js
  *
  * Icons of status
  *

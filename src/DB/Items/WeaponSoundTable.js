@@ -1,5 +1,5 @@
 /**
- * DB/Items/WeaponSoundTable.js
+ * db/items/WeaponSoundTable.js
  *
  * Weapon sound table resources
  *

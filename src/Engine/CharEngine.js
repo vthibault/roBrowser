@@ -1,5 +1,5 @@
 /**
- * Engine/CharEngine.js
+ * engine/CharEngine.js
  *
  * Char Engine
  * Manage char server, connection, character selection / creation / deletion, etc.
@@ -15,16 +15,16 @@ define(function( require )
 
 
 	// Load modules
-	var jQuery     = require('Utils/jquery');
-	var DB         = require('DB/DBManager');
-	var Events     = require('Core/Events');
-	var Sound      = require('Audio/SoundManager');
-	var BGM        = require('Audio/BGM');
-	var Session    = require('Engine/SessionStorage');
-	var MapEngine  = require('Engine/MapEngine');
-	var Network    = require('Network/NetworkManager');
-	var PACKET     = require('Network/PacketStructure');
-	var PACKETVER  = require('Network/PacketVerManager');
+	var jQuery     = require('utils/jquery');
+	var DB         = require('db/DBManager');
+	var Events     = require('core/Events');
+	var Sound      = require('audio/soundManager');
+	var BGM        = require('audio/BGM');
+	var Session    = require('engine/SessionStorage');
+	var MapEngine  = require('engine/MapEngine');
+	var Network    = require('network/networkManager');
+	var PACKET     = require('network/packets/structureTable');
+	var PACKETVER  = require('network/PacketVerManager');
 	var UIManager  = require('UI/UIManager');
 	var Background = require('UI/Background');
 	var CharSelect = require('UI/Components/CharSelect/CharSelect');
@@ -123,7 +123,7 @@ define(function( require )
 	 */
 	function onExitRequest()
 	{
-		getModule('Engine/LoginEngine').reload();
+		getModule('engine/LoginEngine').reload();
 	}
 
 
@@ -163,15 +163,15 @@ define(function( require )
 	 */
 	function onConnectionRefused( pkt )
 	{
-		var msg_id;
+		var msgId;
 
 		switch (pkt.ErrorCode) {
 			default:
-			case 0: msg_id = 3; break;
+			case 0: msgId = 3; break;
 			// other types ?
 		}
 
-		UIManager.showErrorBox( DB.getMessage(msg_id) );
+		UIManager.showErrorBox( DB.getMessage(msgId) );
 	}
 
 
@@ -199,7 +199,7 @@ define(function( require )
 	{
 		var inputMail;
 		var _email;
-		var _time_end;
+		var _timeEnd;
 		var _render = false;
 		var _canvas, _ctx, _width, _height;
 		var _TimeOut;
@@ -260,7 +260,7 @@ define(function( require )
 			_promptDialog.ui.append(_canvas);
 
 			// Parameter
-			_time_end = Date.now() + 10000;
+			_timeEnd = Date.now() + 10000;
 			_render  = true;
 
 			// Start the timing
@@ -270,8 +270,8 @@ define(function( require )
 		// Rendering
 		function render() {
 			// Calculate percent
-			var time_left = _time_end - Date.now();
-			var percent   =  Math.min(100, Math.round( 100 - time_left / 100 ));
+			var timeLeft = _timeEnd - Date.now();
+			var percent   =  Math.min(100, Math.round( 100 - timeLeft / 100 ));
 
 			// Delete character
 			if (percent === 100) {
@@ -415,18 +415,18 @@ define(function( require )
 	 */
 	function onCreationFail( pkt )
 	{
-		var msg_id;
+		var msgId;
 
 		switch (pkt.ErrorCode) {
-			case 0x00: msg_id =   10;  break; // 'Charname already exists'
-			case 0x01: msg_id =  298;  break; // 'You are underaged'
-			case 0x02: msg_id = 1272;  break; // 'Symbols in Character Names are forbidden'
-			case 0x03: msg_id = 1355;  break; // 'You are not elegible to open the Character Slot.'
+			case 0x00: msgId =   10;  break; // 'Charname already exists'
+			case 0x01: msgId =  298;  break; // 'You are underaged'
+			case 0x02: msgId = 1272;  break; // 'Symbols in Character Names are forbidden'
+			case 0x03: msgId = 1355;  break; // 'You are not elegible to open the Character Slot.'
 			default:
-			case 0xFF: msg_id =   11;  break; // 'Char creation denied'
+			case 0xFF: msgId =   11;  break; // 'Char creation denied'
 		}
 
-		UIManager.showMessageBox( DB.getMessage(msg_id), 'ok' );
+		UIManager.showMessageBox( DB.getMessage(msgId), 'ok' );
 	}
 
 

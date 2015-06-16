@@ -1,5 +1,5 @@
 /**
- * Core/ThreadEventHandler.js
+ * core/ThreadEventHandler.js
  *
  * Handler data received from Main Thread and process.
  *
@@ -8,12 +8,12 @@
  * @author Vincent Thibault
  */
 
-importScripts('../Vendors/require.js');
+importScripts('../vendors/require.js');
 requirejs.config({
 	baseUrl: '../'
 });
 
-require(['Core/FileManager', 'Core/FileSystem', 'Loaders/MapLoader'],
+require(['core/FileManager', 'core/FileSystem', 'loaders/MapLoader'],
 function(      FileManager,        FileSystem,           MapLoader )
 {
 	'use strict';

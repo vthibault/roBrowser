@@ -1,5 +1,5 @@
 /**
- * Core/MemoryManager.js
+ * core/MemoryManager.js
  *
  * Memory Manager
  *
@@ -10,7 +10,7 @@
  * @author Vincent Thibault
  */
 
-define( ['Core/MemoryItem'], function( MemoryItem )
+define( ['core/MemoryItem'], function( MemoryItem )
 {
 	'use strict';
 

@@ -15,13 +15,13 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
-	var DB                 = require('DB/DBManager');
-	var ItemType           = require('DB/Items/ItemType');
-	var jQuery             = require('Utils/jquery');
-	var Client             = require('Core/Client');
-	var Preferences        = require('Core/Preferences');
-	var Renderer           = require('Renderer/Renderer');
-	var Mouse              = require('Controls/MouseEventHandler');
+	var DB                 = require('db/DBManager');
+	var ItemType           = require('db/items/ItemType');
+	var jQuery             = require('utils/jquery');
+	var Client             = require('core/Client');
+	var Preferences        = require('core/Preferences');
+	var Renderer           = require('renderer/Renderer');
+	var Mouse              = require('controls/MouseEventHandler');
 	var UIManager          = require('UI/UIManager');
 	var UIComponent        = require('UI/UIComponent');
 	var InputBox           = require('UI/Components/InputBox/InputBox');
@@ -77,7 +77,7 @@ define(function(require)
 	/**
 	 * Initialize UI
 	 */
-	Inventory.init = function Init()
+	Inventory.init = function init()
 	{
 		// Bind buttons
 		this.ui.find('.titlebar .base').mousedown(stopPropagation);
@@ -110,7 +110,7 @@ define(function(require)
 	/**
 	 * Apply preferences once append to body
 	 */
-	Inventory.onAppend = function OnAppend()
+	Inventory.onAppend = function onAppend()
 	{
 		// Apply preferences
 		if (!_preferences.show) {
@@ -136,7 +136,7 @@ define(function(require)
 	/**
 	 * Remove Inventory from window (and so clean up items)
 	 */
-	Inventory.onRemove = function OnRemove()
+	Inventory.onRemove = function onRemove()
 	{
 		this.ui.find('.container .content').empty();
 		this.list.length = 0;
@@ -185,7 +185,7 @@ define(function(require)
 	 * @param {number} width
 	 * @param {number} height
 	 */
-	Inventory.resize = function Resize( width, height )
+	Inventory.resize = function resize( width, height )
 	{
 		width  = Math.min( Math.max(width,  6), 9);
 		height = Math.min( Math.max(height, 2), 6);
@@ -208,7 +208,7 @@ define(function(require)
 	 * @param {number} id
 	 * @returns {Item}
 	 */
-	Inventory.getItemById = function GetItemById( id )
+	Inventory.getItemById = function getItemById( id )
 	{
 		var i, count;
 		var list = Inventory.list;
@@ -247,7 +247,7 @@ define(function(require)
 	/**
 	 * Add items to the list
 	 */
-	Inventory.setItems = function SetItems(items)
+	Inventory.setItems = function setItems(items)
 	{
 		var i, count;
 
@@ -264,7 +264,7 @@ define(function(require)
 	 *
 	 * @param {object} Item
 	 */
-	Inventory.addItem = function AddItem( item )
+	Inventory.addItem = function addItem( item )
 	{
 		var object = this.getItemByIndex(item.index);
 
@@ -288,7 +288,7 @@ define(function(require)
 	 *
 	 * @param {object} Item
 	 */
-	Inventory.addItemSub = function AddItemSub( item )
+	Inventory.addItemSub = function addItemSub( item )
 	{
 		var tab;
 
@@ -354,7 +354,7 @@ define(function(require)
 	 * @param {number} index in inventory
 	 * @param {number} count
 	 */
-	Inventory.removeItem = function RemoveItem( index, count )
+	Inventory.removeItem = function removeItem( index, count )
 	{
 		var item = this.getItemByIndex(index);
 
@@ -393,7 +393,7 @@ define(function(require)
 	 * @param {number} index in inventory
 	 * @param {number} count
 	 */
-	Inventory.updateItem = function UpdateItem( index, count )
+	Inventory.updateItem = function updateItem( index, count )
 	{
 		var item = this.getItemByIndex(index);
 
@@ -427,7 +427,7 @@ define(function(require)
 	 *
 	 * @param {Item} item
 	 */
-	Inventory.useItem = function UseItem( item )
+	Inventory.useItem = function useItem( item )
 	{
 		switch (item.type) {
 
@@ -605,7 +605,7 @@ define(function(require)
 		if (item.count > 1) {
 			InputBox.append();
 			InputBox.setType('number', false, item.count);
-			InputBox.onSubmitRequest = function OnSubmitRequest( count ) {
+			InputBox.onSubmitRequest = function onSubmitRequest( count ) {
 				InputBox.remove();
 				getModule('UI/Components/Storage/Storage').reqRemoveItem(
 					item.index,
@@ -773,10 +773,10 @@ define(function(require)
 	/**
 	 * functions to define
 	 */
-	Inventory.onUseItem    = function OnUseItem(/* index */){};
+	Inventory.onUseItem    = function onUseItem(/* index */){};
 	Inventory.onUseCard    = function onUseCard(/* index */){};
-	Inventory.onEquipItem  = function OnEquipItem(/* index, location */){};
-	Inventory.onUpdateItem = function OnUpdateItem(/* index, amount */){};
+	Inventory.onEquipItem  = function onEquipItem(/* index, location */){};
+	Inventory.onUpdateItem = function onUpdateItem(/* index, amount */){};
 
 
 	/**

@@ -15,10 +15,10 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
-	var DB                   = require('DB/DBManager');
-	var Client               = require('Core/Client');
-	var Preferences          = require('Core/Preferences');
-	var Renderer             = require('Renderer/Renderer');
+	var DB                   = require('db/DBManager');
+	var Client               = require('core/Client');
+	var Preferences          = require('core/Preferences');
+	var Renderer             = require('renderer/Renderer');
 	var UIManager            = require('UI/UIManager');
 	var UIComponent          = require('UI/UIComponent');
 	var htmlText             = require('text!./PetInformations.html');
@@ -221,7 +221,7 @@ define(function(require)
 
 
 	/**
-	 * Functions defined in Engine/MapEngine/Pet.js
+	 * Functions defined in engine/Mapengine/Pet.js
 	 */
 	PetInformations.reqPetFeed    = function reqPetFeed(){};
 	PetInformations.reqPetAction  = function reqPetAction(){};

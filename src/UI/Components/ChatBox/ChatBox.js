@@ -15,21 +15,21 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
-	var DB                 = require('DB/DBManager');
-	var jQuery             = require('Utils/jquery');
-	var Renderer           = require('Renderer/Renderer');
-	var Client             = require('Core/Client');
-	var Events             = require('Core/Events');
-	var Preferences        = require('Core/Preferences');
-	var KEYS               = require('Controls/KeyEventHandler');
-	var BattleMode         = require('Controls/BattleMode');
+	var DB                 = require('db/DBManager');
+	var jQuery             = require('utils/jquery');
+	var Renderer           = require('renderer/Renderer');
+	var Client             = require('core/Client');
+	var Events             = require('core/Events');
+	var Preferences        = require('core/Preferences');
+	var KEYS               = require('controls/KeyEventHandler');
+	var BattleMode         = require('controls/BattleMode');
 	var History            = require('./History');
 	var UIManager          = require('UI/UIManager');
 	var UIComponent        = require('UI/UIComponent');
 	var ContextMenu        = require('UI/Components/ContextMenu/ContextMenu');
 	var htmlText           = require('text!./ChatBox.html');
 	var cssText            = require('text!./ChatBox.css');
-	var ProcessCommand     = require('Controls/ProcessCommand');
+	var ProcessCommand     = require('controls/ProcessCommand');
 
 
 	/**
@@ -76,7 +76,7 @@ define(function(require)
 	/**
 	 * Constants
 	 */
-	ChatBox.TYPE = {
+	ChatBox.Type = {
 		SELF:     1 << 0,
 		PUBLIC:   1 << 1,
 		PRIVATE:  1 << 2,
@@ -93,7 +93,7 @@ define(function(require)
 	/**
 	 * @var {number} target message ?
 	 */
-	var _sendTo = ChatBox.TYPE.PUBLIC;
+	var _sendTo = ChatBox.Type.PUBLIC;
 
 
 	/**
@@ -172,7 +172,7 @@ define(function(require)
 			var ui = ContextMenu.ui.find('.menu');
 
 			if (!count) {
-				ChatBox.addText( DB.getMessage(192), ChatBox.TYPE.ERROR);
+				ChatBox.addText( DB.getMessage(192), ChatBox.Type.ERROR);
 				return;
 			}
 
@@ -201,9 +201,9 @@ define(function(require)
 			ContextMenu.remove();
 			ContextMenu.append();
 
-			ContextMenu.addElement(DB.getMessage(85),  onChangeTargetMessage(ChatBox.TYPE.PUBLIC));
-			ContextMenu.addElement(DB.getMessage(86),  onChangeTargetMessage(ChatBox.TYPE.PARTY));
-			ContextMenu.addElement(DB.getMessage(437), onChangeTargetMessage(ChatBox.TYPE.GUILD));
+			ContextMenu.addElement(DB.getMessage(85),  onChangeTargetMessage(ChatBox.Type.PUBLIC));
+			ContextMenu.addElement(DB.getMessage(86),  onChangeTargetMessage(ChatBox.Type.PARTY));
+			ContextMenu.addElement(DB.getMessage(437), onChangeTargetMessage(ChatBox.Type.GUILD));
 
 			ui.css({
 				top:  pos.top - ui.height() - 5,
@@ -229,7 +229,7 @@ define(function(require)
 	/**
 	 * Clean up the box
 	 */
-	ChatBox.clean = function Clean()
+	ChatBox.clean = function clean()
 	{
 		var matches, i, count;
 
@@ -253,7 +253,7 @@ define(function(require)
 	/**
 	 * Once append to HTML
 	 */
-	ChatBox.onAppend = function OnAppend()
+	ChatBox.onAppend = function onAppend()
 	{
 		// Focus the input
 		this.ui.find('.input .message').focus();
@@ -266,7 +266,7 @@ define(function(require)
 	/**
 	 * Stop custom scroll
 	 */
-	ChatBox.onRemove = function OnRemove()
+	ChatBox.onRemove = function onRemove()
 	{
 		this.ui.find('.content').off('scroll');
 
@@ -314,7 +314,7 @@ define(function(require)
 	 * @param {object} event - KeyEventHandler
 	 * @return {boolean}
 	 */
-	ChatBox.onKeyDown = function OnKeyDown( event )
+	ChatBox.onKeyDown = function onKeyDown( event )
 	{
 		var messageBox = this.ui.find('.input .message');
 		var nickBox    = this.ui.find('.input .username');
@@ -401,7 +401,7 @@ define(function(require)
 	/**
 	 * Process ChatBox message
 	 */
-	ChatBox.submit = function Submit()
+	ChatBox.submit = function submit()
 	{
 		var input = this.ui.find('.input');
 		var $user = input.find('.username');
@@ -457,28 +457,28 @@ define(function(require)
 		var $content = this.ui.find('.content');
 
 		if (!color) {
-			if ((type & ChatBox.TYPE.PUBLIC) && (type & ChatBox.TYPE.SELF)) {
+			if ((type & ChatBox.Type.PUBLIC) && (type & ChatBox.Type.SELF)) {
 				color = '#00FF00';
 			}
-			else if (type & ChatBox.TYPE.PARTY) {
-				color = ( type & ChatBox.TYPE.SELF ) ? 'rgb(200, 200, 100)' : 'rgb(230,215,200)';
+			else if (type & ChatBox.Type.PARTY) {
+				color = ( type & ChatBox.Type.SELF ) ? 'rgb(200, 200, 100)' : 'rgb(230,215,200)';
 			}
-			else if (type & ChatBox.TYPE.GUILD) {
+			else if (type & ChatBox.Type.GUILD) {
 				color = 'rgb(180, 255, 180)';
 			}
-			else if (type & ChatBox.TYPE.PRIVATE) {
+			else if (type & ChatBox.Type.PRIVATE) {
 				color = '#FFFF00';
 			}
-			else if (type & ChatBox.TYPE.ERROR) {
+			else if (type & ChatBox.Type.ERROR) {
 				color = '#FF0000';
 			}
-			else if (type & ChatBox.TYPE.INFO) {
+			else if (type & ChatBox.Type.INFO) {
 				color = '#FFFF63';
 			}
-			else if (type & ChatBox.TYPE.BLUE) {
+			else if (type & ChatBox.Type.BLUE) {
 				color = '#00FFFF';
 			}
-			else if (type & ChatBox.TYPE.ADMIN) {
+			else if (type & ChatBox.Type.ADMIN) {
 				color = '#FFFF00';
 			}
 			else {
@@ -499,7 +499,7 @@ define(function(require)
 			var element, matches;
 			var i, count;
 
-			//Check if theres any blob url object to be released from buffer (Check Controls/ScreenShot.js)
+			//Check if theres any blob url object to be released from buffer (Check controls/ScreenShot.js)
 			element = list.eq(0);
 			matches = element.html().match(/(blob:[^"]+)/g);
 
@@ -619,10 +619,10 @@ define(function(require)
 
 			$input.removeClass('guild party');
 
-			if (type & ChatBox.TYPE.PARTY) {
+			if (type & ChatBox.Type.PARTY) {
 				$input.addClass('party');
 			}
-			else if (type & ChatBox.TYPE.GUILD) {
+			else if (type & ChatBox.Type.GUILD) {
 				$input.addClass('guild');
 			}
 

@@ -1,5 +1,5 @@
 /**
- * Utils/gl-matrix.js
+ * utils/gl-matrix.js
  *
  * Extend gl-matrix
  *
@@ -8,7 +8,7 @@
  * @author Vincent Thibault
  */
 
-define( ['Vendors/gl-matrix'], function( glMatrix )
+define( ['vendors/gl-matrix'], function( glMatrix )
 {
 	'use strict';
 

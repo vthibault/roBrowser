@@ -1,5 +1,5 @@
 /**
- * DB/Skills/SkillInfo.js
+ * db/skills/SkillInfo.js
  *
  * Manage skills
  *
@@ -8,7 +8,7 @@
  * @author Vincent Thibault
  */
 
-define(["./SkillConst", "DB/Jobs/JobConst"], function( SK, JobId )
+define(["./SkillConst", "db/jobs/JobConst"], function( SK, JobId )
 {
 	"use strict";
 

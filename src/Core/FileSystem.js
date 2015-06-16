@@ -1,5 +1,5 @@
 /**
- * Core/FileSystem.js
+ * core/FileSystem.js
  *
  * File System
  * Manage the client files (saving it)
@@ -41,7 +41,7 @@ define(function()
 	/**
 	 * @param {FileSyStem} sync
 	 */
-	var _fs_sync;
+	var _fsSync;
 
 
 	/**
@@ -88,7 +88,7 @@ define(function()
 
 		requestFileSystem( self.TEMPORARY, size, function( fs ){
 			_fs      = fs;
-			_fs_sync = requestFileSystemSync( self.TEMPORARY, size );
+			_fsSync = requestFileSystemSync( self.TEMPORARY, size );
 
 			if (save && _files.length) {
 				cleanUp();
@@ -185,12 +185,12 @@ define(function()
 			var i, count;
 
 			// Move all files from the directory to root.
-			var tmpDir    = _fs_sync.root.getDirectory('/__tmp_upload/', {});
+			var tmpDir    = _fsSync.root.getDirectory('/__tmp_upload/', {});
 			var dirReader = tmpDir.createReader();
 			var entries   = dirReader.readEntries();
 
 			for (i = 0, count = entries.length; i < count; ++i) {
-				entries[i].moveTo( _fs_sync.root, entries[i].name );
+				entries[i].moveTo( _fsSync.root, entries[i].name );
 			}
 
 			tmpDir.removeRecursively();
@@ -214,16 +214,16 @@ define(function()
 					processUpload( index + 1);
 				};
 
-				var last_tick = Date.now();
+				var tick = Date.now();
 				writer.onprogress= function(evt){
 
 					// Do not spam the main thread
 					var now = Date.now();
-					if (last_tick + 100 > now) {
+					if (tick + 100 > now) {
 						return;
 					}
 
-					last_tick = now;
+					tick = now;
 					trigger('onprogress', {
 						filename: file.name,
 						filePath: file._path,
@@ -270,10 +270,10 @@ define(function()
 		keys.sort();
 
 		// Directory where to upload data
-		_fs_sync.root.getDirectory( '/__tmp_upload/', {create: true});
+		_fsSync.root.getDirectory( '/__tmp_upload/', {create: true});
 
 		for (i = 0, count = keys.length; i < count ; ++i) {
-			_fs_sync.root.getDirectory( '/__tmp_upload/' + keys[i], {create: true});
+			_fsSync.root.getDirectory( '/__tmp_upload/' + keys[i], {create: true});
 		}
 	}
 
@@ -284,7 +284,7 @@ define(function()
 	function cleanUp()
 	{
 		var i, count;
-		var dirReader = _fs_sync.root.createReader();
+		var dirReader = _fsSync.root.createReader();
 		var entries   = dirReader.readEntries();
 
 		for (i = 0, count = entries.length; i < count; ++i) {
@@ -352,7 +352,7 @@ define(function()
 		var fileEntry;
 
 		try {
-			fileEntry = _fs_sync.root.getFile(filename, {create:false});
+			fileEntry = _fsSync.root.getFile(filename, {create:false});
 		}
 		catch(e) {
 			// not found
@@ -423,10 +423,10 @@ define(function()
 		// Create hierarchy
 		while (directories.length) {
 			path += directories.shift() + '/';
-			_fs_sync.root.getDirectory( path, {create: true});
+			_fsSync.root.getDirectory( path, {create: true});
 		}
 
-		var fileEntry = _fs_sync.root.getFile(filename, {create:true});
+		var fileEntry = _fsSync.root.getFile(filename, {create:true});
 		var writer    = fileEntry.createWriter();
 
 		writer.write(new Blob([buffer]));
@@ -458,7 +458,7 @@ define(function()
 			return list;
 		}
 
-		var entries = _fs_sync.root.createReader().readEntries();
+		var entries = _fsSync.root.createReader().readEntries();
 
 		for (i = 0, count = entries.length; i < count; ++i) {
 			if (entries[i].isFile && entries[i].name.match(regex)) {

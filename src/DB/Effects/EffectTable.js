@@ -1,5 +1,5 @@
 /**
- * DB/Effects/EffectTable.js
+ * db/effects/EffectTable.js
  *
  * List effects
  * TODO: complete the list, add informations about sound.
@@ -461,7 +461,7 @@ define(function( require )
 			type: 'FUNC',
 			attachedEntity: true,
 			func: function(entity, tick) {
-				var LockOnTarget = require('Renderer/Effects/LockOnTarget');
+				var LockOnTarget = require('renderer/Effects/LockOnTarget');
 
 				this.add(new LockOnTarget(
 					entity,
@@ -1520,7 +1520,7 @@ define(function( require )
 		420: [{
 			type: 'FUNC',
 			attachedEntity: true,
-			func: function EffectSmallTransition(entity) {
+			func: function effectSmallTransition(entity) {
 				var xSize = entity.xSize;
 				var ySize = entity.ySize;
 
@@ -1537,7 +1537,7 @@ define(function( require )
 		421: [{
 			type: 'FUNC',
 			attachedEntity: true,
-			func: function EffectSmall(entity) {
+			func: function effectSmall(entity) {
 				entity.xSize = 2.5;
 				entity.ySize = 2.5;
 			}
@@ -1547,7 +1547,7 @@ define(function( require )
 		422: [{
 			type: 'FUNC',
 			attachedEntity: true,
-			func: function EffectBigTransition(entity) {
+			func: function effectBigTransition(entity) {
 				var xSize = entity.xSize;
 				var ySize = entity.ySize;
 
@@ -1564,7 +1564,7 @@ define(function( require )
 		423: [{
 			type: 'FUNC',
 			attachedEntity: true,
-			func: function EffectBig(entity) {
+			func: function effectBig(entity) {
 				entity.xSize = 7.5;
 				entity.ySize = 7.5;
 			}

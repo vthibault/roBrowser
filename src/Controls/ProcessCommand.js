@@ -1,5 +1,5 @@
 /**
- * Controls/ProcessCommand.js - extended from ChatBox
+ * controls/ProcessCommand.js - extended from ChatBox
  *
  * Command in chatbox handler
  *
@@ -13,17 +13,17 @@ define(function( require )
 
 
 	// Load dependencies
-	var DB                 = require('DB/DBManager');
-	var Emotions           = require('DB/Emotions');
-	var BGM                = require('Audio/BGM');
-	var Sound              = require('Audio/SoundManager');
-	var Session            = require('Engine/SessionStorage');
-	var PACKET             = require('Network/PacketStructure');
-	var Network            = require('Network/NetworkManager');
-	var ControlPreferences = require('Preferences/Controls');
-	var AudioPreferences   = require('Preferences/Audio');
-	var MapPreferences     = require('Preferences/Map');
-	var CameraPreferences  = require('Preferences/Camera');
+	var DB                 = require('db/DBManager');
+	var Emotions           = require('db/Emotions');
+	var BGM                = require('audio/BGM');
+	var Sound              = require('audio/soundManager');
+	var Session            = require('engine/SessionStorage');
+	var PACKET             = require('network/packets/structureTable');
+	var Network            = require('network/networkManager');
+	var ControlPreferences = require('preferences/Controls');
+	var AudioPreferences   = require('preferences/Audio');
+	var MapPreferences     = require('preferences/Map');
+	var CameraPreferences  = require('preferences/Camera');
 	var getModule          = require;
 
 
@@ -37,7 +37,7 @@ define(function( require )
 		switch (cmd) {
 
 			case 'sound':
-				this.addText( DB.getMessage(27 + AudioPreferences.Sound.play), this.TYPE.INFO );
+				this.addText( DB.getMessage(27 + AudioPreferences.Sound.play), this.Type.INFO );
 				AudioPreferences.Sound.play = !AudioPreferences.Sound.play;
 				AudioPreferences.save();
 
@@ -47,7 +47,7 @@ define(function( require )
 				return;
 
 			case 'bgm':
-				this.addText( DB.getMessage(31 + AudioPreferences.BGM.play), this.TYPE.INFO );
+				this.addText( DB.getMessage(31 + AudioPreferences.BGM.play), this.Type.INFO );
 				AudioPreferences.BGM.play = !AudioPreferences.BGM.play;
 				AudioPreferences.save();
 
@@ -60,32 +60,32 @@ define(function( require )
 				return;
 
 			case 'effect':
-				this.addText( DB.getMessage(23 + MapPreferences.effect), this.TYPE.INFO );
+				this.addText( DB.getMessage(23 + MapPreferences.effect), this.Type.INFO );
 				MapPreferences.effect = !MapPreferences.effect;
 				MapPreferences.save();
 				return;
 
 			case 'mineffect':
-				this.addText( DB.getMessage(687 + MapPreferences.mineffect), this.TYPE.INFO );
+				this.addText( DB.getMessage(687 + MapPreferences.mineffect), this.Type.INFO );
 				MapPreferences.mineffect = !MapPreferences.mineffect;
 				MapPreferences.save();
 				return;
 
 			case 'miss':
-				this.addText( DB.getMessage(317 + MapPreferences.miss), this.TYPE.INFO );
+				this.addText( DB.getMessage(317 + MapPreferences.miss), this.Type.INFO );
 				MapPreferences.miss = !MapPreferences.miss;
 				MapPreferences.save();
 				return;
 
 			case 'camera':
-				this.addText( DB.getMessage(319 + CameraPreferences.smooth), this.TYPE.INFO );
+				this.addText( DB.getMessage(319 + CameraPreferences.smooth), this.Type.INFO );
 				CameraPreferences.smooth = !CameraPreferences.smooth;
 				CameraPreferences.save();
 				return;
 
 			case 'fog':
 				MapPreferences.fog = !MapPreferences.fog;
-				this.addText( 'fog ' + ( MapPreferences.fog ? 'on' : 'off'), this.TYPE.INFO );
+				this.addText( 'fog ' + ( MapPreferences.fog ? 'on' : 'off'), this.Type.INFO );
 				MapPreferences.save();
 				return;
 
@@ -96,14 +96,14 @@ define(function( require )
 
 			case 'noctrl':
 			case 'nc':
-				this.addText( DB.getMessage(717 + ControlPreferences.noctrl), this.TYPE.INFO );
+				this.addText( DB.getMessage(717 + ControlPreferences.noctrl), this.Type.INFO );
 				ControlPreferences.noctrl = !ControlPreferences.noctrl;
 				ControlPreferences.save();
 				return;
 
 			case 'noshift':
 			case 'ns':
-				this.addText( DB.getMessage(701 + ControlPreferences.noshift), this.TYPE.INFO );
+				this.addText( DB.getMessage(701 + ControlPreferences.noshift), this.Type.INFO );
 				ControlPreferences.noshift = !ControlPreferences.noshift;
 				ControlPreferences.save();
 				return;
@@ -145,10 +145,10 @@ define(function( require )
 				return;
 
 			case 'where':
-				var currentMap = getModule('Renderer/MapRenderer').currentMap;
+				var currentMap = getModule('renderer/MapRenderer').currentMap;
 				this.addText(
 					DB.getMapName(currentMap) + '(' + currentMap + ') : ' + Math.floor(Session.Entity.position[0]) + ', ' + Math.floor(Session.Entity.position[1]),
-					this.TYPE.INFO
+					this.Type.INFO
 				);
 				return;
 
@@ -172,13 +172,13 @@ define(function( require )
 				return;
 
 			case 'leave':
-				getModule('Engine/MapEngine/Group').onRequestLeave();
+				getModule('engine/Mapengine/Group').onRequestLeave();
 				return;
 
 			case 'invite':
 				matches = text.match(/^invite\s+(")?([^"]+)(")?/);
 				if (matches && matches[2]) {
-					getModule('Engine/MapEngine/Group').onRequestInvitation(0, matches[2]);
+					getModule('engine/Mapengine/Group').onRequestInvitation(0, matches[2]);
 					return;
 				}
 				break;
@@ -186,19 +186,19 @@ define(function( require )
 			case 'organize':
 				matches = text.match(/^organize\s+(")?([^"]+)(")?/);
 				if (matches && matches[2]) {
-					getModule('Engine/MapEngine/Group').onRequestCreationEasy(matches[2]);
+					getModule('engine/Mapengine/Group').onRequestCreationEasy(matches[2]);
 					return;
 				}
 				break;
 
 			case 'hi':
-				getModule('Engine/MapEngine/Friends').sayHi();
+				getModule('engine/Mapengine/Friends').sayHi();
 				return;
 
 			case 'guild':
 				matches = text.match(/^guild\s+(")?([^"]+)(")?/);
 				if (matches && matches[2]) {
-					getModule('Engine/MapEngine/Guild').createGuild(matches[2]);
+					getModule('engine/Mapengine/Guild').createGuild(matches[2]);
 					return;
 				}
 				break;
@@ -206,7 +206,7 @@ define(function( require )
 			case 'breakguild':
 				matches = text.match(/^breakguild\s+(")?([^"]+)(")?/);
 				if (matches && matches[2]) {
-					getModule('Engine/MapEngine/Guild').breakGuild(matches[2]);
+					getModule('engine/Mapengine/Guild').breakGuild(matches[2]);
 					return;
 				}
 				break;
@@ -236,6 +236,6 @@ define(function( require )
 		}
 
 		// Command not found
-		this.addText( DB.getMessage(95), this.TYPE.INFO );
+		this.addText( DB.getMessage(95), this.Type.INFO );
 	};
 });

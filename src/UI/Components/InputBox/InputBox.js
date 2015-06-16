@@ -15,10 +15,10 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
-	var jQuery             = require('Utils/jquery');
-	var Renderer           = require('Renderer/Renderer');
-	var KEYS               = require('Controls/KeyEventHandler');
-	var DB                 = require('DB/DBManager');
+	var jQuery             = require('utils/jquery');
+	var Renderer           = require('renderer/Renderer');
+	var KEYS               = require('controls/KeyEventHandler');
+	var DB                 = require('db/DBManager');
 	var UIManager          = require('UI/UIManager');
 	var UIComponent        = require('UI/UIComponent');
 	var htmlText           = require('text!./InputBox.html');
@@ -34,7 +34,7 @@ define(function(require)
 	/**
 	 * Initialize GUI
 	 */
-	InputBox.init = function Init()
+	InputBox.init = function init()
 	{
 		this.draggable();
 		this.ui.css({ top: (Renderer.height-120)/1.5-49, left: (Renderer.width -280)/2+1 });
@@ -55,7 +55,7 @@ define(function(require)
 	/**
 	 * Once in HTML, focus the input
 	 */
-	InputBox.onAppend = function OnAppend()
+	InputBox.onAppend = function onAppend()
 	{
 		this.ui.find('input').select();
 	};
@@ -64,7 +64,7 @@ define(function(require)
 	/**
 	 * Remove data from UI
 	 */
-	InputBox.onRemove = function OnRemove()
+	InputBox.onRemove = function onRemove()
 	{
 		this.ui.find('input').val('');
 		this.ui.find('.text').text('');
@@ -78,7 +78,7 @@ define(function(require)
 	 * @param {object} event
 	 * @return {boolean}
 	 */
-	InputBox.onKeyDown = function OnKeyDown( event )
+	InputBox.onKeyDown = function onKeyDown( event )
 	{
 		if (!this.isPersistent && event.which === KEYS.ENTER) {
 			validate.call(this);
@@ -163,7 +163,7 @@ define(function(require)
 	/**
 	 * Callback to define
 	 */
-	InputBox.onSubmitRequest = function OnSubmitRequest(){};
+	InputBox.onSubmitRequest = function onSubmitRequest(){};
 
 
 	/**

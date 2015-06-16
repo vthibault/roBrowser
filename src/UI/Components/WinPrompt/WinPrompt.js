@@ -15,10 +15,10 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
-	var DB          = require('DB/DBManager');
+	var DB          = require('db/DBManager');
 	var UIManager   = require('UI/UIManager');
 	var WinPopup    = require('UI/Components/WinPopup');
-	var jQuery      = require('Utils/jquery');
+	var jQuery      = require('utils/jquery');
 
 
 	/**

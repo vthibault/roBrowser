@@ -15,11 +15,11 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
-	var jQuery      = require('Utils/jquery');
-	var DB          = require('DB/DBManager');
-	var KEYS        = require('Controls/KeyEventHandler');
-	var Renderer    = require('Renderer/Renderer');
-	var Preferences = require('Core/Preferences');
+	var jQuery      = require('utils/jquery');
+	var DB          = require('db/DBManager');
+	var KEYS        = require('controls/KeyEventHandler');
+	var Renderer    = require('renderer/Renderer');
+	var Preferences = require('core/Preferences');
 	var UIManager   = require('UI/UIManager');
 	var UIComponent = require('UI/UIComponent');
 	var htmlText    = require('text!./ChatRoomCreate.html');
@@ -92,7 +92,7 @@ define(function(require)
 	/**
 	 * Once append to body
 	 */
-	ChatRoomCreate.onAppend = function OnAppend()
+	ChatRoomCreate.onAppend = function onAppend()
 	{
 		if (!_preferences.show) {
 			this.ui.hide();
@@ -112,7 +112,7 @@ define(function(require)
 	/**
 	 * Once removed from DOM, save preferences
 	 */
-	ChatRoomCreate.onRemove = function OnRemove()
+	ChatRoomCreate.onRemove = function onRemove()
 	{
 		_preferences.show   =  this.ui.is(':visible');
 		_preferences.y      =  parseInt(this.ui.css('top'), 10);

@@ -1,4 +1,4 @@
-(function Builder(){
+(function(){
 
 	'use strict';
 

@@ -13,9 +13,9 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
-	var jQuery       = require('Utils/jquery');
-	var Renderer     = require('Renderer/Renderer');
-	var Mouse        = require('Controls/MouseEventHandler');
+	var jQuery       = require('utils/jquery');
+	var Renderer     = require('renderer/Renderer');
+	var Mouse        = require('controls/MouseEventHandler');
 	var UIManager    = require('UI/UIManager');
 	var UIComponent  = require('UI/UIComponent');
 	var cssText      = require('text!./ContextMenu.css');

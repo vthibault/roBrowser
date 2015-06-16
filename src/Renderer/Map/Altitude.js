@@ -1,5 +1,5 @@
 /**
- * Renderer/Map/Altitude.js
+ * renderer/Map/Altitude.js
  *
  * Rendering altitude (used for color picking)
  *
@@ -7,7 +7,7 @@
  *
  * @author Vincent Thibault
  */
-define( ['Utils/gl-matrix', 'Utils/PathFinding', 'Controls/MouseEventHandler'],
+define( ['utils/gl-matrix', 'utils/PathFinding', 'controls/MouseEventHandler'],
 function(       glMatrix,          PathFinding,            Mouse )
 {
 	'use strict';
@@ -33,9 +33,9 @@ function(       glMatrix,          PathFinding,            Mouse )
 
 	/**
 	 * @var {object} enum cell type
-	 * (Copy from Loaders/Altitude.js)
+	 * (Copy from loaders/Altitude.js)
 	 */
-	Altitude.TYPE = {
+	Altitude.Type = {
 		NONE:     1 << 0,
 		WALKABLE: 1 << 1,
 		WATER:    1 << 2,
@@ -89,7 +89,7 @@ function(       glMatrix,          PathFinding,            Mouse )
 			width:  Altitude.width,
 			height: Altitude.height,
 			cells:  types,
-			types:  Altitude.TYPE
+			Type:  Altitude.Type
 		});
 	};
 
@@ -249,7 +249,7 @@ function(       glMatrix,          PathFinding,            Mouse )
 		var buffer7x7   = new Float32Array(7*7*30);
 		var buffer13x13 = new Float32Array(13*13*30);
 
-		return function generatePlane(pos_x, pos_y, size)
+		return function generatePlane(posX, posY, size)
 		{
 			if (!_cells) {
 				return null;
@@ -259,9 +259,9 @@ function(       glMatrix,          PathFinding,            Mouse )
 			var buffer;
 			var middle = Math.floor(size / 2);
 
-			pos_x  = Math.floor(pos_x);
-			pos_y  = Math.floor(pos_y);
-			i      = 0;
+			posX = Math.floor(posX);
+			posY = Math.floor(posY);
+			i    = 0;
 
 			// Avoid memory allocation
 			switch (size) {
@@ -277,43 +277,43 @@ function(       glMatrix,          PathFinding,            Mouse )
 			for (x = -middle; x <= middle; ++x) {
 				for (y = -middle; y <= middle; ++y, i+=30) {
 
-					index = ((pos_x + x) + ( pos_y + y) * Altitude.width) * 5;
+					index = ((posX + x) + ( posY + y) * Altitude.width) * 5;
 
 					// Triangle 1
-					buffer[i+0 ] = pos_x + x + 0;
+					buffer[i+0 ] = posX + x + 0;
 					buffer[i+1 ] = _cells[index+0];
-					buffer[i+2 ] = pos_y + y + 0;
+					buffer[i+2 ] = posY + y + 0;
 					buffer[i+3 ] = (x + 0 + middle) / size;
 					buffer[i+4 ] = (y + 0 + middle) / size;
 
-					buffer[i+5 ] = pos_x + x + 1;
+					buffer[i+5 ] = posX + x + 1;
 					buffer[i+6 ] = _cells[index+1];
-					buffer[i+7 ] = pos_y + y + 0;
+					buffer[i+7 ] = posY + y + 0;
 					buffer[i+8 ] = (x + 1 + middle) / size;
 					buffer[i+9 ] = (y + 0 + middle) / size;
 
-					buffer[i+10] = pos_x + x + 1;
+					buffer[i+10] = posX + x + 1;
 					buffer[i+11] = _cells[index+3];
-					buffer[i+12] = pos_y + y + 1;
+					buffer[i+12] = posY + y + 1;
 					buffer[i+13] = (x + 1 + middle) / size;
 					buffer[i+14] = (y + 1 + middle) / size;
 
 					// Triangle 2
-					buffer[i+15] = pos_x + x + 1;
+					buffer[i+15] = posX + x + 1;
 					buffer[i+16] = _cells[index+3];
-					buffer[i+17] = pos_y + y + 1;
+					buffer[i+17] = posY + y + 1;
 					buffer[i+18] = (x + 1 + middle) / size;
 					buffer[i+19] = (y + 1 + middle) / size;
 
-					buffer[i+20] = pos_x + x + 0;
+					buffer[i+20] = posX + x + 0;
 					buffer[i+21] = _cells[index+2];
-					buffer[i+22] = pos_y + y + 1;
+					buffer[i+22] = posY + y + 1;
 					buffer[i+23] = (x + 0 + middle) / size;
 					buffer[i+24] = (y + 1 + middle) / size;
 
-					buffer[i+25] = pos_x + x + 0;
+					buffer[i+25] = posX + x + 0;
 					buffer[i+26] = _cells[index+0];
-					buffer[i+27] = pos_y + y + 0;
+					buffer[i+27] = posY + y + 0;
 					buffer[i+28] = (x + 0 + middle) / size;
 					buffer[i+29] = (y + 0 + middle) / size;
 				}

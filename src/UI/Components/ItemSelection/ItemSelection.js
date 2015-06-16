@@ -15,11 +15,11 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
-	var jQuery      = require('Utils/jquery');
-	var DB          = require('DB/DBManager');
-	var SkillInfo   = require('DB/Skills/SkillInfo');
-	var Client      = require('Core/Client');
-	var Renderer    = require('Renderer/Renderer');
+	var jQuery      = require('utils/jquery');
+	var DB          = require('db/DBManager');
+	var SkillInfo   = require('db/skills/SkillInfo');
+	var Client      = require('core/Client');
+	var Renderer    = require('renderer/Renderer');
 	var UIManager   = require('UI/UIManager');
 	var UIComponent = require('UI/UIComponent');
 	var Inventory   = require('UI/Components/Inventory/Inventory');

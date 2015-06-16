@@ -458,7 +458,7 @@
 	{
 		var content = [
 			'/**',
-			'* DB/' + path,
+			'* db/' + path,
 			'*',
 			'* This file is part of ROBrowser, Ragnarok Online in the Web Browser (http://www.robrowser.com/).',
 			'*',
@@ -483,7 +483,7 @@
 		var save   = document.querySelector('.save');
 
 		save.parentNode.className = '';
-		save.parentNode.firstChild.textContent = 'Save this file in DB/' + path; 
+		save.parentNode.firstChild.textContent = 'Save this file in db/' + path; 
 
 		save.href     = window.URL.createObjectURL(blob);
 		save.download = path.replace(/.*\//,'');

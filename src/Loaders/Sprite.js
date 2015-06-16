@@ -1,5 +1,5 @@
 /**
- * Loaders/Sprite.js
+ * loaders/Sprite.js
  *
  * Loaders for Gravity .spr file (Sprite)
  *
@@ -8,7 +8,7 @@
  * @author Vincent Thibault
  */
 
-define( ['Utils/BinaryReader'], function( BinaryReader )
+define( ['utils/BinaryReader'], function( BinaryReader )
 {
 	'use strict';
 
@@ -18,7 +18,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 	 *
 	 * @param {ArrayBuffer} data - optional data to work with
 	 */
-	function SPR( data )
+	function SprReader( data )
 	{
 		if (data) {
 			this.load(data);
@@ -29,22 +29,10 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 	/**
 	 * Sprite Constants
 	 */
-	SPR.TYPE_PAL  = 0;
-	SPR.TYPE_RGBA = 1;
-
-
-	/**
-	 * Sprite public methods
-	 */
-	SPR.prototype.fp             = null;
-	SPR.prototype.header         = 'SP';
-	SPR.prototype.version        = 0.0;
-	SPR.prototype.indexed_count  = 0;
-	SPR.prototype._indexed_count = 0;
-	SPR.prototype.rgba_count     = 0;
-	SPR.prototype.rgba_index     = 0;
-	SPR.prototype.palette        = null;
-	SPR.prototype.frames         = null;
+	SprReader.Type = {
+		PAL:  0,
+		RGBA: 1
+	};
 
 
 	/**
@@ -52,7 +40,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 	 *
 	 * @param {ArrayBuffer} data - file content
 	 */
-	SPR.prototype.load = function load(data)
+	SprReader.prototype.load = function load(data)
 	{
 		this.fp      = new BinaryReader(data);
 		this.header  = this.fp.readBinaryString(2);
@@ -62,15 +50,15 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 			throw new Error('SPR::load() - Incorrect header "' + this.header + '", must be "SP"');
 		}
 
-		this.indexed_count  = this.fp.readUShort();
-		this._indexed_count = this.indexed_count + 0;
+		this.indexedCount  = this.fp.readUShort();
+		this._indexedCount = this.indexedCount + 0;
 
 		if (this.version > 1.1) {
-			this.rgba_count = this.fp.readUShort();
+			this.rgbaCount = this.fp.readUShort();
 		}
 
-		this.frames      = new Array(this.indexed_count + this.rgba_count);
-		this.rgba_index  = this.indexed_count;
+		this.frames     = new Array(this.indexedCount + this.rgbaCount);
+		this.rgbaIndex  = this.indexedCount;
 
 
 		if (this.version < 2.1) {
@@ -92,24 +80,24 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 	/**
 	 * Parse SPR indexed images
 	 */
-	SPR.prototype.readIndexedImage = function readIndexedImage()
+	SprReader.prototype.readIndexedImage = function readIndexedImage()
 	{
-		var pal_count = this.indexed_count;
+		var count     = this.indexedCount;
 		var fp        = this.fp;
 		var i, width, height;
 		var frames    = this.frames;
 
-		for (i = 0; i < pal_count; ++i) {
+		for (i = 0; i < count; ++i) {
 			width     =  fp.readUShort();
 			height    =  fp.readUShort();
 			frames[i] = {
-				type:   SPR.TYPE_PAL,
+				type:   SprReader.Type.PAL,
 				width:  width,
 				height: height,
 				data:   new Uint8Array( fp.buffer, fp.tell(), width * height )
 			};
 
-			fp.seek( width * height, SEEK_CUR );
+			fp.seek( width * height, BinaryReader.Seek.CUR);
 		}
 	};
 
@@ -117,14 +105,14 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 	/**
 	 * Parse SPR indexed images encoded with RLE
 	 */
-	SPR.prototype.readIndexedImageRLE = function readIndexedImageRLE()
+	SprReader.prototype.readIndexedImageRLE = function readIndexedImageRLE()
 	{
-		var pal_count = this.indexed_count;
+		var palCount  = this.indexedCount;
 		var fp        = this.fp;
 		var i, width, height, size, data, index, c, count, j, end;
 		var frames    = this.frames;
 
-		for (i = 0; i < pal_count; ++i) {
+		for (i = 0; i < palCount; ++i) {
 
 			width   =  fp.readUShort();
 			height  =  fp.readUShort();
@@ -151,7 +139,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 			}
 
 			frames[i] = {
-				type:   SPR.TYPE_PAL,
+				type:   SprReader.Type.PAL,
 				width:  width,
 				height: height,
 				data:   data
@@ -163,10 +151,10 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 	/**
 	 * Parse SPR rgba images
 	 */
-	SPR.prototype.readRgbaImage = function readRGBAImage()
+	SprReader.prototype.readRgbaImage = function readRGBAImage()
 	{
-		var rgba   = this.rgba_count;
-		var index  = this.rgba_index;
+		var rgba   = this.rgbaCount;
+		var index  = this.rgbaIndex;
 		var fp     = this.fp;
 		var frames = this.frames;
 		var i, width, height;
@@ -176,13 +164,13 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 			height  =  fp.readShort();
 
 			frames[ i + index ] = {
-				type:   SPR.TYPE_RGBA,
+				type:   SprReader.Type.RGBA,
 				width:  width,
 				height: height,
 				data:   new Uint8Array( fp.buffer, fp.tell(), width * height * 4 )
 			};
 
-			fp.seek( width * height * 4, SEEK_CUR );
+			fp.seek( width * height * 4, BinaryReader.Seek.CUR);
 		}
 	};
 
@@ -191,10 +179,10 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 	 * Change SPR mode : indexed to rgba
 	 * (why keep palette for hat/weapon/shield/monster ?)
 	 */
-	SPR.prototype.switchToRGBA = function switchToRGBA()
+	SprReader.prototype.switchToRGBA = function switchToRGBA()
 	{
 		var frames = this.frames, frame;
-		var i, count = this.indexed_count;
+		var i, count = this.indexedCount;
 		var data, width, height, x, y;
 		var out, pal = this.palette;
 		var idx1, idx2;
@@ -203,7 +191,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 			// Avoid look up
 			frame  = frames[i];
 
-			if (frame.type !== SPR.TYPE_PAL) {
+			if (frame.type !== SprReader.Type.PAL) {
 				continue;
 			}
 	
@@ -213,10 +201,10 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 			out    = new Uint8Array( width * height * 4 );
 	
 			// reverse height
-			for ( y=0; y<height; ++y ) {
-				for ( x = 0; x<width; ++x ) {
+			for (y = 0; y < height; ++y) {
+				for (x = 0; x < width; ++x) {
 					idx1 = data[ x + y * width ] * 4;
-					idx2 = ( x + (height-y-1) * width ) * 4;
+					idx2 = (x + (height-y-1) * width) * 4;
 					out[ idx2 + 3 ] = pal[ idx1 + 0 ];
 					out[ idx2 + 2 ] = pal[ idx1 + 1 ];
 					out[ idx2 + 1 ] = pal[ idx1 + 2 ];
@@ -225,12 +213,12 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 			}
 
 			frame.data = out;
-			frame.type = SPR.TYPE_RGBA;
+			frame.type = SprReader.Type.RGBA;
 		}
 
-		this.indexed_count  = 0;
-		this.rgba_count     = frames.length;
-		this.rgba_index     = 0;
+		this.indexedCount  = 0;
+		this.rgbaCount     = frames.length;
+		this.rgbaIndex     = 0;
 	};
 
 
@@ -240,11 +228,11 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 	 * @param {number} index frame
 	 * @return {HTMLElement} canvas
 	 */
-	SPR.prototype.getCanvasFromFrame = function getCanvasFromFrame( index )
+	SprReader.prototype.getCanvasFromFrame = function getCanvasFromFrame( index )
 	{
 		var canvas = document.createElement('canvas');
 		var ctx    = canvas.getContext('2d');
-		var ImageData, frame;
+		var imageData, frame;
 		var x, y, i, j, width, height;
 
 		frame = this.frames[index];
@@ -258,18 +246,18 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 		canvas.height = frame.height;
 		width         = frame.width;
 		height        = frame.height;
-		ImageData     = ctx.createImageData( frame.width, frame.height );
+		imageData     = ctx.createImageData( frame.width, frame.height );
 
 		// RGBA
-		if (frame.type === SPR.TYPE_RGBA) {
+		if (frame.type === SprReader.Type.RGBA) {
 			for (y = 0; y < height; ++y) {
 				for (x = 0; x < width; ++x) {
 					i = (x + y * width ) * 4;
 					j = (x + (height-y-1) * width ) * 4;
-					ImageData.data[j+0] = frame.data[i+3];
-					ImageData.data[j+1] = frame.data[i+2];
-					ImageData.data[j+2] = frame.data[i+1];
-					ImageData.data[j+3] = frame.data[i+0];
+					imageData.data[j+0] = frame.data[i+3];
+					imageData.data[j+1] = frame.data[i+2];
+					imageData.data[j+2] = frame.data[i+1];
+					imageData.data[j+3] = frame.data[i+0];
 				}
 			}
 		}
@@ -283,16 +271,16 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 				for (x = 0; x < width; ++x) {
 					i = frame.data[ x + y * width ] * 4;
 					j = (x + y * width ) * 4;
-					ImageData.data[ j + 0 ] = pal[ i + 0 ];
-					ImageData.data[ j + 1 ] = pal[ i + 1 ];
-					ImageData.data[ j + 2 ] = pal[ i + 2 ];
-					ImageData.data[ j + 3 ] = i ? 255  : 0;
+					imageData.data[ j + 0 ] = pal[ i + 0 ];
+					imageData.data[ j + 1 ] = pal[ i + 1 ];
+					imageData.data[ j + 2 ] = pal[ i + 2 ];
+					imageData.data[ j + 3 ] = i ? 255  : 0;
 				}
 			}
 		}
 
 		// Export
-		ctx.putImageData( ImageData, 0, 0 );
+		ctx.putImageData( imageData, 0, 0 );
 		return canvas;
 	};
 
@@ -300,11 +288,11 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 	/**
 	 * Compile a SPR file
 	 */
-	SPR.prototype.compile = function compile() {
+	SprReader.prototype.compile = function compile() {
 		var frames = this.frames;
 		var frame;
 		var i, count = frames.length;
-		var data, width, height, gl_width, gl_height, start_x, start_y, x, y;
+		var data, width, height, glWidth, glHeight, startX, startY, x, y;
 		var pow = Math.pow, ceil = Math.ceil, log = Math.log, floor = Math.floor;
 		var out;
 		var output = new Array(count);
@@ -318,40 +306,40 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 			height = frame.height;
 
 			// Calculate new texture size and pos to center
-			gl_width  = pow( 2, ceil( log(width) /log(2) ) );
-			gl_height = pow( 2, ceil( log(height)/log(2) ) );
-			start_x   = floor( (gl_width - width) * 0.5 );
-			start_y   = floor( (gl_height-height) * 0.5 );
+			glWidth  = pow( 2, ceil( log(width) /log(2) ) );
+			glHeight = pow( 2, ceil( log(height)/log(2) ) );
+			startX   = floor( (glWidth - width) * 0.5 );
+			startY   = floor( (glHeight-height) * 0.5 );
 
 			// If palette.
-			if (frame.type === SPR.TYPE_PAL) {
-				out = new Uint8Array( gl_width * gl_height );
+			if (frame.type === SprReader.Type.PAL) {
+				out = new Uint8Array( glWidth * glHeight );
 	
 				for (y = 0; y < height; ++y) {
 					for (x = 0; x < width; ++x) {
-						out[ ( ( y + start_y ) * gl_width + ( x + start_x ) ) ] = data[ y * width + x ];
+						out[ ( ( y + startY ) * glWidth + ( x + startX ) ) ] = data[ y * width + x ];
 					}
 				}
 			}
 
 			// RGBA Images
 			else {
-				out = new Uint8Array( gl_width * gl_height * 4 );
+				out = new Uint8Array( glWidth * glHeight * 4 );
 	
 				for (y = 0; y < height; ++y) {
 					for (x = 0; x < width; ++x) {
-						out[ ( ( y + start_y ) * gl_width + ( x + start_x ) ) * 4 + 0 ] = data[ ( (height-y-1) * width + x ) * 4 + 3 ];
-						out[ ( ( y + start_y ) * gl_width + ( x + start_x ) ) * 4 + 1 ] = data[ ( (height-y-1) * width + x ) * 4 + 2 ];
-						out[ ( ( y + start_y ) * gl_width + ( x + start_x ) ) * 4 + 2 ] = data[ ( (height-y-1) * width + x ) * 4 + 1 ];
-						out[ ( ( y + start_y ) * gl_width + ( x + start_x ) ) * 4 + 3 ] = data[ ( (height-y-1) * width + x ) * 4 + 0 ];
+						out[ ( ( y + startY ) * glWidth + ( x + startX ) ) * 4 + 0 ] = data[ ( (height-y-1) * width + x ) * 4 + 3 ];
+						out[ ( ( y + startY ) * glWidth + ( x + startX ) ) * 4 + 1 ] = data[ ( (height-y-1) * width + x ) * 4 + 2 ];
+						out[ ( ( y + startY ) * glWidth + ( x + startX ) ) * 4 + 2 ] = data[ ( (height-y-1) * width + x ) * 4 + 1 ];
+						out[ ( ( y + startY ) * glWidth + ( x + startX ) ) * 4 + 3 ] = data[ ( (height-y-1) * width + x ) * 4 + 0 ];
 					}
 				}
 			}
 
 			output[i] = {
 				type:           frame.type,
-				width:          gl_width,
-				height:         gl_height,
+				width:          glWidth,
+				height:         glHeight,
 				originalWidth:  width,
 				originalHeight: height,
 				data:           out
@@ -359,13 +347,13 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 		}
 
 		return {
-			frames:        output,
-			palette:       this.palette,
-			rgba_index:    this.rgba_index,
-			old_rgba_index:this._indexed_count
+			frames:       output,
+			palette:      this.palette,
+			rgbaIndex:    this.rgbaIndex,
+			oldRgbaIndex: this._indexedCount
 		};
 	};
 
 
-	return SPR;
+	return SprReader;
 });

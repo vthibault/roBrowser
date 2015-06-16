@@ -15,11 +15,11 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
-	var Configs          = require('Core/Configs');
-	var Context          = require('Core/Context');
-	var Preferences      = require('Core/Preferences');
-	var GraphicsSettings = require('Preferences/Graphics');
-	var Renderer         = require('Renderer/Renderer');
+	var Configs          = require('core/Configs');
+	var Context          = require('core/Context');
+	var Preferences      = require('core/Preferences');
+	var GraphicsSettings = require('preferences/Graphics');
+	var Renderer         = require('renderer/Renderer');
 	var UIManager        = require('UI/UIManager');
 	var UIComponent      = require('UI/UIComponent');
 	var htmlText         = require('text!./GraphicsOption.html');
@@ -44,7 +44,7 @@ define(function(require)
 	/**
 	 * Initialize UI
 	 */
-	GraphicsOption.init = function Init()
+	GraphicsOption.init = function init()
 	{
 		this.ui.find('.base').mousedown(function(event) {
 			event.stopImmediatePropagation();
@@ -64,7 +64,7 @@ define(function(require)
 	/**
 	 * When append the element to html
 	 */
-	GraphicsOption.onAppend = function OnAppend()
+	GraphicsOption.onAppend = function onAppend()
 	{
 		this.ui.css({
 			top:  _preferences.y,
@@ -80,7 +80,7 @@ define(function(require)
 	/**
 	 * Once remove, save preferences
 	 */
-	GraphicsOption.onRemove = function OnRemove()
+	GraphicsOption.onRemove = function onRemove()
 	{
 		_preferences.x    = parseInt(this.ui.css('left'), 10);
 		_preferences.y    = parseInt(this.ui.css('top'), 10);

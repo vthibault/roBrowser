@@ -1,5 +1,5 @@
 /**
- * Controls/MapControl.js
+ * controls/MapControl.js
  *
  * Control for keys and input
  *
@@ -13,22 +13,22 @@ define(function( require )
 
 
 	// Load dependencies
-	var jQuery        = require('Utils/jquery');
-	var DB            = require('DB/DBManager');
+	var jQuery        = require('utils/jquery');
+	var DB            = require('db/DBManager');
 	var UIManager     = require('UI/UIManager');
 	var Cursor        = require('UI/CursorManager');
 	var InputBox      = require('UI/Components/InputBox/InputBox');
 	var ChatBox       = require('UI/Components/ChatBox/ChatBox');
 	var Equipment     = require('UI/Components/Equipment/Equipment');
-	var Mouse         = require('Controls/MouseEventHandler');
-	var Mobile        = require('Core/Mobile');
-	var Renderer      = require('Renderer/Renderer');
-	var Camera        = require('Renderer/Camera');
-	var EntityManager = require('Renderer/EntityManager');
-	var Session       = require('Engine/SessionStorage');
-	var Preferences   = require('Preferences/Controls');
+	var Mouse         = require('controls/MouseEventHandler');
+	var Mobile        = require('core/Mobile');
+	var Renderer      = require('renderer/Renderer');
+	var Camera        = require('renderer/Camera');
+	var EntityManager = require('renderer/EntityManager');
+	var Session       = require('engine/SessionStorage');
+	var Preferences   = require('preferences/Controls');
 
-	require('Controls/ScreenShot');
+	require('controls/ScreenShot');
 
 
 	/**
@@ -162,7 +162,7 @@ define(function( require )
 					entity.onMouseUp();
 
 					// Entity lock is only on MOB type
-					if (Preferences.noctrl === false || entity.objecttype !== entity.constructor.TYPE_MOB) {
+					if (Preferences.noctrl === false || entity.objecttype !== entity.constructor.Type.MOB) {
 						EntityManager.setFocusEntity(null);
 						entity.onFocusEnd();
 					}
@@ -263,7 +263,7 @@ define(function( require )
 		if (Equipment.ui.is(':visible')) {
 			ChatBox.addText(
 				DB.getMessage(189),
-				ChatBox.TYPE.ERROR
+				ChatBox.Type.ERROR
 			);
 			return false;
 		}

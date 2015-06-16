@@ -12,10 +12,10 @@ define(function( require )
 	'use strict';
 
 	// Load dependencies
-	var jQuery      = require('Utils/jquery');
+	var jQuery      = require('utils/jquery');
 	var UIComponent = require('./UIComponent');
-	var KEYS        = require('Controls/KeyEventHandler');
-	var Renderer    = require('Renderer/Renderer');
+	var KEYS        = require('controls/KeyEventHandler');
+	var Renderer    = require('renderer/Renderer');
 	var getModule   = require;
 
 
@@ -126,7 +126,7 @@ define(function( require )
 	
 		// Create popup
 		WinError = this.getComponent('WinPopup').clone('WinError');
-		WinError.init = function Init()
+		WinError.init = function init()
 		{
 			this.ui.find('.text').text(text);
 			this.ui.css({
@@ -135,7 +135,7 @@ define(function( require )
 				zIndex: 100
 			});
 		};
-		WinError.onKeyDown = function OnKeyDown( event )
+		WinError.onKeyDown = function onKeyDown( event )
 		{
 			event.stopImmediatePropagation();
 			switch (event.which) {
@@ -143,7 +143,7 @@ define(function( require )
 				case KEYS.ESCAPE:
 					overlay.remove();
 					this.remove();
-					getModule('Engine/GameEngine').reload();
+					getModule('engine/GameEngine').reload();
 			}
 		};
 
@@ -170,13 +170,13 @@ define(function( require )
 	 * @param {string} button name
 	 * @param {function} callback once the button is pressed
 	 */
-	UIManager.showMessageBox = function showMessageBox( text, btn_name, callback, keydown )
+	UIManager.showMessageBox = function showMessageBox( text, btnName, callback, keydown )
 	{
 		var WinMSG;
 
 		// Create popup
 		WinMSG = this.getComponent('WinPopup').clone('WinMSG');
-		WinMSG.init = function Init()
+		WinMSG.init = function init()
 		{
 			this.draggable();
 			this.ui.find('.text').text(text);
@@ -187,13 +187,13 @@ define(function( require )
 			});
 
 			// Just button
-			if (btn_name) {
+			if (btnName) {
 				WinMSG.ui.find('.btns').append(
 					jQuery('<button/>').
 						addClass('btn').
-						data('background', 'btn_' + btn_name + '.bmp').
-						data('hover',      'btn_' + btn_name + '_a.bmp').
-						data('down',       'btn_' + btn_name + '_b.bmp').
+						data('background', 'btn_' + btnName + '.bmp').
+						data('hover',      'btn_' + btnName + '_a.bmp').
+						data('down',       'btn_' + btnName + '_b.bmp').
 						one('click', function(){
 							WinMSG.remove();
 							if (callback) {
@@ -207,7 +207,7 @@ define(function( require )
 
 
 		// Just keydown
-		if (!btn_name || keydown) {
+		if (!btnName || keydown) {
 			WinMSG.onKeyDown = function(event){
 				switch (event.which) {
 					case KEYS.ENTER:
@@ -242,12 +242,12 @@ define(function( require )
 	 * @param {function} callback when ok is pressed
 	 * @param {function} callback when cancel is pressed
 	 */
-	UIManager.showPromptBox = function showPromptBox( text, btn_yes, btn_no, onYes, onNo )
+	UIManager.showPromptBox = function showPromptBox( text, btnAccept, btnCancel, onAccept, onCancel )
 	{
 		var WinPrompt;
 	
 		WinPrompt = this.getComponent('WinPopup').clone('WinPrompt');
-		WinPrompt.init = function Init()
+		WinPrompt.init = function init()
 		{
 			this.draggable();
 			this.ui.find('.text').text(text);
@@ -260,26 +260,26 @@ define(function( require )
 
 				jQuery('<button/>').
 					addClass('btn').
-					data('background', 'btn_' + btn_yes + '.bmp').
-					data('hover',      'btn_' + btn_yes + '_a.bmp').
-					data('down',       'btn_' + btn_yes + '_b.bmp').
+					data('background', 'btn_' + btnAccept + '.bmp').
+					data('hover',      'btn_' + btnAccept + '_a.bmp').
+					data('down',       'btn_' + btnAccept + '_b.bmp').
 					one('click',function(){
 						WinPrompt.remove();
-						if (onYes) {
-							onYes();
+						if (onAccept) {
+							onAccept();
 						}
 					}).
 					each( this.parseHTML ),
 
 				jQuery('<button/>').
 					addClass('btn').
-					data('background', 'btn_' + btn_no + '.bmp').
-					data('hover',      'btn_' + btn_no + '_a.bmp').
-					data('down',       'btn_' + btn_no + '_b.bmp').
+					data('background', 'btn_' + btnCancel + '.bmp').
+					data('hover',      'btn_' + btnCancel + '_a.bmp').
+					data('down',       'btn_' + btnCancel + '_b.bmp').
 					one('click',function(){
 						WinPrompt.remove();
-						if (onNo) {
-							onNo();
+						if (onCancel) {
+							onCancel();
 						}
 					}).
 					each( this.parseHTML )

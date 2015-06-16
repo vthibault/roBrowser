@@ -1,5 +1,5 @@
 /**
- * DB/Items/EquipmentLocation.js
+ * db/items/EquipmentLocation.js
  *
  * Location constant table
  *

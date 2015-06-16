@@ -15,9 +15,9 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
-	var jQuery             = require('Utils/jquery');
-	var KEYS               = require('Controls/KeyEventHandler');
-	var Renderer           = require('Renderer/Renderer');
+	var jQuery             = require('utils/jquery');
+	var KEYS               = require('controls/KeyEventHandler');
+	var Renderer           = require('renderer/Renderer');
 	var UIManager          = require('UI/UIManager');
 	var UIComponent        = require('UI/UIComponent');
 	var htmlText           = require('text!./NpcMenu.html');
@@ -151,7 +151,7 @@ define(function(require)
 	 * @param {string} menu
 	 * @param {number} gid - npc id
 	 */
-	NpcMenu.setMenu = function SetMenu( menu, gid )
+	NpcMenu.setMenu = function setMenu( menu, gid )
 	{
 		var content, list;
 		var i, j, count;
@@ -233,7 +233,7 @@ define(function(require)
 	/**
 	 * Abstract callback to define
 	 */
-	NpcMenu.onSelectMenu = function OnSelectMenu(/*gid, index*/){};
+	NpcMenu.onSelectMenu = function onSelectMenu(/*gid, index*/){};
 
 
 	/**

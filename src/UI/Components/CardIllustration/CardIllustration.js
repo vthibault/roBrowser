@@ -15,8 +15,8 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
-	var DB                 = require('DB/DBManager');
-	var Client             = require('Core/Client');
+	var DB                 = require('db/DBManager');
+	var Client             = require('core/Client');
 	var UIManager          = require('UI/UIManager');
 	var UIComponent        = require('UI/UIComponent');
 	var htmlText           = require('text!./CardIllustration.html');

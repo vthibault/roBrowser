@@ -13,12 +13,12 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
-	var DB                 = require('DB/DBManager');
-	var jQuery             = require('Utils/jquery');
-	var Client             = require('Core/Client');
-	var Preferences        = require('Core/Preferences');
-	var Renderer           = require('Renderer/Renderer');
-	var Mouse              = require('Controls/MouseEventHandler');
+	var DB                 = require('db/DBManager');
+	var jQuery             = require('utils/jquery');
+	var Client             = require('core/Client');
+	var Preferences        = require('core/Preferences');
+	var Renderer           = require('renderer/Renderer');
+	var Mouse              = require('controls/MouseEventHandler');
 	var UIManager          = require('UI/UIManager');
 	var UIComponent        = require('UI/UIComponent');
 	var InputBox           = require('UI/Components/InputBox/InputBox');
@@ -85,7 +85,7 @@ define(function(require)
 	/**
 	 * Initialize UI
 	 */
-	Storage.init = function Init()
+	Storage.init = function init()
 	{
 		// Bind buttons
 		this.ui.find('.tabs button').mousedown(onSwitchTab);
@@ -387,7 +387,7 @@ define(function(require)
 		if (item.count > 1) {
 			InputBox.append();
 			InputBox.setType('number', false, item.count);
-			InputBox.onSubmitRequest = function OnSubmitRequest( count ) {
+			InputBox.onSubmitRequest = function onSubmitRequest( count ) {
 				InputBox.remove();
 				Storage.reqAddItem(
 					item.index,

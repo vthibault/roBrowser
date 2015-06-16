@@ -1,5 +1,5 @@
 /**
- * Renderer/Effects/LockOnTarget.js
+ * renderer/Effects/LockOnTarget.js
  *
  * Rendering casting on ground (rotating plane)
  *
@@ -13,10 +13,10 @@ define(function( require ) {
 
 
 	// Load dependencies
-	var WebGL    = require('Utils/WebGL');
-	var Texture  = require('Utils/Texture');
-	var glMatrix = require('Utils/gl-matrix');
-	var Client   = require('Core/Client');
+	var WebGL    = require('utils/WebGL');
+	var Texture  = require('utils/Texture');
+	var glMatrix = require('utils/gl-matrix');
+	var Client   = require('core/Client');
 
 
 	/**

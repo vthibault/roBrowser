@@ -1,5 +1,5 @@
 /**
- * Preferences/BattleMode.js
+ * preferences/BattleMode.js
  *
  * BattleMode preferences
  *
@@ -7,7 +7,7 @@
  *
  * @author Vincent Thibault
  */
-define( ['Core/Preferences', 'Controls/KeyEventHandler'], function( Preferences, KEYS )
+define( ['core/Preferences', 'controls/KeyEventHandler'], function( Preferences, KEYS )
 {
 	'use strict';
 

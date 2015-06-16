@@ -1,5 +1,5 @@
 /**
- * DB/Items/ItemType.js
+ * db/items/ItemType.js
  *
  * Item type constant
  *

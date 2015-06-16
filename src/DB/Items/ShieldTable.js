@@ -1,5 +1,5 @@
 /**
- * DB/Items/ShieldTable.js
+ * db/items/ShieldTable.js
  *
  * Shield view id table
  *

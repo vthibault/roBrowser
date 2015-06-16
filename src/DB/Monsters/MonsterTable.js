@@ -1,5 +1,5 @@
 /**
- * DB/Monsters/MonsterTable.js
+ * db/monsters/MonsterTable.js
  *
  * Monster Table ID
  *

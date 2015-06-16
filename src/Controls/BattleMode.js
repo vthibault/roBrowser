@@ -1,5 +1,5 @@
 /**
- * Controls/BattleMode.js
+ * controls/BattleMode.js
  *
  * Manage the battle mode
  *
@@ -15,8 +15,8 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
-	var KEYS        = require('Controls/KeyEventHandler');
-	var Preferences = require('Preferences/BattleMode');
+	var KEYS        = require('controls/KeyEventHandler');
+	var Preferences = require('preferences/BattleMode');
 	var UIManager   = require('UI/UIManager');
 
 

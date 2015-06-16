@@ -1,5 +1,5 @@
 /**
- * Engine/MapEngine/NPC.js
+ * engine/Mapengine/NPC.js
  *
  * Manage Entity based on received packets from server
  *
@@ -16,15 +16,15 @@ define(function( require )
 	/**
 	 * Load dependencies
 	 */
-	var jQuery        = require('Utils/jquery');
-	var DB            = require('DB/DBManager');
-	var Sound         = require('Audio/SoundManager');
-	var BGM           = require('Audio/BGM');
-	var Client        = require('Core/Client');
-	var Session       = require('Engine/SessionStorage');
-	var Network       = require('Network/NetworkManager');
-	var PACKET        = require('Network/PacketStructure');
-	var Renderer      = require('Renderer/Renderer');
+	var jQuery        = require('utils/jquery');
+	var DB            = require('db/DBManager');
+	var Sound         = require('audio/soundManager');
+	var BGM           = require('audio/BGM');
+	var Client        = require('core/Client');
+	var Session       = require('engine/SessionStorage');
+	var Network       = require('network/networkManager');
+	var PACKET        = require('network/packets/structureTable');
+	var Renderer      = require('renderer/Renderer');
 	var NpcBox        = require('UI/Components/NpcBox/NpcBox');
 	var InputBox      = require('UI/Components/InputBox/InputBox');
 	var NpcMenu       = require('UI/Components/NpcMenu/NpcMenu');
@@ -126,12 +126,12 @@ define(function( require )
 		var type = pkt instanceof PACKET.ZC.OPEN_EDITDLGSTR ? 'text' : 'number';
 		var id = pkt.NAID;
 
-		InputBox.onAppend = function OnAppend()
+		InputBox.onAppend = function onAppend()
 		{
 			InputBox.setType(type, true);
 		};
 
-		InputBox.onSubmitRequest = function OnSubmitRequest( data )
+		InputBox.onSubmitRequest = function onSubmitRequest( data )
 		{
 			InputBox.remove();
 			var pkt;
@@ -166,7 +166,7 @@ define(function( require )
 		var WinDeal = WinPopup.clone('WinDeal');
 		var NAID    = pkt.NAID;
 
-		WinDeal.init = function Init()
+		WinDeal.init = function init()
 		{
 			this.draggable();
 			this.ui.find('.text').text( DB.getMessage(92) );
@@ -431,7 +431,7 @@ define(function( require )
 	/**
 	 * Initialize
 	 */
-	return function NPCEngine()
+	return function npcEngine()
 	{
 		Network.hookPacket( PACKET.ZC.SAY_DIALOG,      onMessage );
 		Network.hookPacket( PACKET.ZC.WAIT_DIALOG,     onNextAppear );

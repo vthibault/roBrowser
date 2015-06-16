@@ -1,5 +1,5 @@
 /**
-* DB/Items/HatTable.js
+* db/items/HatTable.js
 *
 * This file is part of ROBrowser, Ragnarok Online in the Web Browser (http://www.robrowser.com/).
 *

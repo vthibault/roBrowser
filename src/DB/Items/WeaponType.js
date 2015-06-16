@@ -1,5 +1,5 @@
 /**
- * DB/Items/WeaponType.js
+ * db/items/WeaponType.js
  *
  * Weapon type table
  *

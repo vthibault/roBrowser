@@ -1,5 +1,5 @@
 /**
- * Renderer/EntityAttachments.js
+ * renderer/EntityAttachments.js
  *
  * Helper to manage entity's attachment
  *
@@ -7,7 +7,7 @@
  *
  * @author Vincent Thibault
  */
-define(['Core/Client', 'Renderer/Renderer', 'Renderer/SpriteRenderer', 'Renderer/Camera'],
+define(['core/Client', 'renderer/Renderer', 'renderer/SpriteRenderer', 'renderer/Camera'],
 function(     Client,            Renderer,            SpriteRenderer,            Camera )
 {
 	'use strict';
@@ -54,7 +54,7 @@ function(     Client,            Renderer,            SpriteRenderer,           
 		// Start rendering once sprite is loaded
 		Client.loadFile(attachment.spr, function onLoad() {
 			this.list.push(attachment);
-		}.bind(this), null, {to_rgba:true});
+		}.bind(this), null, {toRgba:true});
 	};
 
 
@@ -91,7 +91,7 @@ function(     Client,            Renderer,            SpriteRenderer,           
 		this.list.splice(index, 1);
 
 		// Is effect and no attachment, clean up
-		if (this.list.length === 0 && this.entity.objecttype === this.entity.constructor.TYPE_EFFECT) {
+		if (this.list.length === 0 && this.entity.objecttype === this.entity.constructor.Type.EFFECT) {
 			this.entity.remove();
 		}
 	};

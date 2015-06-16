@@ -1,5 +1,5 @@
 /**
- * Engine/MapEngine/ChatRoom.js
+ * engine/Mapengine/ChatRoom.js
  *
  * Chat Room Handler
  *
@@ -15,14 +15,14 @@ define(function( require )
 	/**
 	 * Load dependencies
 	 */
-	var DB              = require('DB/DBManager');
-	var Network			= require('Network/NetworkManager');
-	var PACKET			= require('Network/PacketStructure');
-	var EntityManager   = require('Renderer/EntityManager');
+	var DB              = require('db/DBManager');
+	var Network			= require('network/networkManager');
+	var PACKET			= require('network/packets/structureTable');
+	var EntityManager   = require('renderer/EntityManager');
 	var ChatRoomCreate	= require('UI/Components/ChatRoomCreate/ChatRoomCreate');
 	var ChatRoom		= require('UI/Components/ChatRoom/ChatRoom');
 	var ChatBox         = require('UI/Components/ChatBox/ChatBox');
-	var Session         = require('Engine/SessionStorage');
+	var Session         = require('engine/SessionStorage');
 
 
 	/**
@@ -114,17 +114,17 @@ define(function( require )
 				ChatRoom.owner   = Session.Entity.display.name;
 				ChatRoom.append();
 
-				ChatBox.addText( DB.getMessage(64), ChatBox.TYPE.BLUE );
+				ChatBox.addText( DB.getMessage(64), ChatBox.Type.BLUE );
 				break;
 
 			// Room limit exceeded
 			case 1:
-				ChatBox.addText( DB.getMessage(65), ChatBox.TYPE.ERROR );
+				ChatBox.addText( DB.getMessage(65), ChatBox.Type.ERROR );
 				break;
 
 			// Same room already exists
 			case 2:
-				ChatBox.addText( DB.getMessage(66), ChatBox.TYPE.ERROR );
+				ChatBox.addText( DB.getMessage(66), ChatBox.Type.ERROR );
 				break;
 		}
 	}
@@ -157,7 +157,7 @@ define(function( require )
 			case 7: error = 434; break;
 		}
 		
-		ChatBox.addText( DB.getMessage(error), ChatBox.TYPE.ERROR );
+		ChatBox.addText( DB.getMessage(error), ChatBox.Type.ERROR );
 
 	}
 
@@ -269,7 +269,7 @@ define(function( require )
 	/**
 	 * Initialize
 	 */
-	return function MainEngine()
+	return function mainEngine()
 	{
 		Network.hookPacket(PACKET.ZC.ACK_CREATE_CHATROOM, onCreateRoomResult);
 		//Network.hookPacket(PACKET.ZC.ROOM_NEWENTRY,     Display); //This is holded up at Entity.js

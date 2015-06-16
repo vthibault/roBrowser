@@ -1,5 +1,5 @@
 /**
- * Renderer/Effects/Sky.js
+ * renderer/Effects/Sky.js
  *
  * Rendering blue sky effects
  * TODO: Create a particle class to manage the process
@@ -16,12 +16,12 @@ define(function( require )
 	/**
 	 * Load dependencies
 	 */
-	var WebGL          = require('Utils/WebGL');
-	var WeatherTable   = require('DB/Effects/WeatherEffect');
-	var Client         = require('Core/Client');
-	var Session        = require('Engine/SessionStorage');
-	var SpriteRenderer = require('Renderer/SpriteRenderer');
-	var vec3           = require('Utils/gl-matrix').vec3;
+	var WebGL          = require('utils/WebGL');
+	var WeatherTable   = require('db/effects/WeatherEffect');
+	var Client         = require('core/Client');
+	var Session        = require('engine/SessionStorage');
+	var SpriteRenderer = require('renderer/SpriteRenderer');
+	var vec3           = require('utils/gl-matrix').vec3;
 
 
 	/**
@@ -119,14 +119,14 @@ define(function( require )
 				_clouds[i] = {
 					position:   vec3.create(),
 					direction:  vec3.create(),
-					born_tick:  0,
-					death_tick: 0
+					bornTick:  0,
+					deathTick: 0
 				};
 			}
 			cloudInit(_clouds[i]);
 			_clouds[i].sprite     = (Math.random()*(_textures.length-1)) | 0;
-			_clouds[i].death_tick = _clouds[i].born_tick + Math.random()*8000;
-			_clouds[i].born_tick  -= 2000;
+			_clouds[i].deathTick  = _clouds[i].bornTick + Math.random()*8000;
+			_clouds[i].bornTick  -= 2000;
 		}
 
 		// Sort by textures
@@ -151,8 +151,8 @@ define(function( require )
 		cloud.direction[1] = Math.random()*0.02  - 0.01;
 		cloud.direction[2] = Math.random()*0.002 - 0.001;
 
-		cloud.born_tick    = cloud.death_tick ? cloud.death_tick + 2000 : Date.now();
-		cloud.death_tick   = cloud.born_tick + 6000;
+		cloud.bornTick     = cloud.deathTick ? cloud.deathTick + 2000 : Date.now();
+		cloud.deathTick    = cloud.bornTick + 6000;
 	}
 
 
@@ -193,19 +193,19 @@ define(function( require )
 			cloud = _clouds[i];
 
 			// Appear
-			if (cloud.born_tick + 1000 > tick) {
-				opacity = (tick - cloud.born_tick) / 1000;
+			if (cloud.bornTick + 1000 > tick) {
+				opacity = (tick - cloud.bornTick) / 1000;
 			}
 
 			// Remove
-			else if (cloud.death_tick + 2000 < tick) {
+			else if (cloud.deathTick + 2000 < tick) {
 				cloudInit(cloud);
 				opacity = 0.0;
 			}
 
 			// Disapear
-			else if (cloud.death_tick < tick) {
-				opacity = 1.0 - (tick - cloud.death_tick) / 2000;
+			else if (cloud.deathTick < tick) {
+				opacity = 1.0 - (tick - cloud.deathTick) / 2000;
 			}
 
 			// Default

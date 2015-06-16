@@ -1,5 +1,5 @@
 /**
- * DB/Jobs/HairIndexTable.js
+ * db/jobs/HairIndexTable.js
  *
  * The client is using a look up table to find the correct hair style based on an ID
  *

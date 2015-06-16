@@ -1,5 +1,5 @@
 /**
- * Renderer/ItemObject.js
+ * renderer/ItemObject.js
  *
  * Manage Items in ground
  *
@@ -7,7 +7,7 @@
  *
  * @author Vincent Thibault
  */
-define(['DB/DBManager', './EntityManager', './Entity/Entity', 'Renderer/Map/Altitude'],
+define(['db/DBManager', './EntityManager', './Entity/Entity', 'renderer/Map/Altitude'],
 function(   DB,            EntityManager,            Entity,                Altitude)
 {
 	'use strict';
@@ -32,12 +32,12 @@ function(   DB,            EntityManager,            Entity,                Alti
 		var name   = identify ? it.identifiedDisplayName : it.unidentifiedDisplayName;
 
 		entity.GID          = gid;
-		entity.objecttype   = Entity.TYPE_ITEM;
+		entity.objecttype   = Entity.Type.ITEM;
 		entity.position[0]  = x;
 		entity.position[1]  = y;
 		entity.position[2]  = z;
 
-		entity.display.load = entity.display.TYPE.COMPLETE;
+		entity.display.load = entity.display.Type.COMPLETE;
 		entity.display.name = DB.getMessage(183).replace('%s', name).replace('%d', count);
 		entity.display.update('#FFEF94');
 

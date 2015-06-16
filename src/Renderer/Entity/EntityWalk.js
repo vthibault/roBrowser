@@ -1,5 +1,5 @@
 /**
- * Renderer/EntityWalk.js
+ * renderer/EntityWalk.js
  *
  * Manage entity walking action
  *
@@ -14,9 +14,9 @@ define( function( require )
 	/**
 	 *  Load dependencies
 	 */
-	var PathFinding = require('Utils/PathFinding');
-	var Renderer    = require('Renderer/Renderer');
-	var Altitude    = require('Renderer/Map/Altitude');
+	var PathFinding = require('utils/PathFinding');
+	var Renderer    = require('renderer/Renderer');
+	var Altitude    = require('renderer/Map/Altitude');
 
 
 	/**
@@ -38,7 +38,7 @@ define( function( require )
 		this.tick  =  0;
 		this.path  =  new Int16Array(32*2);
 		this.pos   =  new Float32Array(3);
-		this.onEnd = null;
+		this.onEnd =  null;
 		this.index =  0;
 		this.total =  0;
 	}
@@ -47,16 +47,16 @@ define( function( require )
 	/**
 	 * Want to move to a cell
 	 *
-	 * @param {number} from_x
-	 * @param {number} from_y
-	 * @param {number} to_x
-	 * @param {number} to_y
+	 * @param {number} from x
+	 * @param {number} from y
+	 * @param {number} to x
+	 * @param {number} to y
 	 * @param {number} range optional
 	 */
-	function walkTo( from_x, from_y, to_x, to_y, range )
+	function walkTo( fromX, fromY, toX, toY, range )
 	{
 		var path  = this.walk.path;
-		var total = PathFinding.search( from_x | 0, from_y | 0, to_x | 0, to_y | 0, range || 0, path);
+		var total = PathFinding.search( fromX | 0, fromY | 0, toX | 0, toY | 0, range || 0, path);
 
 		this.walk.index =     1 * 2; // skip first index
 		this.walk.total = total * 2;
@@ -64,8 +64,8 @@ define( function( require )
 		if (total) {
 			// Same position
 			if (total === 2 &&
-				path[this.walk.index+0] === from_x &&
-				path[this.walk.index+1] === from_y){
+				path[this.walk.index+0] === fromX &&
+				path[this.walk.index+1] === fromY){
 				return;
 			}
 
@@ -169,7 +169,7 @@ define( function( require )
 	/**
 	 * Initialize and export methods
 	 */
-	return function Init()
+	return function init()
 	{
 		this.onWalkEnd   = function onWalkEnd(){};
 		this.walk        = new WalkStructure();

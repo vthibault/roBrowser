@@ -15,14 +15,14 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
-	var DB                 = require('DB/DBManager');
-	var MonsterTable       = require('DB/Monsters/MonsterTable');
-	var Preferences        = require('Core/Preferences');
-	var KEYS               = require('Controls/KeyEventHandler');
-	var Renderer           = require('Renderer/Renderer');
-	var Entity             = require('Renderer/Entity/Entity');
-	var SpriteRenderer     = require('Renderer/SpriteRenderer');
-	var Camera             = require('Renderer/Camera');
+	var DB                 = require('db/DBManager');
+	var MonsterTable       = require('db/monsters/MonsterTable');
+	var Preferences        = require('core/Preferences');
+	var KEYS               = require('controls/KeyEventHandler');
+	var Renderer           = require('renderer/Renderer');
+	var Entity             = require('renderer/Entity/Entity');
+	var SpriteRenderer     = require('renderer/SpriteRenderer');
+	var Camera             = require('renderer/Camera');
 	var UIManager          = require('UI/UIManager');
 	var UIComponent        = require('UI/UIComponent');
 	var htmlText           = require('text!./CharSelect.html');
@@ -88,7 +88,7 @@ define(function(require)
 	/**
 	 * Initialize UI
 	 */
-	CharSelect.init = function Init()
+	CharSelect.init = function init()
 	{
 		var ui = this.ui;
 
@@ -237,7 +237,7 @@ define(function(require)
 	 *
 	 * @param {number} error id
 	 */
-	CharSelect.deleteAnswer = function DeleteAnswer( error )
+	CharSelect.deleteAnswer = function deleteAnswer( error )
 	{
 		this.on('keydown');
 

@@ -1,5 +1,5 @@
 /**
- * Network/PacketVerManager.js
+ * network/PacketVerManager.js
  *
  * Manager to find the server protocol
  *
@@ -8,7 +8,7 @@
  * @author Vincent Thibault
  */
 
-define(['Core/Configs'], function( Configs )
+define(['core/Configs'], function( Configs )
 {
 	"use strict";
 
@@ -207,7 +207,7 @@ define(['Core/Configs'], function( Configs )
 			}
 
 			if (blockSize === 116) {
-				fp.seek(0x04, SEEK_CUR); // unknown
+				fp.seek(0x04, fp.constructor.Seek.CUR); // unknown
 			}
 
 			if (blockSize >= 124) {
@@ -266,6 +266,22 @@ define(['Core/Configs'], function( Configs )
 
 
 	/**
+	 * Loading packets table
+	 */
+	function init( versions ) {
+		var i, count;
+		var keys;
+
+		keys  = Object.keys(versions);
+		count = keys.length;
+
+		for (i = 0; i < count; ++i) {
+			addSupport( keys[i], versions[ keys[i] ] );
+		}
+	}
+
+
+	/**
 	 * Export
 	 */
 	return {
@@ -283,6 +299,7 @@ define(['Core/Configs'], function( Configs )
 
 		// Add support for packet version
 		addSupport:    addSupport,
-		parseCharInfo: parseCharList
+		parseCharInfo: parseCharList,
+		init:          init
 	};
 });

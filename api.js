@@ -34,7 +34,7 @@
 	/**
 	 * @Enum Robrowser type
 	 */
-	ROBrowser.TYPE = {
+	ROBrowser.Type = {
 		POPUP:  1,
 		FRAME:  2
 	};
@@ -43,7 +43,7 @@
 	/**
 	 * @Enum Robrowser Applications
 	 */
-	ROBrowser.APP = {
+	ROBrowser.App = {
 		ONLINE:      1,
 		MAPVIEWER:   2,
 		GRFVIEWER:   3,
@@ -120,20 +120,20 @@
 
 
 	/**
-	 * @var {constant} application name (see: ROBrowser.APP.* )
+	 * @var {constant} application name (see: ROBrowser.App.* )
 	 *
 	 * Known applications:
-	 *   a) ROBrowser.APP.ONLINE    - RoBrowser online mode
-	 *   b) ROBrowser.APP.GRFVIEWER - parse and visualize GRF contents
-	 *   c) ROBrowser.APP.MAPVIEWER - parse and visualize maps
+	 *   a) ROBrowser.App.ONLINE    - RoBrowser online mode
+	 *   b) ROBrowser.App.GRFVIEWER - parse and visualize GRF contents
+	 *   c) ROBrowser.App.MAPVIEWER - parse and visualize maps
 	 */
-	ROBrowser.prototype.application = ROBrowser.APP.ONLINE;
+	ROBrowser.prototype.application = ROBrowser.App.ONLINE;
 
 
 	/**
-	 * @var {constant} container type (see: ROBrowser.TYPE.POPUP)
+	 * @var {constant} container type (see: ROBrowser.Type.POPUP)
 	 */
-	ROBrowser.prototype.type = ROBrowser.TYPE.POPUP;
+	ROBrowser.prototype.type = ROBrowser.Type.POPUP;
 
 
 	/**
@@ -258,16 +258,16 @@
 	/**
 	 * Start ROBrowser Instance
 	 */
-	ROBrowser.prototype.start = function Start()
+	ROBrowser.prototype.start = function start()
 	{
 		switch (this.type) {
 
 			// Create Popup
-			case ROBrowser.TYPE.POPUP:
+			case ROBrowser.Type.POPUP:
 				this.width  = this.width  || '800';
 				this.height = this.height || '600';
 
-				this._APP = window.open(
+				this._app = window.open(
 					this.baseUrl + '?' + this.version,
 					'_blank',
 					[
@@ -288,7 +288,7 @@
 				break;
 
 			// Append ROBrowser to an element
-			case ROBrowser.TYPE.FRAME:
+			case ROBrowser.Type.FRAME:
 				this.width  = this.width  || '100%';
 				this.height = this.height || '100%';
 
@@ -309,41 +309,41 @@
 					this.target.appendChild(frame);
 				}
 
-				this._APP = frame.contentWindow;
+				this._app = frame.contentWindow;
 				break;
 		}
 
 
 		// Get back application name
 		switch (this.application) {
-			case ROBrowser.APP.ONLINE:
-				this.application = 'Online';
+			case ROBrowser.App.ONLINE:
+				this.application = 'online';
 				break;
 
-			case ROBrowser.APP.MAPVIEWER:
-				this.application = 'MapViewer';
+			case ROBrowser.App.MAPVIEWER:
+				this.application = 'mapViewer';
 				break;
 
-			case ROBrowser.APP.GRFVIEWER:
-				this.application = 'GrfViewer';
+			case ROBrowser.App.GRFVIEWER:
+				this.application = 'grfViewer';
 				break;
 
-			case ROBrowser.APP.MODELVIEWER:
-				this.application = 'ModelViewer';
+			case ROBrowser.App.MODELVIEWER:
+				this.application = 'modelViewer';
 				break;
 
-			case ROBrowser.APP.STRVIEWER:
-				this.application = 'StrViewer';
+			case ROBrowser.App.STRVIEWER:
+				this.application = 'strViewer';
 				break;
 		}
 
 
 		// Wait for robrowser to be ready
 		var _this = this;
-		function OnMessage( event ) {
+		function onMessage( event ) {
 			if (_this.baseUrl.indexOf(event.origin) === 0) {
 				clearInterval( _this._Interval );
-				window.removeEventListener( 'message', OnMessage, false );
+				window.removeEventListener( 'message', onMessage, false );
 
 				if (_this.onReady) {
 					_this.onReady();
@@ -352,8 +352,8 @@
 		}
 
 		// Start waiting for robrowser
-		this._Interval = setInterval( WaitForInitialization.bind(this), 100 );
-		window.addEventListener('message', OnMessage, false );
+		this._Interval = setInterval( waitForInitialization.bind(this), 100 );
+		window.addEventListener('message', onMessage, false );
 	};
 
 
@@ -361,9 +361,9 @@
 	 * Spam the window until there is an answer
 	 * No onload event from external iframe/popup
 	 */
-	function WaitForInitialization()
+	function waitForInitialization()
 	{
-		this._APP.postMessage({
+		this._app.postMessage({
 			application:      this.application,
 			servers:          this.servers,
 			grfList:          this.grfList,

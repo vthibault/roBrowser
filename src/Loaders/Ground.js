@@ -1,5 +1,5 @@
 /**
- * Loaders/Ground.js
+ * loaders/Ground.js
  *
  * Loaders for Gravity .gnd file (Ground)
  *
@@ -8,7 +8,7 @@
  * @author Vincent Thibault
  */
 
-define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMatrix )
+define( ['utils/BinaryReader', 'utils/gl-matrix'], function( BinaryReader, glMatrix )
 {
 	'use strict';
 
@@ -25,7 +25,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 	 *
 	 * @param {ArrayBuffer} data - optional
 	 */
-	function GND( data )
+	function GndReader( data )
 	{
 		if (data) {
 			this.load(data);
@@ -38,7 +38,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 	 *
 	 * @param {ArrayBuffer} data
 	 */
-	GND.prototype.load = function load( data )
+	GndReader.prototype.load = function load( data )
 	{
 		this.fp     = new BinaryReader(data);
 		var header  = this.fp.readBinaryString(4);
@@ -63,7 +63,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 	/**
 	 * Loading textures
 	 */
-	GND.prototype.parseTextures = function parseTextures()
+	GndReader.prototype.parseTextures = function parseTextures()
 	{
 		var i, j, pos, count, length;
 		var textures, indexes;
@@ -97,23 +97,23 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 	 *
 	 * @return lightmap[][]
 	 */
-	GND.prototype.parseLightmaps = function parseLightmaps()
+	GndReader.prototype.parseLightmaps = function parseLightmaps()
 	{
 		// Load info
-		var fp         = this.fp;
-		var count      = fp.readULong();
-		var per_cell_x = fp.readLong();
-		var per_cell_y = fp.readLong();
-		var size_cell  = fp.readLong();
-		var per_cell   = per_cell_x * per_cell_y * size_cell;
+		var fp       = this.fp;
+		var count    = fp.readULong();
+		var perCellX = fp.readLong();
+		var perCellY = fp.readLong();
+		var sizeCell = fp.readLong();
+		var perCell  = perCellX * perCellY * sizeCell;
 
 		this.lightmap = {
-			per_cell: per_cell,
-			count:    count,
-			data:     new Uint8Array(fp.buffer, fp.offset, count * per_cell * 4)
+			perCell: perCell,
+			count:   count,
+			data:    new Uint8Array(fp.buffer, fp.offset, count * perCell * 4)
 		};
 
-		fp.seek( count * per_cell * 4, SEEK_CUR);
+		fp.seek( count * perCell * 4, BinaryReader.Seek.CUR);
 	};
 
 
@@ -122,7 +122,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 	 *
 	 * @return Tiles[]
 	 */
-	GND.prototype.parseTiles = function parseTiles()
+	GndReader.prototype.parseTiles = function parseTiles()
 	{
 		var i, count;
 		var tiles;
@@ -141,7 +141,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 		var ATLAS_PX_U         = 1/258;
 		var ATLAS_PX_V         = 1/258;
 
-		function ATLAS_GENERATE(tile) {
+		function generateAtlas(tile) {
 			var u   = tile.texture % ATLAS_COLS;
 			var v   = Math.floor(tile.texture / ATLAS_COLS);
 			tile.u1 = (u + tile.u1 * (1-ATLAS_PX_U*2) + ATLAS_PX_U) * ATLAS_FACTOR_U / ATLAS_COLS;
@@ -172,7 +172,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 			// Generate texture atlas only if having texture on the cell.
 			if (tiles[i].texture > -1) {
 				tiles[i].texture = this.textureIndexes[tiles[i].texture];
-				ATLAS_GENERATE(tiles[i]);
+				generateAtlas(tiles[i]);
 			}
 		}
 
@@ -185,7 +185,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 	 *
 	 * @return Surfaces[]
 	 */
-	GND.prototype.parseSurfaces = function parseSurfaces()
+	GndReader.prototype.parseSurfaces = function parseSurfaces()
 	{
 		var i, count;
 		var surfaces;
@@ -196,10 +196,10 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 
 		for (i = 0; i < count; ++i) {
 			surfaces[i] = {
-				height:   [ fp.readFloat()/5, fp.readFloat()/5, fp.readFloat()/5, fp.readFloat()/5 ],
-				tile_up:    fp.readLong(),
-				tile_front: fp.readLong(),
-				tile_right: fp.readLong()
+				height:  [ fp.readFloat()/5, fp.readFloat()/5, fp.readFloat()/5, fp.readFloat()/5 ],
+				tileUp:    fp.readLong(),
+				tileFront: fp.readLong(),
+				tileRight: fp.readLong()
 			};
 		}
 
@@ -212,15 +212,15 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 	 *
 	 * @return {Uint8Array} pixels
 	 */
-	GND.prototype.createLightmapImage = function createLightmapImage()
+	GndReader.prototype.createLightmapImage = function createLightmapImage()
 	{
-		var i, count, width, height, _width, _height, x, y, _x, _y, idx, pos, per_cell;
+		var i, count, width, height, _width, _height, x, y, _x, _y, idx, pos, perCell;
 		var lightmap, data, out;
 
-		lightmap  = this.lightmap;
-		count     = lightmap.count;
-		data      = lightmap.data;
-		per_cell  = lightmap.per_cell;
+		lightmap = this.lightmap;
+		count    = lightmap.count;
+		data     = lightmap.data;
+		perCell  = lightmap.perCell;
 
 		width     = Math.round( Math.sqrt(count) );
 		height    = Math.ceil(  Math.sqrt(count) );
@@ -230,16 +230,16 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 		out       = new Uint8Array(_width * _height * 4);
 
 		for (i = 0; i < count; ++i) {
-			pos   = i * 4 * per_cell;
+			pos   = i * 4 * perCell;
 			x     = (i % width    ) * 8;
 			y     = (i / width | 0) * 8;
 
 			for (_x = 0; _x < 8; ++_x) {
 				for (_y = 0; _y < 8; ++_y) {
 					idx          = ((x + _x) + (y + _y) * _width) * 4;
-					out[idx + 0] = data[pos + per_cell + (_x + _y * 8) * 3 + 0] >> 4 << 4; // Posterisation
-					out[idx + 1] = data[pos + per_cell + (_x + _y * 8) * 3 + 1] >> 4 << 4; // Posterisation
-					out[idx + 2] = data[pos + per_cell + (_x + _y * 8) * 3 + 2] >> 4 << 4; // Posterisation
+					out[idx + 0] = data[pos + perCell + (_x + _y * 8) * 3 + 0] >> 4 << 4; // Posterisation
+					out[idx + 1] = data[pos + perCell + (_x + _y * 8) * 3 + 1] >> 4 << 4; // Posterisation
+					out[idx + 2] = data[pos + perCell + (_x + _y * 8) * 3 + 2] >> 4 << 4; // Posterisation
 					out[idx + 3] = data[pos + (_x + _y * 8)];
 				}
 			}
@@ -254,7 +254,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 	 *
 	 * @return {Uint8Array} pixels
 	 */
-	GND.prototype.createTilesColorImage = function createTilesColorImage()
+	GndReader.prototype.createTilesColorImage = function createTilesColorImage()
 	{
 		var x, y, width, height;
 		var data, cell, surfaces, tiles;
@@ -270,8 +270,8 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 				cell = surfaces[x + y * width];
 
 				// Check tile up
-				if (cell.tile_up > -1) {
-					data.set(tiles[cell.tile_up].color, (x + y * width) * 4);
+				if (cell.tileUp > -1) {
+					data.set(tiles[cell.tileUp].color, (x + y * width) * 4);
 				}
 			}
 		}
@@ -283,16 +283,16 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 	/**
 	 * Create ShadowMap data (only used to render shadow on Entities)
 	 */
-	GND.prototype.createShadowmapData = function createShadowmapData()
+	GndReader.prototype.createShadowmapData = function createShadowmapData()
 	{
-		var width, height, x, y, i, j, index, per_cell;
+		var width, height, x, y, i, j, index, perCell;
 		var data, out, cell, tiles, surfaces;
 
 		width    = this.width;
 		height   = this.height;
 		out      = new Uint8Array( (width * 8) * (height * 8) );
 		data     = this.lightmap.data;
-		per_cell = this.lightmap.per_cell;
+		perCell  = this.lightmap.perCell;
 		tiles    = this.tiles;
 		surfaces = this.surfaces;
 
@@ -301,8 +301,8 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 
 				cell = surfaces[x + y * width];
 
-				if (cell.tile_up > -1 && tiles[ cell.tile_up ].light > -1) {
-					index = tiles[ cell.tile_up ].light * 4 * per_cell;
+				if (cell.tileUp > -1 && tiles[ cell.tileUp ].light > -1) {
+					index = tiles[ cell.tileUp ].light * 4 * perCell;
 
 					for (i = 0; i < 8; ++i) {
 						for (j = 0; j < 8; ++j) {
@@ -332,7 +332,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 	 *
 	 * @return normals[]
 	 */
-	GND.prototype.getSmoothNormal = function getSmoothNormal()
+	GndReader.prototype.getSmoothNormal = function getSmoothNormal()
 	{
 		var x, y;
 		var surfaces = this.surfaces;
@@ -343,7 +343,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 		var count    = width * height;
 		var tmp      = new Array(count);
 		var normals  = new Array(count);
-		var empty_vec = vec3.create();
+		var emptyVec = vec3.create();
 		var tile, cell;
 
 		// Calculate normal for each cells
@@ -354,8 +354,8 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 
 				// Tile Up
 				if (
-					(cell=surfaces[ x + y * width ]).tile_up > -1 &&
-					(tile=tiles[ cell.tile_up ]).texture > -1
+					(cell=surfaces[ x + y * width ]).tileUp > -1 &&
+					(tile=tiles[ cell.tileUp ]).texture > -1
 				) {
 					a[0] = (x+0)*2;  a[1] = cell.height[0];  a[2] = (y+0)*2;
 					b[0] = (x+1)*2;  b[1] = cell.height[1];  b[2] = (y+0)*2;
@@ -375,30 +375,30 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 
 				// Up Left
 				vec3.add( n[0], n[0], tmp[ ( x + 0 ) + ( y + 0 ) * width ] );
-				vec3.add( n[0], n[0], tmp[ ( x - 1 ) + ( y + 0 ) * width ] || empty_vec );
-				vec3.add( n[0], n[0], tmp[ ( x - 1 ) + ( y - 1 ) * width ] || empty_vec  );
-				vec3.add( n[0], n[0], tmp[ ( x + 0 ) + ( y - 1 ) * width ] || empty_vec  );
+				vec3.add( n[0], n[0], tmp[ ( x - 1 ) + ( y + 0 ) * width ] || emptyVec );
+				vec3.add( n[0], n[0], tmp[ ( x - 1 ) + ( y - 1 ) * width ] || emptyVec  );
+				vec3.add( n[0], n[0], tmp[ ( x + 0 ) + ( y - 1 ) * width ] || emptyVec  );
 				vec3.normalize( n[0], n[0] );
 
 				// Up Right
 				vec3.add( n[1], n[1], tmp[ ( x + 0 ) + ( y + 0 ) * width ] );
-				vec3.add( n[1], n[1], tmp[ ( x + 1 ) + ( y + 0 ) * width ] || empty_vec  );
-				vec3.add( n[1], n[1], tmp[ ( x + 1 ) + ( y - 1 ) * width ] || empty_vec  );
-				vec3.add( n[1], n[1], tmp[ ( x + 0 ) + ( y - 1 ) * width ] || empty_vec  );
+				vec3.add( n[1], n[1], tmp[ ( x + 1 ) + ( y + 0 ) * width ] || emptyVec  );
+				vec3.add( n[1], n[1], tmp[ ( x + 1 ) + ( y - 1 ) * width ] || emptyVec  );
+				vec3.add( n[1], n[1], tmp[ ( x + 0 ) + ( y - 1 ) * width ] || emptyVec  );
 				vec3.normalize( n[1], n[1] );
 
 				// Bottom Right
 				vec3.add( n[2], n[2], tmp[ ( x + 0 ) + ( y + 0 ) * width ] );
-				vec3.add( n[2], n[2], tmp[ ( x + 1 ) + ( y + 0 ) * width ] || empty_vec  );
-				vec3.add( n[2], n[2], tmp[ ( x + 1 ) + ( y + 1 ) * width ] || empty_vec  );
-				vec3.add( n[2], n[2], tmp[ ( x + 0 ) + ( y + 1 ) * width ] || empty_vec  );
+				vec3.add( n[2], n[2], tmp[ ( x + 1 ) + ( y + 0 ) * width ] || emptyVec  );
+				vec3.add( n[2], n[2], tmp[ ( x + 1 ) + ( y + 1 ) * width ] || emptyVec  );
+				vec3.add( n[2], n[2], tmp[ ( x + 0 ) + ( y + 1 ) * width ] || emptyVec  );
 				vec3.normalize( n[2], n[2] );
 
 				// Bottom Left
 				vec3.add( n[3], n[3], tmp[ ( x + 0 ) + ( y + 0 ) * width ] );
-				vec3.add( n[3], n[3], tmp[ ( x - 1 ) + ( y + 0 ) * width ] || empty_vec  );
-				vec3.add( n[3], n[3], tmp[ ( x - 1 ) + ( y + 1 ) * width ] || empty_vec  );
-				vec3.add( n[3], n[3], tmp[ ( x + 0 ) + ( y + 1 ) * width ] || empty_vec  );
+				vec3.add( n[3], n[3], tmp[ ( x - 1 ) + ( y + 0 ) * width ] || emptyVec  );
+				vec3.add( n[3], n[3], tmp[ ( x - 1 ) + ( y + 1 ) * width ] || emptyVec  );
+				vec3.add( n[3], n[3], tmp[ ( x + 0 ) + ( y + 1 ) * width ] || emptyVec  );
 				vec3.normalize( n[3], n[3] );
 
 			}
@@ -415,7 +415,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 	 * @param {number} WATER_HEIGHT
 	 * @return object export
 	 */
-	GND.prototype.compile = function compile(WATER_LEVEL, WATER_HEIGHT)
+	GndReader.prototype.compile = function compile(WATER_LEVEL, WATER_HEIGHT)
 	{
 		// Shortcut access
 		var width    = this.width,    height = this.height;
@@ -439,7 +439,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 		var l_count_h  = Math.ceil( Math.sqrt(this.lightmap.count) );
 		var l_width    = Math.pow( 2, Math.ceil( Math.log(l_count_w*8)/Math.log(2) ) );
 		var l_height   = Math.pow( 2, Math.ceil( Math.log(l_count_h*8)/Math.log(2) ) );
-		function lightmap_atlas(i) {
+		function generateLightmapAtlas(i) {
 			l.u1 = ( ((i % l_count_w    ) + 0.125) / l_count_w ) * ( (l_count_w*8)/l_width  );
 			l.u2 = ( ((i % l_count_w    ) + 0.875) / l_count_w ) * ( (l_count_w*8)/l_width  );
 			l.v1 = ( ((i / l_count_w | 0) + 0.125) / l_count_h ) * ( (l_count_h*8)/l_height );
@@ -455,13 +455,13 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 				h_a    = cell_a.height;
 	
 				// Check tile up
-				if (cell_a.tile_up > -1) {
-					tile = tiles[ cell_a.tile_up ];
+				if (cell_a.tileUp > -1) {
+					tile = tiles[ cell_a.tileUp ];
 	
 					// Check if has texture
 					if (tile.texture > -1) {
 						n = normals[ x + y * width ];
-						lightmap_atlas( tile.light );
+						generateLightmapAtlas( tile.light );
 
 						mesh.push(
 							//      vec3 pos           |        vec3 normals          |     vec2 texcoords     |  vec2 lightcoord  |      vec2 tileCoords
@@ -493,14 +493,14 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 	
 	
 				// Check tile front
-				if (cell_a.tile_front > -1) {
-					tile = tiles[cell_a.tile_front];
+				if (cell_a.tileFront > -1) {
+					tile = tiles[cell_a.tileFront];
 	
 					// Check if has texture
 					if (tile.texture > -1 && surfaces[ x + (y+1) * width ]) {
 						cell_b = surfaces[ x + (y+1) * width ];
 						h_b    = cell_b.height;
-						lightmap_atlas( tile.light );
+						generateLightmapAtlas( tile.light );
 	
 						mesh.push(
 							//      vec3 pos           |  vec3 normals     |    vec2 texcoords      |   vec2 lightcoord  |   vec2 tileCoords
@@ -516,14 +516,14 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 	
 	
 				// Check tile right
-				if (cell_a.tile_right > -1) {
-					tile = tiles[cell_a.tile_right];
+				if (cell_a.tileRight > -1) {
+					tile = tiles[cell_a.tileRight];
 	
 					// Check if has texture
 					if (tile.texture > -1 && surfaces[ (x+1) + y * width ]) {
 						cell_b = surfaces[ (x+1) + y * width ];
 						h_b    = cell_b.height;
-						lightmap_atlas( tile.light );
+						generateLightmapAtlas( tile.light );
 	
 						mesh.push(
 							//      vec3 pos           |  vec3 normals    |    vec2 texcoords      |   vec2 lightcoord   |    vec2 tileCoords
@@ -562,5 +562,5 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 	/**
 	 * Export
 	 */
-	return GND;
+	return GndReader;
 });

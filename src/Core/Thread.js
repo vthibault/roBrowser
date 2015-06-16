@@ -1,5 +1,5 @@
 /**
- * Core/Thread.js
+ * core/Thread.js
  *
  * Client Thread
  * Manage the Client Thread to send data to it (let another Thread do the hard job : loading files, ...)
@@ -10,7 +10,7 @@
  */
 
 
-define(['require', 'Core/Configs'], function( require, Configs )
+define(['require', 'core/Configs'], function( require, Configs )
 {
 	'use strict';
 
@@ -54,11 +54,11 @@ define(['require', 'Core/Configs'], function( require, Configs )
 	 * @param {mixed} data
 	 * @param {function} callback
 	 */
-	var Send = function SendClosure()
+	var send = function sendClosure()
 	{
 		var _input = { type: '', data: null, uid: 0 };
 
-		return function Send( type, data, callback )
+		return function send( type, data, callback )
 		{
 			var uid = 0;
 	
@@ -82,7 +82,7 @@ define(['require', 'Core/Configs'], function( require, Configs )
 	 *
 	 * @param {object} event
 	 */
-	function Receive(event)
+	function onmessage(event)
 	{
 		var uid  = event.data.uid;
 		var type = event.data.type;
@@ -101,12 +101,12 @@ define(['require', 'Core/Configs'], function( require, Configs )
 
 
 	/**
-	 * Hook receive data
+	 * Hook received data
 	 *
 	 * @param {string} type
 	 * @param {function} callback
 	 */
-	function Hook( type, callback )
+	function hook( type, callback )
 	{
 		_hook[type] = callback;
 	}
@@ -118,7 +118,7 @@ define(['require', 'Core/Configs'], function( require, Configs )
 	 * @param {Window} source
 	 * @param {string} origin
 	 */
-	function Delegate( source, origin )
+	function delegate( source, origin )
 	{
 		_source = source;
 		_origin = origin;
@@ -128,7 +128,7 @@ define(['require', 'Core/Configs'], function( require, Configs )
 	/**
 	 * Initialize Thread
 	 */
-	function Init()
+	function init()
 	{
 		if (!_source) {
 			var url = Configs.get('development') ? './ThreadEventHandler.js' : './../../ThreadEventHandler.js';
@@ -137,12 +137,12 @@ define(['require', 'Core/Configs'], function( require, Configs )
 
 		// Worker context
 		if (_source instanceof Worker) {
-			_source.addEventListener('message', Receive, false);
+			_source.addEventListener('message', onmessage, false);
 		}
 
 		// Other frame worker
 		else {
-			window.addEventListener('message', Receive, false );
+			window.addEventListener('message', onmessage, false );
 			_source.postMessage({type:'SYNC'}, _origin );
 		}
 	}
@@ -152,9 +152,9 @@ define(['require', 'Core/Configs'], function( require, Configs )
 	 * Exports
 	 */
 	return {
-		send:     Send,
-		hook:     Hook,
-		init:     Init,
-		delegate: Delegate
+		send:     send,
+		hook:     hook,
+		init:     init,
+		delegate: delegate
 	};
 });

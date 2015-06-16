@@ -1,5 +1,5 @@
 /**
- * Audio/SoundManager.js
+ * audio/soundManager.js
  *
  * Sound Manager
  *
@@ -11,7 +11,7 @@
  * @author Vincent Thibault
  */
 
-define( ['Core/Client', 'Preferences/Audio', 'Core/MemoryManager'],
+define( ['core/Client', 'preferences/Audio', 'core/MemoryManager'],
 function(      Client,          Preferences,              Memory )
 {
 	'use strict';

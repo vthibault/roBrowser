@@ -1,5 +1,5 @@
 /**
- * Core/Preferences.js
+ * core/Preferences.js
  *
  * Store informations in local storage (window position, noctrl, etc.)
  *
@@ -15,12 +15,12 @@ define([ './Context' ], function( Context )
 	var Storage = Context.Is.APP ?
 		window.chrome.storage.local :
 		{
-			get: function Get( key, fn ){
+			get: function get( key, fn ){
 				var out = {};
 				out[key] = localStorage.getItem(key);
 				fn( out );
 			},
-			set: function Set( obj, fn ) {
+			set: function set( obj, fn ) {
 				var keys = Object.keys( obj );
 				var i, count;
 
@@ -44,7 +44,7 @@ define([ './Context' ], function( Context )
 	 */
 	function get( key, def, version )
 	{
-		Storage.get( key, function( value ){
+		Storage.get( key, function onData( value ) {
 			var data, keys;
 			var i, count;
 

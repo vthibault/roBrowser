@@ -1,5 +1,5 @@
 /**
- * Utils/WebGL.js
+ * utils/WebGL.js
  *
  * WebGL Helper function
  *
@@ -10,7 +10,7 @@
  * @author Vincent Thibault
  */
  
-define( ['Utils/Texture'], function( Texture )
+define( ['utils/Texture'], function( Texture )
 {
 	'use strict';
 

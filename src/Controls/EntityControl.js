@@ -1,5 +1,5 @@
 /**
- * Controls/EntityControl.js
+ * controls/EntityControl.js
  *
  * Entity class
  *
@@ -13,17 +13,17 @@ define(function( require )
 
 
 	// Load dependencies
-	var glMatrix    = require('Utils/gl-matrix');
-	var PathFinding = require('Utils/PathFinding');
-	var DB          = require('DB/DBManager');
-	var KEYS        = require('Controls/KeyEventHandler');
-	var Mouse       = require('Controls/MouseEventHandler');
-	var Preferences = require('Preferences/Controls');
-	var Camera      = require('Renderer/Camera');
-	var Session     = require('Engine/SessionStorage');
-	var Friends     = require('Engine/MapEngine/Friends');
-	var PACKET      = require('Network/PacketStructure');
-	var Network     = require('Network/NetworkManager');
+	var glMatrix    = require('utils/gl-matrix');
+	var PathFinding = require('utils/PathFinding');
+	var DB          = require('db/DBManager');
+	var KEYS        = require('controls/KeyEventHandler');
+	var Mouse       = require('controls/MouseEventHandler');
+	var Preferences = require('preferences/Controls');
+	var Camera      = require('renderer/Camera');
+	var Session     = require('engine/SessionStorage');
+	var Friends     = require('engine/Mapengine/Friends');
+	var PACKET      = require('network/packets/structureTable');
+	var Network     = require('network/networkManager');
 	var Cursor      = require('UI/CursorManager');
 	var InputBox    = require('UI/Components/InputBox/InputBox');
 	var ChatRoom    = require('UI/Components/ChatRoom/ChatRoom');
@@ -49,15 +49,15 @@ define(function( require )
 		var Entity = this.constructor;
 
 		switch (this.objecttype) {
-			case Entity.TYPE_PET:
+			case Entity.Type.PET:
 				if (!Camera.action.active) {
 					Cursor.setType( Cursor.ACTION.DEFAULT );
 				}
 				break;
 
-			case Entity.TYPE_PC:
-			case Entity.TYPE_ELEM:
-			case Entity.TYPE_HOM:
+			case Entity.Type.PC:
+			case Entity.Type.ELEM:
+			case Entity.Type.HOM:
 				// TODO: Check for pvp flag ?
 				if ((KEYS.SHIFT === false && Preferences.noshift === false) || this === Session.Entity)  {
 					if (!Camera.action.active ) {
@@ -69,19 +69,19 @@ define(function( require )
 				Cursor.setType( Cursor.ACTION.ATTACK );
 				break;
 
-			case Entity.TYPE_MOB:
+			case Entity.Type.MOB:
 				Cursor.setType( Cursor.ACTION.ATTACK );
 				break;
 
-			case Entity.TYPE_NPC:
+			case Entity.Type.NPC:
 				Cursor.setType( Cursor.ACTION.TALK, true );
 				break;
 
-			case Entity.TYPE_WARP:
+			case Entity.Type.WARP:
 				Cursor.setType( Cursor.ACTION.WARP );
 				return;
 
-			case Entity.TYPE_ITEM:
+			case Entity.Type.ITEM:
 				Cursor.setType( Cursor.ACTION.PICK, true, 0 );
 				break;
 		}
@@ -90,8 +90,8 @@ define(function( require )
 		switch (this.display.load) {
 
 			// Ask for the name
-			case this.display.TYPE.NONE:
-				this.display.load = this.display.TYPE.LOADING;
+			case this.display.Type.NONE:
+				this.display.load = this.display.Type.LOADING;
 
 				var pkt = new PACKET.CZ.REQNAME();
 				pkt.AID = this.GID;
@@ -99,11 +99,11 @@ define(function( require )
 				break;
 
 			// Nothing yet
-			case this.display.TYPE.LOADING:
+			case this.display.Type.LOADING:
 				break;
 
 			// Display the name
-			case this.display.TYPE.COMPLETE:
+			case this.display.Type.COMPLETE:
 				mat4.multiply( _matrix, Camera.projection, this.matrix );
 				this.display.render(_matrix);
 				this.display.add();
@@ -141,10 +141,10 @@ define(function( require )
 		var pkt;
 
 		switch (this.objecttype) {
-			case Entity.TYPE_PET:
+			case Entity.Type.PET:
 				break;
 
-			case Entity.TYPE_ITEM:
+			case Entity.Type.ITEM:
 				Cursor.setType( Cursor.ACTION.PICK, true, 2 );
 
 				pkt       = new PACKET.CZ.ITEM_PICKUP();
@@ -166,7 +166,7 @@ define(function( require )
 				Session.Entity.lookTo( this.position[0], this.position[1] );
 				return true;
 
-			case Entity.TYPE_NPC:
+			case Entity.Type.NPC:
 				pkt      = new PACKET.CZ.CONTACTNPC();
 				pkt.NAID = this.GID;
 				pkt.type = 1; // 1 for NPC in Aegis
@@ -180,7 +180,7 @@ define(function( require )
 				Network.sendPacket(pkt);
 				return true;
 
-			case Entity.TYPE_WARP:
+			case Entity.Type.WARP:
 				pkt         = new PACKET.CZ.REQUEST_MOVE();
 				pkt.dest[0] = this.position[0];
 				pkt.dest[1] = this.position[1];
@@ -210,7 +210,7 @@ define(function( require )
 		var entity = this;
 
 		switch (this.objecttype) {
-			case Entity.TYPE_PET:
+			case Entity.Type.PET:
 				if (Session.petId === this.GID) {
 					ContextMenu.remove();
 					ContextMenu.append();
@@ -222,7 +222,7 @@ define(function( require )
 				}
 				break;
 
-			case Entity.TYPE_PC:
+			case Entity.Type.PC:
 				/// TODO: complete it : 
 				/// - check for admin action (kick, mute, ...)
 
@@ -241,7 +241,7 @@ define(function( require )
 					if (Session.guildRight & 0x01 && !this.GUID) {
 						// Send (%s) a Guild invitation
 						ContextMenu.addElement( DB.getMessage(382).replace('%s', this.display.name), function(){
-							getModule('Engine/MapEngine/Guild').requestPlayerInvitation(entity.GID);
+							getModule('engine/Mapengine/Guild').requestPlayerInvitation(entity.GID);
 						});
 					}
 
@@ -250,12 +250,12 @@ define(function( require )
 
 						// Set this guild as an Alliance
 						ContextMenu.addElement( DB.getMessage(399).replace('%s', this.display.name), function(){
-							getModule('Engine/MapEngine/Guild').requestAlliance(entity.GID);
+							getModule('engine/Mapengine/Guild').requestAlliance(entity.GID);
 						});
 
 						// Set this guild as an Antagonist
 						ContextMenu.addElement( DB.getMessage(403).replace('%s', this.display.name), function(){
-							getModule('Engine/MapEngine/Guild').requestHostility(entity.GID);
+							getModule('engine/Mapengine/Guild').requestHostility(entity.GID);
 						});
 					}
 				}
@@ -272,7 +272,7 @@ define(function( require )
 				if (Session.hasParty && Session.isPartyLeader) {
 					ContextMenu.nextGroup();
 					ContextMenu.addElement( DB.getMessage(88).replace('%s', this.display.name), function(){
-						getModule('Engine/MapEngine/Group').onRequestInvitation(entity.GID, entity.display.name);
+						getModule('engine/Mapengine/Group').onRequestInvitation(entity.GID, entity.display.name);
 					});
 				}
 
@@ -280,7 +280,7 @@ define(function( require )
 				//ContextMenu.addElement( DB.getMessage(315), blockUserPrivateMessage);
 				break;
 
-			case Entity.TYPE_HOM:
+			case Entity.Type.HOM:
 				break;
 		}
 
@@ -299,9 +299,9 @@ define(function( require )
 
 		switch (this.objecttype) {
 
-			case Entity.TYPE_PC:
-			case Entity.TYPE_ELEM:
-			case Entity.TYPE_HOM:
+			case Entity.Type.PC:
+			case Entity.Type.ELEM:
+			case Entity.Type.HOM:
 				// TODO: add check for PVP/WOE mapflag
 				if (KEYS.SHIFT === false && Preferences.noshift === false)  {
 					if (!Camera.action.active) {
@@ -311,7 +311,7 @@ define(function( require )
 				}
 			// no break intended.
 
-			case Entity.TYPE_MOB:
+			case Entity.Type.MOB:
 
 				// Start rendering the lock on arrow
 				this.attachments.add({
@@ -327,7 +327,7 @@ define(function( require )
 				var count = PathFinding.search(
 					main.position[0] | 0, main.position[1] | 0,
 					this.position[0] | 0, this.position[1] | 0,
-					main.attack_range + 1,
+					main.attackRange + 1,
 					out
 				);
 
@@ -368,10 +368,10 @@ define(function( require )
 		var Entity = this.constructor;
 
 		switch (this.objecttype) {
-			case Entity.TYPE_PC:
-			case Entity.TYPE_ELEM:
-			case Entity.TYPE_HOM:
-			case Entity.TYPE_MOB:
+			case Entity.Type.PC:
+			case Entity.Type.ELEM:
+			case Entity.Type.HOM:
+			case Entity.Type.MOB:
 				if (Entity.Manager.getFocusEntity()) {
 					Network.sendPacket(new PACKET.CZ.CANCEL_LOCKON());
 				}
@@ -447,7 +447,7 @@ define(function( require )
 	/**
 	 * Export
 	 */
-	return function Init()
+	return function init()
 	{
 		this.onMouseOver   = onMouseOver;
 		this.onMouseOut    = onMouseOut;

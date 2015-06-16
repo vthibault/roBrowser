@@ -15,13 +15,13 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
-	var DB                   = require('DB/DBManager');
-	var jQuery               = require('Utils/jquery');
-	var Preferences          = require('Core/Preferences');
-	var Client               = require('Core/Client');
-	var Renderer             = require('Renderer/Renderer');
-	var Session              = require('Engine/SessionStorage');
-	var Mouse                = require('Controls/MouseEventHandler');
+	var DB                   = require('db/DBManager');
+	var jQuery               = require('utils/jquery');
+	var Preferences          = require('core/Preferences');
+	var Client               = require('core/Client');
+	var Renderer             = require('renderer/Renderer');
+	var Session              = require('engine/SessionStorage');
+	var Mouse                = require('controls/MouseEventHandler');
 	var UIManager            = require('UI/UIManager');
 	var UIComponent          = require('UI/UIComponent');
 	var PartyHelper          = require('UI/Components/PartyFriends/PartyHelper');
@@ -277,11 +277,11 @@ define(function(require)
 
 		if (state) {
 			node.css('backgroundImage', '');
-			ChatBox.addText( DB.getMessage(1042).replace('%s', _friends[index].Name), ChatBox.TYPE.BLUE);
+			ChatBox.addText( DB.getMessage(1042).replace('%s', _friends[index].Name), ChatBox.Type.BLUE);
 			return;
 		}
 
-		ChatBox.addText( DB.getMessage(1041).replace('%s', _friends[index].Name), ChatBox.TYPE.BLUE);
+		ChatBox.addText( DB.getMessage(1041).replace('%s', _friends[index].Name), ChatBox.Type.BLUE);
 		Client.loadFile(DB.INTERFACE_PATH + 'basic_interface/grp_online.bmp', function(url){
 			node.css('backgroundImage', 'url(' + url + ')');
 		});
@@ -465,7 +465,7 @@ define(function(require)
 			this.ui.find('.party.create').show();
 			this.ui.find('.party.leave, .party.add').hide();
 
-			ChatBox.addText( DB.getMessage(84), ChatBox.TYPE.BLUE);
+			ChatBox.addText( DB.getMessage(84), ChatBox.Type.BLUE);
 			return;
 		}
 

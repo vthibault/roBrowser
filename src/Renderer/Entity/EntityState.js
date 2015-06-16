@@ -1,5 +1,5 @@
 /**
- * Renderer/EntityState.js
+ * renderer/EntityState.js
  *
  * Manage Entity files (attachments) to load once a view change
  *
@@ -15,10 +15,10 @@ define(function( require )
 	/**
 	 * Load dependencies
 	 */
-	var Sound       = require('Audio/SoundManager');
-	var StatusConst = require('DB/Status/StatusState');
-	var MountTable  = require('DB/Jobs/MountTable');
-	var Session     = require('Engine/SessionStorage');
+	var Sound       = require('audio/soundManager');
+	var StatusConst = require('db/status/StatusState');
+	var MountTable  = require('db/jobs/MountTable');
+	var Session     = require('engine/SessionStorage');
 
 
 	/**
@@ -307,7 +307,7 @@ define(function( require )
 	/**
 	 * Hooking, export
 	 */
-	return function Init()
+	return function init()
 	{
 		this._bodyStateColor   = new Float32Array([1, 1, 1, 1]);
 		this._healthStateColor = new Float32Array([1, 1, 1, 1]);

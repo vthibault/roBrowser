@@ -15,13 +15,13 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
-	var DB                 = require('DB/DBManager');
-	var Client             = require('Core/Client');
-	var Preferences        = require('Core/Preferences');
-	var Session            = require('Engine/SessionStorage');
-	var Renderer           = require('Renderer/Renderer');
-	var Altitude           = require('Renderer/Map/Altitude');
-	var KEYS               = require('Controls/KeyEventHandler');
+	var DB                 = require('db/DBManager');
+	var Client             = require('core/Client');
+	var Preferences        = require('core/Preferences');
+	var Session            = require('engine/SessionStorage');
+	var Renderer           = require('renderer/Renderer');
+	var Altitude           = require('renderer/Map/Altitude');
+	var KEYS               = require('controls/KeyEventHandler');
 	var UIManager          = require('UI/UIManager');
 	var UIComponent        = require('UI/UIComponent');
 	var htmlText           = require('text!./MiniMap.html');
@@ -378,19 +378,19 @@ define(function(require)
 	var render = (function renderClosure()
 	{
 		var ZOOM_SIZE = 20;
-		var max, start_x, start_y, zoom, f;
+		var max, startX, startY, zoom, f;
 		var pos;
 
 		function projectX(x) {
 			if (zoom === 1) {
-				return (start_x + x * f) | 0;
+				return (startX + x * f) | 0;
 			}
 			return (64 + (x-pos[0]) * f * 256 / (zoom*ZOOM_SIZE)) | 0;
 		}
 
 		function projectY(y) {
 			if (zoom === 1) {
-				return (start_y + 128 - y * f) | 0;
+				return (startY + 128 - y * f) | 0;
 			}
 			return (64 - (y-pos[1]) * f * 256 / (zoom*ZOOM_SIZE)) | 0;
 		}
@@ -404,12 +404,12 @@ define(function(require)
 			height  = Altitude.height;
 
 			// closure
-			zoom    = _zoomFactor[_preferences.zoom];
-			pos     = Session.Entity.position;
-			max     = Math.max(width, height);
-			f       = 1 / max  * 128;
-			start_x = (max-width)  / 2 * f;
-			start_y = (height-max) / 2 * f;
+			zoom   = _zoomFactor[_preferences.zoom];
+			pos    = Session.Entity.position;
+			max    = Math.max(width, height);
+			f      = 1 / max  * 128;
+			startX = (max-width)  / 2 * f;
+			startY = (height-max) / 2 * f;
 
 			// Rendering map
 			_ctx.clearRect( 0, 0, 128, 128 );
@@ -421,8 +421,8 @@ define(function(require)
 				else {
 					_ctx.drawImage(
 						_map,
-						((start_x +       pos[0] * f) * 4 - ZOOM_SIZE * zoom) | 0,
-						((start_y + 128 - pos[1] * f) * 4 - ZOOM_SIZE * zoom) | 0,
+						((startX +       pos[0] * f) * 4 - ZOOM_SIZE * zoom) | 0,
+						((startY + 128 - pos[1] * f) * 4 - ZOOM_SIZE * zoom) | 0,
 						ZOOM_SIZE * zoom * 2,
 						ZOOM_SIZE * zoom * 2,
 						0, 0,

@@ -1,5 +1,5 @@
 /**
- * Loaders/GameFileDecrypt.js
+ * loaders/GameFileDecrypt.js
  *
  * Decrypt Gravity DES encryption stored in GRF file
  * Converted from https://rathena.svn.sourceforge.net/svnroot/rathena/trunk/src/common/des.c
@@ -229,16 +229,16 @@ define(function()
 	 *
 	 * @param {Uint8Array} buf
 	 * @param {number} len
-	 * @param {number} entry_len
+	 * @param {number} entry length
 	 */
-	function decodeFull( buf, len, entry_len)
+	function decodeFull( buf, len, entrySize)
 	{
 		var nblocks = len >> 3;
 		var i, j;
 		var digits, cycle;
 	
 		// compute number of digits of the entry length
-		digits = entry_len.toString().length;
+		digits = entrySize.toString().length;
 
 		// choose size of gap between two encrypted blocks
 		// digits:  0  1  2  3  4  5  6  7  8  9 ...
@@ -320,7 +320,7 @@ define(function()
 	 *
 	 * @var {Uint8Array[]}
 	 */
-	shuffleDec.table = (function init_substitution()
+	shuffleDec.table = (function initSubstitution()
 	{
 		var i, count;
 		var out  = new Uint8Array(256);

@@ -1,5 +1,5 @@
 /**
- * DB/Jobs/WeaponJobTable.js
+ * db/jobs/WeaponJobTable.js
  *
  * Look up: job id -> ressource name
  *

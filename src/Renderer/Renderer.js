@@ -1,5 +1,5 @@
 /**
- * Renderer/Renderer.js
+ * renderer/Renderer.js
  *
  * Rendering sprite in 2D or 3D context
  *
@@ -15,15 +15,15 @@ define(function( require )
 	/**
 	 * Load dependencies
 	 */
-	var WebGL         = require('Utils/WebGL');
-	var jQuery        = require('Utils/jquery');
-	var glMatrix      = require('Utils/gl-matrix');
-	var Configs       = require('Core/Configs');
-	var Events        = require('Core/Events');
+	var WebGL         = require('utils/WebGL');
+	var jQuery        = require('utils/jquery');
+	var glMatrix      = require('utils/gl-matrix');
+	var Configs       = require('core/Configs');
+	var Events        = require('core/Events');
 	var Background    = require('UI/Background');
 	var Cursor        = require('UI/CursorManager');
-	var Mouse         = require('Controls/MouseEventHandler');
-	var Camera        = require('Renderer/Camera');
+	var Mouse         = require('controls/MouseEventHandler');
+	var Camera        = require('renderer/Camera');
 	var mat4          = glMatrix.mat4;
 	var getModule     = require;
 
@@ -198,8 +198,8 @@ define(function( require )
 		 * Once done, it get the files to use as dependencies for this function and
 		 * load them before executing the function.
 		 *
-		 * As UI/UIManager was loaded as dependencies before Renderer/Renderer
-		 * and in the file UI/UIManager, there were a dependencies for Renderer/Renderer,
+		 * As UI/UIManager was loaded as dependencies before renderer/Renderer
+		 * and in the file UI/UIManager, there were a dependencies for renderer/Renderer,
 		 * we just cause a big circular dependencies resulting as having Renderer variable as null in
 		 * UI/UIManager.
 		 */

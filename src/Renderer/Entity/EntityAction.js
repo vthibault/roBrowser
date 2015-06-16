@@ -1,5 +1,5 @@
 /**
- * Renderer/EntityAction.js
+ * renderer/EntityAction.js
  *
  * Manage entity action
  *
@@ -7,7 +7,7 @@
  *
  * @author Vincent Thibault
  */
-define(['Renderer/Renderer', 'DB/DBManager'], function( Renderer, DB )
+define(['renderer/Renderer', 'db/DBManager'], function( Renderer, DB )
 {
 	'use strict';
 
@@ -74,7 +74,7 @@ define(['Renderer/Renderer', 'DB/DBManager'], function( Renderer, DB )
 
 			// Know attack frame based on weapon type
 			if (option.action === this.ACTION.ATTACK) {
-				if (this.objecttype === this.constructor.TYPE_PC) {
+				if (this.objecttype === this.constructor.Type.PC) {
 					var attack    = DB.getWeaponAction( this.weapon, this._job, this._sex );
 					option.action = [ this.ACTION.ATTACK1, this.ACTION.ATTACK2, this.ACTION.ATTACK3 ][attack];
 				}
@@ -103,7 +103,7 @@ define(['Renderer/Renderer', 'DB/DBManager'], function( Renderer, DB )
 	/**
 	 * Initialize Entity action
 	 */
-	return function Init()
+	return function init()
 	{
 		this.ACTION    = new Action();
 		this.animation = new Animation();
@@ -113,7 +113,7 @@ define(['Renderer/Renderer', 'DB/DBManager'], function( Renderer, DB )
 		switch (this.objecttype) {
 
 			// Define action, base on type
-			case Entity.TYPE_PC:
+			case Entity.Type.PC:
 				this.ACTION.IDLE       = 0;
 				this.ACTION.WALK       = 1;
 				this.ACTION.SIT        = 2;
@@ -130,7 +130,7 @@ define(['Renderer/Renderer', 'DB/DBManager'], function( Renderer, DB )
 				break;
 
 			// Mob action
-			case Entity.TYPE_MOB:
+			case Entity.Type.MOB:
 				this.ACTION.IDLE   = 0;
 				this.ACTION.WALK   = 1;
 				this.ACTION.ATTACK = 2;
@@ -138,7 +138,7 @@ define(['Renderer/Renderer', 'DB/DBManager'], function( Renderer, DB )
 				this.ACTION.DIE    = 4;
 				break;
 
-			case Entity.TYPE_PET:
+			case Entity.Type.PET:
 				this.ACTION.IDLE     = 0;
 				this.ACTION.WALK     = 1;
 				this.ACTION.ATTACK   = 2;
@@ -151,7 +151,7 @@ define(['Renderer/Renderer', 'DB/DBManager'], function( Renderer, DB )
 				break;
 
 			// NPC action
-			case Entity.TYPE_NPC:
+			case Entity.Type.NPC:
 				this.ACTION.IDLE   = 0;
 				// For those NPC that move with unitwalk scriptcommand
 				this.ACTION.WALK   = 1;
@@ -159,13 +159,13 @@ define(['Renderer/Renderer', 'DB/DBManager'], function( Renderer, DB )
 
 			// When you see a warp with /effect, it's 3 times bigger.
 			// TODO: put it somewhere else
-			case Entity.TYPE_WARP:
+			case Entity.Type.WARP:
 				this.xSize       = 20;
 				this.ySize       = 20;
 				break;
 
 			// Homunculus
-			case Entity.TYPE_HOM:
+			case Entity.Type.HOM:
 				this.ACTION.IDLE    = 0;
 				this.ACTION.WALK    = 1;
 				this.ACTION.ATTACK  = 2;
@@ -177,7 +177,7 @@ define(['Renderer/Renderer', 'DB/DBManager'], function( Renderer, DB )
 				break;
 
 			//TODO: define others Entities ACTION
-			case Entity.TYPE_ELEM:
+			case Entity.Type.ELEM:
 				break;
 		}
 	};

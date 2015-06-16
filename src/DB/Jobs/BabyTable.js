@@ -1,5 +1,5 @@
 /**
- * DB/Jobs/BabyTable.js
+ * db/jobs/BabyTable.js
  *
  * List all babies
  *

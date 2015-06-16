@@ -1,5 +1,5 @@
 /**
- * Renderer/EntityDialog.js
+ * renderer/EntityDialog.js
  *
  * Manage Entity Dialog box
  *
@@ -7,7 +7,7 @@
  *
  * @author Vincent Thibault
  */
-define(['Utils/gl-matrix', 'Core/Events', 'Renderer/Renderer'], function( glMatrix, Events, Renderer )
+define(['utils/gl-matrix', 'core/Events', 'renderer/Renderer'], function( glMatrix, Events, Renderer )
 {
 	'use strict';
 
@@ -60,7 +60,7 @@ define(['Utils/gl-matrix', 'Core/Events', 'Renderer/Renderer'], function( glMatr
 	 * @param {string} text message
 	 * @param {string} fontColor
 	 */
-	Dialog.prototype.set = function Set( text, fontColor )
+	Dialog.prototype.set = function set( text, fontColor )
 	{
 		// Save info
 		this.text    = text;
@@ -69,7 +69,7 @@ define(['Utils/gl-matrix', 'Core/Events', 'Renderer/Renderer'], function( glMatr
 
 		// Init variables
 		var ctx        = this.ctx;
-		var max_width  = 250;
+		var maxWidth  = 250;
 		var fontSize   =  12;
 		var lines      =  [];
 		var width = 0, i, j;
@@ -81,7 +81,7 @@ define(['Utils/gl-matrix', 'Core/Events', 'Renderer/Renderer'], function( glMatr
 		// Parse lines, depend on text size.
 		while (text.length) {
 			i = text.length;
-			while (ctx.measureText(text.substr(0,i)).width > max_width) {
+			while (ctx.measureText(text.substr(0,i)).width > maxWidth) {
 				i--;
 			}
 
@@ -135,7 +135,7 @@ define(['Utils/gl-matrix', 'Core/Events', 'Renderer/Renderer'], function( glMatr
 	/**
 	 * Remove GUI from html
 	 */
-	Dialog.prototype.remove = function Remove()
+	Dialog.prototype.remove = function remove()
 	{
 		// Clean timeout
 		if (this.timeout) {
@@ -156,7 +156,7 @@ define(['Utils/gl-matrix', 'Core/Events', 'Renderer/Renderer'], function( glMatr
 	/**
 	 * Clean up dialog
 	 */
-	Dialog.prototype.clean = function Clean()
+	Dialog.prototype.clean = function clean()
 	{
 		this.remove();
 		//this.canvas = null;
@@ -167,7 +167,7 @@ define(['Utils/gl-matrix', 'Core/Events', 'Renderer/Renderer'], function( glMatr
 	/**
 	 * Rendering dialog box
 	 */
-	Dialog.prototype.render = function Render( matrix )
+	Dialog.prototype.render = function render( matrix )
 	{
 		var canvas = this.canvas;
 		var z;
@@ -203,7 +203,7 @@ define(['Utils/gl-matrix', 'Core/Events', 'Renderer/Renderer'], function( glMatr
 	/**
 	 * Export
 	 */
-	return function Init()
+	return function init()
 	{
 		this.dialog = new Dialog();
 	};

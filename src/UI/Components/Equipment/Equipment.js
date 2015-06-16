@@ -15,17 +15,17 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
-	var DB                 = require('DB/DBManager');
-	var StatusConst        = require('DB/Status/StatusState');
-	var EquipLocation      = require('DB/Items/EquipmentLocation');
-	var ItemType           = require('DB/Items/ItemType');
-	var jQuery             = require('Utils/jquery');
-	var Client             = require('Core/Client');
-	var Preferences        = require('Core/Preferences');
-	var Session            = require('Engine/SessionStorage');
-	var Renderer           = require('Renderer/Renderer');
-	var Camera             = require('Renderer/Camera');
-	var SpriteRenderer     = require('Renderer/SpriteRenderer');
+	var DB                 = require('db/DBManager');
+	var StatusConst        = require('db/status/StatusState');
+	var EquipLocation      = require('db/items/EquipmentLocation');
+	var ItemType           = require('db/items/ItemType');
+	var jQuery             = require('utils/jquery');
+	var Client             = require('core/Client');
+	var Preferences        = require('core/Preferences');
+	var Session            = require('engine/SessionStorage');
+	var Renderer           = require('renderer/Renderer');
+	var Camera             = require('renderer/Camera');
+	var SpriteRenderer     = require('renderer/SpriteRenderer');
 	var UIManager          = require('UI/UIManager');
 	var UIComponent        = require('UI/UIComponent');
 	var ItemInfo           = require('UI/Components/ItemInfo/ItemInfo');

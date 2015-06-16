@@ -15,15 +15,15 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
-	var DB             = require('DB/DBManager');
-	var MonsterTable   = require('DB/Monsters/MonsterTable');
-	var Session        = require('Engine/SessionStorage');
-	var Entity         = require('Renderer/Entity/Entity');
-	var SpriteRenderer = require('Renderer/SpriteRenderer');
-	var Camera         = require('Renderer/Camera');
-	var Renderer       = require('Renderer/Renderer');
-	var Preferences    = require('Core/Preferences');
-	var Client         = require('Core/Client');
+	var DB             = require('db/DBManager');
+	var MonsterTable   = require('db/monsters/MonsterTable');
+	var Session        = require('engine/SessionStorage');
+	var Entity         = require('renderer/Entity/Entity');
+	var SpriteRenderer = require('renderer/SpriteRenderer');
+	var Camera         = require('renderer/Camera');
+	var Renderer       = require('renderer/Renderer');
+	var Preferences    = require('core/Preferences');
+	var Client         = require('core/Client');
 	var UIManager      = require('UI/UIManager');
 	var UIComponent    = require('UI/UIComponent');
 	var ContextMenu    = require('UI/Components/ContextMenu/ContextMenu');
@@ -96,7 +96,7 @@ define(function(require)
 	/**
 	 * @var {string} checkbox images
 	 */
-	var _checkbox_off, _checkbox_on;
+	var _checkboxOff, _checkboxOn;
 
 
 	/**
@@ -116,8 +116,8 @@ define(function(require)
 
 		// Preload image
 		Client.loadFiles([DB.INTERFACE_PATH + 'checkbox_0.bmp', DB.INTERFACE_PATH + 'checkbox_1.bmp'], function(off,on) {
-			_checkbox_off = off;
-			_checkbox_on  = on;
+			_checkboxOff = off;
+			_checkboxOn  = on;
 		});
 
 		// Positions
@@ -132,7 +132,7 @@ define(function(require)
 			.on('click', 'button', function(){
 				if (Session.isGuildMaster) {
 					this.className = (this.className === 'on' ? 'off' : 'on');
-					this.style.backgroundImage = 'url('+ (this.className === 'on' ? _checkbox_on : _checkbox_off) +')';
+					this.style.backgroundImage = 'url('+ (this.className === 'on' ? _checkboxOn : _checkboxOff) +')';
 					ui.find('.footer .btn_ok').show();
 				}
 			})
@@ -145,7 +145,7 @@ define(function(require)
 		ui.find('.content.info .ally_list, .content.info .hostile_list')
 			.on('contextmenu', 'div', function(){
 				var relation = this.parentNode.classList.contains('ally_list') ? 0 : 1;
-				var guild_id = parseInt(this.getAttribute('data-guild-id'), 10);
+				var guildId  = parseInt(this.getAttribute('data-guild-id'), 10);
 
 				ui.find('.content.info .ally_list div, .content.info .hostile_list div').removeClass('active');
 				this.classList.add('active');
@@ -153,7 +153,7 @@ define(function(require)
 				ContextMenu.remove();
 				ContextMenu.append();
 				ContextMenu.addElement(DB.getMessage(351), function(){
-					Guild.onRequestDeleteRelation(guild_id, relation);
+					Guild.onRequestDeleteRelation(guildId, relation);
 				});
 			});
 
@@ -476,7 +476,7 @@ define(function(require)
 		if (!member.entity) {
 			member.entity = new Entity();
 			member.entity.direction = 4;
-			member.entity.objecttype = Entity.TYPE_PC;
+			member.entity.objecttype = Entity.Type.PC;
 			member.entity.files.shadow.spr = null;
 		}
 
@@ -526,7 +526,7 @@ define(function(require)
 			_members[i].entity.headpalette = member.headPalette;
 		}
 
-		ChatBox.addText( DB.getMessage(485 + (member.status ? 0 : 1)).replace('%s', view.find('.name .value').text()), ChatBox.TYPE.BLUE);
+		ChatBox.addText( DB.getMessage(485 + (member.status ? 0 : 1)).replace('%s', view.find('.name .value').text()), ChatBox.Type.BLUE);
 	};
 
 
@@ -640,12 +640,12 @@ define(function(require)
 			view.find('.tax input').val(rank.payRate);
 
 			view.find('.invite button')
-				.css('backgroundImage', 'url(' + (rank.right & 0x01 ? _checkbox_on : _checkbox_off) + ')')
+				.css('backgroundImage', 'url(' + (rank.right & 0x01 ? _checkboxOn : _checkboxOff) + ')')
 				.removeClass('on off')
 				.addClass(rank.right & 0x01 ? 'on' : 'off');
 
 			view.find('.punish button')
-				.css('backgroundImage', 'url(' + (rank.right & 0x10 ? _checkbox_on : _checkbox_off) + ')')
+				.css('backgroundImage', 'url(' + (rank.right & 0x10 ? _checkboxOn : _checkboxOff) + ')')
 				.removeClass('on off')
 				.addClass(rank.right & 0x10 ? 'on' : 'off');
 
@@ -942,7 +942,7 @@ define(function(require)
 	 * @param {number} guild_id
 	 * @param {number} relation
 	 */
-	Guild.onRequestDeleteRelation = function(){}
+	Guild.onRequestDeleteRelation = function(){};
 
 
 	/**

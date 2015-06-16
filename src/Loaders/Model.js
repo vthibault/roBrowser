@@ -1,5 +1,5 @@
 /**
- * Loaders/Model.js
+ * loaders/Model.js
  *
  * Loaders for Gravity .rsm file (Resource Model)
  *
@@ -8,7 +8,7 @@
  * @author Vincent Thibault
  */
 
-define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMatrix )
+define( ['utils/BinaryReader', 'utils/gl-matrix'], function( BinaryReader, glMatrix )
 {
 	'use strict';
 
@@ -26,7 +26,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 	 *
 	 * @param {ArrayBuffer} data - optional
 	 */
-	function RSM( data )
+	function RsmReader( data )
 	{
 		if (data) {
 			this.load(data);
@@ -37,7 +37,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 	/**
 	 * Model Shading type
 	 */
-	RSM.SHADING = {
+	RsmReader.ShadingType = {
 		NONE:   0,
 		FLAT:   1,
 		SMOOTH: 2
@@ -47,14 +47,14 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 	/**
 	 * Bounding Box
 	 */
-	RSM.Box = function BoundingBox()
+	function RsmBox()
 	{
 		this.max    = vec3.fromValues( -Infinity, -Infinity, -Infinity );
 		this.min    = vec3.fromValues(  Infinity,  Infinity,  Infinity );
 		this.offset = vec3.create();
 		this.range  = vec3.create();
 		this.center = vec3.create();
-	};
+	}
 	
 
 	/**
@@ -62,7 +62,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 	 *
 	 * @param {ArrayBuffer} data
 	 */
-	RSM.prototype.load = function Load( data )
+	RsmReader.prototype.load = function load( data )
 	{
 		var fp, header, name;
 		var i, count;
@@ -81,10 +81,10 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 		this.version    = fp.readByte() + fp.readByte()/10;
 		this.animLen    = fp.readLong();
 		this.shadeType  = fp.readLong();
-		this.main_node  = null;
+		this.mainNode   = null;
 
-		this.alpha      =   ( this.version >= 1.4 ) ? fp.readUByte() / 255.0 : 1.0;
-		fp.seek( 16, SEEK_CUR ); // reserved.
+		this.alpha      = (this.version >= 1.4) ? fp.readUByte() / 255.0 : 1.0;
+		fp.seek( 16, BinaryReader.Seek.CUR); // reserved.
 
 
 		// Read textures.
@@ -100,16 +100,16 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 		nodes  =  new Array(count);
 
 		for (i = 0; i < count; ++i) {
-			nodes[i] =  new RSM.Node( this, fp, count === 1 );
+			nodes[i] =  new RsmNode( this, fp, count === 1 );
 			if (nodes[i].name === name) {
-				this.main_node = nodes[i];
+				this.mainNode = nodes[i];
 			}
 		}
 
 		// In some custom models, the default name don't match nodes name.
 		// So by default, assume the main node is the first one.
-		if (this.main_node === null) {
-			this.main_node = nodes[0];
+		if (this.mainNode === null) {
+			this.mainNode = nodes[0];
 		}
 
 		// Read poskeyframes
@@ -147,7 +147,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 		}
 
 		this.instances    = [];
-		this.box          = new RSM.Box();
+		this.box          = new RsmBox();
 		this.textures     = textures;
 		this.nodes        = nodes;
 		this.volumebox    = volumebox;
@@ -165,7 +165,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 	 * @param {number} width
 	 * @param {number} height
 	 */
-	RSM.prototype.createInstance = function CreateInstance( model, width, height )
+	RsmReader.prototype.createInstance = function createInstance( model, width, height )
 	{
 		var matrix = mat4.create();
 
@@ -183,7 +183,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 	/**
 	 * Calculate model bounding box
 	 */
-	RSM.prototype.calcBoundingBox = function CalcBoundingBox()
+	RsmReader.prototype.calcBoundingBox = function calcBoundingBox()
 	{
 		var i, j, count;
 		var box         = this.box;
@@ -193,7 +193,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 		count           = nodes.length;
 
 		mat4.identity(matrix);
-		this.main_node.calcBoundingBox(matrix);
+		this.mainNode.calcBoundingBox(matrix);
 
 		for (i = 0; i < 3; ++i) {
 			for (j = 0; j < count; ++j) {
@@ -210,20 +210,20 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 	/**
 	 * Compile Model
 	 */
-	RSM.prototype.compile = function Compile()
+	RsmReader.prototype.compile = function compile()
 	{
 		var nodes     = this.nodes;
 		var instances = this.instances;
 
-		var node_count     = nodes.length;
-		var instance_count = instances.length;
+		var nodeCount     = nodes.length;
+		var instanceCount = instances.length;
 		var i, j, k;
 
-		var meshes = new Array(node_count * instance_count);
+		var meshes = new Array(nodeCount * instanceCount);
 
 		// Generate Mesh
-		for (i = 0, k = 0; i < node_count; ++i) {
-			for ( j = 0; j < instance_count; ++j, k++) {
+		for (i = 0, k = 0; i < nodeCount; ++i) {
+			for (j = 0; j < instanceCount; ++j, k++) {
 				meshes[k] = nodes[i].compile( instances[j] );
 			}
 		}
@@ -242,17 +242,17 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 	 * @param {object} fp BinaryReader
 	 * @param {boolean} only
 	 */
-	RSM.Node = function Node( rsm, fp, only ) {
+	function RsmNode( rsm, fp, only ) {
 		var i, j, count, version = rsm.version;
 		var textures, vertices, tvertices, faces, posKeyframes, rotKeyframes;
 
 		// Read initialised
-		this.main     =  rsm;
-		this.is_only  =  only;
+		this.main   =  rsm;
+		this.isOnly =  only;
 
 		// Read name
 		this.name       =  fp.readBinaryString(40);
-		this.parentname =  fp.readBinaryString(40);
+		this.parentName =  fp.readBinaryString(40);
 
 		// Read textures
 		count    = fp.readLong();
@@ -339,7 +339,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 			};
 		}
 
-		this.box          = new RSM.Box();
+		this.box          = new RsmBox();
 		this.matrix       = mat4.create();
 		this.textures     = textures;
 		this.vertices     = vertices;
@@ -357,7 +357,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 	 *
 	 * @param {mat4} _matrix
 	 */
-	RSM.Node.prototype.calcBoundingBox = function NodeCalcBoundingBox( _matrix )
+	RsmNode.prototype.calcBoundingBox = function calcBoundingBox( _matrix )
 	{
 		// Define variables
 		var i, j, count;
@@ -386,7 +386,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 		// Strat from here just modify a local matrix
 		mat4.copy( matrix, this.matrix );
 
-		if (!this.is_only) {
+		if (!this.isOnly) {
 			mat4.translate( matrix, matrix, this.offset );
 		}
 
@@ -415,7 +415,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 		}
 
 		for (i = 0, count = nodes.length; i < count; ++i) {
-			if (nodes[i].parentname === this.name && this.name !== this.parentname) {
+			if (nodes[i].parentName === this.name && this.name !== this.parentName) {
 				nodes[i].calcBoundingBox( this.matrix );
 			}
 		}
@@ -427,7 +427,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 	 *
 	 * @param {mat4} instance_matrix
 	 */
-	RSM.Node.prototype.compile = function( instance_matrix )
+	RsmNode.prototype.compile = function compile( instMatrix )
 	{
 		var matrix;
 		var modelViewMat = mat4.create();
@@ -437,10 +437,10 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 		var faces        = this.faces;
 		var vertices     = this.vertices;
 
-		var mesh      = {};
-		var mesh_size = [];
+		var mesh     = {};
+		var meshSize = [];
 
-		var vert, face_normal;
+		var vert, faceNormal;
 		var shadeGroup     = new Array(32);
 		var shadeGroupUsed = new Array(32);
 		var i, x, y, z, count;
@@ -451,7 +451,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 		mat4.translate( matrix, matrix, [ -this.main.box.center[0], -this.main.box.max[1], -this.main.box.center[2] ] );
 		mat4.multiply( matrix, matrix, this.matrix );
 
-		if (!this.is_only) {
+		if (!this.isOnly) {
 			mat4.translate( matrix, matrix, this.offset );
 		}
 
@@ -459,7 +459,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 
 		// Multiply with instance matrix (position/rotation/...)
 		// Generate normal matrix
-		mat4.multiply( modelViewMat, instance_matrix, matrix );
+		mat4.multiply( modelViewMat, instMatrix, matrix );
 		mat4.extractRotation( normalMat, modelViewMat );
 
 
@@ -479,44 +479,36 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 
 
 		// Generate face normals
-		face_normal = new Float32Array(faces.length*3);
+		faceNormal = new Float32Array(faces.length*3);
 
 		// Setup mesh slot array
 		for (i = 0, count = textures.length; i < count; ++i) {
-			mesh_size[ textures[i] ] = 0;
+			meshSize[ textures[i] ] = 0;
 		}
 
 		// Find mesh max face
 		for (i = 0, count = faces.length; i < count; ++i) {
-			mesh_size[ textures[ faces[i].texid ] ]++;
+			meshSize[ textures[ faces[i].texid ] ]++;
 		}
 
 		// Initialize buffer
 		for (i = 0, count = textures.length; i < count; ++i) {
-			mesh[textures[i]] = new Float32Array(mesh_size[textures[i]]*9*3);
+			mesh[textures[i]] = new Float32Array(meshSize[textures[i]]*9*3);
 		}
 
 
-		switch (this.main.shadeType) {
-			default:
-
-			case RSM.SHADING.NONE:
-				this.calcNormal_NONE( face_normal );
-				this.generate_mesh_FLAT( vert, face_normal, mesh );
-				break;
-
-
-			case RSM.SHADING.FLAT:
-				this.calcNormal_FLAT( face_normal, normalMat, shadeGroupUsed );
-				this.generate_mesh_FLAT( vert, face_normal, mesh );
-				break;
-
-
-			case RSM.SHADING.SMOOTH:
-				this.calcNormal_FLAT( face_normal, normalMat, shadeGroupUsed );
-				this.calcNormal_SMOOTH( face_normal, shadeGroupUsed, shadeGroup );
-				this.generate_mesh_SMOOTH( vert, shadeGroup, mesh );
-				break;
+		if (this.main.shadeType === RsmReader.ShadingType.FLAT) {
+			this.calcNormalFlat( faceNormal, normalMat, shadeGroupUsed );
+			this.generateMeshFlat( vert, faceNormal, mesh );
+		}
+		else if (RsmReader.ShadingType.SMOOTH) {
+			this.calcNormalFlat( faceNormal, normalMat, shadeGroupUsed );
+			this.calcNormalSmooth( faceNormal, shadeGroupUsed, shadeGroup );
+			this.generateMeshSmooth( vert, shadeGroup, mesh );
+		}
+		else {
+			this.calcNormalNone( faceNormal );
+			this.generateMeshFlat( vert, faceNormal, mesh );
 		}
 
 		return mesh;
@@ -529,7 +521,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 	 *
 	 * @param {Float32Array[]} out
 	 */
-	RSM.Node.prototype.calcNormal_NONE = function calcNormalNone( out )
+	RsmNode.prototype.calcNormalNone = function calcNormalNone( out )
 	{
 		var i, count;
 		for (i = 1, count = out.length; i < count; i+= 3) {
@@ -545,7 +537,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 	 * @param {mat4} normalMat
 	 * @param {Array} groupUsed
 	 */
-	RSM.Node.prototype.calcNormal_FLAT = function calcNormalFlat( out, normalMat, groupUsed)
+	RsmNode.prototype.calcNormalFlat = function calcNormalFlat( out, normalMat, groupUsed)
 	{
 		var i, j, count;
 		var face;
@@ -580,7 +572,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 	 * @param {Array} groupUsed
 	 * @param {Array} group
 	 */
-	RSM.Node.prototype.calcNormal_SMOOTH = function calcNormalSmooth(normal, groupUsed, group)
+	RsmNode.prototype.calcNormalSmooth = function calcNormalSmooth(normal, groupUsed, group)
 	{
 		var i, j, k, l, v, x, y, z, len;
 		var size  = this.vertices.length;
@@ -629,7 +621,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 	 * @param {Float32Array[]} norm
 	 * @param {Array} mesh
 	 */
-	RSM.Node.prototype.generate_mesh_FLAT = function generateMeshFlat( vert, norm, mesh )
+	RsmNode.prototype.generateMeshFlat = function generateMeshFlat( vert, norm, mesh )
 	{
 		var a, b, o, i, j, k, t, count;
 		var faces    = this.faces;
@@ -673,7 +665,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 	 * @param {Array} shadeGroup
 	 * @param {Array} mesh
 	 */
-	RSM.Node.prototype.generate_mesh_SMOOTH = function generateMeshSmooth( vert, shadeGroup, mesh )
+	RsmNode.prototype.generateMeshSmooth = function generateMeshSmooth( vert, shadeGroup, mesh )
 	{
 		var a, b, o, i, j, t, count;
 		var faces    = this.faces;
@@ -715,5 +707,5 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 	/**
 	 * Export
 	 */
-	return RSM;
+	return RsmReader;
 });

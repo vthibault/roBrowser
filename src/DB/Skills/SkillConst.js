@@ -1,5 +1,5 @@
 /**
- * DB/Skills/SkillConst.js
+ * db/skills/SkillConst.js
  *
  * Skill ID const
  *

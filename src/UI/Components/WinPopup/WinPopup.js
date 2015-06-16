@@ -15,7 +15,7 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
-	var Renderer    = require('Renderer/Renderer');
+	var Renderer    = require('renderer/Renderer');
 	var UIManager   = require('UI/UIManager');
 	var UIComponent = require('UI/UIComponent');
 	var htmlText    = require('text!./WinPopup.html');

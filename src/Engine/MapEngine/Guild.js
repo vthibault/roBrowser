@@ -1,5 +1,5 @@
 /**
- * Engine/MapEngine/Group.js
+ * engine/Mapengine/Group.js
  *
  * Manage group/party
  *
@@ -16,14 +16,14 @@ define(function( require )
 	/**
 	 * Load dependencies
 	 */
-	var DB            = require('DB/DBManager');
-	var Inflate       = require('Utils/Inflate');
-	var Texture       = require('Utils/Texture');
-	var BinaryWriter  = require('Utils/BinaryWriter');
-	var Session       = require('Engine/SessionStorage');
-	var Network       = require('Network/NetworkManager');
-	var PACKET        = require('Network/PacketStructure');
-	var EntityManager = require('Renderer/EntityManager');
+	var DB            = require('db/DBManager');
+	var Inflate       = require('utils/Inflate');
+	var Texture       = require('utils/Texture');
+	var BinaryWriter  = require('utils/BinaryWriter');
+	var Session       = require('engine/SessionStorage');
+	var Network       = require('network/networkManager');
+	var PACKET        = require('network/packets/structureTable');
+	var EntityManager = require('renderer/EntityManager');
 	var ChatBox       = require('UI/Components/ChatBox/ChatBox');
 	var MiniMap       = require('UI/Components/MiniMap/MiniMap');
 	var Guild         = require('UI/Components/Guild/Guild');
@@ -116,20 +116,20 @@ define(function( require )
 	 * @param {number} version
 	 * @param {function} callback
 	 */
-	GuildEngine.requestGuildEmblem = function requestGuildEmblem(guild_id, version, callback)
+	GuildEngine.requestGuildEmblem = function requestGuildEmblem(guildId, version, callback)
 	{
 		var emblem;
 
 		// Guild does not exist
-		if (!_emblems[guild_id]) {
-			_emblems[guild_id] = {
+		if (!_emblems[guildId]) {
+			_emblems[guildId] = {
 				version:  -1,
 				image:    new Image(),
 				callback: []
 			};
 		}
 
-		emblem = _emblems[guild_id];
+		emblem = _emblems[guildId];
 
 		// Lower version, update it to the current
 		if (version <= emblem.version) {
@@ -139,7 +139,7 @@ define(function( require )
 
 		// Ask for new version
 		var pkt  = new PACKET.CZ.REQ_GUILD_EMBLEM_IMG();
-		pkt.GDID = guild_id;
+		pkt.GDID = guildId;
 		Network.sendPacket(pkt);
 
 		emblem.callback.push(callback);
@@ -209,7 +209,7 @@ define(function( require )
 	GuildEngine.requestNoticeUpdate = function requestNoticeUpdate(subject, content)
 	{
 		var pkt  = new PACKET.CZ.GUILD_NOTICE();
-		pkt.GDID = GuildEngine.guild_id;
+		pkt.GDID = GuildEngine.guildId;
 		pkt.subject = subject;
 		pkt.notice  = content;
 
@@ -273,7 +273,7 @@ define(function( require )
 	GuildEngine.requestLeave = function requestLeave( AID, GID, reason)
 	{
 		var pkt = new PACKET.CZ.REQ_LEAVE_GUILD();
-		pkt.GDID = GuildEngine.guild_id;
+		pkt.GDID = GuildEngine.guildId;
 		pkt.AID = AID;
 		pkt.GID = GID;
 		pkt.reasonDesc = reason;
@@ -292,7 +292,7 @@ define(function( require )
 	GuildEngine.requestMemberExpel = function requestMemberExpel( AID, GID, reason)
 	{
 		var pkt = new PACKET.CZ.REQ_BAN_GUILD();
-		pkt.GDID = GuildEngine.guild_id;
+		pkt.GDID = GuildEngine.guildId;
 		pkt.AID = AID;
 		pkt.GID = GID;
 		pkt.reasonDesc = reason;
@@ -318,14 +318,14 @@ define(function( require )
 	/**
 	 * Request to delete an ally or antagonist
 	 *
-	 * @param {number} guild_id
+	 * @param {number} guild id
 	 * @param {number} relation (0 = Ally, 1 = Enemy)
 	 */
-	GuildEngine.requestDeleteRelatedGuild = function requestDeleteRelatedGuild( guild_id, relation)
+	GuildEngine.requestDeleteRelatedGuild = function requestDeleteRelatedGuild( guildId, relation)
 	{
 		var pkt = new PACKET.CZ.REQ_DELETE_RELATED_GUILD();
 
-		pkt.OpponentGDID = guild_id;
+		pkt.OpponentGDID = guildId;
 		pkt.Relation = relation;
 		Network.sendPacket(pkt);
 	};
@@ -371,7 +371,7 @@ define(function( require )
 	/**
 	 * @var {number} our guild id
 	 */
-	GuildEngine.guild_id = -1;
+	GuildEngine.guildId = -1;
 
 
 	/**
@@ -381,7 +381,7 @@ define(function( require )
 	 */
 	function onMemberTalk( pkt )
 	{
-		ChatBox.addText( pkt.msg, ChatBox.TYPE.GUILD );
+		ChatBox.addText( pkt.msg, ChatBox.Type.GUILD );
 	}
 
 
@@ -431,7 +431,7 @@ define(function( require )
 	 */
 	function onGuildOwnInfo( pkt )
 	{
-		GuildEngine.guild_id  = pkt.GDID;
+		GuildEngine.guildId  = pkt.GDID;
 
 		Session.hasGuild      = true;
 		Session.guildRight    = pkt.right;
@@ -496,7 +496,7 @@ define(function( require )
 				emblem.image = this;
 
 				// Update our guild emblem
-				if (pkt.GDID === GuildEngine.guild_id) {
+				if (pkt.GDID === GuildEngine.guildId) {
 					Guild.setEmblem(this);
 				}
 
@@ -510,8 +510,8 @@ define(function( require )
 					if (entity.GUID === pkt.GDID) {
 						entity.display.emblem = img;
 						entity.display.update(
-							entity.objecttype === entity.constructor.TYPE_MOB ? '#ffc6c6' :
-							entity.objecttype === entity.constructor.TYPE_NPC ? '#94bdf7' :
+							entity.objecttype === entity.constructor.Type.MOB ? '#ffc6c6' :
+							entity.objecttype === entity.constructor.Type.NPC ? '#94bdf7' :
 							'white'
 						);
 					}
@@ -594,8 +594,8 @@ define(function( require )
 	 */
 	function onGuildNotice( pkt )
 	{
-		ChatBox.addText('[ '+ pkt.subject +' ]', ChatBox.TYPE.GUILD, '#FFFF63');
-		ChatBox.addText('[ '+ pkt.notice +' ]', ChatBox.TYPE.GUILD, '#FFFF63');
+		ChatBox.addText('[ '+ pkt.subject +' ]', ChatBox.Type.GUILD, '#FFFF63');
+		ChatBox.addText('[ '+ pkt.notice +' ]', ChatBox.Type.GUILD, '#FFFF63');
 
 		Guild.setNotice( pkt.subject, pkt.notice );
 	}
@@ -622,20 +622,20 @@ define(function( require )
 		switch (pkt.result) {
 			case 0: // Success
 				Session.hasGuild = true;
-				ChatBox.addText( DB.getMessage(374), ChatBox.TYPE.BLUE);
+				ChatBox.addText( DB.getMessage(374), ChatBox.Type.BLUE);
 				Guild.show();
 				break;
 
 			case 1: // You are already in a Guild.#
-				ChatBox.addText( DB.getMessage(375), ChatBox.TYPE.ERROR);
+				ChatBox.addText( DB.getMessage(375), ChatBox.Type.ERROR);
 				break;
 
 			case 2: // That Guild Name already exists.
-				ChatBox.addText( DB.getMessage(376), ChatBox.TYPE.ERROR);
+				ChatBox.addText( DB.getMessage(376), ChatBox.Type.ERROR);
 				break;
 
 			case 3: // You need the neccessary item to create a Guild.
-				ChatBox.addText( DB.getMessage(405), ChatBox.TYPE.ERROR);
+				ChatBox.addText( DB.getMessage(405), ChatBox.Type.ERROR);
 				break;
 		}
 	}
@@ -652,15 +652,15 @@ define(function( require )
 			case 0: // success
 				Guild.hide();
 				Session.hasGuild = false;
-				ChatBox.addText( DB.getMessage(400), ChatBox.TYPE.BLUE);
+				ChatBox.addText( DB.getMessage(400), ChatBox.Type.BLUE);
 				break;
 
 			case 1: // invalid guild name
-				ChatBox.addText( DB.getMessage(401), ChatBox.TYPE.ERROR);
+				ChatBox.addText( DB.getMessage(401), ChatBox.Type.ERROR);
 				break;
 
 			case 2: // still members on the guild
-				ChatBox.addText( DB.getMessage(402), ChatBox.TYPE.ERROR);
+				ChatBox.addText( DB.getMessage(402), ChatBox.Type.ERROR);
 				break;
 		}
 	}
@@ -673,12 +673,12 @@ define(function( require )
 	 */
 	function onGuildInviteRequest( pkt )
 	{
-		var guild_id = pkt.GDID;
+		var guildId = pkt.GDID;
 
 		function answer(result) {
 			return function() {
 				var pkt    = new PACKET.CZ.JOIN_GUILD();
-				pkt.GDID   = guild_id;
+				pkt.GDID   = guildId;
 				pkt.answer = result;
 
 				Network.sendPacket(pkt);
@@ -698,19 +698,19 @@ define(function( require )
 	{
 		switch (pkt.answer) {
 			case 0: // Already in guild.
-				ChatBox.addText( DB.getMessage(378), ChatBox.TYPE.ERROR);
+				ChatBox.addText( DB.getMessage(378), ChatBox.Type.ERROR);
 				break;
 
 			case 1: // Offer rejected.
-				ChatBox.addText( DB.getMessage(379), ChatBox.TYPE.ERROR);
+				ChatBox.addText( DB.getMessage(379), ChatBox.Type.ERROR);
 				break;
 
 			case 2: // Offer accepted.
-				ChatBox.addText( DB.getMessage(380), ChatBox.TYPE.BLUE);
+				ChatBox.addText( DB.getMessage(380), ChatBox.Type.BLUE);
 				break;
 
 			case 3: // Guild full.
-				ChatBox.addText( DB.getMessage(381), ChatBox.TYPE.ERROR);
+				ChatBox.addText( DB.getMessage(381), ChatBox.Type.ERROR);
 				break;
 		}
 	}
@@ -736,8 +736,8 @@ define(function( require )
 	{
 		// %s has been expelled from our guild.
 		// Expulsion Reason: %s
-		ChatBox.addText(DB.getMessage(370).replace('%s', pkt.charName), ChatBox.TYPE.GUILD, '#FFFF00');
-		ChatBox.addText(DB.getMessage(371).replace('%s', pkt.reasonDesc), ChatBox.TYPE.GUILD, '#FFFF00');
+		ChatBox.addText(DB.getMessage(370).replace('%s', pkt.charName), ChatBox.Type.GUILD, '#FFFF00');
+		ChatBox.addText(DB.getMessage(371).replace('%s', pkt.reasonDesc), ChatBox.Type.GUILD, '#FFFF00');
 
 		// Seems like the server doesn't send other informations
 		// to remove the UI
@@ -760,8 +760,8 @@ define(function( require )
 	{
 		// %s has withdrawn from the guild
 		// Secession Reason: %s
-		ChatBox.addText(DB.getMessage(364).replace('%s', pkt.charName), ChatBox.TYPE.GUILD, '#FFFF00');
-		ChatBox.addText(DB.getMessage(365).replace('%s', pkt.reasonDesc), ChatBox.TYPE.GUILD, '#FFFF00');
+		ChatBox.addText(DB.getMessage(364).replace('%s', pkt.charName), ChatBox.Type.GUILD, '#FFFF00');
+		ChatBox.addText(DB.getMessage(365).replace('%s', pkt.reasonDesc), ChatBox.Type.GUILD, '#FFFF00');
 
 		// Seems like the server doesn't send other informations
 		// to remove the UI
@@ -830,27 +830,27 @@ define(function( require )
 	{
 		switch (pkt.answer) {
 			case 0: // Already allied.
-				ChatBox.addText(DB.getMessage(394), ChatBox.TYPE.ERROR);
+				ChatBox.addText(DB.getMessage(394), ChatBox.Type.ERROR);
 				break;
 
 			case 1: // You rejected the offer.
-				ChatBox.addText(DB.getMessage(395), ChatBox.TYPE.ERROR);
+				ChatBox.addText(DB.getMessage(395), ChatBox.Type.ERROR);
 				break;
 
 			case 2: // You accepted the offer.
-				ChatBox.addText(DB.getMessage(396), ChatBox.TYPE.BLUE);
+				ChatBox.addText(DB.getMessage(396), ChatBox.Type.BLUE);
 				break;
 
 			case 3: // They have too any alliances.
-				ChatBox.addText(DB.getMessage(397), ChatBox.TYPE.ERROR);
+				ChatBox.addText(DB.getMessage(397), ChatBox.Type.ERROR);
 				break;
 
 			case 4: // You have too many alliances.
-				ChatBox.addText(DB.getMessage(398), ChatBox.TYPE.ERROR);
+				ChatBox.addText(DB.getMessage(398), ChatBox.Type.ERROR);
 				break;
 
 			case 5: // Alliances are disabled.
-				ChatBox.addText(DB.getMessage(1717), ChatBox.TYPE.ERROR);
+				ChatBox.addText(DB.getMessage(1717), ChatBox.Type.ERROR);
 				break;
 		}
 	}
@@ -865,19 +865,19 @@ define(function( require )
 	{
 		switch (pkt.result) {
 			case 0: // Antagonist has been set.
-				ChatBox.addText(DB.getMessage(495), ChatBox.TYPE.BLUE);
+				ChatBox.addText(DB.getMessage(495), ChatBox.Type.BLUE);
 				break;
 
 			case 1: // Guild has too many Antagonists.
-				ChatBox.addText(DB.getMessage(496), ChatBox.TYPE.ERROR);
+				ChatBox.addText(DB.getMessage(496), ChatBox.Type.ERROR);
 				break;
 
 			case 2: // Already set as an Antagonist.
-				ChatBox.addText(DB.getMessage(497), ChatBox.TYPE.ERROR);
+				ChatBox.addText(DB.getMessage(497), ChatBox.Type.ERROR);
 				break;
 
 			case 3: // Antagonists are disabled.
-				ChatBox.addText(DB.getMessage(1718), ChatBox.TYPE.ERROR);
+				ChatBox.addText(DB.getMessage(1718), ChatBox.Type.ERROR);
 				break;
 		}
 	}

@@ -1,5 +1,5 @@
 /**
- * Engine/MapEngine/Main.js
+ * engine/Mapengine/Main.js
  *
  * Manage Entity based on received packets from server 
  *
@@ -16,14 +16,14 @@ define(function( require )
 	/**
 	 * Load dependencies
 	 */
-	var DB             = require('DB/DBManager');
-	var StatusProperty = require('DB/Status/StatusProperty');
-	var Session        = require('Engine/SessionStorage');
-	var Network        = require('Network/NetworkManager');
-	var PACKET         = require('Network/PacketStructure');
-	var EntityManager  = require('Renderer/EntityManager');
-	var Renderer       = require('Renderer/Renderer');
-	var Damage         = require('Renderer/Effects/Damage');
+	var DB             = require('db/DBManager');
+	var StatusProperty = require('db/status/StatusProperty');
+	var Session        = require('engine/SessionStorage');
+	var Network        = require('network/networkManager');
+	var PACKET         = require('network/packets/structureTable');
+	var EntityManager  = require('renderer/EntityManager');
+	var Renderer       = require('renderer/Renderer');
+	var Damage         = require('renderer/Effects/Damage');
 	var ChatBox        = require('UI/Components/ChatBox/ChatBox');
 	var ChatRoom       = require('UI/Components/ChatRoom/ChatRoom');
 	var BasicInfo      = require('UI/Components/BasicInfo/BasicInfo');
@@ -62,7 +62,7 @@ define(function( require )
 			return;
 		}
 
-		ChatBox.addText( pkt.msg, ChatBox.TYPE.PUBLIC | ChatBox.TYPE.SELF );
+		ChatBox.addText( pkt.msg, ChatBox.Type.PUBLIC | ChatBox.Type.SELF );
 		if (Session.Entity) {
 			Session.Entity.dialog.set( pkt.msg );
 		}
@@ -90,7 +90,7 @@ define(function( require )
 	 */
 	function onAttackRangeUpdate( pkt )
 	{
-		Session.Entity.attack_range = pkt.currentAttRange;
+		Session.Entity.attackRange = pkt.currentAttRange;
 	}
 
 
@@ -208,16 +208,16 @@ define(function( require )
 				break;
 
 			case StatusProperty.EXP:
-				BasicInfo.base_exp = amount;
-				if (BasicInfo.base_exp_next) {
-					BasicInfo.update('bexp', BasicInfo.base_exp, BasicInfo.base_exp_next );
+				BasicInfo.baseExp = amount;
+				if (BasicInfo.baseExpNext) {
+					BasicInfo.update('bexp', BasicInfo.baseExp, BasicInfo.baseExpNext );
 				}
 				break;
 
 			case StatusProperty.JOBEXP:
-				BasicInfo.job_exp = amount;
-				if (BasicInfo.job_exp_next) {
-					BasicInfo.update('jexp', BasicInfo.job_exp, BasicInfo.job_exp_next );
+				BasicInfo.jobExp = amount;
+				if (BasicInfo.jobExpNext) {
+					BasicInfo.update('jexp', BasicInfo.jobExp, BasicInfo.jobExpNext );
 				}
 				break;
 
@@ -230,24 +230,24 @@ define(function( require )
 				Session.Entity.life.hp = amount;
 				Session.Entity.life.update();
 
-				if (Session.Entity.life.hp_max > -1) {
-					BasicInfo.update('hp', Session.Entity.life.hp, Session.Entity.life.hp_max);
+				if (Session.Entity.life.hpMax > -1) {
+					BasicInfo.update('hp', Session.Entity.life.hp, Session.Entity.life.hpMax);
 
 					if (Session.hasParty) {
-						PartyUI.updateMemberLife(Session.AID, Session.Entity.life.canvas, Session.Entity.life.hp, Session.Entity.life.hp_max);
+						PartyUI.updateMemberLife(Session.AID, Session.Entity.life.canvas, Session.Entity.life.hp, Session.Entity.life.hpMax);
 					}
 				}
 				break;
 
 			case StatusProperty.MAXHP:
-				Session.Entity.life.hp_max = amount;
+				Session.Entity.life.hpMax = amount;
 				Session.Entity.life.update();
 
 				if (Session.Entity.life.hp > -1) {
-					BasicInfo.update('hp', Session.Entity.life.hp, Session.Entity.life.hp_max);
+					BasicInfo.update('hp', Session.Entity.life.hp, Session.Entity.life.hpMax);
 
 					if (Session.hasParty) {
-						PartyUI.updateMemberLife(Session.AID, Session.Entity.life.canvas, Session.Entity.life.hp, Session.Entity.life.hp_max);
+						PartyUI.updateMemberLife(Session.AID, Session.Entity.life.canvas, Session.Entity.life.hp, Session.Entity.life.hpMax);
 					}
 				}
 				break;
@@ -256,17 +256,17 @@ define(function( require )
 				Session.Entity.life.sp = amount;
 				Session.Entity.life.update();
 
-				if (Session.Entity.life.sp_max > -1) {
-					BasicInfo.update('sp', Session.Entity.life.sp, Session.Entity.life.sp_max);
+				if (Session.Entity.life.spMax > -1) {
+					BasicInfo.update('sp', Session.Entity.life.sp, Session.Entity.life.spMax);
 				}
 				break;
 
 			case StatusProperty.MAXSP:
-				Session.Entity.life.sp_max = amount;
+				Session.Entity.life.spMax = amount;
 				Session.Entity.life.update();
 
 				if (Session.Entity.life.sp > -1) {
-					BasicInfo.update('sp', Session.Entity.life.sp, Session.Entity.life.sp_max);
+					BasicInfo.update('sp', Session.Entity.life.sp, Session.Entity.life.spMax);
 				}
 				break;
 
@@ -318,30 +318,30 @@ define(function( require )
 				break;
 
 			case StatusProperty.MAXEXP:
-				BasicInfo.base_exp_next = amount;
-				if (BasicInfo.base_exp > -1) {
-					BasicInfo.update('bexp', BasicInfo.base_exp, BasicInfo.base_exp_next );
+				BasicInfo.baseExpNext = amount;
+				if (BasicInfo.baseExp > -1) {
+					BasicInfo.update('bexp', BasicInfo.baseExp, BasicInfo.baseExpNext );
 				}
 				break;
 
 			case StatusProperty.MAXJOBEXP:
-				BasicInfo.job_exp_next = amount;
-				if (BasicInfo.job_exp > -1) {
-					BasicInfo.update('jexp', BasicInfo.job_exp, BasicInfo.job_exp_next );
+				BasicInfo.jobExpNext = amount;
+				if (BasicInfo.jobExp > -1) {
+					BasicInfo.update('jexp', BasicInfo.jobExp, BasicInfo.jobExpNext );
 				}
 				break;
 
 			case StatusProperty.WEIGHT:
 				BasicInfo.weight = amount;
-				if (BasicInfo.weight_max > -1) {
-					BasicInfo.update('weight', BasicInfo.weight, BasicInfo.weight_max );
+				if (BasicInfo.weightMax > -1) {
+					BasicInfo.update('weight', BasicInfo.weight, BasicInfo.weightMax );
 				}
 				break;
 
 			case StatusProperty.MAXWEIGHT:
-				BasicInfo.weight_max = amount;
+				BasicInfo.weightMax = amount;
 				if (BasicInfo.weight > -1) {
-					BasicInfo.update('weight', BasicInfo.weight, BasicInfo.weight_max );
+					BasicInfo.update('weight', BasicInfo.weight, BasicInfo.weightMax );
 				}
 				break;
 
@@ -460,7 +460,7 @@ define(function( require )
 			color = '#FFFF00';
 		}
 		
-		ChatBox.addText( pkt.msg, ChatBox.TYPE.ANNOUNCE, color );
+		ChatBox.addText( pkt.msg, ChatBox.Type.ANNOUNCE, color );
 		Announce.append();
 		Announce.set( pkt.msg, color );
 	}
@@ -472,7 +472,7 @@ define(function( require )
 	 */
 	function onPlayerCountAnswer( pkt )
 	{
-		ChatBox.addText( DB.getMessage(178).replace('%d', pkt.count), ChatBox.TYPE.INFO );
+		ChatBox.addText( DB.getMessage(178).replace('%d', pkt.count), ChatBox.Type.INFO );
 	}
 
 
@@ -490,7 +490,7 @@ define(function( require )
 				Equipment.setEquipConfig( pkt.Value );
 				ChatBox.addText(
 					DB.getMessage(1358 + (pkt.Value ? 1 : 0) ),
-					ChatBox.TYPE.INFO
+					ChatBox.Type.INFO
 				);
 				break;
 
@@ -508,20 +508,20 @@ define(function( require )
 	{
 		switch (pkt.errorCode) {
 			case 0: // Please equip the proper amnution first
-				ChatBox.addText( DB.getMessage(242), ChatBox.TYPE.ERROR );
+				ChatBox.addText( DB.getMessage(242), ChatBox.Type.ERROR );
 				break;
 
 			case 1:  // You can't Attack or use Skills because your Weight Limit has been exceeded.
-				ChatBox.addText( DB.getMessage(243), ChatBox.TYPE.ERROR );
+				ChatBox.addText( DB.getMessage(243), ChatBox.Type.ERROR );
 				break;
 
 			case 2: // You can't use Skills because Weight Limit has been exceeded.
-				ChatBox.addText( DB.getMessage(244), ChatBox.TYPE.ERROR );
+				ChatBox.addText( DB.getMessage(244), ChatBox.Type.ERROR );
 				break;
 
 			case 3: // Ammunition has been equipped.
 				// TODO: check the class - assassin: 1040 | gunslinger: 1175 | default: 245
-				ChatBox.addText( DB.getMessage(245), ChatBox.TYPE.BLUE );
+				ChatBox.addText( DB.getMessage(245), ChatBox.Type.BLUE );
 				break;
 		}
 	}
@@ -534,7 +534,7 @@ define(function( require )
 	 */
 	function onMessage( pkt )
 	{
-		ChatBox.addText( DB.getMessage(pkt.msg), ChatBox.TYPE.PUBLIC );
+		ChatBox.addText( DB.getMessage(pkt.msg), ChatBox.Type.PUBLIC );
 	}
 
 
@@ -548,24 +548,24 @@ define(function( require )
 		switch (pkt.varID) {
 
 			case StatusProperty.HP:
-				Damage.add( pkt.amount, Session.Entity, Renderer.tick, Damage.TYPE.HEAL );
+				Damage.add( pkt.amount, Session.Entity, Renderer.tick, Damage.Type.HEAL );
 
 				Session.Entity.life.hp += pkt.amount;
 				Session.Entity.life.update();
 
-				if (Session.Entity.life.hp_max > -1) {
-					BasicInfo.update('hp', Session.Entity.life.hp, Session.Entity.life.hp_max);
+				if (Session.Entity.life.hpMax > -1) {
+					BasicInfo.update('hp', Session.Entity.life.hp, Session.Entity.life.hpMax);
 				}
 				break;
 
 			case StatusProperty.SP:
-				Damage.add( pkt.amount, Session.Entity, Renderer.tick, Damage.TYPE.HEAL | Damage.TYPE.SP );
+				Damage.add( pkt.amount, Session.Entity, Renderer.tick, Damage.Type.HEAL | Damage.Type.SP );
 
 				Session.Entity.life.sp += pkt.amount;
 				Session.Entity.life.update();
 
-				if (Session.Entity.life.sp_max > -1) {
-					BasicInfo.update('sp', Session.Entity.life.sp, Session.Entity.life.sp_max);
+				if (Session.Entity.life.spMax > -1) {
+					BasicInfo.update('sp', Session.Entity.life.sp, Session.Entity.life.spMax);
 				}
 				break;
 		}
@@ -575,7 +575,7 @@ define(function( require )
 	/**
 	 * Initialize
 	 */
-	return function MainEngine()
+	return function mainEngine()
 	{
 		Network.hookPacket( PACKET.ZC.NOTIFY_PLAYERMOVE,           onPlayerMove );
 		Network.hookPacket( PACKET.ZC.PAR_CHANGE,                  onParameterChange );

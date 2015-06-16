@@ -14,12 +14,12 @@ define(function( require )
 
 
 	// Load dependencies
-	var jQuery        = require('Utils/jquery');
-	var Client        = require('Core/Client');
-	var MemoryManager = require('Core/MemoryManager');
-	var Graphics      = require('Preferences/Graphics');
-	var Sprite        = require('Loaders/Sprite');
-	var Action        = require('Loaders/Action');
+	var jQuery        = require('utils/jquery');
+	var Client        = require('core/Client');
+	var MemoryManager = require('core/MemoryManager');
+	var Graphics      = require('preferences/Graphics');
+	var Sprite        = require('loaders/Sprite');
+	var Action        = require('loaders/Action');
 	var getModule     = require;
 
 
@@ -175,10 +175,10 @@ define(function( require )
 
 		});
 
-		EntityManager  = getModule('Renderer/EntityManager');
-		Entity         = getModule('Renderer/Entity/Entity');
-		SpriteRenderer = getModule('Renderer/SpriteRenderer');
-		Mouse          = getModule('Controls/MouseEventHandler');
+		EntityManager  = getModule('renderer/EntityManager');
+		Entity         = getModule('renderer/Entity/Entity');
+		SpriteRenderer = getModule('renderer/SpriteRenderer');
+		Mouse          = getModule('controls/MouseEventHandler');
 	};
 
 
@@ -302,7 +302,7 @@ define(function( require )
 	 * @param {boolean} norepeat - repeat animation ?
 	 * @param {number} animation numero (optional)
 	 */
-	Cursor.setType = function SetType( type, norepeat, animation )
+	Cursor.setType = function setType( type, norepeat, animation )
 	{
 		if (Cursor.freeze) {
 			return;
@@ -365,8 +365,8 @@ define(function( require )
 			var entity = EntityManager.getOverEntity();
 
 			if (entity &&
-			    (entity.objecttype === Entity.TYPE_MOB ||
-			     entity.objecttype === Entity.TYPE_ITEM)) {
+			    (entity.objecttype === Entity.Type.MOB ||
+			     entity.objecttype === Entity.Type.ITEM)) {
 				x += Math.floor( Mouse.screen.x - (entity.boundingRect.x1 + (entity.boundingRect.x2-entity.boundingRect.x1) / 2));
 				y += Math.floor( Mouse.screen.y - (entity.boundingRect.y1 + (entity.boundingRect.y2-entity.boundingRect.y1) / 2));
 			}

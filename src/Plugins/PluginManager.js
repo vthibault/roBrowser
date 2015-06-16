@@ -1,5 +1,5 @@
 /**
- * Plugins/PluginManager.js
+ * plugins/PluginManager.js
  *
  * Plugin Manager - Load and execute plugins
  * Plugins have to be globals, can not be server specific (multiple server in one clientinfo)
@@ -20,7 +20,7 @@ define(function( require )
 	/**
 	 * Plugins are loaded from configs
 	 */
-	var Configs = require('Core/Configs');
+	var Configs = require('core/Configs');
 
 
 	/**

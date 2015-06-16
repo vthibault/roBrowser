@@ -1,5 +1,5 @@
 /**
- * Renderer/Map/GridSelectior.js
+ * renderer/Map/GridSelectior.js
  *
  * Rendering Grid Selector
  *
@@ -7,7 +7,7 @@
  *
  * @author Vincent Thibault
  */
-define( ['Renderer/Map/Altitude', 'Core/Client', 'Utils/WebGL', 'Utils/Texture'],
+define( ['renderer/Map/Altitude', 'core/Client', 'utils/WebGL', 'utils/Texture'],
 function(              Altitude,        Client,         WebGL,         Texture )
 {
 	'use strict';
@@ -41,7 +41,7 @@ function(              Altitude,        Client,         WebGL,         Texture )
 	 * WebGL buffer array
 	 * x, y, z, u, v
 	 */
-	var _buffer_data = new Float32Array([
+	var _bufferData = new Float32Array([
 		0.0, 0.0, 0.0, 0.0, 0.0,
 		0.0, 0.0, 0.0, 1.0, 0.0,
 		0.0, 0.0, 0.0, 0.0, 1.0,
@@ -184,16 +184,16 @@ function(              Altitude,        Client,         WebGL,         Texture )
 			_xy = x+''+y;
 			z   = Altitude.getCell(x, y);
 
-			_buffer_data[0]  = _buffer_data[10] = x+0;
-			_buffer_data[2]  = _buffer_data[7]  = y+0;
-			_buffer_data[5]  = _buffer_data[15] = x+1;
-			_buffer_data[12] = _buffer_data[17] = y+1;
-			_buffer_data[1]  = z[0];
-			_buffer_data[6]  = z[1];
-			_buffer_data[11] = z[2];
-			_buffer_data[16] = z[3];
+			_bufferData[0]  = _bufferData[10] = x+0;
+			_bufferData[2]  = _bufferData[7]  = y+0;
+			_bufferData[5]  = _bufferData[15] = x+1;
+			_bufferData[12] = _bufferData[17] = y+1;
+			_bufferData[1]  = z[0];
+			_bufferData[6]  = z[1];
+			_bufferData[11] = z[2];
+			_bufferData[16] = z[3];
 
-			gl.bufferData( gl.ARRAY_BUFFER, _buffer_data, gl.STREAM_DRAW );
+			gl.bufferData( gl.ARRAY_BUFFER, _bufferData, gl.STREAM_DRAW );
 		}
 
 		// Send mesh

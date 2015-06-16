@@ -1,5 +1,5 @@
 /**
- * DB/Skills/SkillUnit.js
+ * db/skills/SkillUnit.js
  *
  * Zone effects
  *

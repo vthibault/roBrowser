@@ -1,5 +1,5 @@
 /**
- * Renderer/EntityWalk.js
+ * renderer/EntityWalk.js
  *
  * Manage entity walking action
  *
@@ -7,7 +7,7 @@
  *
  * @author Vincent Thibault
  */
-define( ['Audio/SoundManager'], function( SoundManager )
+define( ['audio/soundManager'], function( SoundManager )
 {
 	'use strict';
 
@@ -35,7 +35,7 @@ define( ['Audio/SoundManager'], function( SoundManager )
 	Sound.prototype.play = function play( fileName, action, animation )
 	{
 		// Pet does not produce sound
-		if (this.entity.objecttype === this.entity.constructor.TYPE_PET) {
+		if (this.entity.objecttype === this.entity.constructor.Type.PET) {
 			return;
 		}
 

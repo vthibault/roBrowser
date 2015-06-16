@@ -1,5 +1,5 @@
 /**
- * App/MapViewer.js
+ * app/mapViewer.js
  *
  * Start a hacked map-viewer
  *
@@ -26,16 +26,16 @@ require.onError = function (err) {
 require({
 	baseUrl: './src/',
 	paths: {
-		text:   'Vendors/text.require',
-		jquery: 'Vendors/jquery-1.9.1'
+		text:   'vendors/text.require',
+		jquery: 'vendors/jquery-1.9.1'
 	}
 },
-	['Utils/Queue',
-	 'Core/Configs', 'Core/Client', 'Core/Thread',
-	 'Audio/BGM',
-	 'Engine/SessionStorage',
-	 'Renderer/Renderer', 'Renderer/MapRenderer', 'Renderer/Camera', 'Renderer/Map/Altitude', 'Renderer/Entity/Entity',
-	 'Controls/MouseEventHandler', 'Controls/MapControl',
+	['utils/Queue',
+	 'core/Configs', 'core/Client', 'core/Thread',
+	 'audio/BGM',
+	 'engine/SessionStorage',
+	 'renderer/Renderer', 'renderer/MapRenderer', 'renderer/Camera', 'renderer/Map/Altitude', 'renderer/Entity/Entity',
+	 'controls/MouseEventHandler', 'controls/MapControl',
 	 'UI/Components/Intro/Intro'],
 
 function(
@@ -71,7 +71,7 @@ function(
 	/**
 	 * Initialize MapViewer
 	 */
-	MapViewer.init = function Init()
+	MapViewer.init = function init()
 	{
 		// Increase max intersection test (because of the max zoom)
 		Altitude.MAX_INTERSECT_COUNT = 500;
@@ -185,7 +185,7 @@ function(
 					MapViewer.dropDown.add( new Option( mapList[i], mapList[i]), null );
 				}
 
-				MapViewer.dropDown.onchange = function OnChange() {
+				MapViewer.dropDown.onchange = function onChange() {
 					MapRenderer.setMap( this.value );
 					document.body.removeChild( MapViewer.dropDown );
 				};
@@ -223,7 +223,7 @@ function(
 	/**
 	 * Overwrite Map Engine mouse down
 	 */
-	MapViewer.onMouseDown = function OnMouseDown()
+	MapViewer.onMouseDown = function onMouseDown()
 	{
 		if (Mouse.world.x > -1 && Mouse.world.y > -1) {
 			MapViewer.spot.position[0] = Mouse.world.x;

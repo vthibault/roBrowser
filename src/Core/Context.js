@@ -1,5 +1,5 @@
 /**
- * Core/Context.js
+ * core/Context.js
  *
  * Application Context
  *
@@ -13,16 +13,13 @@ define(function()
 	'use strict';
 
 
-	var Context = {};
-
-
 	/**
 	 * Get Informations about current Context
 	 */
-	Context.Is = {
+	var isType = {
 		APP:   !!(window.chrome && window.chrome.app && window.chrome.app.window),
 		POPUP: !!(window.opener),
-		FRAME:    window.top !== window.self
+		FRAME:   (window.top !== window.self)
 	};
 
 
@@ -30,28 +27,28 @@ define(function()
 	 * Check if roBrowser is in FullScreen
 	 * @returns {boolean} is in fullscreen
 	 */
-	Context.isFullScreen = function IsFullScreen()
+	function isFullScreen()
 	{
 		return !!(
 			document.fullscreenElement ||
 			document.mozFullScreenElement ||
 			document.webkitFullscreenElement ||
-			( Context.Is.APP && window.chrome.app.window.current().isFullscreen() )
+			(isType.APP && window.chrome.app.window.current().isFullscreen())
 		);
-	};
+	}
 
 
 	/**
 	 * Try to launch roBrowser in Full Screen
 	 */
-	Context.requestFullScreen = function RequestFullScreen()
+	function requestFullScreen()
 	{
-		if (Context.Is.APP) {
+		if (isType.APP) {
 			window.chrome.app.window.current().fullscreen();
 			return;
 		}
 
-		if (!Context.isFullScreen()) {
+		if (!isFullScreen()) {
 			var element = document.documentElement;
 
 			if (element.requestFullscreen) {
@@ -64,15 +61,15 @@ define(function()
 				element.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
 			}
 		}
-	};
+	}
 
 
 	/**
 	 * Try to cancel roBrowser full screen
 	 */
-	Context.cancelFullScreen = function CancelFullScreen()
+	function cancelFullScreen()
 	{
-		if (Context.Is.APP) {
+		if (isType.APP) {
 			window.chrome.app.window.current().restore();
 			return;
 		}
@@ -86,7 +83,7 @@ define(function()
 		else if (document.webkitCancelFullScreen) {
 			document.webkitCancelFullScreen();
 		}
-	};
+	}
 
 
 	/**
@@ -95,7 +92,7 @@ define(function()
 	 *
 	 * (2D graphics, 3D graphics, Threads, File API, ...)
 	 */
-	Context.checkSupport = function CheckSupport()
+	function checkSupport()
 	{
 		var div, canvas, element, gl;
 
@@ -138,11 +135,17 @@ define(function()
 		if (!window.DataView || !DataView.prototype.getFloat64) {
 			throw 'Your web browser need to be updated, it does not support File API (DataView).';
 		}
-	};
+	}
 
 
 	/**
 	 * Export
 	 */
-	return Context;
+	return {
+		Is:                isType,
+		checkSupport:      checkSupport,
+		requestFullScreen: requestFullScreen,
+		cancelFullScreen:  cancelFullScreen,
+		isFullScreen:      isFullScreen
+	};
 });

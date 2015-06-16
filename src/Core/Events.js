@@ -1,5 +1,5 @@
 /**
- * Core/Events.js
+ * core/Events.js
  *
  * Client Manager
  * Manage client files, load GRFs, DATA.INI, extract files from GRFs, ...

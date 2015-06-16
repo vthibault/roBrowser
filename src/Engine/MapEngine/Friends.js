@@ -1,5 +1,5 @@
 /**
- * Engine/MapEngine/Friends.js
+ * engine/Mapengine/Friends.js
  *
  * Manage friends
  *
@@ -16,9 +16,9 @@ define(function( require )
 	/**
 	 * Load dependencies
 	 */
-	var DB            = require('DB/DBManager');
-	var Network       = require('Network/NetworkManager');
-	var PACKET        = require('Network/PacketStructure');
+	var DB            = require('db/DBManager');
+	var Network       = require('network/networkManager');
+	var PACKET        = require('network/packets/structureTable');
 	var UIManager     = require('UI/UIManager');
 	var ChatBox       = require('UI/Components/ChatBox/ChatBox');
 	var FriendUI      = require('UI/Components/PartyFriends/PartyFriends');
@@ -149,7 +149,7 @@ define(function( require )
 			}
 		}
 
-		ChatBox.addText( '[ To Friends ] : ' + pkt.msg, ChatBox.TYPE.PRIVATE );
+		ChatBox.addText( '[ To Friends ] : ' + pkt.msg, ChatBox.Type.PRIVATE );
 	};
 
 
@@ -216,7 +216,7 @@ define(function( require )
 
 		switch (pkt.Result) {
 			case 0: // "You have become friends with (%s)."
-				ChatBox.addText( DB.getMessage(821).replace('%s', pkt.Name), ChatBox.TYPE.BLUE);
+				ChatBox.addText( DB.getMessage(821).replace('%s', pkt.Name), ChatBox.Type.BLUE);
 
 				idx = getFriendIndex( pkt.AID, pkt.GID);
 
@@ -235,15 +235,15 @@ define(function( require )
 				break;
 
 			case 1: // "(%s) does not want to be friends with you."
-				ChatBox.addText( DB.getMessage(822).replace('%s', pkt.Name), ChatBox.TYPE.ERROR);
+				ChatBox.addText( DB.getMessage(822).replace('%s', pkt.Name), ChatBox.Type.ERROR);
 				break;
 
 			case 2: // "Your Friend List is full."
-				ChatBox.addText( DB.getMessage(819), ChatBox.TYPE.ERROR);
+				ChatBox.addText( DB.getMessage(819), ChatBox.Type.ERROR);
 				break;
 
 			case 3: // "(%s)'s Friend List is full."
-				ChatBox.addText( DB.getMessage(820).replace('%s', pkt.Name), ChatBox.TYPE.ERROR);
+				ChatBox.addText( DB.getMessage(820).replace('%s', pkt.Name), ChatBox.Type.ERROR);
 				break;
 		}
 	}

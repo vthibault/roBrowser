@@ -1,5 +1,5 @@
 /**
- * Engine/GameEngine.js
+ * engine/GameEngine.js
  *
  * Game Engine
  * Global game Engine
@@ -15,19 +15,19 @@ define(function( require )
 
 
 	// Load dependencies
-	var jQuery      = require('Utils/jquery');
-	var Queue       = require('Utils/Queue');
-	var Sound       = require('Audio/SoundManager');
-	var BGM         = require('Audio/BGM');
-	var DB          = require('DB/DBManager');
-	var Configs     = require('Core/Configs');
-	var Client      = require('Core/Client');
-	var Thread      = require('Core/Thread');
-	var Context     = require('Core/Context');
-	var LoginEngine = require('Engine/LoginEngine');
-	var Network     = require('Network/NetworkManager');
-	var Renderer    = require('Renderer/Renderer');
-	var MapRenderer = require('Renderer/MapRenderer');
+	var jQuery      = require('utils/jquery');
+	var Queue       = require('utils/Queue');
+	var Sound       = require('audio/soundManager');
+	var BGM         = require('audio/BGM');
+	var DB          = require('db/DBManager');
+	var Configs     = require('core/Configs');
+	var Client      = require('core/Client');
+	var Thread      = require('core/Thread');
+	var Context     = require('core/Context');
+	var LoginEngine = require('engine/LoginEngine');
+	var Network     = require('network/networkManager');
+	var Renderer    = require('renderer/Renderer');
+	var MapRenderer = require('renderer/MapRenderer');
 	var UIManager   = require('UI/UIManager');
 	var Cursor      = require('UI/CursorManager');
 	var Scrollbar   = require('UI/Scrollbar');
@@ -45,7 +45,7 @@ define(function( require )
 	/**
 	 * @var {boolean} is thread ready ? (fix)
 	 */
-	var _thread_ready = false;
+	var _threadReady = false;
 
 
 	/**
@@ -57,11 +57,11 @@ define(function( require )
 
 		// Waiting for the Thread to be ready
 		q.add(function(){
-			if (!_thread_ready) {
+			if (!_threadReady) {
 				Thread.hook('THREAD_ERROR', onThreadError );
 				Thread.hook('THREAD_LOG',   onThreadLog );
 				Thread.hook('THREAD_READY', function(){
-					_thread_ready = true;
+					_threadReady = true;
 					q._next();
 				});
 				Thread.init();

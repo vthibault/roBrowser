@@ -1,5 +1,5 @@
 /**
- * Engine/MapEngine/Store.js
+ * engine/Mapengine/Store.js
  *
  * Manage npc store (buy/sell items)
  *
@@ -15,10 +15,10 @@ define(function( require )
 	/**
 	 * Load dependencies
 	 */
-	var DB            = require('DB/DBManager');
-	var Network       = require('Network/NetworkManager');
-	var PACKET        = require('Network/PacketStructure');
-	var EntityManager = require('Renderer/EntityManager');
+	var DB            = require('db/DBManager');
+	var Network       = require('network/networkManager');
+	var PACKET        = require('network/packets/structureTable');
+	var EntityManager = require('renderer/EntityManager');
 	var NpcStore      = require('UI/Components/NpcStore/NpcStore');
 	var ChatBox       = require('UI/Components/ChatBox/ChatBox');
 
@@ -62,14 +62,14 @@ define(function( require )
 		NpcStore.remove();
 
 		switch (pkt.result) {
-			case 0:  ChatBox.addText( DB.getMessage(54),   ChatBox.TYPE.BLUE);  break; // success
-			case 1:  ChatBox.addText( DB.getMessage(55),   ChatBox.TYPE.ERROR); break; // zeny
-			case 2:  ChatBox.addText( DB.getMessage(56),   ChatBox.TYPE.ERROR); break; // overweight
-			case 4:  ChatBox.addText( DB.getMessage(230),  ChatBox.TYPE.ERROR); break; // out of stock
-			case 5:  ChatBox.addText( DB.getMessage(281),  ChatBox.TYPE.ERROR); break; // trade
+			case 0:  ChatBox.addText( DB.getMessage(54),   ChatBox.Type.BLUE);  break; // success
+			case 1:  ChatBox.addText( DB.getMessage(55),   ChatBox.Type.ERROR); break; // zeny
+			case 2:  ChatBox.addText( DB.getMessage(56),   ChatBox.Type.ERROR); break; // overweight
+			case 4:  ChatBox.addText( DB.getMessage(230),  ChatBox.Type.ERROR); break; // out of stock
+			case 5:  ChatBox.addText( DB.getMessage(281),  ChatBox.Type.ERROR); break; // trade
 			// case 6: 6 = Because the store information was incorrect the item was not purchased.
-			case 7:  ChatBox.addText( DB.getMessage(1797), ChatBox.TYPE.ERROR); break; // no sale information
-			default: ChatBox.addText( DB.getMessage(57),   ChatBox.TYPE.ERROR); break; // deal failed
+			case 7:  ChatBox.addText( DB.getMessage(1797), ChatBox.Type.ERROR); break; // no sale information
+			default: ChatBox.addText( DB.getMessage(57),   ChatBox.Type.ERROR); break; // deal failed
 		}
 	}
 
@@ -114,12 +114,12 @@ define(function( require )
 
 		// success
 		if (pkt.result === 0) {
-			ChatBox.addText( DB.getMessage(54), ChatBox.TYPE.BLUE);
+			ChatBox.addText( DB.getMessage(54), ChatBox.Type.BLUE);
 		}
 
 		// Fail
 		else {
-			ChatBox.addText( DB.getMessage(57), ChatBox.TYPE.ERROR);
+			ChatBox.addText( DB.getMessage(57), ChatBox.Type.ERROR);
 		}
 	}
 
@@ -172,7 +172,7 @@ define(function( require )
 	/**
 	 * Initialize
 	 */
-	return function MainEngine()
+	return function storeEngine()
 	{
 		Network.hookPacket( PACKET.ZC.PC_PURCHASE_ITEMLIST,         onBuyList );
 		Network.hookPacket( PACKET.ZC.PC_PURCHASE_RESULT,           onBuyResult );

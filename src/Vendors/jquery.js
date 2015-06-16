@@ -1,5 +1,5 @@
 /**
- * Vendors/jquery.js
+ * vendors/jquery.js
  *
  * jQuery support for AMD is bad, have to use a hack to get it work
  *

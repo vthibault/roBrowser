@@ -1,5 +1,5 @@
 /**
- * Engine/MapEngine/PrivateMessage.js
+ * engine/Mapengine/PrivateMessage.js
  *
  * Manage Entity based on received packets from server 
  *
@@ -16,10 +16,10 @@ define(function( require )
 	/**
 	 * Load dependencies
 	 */
-	var DB            = require('DB/DBManager');
-	var Friends       = require('Engine/MapEngine/Friends');
-	var Network       = require('Network/NetworkManager');
-	var PACKET        = require('Network/PacketStructure');
+	var DB            = require('db/DBManager');
+	var Friends       = require('engine/Mapengine/Friends');
+	var Network       = require('network/networkManager');
+	var PACKET        = require('network/packets/structureTable');
 	var ChatBox       = require('UI/Components/ChatBox/ChatBox');
 
 
@@ -31,7 +31,7 @@ define(function( require )
 	function onPrivateMessage( pkt )
 	{
 		var prefix = Friends.isFriend(pkt.sender) ? DB.getMessage(102) : 'From';
-		ChatBox.addText('[ '+ prefix +' '+ pkt.sender +' ] : ' + pkt.msg.replace(/\|\d{2}/, ''), ChatBox.TYPE.PRIVATE );
+		ChatBox.addText('[ '+ prefix +' '+ pkt.sender +' ] : ' + pkt.msg.replace(/\|\d{2}/, ''), ChatBox.Type.PRIVATE );
 		ChatBox.saveNickName(pkt.sender);
 	}
 
@@ -49,11 +49,11 @@ define(function( require )
 		
 		if (pkt.result === 0) {
 			if (user && msg) {
-				ChatBox.addText( '[ To '+ user +' ] : ' + msg, ChatBox.TYPE.PRIVATE );
+				ChatBox.addText( '[ To '+ user +' ] : ' + msg, ChatBox.Type.PRIVATE );
 			}
 		}
 		else {
-			ChatBox.addText( '('+ user +') : ' + DB.getMessage(147 + pkt.result),  ChatBox.TYPE.PRIVATE );
+			ChatBox.addText( '('+ user +') : ' + DB.getMessage(147 + pkt.result),  ChatBox.Type.PRIVATE );
 		}
 	
 		ChatBox.PrivateMessageStorage.nick = '';
@@ -64,7 +64,7 @@ define(function( require )
 	/**
 	 * Initialize
 	 */
-	return function PrivateMessageEngine()
+	return function privateMessageEngine()
 	{
 		Network.hookPacket( PACKET.ZC.WHISPER,      onPrivateMessage );
 		Network.hookPacket( PACKET.ZC.ACK_WHISPER,  onPrivateMessageSent );

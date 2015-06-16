@@ -14,12 +14,12 @@ define(function( require )
 
 	// Load dependencies
 	var CommonCSS = require('text!./Common.css');
-	var jQuery    = require('Utils/jquery');
+	var jQuery    = require('utils/jquery');
 	var Cursor    = require('./CursorManager');
-	var DB        = require('DB/DBManager');
-	var Client    = require('Core/Client');
-	var Events    = require('Core/Events');
-	var Mouse     = require('Controls/MouseEventHandler');
+	var DB        = require('db/DBManager');
+	var Client    = require('core/Client');
+	var Events    = require('core/Events');
+	var Mouse     = require('controls/MouseEventHandler');
 	var getModule = require;
 
 
@@ -141,7 +141,7 @@ define(function( require )
 
 					if(_enter === 0 && _intersect) {
 						Mouse.intersect = true;
-						getModule('Renderer/EntityManager').setOverEntity(null);
+						getModule('renderer/EntityManager').setOverEntity(null);
 					}
 				}
 			});
@@ -153,7 +153,7 @@ define(function( require )
 					_enter = 0;
 					if(_intersect) {
 						Mouse.intersect = true;
-						getModule('Renderer/EntityManager').setOverEntity(null);
+						getModule('renderer/EntityManager').setOverEntity(null);
 					}
 				}
 			});
@@ -428,8 +428,8 @@ define(function( require )
 
 		var preloads, i, count;
 
-		var bg_uri    = null;
-		var hover_uri = null;
+		var bgURI    = null;
+		var hoverURI = null;
 
 		// text
 		if (msgId && DB.getMessage(msgId, '')) {
@@ -439,17 +439,17 @@ define(function( require )
 		// Default background
 		if (background) {
 			Client.loadFile( DB.INTERFACE_PATH + background, function(dataURI) {
-				bg_uri = dataURI;
-				$node.css('backgroundImage', 'url(' + bg_uri + ')');
+				bgURI = dataURI;
+				$node.css('backgroundImage', 'url(' + bgURI + ')');
 			});
 		}
 
 		// On mouse over
 		if (hover) {
 			Client.loadFile( DB.INTERFACE_PATH + hover, function(dataURI){
-				hover_uri = dataURI;
-				$node.mouseover(function(){ this.style.backgroundImage = 'url(' + hover_uri + ')'; });
-				$node.mouseout( function(){ this.style.backgroundImage = 'url(' + bg_uri    + ')'; });
+				hoverURI = dataURI;
+				$node.mouseover(function(){ this.style.backgroundImage = 'url(' + hoverURI + ')'; });
+				$node.mouseout( function(){ this.style.backgroundImage = 'url(' + bgURI    + ')'; });
 			});
 		}
 	
@@ -457,11 +457,11 @@ define(function( require )
 		if (down) {
 			Client.loadFile( DB.INTERFACE_PATH + down, function(dataURI){
 				$node.mousedown(function(event){ this.style.backgroundImage = 'url(' + dataURI + ')'; event.stopImmediatePropagation(); });
-				$node.mouseup(  function()     { this.style.backgroundImage = 'url(' + (hover_uri||bg_uri) + ')'; });
+				$node.mouseup(  function()     { this.style.backgroundImage = 'url(' + (hoverURI||bgURI) + ')'; });
 			});
 
 			if (!hover) {
-				$node.mouseout( function(){ this.style.backgroundImage = 'url(' + bg_uri + ')'; });
+				$node.mouseout( function(){ this.style.backgroundImage = 'url(' + bgURI + ')'; });
 			}
 		}
 	

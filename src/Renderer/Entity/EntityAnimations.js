@@ -1,5 +1,5 @@
 /**
- * Renderer/EntityAnimations.js
+ * renderer/EntityAnimations.js
  *
  * Manage entity special animations
  *
@@ -7,7 +7,7 @@
  *
  * @author Vincent Thibault
  */
-define(['Renderer/Renderer'], function( Renderer )
+define(['renderer/Renderer'], function( Renderer )
 {
 	'use strict';
 

@@ -15,13 +15,13 @@ define(function(require)
 	/**
 	 * Load dependencies
 	 */
-	var glMatrix           = require('Utils/gl-matrix');
-	var Client             = require('Core/Client');
-	var Configs            = require('Core/Configs');
-	var Renderer           = require('Renderer/Renderer');
-	var EffectManager      = require('Renderer/EffectManager');
-	var StrEffect          = require('Renderer/Effects/StrEffect');
-	var Camera             = require('Renderer/Camera');
+	var glMatrix           = require('utils/gl-matrix');
+	var Client             = require('core/Client');
+	var Configs            = require('core/Configs');
+	var Renderer           = require('renderer/Renderer');
+	var EffectManager      = require('renderer/EffectManager');
+	var StrEffect          = require('renderer/Effects/StrEffect');
+	var Camera             = require('renderer/Camera');
 
 	var UIManager          = require('UI/UIManager');
 	var UIComponent        = require('UI/UIComponent');
@@ -65,7 +65,7 @@ define(function(require)
 	/**
 	 * Initialize Component
 	 */
-	Viewer.init = function Init()
+	Viewer.init = function init()
 	{
 		// Initialize WebGL
 		Renderer.init({

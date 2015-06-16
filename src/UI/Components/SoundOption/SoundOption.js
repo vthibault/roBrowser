@@ -15,10 +15,10 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
-	var Preferences   = require('Core/Preferences');
-	var AudioSettings = require('Preferences/Audio');
-	var AudioManager  = require('Audio/BGM');
-	var SoundManager  = require('Audio/SoundManager');
+	var Preferences   = require('core/Preferences');
+	var AudioSettings = require('preferences/Audio');
+	var AudioManager  = require('audio/BGM');
+	var SoundManager  = require('audio/soundManager');
 	var UIManager     = require('UI/UIManager');
 	var UIComponent   = require('UI/UIComponent');
 	var htmlText      = require('text!./SoundOption.html');

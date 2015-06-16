@@ -1,5 +1,5 @@
 /**
- * Utils/Executable.js
+ * utils/Executable.js
  *
  * Executable
  *
@@ -55,7 +55,7 @@ define( ['./BinaryReader'], function( BinaryReader )
 
 		// Jump to header and extract
 		// PEHeader structure position
-		_fp.seek( 0x3c, SEEK_SET);
+		_fp.seek( 0x3c, BinaryReader.Seek.SET);
 		offset = _fp.readULong();
 
 		if (offset > _fp.length ) {
@@ -63,13 +63,13 @@ define( ['./BinaryReader'], function( BinaryReader )
 		}
 
 		// Jump to PEHeader structure
-		_fp.seek( offset, SEEK_SET);
+		_fp.seek( offset, BinaryReader.Seek.SET);
 		if (_fp.readString(4) !== 'PE') {
 			throw new Error('Executable::getDate() - Invalid executable specified.');
 		}
 
 		// Extract compiled date from executable
-		_fp.seek(0x04, SEEK_CUR);
+		_fp.seek(0x04, BinaryReader.Seek.CUR);
 		date = new Date(_fp.readULong() * 1000);
 
 		// Convert date to YYYYMMDD

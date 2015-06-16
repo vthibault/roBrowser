@@ -1,5 +1,5 @@
 /**
- * DB/Pets/PetActions.js
+ * db/pets/PetActions.js
  *
  * Pet .ACT file
  *

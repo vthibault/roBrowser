@@ -1,5 +1,5 @@
 /**
- * DB/Status/StatusProperty.js
+ * db/status/StatusProperty.js
  *
  * Status property enumeration
  *

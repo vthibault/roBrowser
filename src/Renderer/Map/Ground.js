@@ -1,5 +1,5 @@
 /**
- * Renderer/Map/Ground.js
+ * renderer/Map/Ground.js
  *
  * Rendering ground
  *
@@ -7,7 +7,7 @@
  *
  * @author Vincent Thibault
  */
-define(['Utils/WebGL', 'Utils/Texture', 'Preferences/Map'],
+define(['utils/WebGL', 'utils/Texture', 'preferences/Map'],
 function(      WebGL,         Texture,   Preferences )
 {
 	'use strict';

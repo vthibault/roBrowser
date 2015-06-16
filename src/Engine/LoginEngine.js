@@ -1,5 +1,5 @@
 /**
- * Engine/LoginEngine.js
+ * engine/LoginEngine.js
  *
  * Login Engine
  * Manage login server, connexion
@@ -15,18 +15,18 @@ define(function( require )
 
 
 	// Load dependencies
-	var TextEncoding = require('Vendors/text-encoding');
-	var DB           = require('DB/DBManager');
-	var BGM          = require('Audio/BGM');
-	var Sound        = require('Audio/SoundManager');
-	var Configs      = require('Core/Configs');
-	var Thread       = require('Core/Thread');
-	var Session      = require('Engine/SessionStorage');
-	var CharEngine   = require('Engine/CharEngine');
-	var Network      = require('Network/NetworkManager');
-	var PACKET       = require('Network/PacketStructure');
-	var PACKETVER    = require('Network/PacketVerManager');
-	var Renderer     = require('Renderer/Renderer');
+	var TextEncoding = require('vendors/text-encoding');
+	var DB           = require('db/DBManager');
+	var BGM          = require('audio/BGM');
+	var Sound        = require('audio/soundManager');
+	var Configs      = require('core/Configs');
+	var Thread       = require('core/Thread');
+	var Session      = require('engine/SessionStorage');
+	var CharEngine   = require('engine/CharEngine');
+	var Network      = require('network/networkManager');
+	var PACKET       = require('network/packets/structureTable');
+	var PACKETVER    = require('network/PacketVerManager');
+	var Renderer     = require('renderer/Renderer');
 	var UIManager    = require('UI/UIManager');
 	var WinList      = require('UI/Components/WinList/WinList');
 	var WinPopup     = require('UI/Components/WinPopup/WinPopup');
@@ -272,7 +272,7 @@ define(function( require )
 	 */
 	function onExitRequest()
 	{
-		getModule('Engine/GameEngine').reload();
+		getModule('engine/GameEngine').reload();
 	}
 
 
@@ -400,26 +400,26 @@ define(function( require )
 	 */
 	function onServerClosed( pkt )
 	{
-		var msg_id;
+		var msgId;
 
 		switch (pkt.ErrorCode) {
 			default:
-			case 0:   msg_id =    3; break; // Server closed
-			case 1:   msg_id =    4; break; // Server closed
-			case 2:   msg_id =    5; break; // Someone has already logged in with this id
-			case 3:   msg_id =    9; break; // Sync error ?
-			case 4:   msg_id =  439; break; // Server is jammed due to overpopulation.
-			case 5:   msg_id =  305; break; // You are underaged and cannot join this server.
-			case 6:   msg_id =  764; break; // Trial players can't connect Pay to Play Server. (761)
-			case 8:   msg_id =  440; break; // Server still recognizes your last login
-			case 9:   msg_id =  529; break; // IP capacity of this Internet Cafe is full. Would you like to pay the personal base?
-			case 10:  msg_id =  530; break; // You are out of available paid playing time. Game will be shut down automatically. (528)
-			case 15:  msg_id =  579; break; // You have been forced to disconnect by the Game Master Team
-			case 101: msg_id =  810; break; // Account has been locked for a hacking investigation.
-			case 102: msg_id = 1179; break; // More than 10 connections sharing the same IP have logged into the game for an hour. (1176)
+			case 0:   msgId =    3; break; // Server closed
+			case 1:   msgId =    4; break; // Server closed
+			case 2:   msgId =    5; break; // Someone has already logged in with this id
+			case 3:   msgId =    9; break; // Sync error ?
+			case 4:   msgId =  439; break; // Server is jammed due to overpopulation.
+			case 5:   msgId =  305; break; // You are underaged and cannot join this server.
+			case 6:   msgId =  764; break; // Trial players can't connect Pay to Play Server. (761)
+			case 8:   msgId =  440; break; // Server still recognizes your last login
+			case 9:   msgId =  529; break; // IP capacity of this Internet Cafe is full. Would you like to pay the personal base?
+			case 10:  msgId =  530; break; // You are out of available paid playing time. Game will be shut down automatically. (528)
+			case 15:  msgId =  579; break; // You have been forced to disconnect by the Game Master Team
+			case 101: msgId =  810; break; // Account has been locked for a hacking investigation.
+			case 102: msgId = 1179; break; // More than 10 connections sharing the same IP have logged into the game for an hour. (1176)
 		}
 
-		UIManager.showErrorBox( DB.getMessage(msg_id) );
+		UIManager.showErrorBox( DB.getMessage(msgId) );
 		Network.close();
 	}
 

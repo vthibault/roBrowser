@@ -15,11 +15,11 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
-	var jQuery             = require('Utils/jquery');
-	var DB                 = require('DB/DBManager');
-	var ItemType           = require('DB/Items/ItemType');
-	var Client             = require('Core/Client');
-	var KEYS               = require('Controls/KeyEventHandler');
+	var jQuery             = require('utils/jquery');
+	var DB                 = require('db/DBManager');
+	var ItemType           = require('db/items/ItemType');
+	var Client             = require('core/Client');
+	var KEYS               = require('controls/KeyEventHandler');
 	var CardIllustration   = require('UI/Components/CardIllustration/CardIllustration');
 	var UIManager          = require('UI/UIManager');
 	var UIComponent        = require('UI/UIComponent');

@@ -1,5 +1,5 @@
 /**
- * DB/Jobs/MountTable.js
+ * db/jobs/MountTable.js
  *
  * Look up table <job> => <job mount>
  *

@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html>
 	<body></body>
-	<script type="text/javascript" src="../../src/Vendors/require.js"></script>
+	<script type="text/javascript" src="../../src/vendors/require.js"></script>
 	<script type="text/javascript">
 require({
 	baseUrl: '../../src/',
 	paths: {
-		text:   "Vendors/text.require",
-		jquery: "Vendors/jquery-1.9.1"
+		text:   "vendors/text.require",
+		jquery: "vendors/jquery-1.9.1"
 	}
-}, ['../tools/tests/FileTester', 'Loaders/Str'], function( FileTester, Str )
+}, ['../tools/tests/FileTester', 'loaders/Str'], function( FileTester, Str )
 {
 	var ft = new FileTester("str",function(data){
 		new Str(data);

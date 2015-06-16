@@ -1,5 +1,5 @@
 /**
- * DB/Jobs/JobConst.js
+ * db/jobs/JobConst.js
  *
  * Manage skills
  *

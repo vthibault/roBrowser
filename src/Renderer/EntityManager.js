@@ -1,5 +1,5 @@
 /**
- * Renderer/EntityManager.js
+ * renderer/EntityManager.js
  *
  * Manage Entity 
  *
@@ -13,11 +13,11 @@ define(function( require )
 
 
 	// Load dependencies
-	var Session        = require('Engine/SessionStorage');
+	var Session        = require('engine/SessionStorage');
 	var Entity         = require('./Entity/Entity');
 	var SpriteRenderer = require('./SpriteRenderer');
-	var Mouse          = require('Controls/MouseEventHandler');
-	var KEYS           = require('Controls/KeyEventHandler');
+	var Mouse          = require('controls/MouseEventHandler');
+	var KEYS           = require('controls/KeyEventHandler');
 
 
 	var _list = [];
@@ -270,7 +270,7 @@ define(function( require )
 		// Rendering
 		for (i = 0, count = _list.length; i < count; ++i) {
 			// Remove from list
-			if (_list[i].remove_tick && _list[i].remove_tick + _list[i].remove_delay < tick) {
+			if (_list[i].removeTick && _list[i].removeTick + _list[i].removeDelay < tick) {
 				_list[i].clean();
 				_list.splice(i, 1);
 				i--;
@@ -308,7 +308,7 @@ define(function( require )
 			entity = _list[i];
 
 			// No picking on dead entites
-			if ((entity.action !== entity.ACTION.DIE || entity.objecttype === Entity.TYPE_PC) && entity.remove_tick === 0) {
+			if ((entity.action !== entity.ACTION.DIE || entity.objecttype === Entity.Type.PC) && entity.removeTick === 0) {
 				if (x > entity.boundingRect.x1 &&
 				    x < entity.boundingRect.x2 &&
 				    y > entity.boundingRect.y1 &&

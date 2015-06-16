@@ -1,5 +1,5 @@
 /**
- * Controls/MouseEventHandler.js
+ * controls/MouseEventHandler.js
  *
  * Mouse Event Handler
  *
@@ -8,7 +8,7 @@
  * @author Vincent Thibault
  */
 
-define(['Utils/jquery'], function( jQuery )
+define(['utils/jquery'], function( jQuery )
 {
 	"use strict";
 

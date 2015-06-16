@@ -1,5 +1,5 @@
 /**
- * Renderer/MapRenderer.js
+ * renderer/MapRenderer.js
  *
  * Rendering sprite in 2D or 3D context
  *
@@ -15,31 +15,31 @@ define(function( require )
 	/**
 	 * Load dependencies
 	 */
-	var Thread         = require('Core/Thread');
-	var SoundManager   = require('Audio/SoundManager');
-	var BGM            = require('Audio/BGM');
-	var DB             = require('DB/DBManager');
+	var Thread         = require('core/Thread');
+	var SoundManager   = require('audio/soundManager');
+	var BGM            = require('audio/BGM');
+	var DB             = require('db/DBManager');
 	var UIManager      = require('UI/UIManager');
 	var Background     = require('UI/Background');
 	var Cursor         = require('UI/CursorManager');
-	var Session        = require('Engine/SessionStorage');
-	var MemoryManager  = require('Core/MemoryManager');
-	var Mouse          = require('Controls/MouseEventHandler');
-	var Renderer       = require('Renderer/Renderer');
-	var Camera         = require('Renderer/Camera');
-	var EntityManager  = require('Renderer/EntityManager');
-	var GridSelector   = require('Renderer/Map/GridSelector');
-	var Ground         = require('Renderer/Map/Ground');
-	var Altitude       = require('Renderer/Map/Altitude');
-	var Water          = require('Renderer/Map/Water');
-	var Models         = require('Renderer/Map/Models');
-	var Sounds         = require('Renderer/Map/Sounds');
-	var Effects        = require('Renderer/Map/Effects');
-	var SpriteRenderer = require('Renderer/SpriteRenderer');
-	var EffectManager  = require('Renderer/EffectManager');
-	var Sky            = require('Renderer/Effects/Sky');
-	var Damage         = require('Renderer/Effects/Damage');
-	var MapPreferences = require('Preferences/Map');
+	var Session        = require('engine/SessionStorage');
+	var MemoryManager  = require('core/MemoryManager');
+	var Mouse          = require('controls/MouseEventHandler');
+	var Renderer       = require('renderer/Renderer');
+	var Camera         = require('renderer/Camera');
+	var EntityManager  = require('renderer/EntityManager');
+	var GridSelector   = require('renderer/Map/GridSelector');
+	var Ground         = require('renderer/Map/Ground');
+	var Altitude       = require('renderer/Map/Altitude');
+	var Water          = require('renderer/Map/Water');
+	var Models         = require('renderer/Map/Models');
+	var Sounds         = require('renderer/Map/Sounds');
+	var Effects        = require('renderer/Map/Effects');
+	var SpriteRenderer = require('renderer/SpriteRenderer');
+	var EffectManager  = require('renderer/EffectManager');
+	var Sky            = require('renderer/Effects/Sky');
+	var Damage         = require('renderer/Effects/Damage');
+	var MapPreferences = require('preferences/Map');
 
 
 	/**
@@ -165,7 +165,7 @@ define(function( require )
 	/**
 	 * Clean up data
 	 */
-	MapRenderer.free = function Free()
+	MapRenderer.free = function free()
 	{
 		var gl = Renderer.getContext();
 
@@ -346,7 +346,7 @@ define(function( require )
 	 * @param {object} gl context
 	 */
 	var _pos = new Uint16Array(2);
-	MapRenderer.onRender = function OnRender( tick, gl )
+	MapRenderer.onRender = function onRender( tick, gl )
 	{
 		var fog   = MapRenderer.fog;
 		fog.use   = MapPreferences.fog;
@@ -379,7 +379,7 @@ define(function( require )
 			y = _pos[1];
 
 			// Walkable
-			if (Altitude.getCellType( x, y ) & Altitude.TYPE.WALKABLE) {
+			if (Altitude.getCellType( x, y ) & Altitude.Type.WALKABLE) {
 				GridSelector.render( gl, modelView, projection, fog, x, y );
 				Mouse.world.x =  x;
 				Mouse.world.y =  y;

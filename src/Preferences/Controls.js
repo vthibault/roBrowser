@@ -1,5 +1,5 @@
 /**
- * Preferences/Controls.js
+ * preferences/Controls.js
  *
  * Control user preferences
  *
@@ -7,7 +7,7 @@
  *
  * @author Vincent Thibault
  */
-define( ['Core/Preferences'], function( Preferences )
+define( ['core/Preferences'], function( Preferences )
 {
 	'use strict';
 

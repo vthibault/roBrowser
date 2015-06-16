@@ -1,5 +1,5 @@
 /**
- * Renderer/EntityView.js
+ * renderer/EntityView.js
  *
  * Manage Entity files (attachments) to load once a view change
  *
@@ -13,10 +13,10 @@ define(function( require )
 
 
 	// Load dependencies
-	var Client       = require('Core/Client');
-	var DB           = require('DB/DBManager');
-	var ShadowTable  = require('DB/Monsters/ShadowTable');
-	var MountTable   = require('DB/Jobs/MountTable');
+	var Client       = require('core/Client');
+	var DB           = require('db/DBManager');
+	var ShadowTable  = require('db/monsters/ShadowTable');
+	var MountTable   = require('db/jobs/MountTable');
 	var EntityAction = require('./EntityAction');
 
 
@@ -58,7 +58,7 @@ define(function( require )
 	 *
 	 * @param {number} sex (mal/female)
 	 */
-	function UpdateSex( sex )
+	function updateSex( sex )
 	{
 		// Not defined yet, no update others
 		if (this._sex === -1) {
@@ -81,7 +81,7 @@ define(function( require )
 	 *
 	 * @param {number} job id
 	 */
-	function UpdateBody( job )
+	function updateBody( job )
 	{
 		var baseJob, path;
 		var Entity;
@@ -117,15 +117,15 @@ define(function( require )
 		Entity                 = this.constructor;
 
 		// Define Object type based on its id
-		if (this.objecttype === Entity.TYPE_UNKNOWN) {
+		if (this.objecttype === Entity.Type.UNKNOWN) {
 			var objecttype = (
-				job < 45   ? Entity.TYPE_PC   :
-				job < 46   ? Entity.TYPE_WARP :
-				job < 1000 ? Entity.TYPE_NPC  :
-				job < 4000 ? Entity.TYPE_MOB  :
-				job < 6000 ? Entity.TYPE_PC   :
-				job < 7000 ? Entity.TYPE_HOM  :
-				             Entity.TYPE_MERC
+				job < 45   ? Entity.Type.PC   :
+				job < 46   ? Entity.Type.WARP :
+				job < 1000 ? Entity.Type.NPC  :
+				job < 4000 ? Entity.Type.MOB  :
+				job < 6000 ? Entity.Type.PC   :
+				job < 7000 ? Entity.Type.HOM  :
+				             Entity.Type.MERC
 			);
 
 			// Clean up action frames
@@ -160,7 +160,7 @@ define(function( require )
 			this.shield      = this._shield;
 
 		}.bind(this), null, {
-			to_rgba: this.objecttype !== Entity.TYPE_PC
+			toRgba: this.objecttype !== Entity.Type.PC
 		});
 	}
 
@@ -170,7 +170,7 @@ define(function( require )
 	 *
 	 * @param {number} body palette number
 	 */
-	function UpdateBodyPalette( pal )
+	function updateBodyPalette( pal )
 	{
 		this._bodypalette = pal;
 
@@ -194,7 +194,7 @@ define(function( require )
 	 *
 	 * @param {number} head index
 	 */
-	function UpdateHead( head )
+	function updateHead( head )
 	{
 		var path;
 
@@ -220,7 +220,7 @@ define(function( require )
 	 *
 	 * @param {number} palette id
 	 */
-	function UpdateHeadPalette( pal )
+	function updateHeadPalette( pal )
 	{
 		this._headpalette = pal;
 
@@ -246,7 +246,7 @@ define(function( require )
 	 * @param {string} method from DB to get path
 	 * @param {function} callback if fail
 	 */
-	function UpdateGeneric( type, func, fallback )
+	function updateGeneric( type, func, fallback )
 	{
 		return function (val) {
 			var path;
@@ -285,7 +285,7 @@ define(function( require )
 				return;
 			}
 
-			function LoadView( path, final ) {
+			function loadView( path, final ) {
 				Client.loadFile(path + '.act');
 				Client.loadFile(path + '.spr', function(){
 					_this['_'+type] = _val;
@@ -299,22 +299,22 @@ define(function( require )
 				},
 
 				// if weapon isn't loaded, try to load the default sprite for the weapon type
-				function(){
+				function() {
 					if (fallback && !final) {
 						_val = DB[fallback](val);
 						path = DB[func]( _val, _this.job, _this._sex );
 						if (path) {
-							LoadView( path, true );
+							loadView( path, true );
 						}
 					}
 
 				// The generic just used : weapon, shield, accessory.
 				// This sprites don't use external palettes, so compile it now to rgba.
-				}, {to_rgba:true});
+				}, {toRgba:true});
 			}
 
 			// Start loading view
-			LoadView(path);
+			loadView(path);
 		};
 	}
 
@@ -322,58 +322,58 @@ define(function( require )
 	/**
 	 * Hooking, export
 	 */
-	return function Init()
+	return function init()
 	{
 		this.files = new View();
 
 		Object.defineProperty(this, 'sex', {
 			get: function(){ return this._sex; },
-			set: UpdateSex
+			set: updateSex
 		});
 
 		Object.defineProperty(this, 'job', {
 			get: function(){ return this.costume || this._job; },
-			set: UpdateBody
+			set: updateBody
 		});
 
 		Object.defineProperty(this, 'bodypalette', {
 			get: function(){ return this._bodypalette; },
-			set: UpdateBodyPalette
+			set: updateBodyPalette
 		});
 
 		Object.defineProperty(this, 'head', {
 			get: function(){ return this._head; },
-			set: UpdateHead
+			set: updateHead
 		});
 
 		Object.defineProperty(this, 'headpalette', {
 			get: function(){ return this._headpalette; },
-			set: UpdateHeadPalette
+			set: updateHeadPalette
 		});
 
 		Object.defineProperty(this, 'weapon', {
 			get: function(){ return this._weapon; },
-			set: UpdateGeneric('weapon', 'getWeaponPath', 'getWeaponViewID')
+			set: updateGeneric('weapon', 'getWeaponPath', 'getWeaponViewID')
 		});
 
 		Object.defineProperty(this, 'shield', {
 			get: function(){ return this._shield; },
-			set: UpdateGeneric('shield', 'getShieldPath')
+			set: updateGeneric('shield', 'getShieldPath')
 		});
 
 		Object.defineProperty(this, 'accessory', {
 			get: function(){ return this._accessory; },
-			set: UpdateGeneric('accessory', 'getHatPath')
+			set: updateGeneric('accessory', 'getHatPath')
 		});
 
 		Object.defineProperty(this, 'accessory2', {
 			get: function(){ return this._accessory2; },
-			set: UpdateGeneric('accessory2', 'getHatPath')
+			set: updateGeneric('accessory2', 'getHatPath')
 		});
 
 		Object.defineProperty(this, 'accessory3', {
 			get: function(){ return this._accessory3; },
-			set: UpdateGeneric('accessory3', 'getHatPath')
+			set: updateGeneric('accessory3', 'getHatPath')
 		});
 	};
 });

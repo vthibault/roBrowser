@@ -1,5 +1,5 @@
 /**
- * Core/Mobile.js
+ * core/Mobile.js
  *
  * Help to handle touch devices
  *
@@ -18,12 +18,12 @@ define(function( require )
 	/**
 	 * Import dependencies
 	 */
-	var jQuery    = require('Utils/jquery');
-	var Context   = require('Core/Context');
-	var Events    = require('Core/Events');
-	var Camera    = require('Renderer/Camera');
-	var Mouse     = require('Controls/MouseEventHandler');
-	var KEYS      = require('Controls/KeyEventHandler');
+	var jQuery    = require('utils/jquery');
+	var Context   = require('core/Context');
+	var Events    = require('core/Events');
+	var Camera    = require('renderer/Camera');
+	var Mouse     = require('controls/MouseEventHandler');
+	var KEYS      = require('controls/KeyEventHandler');
 
 
 	/**

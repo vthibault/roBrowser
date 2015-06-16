@@ -1,5 +1,5 @@
 /**
- * Renderer/Map/Models.js
+ * renderer/Map/Models.js
  *
  * Rendering Models
  *
@@ -7,7 +7,7 @@
  *
  * @author Vincent Thibault
  */
-define( ['Utils/WebGL'], function( WebGL )
+define( ['utils/WebGL'], function( WebGL )
 {
 	'use strict';
 

@@ -1,5 +1,5 @@
 /**
- * DB/Jobs/JobNameTable.js
+ * db/jobs/JobNameTable.js
  *
  * Look up: job id -> ressource name
  *

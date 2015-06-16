@@ -1,5 +1,5 @@
 /**
- * Renderer/Effects/MagicTarget.js
+ * renderer/Effects/MagicTarget.js
  *
  * Rendering casting on ground (rotating plane)
  *
@@ -13,11 +13,11 @@ define(function( require ) {
 
 
 	// Load dependencies
-	var WebGL    = require('Utils/WebGL');
-	var glMatrix = require('Utils/gl-matrix');
-	var SkillId  = require('DB/Skills/SkillConst');
-	var Client   = require('Core/Client');
-	var Altitude = require('Renderer/Map/Altitude');
+	var WebGL    = require('utils/WebGL');
+	var glMatrix = require('utils/gl-matrix');
+	var SkillId  = require('db/skills/SkillConst');
+	var Client   = require('core/Client');
+	var Altitude = require('renderer/Map/Altitude');
 
 
 	/**

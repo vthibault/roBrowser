@@ -57,8 +57,8 @@ function buildApp(appName) {
 
 		// Shortcut used in the app
 		paths: {
-			text:   'Vendors/text.require',
-			jquery: 'Vendors/jquery-1.9.1'
+			text:   'vendors/text.require',
+			jquery: 'vendors/jquery-1.9.1'
 		},
 
 		// Minify scripts

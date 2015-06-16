@@ -1,5 +1,5 @@
 /**
- * Preferences/Map.js
+ * preferences/Map.js
  *
  * Map user preferences
  *
@@ -7,7 +7,7 @@
  *
  * @author Vincent Thibault
  */
-define( ['Core/Preferences'], function( Preferences )
+define( ['core/Preferences'], function( Preferences )
 {
 	'use strict';
 

@@ -1,5 +1,5 @@
 /**
- * Engine/MapEngine/Storage.js
+ * engine/Mapengine/Storage.js
  *
  * Manage Storage sockets
  *
@@ -14,9 +14,9 @@ define(function( require )
 	/**
 	 * Load dependencies
 	 */
-	var jQuery        = require('Utils/jquery');
-	var Network       = require('Network/NetworkManager');
-	var PACKET        = require('Network/PacketStructure');
+	var jQuery        = require('utils/jquery');
+	var Network       = require('network/networkManager');
+	var PACKET        = require('network/packets/structureTable');
 	var Storage       = require('UI/Components/Storage/Storage');
 
 
@@ -104,7 +104,7 @@ define(function( require )
 	 * Send item to storage
 	 * PACKET.CZ.MOVE_ITEM_FROM_BODY_TO_STORE
 	 */
-	Storage.reqAddItem = function ReqAddItem( index, count )
+	Storage.reqAddItem = function reqAddItem( index, count )
 	{
 		if (count <= 0) {
 			return;
@@ -121,7 +121,7 @@ define(function( require )
 	 * Send frm storage to inventory
 	 * PACKET.CZ.MOVE_ITEM_FROM_STORE_TO_BODY
 	 */
-	Storage.reqRemoveItem = function ReqRemoveItem( index, count )
+	Storage.reqRemoveItem = function reqRemoveItem( index, count )
 	{
 		if (count <= 0) {
 			return;
@@ -137,7 +137,7 @@ define(function( require )
 	/**
 	 * Initialize
 	 */
-	return function StorageEngine()
+	return function storageEngine()
 	{
 		Network.hookPacket( PACKET.ZC.STORE_NORMAL_ITEMLIST,      onStorageList );
 		Network.hookPacket( PACKET.ZC.STORE_NORMAL_ITEMLIST2,     onStorageList );

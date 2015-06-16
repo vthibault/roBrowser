@@ -1,5 +1,5 @@
 /**
- * DB/Status/StatusConst.js
+ * db/status/StatusConst.js
  *
  * Status constants enumeration
  *

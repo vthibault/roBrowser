@@ -1,5 +1,5 @@
 /**
- * DB/Skills/SkillDescription.js
+ * db/skills/SkillDescription.js
  *
  * Skill Description tABLE
  *

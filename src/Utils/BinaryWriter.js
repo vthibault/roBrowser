@@ -1,5 +1,5 @@
 /**
- * Utils/BinaryWriter.js
+ * utils/BinaryWriter.js
  *
  * BinaryWriter Helper
  *
@@ -10,7 +10,7 @@
  * @author Vincent Thibault
  */
 
-define(['Vendors/text-encoding'], function(TextEncoding)
+define(['vendors/text-encoding'], function(TextEncoding)
 {
 	'use strict';
 
@@ -22,7 +22,7 @@ define(['Vendors/text-encoding'], function(TextEncoding)
 	 * @param {Array} value (x, y)
 	 * @param {boolean} littleEndian (if true use LE encode order)
 	 */
-	DataView.prototype.setPos = function SetPos( offset, value, littleEndian ) {
+	DataView.prototype.setPos = function setPos( offset, value, littleEndian ) {
 		var x = value[0];
 		var y = value[1];
 	
@@ -46,7 +46,7 @@ define(['Vendors/text-encoding'], function(TextEncoding)
 	 * @param {string} str
 	 * @param {number} len
 	 */
-	DataView.prototype.setString = function SetString( offset, str, len) {
+	DataView.prototype.setString = function setString( offset, str, len) {
 		if (len) {
 			str = String(str).substr(0,len);
 		}
@@ -72,7 +72,7 @@ define(['Vendors/text-encoding'], function(TextEncoding)
 	 * @param {string} str
 	 * @param {number} len
 	 */
-	DataView.prototype.setBinaryString = function SetBinaryString( offset, str, len) {
+	DataView.prototype.setBinaryString = function setBinaryString( offset, str, len) {
 		if (len) {
 			str = String(str).substr(0,len);
 		}

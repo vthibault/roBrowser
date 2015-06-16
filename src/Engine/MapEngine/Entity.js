@@ -1,5 +1,5 @@
 /**
- * Engine/MapEngine/Entity.js
+ * engine/Mapengine/Entity.js
  *
  * Manage Entity based on received packets from server 
  *
@@ -16,24 +16,24 @@ define(function( require )
 	/**
 	 * Load dependencies
 	 */
-	var SkillId       = require('DB/Skills/SkillConst');
-	var SkillInfo     = require('DB/Skills/SkillInfo');
-	var StatusConst   = require('DB/Status/StatusConst');
-	var Emotions      = require('DB/Emotions');
-	var Events        = require('Core/Events');
-	var Session       = require('Engine/SessionStorage');
-	var Guild         = require('Engine/MapEngine/Guild');
-	var Network       = require('Network/NetworkManager');
-	var PACKET        = require('Network/PacketStructure');
-	var Renderer      = require('Renderer/Renderer');
-	var Altitude      = require('Renderer/Map/Altitude');
-	var EntityManager = require('Renderer/EntityManager');
-	var Entity        = require('Renderer/Entity/Entity');
-	var EffectManager = require('Renderer/EffectManager');
-	var Damage        = require('Renderer/Effects/Damage');
-	var MagicTarget   = require('Renderer/Effects/MagicTarget');
-	var LockOnTarget  = require('Renderer/Effects/LockOnTarget');
-	var Sound         = require('Audio/SoundManager');
+	var SkillId       = require('db/skills/SkillConst');
+	var SkillInfo     = require('db/skills/SkillInfo');
+	var StatusConst   = require('db/status/StatusConst');
+	var Emotions      = require('db/Emotions');
+	var Events        = require('core/Events');
+	var Session       = require('engine/SessionStorage');
+	var Guild         = require('engine/Mapengine/Guild');
+	var Network       = require('network/networkManager');
+	var PACKET        = require('network/packets/structureTable');
+	var Renderer      = require('renderer/Renderer');
+	var Altitude      = require('renderer/Map/Altitude');
+	var EntityManager = require('renderer/EntityManager');
+	var Entity        = require('renderer/Entity/Entity');
+	var EffectManager = require('renderer/EffectManager');
+	var Damage        = require('renderer/Effects/Damage');
+	var MagicTarget   = require('renderer/Effects/MagicTarget');
+	var LockOnTarget  = require('renderer/Effects/LockOnTarget');
+	var Sound         = require('audio/soundManager');
 	var ChatBox       = require('UI/Components/ChatBox/ChatBox');
 	var ChatRoom      = require('UI/Components/ChatRoom/ChatRoom');
 	var StatusIcons   = require('UI/Components/StatusIcons/StatusIcons');
@@ -277,9 +277,9 @@ define(function( require )
 							// double attack
 							case 8:
 								// Display combo only if entity is mob and the attack don't miss
-								if (dstEntity.objecttype === Entity.TYPE_MOB && pkt.damage > 0) {
-									Damage.add( pkt.damage / 2, dstEntity, Renderer.tick + pkt.attackMT * 1, Damage.TYPE.COMBO );
-									Damage.add( pkt.damage ,    dstEntity, Renderer.tick + pkt.attackMT * 2, Damage.TYPE.COMBO | Damage.TYPE.COMBO_FINAL );
+								if (dstEntity.objecttype === Entity.Type.MOB && pkt.damage > 0) {
+									Damage.add( pkt.damage / 2, dstEntity, Renderer.tick + pkt.attackMT * 1, Damage.Type.COMBO );
+									Damage.add( pkt.damage ,    dstEntity, Renderer.tick + pkt.attackMT * 2, Damage.Type.COMBO | Damage.Type.COMBO_FINAL );
 								}
 
 								Damage.add( pkt.damage / 2, target, Renderer.tick + pkt.attackMT * 1 );
@@ -302,7 +302,7 @@ define(function( require )
 					srcEntity.lookTo( dstEntity.position[0], dstEntity.position[1] );
 				}
 
-				srcEntity.attack_speed = pkt.attackMT;
+				srcEntity.attackSpeed = pkt.attackMT;
 				srcEntity.setAction({
 					action: srcEntity.ACTION.ATTACK,
 					frame:  0,
@@ -384,14 +384,14 @@ define(function( require )
 			entity.dialog.set( pkt.msg );
 		}
 
-		type = ChatBox.TYPE.PUBLIC;
+		type = ChatBox.Type.PUBLIC;
 
 		// Should not happened
 		if (entity === Session.Entity) {
-			type |= ChatBox.TYPE.SELF;
+			type |= ChatBox.Type.SELF;
 		}
 		else if (entity.isAdmin) {
-			type |= ChatBox.TYPE.ADMIN;
+			type |= ChatBox.Type.ADMIN;
 		}
 
 		ChatBox.addText( pkt.msg, type );
@@ -420,7 +420,7 @@ define(function( require )
 			entity.dialog.set( pkt.msg );
 		}
 
-		ChatBox.addText( pkt.msg, ChatBox.TYPE.PUBLIC, color);
+		ChatBox.addText( pkt.msg, ChatBox.Type.PUBLIC, color);
 	}
 
 
@@ -435,18 +435,18 @@ define(function( require )
 		if (entity) {
 			entity.display.name = pkt.CName;
 
-			entity.display.party_name = pkt.PName || '';
-			entity.display.guild_name = pkt.GName || '';
-			entity.display.guild_rank = pkt.RName || '';
+			entity.display.partyName = pkt.PName || '';
+			entity.display.guildName = pkt.GName || '';
+			entity.display.guildRank = pkt.RName || '';
 
-			entity.display.load = entity.display.TYPE.COMPLETE;
+			entity.display.load = entity.display.Type.COMPLETE;
 
 			if (entity.GUID) {
 				Guild.requestGuildEmblem(entity.GUID, entity.GEmblemVer, function(image) {
 					entity.display.emblem = image;
 					entity.display.update(
-						entity.objecttype === Entity.TYPE_MOB ? '#ffc6c6' :
-						entity.objecttype === Entity.TYPE_NPC ? '#94bdf7' :
+						entity.objecttype === Entity.Type.MOB ? '#ffc6c6' :
+						entity.objecttype === Entity.Type.NPC ? '#94bdf7' :
 						'white'
 					)
 				});
@@ -456,8 +456,8 @@ define(function( require )
 			}
 
 			entity.display.update(
-				entity.objecttype === Entity.TYPE_MOB ? '#ffc6c6' :
-				entity.objecttype === Entity.TYPE_NPC ? '#94bdf7' :
+				entity.objecttype === Entity.Type.MOB ? '#ffc6c6' :
+				entity.objecttype === Entity.Type.NPC ? '#94bdf7' :
 				'white'
 			);
 
@@ -478,7 +478,7 @@ define(function( require )
 		var entity = EntityManager.get(pkt.AID);
 		if (entity) {
 			entity.life.hp = pkt.hp;
-			entity.life.hp_max = pkt.maxhp;
+			entity.life.hpMax = pkt.maxhp;
 			entity.life.update();
 		}
 	}
@@ -561,7 +561,7 @@ define(function( require )
 		var dstEntity = EntityManager.get(pkt.targetAID);
 
 		// Only mob to don't display skill name ?
-		if (srcEntity && srcEntity.objecttype !== Entity.TYPE_MOB) {
+		if (srcEntity && srcEntity.objecttype !== Entity.Type.MOB) {
 			srcEntity.dialog.set(
 				( (SkillInfo[pkt.SKID] && SkillInfo[pkt.SKID].SkillName ) || 'Unknown Skill' ) + ' !!',
 				'white'
@@ -577,7 +577,7 @@ define(function( require )
 			if (pkt.SKID === SkillId.AL_HEAL ||
 			    pkt.SKID === SkillId.AB_HIGHNESSHEAL ||
 			    pkt.SKID === SkillId.AB_CHEAL) {
-				Damage.add( pkt.level, dstEntity, Renderer.tick, Damage.TYPE.HEAL );
+				Damage.add( pkt.level, dstEntity, Renderer.tick, Damage.Type.HEAL );
 			}
 
 			EffectManager.spamSkill( pkt.SKID, pkt.targetAID );
@@ -620,10 +620,10 @@ define(function( require )
 		if (srcEntity) {
 			pkt.attackMT = Math.min( 450, pkt.attackMT ); // FIXME: cap value ?
 			pkt.attackMT = Math.max(   1, pkt.attackMT );
-			srcEntity.attack_speed = pkt.attackMT;
+			srcEntity.attackSpeed = pkt.attackMT;
 
 
-			if (srcEntity.objecttype !== Entity.TYPE_MOB) {
+			if (srcEntity.objecttype !== Entity.Type.MOB) {
 				srcEntity.dialog.set( ( (SkillInfo[pkt.SKID] && SkillInfo[pkt.SKID].SkillName ) || 'Unknown Skill' ) + ' !!' );
 			}
 
@@ -653,7 +653,7 @@ define(function( require )
 				var addDamage = function(i) {
 					return function addDamageClosure() {
 						var isAlive = dstEntity.action !== dstEntity.ACTION.DIE;
-						var isCombo = target.objecttype !== Entity.TYPE_PC && pkt.count > 1;
+						var isCombo = target.objecttype !== Entity.Type.PC && pkt.count > 1;
 
 						EffectManager.spamSkillHit( pkt.SKID, dstEntity.GID, Renderer.tick);
 						Damage.add( pkt.damage / pkt.count, target, Renderer.tick);
@@ -665,7 +665,7 @@ define(function( require )
 								pkt.damage / pkt.count * (i+1),
 								target,
 								Renderer.tick, 
-								Damage.TYPE.COMBO | ( (i+1) === pkt.count ? Damage.TYPE.COMBO_FINAL : 0 )
+								Damage.Type.COMBO | ( (i+1) === pkt.count ? Damage.Type.COMBO_FINAL : 0 )
 							);
 						}
 
@@ -738,7 +738,7 @@ define(function( require )
 		}
 
 		// Only mob to don't display skill name ?
-		if (srcEntity.objecttype !== Entity.TYPE_MOB) {
+		if (srcEntity.objecttype !== Entity.Type.MOB) {
 			srcEntity.dialog.set(
 				( ( SkillInfo[pkt.SKID] && SkillInfo[pkt.SKID].SkillName ) || 'Unknown Skill' ) + ' !!',
 				'white'
@@ -955,7 +955,7 @@ define(function( require )
 	/**
 	 * Initialize
 	 */
-	return function EntityEngine()
+	return function entityEngine()
 	{
 		Network.hookPacket( PACKET.ZC.NOTIFY_STANDENTRY,            onEntitySpam );
 		Network.hookPacket( PACKET.ZC.NOTIFY_NEWENTRY,              onEntitySpam );

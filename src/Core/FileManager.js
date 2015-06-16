@@ -1,5 +1,5 @@
 /**
- * Core/FileManager.js
+ * core/FileManager.js
  *
  * Manage and load files
  *
@@ -14,15 +14,15 @@ define(function( require )
 
 
 	// Load dependencies
-	var GameFile   = require('Loaders/GameFile');
-	var World      = require('Loaders/World');
-	var Ground     = require('Loaders/Ground');
-	var Altitude   = require('Loaders/Altitude');
-	var Model      = require('Loaders/Model');
-	var Sprite     = require('Loaders/Sprite');
-	var Action     = require('Loaders/Action');
-	var Str        = require('Loaders/Str');
-	var FileSystem = require('Core/FileSystem');
+	var GameFile   = require('loaders/GameFile');
+	var World      = require('loaders/World');
+	var Ground     = require('loaders/Ground');
+	var Altitude   = require('loaders/Altitude');
+	var Model      = require('loaders/Model');
+	var Sprite     = require('loaders/Sprite');
+	var Action     = require('loaders/Action');
+	var Str        = require('loaders/Str');
+	var FileSystem = require('core/FileSystem');
 	var fs         = self.requireNode && self.requireNode('fs');
 
 
@@ -58,7 +58,7 @@ define(function( require )
 	 *
 	 * @param {mixed} grf list
 	 */
-	FileManager.init = function Init( grfList )
+	FileManager.init = function init( grfList )
 	{
 		var content, files, result, regex;
 		var i, count, sortBySize = true;
@@ -138,7 +138,7 @@ define(function( require )
 	 *
 	 * @param {File} file to load
 	 */
-	FileManager.addGameFile = function AddGameFile( file )
+	FileManager.addGameFile = function addGameFile( file )
 	{
 		try {
 			var grf = new GameFile();
@@ -161,7 +161,7 @@ define(function( require )
 	/**
 	 * Clean up Game files
 	 */
-	FileManager.clean = function Clean()
+	FileManager.clean = function clean()
 	{
 		this.gameFiles.length = 0;
 	};
@@ -173,7 +173,7 @@ define(function( require )
 	 * @param {RegExp} regex
 	 * @return {Array} filename list
 	 */
-	FileManager.search = function Search( regex )
+	FileManager.search = function search( regex )
 	{
 		// Use hosted client (only one to be async ?)
 		if (!this.gameFiles.length && this.remoteClient) {
@@ -213,7 +213,7 @@ define(function( require )
 	 * @param {string} filename
 	 * @param {function} callback
 	 */
-	FileManager.get = function Get( filename, callback )
+	FileManager.get = function get( filename, callback )
 	{
 		// Trim the path
 		filename = filename.replace(/^\s+|\s+$/g, '');
@@ -266,7 +266,7 @@ define(function( require )
 	 * @param {string} filename
 	 * @param {function} callback
 	 */
-	FileManager.getHTTP = function GetHTTP( filename, callback )
+	FileManager.getHTTP = function getHTTP( filename, callback )
 	{
 		// Use http request here (ajax)
 		if (!this.remoteClient) {
@@ -317,7 +317,7 @@ define(function( require )
 	 * @param {function} callback
 	 * @return {string|object}
 	 */
-	FileManager.load = function Load( filename, callback, args )
+	FileManager.load = function load( filename, callback, args )
 	{
 		if (!filename) {
 			callback(null, 'undefined ?');
@@ -391,7 +391,7 @@ define(function( require )
 					// Sprite
 					case 'spr':
 						var spr = new Sprite(buffer);
-						if (args && args.to_rgba) {
+						if (args && args.toRgba) {
 							spr.switchToRGBA();
 						}
 

@@ -1,5 +1,5 @@
 /**
- * Renderer/Effects/Damage.js
+ * renderer/Effects/Damage.js
  *
  * Rendering damage particles
  * TODO: Create a particle class to manage the process
@@ -14,12 +14,12 @@ define(function( require )
 
 
 	// Load dependencies
-	var WebGL          = require('Utils/WebGL');
-	var Client         = require('Core/Client');
-	var Sprite         = require('Loaders/Sprite');
-	var Renderer       = require('Renderer/Renderer');
-	var SpriteRenderer = require('Renderer/SpriteRenderer');
-	var MapPreferences  = require('Preferences/Map');
+	var WebGL          = require('utils/WebGL');
+	var Client         = require('core/Client');
+	var Sprite         = require('loaders/Sprite');
+	var Renderer       = require('renderer/Renderer');
+	var SpriteRenderer = require('renderer/SpriteRenderer');
+	var MapPreferences  = require('preferences/Map');
 
 
 	/**
@@ -41,7 +41,7 @@ define(function( require )
 	/**
 	 * Damage type constant
 	 */
-	Damage.TYPE = {
+	Damage.Type = {
 		HEAL:        1 << 0,
 		MISS:        1 << 1,
 		DAMAGE:      1 << 2,
@@ -139,7 +139,7 @@ define(function( require )
 		damage = Math.floor(damage);
 
 		var PADDING = 2;
-		var i, count, start_x, start_y;
+		var i, count, startX, startY;
 		var frame;
 
 		var canvas  = document.createElement('canvas');
@@ -152,11 +152,11 @@ define(function( require )
 		var texture;
 
 
-		var obj      = new Damage();
+		var obj     = new Damage();
+		obj.type    = type || (damage ? Damage.Type.DAMAGE : Damage.Type.MISS);
 
-		obj.type     = type || (damage ? Damage.TYPE.DAMAGE : Damage.TYPE.MISS);
-		if (entity.objecttype === entity.constructor.TYPE_PC) {
-			obj.type |= Damage.TYPE.ENEMY;
+		if (entity.objecttype === entity.constructor.Type.PC) {
+			obj.type |= Damage.Type.ENEMY;
 		}
 
 		obj.color[3] = 1.0;
@@ -164,20 +164,20 @@ define(function( require )
 		obj.start    = tick;
 		obj.entity   = entity;
 
-		if (obj.type & Damage.TYPE.SP) {
+		if (obj.type & Damage.Type.SP) {
 			obj.color[0] = 0.13;
 			obj.color[1] = 0.19;
 			obj.color[2] = 0.75;
 		}
-		else if (obj.type & Damage.TYPE.HEAL) {
+		else if (obj.type & Damage.Type.HEAL) {
 			// green
 			obj.color[1] = 1.0;
 		}
-		else if (obj.type & Damage.TYPE.ENEMY) {
+		else if (obj.type & Damage.Type.ENEMY) {
 			// red
 			obj.color[0] = 1.0;
 		}
-		else if (obj.type & Damage.TYPE.COMBO) {
+		else if (obj.type & Damage.Type.COMBO) {
 			// yellow
 			obj.color[0] = 0.9;
 			obj.color[1] = 0.9;
@@ -214,8 +214,8 @@ define(function( require )
 		ctx.canvas.height = WebGL.toPowerOfTwo( height );
 
 		// find where to start to get the image at the center
-		start_x = (ctx.canvas.width  - width ) >> 1;
-		start_y = (ctx.canvas.height - height) >> 1;
+		startX = (ctx.canvas.width  - width ) >> 1;
+		startY = (ctx.canvas.height - height) >> 1;
 
 		// build texture
 		width = 0;
@@ -223,8 +223,8 @@ define(function( require )
 			frame  = _sprite[ numbers[i] ];
 			ctx.drawImage(
 				frame,
-				start_x + width,
-				start_y + (height - frame.height) >> 1
+				startX + width,
+				startY + (height - frame.height) >> 1
 			);
 			width += frame.width + PADDING;
 		}
@@ -319,12 +319,12 @@ define(function( require )
 			perc = (tick - damage.start) / damage.delay;
 
 			// Combo title
-			if (damage.type & Damage.TYPE.COMBO) {
+			if (damage.type & Damage.Type.COMBO) {
 				// TODO: fix it
 				size = Math.min( perc, 0.05 ) * 75;
 
 				// Remove it
-				if (!(damage.type & Damage.TYPE.COMBO_FINAL) && perc > 0.15) {
+				if (!(damage.type & Damage.Type.COMBO_FINAL) && perc > 0.15) {
 					damage.start = 0;
 				}
 
@@ -334,7 +334,7 @@ define(function( require )
 			}
 
 			// Damage
-			else if (damage.type & Damage.TYPE.DAMAGE) {
+			else if (damage.type & Damage.Type.DAMAGE) {
 				size = ( 1 - perc ) * 4;
 				SpriteRenderer.position[0] = damage.entity.position[0] + perc * 4;
 				SpriteRenderer.position[1] = damage.entity.position[1] - perc * 4;
@@ -342,7 +342,7 @@ define(function( require )
 			}
 
 			// Heal
-			else if (damage.type & Damage.TYPE.HEAL) {
+			else if (damage.type & Damage.Type.HEAL) {
 				size = Math.max( (1 - perc * 2) * 3, 0.8);
 				SpriteRenderer.position[0] = damage.entity.position[0];
 				SpriteRenderer.position[1] = damage.entity.position[1];
@@ -350,7 +350,7 @@ define(function( require )
 			}
 
 			// Miss
-			else if (damage.type & Damage.TYPE.MISS) {
+			else if (damage.type & Damage.Type.MISS) {
 				perc = (( tick - damage.start ) / 800);
 				size = 0.5;
 				SpriteRenderer.position[0] = damage.entity.position[0];

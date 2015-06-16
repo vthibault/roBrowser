@@ -1,5 +1,5 @@
 /**
- * Audio/BGM.js
+ * audio/BGM.js
  *
  * BGM Manager
  *
@@ -11,7 +11,7 @@
  * @author Vincent Thibault
  */
  
-define( ['require', 'Utils/jquery', 'Core/Client', 'Preferences/Audio'],
+define( ['require', 'utils/jquery', 'core/Client', 'preferences/Audio'],
 function( require,         jQuery,        Client,   Preferences )
 {
 	'use strict';

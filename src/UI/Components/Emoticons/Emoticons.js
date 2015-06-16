@@ -15,12 +15,12 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
-	var EmoticonsDB    = require('DB/Emotions');
-	var Client         = require('Core/Client');
-	var Preferences    = require('Core/Preferences');
-	var Renderer       = require('Renderer/Renderer');
-	var SpriteRenderer = require('Renderer/SpriteRenderer');
-	var Entity         = require('Renderer/Entity/Entity');
+	var EmoticonsDB    = require('db/Emotions');
+	var Client         = require('core/Client');
+	var Preferences    = require('core/Preferences');
+	var Renderer       = require('renderer/Renderer');
+	var SpriteRenderer = require('renderer/SpriteRenderer');
+	var Entity         = require('renderer/Entity/Entity');
 	var UIManager      = require('UI/UIManager');
 	var UIComponent    = require('UI/UIComponent');
 	var ChatBox        = require('UI/Components/ChatBox/ChatBox');
@@ -141,7 +141,7 @@ define(function(require)
 	/**
 	 * Once removed from DOM, save preferences
 	 */
-	Emoticons.onRemove = function OnRemove()
+	Emoticons.onRemove = function onRemove()
 	{
 		_preferences.show   =  this.ui.is(':visible');
 		_preferences.y      =  parseInt(this.ui.css('top'), 10);

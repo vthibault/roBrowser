@@ -15,12 +15,12 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
-	var Preferences  = require('Core/Preferences');
-	var jQuery       = require('Utils/jquery');
-	var Renderer     = require('Renderer/Renderer');
-	var Session      = require('Engine/SessionStorage');
-	var Mouse        = require('Controls/MouseEventHandler');
-	var KEYS         = require('Controls/KeyEventHandler');
+	var Preferences  = require('core/Preferences');
+	var jQuery       = require('utils/jquery');
+	var Renderer     = require('renderer/Renderer');
+	var Session      = require('engine/SessionStorage');
+	var Mouse        = require('controls/MouseEventHandler');
+	var KEYS         = require('controls/KeyEventHandler');
 	var ChatBox      = require('UI/Components/ChatBox/ChatBox');
 	var UIManager    = require('UI/UIManager');
 	var UIComponent  = require('UI/UIComponent');
@@ -191,7 +191,7 @@ define(function(require)
 
 		// Process commands
 		if (message[0] === '/') {
-			getModule('Controls/ProcessCommand').call( ChatBox, message.substr(1) );
+			getModule('controls/ProcessCommand').call( ChatBox, message.substr(1) );
 			ui.find('.send input[name=message]').val('');
 			return true;
 		}

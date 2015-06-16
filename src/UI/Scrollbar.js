@@ -7,7 +7,7 @@
  *
  * @author Vincent Thibault
  */
-define( ['Utils/jquery', 'Utils/Texture', 'DB/DBManager', 'Core/Client' ],
+define( ['utils/jquery', 'utils/Texture', 'db/DBManager', 'core/Client' ],
 function(       jQuery,         Texture,      DB,               Client )
 {
 	'use strict';
@@ -28,7 +28,7 @@ function(       jQuery,         Texture,      DB,               Client )
 	/**
 	 * Initialize scrollbar
 	 */
-	ScrollBar.init = function Init()
+	ScrollBar.init = function init()
 	{
 		// Already loaded
 		if (ScrollBar.complete) {
@@ -43,22 +43,22 @@ function(       jQuery,         Texture,      DB,               Client )
 			  DB.INTERFACE_PATH + 'scroll0bar_down.bmp',
 			  DB.INTERFACE_PATH + 'scroll0bar_mid.bmp',
 			  DB.INTERFACE_PATH + 'scroll0bar_up.bmp' ],
-			function( down, mid, up, base_down, base_mid, base_up ) {
+			function( down, mid, up, baseDown, baseMid, baseUp ) {
 
-				Texture.load( base_down, function(){
-					var base_down = this;
-					Texture.load( base_mid, function(){
-						var base_mid = this;
-						Texture.load( base_up, function(){
-							var base_up = this;
+				Texture.load( baseDown, function(){
+					var baseDown = this;
+					Texture.load( baseMid, function(){
+						var baseMid = this;
+						Texture.load( baseUp, function(){
+							var baseUp  = this;
 							var base    = document.createElement('canvas');
 							var ctx     = base.getContext('2d');
-							base.width  = base_up.width;
-							base.height = base_up.height + base_mid.height + base_down.height;
+							base.width  = baseUp.width;
+							base.height = baseUp.height + baseMid.height + baseDown.height;
 
-							ctx.drawImage( base_up, 0, 0);
-							ctx.drawImage( base_mid, 0, base_up.height);
-							ctx.drawImage( base_down, 0, base_up.height + base_mid.height );
+							ctx.drawImage( baseUp, 0, 0);
+							ctx.drawImage( baseMid, 0, baseUp.height);
+							ctx.drawImage( baseDown, 0, baseUp.height + baseMid.height );
 
 							jQuery('style:first').append([
 								'::-webkit-scrollbar { width: 13px; height: 12px; }',

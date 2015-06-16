@@ -16,14 +16,14 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
-	var jQuery         = require('Utils/jquery');
+	var jQuery         = require('utils/jquery');
 	var UIManager      = require('UI/UIManager');
 	var UIComponent    = require('UI/UIComponent');
-	var Client         = require('Core/Client');
-	var Events         = require('Core/Events');
-	var Renderer       = require('Renderer/Renderer');
-	var Entity         = require('Renderer/Entity/Entity');
-	var SpriteRenderer = require('Renderer/SpriteRenderer');
+	var Client         = require('core/Client');
+	var Events         = require('core/Events');
+	var Renderer       = require('renderer/Renderer');
+	var Entity         = require('renderer/Entity/Entity');
+	var SpriteRenderer = require('renderer/SpriteRenderer');
 
 
 	/**
@@ -212,7 +212,7 @@ define(function(require)
 
 
 	/**
-	 * Functions defined in Engine/MapEngine/Pet.js
+	 * Functions defined in engine/Mapengine/Pet.js
 	 */
 	SlotMachine.onTry = function onTry(){};
 

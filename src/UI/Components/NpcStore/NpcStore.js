@@ -15,14 +15,14 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
-	var jQuery       = require('Utils/jquery');
-	var DB           = require('DB/DBManager');
-	var ItemType     = require('DB/Items/ItemType');
-	var Client       = require('Core/Client');
-	var Preferences  = require('Core/Preferences');
-	var Session      = require('Engine/SessionStorage');
-	var Mouse        = require('Controls/MouseEventHandler');
-	var KEYS         = require('Controls/KeyEventHandler');
+	var jQuery       = require('utils/jquery');
+	var DB           = require('db/DBManager');
+	var ItemType     = require('db/items/ItemType');
+	var Client       = require('core/Client');
+	var Preferences  = require('core/Preferences');
+	var Session      = require('engine/SessionStorage');
+	var Mouse        = require('controls/MouseEventHandler');
+	var KEYS         = require('controls/KeyEventHandler');
 	var UIManager    = require('UI/UIManager');
 	var UIComponent  = require('UI/UIComponent');
 	var ItemInfo     = require('UI/Components/ItemInfo/ItemInfo');
@@ -69,8 +69,8 @@ define(function(require)
 			y:    100 + (7*32) - (2*32),
 			height: 2
 		},
-		select_all: false
-	}, 1.0);
+		selectAll: false
+	}, 1.1);
 
 
 	/**
@@ -148,7 +148,7 @@ define(function(require)
 		InputWindow.css({  top:  _preferences.inputWindow.y,  left: _preferences.inputWindow.x });
 		OutputWindow.css({ top:  _preferences.outputWindow.y, left: _preferences.outputWindow.x });
 
-		Client.loadFile(DB.INTERFACE_PATH + 'checkbox_' + (_preferences.select_all ? 1 : 0) + '.bmp', function(data){
+		Client.loadFile(DB.INTERFACE_PATH + 'checkbox_' + (_preferences.selectAll ? 1 : 0) + '.bmp', function(data){
 			this.ui.find('.selectall:first').css('backgroundImage', 'url('+ data +')');
 		}.bind(this));
 
@@ -509,7 +509,7 @@ define(function(require)
 				// You don't have enough zeny
 				if (_type === NpcStore.Type.BUY || _type === NpcStore.Type.VENDING_STORE) {
 					if (NpcStore.calculateCost() + (_input[index].discountprice || _input[index].price) * count > Session.zeny) {
-						ChatBox.addText( DB.getMessage(55), ChatBox.TYPE.ERROR);
+						ChatBox.addText( DB.getMessage(55), ChatBox.Type.ERROR);
 						return;
 					}
 				}
@@ -586,7 +586,7 @@ define(function(require)
 		}
 
 		// Just one item amount
-		if (item.count === 1 || (_type === NpcStore.Type.SELL && _preferences.select_all) || !isStackable) {
+		if (item.count === 1 || (_type === NpcStore.Type.SELL && _preferences.selectAll) || !isStackable) {
 			transferItem(fromContent, toContent, isAdding, index, isFinite(item.count) ? item.count : 1 );
 			return false;
 		}
@@ -761,9 +761,9 @@ define(function(require)
 	 */
 	function onToggleSelectAmount()
 	{
-		_preferences.select_all = !_preferences.select_all;
+		_preferences.selectAll = !_preferences.selectAll;
 
-		Client.loadFile(DB.INTERFACE_PATH + 'checkbox_' + (_preferences.select_all ? 1 : 0) + '.bmp', function(data) {
+		Client.loadFile(DB.INTERFACE_PATH + 'checkbox_' + (_preferences.selectAll ? 1 : 0) + '.bmp', function(data) {
 			this.style.backgroundImage = 'url('+ data +')';
 		}.bind(this));
 	}

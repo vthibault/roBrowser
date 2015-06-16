@@ -1,5 +1,5 @@
 /**
- * Engine/MapEngine/Group.js
+ * engine/Mapengine/Group.js
  *
  * Manage group/party
  *
@@ -16,12 +16,12 @@ define(function( require )
 	/**
 	 * Load dependencies
 	 */
-	var DB            = require('DB/DBManager');
-	var Session       = require('Engine/SessionStorage');
-	var Network       = require('Network/NetworkManager');
-	var PACKET        = require('Network/PacketStructure');
-	var EntityManager = require('Renderer/EntityManager');
-	var MapRenderer   = require('Renderer/MapRenderer');
+	var DB            = require('db/DBManager');
+	var Session       = require('engine/SessionStorage');
+	var Network       = require('network/networkManager');
+	var PACKET        = require('network/packets/structureTable');
+	var EntityManager = require('renderer/EntityManager');
+	var MapRenderer   = require('renderer/MapRenderer');
 	var UIManager     = require('UI/UIManager');
 	var ChatBox       = require('UI/Components/ChatBox/ChatBox');
 	var MiniMap       = require('UI/Components/MiniMap/MiniMap');
@@ -123,7 +123,7 @@ define(function( require )
 			return;
 		}
 
-		ChatBox.addText( pseudo + ' ' + DB.getMessage(2059, ' has recieved an invitation to join your party.'), ChatBox.TYPE.BLUE);
+		ChatBox.addText( pseudo + ' ' + DB.getMessage(2059, ' has recieved an invitation to join your party.'), ChatBox.Type.BLUE);
 
 		var pkt = new PACKET.CZ.REQ_JOIN_GROUP();
 		pkt.AID = AID;
@@ -212,7 +212,7 @@ define(function( require )
 	{
 		switch (pkt.result) {
 			case 0: // Ok, process
-				ChatBox.addText( DB.getMessage(77), ChatBox.TYPE.BLUE);
+				ChatBox.addText( DB.getMessage(77), ChatBox.Type.BLUE);
 				Session.hasParty = true;
 
 				PartyUI.setParty( _partyName, [{
@@ -225,15 +225,15 @@ define(function( require )
 				break;
 
 			case 1: // party name already exists
-				ChatBox.addText( DB.getMessage(78), ChatBox.TYPE.ERROR);
+				ChatBox.addText( DB.getMessage(78), ChatBox.Type.ERROR);
 				break;
 
 			case 1: // already in a party
-				ChatBox.addText( DB.getMessage(79), ChatBox.TYPE.ERROR);
+				ChatBox.addText( DB.getMessage(79), ChatBox.Type.ERROR);
 				break;
 
 			case 3: // cannot organize parties on this map
-				ChatBox.addText( DB.getMessage(1387), ChatBox.TYPE.ERROR);
+				ChatBox.addText( DB.getMessage(1387), ChatBox.Type.ERROR);
 				break;
 		}
 	}
@@ -294,12 +294,12 @@ define(function( require )
 
 			case 2:
 				// Cannot leave a party in this map
-				ChatBox.addText( DB.getMessage(1872), ChatBox.TYPE.ERROR);
+				ChatBox.addText( DB.getMessage(1872), ChatBox.Type.ERROR);
 				return;
 
 			case 3:
 				// Cannot withdraw/break the party in this map
-				ChatBox.addText( DB.getMessage(1873), ChatBox.TYPE.ERROR);
+				ChatBox.addText( DB.getMessage(1873), ChatBox.Type.ERROR);
 				return;
 		}
 
@@ -322,7 +322,7 @@ define(function( require )
 
 		if (entity) {
 			entity.life.hp = pkt.hp;
-			entity.life.hp_max = pkt.maxhp;
+			entity.life.hpMax = pkt.maxhp;
 			entity.life.update();
 
 			if (pkt.AID !== Session.AID) {
@@ -345,7 +345,7 @@ define(function( require )
 			entity.dialog.set( pkt.msg );
 		}
 
-		ChatBox.addText( pkt.msg, ChatBox.TYPE.PARTY );
+		ChatBox.addText( pkt.msg, ChatBox.Type.PARTY );
 	}
 
 
@@ -375,9 +375,9 @@ define(function( require )
 	{
 		PartyUI.setOptions(pkt.expOption, pkt.ItemPickupRule, pkt.ItemDivisionRule);
 
-		ChatBox.addText( DB.getMessage(291) + '  - ' + DB.getMessage(292) + '  : ' + DB.getMessage(287 + pkt.expOption ), ChatBox.TYPE.INFO );
-		ChatBox.addText( DB.getMessage(291) + '  - ' + DB.getMessage(293) + '  : ' + DB.getMessage(289 + pkt.ItemPickupRule), ChatBox.TYPE.INFO );
-		ChatBox.addText( DB.getMessage(291) + '  - ' + DB.getMessage(738) + '  : ' + DB.getMessage(287 + pkt.ItemDivisionRule), ChatBox.TYPE.INFO );
+		ChatBox.addText( DB.getMessage(291) + '  - ' + DB.getMessage(292) + '  : ' + DB.getMessage(287 + pkt.expOption ), ChatBox.Type.INFO );
+		ChatBox.addText( DB.getMessage(291) + '  - ' + DB.getMessage(293) + '  : ' + DB.getMessage(289 + pkt.ItemPickupRule), ChatBox.Type.INFO );
+		ChatBox.addText( DB.getMessage(291) + '  - ' + DB.getMessage(738) + '  : ' + DB.getMessage(287 + pkt.ItemDivisionRule), ChatBox.Type.INFO );
 	}
 
 
@@ -388,7 +388,7 @@ define(function( require )
 	 */
 	function onPartyConfig( pkt )
 	{
-		ChatBox.addText( DB.getMessage(pkt.bRefuseJoinMsg ? 1325 : 1326), ChatBox.TYPE.INFO );
+		ChatBox.addText( DB.getMessage(pkt.bRefuseJoinMsg ? 1325 : 1326), ChatBox.Type.INFO );
 	}
 
 
@@ -421,7 +421,7 @@ define(function( require )
 	 */
 	function onPartyInvitationAnswer( pkt )
 	{
-		var id = 1, color = ChatBox.TYPE.ERROR;
+		var id = 1, color = ChatBox.Type.ERROR;
 
 		switch (pkt.answer) {
 			case 0: id = 80;  break;
@@ -429,7 +429,7 @@ define(function( require )
 
 			case 2:
 				id = 82;
-				color = ChatBox.TYPE.BLUE;
+				color = ChatBox.Type.BLUE;
 				break;
 
 			case 3: id = 83;   break;

@@ -15,14 +15,14 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
-	var jQuery      = require('Utils/jquery');
-	var KEYS        = require('Controls/KeyEventHandler');
+	var jQuery      = require('utils/jquery');
+	var KEYS        = require('controls/KeyEventHandler');
 	var UIManager   = require('UI/UIManager');
 	var UIComponent = require('UI/UIComponent');
 	var htmlText    = require('text!./Intro.html');
 	var cssText     = require('text!./Intro.css');
-	var Context     = require('Core/Context');
-	var Configs     = require('Core/Configs');
+	var Context     = require('core/Context');
+	var Configs     = require('core/Configs');
 	var Particle    = require('./Particle');
 	var Preferences = require('./Preferences');
 	var FileSystem  = require('./FileSystem');
@@ -43,7 +43,7 @@ define(function(require)
 	/**
 	 * Manage Escape key to exit
 	 */
-	Intro.onKeyDown = function OnKeyDown( event )
+	Intro.onKeyDown = function onKeyDown( event )
 	{
 		// Exit fullScreen mode
 		if (event.which === KEYS.ESCAPE) {
@@ -309,10 +309,10 @@ define(function(require)
 	{
 		var i, count;
 
-		var _dir_count   = 0;
-		var _dir_loaded  = 0;
-		var _file_count  = 0;
-		var _file_loaded = 0;
+		var _dirCount   = 0;
+		var _dirLoaded  = 0;
+		var _fileCount  = 0;
+		var _fileLoaded = 0;
 		var _files       = [];
 
 		event.stopImmediatePropagation();
@@ -328,22 +328,22 @@ define(function(require)
 		// Extract files from directory
 		function recursiveReader(entry, skip){
 			if (entry.isFile) {
-				++_file_count;
+				++_fileCount;
 				entry.file(function(file){
 					file.fullPath = entry.fullPath.substr(skip); // get rid of the "/"
 					_files.push(file);
-					if ((++_file_loaded) === _file_count && _dir_loaded === _dir_count) {
+					if ((++_fileLoaded) === _fileCount && _dirLoaded === _dirCount) {
 						processing(_files);
 					}
 				});
 			}
 			else if (entry.isDirectory) {
-				++_dir_count;
+				++_dirCount;
 				entry.createReader().readEntries(function(entries){
 					for (var i = 0, count = entries.length; i < count; ++i) {
 						recursiveReader(entries[i], skip);
 					}
-					if ((++_dir_loaded) === _dir_count && _file_loaded === _file_count) {
+					if ((++_dirLoaded) === _dirCount && _fileLoaded === _fileCount) {
 						processing(_files);
 					}
 				});
@@ -409,7 +409,7 @@ define(function(require)
 	/**
 	 * Callback to used.
 	 */
-	Intro.onFilesSubmit = function OnFilesSubmit(){};
+	Intro.onFilesSubmit = function onFilesSubmit(){};
 
 
 	/**

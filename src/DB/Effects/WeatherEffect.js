@@ -1,5 +1,5 @@
 /**
- * DB/Effects/WeatherEffect.js
+ * db/effects/WeatherEffect.js
  *
  * Weather DB
  *

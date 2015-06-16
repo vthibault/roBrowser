@@ -1,5 +1,5 @@
 /**
- * Utils/Queue.js
+ * utils/Queue.js
  *
  * Queue System
  *
@@ -30,7 +30,7 @@ define(function()
 	 *
 	 * @param {function} callback
 	 */
-	Queue.prototype.add = function Add(callback)
+	Queue.prototype.add = function add(callback)
 	{
 		this.list.push(callback);
 	};
@@ -39,7 +39,7 @@ define(function()
 	/**
 	 * Continue the queue
 	 */
-	Queue.prototype._next = function _Next()
+	Queue.prototype._next = function next()
 	{
 		if (this.list.length) {
 			this.list.shift().call(this);
@@ -58,7 +58,7 @@ define(function()
 	/**
 	 * Start running queue
 	 */
-	Queue.prototype.run = function Run()
+	Queue.prototype.run = function run()
 	{
 		this.next();
 	};

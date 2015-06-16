@@ -1,5 +1,5 @@
 /**
- * Renderer/SpriteRenderer.js
+ * renderer/SpriteRenderer.js
  *
  * Rendering sprite in 2D or 3D context
  *
@@ -7,7 +7,7 @@
  *
  * @author Vincent Thibault
  */
-define(["Utils/WebGL", "Utils/gl-matrix", "./Camera"],
+define(["utils/WebGL", "utils/gl-matrix", "./Camera"],
 function(      WebGL,         glMatrix,      Camera )
 {
 	"use strict";
@@ -343,6 +343,12 @@ function(      WebGL,         glMatrix,      Camera )
 
 
 	/**
+	 * @var {boolean} should render in 3D context ?
+	 */
+	var _render3D = false;
+
+
+	/**
 	 * Initialize SpriteRenderer Renderer
 	 *
 	 * @param {object} gl context
@@ -374,7 +380,7 @@ function(      WebGL,         glMatrix,      Camera )
 	 * @param {mat4} projection
 	 * @param {object} fog structure
 	 */
-	SpriteRenderer.bind3DContext = function Bind3dContext( gl, modelView, projection, fog )
+	SpriteRenderer.bind3DContext = function bind3dContext( gl, modelView, projection, fog )
 	{
 		var attribute = _program.attribute;
 		var uniform   = _program.uniform;
@@ -407,9 +413,9 @@ function(      WebGL,         glMatrix,      Camera )
 		gl.vertexAttribPointer( attribute.aTextureCoord, 2, gl.FLOAT, false,  4*4, 2*4 );
 	
 		// Binding 3D context
-		this.render = RenderCanvas3D;
-		this.xSize  = 5;
-		this.ySize  = 5;
+		_render3D  = true;
+		this.xSize = 5;
+		this.ySize = 5;
 
 		_gl = gl;
 		_groupId++;
@@ -437,22 +443,35 @@ function(      WebGL,         glMatrix,      Camera )
 	 * @param {number} x position
 	 * @param {number} y position
 	 */
-	SpriteRenderer.bind2DContext = function Bind2DContext( ctx, x, y )
+	SpriteRenderer.bind2DContext = function bind2DContext( ctx, x, y )
 	{
-		_ctx        = ctx;
-		_pos[0]     = x;
-		_pos[1]     = y;
+		_ctx       = ctx;
+		_pos[0]    = x;
+		_pos[1]    = y;
+		_render3D  = false;
 
-		this.render = RenderCanvas2D;
-		this.xSize  = 5;
-		this.ySize  = 5;
+		this.xSize = 5;
+		this.ySize = 5;
+	};
+
+
+	/**
+	 * Rendering
+	 */
+	SpriteRenderer.render = function render() {
+		if (_render3D) {
+			this.renderCanvas3D();
+		}
+		else {
+			this.renderCanvas2D();
+		}
 	};
 
 
 	/**
 	 * Render in 3D mode
 	 */
-	function RenderCanvas3D()
+	SpriteRenderer.renderCanvas3D = function renderCanvas3D()
 	{
 		// Nothing to render ?
 		if (!this.image.texture || !this.color[3]) {
@@ -464,7 +483,7 @@ function(      WebGL,         glMatrix,      Camera )
 
 		var uniform = _program.uniform;
 		var gl      = _gl;
-		var use_pal = this.image.palette !== null;
+		var isPal   = this.image.palette !== null;
 
 		if (this.shadow !== _shadow) {
 			gl.uniform1f( uniform.uShadow, _shadow = this.shadow);
@@ -472,15 +491,15 @@ function(      WebGL,         glMatrix,      Camera )
 		gl.uniform3fv( uniform.uSpriteRendererPosition, this.position );
 
 		// Palette
-		if (use_pal) {
+		if (isPal) {
 			gl.activeTexture( gl.TEXTURE1 );
 			gl.bindTexture( gl.TEXTURE_2D,    this.image.palette );
 			gl.uniform2fv( uniform.uTextSize, this.image.size );
 			gl.activeTexture( gl.TEXTURE0 );
 		}
 
-		if (_usepal !== use_pal) {
-			gl.uniform1i(  uniform.uUsePal, _usepal = use_pal );
+		if (_usepal !== isPal) {
+			gl.uniform1i(  uniform.uUsePal, _usepal = isPal);
 		}
 
 		if (this.depth !== _depth) {
@@ -515,13 +534,13 @@ function(      WebGL,         glMatrix,      Camera )
 			gl.bindTexture( gl.TEXTURE_2D, _texture = this.image.texture );
 		}
 		gl.drawArrays( gl.TRIANGLE_STRIP, 0, 4 );
-	}
+	};
 
 
 	/**
 	 * Render in 2D
 	 */
-	var RenderCanvas2D = function RenderCanvas2DClosure()
+	SpriteRenderer.renderCanvas2D = function renderCanvas2DClosure()
 	{
 		var canvas, ctx, imageData;
 
@@ -531,20 +550,20 @@ function(      WebGL,         glMatrix,      Camera )
 		canvas.height  = 20;
 		imageData      = ctx.createImageData(canvas.width, canvas.height);
 
-		return function RenderCanvas2D()
+		return function renderCanvas2D()
 		{
 			// Nothing to render
 			if (this.sprite.width <= 0 || this.sprite.height <= 0) {
 				return;
 			}
 
-			var scale_x, scale_y, idx1, idx2;
+			var scaleX, scaleY, idx1, idx2;
 			var x, y, _x, _y, width, height, outputWidth;
 			var pal, frame, color;
 			var input, output;
 
-			scale_x  = 1.0;
-			scale_y  = 1.0;
+			scaleX  = 1.0;
+			scaleY  = 1.0;
 			_x       = _pos[0] + this.offset[0];
 			_y       = _pos[1] + this.offset[1] - 0.5 * 35; // middle of cell
 			pal      = this.palette;
@@ -556,12 +575,12 @@ function(      WebGL,         glMatrix,      Camera )
 
 			// Mirror feature
 			if (_size[0] < 0) {
-				scale_x  *= -1;
+				scaleX  *= -1;
 				_size[0] *= -1;
 			}
 
 			if (_size[1] < 0) {
-				scale_y  *= -1;
+				scaleY  *= -1;
 				_size[1] *= -1;
 			}
 
@@ -612,7 +631,7 @@ function(      WebGL,         glMatrix,      Camera )
 			_ctx.save();
 			_ctx.translate( _x | 0, _y | 0 );
 			_ctx.rotate( this.angle / 180 * Math.PI );
-			_ctx.scale( scale_x, scale_y );
+			_ctx.scale( scaleX, scaleY );
 			_ctx.drawImage(
 				 canvas,
 				 0,              0,

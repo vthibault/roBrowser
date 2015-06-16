@@ -1,5 +1,5 @@
 /**
- * Utils/PathFinding.js
+ * utils/PathFinding.js
  *
  * Path Finding Algorithm (A*)
  *
@@ -17,11 +17,11 @@ define(function()
 
 
 	// World object
-	var GAT = {
+	var gat = {
 		width:     0,
 		height:    0,
 		cells:  null,
-		type:   null
+		Type:   null
 	};
 
 
@@ -203,14 +203,11 @@ define(function()
 	/**
 	 * Copy Gat cell types info to local.
 	 *
-	 * @param {object} gat - Altitude info
+	 * @param {object} Altitude info
 	 */
-	function setGat( gat )
+	function setGat( altitude )
 	{
-		GAT.width  = gat.width;
-		GAT.height = gat.height;
-		GAT.cells  = gat.cells;
-		GAT.type   = gat.types;
+		gat = altitude;
 	}
 
 
@@ -223,13 +220,13 @@ define(function()
 	 * @param {number} y1
 	 * @param {Array} out
 	 * @param {number} range
-	 * @param {type} type - see Altitude.TYPE.* consts
+	 * @param {type} type - see Altitude.Type.* consts
 	 */
 	function searchLong( x0, y0, x1, y1, range, out, type )
 	{
 		var i, dx, dy, x, y;
-		var types = GAT.cells;
-		var width = GAT.width;
+		var types = gat.cells;
+		var width = gat.width;
 
 		dx   = ((dx = x1-x0)) ? ((dx<0) ? -1 : 1) : 0;
 		dy   = ((dy = y1-y0)) ? ((dy<0) ? -1 : 1) : 0;
@@ -273,7 +270,7 @@ define(function()
 			x = x1 - x0;
 			y = y1 - y0;
 			if (Math.sqrt(x*x + y*y) <= range) {
-				return searchLong( x0, y0, x1, y1, 0, out, GAT.type.SNIPABLE );
+				return searchLong( x0, y0, x1, y1, 0, out, gat.Type.SNIPABLE );
 			}
 		}
 
@@ -296,13 +293,13 @@ define(function()
 		var e, f, len, dist, cost;
 
 		// Import world
-		var width  = GAT.width;
-		var height = GAT.height;
-		var types  = GAT.cells;
-		var TYPE   = GAT.type;
+		var width  = gat.width;
+		var height = gat.height;
+		var types  = gat.cells;
+		var Type   = gat.Type;
 
 		// Direct search
-		i = searchLong( x0, y0, x1, y1, range, out, TYPE.WALKABLE );
+		i = searchLong( x0, y0, x1, y1, range, out, Type.WALKABLE );
 		if (i) {
 			return i;
 		}
@@ -361,44 +358,44 @@ define(function()
 				break;
 			}
 
-			if (y < ys && types[ (x+0) + (y+1) * width ] & TYPE.WALKABLE) {
+			if (y < ys && types[ (x+0) + (y+1) * width ] & Type.WALKABLE) {
 				dc[0] = (y >= y1 ? 20 : 0);
 				f    |= 1;
 				e    += add_path( heap, x+0, y+1, dist, rp, cost + dc[0] );
 			}
 
-			if (x > 0 && types[ (x-1) + (y+0) * width ] & TYPE.WALKABLE) {
+			if (x > 0 && types[ (x-1) + (y+0) * width ] & Type.WALKABLE) {
 				dc[1] = (x <= x1 ? 20 : 0);
 				f    |= 2;
 				e    += add_path( heap, x-1, y+0, dist, rp, cost + dc[1] );
 			}
 
-			if (y > 0 && types[ (x+0) + (y-1) * width ] & TYPE.WALKABLE) {
+			if (y > 0 && types[ (x+0) + (y-1) * width ] & Type.WALKABLE) {
 				dc[2] = (y <= y1 ? 20 : 0);
 				f    |= 4;
 				e    += add_path( heap, x+0, y-1, dist, rp, cost + dc[2] );
 			}
 
-			if (x < xs && types[ (x+1) + (y+0) * width ] & TYPE.WALKABLE) {
+			if (x < xs && types[ (x+1) + (y+0) * width ] & Type.WALKABLE) {
 				dc[3] = (x >= x1 ? 20 : 0);
 				f    |= 8;
 				e    += add_path( heap, x+1, y+0, dist, rp, cost + dc[3] );
 			}
 
 			// Diagonals
-			if ((f & (2+1)) === 2+1 && types[ (x-1) + (y+1) * width ] & TYPE.WALKABLE) {
+			if ((f & (2+1)) === 2+1 && types[ (x-1) + (y+1) * width ] & Type.WALKABLE) {
 				e += add_path( heap, x-1, y+1, dist+4, rp, cost + dc[1] + dc[0] - 6 );
 			}
 
-			if ((f & (2+4)) === 2+4 && types[ (x-1) + (y-1) * width ] & TYPE.WALKABLE) {
+			if ((f & (2+4)) === 2+4 && types[ (x-1) + (y-1) * width ] & Type.WALKABLE) {
 				e += add_path( heap, x-1, y-1, dist+4, rp ,cost + dc[1] + dc[2] - 6 );
 			}
 
-			if ((f & (8+4)) === 8+4 && types[ (x+1) + (y-1) * width ] & TYPE.WALKABLE) {
+			if ((f & (8+4)) === 8+4 && types[ (x+1) + (y-1) * width ] & Type.WALKABLE) {
 				e += add_path( heap, x+1, y-1, dist+4, rp, cost + dc[3] + dc[2] - 6 );
 			}
 
-			if ((f & (8+1)) === 8+1 && types[ (x+1) + (y+1) * width ] & TYPE.WALKABLE) {
+			if ((f & (8+1)) === 8+1 && types[ (x+1) + (y+1) * width ] & Type.WALKABLE) {
 				e += add_path( heap, x+1, y+1, dist+4, rp, cost + dc[3] + dc[0] - 6 );
 			}
 

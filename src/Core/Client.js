@@ -1,5 +1,5 @@
 /**
- * Core/Client.js
+ * core/Client.js
  *
  * Client Manager
  * Manage client files, load GRFs, DATA.INI, extract files from GRFs, ...
@@ -15,13 +15,13 @@ define(function( require )
 
 
 	// Load dependencies
-	var Executable    = require('Utils/Executable');
-	var Texture       = require('Utils/Texture');
-	var WebGL         = require('Utils/WebGL');
+	var Executable    = require('utils/Executable');
+	var Texture       = require('utils/Texture');
+	var WebGL         = require('utils/WebGL');
 	var Configs       = require('./Configs');
 	var Thread        = require('./Thread');
 	var Memory        = require('./MemoryManager');
-	var PACKETVER     = require('Network/PacketVerManager');
+	var PACKETVER     = require('network/PacketVerManager');
 	var getModule     = require;
 
 
@@ -37,7 +37,7 @@ define(function( require )
 		var packetver    = Configs.get('packetver');
 		var remoteClient = Configs.get('remoteClient');
 
-		function OnDate(date){
+		function onDate(date){
 			// Avoid errors
 			if (date > 20000000) {
 				PACKETVER.value = date;
@@ -48,7 +48,7 @@ define(function( require )
 		if (!packetver || String(packetver).match(/^executable$/i)) {
 			for (i = 0, count = files.length; i < count; ++i) {
 				if (Executable.isROExec(files[i])) {
-					Executable.getDate(files[i], OnDate);
+					Executable.getDate(files[i], onDate);
 					break;
 				}
 			}
@@ -76,7 +76,7 @@ define(function( require )
 	{
 		var progressbar = document.createElement('div');
 		var info        = document.createElement('div');
-		var last_tick   = Date.now();
+		var tick        = Date.now();
 		var list        = [];
 		var i, count;
 		var temporaryStorage;
@@ -118,10 +118,10 @@ define(function( require )
 			// Get progress on saving the client
 			Thread.hook( 'CLIENT_SAVE_PROGRESS', function(data){
 				var now = Date.now();
-				if (last_tick + 400 < now) {
+				if (tick + 400 < now) {
 					progressbar.style.width = data.total.perc + '%';
 					info.textContent = 'Saving fullclient... ('+ data.total.perc +' %)';
-					last_tick = now;
+					tick = now;
 				}
 			});
 
@@ -260,7 +260,7 @@ define(function( require )
 
 					// Load str textures
 					case 'str':
-						gl     = getModule('Renderer/Renderer').getContext();
+						gl     = getModule('renderer/Renderer').getContext();
 						layers = data.layers;
 
 						for (i = 0; i < data.layernum; ++i) {
@@ -281,7 +281,7 @@ define(function( require )
 						return;
 
 					case 'spr':
-						gl     = getModule('Renderer/Renderer').getContext();
+						gl     = getModule('renderer/Renderer').getContext();
 						frames = data.frames;
 						count  = frames.length;
 
@@ -299,7 +299,7 @@ define(function( require )
 						}
 
 						// Send palette to GPU
-						if (data.rgba_index !== 0) {
+						if (data.rgbaIndex !== 0) {
 							data.texture = gl.createTexture();
 							gl.bindTexture( gl.TEXTURE_2D, data.texture );
 							gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 256, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, data.palette );
@@ -312,7 +312,7 @@ define(function( require )
 
 					// Build palette
 					case 'pal':
-						gl      = getModule('Renderer/Renderer').getContext();
+						gl      = getModule('renderer/Renderer').getContext();
 						texture = gl.createTexture();
 						palette = new Uint8Array(data);
 
@@ -402,7 +402,7 @@ define(function( require )
 		loadFile:      loadFile,
 		loadFiles:     loadFiles,
 		search:        search,
-		onFilesLoaded: function OnFilesLoaded(){}
+		onFilesLoaded: function onFilesLoaded(){}
 	};
 
 	return Client;

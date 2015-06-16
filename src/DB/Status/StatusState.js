@@ -1,5 +1,5 @@
 /**
- * DB/Status/StatusState.js
+ * db/status/StatusState.js
  *
  * List of status state
  *

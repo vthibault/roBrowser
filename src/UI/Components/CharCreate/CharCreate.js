@@ -15,11 +15,11 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
-	var Renderer           = require('Renderer/Renderer');
-	var KEYS               = require('Controls/KeyEventHandler');
-	var Entity             = require('Renderer/Entity/Entity');
-	var SpriteRenderer     = require('Renderer/SpriteRenderer');
-	var Camera             = require('Renderer/Camera');
+	var Renderer           = require('renderer/Renderer');
+	var KEYS               = require('controls/KeyEventHandler');
+	var Entity             = require('renderer/Entity/Entity');
+	var SpriteRenderer     = require('renderer/SpriteRenderer');
+	var Camera             = require('renderer/Camera');
 	var UIManager          = require('UI/UIManager');
 	var UIComponent        = require('UI/UIComponent');
 	var htmlText           = require('text!./CharCreate.html');
@@ -308,13 +308,13 @@ define(function(require)
 	/**
 	 * Callback to define
 	 */
-	CharCreate.onExitRequest = function OnExitRequest(){};
+	CharCreate.onExitRequest = function onExitRequest(){};
 
 
 	/**
 	 * Abstract callback to define
 	 */
-	CharCreate.onCharCreationRequest = function OnCharCreationRequest(){};
+	CharCreate.onCharCreationRequest = function onCharCreationRequest(){};
 
 
 	/**

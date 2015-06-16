@@ -15,12 +15,12 @@ define(function(require)
 	/**
 	 * Dependencies
 	 */
-	var DB                 = require('DB/DBManager');
-	var MonsterTable       = require('DB/Monsters/MonsterTable');
-	var Client             = require('Core/Client');
-	var Preferences        = require('Core/Preferences');
-	var Renderer           = require('Renderer/Renderer');
-	var Session            = require('Engine/SessionStorage');
+	var DB                 = require('db/DBManager');
+	var MonsterTable       = require('db/monsters/MonsterTable');
+	var Client             = require('core/Client');
+	var Preferences        = require('core/Preferences');
+	var Renderer           = require('renderer/Renderer');
+	var Session            = require('engine/SessionStorage');
 	var UIManager          = require('UI/UIManager');
 	var UIComponent        = require('UI/UIComponent');
 	var Inventory          = require('UI/Components/Inventory/Inventory');
@@ -42,12 +42,12 @@ define(function(require)
 	/**
 	 * Stored data
 	 */
-	BasicInfo.base_exp      = 0;
-	BasicInfo.base_exp_next = 1;
-	BasicInfo.job_exp       = 0;
-	BasicInfo.job_exp_next  =-1;
+	BasicInfo.baseExp      = 0;
+	BasicInfo.baseExpNext = 1;
+	BasicInfo.jobExp       = 0;
+	BasicInfo.jobExpNext  =-1;
 	BasicInfo.weight        = 0;
-	BasicInfo.weight_max    = 1;
+	BasicInfo.weightMax    = 1;
 
 
 	/**

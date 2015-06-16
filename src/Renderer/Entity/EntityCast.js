@@ -1,5 +1,5 @@
 /**
- * Renderer/EntityCast.js
+ * renderer/EntityCast.js
  *
  * Display the progressbar when an Entity cast a skill
  *
@@ -7,7 +7,7 @@
  *
  * @author Vincent Thibault
  */
-define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
+define(['utils/gl-matrix', 'renderer/Renderer'], function( glMatrix, Renderer )
 {
 	'use strict';
 

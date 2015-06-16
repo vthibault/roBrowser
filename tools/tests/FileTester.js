@@ -23,9 +23,9 @@ define(function( require )
 
 
 	// Load dependencies
-	var Client = require('Core/Client');
-	var Thread = require('Core/Thread');
-	var Memory = require('Core/MemoryManager');
+	var Client = require('core/Client');
+	var Thread = require('core/Thread');
+	var Memory = require('core/MemoryManager');
 	var Intro  = require('UI/Components/Intro/Intro');
 
 
@@ -57,7 +57,7 @@ define(function( require )
 	/**
 	 * Start to test files
 	 */
-	FileTester.prototype.start = function Start()
+	FileTester.prototype.start = function start()
 	{
 		var _self = this;
 
@@ -65,7 +65,7 @@ define(function( require )
 		Thread.hook('THREAD_READY', function(){
 			Intro.onFilesSubmit = function( files ) {
 				Client.onFilesLoaded = function(){
-					Client.search( new RegExp('data\\\\[^\\0]+\\.'+ _self.ext, 'gi'), Test.bind(_self) );
+					Client.search( new RegExp('data\\\\[^\\0]+\\.'+ _self.ext, 'gi'), test.bind(_self) );
 				};
 				Client.init( files );
 			};
@@ -81,7 +81,7 @@ define(function( require )
 	 *
 	 * @var {Array} file list
 	 */
-	function Test( list )
+	function test( list )
 	{
 		var callback = this.callback;
 		var ext      = this.ext;

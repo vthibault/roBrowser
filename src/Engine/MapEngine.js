@@ -1,5 +1,5 @@
 /**
- * Engine/MapEngine.js
+ * engine/MapEngine.js
  *
  * Map Engine
  * Manage Map server
@@ -17,23 +17,23 @@ define(function( require )
 	/**
 	 * Load dependencies
 	 */
-	var jQuery           = require('Utils/jquery');
-	var DB               = require('DB/DBManager');
-	var SoundManager     = require('Audio/SoundManager');
-	var BGM              = require('Audio/BGM');
-	var Events           = require('Core/Events');
-	var Session          = require('Engine/SessionStorage');
-	var Network          = require('Network/NetworkManager');
-	var PACKET           = require('Network/PacketStructure');
-	var Renderer         = require('Renderer/Renderer');
-	var Camera           = require('Renderer/Camera');
-	var MapRenderer      = require('Renderer/MapRenderer');
-	var EntityManager    = require('Renderer/EntityManager');
-	var Entity           = require('Renderer/Entity/Entity');
-	var Altitude         = require('Renderer/Map/Altitude');
-	var MapControl       = require('Controls/MapControl');
-	var Mouse            = require('Controls/MouseEventHandler');
-	var KEYS             = require('Controls/KeyEventHandler');
+	var jQuery           = require('utils/jquery');
+	var DB               = require('db/DBManager');
+	var SoundManager     = require('audio/soundManager');
+	var BGM              = require('audio/BGM');
+	var Events           = require('core/Events');
+	var Session          = require('engine/SessionStorage');
+	var Network          = require('network/networkManager');
+	var PACKET           = require('network/packets/structureTable');
+	var Renderer         = require('renderer/Renderer');
+	var Camera           = require('renderer/Camera');
+	var MapRenderer      = require('renderer/MapRenderer');
+	var EntityManager    = require('renderer/EntityManager');
+	var Entity           = require('renderer/Entity/Entity');
+	var Altitude         = require('renderer/Map/Altitude');
+	var MapControl       = require('controls/MapControl');
+	var Mouse            = require('controls/MouseEventHandler');
+	var KEYS             = require('controls/KeyEventHandler');
 	var UIManager        = require('UI/UIManager');
 	var Background       = require('UI/Background');
 	var Escape           = require('UI/Components/Escape/Escape');
@@ -146,48 +146,48 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.NOTIFY_TIME,         onPong );
 
 		// Extend controller
-		require('./MapEngine/Main').call();
-		require('./MapEngine/NPC').call();
-		require('./MapEngine/Entity').call();
-		require('./MapEngine/Item').call();
-		require('./MapEngine/PrivateMessage').call();
-		require('./MapEngine/Storage').call();
-		require('./MapEngine/Group').init();
-		require('./MapEngine/Guild').init();
-		require('./MapEngine/Skill').call();
-		require('./MapEngine/ChatRoom').call();
-		require('./MapEngine/Pet').call();
-		require('./MapEngine/Store').call();
-		require('./MapEngine/Trade').call();
-		require('./MapEngine/Friends').init();
+		require('./Mapengine/Main').call();
+		require('./Mapengine/NPC').call();
+		require('./Mapengine/Entity').call();
+		require('./Mapengine/Item').call();
+		require('./Mapengine/PrivateMessage').call();
+		require('./Mapengine/Storage').call();
+		require('./Mapengine/Group').init();
+		require('./Mapengine/Guild').init();
+		require('./Mapengine/Skill').call();
+		require('./Mapengine/ChatRoom').call();
+		require('./Mapengine/Pet').call();
+		require('./Mapengine/Store').call();
+		require('./Mapengine/Trade').call();
+		require('./Mapengine/Friends').init();
 
 		// Prepare UI
-		MiniMap.prepare();
+		Guild.prepare();
 		Escape.prepare();
+		ChatBox.prepare();
+		MiniMap.prepare();
+		ShortCut.prepare();
 		Inventory.prepare();
 		Equipment.prepare();
-		ShortCut.prepare();
-		ChatRoomCreate.prepare();
 		Emoticons.prepare();
 		SkillList.prepare();
-		PartyFriends.prepare();
-		StatusIcons.prepare();
 		BasicInfo.prepare();
-		ChatBox.prepare();
-		Guild.prepare();
+		StatusIcons.prepare();
+		PartyFriends.prepare();
+		ChatRoomCreate.prepare();
 
 		// Bind UI
 		WinStats.onRequestUpdate        = onRequestStatUpdate;
 		Equipment.onUnEquip             = onUnEquip;
-		Equipment.onConfigUpdate        = onConfigUpdate;
 		Equipment.onEquipItem           = onEquipItem;
+		Equipment.onConfigUpdate        = onConfigUpdate;
 		Equipment.onRemoveOption        = onRemoveOption;
 		Inventory.onUseItem             = onUseItem;
 		Inventory.onEquipItem           = onEquipItem;
 		Escape.onExitRequest            = onExitRequest;
 		Escape.onCharSelectionRequest   = onRestartRequest;
-		Escape.onReturnSavePointRequest = onReturnSavePointRequest;
 		Escape.onResurectionRequest     = onResurectionRequest;
+		Escape.onReturnSavePointRequest = onReturnSavePointRequest;
 		ChatBox.onRequestTalk           = onRequestTalk;
 	};
 
@@ -282,21 +282,22 @@ define(function( require )
 			Camera.init();
 
 			// Add Game UI
-			MiniMap.append();
-			MiniMap.setMap( MapRenderer.currentMap );
-			ChatBox.append();
-			BasicInfo.append();
+			Guild.append();
 			Escape.append();
+			ChatBox.append();
+			MiniMap.append();
+			ShortCut.append();
+			BasicInfo.append();
 			Inventory.append();
 			Equipment.append();
-			StatusIcons.append();
-			ShortCut.append();
-			ChatRoomCreate.append();
 			Emoticons.append();
 			SkillList.append();
+			StatusIcons.append();
 			PartyFriends.append();
-			Guild.append();
+			ChatRoomCreate.append();
 
+			MiniMap.setMap( MapRenderer.currentMap );
+	
 			// Map loaded
 			Network.sendPacket(
 				new PACKET.CZ.NOTIFY_ACTORINIT()
@@ -337,7 +338,7 @@ define(function( require )
 
 		Background.remove(function(){
 			window.close();
-			require('Engine/GameEngine').init();
+			require('engine/GameEngine').init();
 		});
 	}
 
@@ -349,7 +350,7 @@ define(function( require )
 	 */
 	function onExitFail( pkt )
 	{
-		ChatBox.addText( DB.getMessage(502), ChatBox.TYPE.ERROR);
+		ChatBox.addText( DB.getMessage(502), ChatBox.Type.ERROR);
 	}
 
 
@@ -372,7 +373,7 @@ define(function( require )
 
 		Background.remove(function(){
 			window.close();
-			require('Engine/GameEngine').init();
+			require('engine/GameEngine').init();
 		});
 	}
 
@@ -418,13 +419,14 @@ define(function( require )
 	{
 		if (!pkt.type) {
 			// Have to wait 10sec
-			ChatBox.addText( DB.getMessage(502), ChatBox.TYPE.ERROR );
+			ChatBox.addText( DB.getMessage(502), ChatBox.Type.ERROR );
 		}
 		else {
 			StatusIcons.clean();
 			ChatBox.clean();
 			ShortCut.clean();
 			PartyFriends.clean();
+
 			MapRenderer.free();
 			Renderer.stop();
 			onRestart();
@@ -441,17 +443,18 @@ define(function( require )
 		switch (pkt.result) {
 			// Disconnect
 			case 0:
-				StatusIcons.clean();
 				ChatBox.clean();
 				ShortCut.clean();
+				StatusIcons.clean();
 				PartyFriends.clean();
+	
 				Renderer.stop();
 				onExitSuccess();
 				break;
 
 			case 1:
 				// Have to wait 10 sec
-				ChatBox.addText( DB.getMessage(502), ChatBox.TYPE.ERROR);
+				ChatBox.addText( DB.getMessage(502), ChatBox.Type.ERROR);
 				break;
 
 			default:
@@ -469,8 +472,8 @@ define(function( require )
 	function onRequestTalk( user, text, target )
 	{
 		var pkt;
-		var flag_party = text[0] === '%' || KEYS.CTRL;
-		var flag_guild = text[0] === '$' || KEYS.ALT;
+		var flagParty = text[0] === '%' || KEYS.CTRL;
+		var flagGuild = text[0] === '$' || KEYS.ALT;
 
 		text = text.replace(/^(\$|\%)/, '');
 
@@ -484,19 +487,19 @@ define(function( require )
 		}
 
 		// Set off/on flags
-		if (flag_party) {
-			target = (target & ~ChatBox.TYPE.PARTY) | (~target & ChatBox.TYPE.PARTY);
+		if (flagParty) {
+			target = (target & ~ChatBox.Type.PARTY) | (~target & ChatBox.Type.PARTY);
 		}
 
-		if (flag_guild) {
-			target = (target & ~ChatBox.TYPE.GUILD) | (~target & ChatBox.TYPE.GUILD);
+		if (flagGuild) {
+			target = (target & ~ChatBox.Type.GUILD) | (~target & ChatBox.Type.GUILD);
 		}
 
 		// Get packet
-		if (target & ChatBox.TYPE.PARTY) {
+		if (target & ChatBox.Type.PARTY) {
 			pkt = new PACKET.CZ.REQUEST_CHAT_PARTY();
 		}
-		else if (target & ChatBox.TYPE.GUILD) {
+		else if (target & ChatBox.Type.GUILD) {
 			pkt = new PACKET.CZ.GUILD_CHAT();
 		}
 		else {
@@ -605,16 +608,16 @@ define(function( require )
 	function checkFreeCell(x, y, range, out)
 	{
 		var _x, _y, r;
-		var d_x = Session.Entity.position[0] < x ? -1 : 1;
-		var d_y = Session.Entity.position[1] < y ? -1 : 1;
+		var dx = Session.Entity.position[0] < x ? -1 : 1;
+		var dy = Session.Entity.position[1] < y ? -1 : 1;
 
 		// Search possible positions
 		for (r = 0; r <= range; ++r) {
 			for (_x = -r; _x <= r; ++_x) {
 				for (_y = -r; _y <= r; ++_y) {
-					if (isFreeCell(x + _x * d_x, y + _y * d_y)) {
-						out[0] = x + _x * d_x;
-						out[1] = y + _y * d_y;
+					if (isFreeCell(x + _x * dx, y + _y * dy)) {
+						out[0] = x + _x * dx;
+						out[1] = y + _y * dy;
 						return true;
 					}
 				}
@@ -634,7 +637,7 @@ define(function( require )
 	 */
 	function isFreeCell(x, y)
 	{
-		if (!(Altitude.getCellType(x, y) & Altitude.TYPE.WALKABLE)) {
+		if (!(Altitude.getCellType(x, y) & Altitude.Type.WALKABLE)) {
 			return false;
 		}
 
@@ -770,7 +773,7 @@ define(function( require )
 	 */
 	function onRestart()
 	{
-		require('Engine/CharEngine').reload();
+		require('engine/CharEngine').reload();
 	}
 
 

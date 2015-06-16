@@ -1,5 +1,5 @@
 /**
- * App/StrViewer.js
+ * app/strViewer.js
  *
  * Show Str file effect
  *
@@ -25,11 +25,11 @@ require.onError = function (err) {
 require({
 	baseUrl: './src/',
 	paths: {
-		text:   'Vendors/text.require',
-		jquery: 'Vendors/jquery-1.9.1'
+		text:   'vendors/text.require',
+		jquery: 'vendors/jquery-1.9.1'
 	}
 },
-   ['Core/Configs', 'Core/Thread', 'Core/Context', 'Core/Client', 'UI/Components/StrViewer/StrViewer'],
+   ['core/Configs', 'core/Thread', 'core/Context', 'core/Client', 'UI/Components/StrViewer/StrViewer'],
 function( Configs,        Thread,        Context,        Client,                           StrViewer ) {
 	'use strict';
 

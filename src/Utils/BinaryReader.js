@@ -1,5 +1,5 @@
 /**
- * Utils/BinaryReader.js
+ * utils/BinaryReader.js
  *
  * BinaryReader Helper
  *
@@ -12,18 +12,9 @@
 
 var _global = this;
 
-define( ['./Struct', 'Vendors/text-encoding'], function( Struct, TextEncoding )
+define( ['./Struct', 'vendors/text-encoding'], function( Struct, TextEncoding )
 {
 	'use strict';
-
-
-	/**
-	 * Binary Constant for BinaryReader::seek();
-	 * Export to global context
-	 */
-	_global.SEEK_CUR = 1;
-	_global.SEEK_SET = 2;
-	_global.SEEK_END = 3;
 
 
 	/**
@@ -37,7 +28,16 @@ define( ['./Struct', 'Vendors/text-encoding'], function( Struct, TextEncoding )
 	{
 		var buffer;
 
-		if (typeof mixed === 'string') {
+		if (typeof mixed === 'undefined') {
+			this.data   = new Uint8Array(32768);
+			this.buffer = this.data.buffer;
+			this.view   = new DataView( this.buffer, 0, this.buffer.byteLength);
+			this.offset = 0;
+			this.length = 0;
+
+			return this;
+		}
+		else if (typeof mixed === 'string') {
 			var uint8;
 			var i, length;
 
@@ -60,10 +60,78 @@ define( ['./Struct', 'Vendors/text-encoding'], function( Struct, TextEncoding )
 		}
 
 		this.buffer = buffer;
+		this.data   = new Uint8Array(this.buffer);
 		this.view   = new DataView( buffer, start || 0 , end || buffer.byteLength);
 		this.offset = 0;
 		this.length = ( end || buffer.byteLength ) - ( start || 0 );
 	}
+
+
+	/**
+	 * Binary Constant for BinaryReader::seek();
+	 */
+	BinaryReader.Seek = {
+		CUR: 1,
+		SET: 2,
+		END: 3
+	};
+
+
+	/**
+	 * Add buffer to the stream (will erase already used bytes).
+	 * 
+	 * @param {ArrayBuffer} buffer
+	 */
+	BinaryReader.prototype.addBuffer = function addBuffer( buffer )
+	{
+		// Already at end, can reset it.
+		if (this.offset === this.length) {
+			this.offset = 0;
+			this.length = 0;	
+		}
+
+		// Add at the end
+		if (this.length + buffer.byteLength < this.buffer.byteLength) {
+			this.data.set(new Uint8Array(buffer), this.length);
+
+			this.length += buffer.byteLength;
+			return;
+		}
+
+		// Add at the start (erase already used bytes)
+		if (this.length - this.buffer.byteLength - this.offset > buffer.byteLength) {
+			this.data.set( this.data.subarray(this.offset, this.length), 0);
+			this.data.set( new Uint8Array(buffer), this.length - this.offset);
+
+			this.length = this.length - this.offset + buffer.byteLength;
+			this.offset = 0;
+			return;
+		}
+
+		// Create a new buffer to contain both
+		var data = new Uint8Array(this.length - this.offset + buffer.byteLength);
+		data.set( this.data.subarray(this.offset, this.length), 0);
+		data.set( new Uint8Array(buffer), this.length - this.offset);
+
+		this.data   = data;
+		this.buffer = data.buffer;
+		this.offset = 0;
+		this.length = data.length;
+
+		this.view = new DataView(this.buffer, this.offset, this.length);
+	};
+
+
+	/**
+	 * Does buffer can read this much bytes ?
+	 * 
+	 * @param {number} bytes count
+	 * @returns {boolean}
+	 */
+	BinaryReader.prototype.hasBytes = function hasBytes( count )
+	{
+		return (this.offset + count < this.length);	
+	};
 
 
 	/**
@@ -278,23 +346,23 @@ define( ['./Struct', 'Vendors/text-encoding'], function( Struct, TextEncoding )
 	 * Move cursor to another offset
 	 *
 	 * @param {number} index
-	 * @param {number} type - const SEEK_*
+	 * @param {number} type - const BinaryReader.Seek.*
 	 */
 	BinaryReader.prototype.seek = function seek( index, type )
 	{
-		type    = type || SEEK_SET;
+		type    = type || BinaryReader.Seek.SET;
 		this.offset =
-			type === SEEK_CUR ? this.offset + index :
-			type === SEEK_END ? this.length + index :
+			type === BinaryReader.Seek.CUR ? this.offset + index :
+			type === BinaryReader.Seek.END ? this.length + index :
 			index
 		;
 	};
 
 
 	// Old compatibility for pos and pos2
-	var bf_byteBuff = new ArrayBuffer(4);
-	var bf_wba      = new Int8Array(bf_byteBuff);
-	var bf_wia      = new Int32Array(bf_byteBuff);
+	var byteBuff = new ArrayBuffer(4);
+	var wba      = new Int8Array(byteBuff);
+	var wia      = new Int32Array(byteBuff);
 
 
 	/**
@@ -307,12 +375,12 @@ define( ['./Struct', 'Vendors/text-encoding'], function( Struct, TextEncoding )
 	{
 		var p, dir, x, y;
 
-		bf_wba[2] = this.getUint8();
-		bf_wba[1] = this.getUint8();
-		bf_wba[0] = this.getUint8();
-		bf_wba[3] = 0;
+		wba[2] = this.getUint8();
+		wba[1] = this.getUint8();
+		wba[0] = this.getUint8();
+		wba[3] = 0;
 
-		p         = 0 + bf_wia[0];
+		p         = 0 + wia[0];
 		dir       = p & 0x0f;
 		p       >>= 4;
 

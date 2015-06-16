@@ -1,5 +1,5 @@
 /**
- * Renderer/EntityLife.js
+ * renderer/EntityLife.js
  *
  * Manage Entity Life GUI
  *
@@ -7,7 +7,7 @@
  *
  * @author Vincent Thibault
  */
-define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
+define(['utils/gl-matrix', 'renderer/Renderer'], function( glMatrix, Renderer )
 {
 	'use strict';
 
@@ -27,8 +27,8 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 	{
 		this.hp      = -1;
 		this.sp      = -1;
-		this.hp_max  = -1;
-		this.sp_max  = -1;
+		this.hpMax   = -1;
+		this.spMax   = -1;
 		this.display = false;
 		this.canvas  = document.createElement('canvas');
 		this.ctx     = this.canvas.getContext('2d');
@@ -70,7 +70,7 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 		var Entity = this.entity.constructor;
 
 		// Don't display it, if negatives values.
-		if (this.hp < 0 || this.hp_max < 0) {
+		if (this.hp < 0 || this.hpMax < 0) {
 			this.remove();
 			return;
 		}
@@ -78,9 +78,9 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 		// Init variables
 		this.display = true;
 		var ctx      = this.ctx;
-		var hp_per   = this.hp / this.hp_max;
-		var sp       = this.sp > -1 && this.sp_max > -1;
-		var sp_per   = this.sp / this.sp_max;
+		var hpPer   = this.hp / this.hpMax;
+		var sp       = this.sp > -1 && this.spMax > -1;
+		var spPer   = this.sp / this.spMax;
 
 		if (sp) {
 			height += 4;
@@ -99,24 +99,24 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 		ctx.fillRect( 1, 1, width-2, height-2 );
 	
 		// Display HP
-		if (this.entity.objecttype === Entity.TYPE_MOB) {
-			ctx.fillStyle = ( hp_per < 0.25 ) ? '#FFFF00' : '#FF00E7';
+		if (this.entity.objecttype === Entity.Type.MOB) {
+			ctx.fillStyle = ( hpPer < 0.25 ) ? '#FFFF00' : '#FF00E7';
 		}
-		else if (this.entity.objecttype === Entity.TYPE_PET) {
-			ctx.fillStyle = ( hp_per < 0.25 ) ? '#FFFF00' : '#FFE7E7';
+		else if (this.entity.objecttype === Entity.Type.PET) {
+			ctx.fillStyle = ( hpPer < 0.25 ) ? '#FFFF00' : '#FFE7E7';
 		}
 		else {
-			ctx.fillStyle = ( hp_per < 0.25 ) ? '#FF0000' : '#10ef21';
+			ctx.fillStyle = ( hpPer < 0.25 ) ? '#FF0000' : '#10ef21';
 		}
 
-		ctx.fillRect( 1, 1, Math.round( (width-2) * hp_per ), 3 );
+		ctx.fillRect( 1, 1, Math.round( (width-2) * hpPer ), 3 );
 
 		// Display SP
 		if (sp) {
 			ctx.fillStyle = '#10189c';
 			ctx.fillRect( 0, 4, width, 1);
 			ctx.fillStyle = '#1863de';
-			ctx.fillRect( 1, 5, Math.round( (width-2) * sp_per ), 3 );
+			ctx.fillRect( 1, 5, Math.round( (width-2) * spPer ), 3 );
 		}
 	};
 
@@ -126,7 +126,7 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 	 *
 	 * @param {mat4} matrix
 	 */
-	Life.prototype.render = function Render( matrix )
+	Life.prototype.render = function render( matrix )
 	{
 		var canvas = this.canvas;
 		var z;
@@ -162,7 +162,7 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 	/**
 	 * Export
 	 */
-	return function Init()
+	return function init()
 	{
 		this.life        = new Life();
 		this.life.entity = this;

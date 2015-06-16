@@ -1,5 +1,5 @@
 /**
- * Utils/jquery.js
+ * utils/jquery.js
  *
  * Extend jquery
  *
@@ -8,7 +8,7 @@
  * @author Vincent Thibault
  */
 
-define( ['jquery', 'DB/DBManager'], function( jQuery, DB )
+define( ['jquery', 'db/DBManager'], function( jQuery, DB )
 {
 	'use strict';
 

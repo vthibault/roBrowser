@@ -1,5 +1,5 @@
 /**
- * Loaders/Str.js
+ * loaders/Str.js
  *
  * Loaders for Gravity .str file (effects file)
  * It's basically a .ezv file compiled to binary (except ezv file are version 0x95, str are 0x94).
@@ -9,7 +9,7 @@
  * @author Vincent Thibault
  */
 
-define( ['Utils/BinaryReader'], function( BinaryReader )
+define( ['utils/BinaryReader'], function( BinaryReader )
 {
 	'use strict';
 
@@ -19,7 +19,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 	 *
 	 * @param {ArrayBuffer} data - optional
 	 */
-	function STR( data )
+	function StrReader( data )
 	{
 		this.version = 0.0;
 
@@ -34,7 +34,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 	 *
 	 * @param {ArrayBuffer} data
 	 */
-	STR.prototype.load = function load( data )
+	StrReader.prototype.load = function load( data )
 	{
 		var fp, i;
 
@@ -54,12 +54,12 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 		this.fps      = fp.readULong();
 		this.maxKey   = fp.readULong();
 		this.layernum = fp.readULong();
-		fp.seek(16, SEEK_CUR); // display, group, type, ... ?
+		fp.seek(16, BinaryReader.Seek.CUR); // display, group, type, ... ?
 
 		this.layers   = new Array(this.layernum);
 
 		for (i = 0; i < this.layernum; ++i) {
-			this.layers[i] = new STRLayer(fp);
+			this.layers[i] = new StrLayer(fp);
 		}
 	};
 
@@ -69,7 +69,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 	 *
 	 * @param {BinaryReader} fp
 	 */
-	function STRLayer( fp )
+	function StrLayer( fp )
 	{
 		var i;
 
@@ -84,7 +84,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 		this.animations = new Array(this.anikeynum);
 
 		for (i = 0; i < this.anikeynum; ++i) {
-			this.animations[i] = new STRAnimation(fp);
+			this.animations[i] = new StrAnimation(fp);
 		}
 	}
 
@@ -94,7 +94,7 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 	 *
 	 * @param {BinaryReader} fp
 	 */
-	function STRAnimation( fp )
+	function StrAnimation( fp )
 	{
 		this.frame     = fp.readLong();
 		this.type      = fp.readULong();
@@ -115,5 +115,5 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 	/**
 	 * Export
 	 */
-	return STR;
+	return StrReader;
 });

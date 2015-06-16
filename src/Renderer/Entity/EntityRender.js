@@ -1,5 +1,5 @@
 /**
- * Renderer/EntityRender.js
+ * renderer/EntityRender.js
  *
  * Entity class
  *
@@ -15,13 +15,13 @@ define( function( require )
 	/**
 	 * Load dependencies
 	 */
-	var glMatrix       = require('Utils/gl-matrix');
-	var Camera         = require('Renderer/Camera');
-	var Client         = require('Core/Client');
-	var Renderer       = require('Renderer/Renderer');
-	var SpriteRenderer = require('Renderer/SpriteRenderer');
-	var Ground         = require('Renderer/Map/Ground');
-	var Altitude       = require('Renderer/Map/Altitude');
+	var glMatrix       = require('utils/gl-matrix');
+	var Camera         = require('renderer/Camera');
+	var Client         = require('core/Client');
+	var Renderer       = require('renderer/Renderer');
+	var SpriteRenderer = require('renderer/SpriteRenderer');
+	var Ground         = require('renderer/Map/Ground');
+	var Altitude       = require('renderer/Map/Altitude');
 
 
 	/**
@@ -148,7 +148,7 @@ define( function( require )
 			size[1] = Renderer.height * 0.5;
 
 			rect    = entity.boundingRect;
-			minSize = (entity.objecttype === entity.constructor.TYPE_ITEM) ? 30 : 60;
+			minSize = (entity.objecttype === entity.constructor.Type.ITEM) ? 30 : 60;
 
 			// No body ? Default picking (sprite 110 for example)
 			if (rect.x1 === Infinity || rect.x2 ===-Infinity ||
@@ -232,14 +232,14 @@ define( function( require )
 			SpriteRenderer.position.set(this.position);
 
 			// Shield is behind on some position, seems to be hardcoded by the client
-			if (this.objecttype === Entity.TYPE_PC && this.shield && behind) {
+			if (this.objecttype === Entity.Type.PC && this.shield && behind) {
 				renderElement( this, this.files.shield, 'shield', _position, true );
 			}
 
 			// Draw body, get head position
 			renderElement( this, this.files.body, 'body', _position, true );
 
-			if (this.objecttype === Entity.TYPE_PC) {
+			if (this.objecttype === Entity.Type.PC) {
 				// Draw Head
 				renderElement( this, this.files.head, 'head', _position, false);
 
@@ -280,13 +280,13 @@ define( function( require )
 	 * @param {object} files {spr, act, pal}
 	 * @param {string} type
 	 * @param {vec2}   position (reference)
-	 * @param {boolean} is_main - true if it's the main element (body)
+	 * @param {boolean} is main - true if it's the main element (body)
 	 */
 	var renderElement = function renderElementClosure()
 	{
 		var _position = new Int32Array(2);
 
-		return function renderElement( entity, files, type, position, is_main )
+		return function renderElement( entity, files, type, position, isMain )
 		{
 			// Nothing to render
 			if (!files.spr || !files.act) {
@@ -312,19 +312,19 @@ define( function( require )
 				) % act.actions.length ];                        // Avoid overflow on action (ex: if there is just one action)
 
 			// Find animation
-			var animation_id = calcAnimation( entity, action, type, Renderer.tick - entity.animation.tick);
-			var animation    = action.animations[animation_id];
-			var layers       = animation.layers;
+			var animationId = calcAnimation( entity, action, type, Renderer.tick - entity.animation.tick);
+			var animation   = action.animations[animationId];
+			var layers      = animation.layers;
 
 			// Play sound
 			if (animation.sound > -1) {
-				entity.sound.play( act.sounds[animation.sound], entity.action, animation_id );
+				entity.sound.play( act.sounds[animation.sound], entity.action, animationId);
 			}
 
 			_position[0] = 0;
 			_position[1] = 0;
 
-			if (animation.pos.length && !is_main) {
+			if (animation.pos.length && !isMain) {
 				_position[0] = position[0] - animation.pos[0].x;
 				_position[1] = position[1] - animation.pos[0].y;
 			}
@@ -335,7 +335,7 @@ define( function( require )
 			}
 
 			// Save reference
-			if (is_main && animation.pos.length) {
+			if (isMain && animation.pos.length) {
 				position[0] = animation.pos[0].x;
 				position[1] = animation.pos[0].y;
 			}
@@ -362,7 +362,7 @@ define( function( require )
             entity.action === entity.ACTION.ATTACK1 ||
             entity.action === entity.ACTION.ATTACK2 ||
             entity.action === entity.ACTION.ATTACK3) {
-            return entity.attack_speed / act.animations.length;
+            return entity.attackSpeed / act.animations.length;
         }
 
         return act.delay;
@@ -391,7 +391,7 @@ define( function( require )
 		var anim      = 0;
 
 		// Get rid of doridori
-		if (type === 'body' && entity.objecttype === entity.constructor.TYPE_PC && isIdle) {
+		if (type === 'body' && entity.objecttype === entity.constructor.Type.PC && isIdle) {
 			return entity.headDir;
 		}
 
@@ -462,17 +462,17 @@ define( function( require )
 		SpriteRenderer.palette       = pal.palette;
 
 		var index   = layer.index + 0;
-		var is_rgba = layer.spr_type === 1 || spr.rgba_index === 0;
+		var isRgba = layer.sprType === 1 || spr.rgbaIndex === 0;
 
-		if (!is_rgba) {
+		if (!isRgba) {
 			SpriteRenderer.image.palette = pal.texture;
 			SpriteRenderer.image.size[0] = spr.frames[ index ].width;
 			SpriteRenderer.image.size[1] = spr.frames[ index ].height;
 		}
 
 		// RGBA is at the end of the spr.
-		else if (layer.spr_type === 1) {
-			index += spr.old_rgba_index;
+		else if (layer.sprType === 1) {
+			index += spr.oldRgbaIndex;
 		}
 
 		var frame  = spr.frames[ index ];
@@ -496,7 +496,7 @@ define( function( require )
 		}
 
 		// Image inverted
-		if (layer.is_mirror) {
+		if (layer.isMirror) {
 			width = -width;
 		}
 
@@ -507,8 +507,8 @@ define( function( require )
 		SpriteRenderer.color[3] = layer.color[3] * this.effectColor[3];
 
 		// apply disapear
-		if (this.remove_tick) {
-			SpriteRenderer.color[3] *= 1 - ( Renderer.tick - this.remove_tick  ) / this.remove_delay;
+		if (this.removeTick) {
+			SpriteRenderer.color[3] *= 1 - ( Renderer.tick - this.removeTick  ) / this.removeDelay;
 		}
 
 		// Store shader info
@@ -529,7 +529,7 @@ define( function( require )
 	/**
 	 * Export
 	 */
-	return function Init()
+	return function init()
 	{
 		this.render         = render;
 		this.renderLayer    = renderLayer;

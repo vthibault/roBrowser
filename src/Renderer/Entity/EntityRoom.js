@@ -1,5 +1,5 @@
 /**
- * Renderer/Entity/EntityRoom.js
+ * renderer/Entity/EntityRoom.js
  *
  * Shop / Chat room above entity's head
  *
@@ -13,10 +13,10 @@ define(function( require )
 
 
 	// Load dependencies
-	var glMatrix   = require('Utils/gl-matrix');
-	var Renderer   = require('Renderer/Renderer');
-	var Client     = require('Core/Client');
-	var DB         = require('DB/DBManager');
+	var glMatrix   = require('utils/gl-matrix');
+	var Renderer   = require('renderer/Renderer');
+	var Client     = require('core/Client');
+	var DB         = require('db/DBManager');
 	var EntityRoom = require('UI/Components/EntityRoom/EntityRoom');
 
 
@@ -164,7 +164,7 @@ define(function( require )
 	/**
 	 * Export
 	 */
-	return function Init()
+	return function init()
 	{
 		this.room = new Room(this);
 	};

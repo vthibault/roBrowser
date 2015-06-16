@@ -1,5 +1,5 @@
 /**
- * Renderer/EntityDisplay.js
+ * renderer/EntityDisplay.js
  *
  * Manage Entity Display (pseudo + guild + party)
  * Writing to canvas is very ugly, this file contain some hack to get some best results on Firefox and Chrome.
@@ -8,7 +8,7 @@
  *
  * @author Vincent Thibault
  */
-define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
+define(['utils/gl-matrix', 'renderer/Renderer'], function( glMatrix, Renderer )
 {
 	'use strict';
 
@@ -114,17 +114,17 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 	 */
 	function Display()
 	{
-		this.TYPE = {
+		this.Type = {
 			NONE:     0,
 			LOADING:  1,
 			COMPLETE: 2
 		};
 
-		this.load       =  this.TYPE.NONE;
+		this.load       =  this.Type.NONE;
 		this.name       =  '';
-		this.party_name =  '';
-		this.guild_name =  '';
-		this.guild_rank =  '';
+		this.partyName =  '';
+		this.guildName =  '';
+		this.guildRank =  '';
 		this.emblem     =  null;
 		this.display    =  false;
 		this.canvas     =  document.createElement('canvas');
@@ -174,7 +174,7 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 		var lines    = new Array(2);
 		var fontSize = 12;
 		var ctx      = this.ctx;
-		var start_x  = (this.emblem ? 26 : 0) + 5;
+		var startX   = (this.emblem ? 26 : 0) + 5;
 		var width, height;
 
 		// Skip the "#" in the pseudo
@@ -182,23 +182,23 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 		lines[1] = '';
 
 		// Add the party name
-		if (this.party_name.length) {
-			lines[0] += ' (' + this.party_name + ')';
+		if (this.partyName.length) {
+			lines[0] += ' (' + this.partyName + ')';
 		}
 
 		// Add guild name
-		if (this.guild_name.length) {
-			lines[1]  = this.guild_name;
+		if (this.guildName.length) {
+			lines[1]  = this.guildName;
 
 			// Add guild rank
-			if (this.guild_rank.length) {
-				lines[1] +=  ' [' + this.guild_rank + ']';
+			if (this.guildRank.length) {
+				lines[1] +=  ' [' + this.guildRank + ']';
 			}
 		}
 
 		// Setup the canvas
 		ctx.font          = fontSize + 'px Arial';
-		width             = Math.max( ctx.measureText(lines[0]).width, ctx.measureText(lines[1]).width ) + start_x + 5;
+		width             = Math.max( ctx.measureText(lines[0]).width, ctx.measureText(lines[1]).width ) + startX + 5;
 		height            = fontSize * 3 * (lines[1].length ? 2 : 1);
 		ctx.canvas.width  = width;
 		ctx.canvas.height = height;
@@ -217,31 +217,31 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 
 		// Shadow renderer
 		if (!_isUglyShadow) {
-			multiShadow(ctx, lines[0], start_x, 0,  0, -1, 0);
-			multiShadow(ctx, lines[0], start_x, 0,  0,  1, 0);
-			multiShadow(ctx, lines[0], start_x, 0, -1,  0, 0);
-			multiShadow(ctx, lines[0], start_x, 0,  1,  0, 0);
-			multiShadow(ctx, lines[1], start_x, fontSize * 1.2,  0, -1, 0);
-			multiShadow(ctx, lines[1], start_x, fontSize * 1.2,  0,  1, 0);
-			multiShadow(ctx, lines[1], start_x, fontSize * 1.2, -1,  0, 0);
-			multiShadow(ctx, lines[1], start_x, fontSize * 1.2,  1,  0, 0);
+			multiShadow(ctx, lines[0], startX, 0,  0, -1, 0);
+			multiShadow(ctx, lines[0], startX, 0,  0,  1, 0);
+			multiShadow(ctx, lines[0], startX, 0, -1,  0, 0);
+			multiShadow(ctx, lines[0], startX, 0,  1,  0, 0);
+			multiShadow(ctx, lines[1], startX, fontSize * 1.2,  0, -1, 0);
+			multiShadow(ctx, lines[1], startX, fontSize * 1.2,  0,  1, 0);
+			multiShadow(ctx, lines[1], startX, fontSize * 1.2, -1,  0, 0);
+			multiShadow(ctx, lines[1], startX, fontSize * 1.2,  1,  0, 0);
 			ctx.fillStyle   = color;
 			ctx.strokeStyle = 'black';
-			ctx.strokeText(lines[0], start_x, 0);
-			ctx.fillText(  lines[0], start_x, 0);
-			ctx.strokeText(lines[1], start_x, fontSize * 1.2);
-			ctx.fillText(  lines[1], start_x, fontSize * 1.2);
+			ctx.strokeText(lines[0], startX, 0);
+			ctx.fillText(  lines[0], startX, 0);
+			ctx.strokeText(lines[1], startX, fontSize * 1.2);
+			ctx.fillText(  lines[1], startX, fontSize * 1.2);
 		}
 
 		// fillText renderer
 		else {
 			ctx.translate(0.5, 0.5);
 			ctx.fillStyle    = 'black';
-			ctx.outlineText( lines[0], start_x, 0 );
-			ctx.outlineText( lines[1], start_x, fontSize * 1.2 );
+			ctx.outlineText( lines[0], startX, 0 );
+			ctx.outlineText( lines[1], startX, fontSize * 1.2 );
 			ctx.fillStyle    = color;
-			ctx.fillText( lines[0], start_x, 0 );
-			ctx.fillText( lines[1], start_x, fontSize * 1.2 );
+			ctx.fillText( lines[0], startX, 0 );
+			ctx.fillText( lines[1], startX, fontSize * 1.2 );
 		}
 	};
 
@@ -285,7 +285,7 @@ define(['Utils/gl-matrix', 'Renderer/Renderer'], function( glMatrix, Renderer )
 	/**
 	 * Exporting
 	 */
-	return function Init()
+	return function init()
 	{
 		this.display = new Display();
 	};
