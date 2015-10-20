@@ -111,7 +111,7 @@ define(function(require)
 		this.ui.find('.base').mousedown(function(event){
 			event.stopImmediatePropagation();
 			return false;
-		})
+		});
 
 		this.ui.find('.prev').addClass('disabled');
 		this.ui.find('.close').click(onClose);

@@ -77,7 +77,6 @@ define(function( require )
 			.on('drop',                      onDrop.bind(this));
 
 		jQuery(window)
-			.on('contextmenu',     function(){ return false; })
 			.on('mousedown.map',   onMouseDown.bind(this))
 			.on('mouseup.map',     onMouseUp.bind(this));
 	};
@@ -234,7 +233,6 @@ define(function( require )
 	function onDrop( event )
 	{
 		var item, data;
-		var MapEngine = this;
 
 		try {
 			data = JSON.parse(

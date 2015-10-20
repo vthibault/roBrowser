@@ -121,69 +121,70 @@ define( function( require )
 		var size   = glMatrix.vec2.create();
 		var vector = vec4.create();
 		var out    = vec4.create();
-		var minSize;
+
+		function projectPoint(x, y, matrix) {
+			vector[0] = x;
+			vector[1] = y;
+			vector[2] = 0.0;
+			vector[3] = 1.0;
+
+			vec4.transformMat4(out, vector, matrix);
+
+			out[3]  = (out[3] === 0.0) ? 1.0 : (1.0 / out[3]);
+			out[0] *= out[3];
+			out[1] *= out[3];
+		}
+
 
 		return function calculateBoundingRect( entity, matrix )
 		{
-			var z;
-			var xFactor = 1 / 175.0 * entity.xSize;
-			var yFactor = 1 / 175.0 * entity.ySize;
+			var minSize, fx, fy;
+			var tmp, rect;
+			
+			fx = entity.xSize / 175;
+			fy = entity.ySize / 175;
+
+			size[0] = Renderer.width  * 0.5;
+			size[1] = Renderer.height * 0.5;
+
+			rect    = entity.boundingRect;
+			minSize = (entity.objecttype === entity.constructor.TYPE_ITEM) ? 30 : 60;
 
 			// No body ? Default picking (sprite 110 for example)
-			if (entity.boundingRect.x1 === Infinity ||
-			    entity.boundingRect.x2 ===-Infinity ||
-			    entity.boundingRect.y1 ===-Infinity ||
-			    entity.boundingRect.y2 === Infinity) {
-				entity.boundingRect.x1 = -25;
-				entity.boundingRect.x2 = +25;
-				entity.boundingRect.y1 = +45;
-				entity.boundingRect.y2 =   0;
+			if (rect.x1 === Infinity || rect.x2 ===-Infinity ||
+			    rect.y1 ===-Infinity || rect.y2 === Infinity) {
+				rect.x1 = -25;
+				rect.x2 = +25;
+				rect.y1 = +45;
+				rect.y2 =   0;
 			}
-
-			size[0]   = Renderer.width  * 0.5;
-			size[1]   = Renderer.height * 0.5;
-			vector[2] =  0.0;
-			vector[3] =  1.0;
 
 			// Swap x1 and x2 if needed
-			if (entity.boundingRect.x1 > entity.boundingRect.x2) {
-				z = entity.boundingRect.x1;
-				entity.boundingRect.x1 = entity.boundingRect.x2;
-				entity.boundingRect.x2 = z;
+			if (rect.x1 > rect.x2) {
+				tmp     = rect.x1;
+				rect.x1 = rect.x2;
+				rect.x2 = tmp;
 			}
-
 
 			// Top left
-			vector[0] = entity.boundingRect.x1 * xFactor;
-			vector[1] = entity.boundingRect.y1 * yFactor;
-			vec4.transformMat4( out, vector, matrix );
-
-			z = out[3] === 0.0 ? 1.0 : ( 1.0 / out[3] );
-			entity.boundingRect.x1 = size[0] + Math.round(size[0] * (out[0] * z));
-			entity.boundingRect.y1 = size[1] - Math.round(size[1] * (out[1] * z));
-
+			projectPoint(rect.x1 * fx, rect.y1 * fy, matrix);
+			rect.x1 = size[0] + (size[0] * out[0]);
+			rect.y1 = size[1] - (size[1] * out[1]);
 
 			// Bottom right
-			vector[0] = entity.boundingRect.x2 * xFactor;
-			vector[1] = entity.boundingRect.y2 * yFactor;
-			vec4.transformMat4( out, vector, matrix );
+			projectPoint(rect.x2 * fx, rect.y2 * fy, matrix);
+			rect.x2 = size[0] + (size[0] * out[0]);
+			rect.y2 = size[1] - (size[1] * out[1]);
 
-			z = out[3] === 0.0 ? 1.0 : ( 1.0 / out[3] );
-			entity.boundingRect.x2 = size[0] + Math.round(size[0] * (out[0] * z));
-			entity.boundingRect.y2 = size[1] - Math.round(size[1] * (out[1] * z));
-
-
-			// Minimum picking size is
-			minSize = entity.objecttype === entity.constructor.TYPE_ITEM ? 30 : 60;
-
-			if (entity.boundingRect.x2 - entity.boundingRect.x1 < minSize) {
-				entity.boundingRect.x1 = (entity.boundingRect.x1 + entity.boundingRect.x2) * 0.5 - minSize * 0.5;
-				entity.boundingRect.x2 = (entity.boundingRect.x1 + entity.boundingRect.x2) * 0.5 + minSize * 0.5;
+			// Cap it to minSize
+			if (rect.x2 - rect.x1 < minSize) {
+				rect.x1 = (rect.x1 + rect.x2) * 0.5 - (minSize * 0.5);
+				rect.x2 = rect.x1 + minSize;
 			}
 
-			if (entity.boundingRect.y2 - entity.boundingRect.y1 < minSize) {
-				entity.boundingRect.y1 = (entity.boundingRect.y1 + entity.boundingRect.y2) * 0.5 - minSize * 0.5;
-				entity.boundingRect.y2 = (entity.boundingRect.y1 + entity.boundingRect.y2) * 0.5 + minSize * 0.5;
+			if (rect.y2 - rect.y1 < minSize) {
+				rect.y1 = (rect.y1 + rect.y2) * 0.5 - (minSize * 0.5);
+				rect.y2 = rect.y1 + minSize;
 			}
 		};
 	}();
@@ -311,7 +312,7 @@ define( function( require )
 				) % act.actions.length ];                        // Avoid overflow on action (ex: if there is just one action)
 
 			// Find animation
-			var animation_id = calcAnimation( entity, entity.action, action, type, Renderer.tick - entity.animation.tick);
+			var animation_id = calcAnimation( entity, action, type, Renderer.tick - entity.animation.tick);
 			var animation    = action.animations[animation_id];
 			var layers       = animation.layers;
 
@@ -342,10 +343,36 @@ define( function( require )
 	}();
 
 
+    /**
+     * Get animation delay
+     * TODO: search how works the delay on walk and aspd.
+     *
+     * @param {string} type
+     * @param {string} entity
+     * @param {object} act
+     * @returns {number} delay
+     */
+    function getAnimationDelay(type, entity, act) {
+        if (type === 'body' && entity.action === entity.ACTION.WALK) {
+            return act.delay / 150 * entity.walk.speed;
+        }
+
+        // Delay on attack
+        if (entity.action === entity.ACTION.ATTACK  ||
+            entity.action === entity.ACTION.ATTACK1 ||
+            entity.action === entity.ACTION.ATTACK2 ||
+            entity.action === entity.ACTION.ATTACK3) {
+            return entity.attack_speed / act.animations.length;
+        }
+
+        return act.delay;
+    }
+
+
 	/**
 	 * Calculate animations
 	 */
-	function calcAnimation( entity, ACTION, action, type, time_passed )
+	function calcAnimation( entity, act, type, tick)
 	{
 		// Fix for shadow
 		if (type === 'shadow') {
@@ -353,79 +380,63 @@ define( function( require )
 		}
 
 		// To avoid look up
-		var animations_count  = action.animations.length;
-		var animations_length = animations_count + 0;
-		var delay             = action.delay + 0;
-		var Entity            = entity.constructor;
-		var headDir           = 0;
-		var animation         = entity.animation;
-		var anim;
-
-		// Delay on walk
-		// TODO: search how works the delay on walk and aspd.
-		if (type === 'body' && ACTION === entity.ACTION.WALK) {
-			delay = delay / 150 * entity.walk.speed;
-		}
-
-		// Delay on attack
-		else if (ACTION === entity.ACTION.ATTACK || ACTION === entity.ACTION.ATTACK1 || ACTION === entity.ACTION.ATTACK2 || ACTION === entity.ACTION.ATTACK3) {
-			delay = entity.attack_speed / animations_count;
-		}
-
-
-		// If hat/hair, divide to 3 since there is doridori include
-		// TODO: fixed, just on IDLE and SIT ?
-		if (type === 'head' && ( ACTION === entity.ACTION.IDLE || ACTION === entity.ACTION.SIT )) {
-			animations_count  = Math.floor( animations_count / 3 );
-			headDir           = entity.headDir + 0;
-		}
+		var ACTION    = entity.ACTION;
+		var action    = entity.action;
+		var animation = entity.animation;
+		var animCount = act.animations.length;
+		var animSize  = animCount;
+		var isIdle    = (action === ACTION.IDLE || action === ACTION.SIT);
+		var delay     = getAnimationDelay(type, entity, act);
+		var headDir   = 0;
+		var anim      = 0;
 
 		// Get rid of doridori
-		if (type === 'body' && entity.objecttype === Entity.TYPE_PC && ( ACTION === entity.ACTION.IDLE || ACTION === entity.ACTION.SIT )) {
+		if (type === 'body' && entity.objecttype === entity.constructor.TYPE_PC && isIdle) {
 			return entity.headDir;
 		}
 
 		// Don't play, so stop at the current frame.
 		if (animation.play === false) {
-			return Math.min(animation.frame, animations_length-1);
+			return Math.min(animation.frame, animSize-1);
+		}
+
+		// If hat/hair, divide to 3 since there is doridori include
+		// TODO: fixed, just on IDLE and SIT ?
+		if (type === 'head' && isIdle) {
+			animCount = Math.floor(animCount / 3);
+			headDir   = entity.headDir;
 		}
 
 		// Repeatable
 		if (animation.repeat) {
-			anim = Math.floor( time_passed / delay );
+			anim = Math.floor(tick / delay);
 
-			// repeat
-			if (anim >= animations_count) {
-				if (entity.sound._animCounter !== Math.floor(anim/animations_count)) {
-					entity.sound.free();
-					entity.sound._animCounter = Math.floor(anim/animations_count);
-				}
-				anim %= animations_count;
-			}
+			entity.sound.freeOnAnimationEnd(anim, animCount);
 
-			anim += animations_count * headDir; // get rid of doridori
-			anim += animation.frame;            // don't forget the previous frame
-			anim %= animations_length;          // avoid overflow
+			anim %= animCount;
+			anim += animCount * headDir; // get rid of doridori
+			anim += animation.frame;     // don't forget the previous frame
+			anim %= animSize;            // avoid overflow
 
 			return anim;
 		}
 
 		// No repeat
 		anim = (
-			Math.min( time_passed / delay | 0, animations_count || animations_count -1 )  // Avoid an error if animation = 0, search for -1 :(
-			+ animations_count * headDir // get rid of doridori
-			+ animation.frame            // previous frame
+			Math.min(tick / delay | 0, animCount || animCount -1)  // Avoid an error if animation = 0, search for -1 :(
+			+ animCount * headDir // get rid of doridori
+			+ animation.frame     // previous frame
 		);
 
-		if (type === 'body' && anim >= animations_length - 1) {
-			animation.frame = anim = animations_length - 1;
+		if (type === 'body' && anim >= animSize - 1) {
+			animation.frame = anim = animSize - 1;
 			animation.play  = false;
 			if (animation.next) {
 				entity.setAction( animation.next );
 			}
 		}
 
-		return Math.min( anim, animations_count-1 );
+		return Math.min( anim, animCount-1 );
 	}
 
 

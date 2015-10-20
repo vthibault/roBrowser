@@ -71,7 +71,7 @@ define(function()
 	 */
 	function init( files, save, quota )
 	{
-		var requestFileSystemSync, requestFileSystem, temporaryStorage;
+		var requestFileSystemSync, requestFileSystem;
 		_files = normalizeFilesPath(files);
 
 		if (!_available) {

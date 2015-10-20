@@ -278,7 +278,7 @@ function(    GameFileDecrypt,         BinaryReader,         Struct,         Infl
 
 			while (range[1] < range[0]) {
 				middle   = range[1] + ((range[0]-range[1]) >> 1);
-				v        = (entries[middle].filename < filename) | 0;
+				v        = (entries[middle].filename < filename ? 1 : 0);
 				range[v] = middle + v;
 			}
 
@@ -317,7 +317,7 @@ function(    GameFileDecrypt,         BinaryReader,         Struct,         Infl
 			}
 
 			// node.js
-			if (fs && file.fd) {
+			if (fs && this.file.fd) {
 				var buffer = new Buffer(entry.length_aligned);
 				fs.readSync(this.file.fd, buffer, 0, entry.length_aligned, entry.offset + GRF.struct_header.size);
 				grf.decodeEntry( (new Uint8Array(buffer)).buffer, entry, callback);

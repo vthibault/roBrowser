@@ -479,11 +479,14 @@ define(function(require)
 			if (count) {
 				_ctx.fillStyle   = 'rgb(245,175,200)';
 				_ctx.strokeStyle = 'white';
+				_ctx.lineWidth   = 2;
 				for (i = 0; i < count; ++i) {
 					dot = _guild[i];
-					_ctx.moveTo( projectX(dot.x) + 0, projectY(dot.y) - 3 );
-					_ctx.lineTo( projectX(dot.x) + 3, projectY(dot.y) + 3 );
-					_ctx.lineTo( projectX(dot.x) - 3, projectY(dot.y) + 3 );
+					_ctx.beginPath();
+					_ctx.moveTo( projectX(dot.x) + 0, projectY(dot.y) - 4 );
+					_ctx.lineTo( projectX(dot.x) + 4, projectY(dot.y) + 4 );
+					_ctx.lineTo( projectX(dot.x) - 4, projectY(dot.y) + 4 );
+					_ctx.lineTo( projectX(dot.x) + 0, projectY(dot.y) - 4 );
 				}
 				_ctx.stroke();
 				_ctx.fill();

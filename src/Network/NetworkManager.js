@@ -58,10 +58,10 @@ define(function( require )
 	 * @param {callback} struct - callback to parse the packet
 	 * @param {number} size - packet size
 	 */
-	function Packets( name, struct, size )
+	function Packets( name, Struct, size )
 	{
 		this.name     = name;
-		this.struct   = struct;
+		this.Struct   = Struct;
 		this.size     = size;
 		this.callback = null;
 	}
@@ -182,12 +182,12 @@ define(function( require )
 	 * @param {number} id - packet UID
 	 * @param {function} struct - packet structure callback
 	 */
-	function registerPacket( id, struct ) {
-		struct.id = id;
+	function registerPacket( id, Struct ) {
+		Struct.id = id;
 		Packets.list[id] = new Packets(
-			struct.name,
-			struct,
-			struct.size
+			Struct.name,
+			Struct,
+			Struct.size
 		);
 	}
 
@@ -313,10 +313,10 @@ define(function( require )
 
 			// Parse packet
 			if (!packet.instance) {
-				packet.instance = new packet.struct(fp, offset);
+				packet.instance = new packet.Struct(fp, offset);
 			}
 			else {
-				packet.struct.call(packet.instance, fp, offset);
+				packet.Struct.call(packet.instance, fp, offset);
 			}
 
 			console.log( '%c[Network] Recv:', 'color:#900090', packet.instance, packet.callback ? '' : '(no callback)'  );
@@ -432,16 +432,7 @@ define(function( require )
 	/**
 	 * Export
 	 */
-	return new function Network()
-	{
-		this.sendPacket     = sendPacket;
-		this.send           = send;
-		this.setPing        = setPing;
-		this.connect        = connect;
-		this.hookPacket     = hookPacket;
-		this.close          = close;
-		this.read           = read;
-
+	return (function Network() {
 		var keys;
 		var i, count;
 
@@ -461,8 +452,17 @@ define(function( require )
 			registerPacket( keys[i], PacketRegister[ keys[i] ] );
 		}
 
-		this.utils = {
-			longToIP: utilsLongToIP
+		return {
+			sendPacket: sendPacket,
+			send:       send,
+			setPing:    setPing,
+			connect:    connect,
+			hookPacket: hookPacket,
+			close:      close,
+			read:       read,
+			utils: {
+				longToIP: utilsLongToIP
+			}
 		};
-	}();
+	})();
 });

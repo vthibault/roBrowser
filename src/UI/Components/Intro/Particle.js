@@ -86,7 +86,9 @@ define(function( require )
 
 		this.ctx.clearRect( 0, 0, this.width, this.height );
 		if (this.bg.ready) {
+			this.ctx.globalCompositeOperation = 'source-over';
 			this.ctx.drawImage(this.bg, 0, 0);
+			this.ctx.globalCompositeOperation = 'lighter';
 		}
 
 		for (i = 0, count = this.list.length; i < count; ++i) {
@@ -139,11 +141,11 @@ define(function( require )
 	 */
 	Particle.prototype.render = function render( ctx )
 	{
-		var opacity  = (1 - ( this.ratio / this.life )).toFixed(2);
+		var opacity  = Math.floor((1 - ( this.ratio / this.life )) * 100) * 0.01;
 		var radius   = this.r * opacity;
 		var gradient = ctx.createRadialGradient(
 			this.x, this.y,  0,
-			this.x, this.y, (radius <= 0 ? 1 : radius | 0)
+			this.x, this.y, Math.max(radius, 0.5)
 		);
 
 		ctx.beginPath();

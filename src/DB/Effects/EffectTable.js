@@ -59,18 +59,172 @@ define(function( require )
 
 	return {
 
-		10: [{
-			type: 'STR',
-			file: 'maemor',
-			min:  'memor_min',
+		1: [{
+			//  Loads 2 tga-images, semi-randomly (alternating pattern but random position) aligns 4 instances of each (=8 in total) in a circle around the object and stretches them away.
+			//  Important note: It really is just stretching one end further and further out, one end of the images is tied to the object
+			//type: 'FUNC',
+			//file:  'lens1', // lens2 is also used
+			wav: 'effect/ef_hit2',
 			attachedEntity: true
 		}],
 
 
+		2: [{
+			//type:  'FUNC',
+			wav: 'effect/ef_hit3',
+			attachedEntity: true
+		}],
+
+
+		3: [{
+			//type:  'FUNC',
+			wav: 'effect/ef_hit4',
+			attachedEntity: true
+		}],
+
+
+		4: [{
+			//type:  'FUNC',
+			//file:  'lens2',
+			wav: 'effect/ef_hit5',
+			attachedEntity: true
+		}],
+
+
+		5: [{
+			//type:  'FUNC',
+			//file: 'lens2',
+			wav: 'effect/ef_hit6',
+			attachedEntity: true
+		}],
+
+
+		6: [{
+			//type: 'FUNC',
+			//file: 'effect/ring_blue',
+			attachedEntity: false
+		}],
+
+
+		7: [{
+			//type: 'FUNC',
+			//file: 'effect/alpha_down',
+			wav: '_heal_effect',
+			attachedEntity: true
+		}],
+
+
+		8: [{
+			//type: 'FUNC',
+			//file: 'effect/ring_yellow',
+			attachedEntity: false
+		}],
+
+
+		9: [{
+			//type: 'FUNC',
+			//file: 'effect/alpha_down',
+			attachedEntity: false
+		}],
+
+
+		10: [{
+			type: 'STR',
+			file: 'maemor',
+			min:  'memor_min',
+			wav:  'effect/ef_coin2',
+			attachedEntity: true
+		}],
+
+
+		11: [{
+			//type: 'FUNC',
+			//file: 'effect/endure',
+			wav:  'effect/ef_endure',
+			attachedEntity: true
+		}],
+
+
+		12: [{
+			//type: 'FUNC',
+			//file: 'effect/ring_yellow',
+			wav:  'effect/ef_beginspell',
+ 			attachedEntity: true
+ 		}],
+
+
 		13: [{
 			type: 'STR',
-			file: 'magician_safe',
+			file: 'effect/safetywall',
+			wav:  'effect/ef_glasswall',
 			attachedEntity: false
+		}],
+
+
+		14: [{
+			//type: 'FUNC',
+			//file: 'effect/ring_blue',
+			wav: '_heal_effect',
+			attachedEntity: true
+		}],
+
+
+		15: [{
+			//type: 'FUNC',
+			//file: 'sprite/ÀÌÆÑÆ®/particle1',
+			wav: 'effect/ef_soulstrike',
+ 			attachedEntity: false
+ 		}],
+
+
+		16: [{
+			//type: 'FUNC',
+			//file: 'effect/alpha_center',
+			wav: 'effect/ef_bash',
+			attachedEntity: true
+		}],
+
+
+		17: [{
+			//type: 'FUNC',
+			//file: 'effect/´ëÆø¹ß',
+			wav: 'effect/ef_magnumbreak',
+			attachedEntity: false
+		}],
+
+
+		18: [{
+			//type: 'FUNC',
+			//file: 'sprite/ÀÌÆÑÆ®/particle7',
+			wav: 'effect/ef_steal',
+			attachedEntity: true
+		}],
+
+
+		// 19: Invalid Effect ID Popup in client
+
+
+		20: [{
+			//type: 'FUNC',
+			//file: 'sprite/ÀÌÆÑÆ®/particle3',
+			wav: 'effect/assasin_enchantpoison',
+			attachedEntity: false
+		}],
+
+
+		21: [{
+			//type: 'FUNC',
+			wav: 'effect/ef_detoxication',
+			//file: 'sprite/ÀÌÆÑÆ®/particle2',
+			attachedEntity: false
+		}],
+
+
+		22: [{
+			// Sight effect, circling the entity 3.75 times
+			//type: 'FUNC',
+			//file: 'sprite/ÀÌÆÑÆ®/sight',
+			attachedEntity: true
 		}],
 
 
@@ -81,11 +235,41 @@ define(function( require )
 		}],
 
 
+		24: [{
+			type: 'FUNC',
+			wav: 'effect/ef_fireball',
+			attachedEntity: false
+		}],
+
+
 		25: [{
 			type: 'STR',
 			file: 'firewall%d',
 			wav:  'effect/ef_firewall',
 			rand: [1, 2],
+			attachedEntity: false
+		}],
+
+
+		26: [{
+			//type: 'FUNC',
+			wav: 'effect/ef_icearrow%d', // Or ef_icearrow2 & ef_icearrow3 . Seems to be random
+			rand: [1, 3],
+			attachedEntity: false
+		}],
+
+
+		27: [{
+			//type: 'FUNC',
+			file: 'effect/ice',
+			attachedEntity: false
+		}],
+
+
+		28: [{
+			//type: 'FUNC',
+			file: 'effect/ice',
+			wav: 'effect/ef_frostdiver2',
 			attachedEntity: false
 		}],
 
@@ -105,9 +289,56 @@ define(function( require )
 		}],
 
 
+		31: [{
+			//type: 'FUNC',
+			wav: 'effect/ef_firearrow1',
+			attachedEntity: true
+		}],
+
+
+		32: [{
+			//type: 'FUNC',
+			//file: 'effect/Æø¹ß1', // Uses up to Æø¹ß8 , so eight files for an animated explosion
+			wav: 'effect/ef_napalmbeat',
+			attachedEntity: true
+		}],
+
+
+		34: [{
+			//type: 'FUNC',
+			//file: 'effect/ring_blue',
+			wav: 'effect/ef_teleportation',
+			attachedEntity: false
+		}],
+
+
+		35: [{
+			//type: 'FUNC',
+			//file: 'effect/ring_blue',
+			wav: 'effect/ef_readyportal',
+			attachedEntity: false
+		}],
+
+
+		37: [{
+			//type: 'FUNC',
+			//file: 'effect/ac_center2',
+			wav: 'effect/ef_incagility',
+			attachedEntity: true
+		}],
+
+
+		38: [{
+			//type: 'FUNC',
+			wav: 'effect/ef_decagility',
+			attachedEntity: true
+		}],
+
+
 		39: [{
 			type: 'SPR',
 			file: '¼º¼ö¶ß±â',
+			wav:  'effect/ef_aqua',
 			head:  true,
 			attachedEntity: true
 		}],
@@ -116,6 +347,7 @@ define(function( require )
 		40: [{
 			type: 'STR',
 			file: 'cross',
+			wav:  'effect/ef_signum',
 			attachedEntity: true
 		}],
 
@@ -125,6 +357,28 @@ define(function( require )
 			file: 'angelus',
 			wav:  'effect/ef_angelus',
 			min:  'jong_mini',
+			attachedEntity: true
+		}],
+
+
+		42: [{
+			type: 'SPR',
+			file: 'Ãàº¹',
+			wav: 'effect/ef_blessing',
+			attachedEntity: true
+		}],
+
+
+		43: [{
+			//type: 'FUNC',
+			wav: 'effect/ef_incagidex',
+			attachedEntity: true
+		}],
+
+
+		45: [{ // This one is almost invisible, but there are some small white thingies flying around
+			type: 'FUNC',
+			//file: 'sprite/ÀÌÆÑÆ®/particle1',
 			attachedEntity: true
 		}],
 
@@ -154,6 +408,55 @@ define(function( require )
 		}],
 
 
+		53: [{
+			type: 'SPR',
+			file: 'poisonhit',
+			attachedEntity: false
+		}],
+
+
+		54: [{
+			//type: 'FUNC',
+			wav:  'effect/ef_beginspell',
+			attachedEntity: true
+		}],
+
+
+		55: [{
+			//type: 'FUNC',
+			wav:  'effect/ef_beginspell',
+			attachedEntity: true
+		}],
+
+
+		56: [{
+			//type: 'FUNC',
+			wav:  'effect/ef_beginspell',
+			attachedEntity: true
+		}],
+
+
+		57: [{
+			//type: 'FUNC',
+			wav:  'effect/ef_beginspell',
+			attachedEntity: true
+		}],
+
+
+		58: [{
+			//type: 'FUNC',
+			wav:  'effect/ef_beginspell',
+			attachedEntity: true
+		}],
+
+
+		59: [{
+			//type: 'FUNC',
+			wav:  'effect/ef_beginspell',
+			attachedEntity: true
+		}],
+
+
 		60: [{
 			type: 'FUNC',
 			attachedEntity: true,
@@ -169,6 +472,14 @@ define(function( require )
 		}],
 
 
+		62: [{
+			//type: 'FUNC',
+			//file: 'sprite/ÀÌÆÑÆ®/sight',
+			wav:  'effect/wizard_sightrasher',
+			attachedEntity: false
+		}],
+
+
 		64: [{
 			type: 'STR',
 			file: 'arrowshot',
@@ -179,6 +490,7 @@ define(function( require )
 		65: [{
 			type: 'STR',
 			file: 'invenom',
+			wav:  'effect/thief_invenom',
 			attachedEntity: true
 		}],
 
@@ -224,6 +536,13 @@ define(function( require )
 		}],
 
 
+		74: [{
+			//type: 'FUNC',
+			wav:  'effect/wizard_icewall',
+			attachedEntity: false
+		}],
+
+
 		75: [{
 			type: 'STR',
 			file: 'gloria',
@@ -255,6 +574,27 @@ define(function( require )
 			type: 'STR',
 			file: 'recovery',
 			wav:  'effect/priest_recovery',
+			attachedEntity: true
+		}],
+
+
+		79: [{
+			//type: 'FUNC',
+			wav:  'effect/wizard_earthspike',
+			attachedEntity: false
+		}],
+
+
+		80: [{
+			//type: 'FUNC',
+			wav:  'effect/ef_fireball',
+			attachedEntity: false
+		}],
+
+
+		82: [{
+			//type: 'FUNC',
+			wav:  'effect/ef_bash',
 			attachedEntity: true
 		}],
 
@@ -343,6 +683,13 @@ define(function( require )
 		}],
 
 
+		93: [{
+			//type: 'FUNC',
+			wav:  'effect/hunter_shockwavetrap',
+			attachedEntity: true
+		}],
+
+
 		94: [{
 			type: 'STR',
 			file: 'ufidel_pang',
@@ -372,6 +719,29 @@ define(function( require )
 			attachedEntity: false
 		}],
 
+
+		98: [{
+			//type: 'FUNC',
+			// This one is pretty messy... it somehow consists of two sprites, one is attached to the Entity, one isnt. additionally it consists of two sounds
+			// For the sake of simplicity, I propose just using one sprite and one sound - the _a sound is just some "intro" while _b is a real effect
+			wav:  'effect/black_adrenalinerush_b',	// The original client plays _a first and then continues with b
+			attachedEntity: true
+		}],
+
+
+		99: [{
+			//type: 'FUNC',
+			// Again two sprites... one attached one not. But here the "main" sprite is ment to stay a little longer
+			wav:  'effect/hunter_flasher',
+			attachedEntity: false
+		}],
+
+
+		100: [{
+			//type: 'FUNC',
+			wav:  'effect/hunter_removetrap',
+			attachedEntity: false
+		}],
 
 		101: [{
 			type: 'STR',

@@ -21,6 +21,7 @@
 					ROConfig.API              = event.data.api              || false;
 					ROConfig.socketProxy      = event.data.socketProxy      || null;
 					ROConfig.packetKeys       = event.data.packetKeys       || false;
+					ROConfig.saveFiles        = event.data.saveFiles        || false;
 					ROConfig.skipServerList   = event.data.skipServerList   || false;
 					ROConfig.skipIntro        = event.data.skipIntro        || false;
 					ROConfig.autoLogin        = event.data.autoLogin        || [];
@@ -32,7 +33,7 @@
 						var script  = document.createElement('script');
 						script.src  = 'src/Vendors/require.js?' + ROConfig.version;
 						script.type = 'text/javascript';
-						script.setAttribute('data-main', 'src/App/' + event.data.application + '?' + ROConfig.version);
+						script.setAttribute('data-main', 'src/App/' + event.data.application + '.js?' + ROConfig.version);
 
 						document.getElementsByTagName('head')[0].appendChild(script);
 						event.source.postMessage('ready', '*' );

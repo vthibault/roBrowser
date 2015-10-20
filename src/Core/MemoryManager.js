@@ -26,7 +26,7 @@ define( ['Core/MemoryItem'], function( MemoryItem )
 	 * Remove files from memory if not used until a period of time
 	 * @var {number}
 	 */
-	var _remember_time = 2 * 60 * 1000; // 2 min
+	var _rememberTime = 2 * 60 * 1000; // 2 min
 
 
 	/**
@@ -54,7 +54,7 @@ define( ['Core/MemoryItem'], function( MemoryItem )
 		var item;
 
 		// Not in memory yet, create slot
-		if (!exist(filename)) {
+		if (!_memory[filename]) {
 			_memory[filename] = new MemoryItem();
 		}
 
@@ -80,7 +80,7 @@ define( ['Core/MemoryItem'], function( MemoryItem )
 	 */
 	function exist( filename )
 	{
-		return filename in _memory;
+		return !!_memory[filename];
 	}
 
 
@@ -94,7 +94,7 @@ define( ['Core/MemoryItem'], function( MemoryItem )
 	function set( filename, data, error )
 	{
 		// Not in memory yet, create slot
-		if (!exist(filename)) {
+		if (!_memory[filename]) {
 			_memory[filename] = new MemoryItem();
 		}
 
@@ -125,7 +125,7 @@ define( ['Core/MemoryItem'], function( MemoryItem )
 
 		keys  = Object.keys(_memory);
 		count = keys.length;
-		tick  = now - _remember_time;
+		tick  = now - _rememberTime;
 
 		for (i = 0; i < count; ++i) {
 			item = _memory[ keys[i] ];
@@ -152,7 +152,7 @@ define( ['Core/MemoryItem'], function( MemoryItem )
 	function remove( gl, filename )
 	{
 		// Not found ?
-		if (!exist(filename)) {
+		if (!_memory[filename]) {
 			return;
 		}
 

@@ -568,5 +568,5 @@
 		};
 
 		initialize();
-	}, false)
+	}, false);
 })();

@@ -104,7 +104,12 @@ define(function( require )
 
 			this.gl = WebGL.getContext( this.canvas, param );
 
-			jQuery(window).resize(this.onResize.bind(this));
+			jQuery(window)
+				.resize(this.onResize.bind(this))
+				.on('contextmenu',function(){
+					return false;
+				});
+
 			this.render(null);
 			this.resize();
 		}
@@ -164,15 +169,17 @@ define(function( require )
 	 */
 	Renderer.resize = function resize()
 	{
-		this.width  = window.innerWidth  || document.body.offsetWidth;
-		this.height = window.innerHeight || document.body.offsetHeight;
+		var width, height, quality;
 
-		Mouse.screen.width  = this.width;
-		Mouse.screen.height = this.height;
+		width  = window.innerWidth  || document.body.offsetWidth;
+		height = window.innerHeight || document.body.offsetHeight;
+	
+		Mouse.screen.width  = this.width  = width;
+		Mouse.screen.height = this.height = height;
 
-		var quality = Configs.get('quality', 100) / 100;
-		var width   = this.width  * quality;
-		var height  = this.height * quality;
+		quality = Configs.get('quality', 100) / 100;
+		width  *= quality;
+		height *= quality;
 
 		this.canvas.width         = width;
 		this.canvas.height        = height;

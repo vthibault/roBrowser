@@ -183,6 +183,17 @@
 
 
 	/**
+	 * @var {boolean} should we save files in chrome filesystem ?
+	 * 
+	 * If set to true, then we try to save the files loaded from server/grfs on a filesystem to load
+	 * them faster the next time.
+	 * 
+	 * Only working on Chrome, status: deprecated.
+	 */
+	ROBrowser.prototype.saveFiles = false;
+
+
+	/**
 	 * @var {boolean} skip server list if only one server define ?
 	 *
 	 * If set to true and the server list (clientinfo, char-server list) just have one
@@ -287,9 +298,9 @@
 				frame.height       = this.height;
 				frame.style.border = 'none';
 
-				frame.setAttribute('allowfullscreen', true);
-				frame.setAttribute('webkitallowfullscreen', true);
-				frame.setAttribute('mozallowfullscreen', true);
+				frame.setAttribute('allowfullscreen', 'true');
+				frame.setAttribute('webkitallowfullscreen', 'true');
+				frame.setAttribute('mozallowfullscreen', 'true');
 
 				if (this.target) {
 					while (this.target.firstChild) {
@@ -362,6 +373,7 @@
 			api:              this.api,
 			socketProxy:      this.socketProxy,
 			packetKeys:       this.packetKeys,
+			saveFiles:        this.saveFiles,
 			skipServerList:   this.skipServerList,
 			skipIntro:        this.skipIntro,
 			autoLogin:        this.autoLogin,

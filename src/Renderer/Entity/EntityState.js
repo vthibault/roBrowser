@@ -22,14 +22,6 @@ define(function( require )
 
 
 	/**
-	 * Status color
-	 */
-	var _bodyStateColor   = new Float32Array([1,1,1,1]);
-	var _healthStateColor = new Float32Array([1,1,1,1]);
-	var _effectStateColor = new Float32Array([1,1,1,1]);
-
-
-	/**
 	 * Calculate new color
 	 */
 	function recalculateBlendingColor()
@@ -324,17 +316,17 @@ define(function( require )
 
 
 		Object.defineProperty(this, 'bodyState', {
-			get: function(){ return this._bodyState },
+			get: function(){ return this._bodyState; },
 			set: updateBodyState
 		});
 
 		Object.defineProperty(this, 'healthState', {
-			get: function(){ return this._healthState },
+			get: function(){ return this._healthState; },
 			set: updateHealthState
 		});
 
 		Object.defineProperty(this, 'effectState', {
-			get: function(){ return this._effectState },
+			get: function(){ return this._effectState; },
 			set: updateEffectState
 		});
 	};
