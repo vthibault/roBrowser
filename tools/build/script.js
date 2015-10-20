@@ -13,8 +13,9 @@
 				break;
 
 			case 'error':
-				alert(event.data.message);
-				location.reload();
+				status.textContent = event.data.message;
+				document.querySelector('#loading .gear-loading').classList.add('hide');
+				thread.onmessage = null;
 				break;
 
 			case 'result':

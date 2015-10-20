@@ -23662,6 +23662,10 @@ define('requirePatch', [ 'env!env/file', 'pragma', 'parse', 'lang', 'logger', 'c
                                             require._cachedDefinesRequireUrls[url] = true;
                                         }
                                     } catch (e1) {
+                                        if (context.config.error) {
+                                            context.config.error('Parse error using esprima ' +
+                                                                 'for file: ' + url + '\n' + e1);
+                                        }
                                         throw new Error('Parse error using esprima ' +
                                                         'for file: ' + url + '\n' + e1);
                                     }
