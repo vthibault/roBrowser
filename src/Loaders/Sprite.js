@@ -330,6 +330,10 @@ define( ['Utils/BinaryReader'], function( BinaryReader )
 				for (y = 0; y < height; ++y) {
 					for (x = 0; x < width; ++x) {
 						out[ ( ( y + start_y ) * gl_width + ( x + start_x ) ) ] = data[ y * width + x ];
+						if(this.palette[data[ y * width + x ]*4]==255 
+							&& this.palette[data[ y * width + x ]*4+2]==255 
+							&&this.palette[data[ y * width + x ]*4+1]==0 )
+							out[ ( ( y + start_y ) * gl_width + ( x + start_x ) ) ] = 0;
 					}
 				}
 			}

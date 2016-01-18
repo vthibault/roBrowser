@@ -6,6 +6,8 @@
  * This file is part of ROBrowser, Ragnarok Online in the Web Browser (http://www.robrowser.com/).
  *
  * @author Vincent Thibault
+ * In some cases the client will send packet twice.eg NORMAL_ITEMLIST4; fixit [skybook888] 
+ *
  */
 define(function(require)
 {
@@ -246,16 +248,24 @@ define(function(require)
 
 	/**
 	 * Add items to the list
+	 * if the item index is exist you should clear it;[skybook888]
 	 */
 	Inventory.setItems = function SetItems(items)
 	{
 		var i, count;
-
+		
 		for (i = 0, count = items.length; i < count ; ++i) {
-			if (this.addItemSub( items[i] )) {
-				this.list.push( items[i] );
+			var object= this.getItemByIndex(items[i].index);
+			if(object){
+				var item=this.removeItem(object.index,object.count);
 			}
+			if(this.addItemSub(items[i])){
+				this.list.push(items[i]);
+			}
+			
+			
 		}
+		
 	};
 
 
@@ -267,6 +277,7 @@ define(function(require)
 	Inventory.addItem = function AddItem( item )
 	{
 		var object = this.getItemByIndex(item.index);
+		//console.log("add");
 
 		if (object) {
 			object.count += item.count;
@@ -291,7 +302,6 @@ define(function(require)
 	Inventory.addItemSub = function AddItemSub( item )
 	{
 		var tab;
-
 		switch (item.type) {
 			case ItemType.HEALING:
 			case ItemType.USABLE:
@@ -373,7 +383,7 @@ define(function(require)
 				return item;
 			}
 		}
-
+		
 		this.list.splice( this.list.indexOf(item), 1 );
 		this.ui.find('.item[data-index="'+ item.index +'"]').remove();
 		this.onUpdateItem(item.ITID, 0);

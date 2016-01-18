@@ -54,7 +54,7 @@
 	 * @param {string} string to convert
 	 */
 	function to_ascii(str) {
-		return str.replace(/[\u0080-\uffff]/g, function(ch) {
+		return str.replace(/[\u0000-\uffff]/g, function(ch) {
 			var code = ch.charCodeAt(0).toString(16);
 			if (code.length <= 2) {
 				while (code.length < 2) code = "0" + code;
@@ -215,14 +215,21 @@
 	 */
 	function lua_parse_glob(content)
 	{
+		
+		
 		// Remove comments
 		content = lua_remove_comments(content);
 
 		// Some failed escaped string on lua
 		content = content.replace(/\\\\\\/g, '\\');
-
+		
 		// Remove variable container
 		content = content.replace(/^([^\{]+)\{/, '');
+		// Encode special characters
+		content = content.replace(/"([^"]+)",/g, function(a,b){
+			return '"' + to_ascii(b).replace(/\\/g,'\\\\') + '",';
+		});
+
 
 		// Convert lua array
 		content = content.replace(/\{(\s+?"[^\}]+)\}/g, '[$1]');
@@ -232,11 +239,7 @@
 
 		// Convert parameters
 		content = content.replace(/(\s+)(\w+)\s+?=\s+?/g, '$1"$2": ');
-
-		// Encode special characters
-		content = content.replace(/identifiedResourceName":(\s+)?"([^"]+)"/g, function(a,b,c){
-			return 'identifiedResourceName": "' + to_ascii(c).replace(/\\/g,'\\\\') + '"';
-		});
+		
 
 		// Remove un-needed coma
 		content = content.replace(/,(\s+(\]|\}))/g, '$1').replace(/,(\s+)?$/, '');
@@ -250,11 +253,11 @@
 		// Fix curly brace
 		var open  = content.split('{').length;
 		var close = content.split('}').length;
-
 		if (open > close) {
 			content += '}';
 		}
-
+		
+		
 		return sandboxEval('(' + content + ')');
 	}
 
@@ -422,6 +425,7 @@
 
 			case 'lua':
 				// easy
+				
 				if (info.lua_key) {
 					output = lua_parse_keyval(out[0], out[1], info.lua_key, info.lua_val);
 				}
@@ -429,9 +433,8 @@
 				else {
 					output = lua_parse_glob(out[0].content);
 				}
-
-				if (!output) {
-					alert('Sorry, something bad happened while converting lua files... Exiting.');
+								if (!output) {
+				alert('Sorry, something bad happened while converting lua files... Exiting.');
 					return;
 				}
 				break;
