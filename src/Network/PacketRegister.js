@@ -556,7 +556,13 @@ define( ['./PacketStructure' ], function( PACKET )
 		0x99d: PACKET.HC.ACCEPT_ENTER_NEO_UNION_LIST,  // ok
 		0x9a0: PACKET.HC.CHARLIST_NOTIFY,
 		0x9ca: PACKET.ZC.SKILL_ENTRY5, // ok
+		0x9db: PACKET.ZC.NOTIFY_MOVEENTRY8, // ok
+		0x9dc: PACKET.ZC.NOTIFY_STANDENTRY8, // ok
+		0x9dd: PACKET.ZC.NOTIFY_NEWENTRY8, // ok
 		0x9df: PACKET.ZC.ACK_WHISPER2,
+		0x9fd: PACKET.ZC.NOTIFY_MOVEENTRY9, // ok
+		0x9fe: PACKET.ZC.NOTIFY_STANDENTRY9, // ok
+		0x9ff: PACKET.ZC.NOTIFY_NEWENTRY9, // ok
 		//0x9d5: npcmarketopenType
 		//0x9d7: npcmarketresultackType
 		0xa00: PACKET.ZC.SHORTCUT_KEY_LIST_V3, // ok

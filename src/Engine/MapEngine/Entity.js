@@ -379,19 +379,19 @@ define(function( require )
 			return;
 		}
 
+		type = ChatBox.TYPE.PUBLIC;
 		entity = EntityManager.get(pkt.GID);
+
 		if (entity) {
 			entity.dialog.set( pkt.msg );
-		}
 
-		type = ChatBox.TYPE.PUBLIC;
-
-		// Should not happened
-		if (entity === Session.Entity) {
-			type |= ChatBox.TYPE.SELF;
-		}
-		else if (entity.isAdmin) {
-			type |= ChatBox.TYPE.ADMIN;
+			// Should not happen
+			if (entity === Session.Entity) {
+				type |= ChatBox.TYPE.SELF;
+			}
+			else if (entity.isAdmin) {
+				type |= ChatBox.TYPE.ADMIN;
+			}
 		}
 
 		ChatBox.addText( pkt.msg, type );

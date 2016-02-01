@@ -11013,12 +11013,247 @@ define(['Utils/BinaryWriter', './PacketVerManager'], function(BinaryWriter, PACK
 	PACKET.ZC.SKILL_ENTRY5.size = -1;
 
 
+	// 0x9db
+	PACKET.ZC.NOTIFY_MOVEENTRY8 = function PACKET_ZC_NOTIFY_MOVEENTRY8(fp, end) {
+		this.objecttype = fp.readUChar();
+		this.AID = fp.readULong();
+		this.GID = fp.readULong();
+		this.speed = fp.readShort();
+		this.bodyState = fp.readShort();
+		this.healthState = fp.readShort();
+		this.effectState = fp.readLong();
+		this.job = fp.readShort();
+		this.head = fp.readShort();
+		this.weapon = fp.readLong();
+		this.accessory = fp.readShort();
+		this.moveStartTime = fp.readULong();
+		this.accessory2 = fp.readShort();
+		this.accessory3 = fp.readShort();
+		this.headpalette = fp.readShort();
+		this.bodypalette = fp.readShort();
+		this.headDir = fp.readShort();
+		this.Robe = fp.readShort();
+		this.GUID = fp.readULong();
+		this.GEmblemVer = fp.readShort();
+		this.honor = fp.readShort();
+		this.virtue = fp.readLong();
+		this.isPKModeON = fp.readUChar();
+		this.sex = fp.readUChar();
+		this.MoveData = fp.readPos2();
+		this.xSize = fp.readUChar();
+		this.ySize = fp.readUChar();
+		this.clevel = fp.readShort();
+		this.font = fp.readShort();
+		this.hp = fp.readLong();
+		this.maxhp = fp.readLong();
+		this.isBoss = fp.readUChar();
+		this.name = fp.readString(24);
+	};
+	PACKET.ZC.NOTIFY_MOVEENTRY8.size = -1;
+
+
+	// 0x9dc
+	PACKET.ZC.NOTIFY_STANDENTRY8 = function PACKET_ZC_NOTIFY_STANDENTRY8(fp, end) {
+		this.objecttype = fp.readUChar();
+		this.AID = fp.readULong();
+		this.GID = fp.readULong();
+		this.speed = fp.readShort();
+		this.bodyState = fp.readShort();
+		this.healthState = fp.readShort();
+		this.effectState = fp.readLong();
+		this.job = fp.readShort();
+		this.head = fp.readShort();
+		this.weapon = fp.readLong();
+		this.accessory = fp.readShort();
+		this.accessory2 = fp.readShort();
+		this.accessory3 = fp.readShort();
+		this.headpalette = fp.readShort();
+		this.bodypalette = fp.readShort();
+		this.headDir = fp.readShort();
+		this.Robe = fp.readShort();
+		this.GUID = fp.readULong();
+		this.GEmblemVer = fp.readShort();
+		this.honor = fp.readShort();
+		this.virtue = fp.readLong();
+		this.isPKModeON = fp.readUChar();
+		this.sex = fp.readUChar();
+		this.PosDir = fp.readPos();
+		this.xSize = fp.readUChar();
+		this.ySize = fp.readUChar();
+		this.clevel = fp.readShort();
+		this.font = fp.readShort();
+		this.hp = fp.readLong();
+		this.maxhp = fp.readLong();
+		this.isBoss = fp.readUChar();
+		this.name = fp.readString(end - fp.tell());
+	};
+	PACKET.ZC.NOTIFY_STANDENTRY8.size = -1;
+
+
+	// 0x9dd
+	PACKET.ZC.NOTIFY_NEWENTRY8 = function PACKET_ZC_NOTIFY_NEWENTRY8(fp, end) {
+		this.objecttype = fp.readUChar();
+		this.AID = fp.readULong();
+		this.GID = fp.readULong();
+		this.speed = fp.readShort();
+		this.bodyState = fp.readShort();
+		this.healthState = fp.readShort();
+		this.effectState = fp.readLong();
+		this.job = fp.readShort();
+		this.head = fp.readShort();
+		this.weapon = fp.readLong();
+		this.accessory = fp.readShort();
+		this.accessory2 = fp.readShort();
+		this.accessory3 = fp.readShort();
+		this.headpalette = fp.readShort();
+		this.bodypalette = fp.readShort();
+		this.headDir = fp.readShort();
+		this.Robe = fp.readShort();
+		this.GUID = fp.readULong();
+		this.GEmblemVer = fp.readShort();
+		this.honor = fp.readShort();
+		this.virtue = fp.readLong();
+		this.isPKModeON = fp.readUChar();
+		this.sex = fp.readUChar();
+		this.PosDir = fp.readPos();
+		this.xSize = fp.readUChar();
+		this.ySize = fp.readUChar();
+		this.state = fp.readUChar();
+		this.clevel = fp.readShort();
+		this.font = fp.readShort();
+		this.hp = fp.readLong();
+		this.maxhp = fp.readLong();
+		this.isBoss = fp.readUChar();
+		this.name = fp.readString(end - fp.tell());
+	};
+	PACKET.ZC.NOTIFY_NEWENTRY8.size = -1;
+
+
 	// 0x9df
 	PACKET.ZC.ACK_WHISPER2 = function PACKET_ZC_ACK_WHISPER2(fp, end) {
 		this.result = fp.readUChar();
 		this.unknown = fp.readULong(); // AID ?
 	};
 	PACKET.ZC.ACK_WHISPER2.size = 7;
+
+
+	// 0x9fd
+	PACKET.ZC.NOTIFY_MOVEENTRY9 = function PACKET_ZC_NOTIFY_MOVEENTRY9(fp, end) {
+		this.objecttype = fp.readUChar();
+		this.AID = fp.readULong();
+		this.GID = fp.readULong();
+		this.speed = fp.readShort();
+		this.bodyState = fp.readShort();
+		this.healthState = fp.readShort();
+		this.effectState = fp.readLong();
+		this.job = fp.readShort();
+		this.head = fp.readShort();
+		this.weapon = fp.readLong();
+		this.accessory = fp.readShort();
+		this.moveStartTime = fp.readULong();
+		this.accessory2 = fp.readShort();
+		this.accessory3 = fp.readShort();
+		this.headpalette = fp.readShort();
+		this.bodypalette = fp.readShort();
+		this.headDir = fp.readShort();
+		this.Robe = fp.readShort();
+		this.GUID = fp.readULong();
+		this.GEmblemVer = fp.readShort();
+		this.honor = fp.readShort();
+		this.virtue = fp.readLong();
+		this.isPKModeON = fp.readUChar();
+		this.sex = fp.readUChar();
+		this.MoveData = fp.readPos2();
+		this.xSize = fp.readUChar();
+		this.ySize = fp.readUChar();
+		this.clevel = fp.readShort();
+		this.font = fp.readShort();
+		this.hp = fp.readLong();
+		this.maxhp = fp.readLong();
+		this.isBoss = fp.readUChar();
+		this.body = fp.readShort();
+		this.name = fp.readString(24);
+	};
+	PACKET.ZC.NOTIFY_MOVEENTRY9.size = -1;
+
+
+	// 0x9fe
+	PACKET.ZC.NOTIFY_STANDENTRY9 = function PACKET_ZC_NOTIFY_STANDENTRY9(fp, end) {
+		this.objecttype = fp.readUChar();
+		this.AID = fp.readULong();
+		this.GID = fp.readULong();
+		this.speed = fp.readShort();
+		this.bodyState = fp.readShort();
+		this.healthState = fp.readShort();
+		this.effectState = fp.readLong();
+		this.job = fp.readShort();
+		this.head = fp.readShort();
+		this.weapon = fp.readLong();
+		this.accessory = fp.readShort();
+		this.accessory2 = fp.readShort();
+		this.accessory3 = fp.readShort();
+		this.headpalette = fp.readShort();
+		this.bodypalette = fp.readShort();
+		this.headDir = fp.readShort();
+		this.Robe = fp.readShort();
+		this.GUID = fp.readULong();
+		this.GEmblemVer = fp.readShort();
+		this.honor = fp.readShort();
+		this.virtue = fp.readLong();
+		this.isPKModeON = fp.readUChar();
+		this.sex = fp.readUChar();
+		this.PosDir = fp.readPos();
+		this.xSize = fp.readUChar();
+		this.ySize = fp.readUChar();
+		this.clevel = fp.readShort();
+		this.font = fp.readShort();
+		this.hp = fp.readLong();
+		this.maxhp = fp.readLong();
+		this.isBoss = fp.readUChar();
+		this.body = fp.readShort();
+		this.name = fp.readString(end - fp.tell());
+	};
+	PACKET.ZC.NOTIFY_STANDENTRY9.size = -1;
+
+
+	// 0x9dd
+	PACKET.ZC.NOTIFY_NEWENTRY9 = function PACKET_ZC_NOTIFY_NEWENTRY9(fp, end) {
+		this.objecttype = fp.readUChar();
+		this.AID = fp.readULong();
+		this.GID = fp.readULong();
+		this.speed = fp.readShort();
+		this.bodyState = fp.readShort();
+		this.healthState = fp.readShort();
+		this.effectState = fp.readLong();
+		this.job = fp.readShort();
+		this.head = fp.readShort();
+		this.weapon = fp.readLong();
+		this.accessory = fp.readShort();
+		this.accessory2 = fp.readShort();
+		this.accessory3 = fp.readShort();
+		this.headpalette = fp.readShort();
+		this.bodypalette = fp.readShort();
+		this.headDir = fp.readShort();
+		this.Robe = fp.readShort();
+		this.GUID = fp.readULong();
+		this.GEmblemVer = fp.readShort();
+		this.honor = fp.readShort();
+		this.virtue = fp.readLong();
+		this.isPKModeON = fp.readUChar();
+		this.sex = fp.readUChar();
+		this.PosDir = fp.readPos();
+		this.xSize = fp.readUChar();
+		this.ySize = fp.readUChar();
+		this.state = fp.readUChar();
+		this.clevel = fp.readShort();
+		this.font = fp.readShort();
+		this.hp = fp.readLong();
+		this.maxhp = fp.readLong();
+		this.isBoss = fp.readUChar();
+		this.body = fp.readShort();
+		this.name = fp.readString(end - fp.tell());
+	};
+	PACKET.ZC.NOTIFY_NEWENTRY9.size = -1;
 
 
 	// 0xa00
