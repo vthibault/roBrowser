@@ -11016,8 +11016,8 @@ define(['Utils/BinaryWriter', './PacketVerManager'], function(BinaryWriter, PACK
 	// 0x9db
 	PACKET.ZC.NOTIFY_MOVEENTRY8 = function PACKET_ZC_NOTIFY_MOVEENTRY8(fp, end) {
 		this.objecttype = fp.readUChar();
-		this.AID = fp.readULong();
 		this.GID = fp.readULong();
+		this.AID = fp.readULong();
 		this.speed = fp.readShort();
 		this.bodyState = fp.readShort();
 		this.healthState = fp.readShort();
@@ -11055,8 +11055,8 @@ define(['Utils/BinaryWriter', './PacketVerManager'], function(BinaryWriter, PACK
 	// 0x9dc
 	PACKET.ZC.NOTIFY_STANDENTRY8 = function PACKET_ZC_NOTIFY_STANDENTRY8(fp, end) {
 		this.objecttype = fp.readUChar();
-		this.AID = fp.readULong();
 		this.GID = fp.readULong();
+		this.AID = fp.readULong();
 		this.speed = fp.readShort();
 		this.bodyState = fp.readShort();
 		this.healthState = fp.readShort();
@@ -11093,8 +11093,8 @@ define(['Utils/BinaryWriter', './PacketVerManager'], function(BinaryWriter, PACK
 	// 0x9dd
 	PACKET.ZC.NOTIFY_NEWENTRY8 = function PACKET_ZC_NOTIFY_NEWENTRY8(fp, end) {
 		this.objecttype = fp.readUChar();
-		this.AID = fp.readULong();
 		this.GID = fp.readULong();
+		this.AID = fp.readULong();
 		this.speed = fp.readShort();
 		this.bodyState = fp.readShort();
 		this.healthState = fp.readShort();
@@ -11140,8 +11140,8 @@ define(['Utils/BinaryWriter', './PacketVerManager'], function(BinaryWriter, PACK
 	// 0x9fd
 	PACKET.ZC.NOTIFY_MOVEENTRY9 = function PACKET_ZC_NOTIFY_MOVEENTRY9(fp, end) {
 		this.objecttype = fp.readUChar();
-		this.AID = fp.readULong();
 		this.GID = fp.readULong();
+		this.AID = fp.readULong();
 		this.speed = fp.readShort();
 		this.bodyState = fp.readShort();
 		this.healthState = fp.readShort();
@@ -11180,8 +11180,8 @@ define(['Utils/BinaryWriter', './PacketVerManager'], function(BinaryWriter, PACK
 	// 0x9fe
 	PACKET.ZC.NOTIFY_STANDENTRY9 = function PACKET_ZC_NOTIFY_STANDENTRY9(fp, end) {
 		this.objecttype = fp.readUChar();
-		this.AID = fp.readULong();
 		this.GID = fp.readULong();
+		this.AID = fp.readULong();
 		this.speed = fp.readShort();
 		this.bodyState = fp.readShort();
 		this.healthState = fp.readShort();
@@ -11219,8 +11219,8 @@ define(['Utils/BinaryWriter', './PacketVerManager'], function(BinaryWriter, PACK
 	// 0x9dd
 	PACKET.ZC.NOTIFY_NEWENTRY9 = function PACKET_ZC_NOTIFY_NEWENTRY9(fp, end) {
 		this.objecttype = fp.readUChar();
-		this.AID = fp.readULong();
 		this.GID = fp.readULong();
+		this.AID = fp.readULong();
 		this.speed = fp.readShort();
 		this.bodyState = fp.readShort();
 		this.healthState = fp.readShort();
