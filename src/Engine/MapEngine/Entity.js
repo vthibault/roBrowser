@@ -399,26 +399,20 @@ define(function( require )
 
 
 	/**
-	 * Entity say something in color
+	 * Entity say something in color (channel system)
 	 *
 	 * @param {object} pkt - PACKET.ZC.NPC_CHAT
 	 */
 	function onEntityTalkColor( pkt )
 	{
-		var entity;
 		var color = 'rgb(' + ([
 			( pkt.color & 0x000000ff ),
 			( pkt.color & 0x0000ff00 ) >> 8,
 			( pkt.color & 0x00ff0000 ) >> 16
 		]).join(',') + ')'; // bgr to rgb.
 
-		// Remove "pseudo : |00Dialogue
+		// Remove "pseudo : |00Dialogue"
 		pkt.msg = pkt.msg.replace(/\: \|\d{2}/, ': ');
-
-		entity = pkt.accountID ? EntityManager.get(pkt.accountID) : Session.Entity;
-		if (entity) {
-			entity.dialog.set( pkt.msg );
-		}
 
 		ChatBox.addText( pkt.msg, ChatBox.TYPE.PUBLIC, color);
 	}
