@@ -159,8 +159,8 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 			tiles[i] = {
 				u1: fp.readFloat(),  u2: fp.readFloat(),  u3: fp.readFloat(),  u4: fp.readFloat(),
 				v1: fp.readFloat(),  v2: fp.readFloat(),  v3: fp.readFloat(),  v4: fp.readFloat(),
-				texture: fp.readShort(),
-				light:   fp.readShort(),
+				texture: fp.readUShort(),
+				light:   fp.readUShort(),
 				color:  [
 					fp.readUByte(),
 					fp.readUByte(),
