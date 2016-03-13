@@ -15,19 +15,18 @@ define(function( require )
 	'use strict';
 
 
-	// Always in development mode when running test (easier to debug)
-	window.ROConfig = {
-		development: true,
-		saveFiles:   false
-	};
-
-
 	// Load dependencies
-	var Client = require('Core/Client');
-	var Thread = require('Core/Thread');
-	var Memory = require('Core/MemoryManager');
-	var Intro  = require('UI/Components/Intro/Intro');
+	var Configs = require('Core/Configs');
+	var Client  = require('Core/Client');
+	var Thread  = require('Core/Thread');
+	var Memory  = require('Core/MemoryManager');
+	var Events  = require('Core/Events');
+	var Intro   = require('UI/Components/Intro/Intro');
 
+
+	// Always in development mode when running test (easier to debug)
+	Configs.set('development', true);
+	Configs.set('saveFiles', false);
 
 	/**
 	 * File Tester class
@@ -40,19 +39,6 @@ define(function( require )
 		this.ext = ext;
 		this.callback = callback;
 	}
-
-
-	/**
-	 * @var {string} file extention
-	 */
-	FileTester.prototype.ext = '';
-
-
-	/**
-	 * @var {string} callback to execute
-	 */
-	FileTester.prototype.callback = null;
-
 
 	/**
 	 * Start to test files
@@ -70,6 +56,7 @@ define(function( require )
 				Client.init( files );
 			};
 			Intro.append();
+			Events.process(Date.now() + 100);
 		});
 
 		Thread.init();
@@ -115,7 +102,7 @@ define(function( require )
 			Client.getFile( list[i], function(data){
 				try {
 					var tick = (Date.now()-start);
-					log.textContent = '[' + (i+1) + '/' + count + '] ' + '(' + Math.floor(((tick / i * count) - tick) * 0.001 + 1) + ' seconds) ' + list[i];
+					log.textContent = '[' + (index+1) + '/' + count + '] ' + '(' + Math.floor(((tick / index * count) - tick) * 0.001 + 1) + ' seconds) ' + list[i];
 					callback(data);
 				}
 				catch(e){
@@ -132,7 +119,7 @@ define(function( require )
 				}
 	
 				if (index === count+4) {
-					alert( log.textContent = count + ' '+ ext +' files loaded and compiled, found ' + errors +' errors' );
+					alert( log.textContent = count + ' '+ ext +' files loaded and compiled, found ' + errors +' errors ( '+ Math.floor((Date.now()-start)/1000) +' seconds)' );
 				}
 			});
 		}
