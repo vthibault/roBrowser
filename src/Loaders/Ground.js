@@ -170,10 +170,8 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 			};
 
 			// Generate texture atlas only if having texture on the cell.
-			if (tiles[i].texture > -1) {
-				tiles[i].texture = this.textureIndexes[tiles[i].texture];
-				ATLAS_GENERATE(tiles[i]);
-			}
+			tiles[i].texture = this.textureIndexes[tiles[i].texture];
+			ATLAS_GENERATE(tiles[i]);
 		}
 
 		return tiles;
@@ -301,7 +299,7 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 
 				cell = surfaces[x + y * width];
 
-				if (cell.tile_up > -1 && tiles[ cell.tile_up ].light > -1) {
+				if (cell.tile_up > -1) {
 					index = tiles[ cell.tile_up ].light * 4 * per_cell;
 
 					for (i = 0; i < 8; ++i) {
@@ -344,19 +342,17 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 		var tmp      = new Array(count);
 		var normals  = new Array(count);
 		var empty_vec = vec3.create();
-		var tile, cell;
+		var cell;
 
 		// Calculate normal for each cells
 		for (y = 0 ; y < height ; ++y) {
 			for (x = 0; x < width; ++x) {
 
 				tmp[ x + y * width ] = vec3.create();
+				cell = surfaces[ x + y * width ];
 
 				// Tile Up
-				if (
-					(cell=surfaces[ x + y * width ]).tile_up > -1 &&
-					(tile=tiles[ cell.tile_up ]).texture > -1
-				) {
+				if (cell.tile_up > -1) {
 					a[0] = (x+0)*2;  a[1] = cell.height[0];  a[2] = (y+0)*2;
 					b[0] = (x+1)*2;  b[1] = cell.height[1];  b[2] = (y+0)*2;
 					c[0] = (x+1)*2;  c[1] = cell.height[3];  c[2] = (y+1)*2;
@@ -459,20 +455,18 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 					tile = tiles[ cell_a.tile_up ];
 	
 					// Check if has texture
-					if (tile.texture > -1) {
-						n = normals[ x + y * width ];
-						lightmap_atlas( tile.light );
+					n = normals[ x + y * width ];
+					lightmap_atlas( tile.light );
 
-						mesh.push(
-							//      vec3 pos           |        vec3 normals          |     vec2 texcoords     |  vec2 lightcoord  |      vec2 tileCoords
-							(x+0)*2, h_a[0], (y+0)*2,    n[0][0], n[0][1], n[0][1],       tile.u1, tile.v1,          l.u1, l.v1,      (x+0.5)/width, (y+0.5)/height,
-							(x+1)*2, h_a[1], (y+0)*2,    n[1][0], n[1][1], n[1][1],       tile.u2, tile.v2,          l.u2, l.v1,      (x+1.5)/width, (y+0.5)/height,
-							(x+1)*2, h_a[3], (y+1)*2,    n[2][0], n[2][1], n[2][1],       tile.u4, tile.v4,          l.u2, l.v2,      (x+1.5)/width, (y+1.5)/height,
-							(x+1)*2, h_a[3], (y+1)*2,    n[2][0], n[2][1], n[2][1],       tile.u4, tile.v4,          l.u2, l.v2,      (x+1.5)/width, (y+1.5)/height,
-							(x+0)*2, h_a[2], (y+1)*2,    n[3][0], n[3][1], n[3][1],       tile.u3, tile.v3,          l.u1, l.v2,      (x+0.5)/width, (y+1.5)/height,
-							(x+0)*2, h_a[0], (y+0)*2,    n[0][0], n[0][1], n[0][1],       tile.u1, tile.v1,          l.u1, l.v1,      (x+0.5)/width, (y+0.5)/height
-						);
-					}
+					mesh.push(
+						//      vec3 pos           |        vec3 normals          |     vec2 texcoords     |  vec2 lightcoord  |      vec2 tileCoords
+						(x+0)*2, h_a[0], (y+0)*2,    n[0][0], n[0][1], n[0][1],       tile.u1, tile.v1,          l.u1, l.v1,      (x+0.5)/width, (y+0.5)/height,
+						(x+1)*2, h_a[1], (y+0)*2,    n[1][0], n[1][1], n[1][1],       tile.u2, tile.v2,          l.u2, l.v1,      (x+1.5)/width, (y+0.5)/height,
+						(x+1)*2, h_a[3], (y+1)*2,    n[2][0], n[2][1], n[2][1],       tile.u4, tile.v4,          l.u2, l.v2,      (x+1.5)/width, (y+1.5)/height,
+						(x+1)*2, h_a[3], (y+1)*2,    n[2][0], n[2][1], n[2][1],       tile.u4, tile.v4,          l.u2, l.v2,      (x+1.5)/width, (y+1.5)/height,
+						(x+0)*2, h_a[2], (y+1)*2,    n[3][0], n[3][1], n[3][1],       tile.u3, tile.v3,          l.u1, l.v2,      (x+0.5)/width, (y+1.5)/height,
+						(x+0)*2, h_a[0], (y+0)*2,    n[0][0], n[0][1], n[0][1],       tile.u1, tile.v1,          l.u1, l.v1,      (x+0.5)/width, (y+0.5)/height
+					);
 
 					// Add water only if it's upper than the ground.
 					if (h_a[0] > WATER_LEVEL - WATER_HEIGHT ||
@@ -490,53 +484,46 @@ define( ['Utils/BinaryReader', 'Utils/gl-matrix'], function( BinaryReader, glMat
 						);
 					}
 				}
-	
-	
+
 				// Check tile front
-				if (cell_a.tile_front > -1) {
+				if ((cell_a.tile_front > -1) && (y + 1 < height)) {
 					tile = tiles[cell_a.tile_front];
-	
-					// Check if has texture
-					if (tile.texture > -1 && surfaces[ x + (y+1) * width ]) {
-						cell_b = surfaces[ x + (y+1) * width ];
-						h_b    = cell_b.height;
-						lightmap_atlas( tile.light );
-	
-						mesh.push(
-							//      vec3 pos           |  vec3 normals     |    vec2 texcoords      |   vec2 lightcoord  |   vec2 tileCoords
-							(x+0)*2, h_b[0], (y+1)*2,    0.0, 0.0, 1.0,        tile.u3, tile.v3,           l.u1, l.v2,           0, 0,
-							(x+1)*2, h_a[3], (y+1)*2,    0.0, 0.0, 1.0,        tile.u2, tile.v2,           l.u2, l.v1,           0, 0,
-							(x+1)*2, h_b[1], (y+1)*2,    0.0, 0.0, 1.0,        tile.u4, tile.v4,           l.u2, l.v2,           0, 0,
-							(x+0)*2, h_b[0], (y+1)*2,    0.0, 0.0, 1.0,        tile.u3, tile.v3,           l.u1, l.v2,           0, 0,
-							(x+1)*2, h_a[3], (y+1)*2,    0.0, 0.0, 1.0,        tile.u2, tile.v2,           l.u2, l.v1,           0, 0,
-							(x+0)*2, h_a[2], (y+1)*2,    0.0, 0.0, 1.0,        tile.u1, tile.v1,           l.u1, l.v1,           0, 0
-						);
-					}
+
+					cell_b = surfaces[ x + (y+1) * width ];
+					h_b    = cell_b.height;
+					lightmap_atlas( tile.light );
+
+					mesh.push(
+						//      vec3 pos           |  vec3 normals     |    vec2 texcoords      |   vec2 lightcoord  |   vec2 tileCoords
+						(x+0)*2, h_b[0], (y+1)*2,    0.0, 0.0, 1.0,        tile.u3, tile.v3,           l.u1, l.v2,           0, 0,
+						(x+1)*2, h_a[3], (y+1)*2,    0.0, 0.0, 1.0,        tile.u2, tile.v2,           l.u2, l.v1,           0, 0,
+						(x+1)*2, h_b[1], (y+1)*2,    0.0, 0.0, 1.0,        tile.u4, tile.v4,           l.u2, l.v2,           0, 0,
+						(x+0)*2, h_b[0], (y+1)*2,    0.0, 0.0, 1.0,        tile.u3, tile.v3,           l.u1, l.v2,           0, 0,
+						(x+1)*2, h_a[3], (y+1)*2,    0.0, 0.0, 1.0,        tile.u2, tile.v2,           l.u2, l.v1,           0, 0,
+						(x+0)*2, h_a[2], (y+1)*2,    0.0, 0.0, 1.0,        tile.u1, tile.v1,           l.u1, l.v1,           0, 0
+					);
 				}
-	
-	
+
+
 				// Check tile right
-				if (cell_a.tile_right > -1) {
+				if ((cell_a.tile_right > -1) && (x + 1 < width))  {
 					tile = tiles[cell_a.tile_right];
-	
-					// Check if has texture
-					if (tile.texture > -1 && surfaces[ (x+1) + y * width ]) {
-						cell_b = surfaces[ (x+1) + y * width ];
-						h_b    = cell_b.height;
-						lightmap_atlas( tile.light );
-	
-						mesh.push(
-							//      vec3 pos           |  vec3 normals    |    vec2 texcoords      |   vec2 lightcoord   |    vec2 tileCoords
-							(x+1)*2, h_a[1], (y+0)*2,    1.0, 0.0, 0.0,       tile.u2, tile.v2,          l.u2, l.v1,            0, 0,
-							(x+1)*2, h_a[3], (y+1)*2,    1.0, 0.0, 0.0,       tile.u1, tile.v1,          l.u1, l.v1,            0, 0,
-							(x+1)*2, h_b[0], (y+0)*2,    1.0, 0.0, 0.0,       tile.u4, tile.v4,          l.u2, l.v2,            0, 0,
-							(x+1)*2, h_b[0], (y+0)*2,    1.0, 0.0, 0.0,       tile.u4, tile.v4,          l.u2, l.v2,            0, 0,
-							(x+1)*2, h_b[2], (y+1)*2,    1.0, 0.0, 0.0,       tile.u3, tile.v3,          l.u1, l.v2,            0, 0,
-							(x+1)*2, h_a[3], (y+1)*2,    1.0, 0.0, 0.0,       tile.u1, tile.v1,          l.u1, l.v1,            0, 0
-						);
-					}
+
+					cell_b = surfaces[ (x+1) + y * width ];
+					h_b    = cell_b.height;
+					lightmap_atlas( tile.light );
+
+					mesh.push(
+						//      vec3 pos           |  vec3 normals    |    vec2 texcoords      |   vec2 lightcoord   |    vec2 tileCoords
+						(x+1)*2, h_a[1], (y+0)*2,    1.0, 0.0, 0.0,       tile.u2, tile.v2,          l.u2, l.v1,            0, 0,
+						(x+1)*2, h_a[3], (y+1)*2,    1.0, 0.0, 0.0,       tile.u1, tile.v1,          l.u1, l.v1,            0, 0,
+						(x+1)*2, h_b[0], (y+0)*2,    1.0, 0.0, 0.0,       tile.u4, tile.v4,          l.u2, l.v2,            0, 0,
+						(x+1)*2, h_b[0], (y+0)*2,    1.0, 0.0, 0.0,       tile.u4, tile.v4,          l.u2, l.v2,            0, 0,
+						(x+1)*2, h_b[2], (y+1)*2,    1.0, 0.0, 0.0,       tile.u3, tile.v3,          l.u1, l.v2,            0, 0,
+						(x+1)*2, h_a[3], (y+1)*2,    1.0, 0.0, 0.0,       tile.u1, tile.v1,          l.u1, l.v1,            0, 0
+					);
 				}
-	
+
 			}
 		}
 
