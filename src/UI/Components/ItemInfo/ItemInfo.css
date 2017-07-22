@@ -1,10 +1,11 @@
 .ItemInfo { position:absolute; top:0px; left:0px; width:280px; background-repeat:no-repeat; background-color:transparent; }
-.ItemInfo .container { height:120px; position:relative; }
+.ItemInfo .container { height:120px; position:relative; box-shadow: white 0px 0px 0px 3px inset, rgb(192, 192, 192) 0px 0px 0px 4px inset; background-repeat: no-repeat; background-color: white; border-radius: 10px; }
 .ItemInfo .view { position:absolute; width:42px; height:20px; background-repeat:no-repeat; background-color:transparent; border:none; top:6px; left:6px; }
 .ItemInfo .collection { position:absolute; top:11px; left:10px; width:75px; height:100px; background-repeat:no-repeat; background-color:transparent; }
 .ItemInfo .title { position:absolute; top:3px; left:86px; width:185px; height:14px; padding-left:4px; padding-top:6px; font-size:12px; text-shadow:1px 1px 0px white; white-space:nowrap; }
 .ItemInfo .close { position:absolute; top:3px; right:3px; width:11px; height:11px; display:block; background-repeat:no-repeat; background-color:transparent; border:none; }
 .ItemInfo .description { position:absolute; top:35px; left:100px; line-height:18px; width:170px; height:75px; overflow-y:auto;}
+.ItemInfo .description .description-inner { width: 150px }
 .ItemInfo .extend { position:absolute; right:4px; bottom:3px; width:13px; height:13px; border:none; background-repeat:no-repeat; background-color:transparent; }
 
 .ItemInfo .cardlist { border-radius:5px; background:white; padding:2px; margin-top:3px; }
