@@ -39,9 +39,11 @@ define(function( require )
 	var StatusIcons   = require('UI/Components/StatusIcons/StatusIcons');
 	var BasicInfo     = require('UI/Components/BasicInfo/BasicInfo');
 	var Escape        = require('UI/Components/Escape/Escape');
+    var StrEffect     = require('Renderer/Effects/StrEffect');
+    var DB            = require('DB/DBManager');
 
 
-	/**
+    /**
 	 * Spam an entity on the map
 	 * Generic packet handler
 	 */
@@ -478,7 +480,31 @@ define(function( require )
 	}
 
 
-	/**
+    /**
+     * Show MvP reward Effect
+     *
+     * @param {object} pkt - PACKET.ZC.MVP
+     */
+    function onEntityMvpReward( pkt )
+    {
+        var Entity = EntityManager.get(pkt.AID);
+        EffectManager.add(new StrEffect('data/texture/effect/mvp.str', Entity.position, Renderer.tick), pkt.AID);
+        Sound.play('effect/st_mvp.wav');
+    }
+
+    /**
+     * Show MvP item message
+     *
+     * @param {object} pkt - PACKET.ZC.MVP_GETTING_ITEM
+     */
+    function onEntityMvpRewardItemMessage( pkt ) {
+        var item = DB.getItemInfo(pkt.ITID);
+        ChatBox.addText(DB.getMessage(143), ChatBox.TYPE.BLUE);
+        ChatBox.addText(item.identifiedDisplayName, ChatBox.TYPE.BLUE);
+    }
+
+
+    /**
 	 * Updating entity direction
 	 *
 	 * @param {object} pkt - PACKET.ZC.CHANGE_DIRECTION
@@ -1024,5 +1050,7 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.RESURRECTION,                 onEntityResurect);
 		Network.hookPacket( PACKET.ZC.EMOTION,                      onEntityEmotion);
 		Network.hookPacket( PACKET.ZC.NOTIFY_MONSTER_HP,            onEntityLifeUpdate);
+        Network.hookPacket( PACKET.ZC.MVP,                          onEntityMvpReward);
+        Network.hookPacket( PACKET.ZC.MVP_GETTING_ITEM,             onEntityMvpRewardItemMessage);
 	};
 });
