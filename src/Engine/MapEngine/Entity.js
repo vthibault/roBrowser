@@ -39,6 +39,7 @@ define(function( require )
 	var StatusIcons   = require('UI/Components/StatusIcons/StatusIcons');
 	var BasicInfo     = require('UI/Components/BasicInfo/BasicInfo');
 	var Escape        = require('UI/Components/Escape/Escape');
+    var MiniMap       = require('UI/Components/MiniMap/MiniMap');
 
 
 	/**
@@ -476,6 +477,57 @@ define(function( require )
 			entity.life.update();
 		}
 	}
+
+
+    /**
+     * Shows notification effect for quests and events
+     *
+     * @param {object} pkt - PACKET.ZC.QUEST_NOTIFY_EFFECT
+     */
+    function onEntityQuestNotifyEffect( pkt ) {
+        var Entity = EntityManager.get(pkt.npcID);
+        var color = 0;
+
+        if (pkt.effect !== 9999) {
+            var emotionId = pkt.effect + 81;
+
+            if (Entity && (pkt.effect in Emotions.indexes)) {
+                Entity.attachments.add({
+                    frame: Emotions.indexes[emotionId],
+                    file:  'emotion',
+                    play:   true,
+                    head:   true,
+                    repeat: true,
+                    depth:  5.0
+                });
+            }
+
+        }
+
+        switch (pkt.color + 1) {
+            case 1:
+                // yellow
+                color = 0xffff00;
+                break;
+            case 2:
+                // orange
+                color = 0xffa500;
+                break;
+            case 3:
+                // green
+                color = 0x00e16a;
+                break;
+            case 4:
+                // purple
+                color = 0x800080;
+                break;
+            case 0:
+            default:
+                return;
+        }
+
+        MiniMap.addNpcMark( pkt.npcID, pkt.xPos, pkt.yPos, color, Infinity);
+    }
 
 
 	/**
@@ -1024,5 +1076,6 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.RESURRECTION,                 onEntityResurect);
 		Network.hookPacket( PACKET.ZC.EMOTION,                      onEntityEmotion);
 		Network.hookPacket( PACKET.ZC.NOTIFY_MONSTER_HP,            onEntityLifeUpdate);
-	};
+        Network.hookPacket( PACKET.ZC.QUEST_NOTIFY_EFFECT,          onEntityQuestNotifyEffect);
+    };
 });

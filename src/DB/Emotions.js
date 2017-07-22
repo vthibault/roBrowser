@@ -257,17 +257,29 @@ define(function()
 		// ET_PANIC = 79
 		[ 78, 62, "panic", "e32", "øÈ²" ],
 
-		// ET_WHISP = 80
-		[ 79, 63, "whisp", "e33", "À§½ºÆÛ" ]
+        // ET_WHISP = 80
+        [ 79, 63, "whisp", "e33", "À§½ºÆÛ" ],
 
-/*
-80 ! quest
-81 ? quest
-82 ! job
-83 ? job
-84 ! special
-85 ? special
-*/
+        // ET_!QUEST = 81 / 0
+        [ 80, -1 ],
+
+        // ET_?QUEST = 82 / 1
+        [ 81, -1 ],
+
+        // ET_!JOB = 83 / 2
+        [ 82, -1 ],
+
+        // ET_?JOB = 84 / 3
+        [ 83, -1 ],
+
+        // ET_!EVENT = 85 / 4
+        [ 84, -1 ],
+
+        // ET_?EVENT = 86 / 5
+        [ 85, -1 ],
+
+        // ET_??? = 87 / 6
+        [ 86, -1 ]
 	];
 
 	var i, j, count, size;

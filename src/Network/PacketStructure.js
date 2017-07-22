@@ -9451,7 +9451,7 @@ define(['Utils/BinaryWriter', './PacketVerManager'], function(BinaryWriter, PACK
 		this.xPos = fp.readShort();
 		this.yPos = fp.readShort();
 		this.effect = fp.readShort();
-		this.type = fp.readShort();
+		this.color = fp.readShort();
 	};
 	PACKET.ZC.QUEST_NOTIFY_EFFECT.size = 14;
 
