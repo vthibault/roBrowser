@@ -21,6 +21,7 @@ define(function(require)
 	var Client             = require('Core/Client');
 	var KEYS               = require('Controls/KeyEventHandler');
 	var CardIllustration   = require('UI/Components/CardIllustration/CardIllustration');
+    var Mouse              = require('Controls/MouseEventHandler');
 	var UIManager          = require('UI/UIManager');
 	var UIComponent        = require('UI/UIComponent');
 	var htmlText           = require('text!./ItemInfo.html');
@@ -62,6 +63,7 @@ define(function(require)
 		// Seems like "EscapeWindow" is execute first, push it before.
 		var events = jQuery._data( window, 'events').keydown;
 		events.unshift( events.pop() );
+        resize(ItemInfo.ui.find('.container').height());
 	};
 
 
@@ -80,7 +82,7 @@ define(function(require)
 	ItemInfo.init = function init()
 	{
 		this.ui.css({ top: 200, left:200 });
-
+        this.ui.find('.extend').mousedown(onResize);
 		this.ui.find('.close')
 			.mousedown(function(event){
 				event.stopImmediatePropagation();
@@ -116,7 +118,7 @@ define(function(require)
 
 
 		ui.find('.title').text( item.IsIdentified ? it.identifiedDisplayName : it.unidentifiedDisplayName );
-		ui.find('.description').text( item.IsIdentified ? it.identifiedDescriptionName : it.unidentifiedDescriptionName );
+		ui.find('.description-inner').text( item.IsIdentified ? it.identifiedDescriptionName : it.unidentifiedDescriptionName );
 
 		// Add view button (for cards)
 		if (item.type === ItemType.CARD) {
@@ -152,8 +154,14 @@ define(function(require)
 				for (i = 0; i < 4; ++i) {
 					addCard(cardList, (item.slot && item.slot['card' + (i+1)]) || 0, i, slotCount);
 				}
+
+				if (!item.IsIdentified) {
+                    cardList.parent().hide();
+                }
 				break;
 		}
+
+        resize(ItemInfo.ui.find('.container').height());
 	};
 
 
@@ -205,7 +213,71 @@ define(function(require)
 		});
 	}
 
-	
+    /**
+     * Extend ItemInfo window size
+     */
+    function onResize()
+    {
+        var ui      = ItemInfo.ui;
+        var top     = ui.position().top;
+        var left    = ui.position().left;
+        var lastHeight = 0;
+        var _Interval;
+
+        function resizing()
+        {
+            var h = Math.floor((Mouse.screen.y - top));
+            if (h === lastHeight) {
+                return;
+            }
+            resize( h );
+            lastHeight = h;
+        }
+
+        // Start resizing
+        _Interval = setInterval(resizing, 30);
+
+        // Stop resizing on left click
+        jQuery(window).on('mouseup.resize', function(event){
+            if (event.which === 1) {
+                clearInterval(_Interval);
+                jQuery(window).off('mouseup.resize');
+            }
+        });
+    }
+
+
+    /**
+     * Extend ItemInfo window size
+     *
+     * @param {number} height
+     */
+    function resize( height )
+    {
+        var container = ItemInfo.ui.find('.container');
+        var description = ItemInfo.ui.find('.description');
+        var descriptionInner = ItemInfo.ui.find('.description-inner');
+        var containerHeight = height;
+        var minHeight = 120;
+        var maxHeight = (descriptionInner.height() + 45 > 120) ? descriptionInner.height() + 45 : 120;
+
+        if (containerHeight <= minHeight) {
+            containerHeight = minHeight;
+        }
+ 
+        if (containerHeight >= maxHeight) {
+            containerHeight = maxHeight;
+        }
+
+        container.css({
+            height: containerHeight
+        });
+        description.css({
+            height: containerHeight - 45
+        });
+    }
+
+
 	/**
 	 * Create component and export it
 	 */
