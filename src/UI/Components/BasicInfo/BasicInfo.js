@@ -231,7 +231,7 @@ define(function(require)
 	 * @param {number} val1
 	 * @param {number} val2 (optional)
 	 */
-	BasicInfo.update = function ipdate( type, val1, val2 )
+	BasicInfo.update = function update( type, val1, val2 )
 	{
 		switch (type) {
 			case 'name':

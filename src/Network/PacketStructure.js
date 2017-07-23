@@ -7459,7 +7459,7 @@ define(['Utils/BinaryWriter', './PacketVerManager'], function(BinaryWriter, PACK
 			for (i = 0; i < count; ++i) {
 				out[i] = {};
 				out[i].GID = fp.readULong();
-				out[i].szExpireDate = fp.readBinaryString(20);
+                out[i].szExpireDate = fp.readBinaryString(20);
 			}
 			return out;
 		})();
@@ -10723,6 +10723,7 @@ define(['Utils/BinaryWriter', './PacketVerManager'], function(BinaryWriter, PACK
 				out[i].index = fp.readShort();
 				out[i].ITID = fp.readUShort();
 				out[i].type = fp.readUChar();
+
 				out[i].count = fp.readShort();
 				out[i].WearState = fp.readULong();
 				out[i].slot = {};
@@ -10994,8 +10995,11 @@ define(['Utils/BinaryWriter', './PacketVerManager'], function(BinaryWriter, PACK
 	// 0x9a0
 	PACKET.HC.CHARLIST_NOTIFY = function PACKET_HC_CHARLIST_NOTIFY(fp, end) {
 		this.TotalCnt = fp.readLong();
+		if (PACKETVER.value >= 20151001) {
+			this.charSlots = fp.readLong();
+		}
 	};
-	PACKET.HC.CHARLIST_NOTIFY.size = 6;
+	PACKET.HC.CHARLIST_NOTIFY.size = (PACKETVER.value >= 20151001 ? 10 : 6);
 
 
 	// 0x9ca
@@ -11274,6 +11278,178 @@ define(['Utils/BinaryWriter', './PacketVerManager'], function(BinaryWriter, PACK
 	PACKET.ZC.SHORTCUT_KEY_LIST_V3.size = 269;
 
 
+	// 0xa07
+	PACKET.ZC.ACK_REMOVE_RODEX_ITEM = function PACKET_ZC_ACK_REMOVE_RODEX_ITEM(fp, end) {
+		this.success = fp.readChar();
+		this.index = fp.readUShort();
+		this.amount = fp.readUShort();
+		this.weight_ = fp.readShort();
+	};
+	PACKET.ZC.ACK_REMOVE_RODEX_ITEM.size = 9;
+
+
+	// 0xa08
+	PACKET.CZ.REQ_OPEN_WRITE_RODEX = function PACKET_CA_LOGIN() {
+		this.receiver = '';
+	};
+	PACKET.CZ.REQ_OPEN_WRITE_RODEX.prototype.build = function() {
+		var pkt_len = 2 + 24;
+		var pkt_buf = new BinaryWriter(pkt_len);
+
+		pkt_buf.writeShort(0x64);
+		pkt_buf.writeString(this.receiver);
+		return pkt_buf;
+	};
+
+
+	// 0xa09
+	PACKET.ZC.ADD_EXCHANGE_ITEM3 = function PACKET_ZC_ADD_EXCHANGE_ITEM3(fp, end) {
+		this.ITID = fp.readUShort();
+		this.type = fp.readUChar();
+		this.count = fp.readLong();
+		this.IsIdentified = fp.readUChar();
+		this.IsDamaged = fp.readUChar();
+		this.RefiningLevel = fp.readUChar();
+		this.slot = {};
+		this.slot.card1 = fp.readUShort();
+		this.slot.card2 = fp.readUShort();
+		this.slot.card3 = fp.readUShort();
+		this.slot.card4 = fp.readUShort();
+
+		this.randomOptions = []
+		for (var i = 0; i < 5; i++) {
+			this.randomOptions[i] = {}
+			this.randomOptions[i].optIndex = fp.readShort();
+			this.randomOptions[i].value = fp.readShort();
+			this.randomOptions[i].param = fp.readChar();
+		}
+	};
+	PACKET.ZC.ADD_EXCHANGE_ITEM3.size = 45;
+
+
+	// 0xa0a
+	PACKET.ZC.ADD_ITEM_TO_STORE3 = function PACKET_ZC_ADD_ITEM_TO_STORE3(fp, end) {
+		this.index = fp.readShort();
+		this.count = fp.readLong();
+		this.ITID = fp.readUShort();
+		this.type = fp.readUChar();
+		this.IsIdentified = fp.readUChar();
+		this.IsDamaged = fp.readUChar();
+		this.RefiningLevel = fp.readUChar();
+		this.slot = {};
+		this.slot.card1 = fp.readUShort();
+		this.slot.card2 = fp.readUShort();
+		this.slot.card3 = fp.readUShort();
+		this.slot.card4 = fp.readUShort();
+
+		this.randomOptions = []
+		for (var i = 0; i < 5; i++) {
+			this.randomOptions[i] = {}
+			this.randomOptions[i].optIndex = fp.readShort();
+			this.randomOptions[i].value = fp.readShort();
+			this.randomOptions[i].param = fp.readChar();
+		}
+	};
+	PACKET.ZC.ADD_ITEM_TO_STORE3.size = 47;
+
+
+	// 0xa0b
+	PACKET.ZC.ADD_ITEM_TO_CART3 = function PACKET_ZC_ADD_ITEM_TO_CART3(fp, end) {
+		this.index = fp.readShort();
+		this.count = fp.readLong();
+		this.ITID = fp.readUShort();
+		this.type = fp.readUChar();
+		this.IsIdentified = fp.readUChar();
+		this.IsDamaged = fp.readUChar();
+		this.RefiningLevel = fp.readUChar();
+		this.slot = {};
+		this.slot.card1 = fp.readUShort();
+		this.slot.card2 = fp.readUShort();
+		this.slot.card3 = fp.readUShort();
+		this.slot.card4 = fp.readUShort();
+
+		this.randomOptions = []
+		for (var i = 0; i < 5; i++) {
+			this.randomOptions[i] = {}
+			this.randomOptions[i].optIndex = fp.readShort();
+			this.randomOptions[i].value = fp.readShort();
+			this.randomOptions[i].param = fp.readChar();
+		}
+	};
+	PACKET.ZC.ADD_ITEM_TO_CART2.size = 47;
+
+
+	// 0xa0c
+	PACKET.ZC.ITEM_PICKUP_ACK6 = function PACKET_ZC_ITEM_PICKUP_ACK6(fp, end) {
+		this.index = fp.readUShort();
+		this.count = fp.readUShort();
+		this.ITID = fp.readUShort();
+		this.IsIdentified = fp.readUChar();
+		this.IsDamaged = fp.readUChar();
+		this.RefiningLevel = fp.readUChar();
+		this.slot = {};
+		this.slot.card1 = fp.readUShort();
+		this.slot.card2 = fp.readUShort();
+		this.slot.card3 = fp.readUShort();
+		this.slot.card4 = fp.readUShort();
+		this.location = fp.readLong();
+		this.type = fp.readUChar();
+		this.result = fp.readUChar();
+		this.HireExpireDate = fp.readLong();
+		
+		this.randomOptions = []
+		for (var i = 0; i < 5; i++) {
+			this.randomOptions[i] = {}
+			this.randomOptions[i].optIndex = fp.readShort();
+			this.randomOptions[i].value = fp.readShort();
+			this.randomOptions[i].param = fp.readChar();
+		}
+	};
+	PACKET.ZC.ITEM_PICKUP_ACK6.size = 56;
+
+
+	// 0xa0d
+	PACKET.ZC.EQUIPMENT_ITEMLIST6 = function PACKET_ZC_EQUIPMENT_ITEMLIST6(fp, end) {
+		this.ItemInfo = (function() {
+			var i, count = (end - fp.tell()) / 57 | 0,
+				out = new Array(count);
+			var flag;
+			for (i = 0; i < count; ++i) {
+				out[i] = {};
+				out[i].index = fp.readShort();
+				out[i].ITID = fp.readUShort();
+				out[i].type = fp.readUChar();
+
+				out[i].location = fp.readULong();
+				out[i].WearState = fp.readULong();
+				out[i].RefiningLevel = fp.readUChar();
+				out[i].slot = {};
+				out[i].slot.card1 = fp.readUShort();
+				out[i].slot.card2 = fp.readUShort();
+				out[i].slot.card3 = fp.readUShort();
+				out[i].slot.card4 = fp.readUShort();
+				out[i].HireExpireDate = fp.readLong();
+				out[i].bindOnEquipType = fp.readUShort();
+				out[i].wItemSpriteNumber = fp.readUShort();
+				out[i].nRandomOptionCnt = fp.readChar();
+				out[i].option = [];
+				for (var j = 0; j < 5; j++) {
+					out[i].option[j] = {};
+					out[i].option[j].optIndex = fp.readUShort();
+					out[i].option[j].value = fp.readShort();
+					out[i].option[j].param = fp.readChar();
+				}
+				flag = fp.readUChar();
+				out[i].IsIdentified = flag & 1;
+				out[i].IsDamaged = flag & 2;
+				out[i].PlaceETCTab = flag & 4;
+			}
+			return out;
+		})();
+	};
+	PACKET.ZC.EQUIPMENT_ITEMLIST6.size = -1;
+
+
 	// 0xa18
 	PACKET.ZC.ACCEPT_ENTER3 = function PACKET_ZC_ACCEPT_ENTER3(fp, end) {
 		this.startTime = fp.readULong();
@@ -11284,6 +11460,48 @@ define(['Utils/BinaryWriter', './PacketVerManager'], function(BinaryWriter, PACK
 		this.sex = fp.readUChar();
 	};
 	PACKET.ZC.ACCEPT_ENTER3.size = 14;
+
+
+	// 0xac4
+	PACKET.AC.ACCEPT_LOGIN3 = function PACKET_AC_ACCEPT_LOGIN3(fp, end) {
+		this.AuthCode = fp.readLong();
+		this.AID = fp.readULong();
+		this.userLevel = fp.readULong();
+		this.lastLoginIP = fp.readULong();
+		this.lastLoginTime = fp.readBinaryString(26);
+		this.Sex = fp.readUChar();
+		this.unknown = fp.readBinaryString(17);
+		this.ServerList = (function() {
+			var i, count=(end-fp.tell())/160|0, out=new Array(count);
+			for (i = 0; i < count; ++i) {
+				out[i] = {};
+				out[i].ip = fp.readULong();
+				out[i].port = fp.readUShort();
+				out[i].name = fp.readString(20);
+				out[i].usercount = fp.readUShort();
+				out[i].state = fp.readUShort();
+				out[i].property = fp.readUShort();
+				out[i].unknown = fp.readBinaryString(128);
+			}
+			return out;
+		})();
+	};
+	PACKET.AC.ACCEPT_LOGIN3.size = -1;
+
+
+	// 0xa3b
+	PACKET.ZC.HAT_EFFECT = function PACKET_ZC_HAT_EFFECT(fp, end) {
+		this.GID = fp.readULong();
+		this.enabled = fp.readChar();
+		this.hatEffectIDs = (function() {
+			var i, count=(end-fp.tell())/2|0, out=new Array(count);
+			for (i = 0; i < count; ++i) {
+				out[i] = fp.readShort(); // #FixMe: Can also be send as single packet, which sends the effectId as Long...
+			}
+			return out;
+		})();
+	};
+	PACKET.ZC.HAT_EFFECT = -1;
 
 
 	/**
