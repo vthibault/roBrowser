@@ -18,7 +18,7 @@
 #NpcStore .content .item .price { position:absolute; top:13px; right:16px; white-space:nowrap; text-align:right; }
 #NpcStore .content .item .unity { position:absolute; top:13px; right:2px; width:10px; }
 
-#NpcStore .footer .total { padding-left:10px; padding-top:8px; }
+#NpcStore .footer .total, #NpcStore .footer .totalP, #NpcStore .footer .cashuser { padding-left:10px; padding-top:8px; }
 #NpcStore .InputWindow, #NpcStore .OutputWindow  { width:280px; position:absolute; z-index:50; }
 #NpcStore .btn.buy, #NpcStore .btn.sell { position:absolute; top:4px; right:62px; }
 #NpcStore .btn.cancel { position:absolute; top:4px; right:15px;} 

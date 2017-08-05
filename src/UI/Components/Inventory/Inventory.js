@@ -607,26 +607,52 @@ define(function(require)
 		}
 
 		// Just allow item from storage
-		if (data.type !== 'item' || data.from !== 'Storage') {
+		if (data.type !== 'item' || (data.from !== 'Storage' && data.from !== 'CartItems')) {
 			return false;
 		}
 
 		// Have to specify how much
-		if (item.count > 1) {
+		if (item.count > 1) 
+		{
 			InputBox.append();
 			InputBox.setType('number', false, item.count);
-			InputBox.onSubmitRequest = function OnSubmitRequest( count ) {
+			
+			InputBox.onSubmitRequest = function OnSubmitRequest( count ) 
+			{
 				InputBox.remove();
-				getModule('UI/Components/Storage/Storage').reqRemoveItem(
-					item.index,
-					parseInt(count, 10 )
-				);
+				
+					switch(data.from)
+					{
+					case 'Storage':
+						getModule('UI/Components/Storage/Storage').reqRemoveItem(
+							item.index,
+							parseInt(count, 10 )
+							);
+					break;
+					
+					case 'CartItems':
+						getModule('UI/Components/CartItems/CartItems').reqRemoveItem(
+							item.index,
+							parseInt(count, 10 )
+							);
+					break;					
+				
+					}
 			};
 			return false;
 		}
+		
+		switch(data.from)
+		{
+			case 'Storage':
+				getModule('UI/Components/Storage/Storage').reqRemoveItem( item.index, 1 );
+			break;
+					
+			case 'CartItems':
+				getModule('UI/Components/CartItems/CartItems').reqRemoveItem( item.index, 1 );
+			break;							
+		}
 
-		// Only one, don't have to specify
-		getModule('UI/Components/Storage/Storage').reqRemoveItem( item.index, 1 );
 		return false;
 	}
 
@@ -787,6 +813,7 @@ define(function(require)
 	Inventory.onUseCard    = function onUseCard(/* index */){};
 	Inventory.onEquipItem  = function OnEquipItem(/* index, location */){};
 	Inventory.onUpdateItem = function OnUpdateItem(/* index, amount */){};
+	Inventory.reqMoveItemToCart = function reqMoveItemToCart(){};
 
 
 	/**

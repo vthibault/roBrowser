@@ -134,6 +134,8 @@ define( function( require )
 
 	Entity.prototype.effectColor  = null;
 	Entity.prototype.isAdmin      = false;
+	Entity.prototype.hasCart      = false;
+	Entity.prototype.CartNum      = 0;
 
 
 	/**

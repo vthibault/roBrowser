@@ -49,6 +49,16 @@ define(function( require )
 		this.accessory2 = new ViewFiles();
 		this.accessory3 = new ViewFiles();
 		this.shadow     = new ViewFiles('data/sprite/shadow.spr', 'data/sprite/shadow.act');
+    
+		this.cart     = [];
+        this.cart[0] = new ViewFiles('data/sprite/carts/cart.spr', 'data/sprite/carts/cart.act');
+        this.cart[1] = 	new ViewFiles('data/sprite/carts/cart1.spr', 'data/sprite/carts/cart1.act');
+        this.cart[2] = 	new ViewFiles('data/sprite/carts/cart2.spr', 'data/sprite/carts/cart2.act');
+        this.cart[3] = 	new ViewFiles('data/sprite/carts/cart3.spr', 'data/sprite/carts/cart3.act');
+        this.cart[4] = 	new ViewFiles('data/sprite/carts/cart4.spr', 'data/sprite/carts/cart4.act');
+        this.cart[5] = 	new ViewFiles('data/sprite/carts/cart5.spr', 'data/sprite/carts/cart5.act');
+    
+		this.cart_shadow     = new ViewFiles('data/sprite/shadow.spr', 'data/sprite/shadow.act');
 	}
 
 

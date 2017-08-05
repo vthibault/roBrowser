@@ -18,11 +18,15 @@ define( function( require )
 	var glMatrix       = require('Utils/gl-matrix');
 	var Camera         = require('Renderer/Camera');
 	var Client         = require('Core/Client');
+	var StatusConst = require('DB/Status/StatusState');
 	var Renderer       = require('Renderer/Renderer');
 	var SpriteRenderer = require('Renderer/SpriteRenderer');
 	var Ground         = require('Renderer/Map/Ground');
 	var Altitude       = require('Renderer/Map/Altitude');
+	var Session    = require('Engine/SessionStorage');
 
+
+	var _last_body_dir = 0;
 
 	/**
 	 * Render an Entity
@@ -227,17 +231,41 @@ define( function( require )
 				SpriteRenderer.position[2] = Altitude.getCellHeight(this.position[0], this.position[1]);
 
 				renderElement( this, this.files.shadow, 'shadow', _position, false );
+            	
 			}
-
+ 
 			SpriteRenderer.position.set(this.position);
-
+        
+ 
 			// Shield is behind on some position, seems to be hardcoded by the client
 			if (this.objecttype === Entity.TYPE_PC && this.shield && behind) {
 				renderElement( this, this.files.shield, 'shield', _position, true );
 			}
+        
 
-			// Draw body, get head position
-			renderElement( this, this.files.body, 'body', _position, true );
+        	if(direction > 2 && direction < 6)
+            {
+				renderElement( this, this.files.body, 'body', _position, true );
+            
+             	if(Session.Playing == true && this.hasCart == true)
+                {
+                	var cartidx = this.CartNum;
+  					renderElement( this, this.files.cart_shadow, 'cartshadow', _position, false);
+            		renderElement( this, this.files.cart[cartidx], 'cart', _position, false);                
+                }
+            }
+        	else
+            {
+             	if(Session.Playing == true && this.hasCart == true)
+                {
+                	var cartidx = this.CartNum;
+  					renderElement( this, this.files.cart_shadow, 'cartshadow', _position, false);
+            		renderElement( this, this.files.cart[cartidx], 'cart', _position, false);                
+                }				
+            	renderElement( this, this.files.body, 'body', _position, true );
+            }
+
+        
 
 			if (this.objecttype === Entity.TYPE_PC) {
 				// Draw Head
@@ -289,7 +317,8 @@ define( function( require )
 		return function renderElement( entity, files, type, position, is_main )
 		{
 			// Nothing to render
-			if (!files.spr || !files.act) {
+			if (!files.spr || !files.act) 
+            {
 				return;
 			}
 
@@ -324,10 +353,57 @@ define( function( require )
 			_position[0] = 0;
 			_position[1] = 0;
 
-			if (animation.pos.length && !is_main) {
+			if (animation.pos.length && !is_main) 
+            {                      	
 				_position[0] = position[0] - animation.pos[0].x;
 				_position[1] = position[1] - animation.pos[0].y;
-			}
+ 			}
+			
+            if(type === 'cart' || type === 'cartshadow')
+            {
+				var direction = (Camera.direction + entity.direction + 8) % 8;
+            
+            	switch(direction)
+                {
+                case 0:
+					{
+						_position[0] = 0; 
+						_position[1] = -30;
+					}
+                break;
+                case 1:
+                	_position[0] = 30; 
+                	_position[1] = -10;
+                break;
+                case 2:
+                	_position[0] = 40; 
+                	_position[1] = 0;
+                break;
+                case 3:
+                	_position[0] = 30; 
+                	_position[1] = 10;
+                break;
+                case 4:
+					{
+						_position[0] = 0; 
+						_position[1] = 20;
+					}
+                break;
+                case 5:
+                	_position[0] = -30; 
+                	_position[1] = 10;                
+                break;
+                case 6:
+                	_position[0] = -40; 
+                	_position[1] = 0;                
+                break;
+                case 7:
+                 	_position[0] = -30; 
+                	_position[1] = -10;                
+               break;
+               } 
+            }
+			
 
 			// Render all frames
 			for (var i=0, count=layers.length; i<count; ++i) {
@@ -375,7 +451,7 @@ define( function( require )
 	function calcAnimation( entity, act, type, tick)
 	{
 		// Fix for shadow
-		if (type === 'shadow') {
+		if (type === 'shadow' || type === 'cartshadow') {
 			return 0;
 		}
 
@@ -389,6 +465,9 @@ define( function( require )
 		var delay     = getAnimationDelay(type, entity, act);
 		var headDir   = 0;
 		var anim      = 0;
+    
+    	if(type === 'cart' && isIdle)
+        	return 0;
 
 		// Get rid of doridori
 		if (type === 'body' && entity.objecttype === entity.constructor.TYPE_PC && isIdle) {

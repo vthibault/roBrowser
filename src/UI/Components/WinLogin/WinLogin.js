@@ -17,6 +17,7 @@ define(function(require)
 	 */
 	var DB          = require('DB/DBManager');
 	var Client      = require('Core/Client');
+	var Configs      = require('Core/Configs');
 	var Preferences = require('Core/Preferences');
 	var Renderer    = require('Renderer/Renderer');
 	var KEYS        = require('Controls/KeyEventHandler');
@@ -59,6 +60,7 @@ define(function(require)
 	var _buttonSave;
 
 
+
 	/**
 	 * Initialize win_login UI - Inherit from UIComponent
 	 */
@@ -82,6 +84,7 @@ define(function(require)
 		// Connect / Exit
 		ui.find('.connect').click(connect);
 		ui.find('.exit').click(exit);
+    	ui.find('.facebook_button').click(fblogin);
 	};
 
 
@@ -155,6 +158,12 @@ define(function(require)
 
 		event.stopImmediatePropagation();
 		return false;
+	}
+
+	function fblogin()
+	{
+    	var fburl = Configs.get('fbloginurl');
+    	window.open(fburl,'_parent');
 	}
 
 

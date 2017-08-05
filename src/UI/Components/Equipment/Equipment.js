@@ -18,6 +18,8 @@ define(function(require)
 	var DB                 = require('DB/DBManager');
 	var StatusConst        = require('DB/Status/StatusState');
 	var EquipLocation      = require('DB/Items/EquipmentLocation');
+	var Network          = require('Network/NetworkManager');
+	var PACKET           = require('Network/PacketStructure');
 	var ItemType           = require('DB/Items/ItemType');
 	var jQuery             = require('Utils/jquery');
 	var Client             = require('Core/Client');
@@ -29,6 +31,7 @@ define(function(require)
 	var UIManager          = require('UI/UIManager');
 	var UIComponent        = require('UI/UIComponent');
 	var ItemInfo           = require('UI/Components/ItemInfo/ItemInfo');
+	var CartItems          = require('UI/Components/CartItems/CartItems');
 	var WinStats           = require('UI/Components/WinStats/WinStats');
 	var htmlText           = require('text!./Equipment.html');
 	var cssText            = require('text!./Equipment.css');
@@ -107,9 +110,12 @@ define(function(require)
 		this.ui.find('.titlebar .mini').click(function(){ Equipment.ui.find('.panel').toggle(); });
 		this.ui.find('.titlebar .close').click(function(){ Equipment.ui.hide(); });
 
-		this.ui.find('.removeOption').click(this.onRemoveOption);
+		this.ui.find('.removeOption').mousedown(onRemoveOption);
 		this.ui.find('.view_status').mousedown(toggleStatus);
 		this.ui.find('.show_equip').mousedown(toggleEquip);
+		
+		this.ui.find('.cartitems').click(onCartItems);
+		
 
 		// drag, drop items
 		this.ui.on('dragover', onDragOver);
@@ -125,6 +131,23 @@ define(function(require)
 
 		this.draggable(this.ui.find('.titlebar'));
 	};
+
+
+	function onCartItems()
+	{
+		if(Session.Entity.hasCart ==  false)
+		{
+			return;
+		}
+		CartItems.ui.toggle();
+	}
+
+
+	function onRemoveOption()
+	{
+		var pkt = new PACKET.CZ.REQ_CARTOFF();
+		Network.sendPacket(pkt);
+	}
 
 
 	/**
@@ -374,14 +397,16 @@ define(function(require)
 			var animation = character.animation;
 
 			// If state change, we have to check if the new option is removable.
-			if (character.effectState !== _lastState || _hasCart !== Session.hasCart) {
+			if (character.effectState !== _lastState || _hasCart !== character.hasCart) {
 				_lastState = character.effectState;
-				_hasCart   = Session.hasCart;
+				_hasCart   = character.hasCart;
 
 				if (_lastState & OptionFlag || _hasCart) {
+					Equipment.ui.find('.cartitems').show();
 					Equipment.ui.find('.removeOption').show();
 				}
 				else {
+					Equipment.ui.find('.cartitems').hide();
 					Equipment.ui.find('.removeOption').hide();
 				}
 			}

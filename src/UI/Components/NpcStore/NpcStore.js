@@ -45,7 +45,8 @@ define(function(require)
 	NpcStore.Type = {
 		BUY:  0,
 		SELL: 1,
-		VENDING_STORE: 2
+		VENDING_STORE: 2,
+		CASH_SHOP: 3
 	};
 
 
@@ -212,6 +213,7 @@ define(function(require)
 	NpcStore.setType = function setType(type)
 	{
 		switch (type) {
+			case NpcStore.Type.CASH_SHOP:
 			case NpcStore.Type.BUY:
 				this.ui.find('.WinSell, .WinVendingStore').hide();
 				this.ui.find('.WinBuy').show();
@@ -243,7 +245,18 @@ define(function(require)
 		var it, item, out, content;
 
 		this.ui.find('.content').empty();
-		this.ui.find('.total .result').text(0);
+		
+		if(_type == NpcStore.Type.CASH_SHOP)
+        {
+        	this.ui.find('.total').hide();
+ 			this.ui.find('.totalP .resultP').text(0);
+       }
+		else
+        {
+         	this.ui.find('.cashuser').hide();
+       		this.ui.find('.totalP').hide();
+			this.ui.find('.total .result').text(0);
+        }
 
 		_input.length  = 0;
 		_output.length = 0;
@@ -253,6 +266,7 @@ define(function(require)
 
 			case NpcStore.Type.BUY:
 			case NpcStore.Type.VENDING_STORE:
+			case NpcStore.Type.CASH_SHOP:
 				for (i = 0, count = items.length; i < count; ++i) {
 					if (!('index' in items[i])) {
 						items[i].index = i;
@@ -331,9 +345,12 @@ define(function(require)
 				total += (_output[i].discountprice || _output[i].overchargeprice || _output[i].price) * _output[i].count;
 			}
 		}
-
-		this.ui.find('.total .result').text(total);
-
+		
+		if(_type == NpcStore.Type.CASH_SHOP)
+			this.ui.find('.totalP .resultP').text(total);
+		else
+			this.ui.find('.total .result').text(total);
+    
 		return total;
 	};
 
@@ -386,6 +403,7 @@ define(function(require)
 		var it      = DB.getItemInfo(item.ITID);
 		var element = content.find('.item[data-index='+ item.index +']:first');
 		var price;
+		var m_unit;
 
 		// 0 as amount ? remove it
 		if (item.count === 0) {
@@ -403,6 +421,11 @@ define(function(require)
 		}
 
 		price = prettyZeny(item.price, _type === NpcStore.Type.VENDING_STORE);
+		m_unit = 'Z';
+		if(_type == NpcStore.Type.CASH_SHOP)
+		{
+			m_unit = 'P';
+		}
 
 		// Discount price
 		if ('discountprice' in item && item.price !== item.discountprice) {
@@ -419,7 +442,7 @@ define(function(require)
 				'<div class="amount">' + (isFinite(item.count) ? item.count : '') + '</div>' +
 				'<div class="name">'+ jQuery.escape(DB.getItemName(item)) +'</div>' +
 				'<div class="price">'+ price +'</div>' +
-				'<div class="unity">Z</div>' +
+				'<div class="unity">'+ m_unit +'</div>' +
 			'</div>'
 		);
 

@@ -62,6 +62,7 @@ define(function( require )
 	 */
 	var _loginID = '';
 
+	var _rophservers = [];
 
 	/**
 	 * Init Game

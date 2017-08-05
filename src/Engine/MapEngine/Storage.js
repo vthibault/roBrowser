@@ -115,6 +115,19 @@ define(function( require )
 		pkt.count = count;
 		Network.sendPacket( pkt );
 	};
+	
+	
+	Storage.reqAddItemFromCart = function reqAddItemFromCart( index, count )
+	{
+		if (count <= 0) {
+			return;
+		}
+
+		var pkt   = new PACKET.CZ.MOVE_ITEM_FROM_CART_TO_STORE();
+		pkt.index = index;
+		pkt.count = count;
+		Network.sendPacket( pkt );
+	};	
 
 
 	/**
@@ -132,6 +145,18 @@ define(function( require )
 		pkt.count = count;
 		Network.sendPacket( pkt );
 	};
+	
+	Storage.reqMoveItemToCart = function reqMoveItemToCart( index, count )
+	{
+		if (count <= 0) {
+			return;
+		}
+
+		var pkt   = new PACKET.CZ.MOVE_ITEM_FROM_STORE_TO_CART();
+		pkt.index = index;
+		pkt.count = count;
+		Network.sendPacket( pkt );
+	};	
 
 
 	/**

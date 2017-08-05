@@ -377,7 +377,7 @@ define(function(require)
 		event.stopImmediatePropagation();
 
 		// Just support items for now ?
-		if (!data || data.type !== 'item' || data.from !== 'Inventory') {
+		if (!data || data.type !== 'item' || (data.from !== 'Inventory' && data.from !== 'CartItems')) {
 			return false;
 		}
 
@@ -389,16 +389,35 @@ define(function(require)
 			InputBox.setType('number', false, item.count);
 			InputBox.onSubmitRequest = function OnSubmitRequest( count ) {
 				InputBox.remove();
-				Storage.reqAddItem(
-					item.index,
-					parseInt(count, 10 )
-				);
+				
+				if(data.from === 'CartItems')
+				{
+					Storage.reqAddItemFromCart(
+						item.index,
+						parseInt(count, 10 )
+					);
+				}
+				else
+				{
+					Storage.reqAddItem(
+						item.index,
+						parseInt(count, 10 )
+					);
+				}
 			};
 
 			return false;
 		}
 
-		Storage.reqAddItem( item.index, 1 );
+		if(data.from === 'CartItems')
+		{
+			Storage.reqAddItemFromCart( item.index, 1 );
+		}
+		else
+		{
+			Storage.reqAddItem( item.index, 1 );
+		}
+		
 		return false;
 	}
 
@@ -574,8 +593,9 @@ define(function(require)
 	 */
 	Storage.onClosePressed  = function onClosedPressed(){};
 	Storage.reqAddItem      = function reqAddItem(){};
+	Storage.reqAddItemFromCart      = function reqAddItemFromCart(){};
 	Storage.reqRemoveItem   = function reqRemoveItem(){};
-
+	Storage.reqMoveItemToCart = function reqMoveItemToCart(){};
 
 	/**
 	 * Create component and export it

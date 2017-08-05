@@ -30,6 +30,7 @@ define(['Utils/BinaryWriter', './PacketVerManager'], function(BinaryWriter, PACK
 	// * auto-generated *
 
 
+
 	// 0x64
 	PACKET.CA.LOGIN = function PACKET_CA_LOGIN() {
 		this.Version = 0;
@@ -181,6 +182,16 @@ define(['Utils/BinaryWriter', './PacketVerManager'], function(BinaryWriter, PACK
 		pkt.writeShort(ver[1]);
 		pkt.view.setUint32(ver[3], this.clientTime, true);
 		return pkt;
+	};
+
+
+	// 0x844
+	PACKET.CZ.HBT = function PACKET_CZ_HBT() {};
+	PACKET.CZ.HBT.prototype.build = function() {
+		var pkt_len = 2;
+		var pkt_buf = new BinaryWriter(pkt_len);
+		pkt_buf.writeShort(0x0844);
+		return pkt_buf;
 	};
 
 
@@ -1937,7 +1948,7 @@ define(['Utils/BinaryWriter', './PacketVerManager'], function(BinaryWriter, PACK
 		for (i = 0, count = this.storeList.length; i < count; ++i) {
 			pkt_buf.writeShort(this.storeList[i].index);
 			pkt_buf.writeShort(this.storeList[i].count);
-			pkt_buf.writeLong(this.storeList[i].Price);
+			pkt_buf.writeLong(this.storeList[i].price);
 		}
 
 		return pkt_buf;
@@ -2155,6 +2166,29 @@ define(['Utils/BinaryWriter', './PacketVerManager'], function(BinaryWriter, PACK
 		return pkt_buf;
 	};
 
+	/*// 0x01b2
+	PACKET.CZ.REQ_OPEN_VENDING = function PACKET_CZ_REQ_REQ_OPEN_VENDING() {
+		this.shop_name = '';
+		this.result = 0;
+		this.itemlist = [];
+	};
+	PACKET.CZ.REQ_OPEN_VENDING.prototype.build = function() {
+		var i = 0;
+		var ver = this.getPacketVersion();
+		var pkt_len = 2+2+80+1+itemlist.length*8;
+		var pkt_buf = new BinaryWriter(len);
+		pkt_buf.writeShort(ver[1]);
+		pkt_buf.writeShort(pkt_len);
+		pkt_buf.writeString(this.shop_name,80);
+		pkt_buf.writeChar(this.result);
+		for(i=0; i < this.itemlist.length; i += 1)
+		{
+			pkt_buf.writeShort(this.itemlist[i].index);
+			pkt_buf.writeShort(this.itemlist[i].amount);
+			pkt_buf.writeLong(this.itemlist[i].price);
+		}		
+		return pkt_buf;
+	};*/
 
 	// 0x1df
 	PACKET.CZ.REQ_ACCOUNTNAME = function PACKET_CZ_REQ_ACCOUNTNAME() {
@@ -3172,42 +3206,30 @@ define(['Utils/BinaryWriter', './PacketVerManager'], function(BinaryWriter, PACK
 
 
 	// 0x288
+
 	PACKET.CZ.PC_BUY_CASH_POINT_ITEM = function PACKET_CZ_PC_BUY_CASH_POINT_ITEM() {
 		this.list = [];
 		this.kafrapts = 0;
 	};
 	PACKET.CZ.PC_BUY_CASH_POINT_ITEM.prototype.build = function() {
 		var ver = this.getPacketVersion();
-		var pkt = new BinaryWriter(ver[2]);
-
-		pkt.writeShort(ver[1]);
-
-		switch (ver[2]) {
-			case 6:
-				pkt.view.setUint16(ver[3], this.list[0].id, true);
-				pkt.view.setInt16(ver[4], this.list[0].count, true);
-				break;
-
-			case 10:
-				pkt.view.setUint16(ver[3], this.list[0].id, true);
-				pkt.view.setInt16(ver[4], this.list[0].count, true);
-				pkt.view.setInt32(ver[5], this.kafrapts, true);
-				break;
-
-			case -1:
-				pkt.writeShort(2 + 2 + 4 + 2 + this.list.length * 4);
-				pkt.view.setInt32(ver[3], this.kafrapts, true);
-				pkt.view.setInt16(ver[4], this.list.length, true);
-				var pos = ver[4] + 2;
-				var i, count = this.list.length;
-
-				for (i = 0; i < count; ++i) {
-					pkt.view.setUint16(pos + 0, this.list[i].id, true);
-					pkt.view.setInt16(pos + 2, this.list[i].count, true);
-					pos += 4;
-				}
-				break;
+    
+    	var len = 10 + this.list.length * 4; 
+		var pkt = new BinaryWriter(len);
+    	pkt.writeShort(ver[1]); // cmd 
+		pkt.writeShort(len);
+		pkt.view.setInt32(ver[3], this.kafrapts, true);
+		pkt.view.setInt16(ver[4], this.list.length, true);
+		var pos = ver[4] + 2;
+		var i, count = this.list.length;
+		
+    	for (i = 0; i < count; ++i) 
+        {
+			pkt.view.setInt16(pos + 0, this.list[i].count , true);
+			pkt.view.setUint16(pos + 2, this.list[i].ITID , true);
+			pos += 4;
 		}
+
 
 		return pkt;
 	};
@@ -8289,7 +8311,8 @@ define(['Utils/BinaryWriter', './PacketVerManager'], function(BinaryWriter, PACK
 
 	// 0x287
 	PACKET.ZC.PC_CASH_POINT_ITEMLIST = function PACKET_ZC_PC_CASH_POINT_ITEMLIST(fp, end) {
-		this.CashPoint = fp.readULong();
+    	this.KafraPoint = fp.readULong();
+    	this.CashPoint = fp.readULong();
 		this.itemList = (function() {
 			var i, count=(end-fp.tell())/11|0, out=new Array(count);
 			for (i = 0; i < count; ++i) {
@@ -8307,6 +8330,7 @@ define(['Utils/BinaryWriter', './PacketVerManager'], function(BinaryWriter, PACK
 
 	// 0x289
 	PACKET.ZC.PC_CASH_POINT_UPDATE = function PACKET_ZC_PC_CASH_POINT_UPDATE(fp, end) {
+		this.KafraPoint = fp.readULong();
 		this.CashPoint = fp.readULong();
 		this.Error = fp.readShort();
 	};

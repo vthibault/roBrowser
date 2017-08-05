@@ -16,11 +16,68 @@ define(function( require )
 	 * Load dependencies
 	 */
 	var DB            = require('DB/DBManager');
+	var Session        = require('Engine/SessionStorage');
 	var Network       = require('Network/NetworkManager');
 	var PACKET        = require('Network/PacketStructure');
 	var EntityManager = require('Renderer/EntityManager');
 	var NpcStore      = require('UI/Components/NpcStore/NpcStore');
+	var VendingShop = require('UI/Components/VendingShop/VendingShop');
 	var ChatBox       = require('UI/Components/ChatBox/ChatBox');
+
+
+	/**
+	 * Received items list to buy from cash npc
+	 *
+	 * @param {object} pkt - PACKET.ZC.ZC_PC_CASH_POINT_ITEMLIST
+	 */
+	function onBuyCashList( pkt )
+	{
+		NpcStore.append();
+		NpcStore.setType(NpcStore.Type.CASH_SHOP);
+		NpcStore.setList(pkt.itemList);
+		
+		var entity = Session.Entity;
+		NpcStore.ui.find('.cashuser .buyer').text( entity ? entity.display.name : '');		
+		NpcStore.ui.find('.cashuser .cashpoints').text(pkt.KafraPoint);
+		
+		NpcStore.onSubmit = function(itemList)  // add prompt confirmation first later...
+        {
+			var i, count;
+			var pkt;
+
+			pkt   = new PACKET.CZ.PC_BUY_CASH_POINT_ITEM();
+			count = itemList.length;
+        	pkt.kafrapts = 0;
+
+			for (i = 0; i < count; ++i) 
+            {
+				pkt.list.push({
+					count: itemList[i].count,               
+					ITID:  itemList[i].ITID
+				});
+            	//pkt.kafrapts += (itemList[i].discountprice || itemList[i].price) * itemList[i].count;
+			}
+          
+			Network.sendPacket(pkt);
+		};
+	}
+	
+	
+	/**
+	 * Received items list to buy from cash npc
+	 *
+	 * @param {object} pkt - PACKET.ZC.ZC_PC_CASH_POINT_ITEMLIST
+	 */
+	function onBuyVendingList( pkt )
+	{
+		VendingShop.append();
+		VendingShop.setItems(pkt.itemList);
+	}
+	
+	function onDeleteVendingItem( pkt )
+	{
+		VendingShop.removeItem(pkt.index,pkt.count);
+	}
 
 
 	/**
@@ -72,6 +129,28 @@ define(function( require )
 			default: ChatBox.addText( DB.getMessage(57),   ChatBox.TYPE.ERROR); break; // deal failed
 		}
 	}
+	
+	/**
+	 * Received purchased informations
+	 *
+	 * @param {object} pkt - PACKET_ZC_PC_CASH_POINT_UPDATE
+	 */
+
+	function onBuyCashResult( pkt )
+	{
+		NpcStore.remove();
+
+		switch (pkt.Error) {
+			case 0:  ChatBox.addText( DB.getMessage(54),   ChatBox.TYPE.BLUE);  break; // success
+			case 1:  ChatBox.addText( DB.getMessage(1227),   ChatBox.TYPE.ERROR); break; // zeny
+			case 2:  ChatBox.addText( DB.getMessage(1228),   ChatBox.TYPE.ERROR); break; // overweight
+			case 4:  ChatBox.addText( DB.getMessage(1229),  ChatBox.TYPE.ERROR); break; // out of stock
+			case 5:  ChatBox.addText( DB.getMessage(1230),  ChatBox.TYPE.ERROR); break; // trade
+			case 6:   ChatBox.addText( DB.getMessage(1254),  ChatBox.TYPE.ERROR); break;
+			case 7:  ChatBox.addText( DB.getMessage(1813), ChatBox.TYPE.ERROR); break; // no sale information
+			default: ChatBox.addText( DB.getMessage(1814),   ChatBox.TYPE.ERROR); break; // deal failed
+		}
+	}	
 
 
 	/**
@@ -174,6 +253,8 @@ define(function( require )
 	 */
 	return function MainEngine()
 	{
+		Network.hookPacket( PACKET.ZC.PC_CASH_POINT_ITEMLIST,       onBuyCashList );
+		Network.hookPacket( PACKET.ZC.PC_CASH_POINT_UPDATE,       onBuyCashResult );
 		Network.hookPacket( PACKET.ZC.PC_PURCHASE_ITEMLIST,         onBuyList );
 		Network.hookPacket( PACKET.ZC.PC_PURCHASE_RESULT,           onBuyResult );
 		Network.hookPacket( PACKET.ZC.PC_SELL_ITEMLIST,             onSellList );
@@ -181,5 +262,7 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.PC_PURCHASE_ITEMLIST_FROMMC,  onVendingStoreList );
 		Network.hookPacket( PACKET.ZC.PC_PURCHASE_ITEMLIST_FROMMC2, onVendingStoreList );
 		Network.hookPacket( PACKET.ZC.PC_PURCHASE_RESULT_FROMMC,    onBuyResult );
+		Network.hookPacket( PACKET.ZC.PC_PURCHASE_MYITEMLIST,    onBuyVendingList );
+		Network.hookPacket( PACKET.ZC.DELETEITEM_FROM_MCSTORE,    onDeleteVendingItem );
 	};
 });

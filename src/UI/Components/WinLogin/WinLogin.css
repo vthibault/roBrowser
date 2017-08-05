@@ -6,3 +6,23 @@
 #win_login .btn { position:absolute; border:0; width:42px; height:20px; bottom:4px; background-color:transparent; }
 #win_login .btn.connect { right:50px; }
 #win_login .btn.exit { right:5px; }
+#win_login .btnfb { position:absolute; border:0; width:150px; height:20px; bottom:4px; }
+#win_login .btnfb.facebook_button {
+	left:5px;
+    display: inline-block;
+    background: #627aac url(img/facebook_small.png) left no-repeat;
+    border-top: 1px solid #29447e;
+    border-right: 1px solid #29447e;
+    border-bottom: 1px solid #1a356e;
+    border-left: none;
+    height: 22px;
+    padding-right: 7px;
+    padding-left: 29px;
+    font-weight: bold;
+    font-size: 10px;
+    color: white;
+    text-decoration: none;
+    font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
+    line-height: 22px;
+    cursor: pointer;
+}

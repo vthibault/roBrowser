@@ -27,6 +27,7 @@ define(function( require )
 	var ItemObtain    = require('UI/Components/ItemObtain/ItemObtain');
 	var ItemSelection = require('UI/Components/ItemSelection/ItemSelection');
 	var Inventory     = require('UI/Components/Inventory/Inventory');
+	var CartItems          = require('UI/Components/CartItems/CartItems');
 	var Equipment     = require('UI/Components/Equipment/Equipment');
 
 
@@ -338,7 +339,62 @@ define(function( require )
 
 		debugger;
 	}
+	
+	/**
+	 * Generic function to add items to cart
+	 *
+	 * @param {object} pkt - PACKET.ZC.CART_EQUIPMENT_ITEMLIST3
+	 */
+	function onCartSetList( pkt )
+	{
+		CartItems.setItems( pkt.itemInfo || pkt.ItemInfo );
+	}
+	
+	/**
+	 * Generic function to set cart info
+	 *
+	 * @param {object} pkt - PACKET.ZC.NOTIFY_CARTITEM_COUNTINFO
+	 */
+	function onCartSetInfo( pkt )
+	{
+		CartItems.setCartInfo( pkt.curCount, pkt.maxCount, pkt.curWeight, pkt.maxWeight  );
+	}	
+	
+	function onCartRemoveItem( pkt )
+	{
+		CartItems.removeItem( pkt.index, pkt.count);
+	}
+	
+	CartItems.reqRemoveItem = function ReqRemoveItem( index, count )
+	{
+		if (count <= 0) {
+			return;
+		}
 
+		var pkt   = new PACKET.CZ.MOVE_ITEM_FROM_CART_TO_BODY();
+		pkt.index = index;
+		pkt.count = count;
+		Network.sendPacket( pkt );
+	};
+	
+	Inventory.reqMoveItemToCart = function reqMoveItemToCart( index, count )
+	{
+		if (count <= 0) {
+			return;
+		}
+
+		var pkt   = new PACKET.CZ.MOVE_ITEM_FROM_BODY_TO_CART();
+		pkt.index = index;
+		pkt.count = count;
+		Network.sendPacket( pkt );
+	};
+	
+	
+	function onCartItemAdded( pkt )
+	{
+		CartItems.addItem(pkt);
+	}	
+	
 
 	/**
 	 * Initialize
@@ -358,6 +414,9 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.NORMAL_ITEMLIST2,       onInventorySetList );
 		Network.hookPacket( PACKET.ZC.NORMAL_ITEMLIST3,       onInventorySetList );
 		Network.hookPacket( PACKET.ZC.NORMAL_ITEMLIST4,       onInventorySetList );
+		Network.hookPacket( PACKET.ZC.CART_NORMAL_ITEMLIST3,        onCartSetList );
+		Network.hookPacket( PACKET.ZC.CART_EQUIPMENT_ITEMLIST3,        onCartSetList );
+		Network.hookPacket( PACKET.ZC.NOTIFY_CARTITEM_COUNTINFO,        onCartSetInfo );		
 		Network.hookPacket( PACKET.ZC.EQUIPMENT_ITEMLIST,     onInventorySetList );
 		Network.hookPacket( PACKET.ZC.EQUIPMENT_ITEMLIST2,    onInventorySetList );
 		Network.hookPacket( PACKET.ZC.EQUIPMENT_ITEMLIST3,    onInventorySetList );
@@ -369,6 +428,7 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.REQ_WEAR_EQUIP_ACK2,    onItemEquip );
 		Network.hookPacket( PACKET.ZC.ACK_WEAR_EQUIP_V5,      onItemEquip );
 		Network.hookPacket( PACKET.ZC.DELETE_ITEM_FROM_BODY,  onIventoryRemoveItem );
+		Network.hookPacket( PACKET.ZC.DELETE_ITEM_FROM_CART,  onCartRemoveItem );		
 		Network.hookPacket( PACKET.ZC.USE_ITEM_ACK,           onItemUseAnswer );
 		Network.hookPacket( PACKET.ZC.USE_ITEM_ACK2,          onItemUseAnswer );
 		Network.hookPacket( PACKET.ZC.CONFIG_NOTIFY,          onConfigEquip );
@@ -376,5 +436,7 @@ define(function( require )
 		Network.hookPacket( PACKET.ZC.ITEMCOMPOSITION_LIST,   onItemCompositionList );
 		Network.hookPacket( PACKET.ZC.ACK_ITEMCOMPOSITION,    onItemCompositionResult );
 		Network.hookPacket( PACKET.ZC.ACK_ITEMREFINING,       onRefineResult);
+		Network.hookPacket( PACKET.ZC.ADD_ITEM_TO_CART,          onCartItemAdded );
+		Network.hookPacket( PACKET.ZC.ADD_ITEM_TO_CART2,         onCartItemAdded );		
 	};
 });

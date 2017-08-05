@@ -32,6 +32,7 @@ define( ['Core/Preferences', 'Controls/KeyEventHandler'], function( Preferences,
 	// UI
 	defaultKey[ KEYS.C ]   = { component:'ChatRoomCreate',  cmd:'TOGGLE', alt:true };
 	defaultKey[ KEYS.E ]   = { component:'Inventory',       cmd:'TOGGLE', alt:true };
+	defaultKey[ KEYS.W ]   = { component:'CartItems',       cmd:'TOGGLE', alt:true };
 	defaultKey[ KEYS.G ]   = { component:'Guild',           cmd:'TOGGLE', alt:true };
 	defaultKey[ KEYS.J ]   = { component:'PetInformations', cmd:'TOGGLE', alt:true };
 	defaultKey[ KEYS.L ]   = { component:'Emoticons',       cmd:'TOGGLE', alt:true };

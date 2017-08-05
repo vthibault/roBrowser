@@ -40,6 +40,10 @@ define(function()
 
 		hasGuild:      false,
 		guildRight:    0,
-		isGuildMaster: false
+		isGuildMaster: false,
+    
+    	Playing: false,
+//    	hasCart: false,
+//    	CartNum: 0
 	};
 });

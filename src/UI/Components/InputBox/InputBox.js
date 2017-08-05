@@ -132,10 +132,24 @@ define(function(require)
 				this.ui.find('input').attr('type', 'text');
 				defaultVal = defaultVal || 0;
 				break;
+				
+			case 'price':
+				this.ui.addClass('number');
+				this.ui.find('.text').text( 'Input Price' );
+				this.ui.find('input').attr('type', 'text');
+				defaultVal = defaultVal || 0;
+				break;
+				
 
 			case 'text':
 				this.ui.removeClass('number');
 				this.ui.find('.text').text('');
+				this.ui.find('input').attr('type', 'text');
+				break;
+
+			case 'shopname':
+				this.ui.removeClass('number');
+				this.ui.find('.text').text('Input your Shop Name');
 				this.ui.find('input').attr('type', 'text');
 				break;
 

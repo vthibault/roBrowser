@@ -32,6 +32,7 @@ define(function( require )
 	var ItemSelection        = require('UI/Components/ItemSelection/ItemSelection');
 	var Inventory            = require('UI/Components/Inventory/Inventory');
 	var NpcMenu              = require('UI/Components/NpcMenu/NpcMenu');
+	var getModule          = require;
 
 
 	/**
@@ -447,11 +448,25 @@ define(function( require )
 		if (!count) {
 			return;
 		}
-
-		pkt               = new PACKET.CZ.USE_SKILL();
-		pkt.SKID          = id;
-		pkt.selectedLevel = level;
-		pkt.targetID      = targetID || Session.Entity.GID;
+    
+   	
+    	if(id === SkillId.MC_CHANGECART)
+        {
+			if(Session.Entity.hasCart == true)
+			{
+				getModule('UI/Components/ChangeCart/ChangeCart').onChangeCartSkill();
+			}
+       	}
+		else if(id === SkillId.MC_VENDING)
+		{
+			getModule('UI/Components/Vending/Vending').onVendingSkill();
+			return;
+		}
+		
+        pkt               = new PACKET.CZ.USE_SKILL();
+        pkt.SKID          = id;
+        pkt.selectedLevel = level;
+        pkt.targetID      = targetID || Session.Entity.GID;
 
 		// In range
 		if (count < 2 || target === entity) {

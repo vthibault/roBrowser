@@ -131,6 +131,10 @@ define(function( require )
 		Network.setPing(function(){
 			Network.sendPacket(ping);
 		});
+    
+    	Session.Playing = false;
+    	//Session.hasCart = false;
+    
 
 		UIManager.getComponent('WinLoading').remove();
 
